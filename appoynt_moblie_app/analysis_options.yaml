@@ -1,0 +1,19 @@
+# /*
+#  * File Name: analysis_options.yaml
+#  * Author: Kholoud Khaled
+#  * Date of Creation: 17/06/2026
+#  * Version Information: 1.0.0
+#  * Dependencies: None
+#  * Contributors: [Kholoud Khaled]
+#  * Last Modified Date: [Kholoud Khaled - 17/06/2026]
+#  * File Description: Static analysis configuration for the Appoynt Mobile App.
+#  */
+
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    # Disable camelCase naming rules to support project's mandatory snake_case naming style
+    constant_identifier_names: false
+    non_constant_identifier_names: false
+

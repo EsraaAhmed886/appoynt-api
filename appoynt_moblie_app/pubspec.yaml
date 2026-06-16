@@ -1,0 +1,82 @@
+# /*
+#  * File Name: pubspec.yaml
+#  * Author: Kholoud Khaled
+#  * Date of Creation: 17/06/2026
+#  * Version Information: 1.0.0
+#  * Dependencies: None
+#  * Contributors: [Kholoud Khaled]
+#  * Last Modified Date: [Kholoud Khaled - 17/06/2026]
+#  * File Description: Configuration and dependencies for Appoynt Mobile App.
+#  */
+
+name: appoynt_mobile_app
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.4.4 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+
+  # State Management
+  flutter_bloc: ^8.1.6
+
+  # Navigation
+  go_router: ^14.2.0
+
+  # Networking
+  dio: ^5.5.0
+
+  # Local Storage
+  flutter_secure_storage: ^9.2.2
+
+  # Local Database
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+
+  # Maps and Geolocation
+  google_maps_flutter: ^2.7.0
+  geolocator: ^12.0.0
+
+  # Video Consultations
+  agora_rtc_engine: ^6.3.2
+
+  # Push Notifications
+  firebase_messaging: ^15.0.3
+
+  # Dependency Injection
+  get_it: ^7.7.0
+
+  # Connectivity Status
+  connectivity_plus: ^6.0.3
+
+  # QR Code Scanning
+  mobile_scanner: ^5.1.1
+
+  # Analytics Charts
+  fl_chart: ^0.68.0
+
+  # Custom Typography
+  google_fonts: ^6.2.1
+
+  # JSON Serialization
+  json_annotation: ^4.9.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+  # Code Generation
+  build_runner: ^2.4.11
+  hive_generator: ^2.0.1
+  json_serializable: ^6.8.0
+
+flutter:
+  uses-material-design: true
+
