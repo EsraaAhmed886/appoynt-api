@@ -5,7 +5,7 @@
 #  * Version Information: 1.0.0
 #  * Dependencies: None
 #  * Contributors: [Kholoud Khaled]
-#  * Last Modified Date: [Kholoud Khaled - 17/06/2026]
+#  * Last Modified Date: [Kholoud Khaled - 19/06/2026]
 #  * File Description: Configuration and dependencies for Appoynt Mobile App.
 #  */
 
@@ -22,6 +22,8 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.6
+  # Value equality comparison helper package
+  equatable: ^2.0.8
 
   # State Management
   flutter_bloc: ^8.1.6
@@ -78,5 +80,10 @@ dev_dependencies:
   json_serializable: ^6.8.0
 
 flutter:
+  # Enable material design styles
   uses-material-design: true
+  # Define static asset paths for images
+  assets:
+    # Add path to the local assets/images directory
+    - assets/images/
 
