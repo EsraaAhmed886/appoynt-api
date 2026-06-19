@@ -3,48 +3,67 @@
  * Author: Kholoud Khaled
  * Date of Creation: 17/06/2026
  * Version Information: 1.0.0
- * Dependencies: flutter/material.dart
+ * Dependencies:
+ *   - flutter/material.dart
+ *   - package:appoynt_mobile_app/core/theme/modes/light_mode.dart
+ *   - package:appoynt_mobile_app/core/theme/modes/dark_mode.dart
+ *   - package:appoynt_mobile_app/core/theme/modes/theme_mode.dart
+ *   - package:appoynt_mobile_app/features/splash/presentation/pages/splash_screen.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 17/06/2026]
- * File Description: Default counter app for Flutter setup, styled to follow repository guidelines.
+ * Last Modified Date: [Kholoud Khaled - 19/06/2026]
+ * File Description: Entry point of the Appoynt mobile application, configuring themes and initial splash route.
  */
 
-// Importing flutter material library for UI widgets
-import 'package:flutter/material.dart';
+// Importing central presentation and UI barrel exports
+import 'package:appoynt_mobile_app/core/routing/route_export.dart';
+// Importing initial splash screen landing widget
+import 'package:appoynt_mobile_app/features/splash/presentation/pages/splash_screen.dart';
 
-// The main entry point function of the program
-void main() {
+// Global notifier instance for managing application theme mode changes
+final ThemeModeNotifier theme_mode_notifier = ThemeModeNotifier();
+
+// The main entry point function of the mobile application
+void main() async {
+  // Ensure framework services and widget bindings are fully initialized before running async tasks
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Load the persisted theme configuration from secure local storage
+  await theme_mode_notifier.load_theme_mode();
+
   // Execute and run the root widget application
   runApp(const MyApp());
 }
 
-// Defining the MyApp class which represents the root widget
+// Defining the MyApp class which represents the root widget of the application
 class MyApp extends StatelessWidget {
   // Constructor initializing the widget key
   const MyApp({super.key});
 
-  // Build method creating the material application instance
+  // Build method creating the material application instance with listeners
   @override
   Widget build(BuildContext context) {
-    // Return MaterialApp configured with theme and title
-    return MaterialApp(
-      // Setting the app title
-      title: 'Flutter Demo',
-      // Setting the light theme
-      theme: ThemeData(
-        // Configure color scheme using seed color
-        colorScheme: ColorScheme.fromSeed(
-          // Define seed color
-          seedColor: Colors.deepPurple,
-        ),
-        // Enable material 3 design standard
-        useMaterial3: true,
-      ),
-      // Defining the home landing page of the application
-      home: const MyHomePage(
-        // Set page title parameter
-        title: 'Flutter Demo Home Page',
-      ),
+    // Return ListenableBuilder to rebuild MaterialApp when theme changes
+    return ListenableBuilder(
+      // Bind notifier dependency to the global theme mode notifier
+      listenable: theme_mode_notifier,
+      // Builder callback defining UI hierarchy around MaterialApp
+      builder: (context, child) {
+        // Return MaterialApp configured with theme tokens and initial page
+        return MaterialApp(
+          // Setting the application title name
+          title: 'Appoynt',
+          // Disable default debug banner indicator from top corner
+          debugShowCheckedModeBanner: false,
+          // Set light mode theme configuration import
+          theme: light_mode_theme,
+          // Set dark mode theme configuration import
+          darkTheme: dark_mode_theme,
+          // Bind active theme mode property value to dynamic state notifier
+          themeMode: theme_mode_notifier.current_theme_mode,
+          // Defining the landing splash screen as the initial home page
+          home: const SplashScreen(),
+        );
+      },
     );
   }
 }
@@ -83,10 +102,36 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       // Configure top navigation app bar
       appBar: AppBar(
-        // Set background color from color scheme
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         // Set title text widget
         title: Text(widget.title),
+        // List of widgets placed in app bar action area
+        actions: [
+          // Icon button to toggle between light and dark themes
+          IconButton(
+            // Set callback function when button is clicked
+            onPressed: () {
+              // Retrieve current theme mode from notifier
+              final ThemeMode current = theme_mode_notifier.current_theme_mode;
+              // Check if current theme is dark mode using Yoda comparison
+              if (ThemeMode.dark == current) {
+                // Set theme mode to light mode
+                theme_mode_notifier.set_theme_mode(ThemeMode.light);
+              }
+              // Else check if current theme is light mode using Yoda comparison
+              else if (ThemeMode.light == current) {
+                // Set theme mode to dark mode
+                theme_mode_notifier.set_theme_mode(ThemeMode.dark);
+              }
+              // Else fall back case representing system theme state
+              else {
+                // Toggle theme mode to dark mode as default action
+                theme_mode_notifier.set_theme_mode(ThemeMode.dark);
+              }
+            },
+            // Icon representing brightness selection state
+            icon: const Icon(Icons.brightness_6),
+          ),
+        ],
       ),
       // Center layout container for the main body
       body: Center(

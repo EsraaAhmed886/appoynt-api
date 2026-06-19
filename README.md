@@ -382,7 +382,7 @@ Follow these instructions to set up your local development environment.
 
 ## 📄 License
 
-This project is developed as a **Graduation Project**. All rights reserved to the Appoynt team © 2025.
+This project is developed as a **Graduation Project**. All rights reserved to the Appoynt team © 2026.
 
 ---
 
