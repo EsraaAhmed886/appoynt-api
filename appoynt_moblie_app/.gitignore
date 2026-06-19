@@ -1,0 +1,60 @@
+# /*
+#  * File Name: .gitignore
+#  * Author: Kholoud Khaled
+#  * Date of Creation: 17/06/2026
+#  * Version Information: 1.0.0
+#  * Dependencies: None
+#  * Contributors: [Kholoud Khaled]
+#  * Last Modified Date: [Kholoud Khaled - 17/06/2026]
+#  * File Description: Git ignore configuration for Appoynt Mobile App.
+#  */
+
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.project
+.directory
+.idea/
+.packages
+.fvm/
+.vscode/
+.flutter-plugins
+.flutter-plugins-dependencies
+.dart_tool/
+
+# Android-specific
+android/app/local.properties
+android/app/flutter_bootstrap.gradle
+android/.gradle/
+android/app/libs/
+android/key.properties
+*.apk
+*.ap_
+*.dex
+
+# iOS-specific
+ios/.bundle/
+ios/Flutter/Ephemeral/
+ios/Flutter/Generated.xcconfig
+ios/Flutter/flutter_export_environment.sh
+ios/Flutter/Flutter.podspec
+ios/Runner/GeneratedPluginRegistrant.h
+ios/Runner/GeneratedPluginRegistrant.m
+ios/Runner/GeneratedPluginRegistrant.swift
+**/doc/api/
+**/ios/Flutter/.symlinks/
+**/ios/Pods/
+**/ios/Podfile.lock
+
+# Build outputs
+build/
+
+# Symbol maps
+*.symbols
+*.cdx
