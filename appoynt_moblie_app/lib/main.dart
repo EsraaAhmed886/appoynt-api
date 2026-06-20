@@ -10,7 +10,7 @@
  *   - package:appoynt_mobile_app/core/theme/modes/theme_mode.dart
  *   - package:appoynt_mobile_app/features/splash/presentation/pages/splash_screen.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 19/06/2026]
+ * Last Modified Date: [Kholoud Khaled - 20/06/2026]
  * File Description: Entry point of the Appoynt mobile application, configuring themes and initial splash route.
  */
 
@@ -59,7 +59,11 @@ class MyApp extends StatelessWidget {
           // Set dark mode theme configuration import
           darkTheme: dark_mode_theme,
           // Bind active theme mode property value to dynamic state notifier
-          themeMode: theme_mode_notifier.current_theme_mode,
+          themeMode: ThemeMode.dark,
+          // Set the localizations delegates to support custom bilingual engine translations
+          localizationsDelegates: app_localizations_delegates,
+          // Define supported locales list for the application context
+          supportedLocales: app_supported_locales,
           // Defining the landing splash screen as the initial home page
           home: const SplashScreen(),
         );

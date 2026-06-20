@@ -5,7 +5,7 @@
  * Version Information: 1.0.0
  * Dependencies: None
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 19/06/2026]
+ * Last Modified Date: [Kholoud Khaled - 20/06/2026]
  * File Description: Defines centralized dimension, spacing, border radius, and animation constants.
  */
 
@@ -76,5 +76,41 @@ class AppSpacing {
 
   // Default opacity constant value representing a fully opaque state
   static const double opacity_full = 1.0;
+
+  // Diameter dimension constant for page indicator dots
+  static const double size_dot = 10.0;
+
+  // Top spacing constraint for onboarding page layout alignment
+  static const double spacing_onboarding_top = 60.0;
+
+  // Bottom margin constraint for dot indicators row spacing
+  static const double spacing_dot_bottom = 20.0;
+
+  // Horizontal padding constraint for onboarding content text column
+  static const double padding_onboarding_content = 28.0;
+
+  // Spacing height between onboarding title and description text
+  static const double spacing_title_subtitle = 14.0;
+
+  // Spacing height reserved at screen bottom for button navigation layouts
+  static const double spacing_bottom_reserve = 104.0;
+
+  // Edge offset constraint for positioning skip action button
+  static const double offset_skip_button = 20.0;
+
+  // Typography font size constraint for skip button label
+  static const double font_size_skip_button = 15.0;
+
+  // Typography font size constraint for main onboarding CTA button
+  static const double font_size_action_button = 17.0;
+
+  // Duration in milliseconds for skip button fade animation
+  static const int duration_onboarding_fade_ms = 250;
+
+  // Duration in milliseconds for page controller sliding transition
+  static const int duration_page_slide_ms = 400;
+
+  // Duration in milliseconds for illustration entrance scaling pop
+  static const int duration_illustration_pop_ms = 500;
 }
 // End of app_spacing.dart

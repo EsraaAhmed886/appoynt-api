@@ -5,7 +5,7 @@
  * Version Information: 1.0.0
  * Dependencies: flutter/material.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 19/06/2026]
+ * Last Modified Date: [Kholoud Khaled - 20/06/2026]
  * File Description: Defines centralized color constants and palettes for light and dark theme modes.
  */
 
@@ -46,5 +46,11 @@ class AppColors {
 
   // Divider and border color constant representation for the dark theme mode
   static const Color border_dark = Color(0xFF2C2C2C);
+
+  // Background color constant for the onboarding screens layout
+  static const Color onboarding_background = Color(0xFFF0F3FA);
+
+  // Color representation for inactive dot indicators in pagination
+  static const Color dot_inactive = Color(0xFFCDD5E0);
 }
 // End of app_colors.dart

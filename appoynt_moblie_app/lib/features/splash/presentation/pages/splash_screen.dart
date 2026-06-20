@@ -9,7 +9,7 @@
  *   - package:appoynt_mobile_app/features/splash/presentation/cubit/splash_cubit.dart
  *   - package:appoynt_mobile_app/main.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 19/06/2026]
+ * Last Modified Date: [Kholoud Khaled - 20/06/2026]
  * File Description: Presentation page for the splash screen displaying animated Appoynt brand logo with a shiny sweep.
  */
 
@@ -21,6 +21,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:appoynt_mobile_app/features/splash/presentation/cubit/splash_cubit.dart';
 // Importing the homepage widget to navigate to after splash delay
 import 'package:appoynt_mobile_app/main.dart';
+// Importing onboarding screen to route to after splash completes
+import 'package:appoynt_mobile_app/features/onboarding/presentation/pages/onboarding_page.dart';
 
 // Stateful widget representing the initial landing splash screen
 class SplashScreen extends StatefulWidget {
@@ -142,18 +144,55 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     });
   }
 
-  // Helper method to navigate to the home screen of the application
-  void _navigate_to_home() {
+  // Helper method to navigate to the onboarding screen of the application
+  void _navigate_to_onboarding() {
     // Check if the state object remains active in widget tree using Yoda comparison
     if (true == mounted) {
-      // Transition by replacing splash page with home counter screen page
+      // Transition by replacing splash page with onboarding page
       Navigator.of(context).pushReplacement(
         // Define page route with cross-fade transition behavior
         PageRouteBuilder(
-          // Set target page to MyHomePage instance
+          // Set target page to OnboardingPage instance
           pageBuilder: (context, animation, secondary_animation) {
-            // Return root demo homepage layout widget
-            return const MyHomePage(title: 'Appoynt Home Page');
+            // Return onboarding page layout widget
+            return OnboardingPage(
+              // Define callback triggered when onboarding completes
+              on_done: () {
+                // Check if the state object remains active in widget tree using Yoda comparison
+                if (true == mounted) {
+                  // Transition to the home page using cross-fade route builder
+                  Navigator.of(context).pushReplacement(
+                    // Define page route with cross-fade transition behavior
+                    PageRouteBuilder(
+                      // Set target page to MyHomePage instance
+                      pageBuilder: (context, anim, secAnim) {
+                        // Return root demo homepage layout widget
+                        return const MyHomePage(title: 'Appoynt Home Page');
+                      },
+                      // Build custom transition animation logic
+                      transitionsBuilder: (context, anim, secAnim, child) {
+                        // Return fade transition widget mapping logic
+                        return FadeTransition(
+                          // Bind transition opacity to route animation progress
+                          opacity: anim,
+                          // Return child route widget tree
+                          child: child,
+                        );
+                      },
+                      // Retrieve transition duration constant from app spacing definition
+                      transitionDuration: const Duration(
+                        // Set transition duration in milliseconds
+                        milliseconds: AppSpacing.duration_fade_ms,
+                      ),
+                    ),
+                  );
+                }
+                // Else block to ensure explicit control flow paths are handled
+                else {
+                  // Do nothing since widget is unmounted from the tree
+                }
+              },
+            );
           },
           // Build custom transition animation logic
           transitionsBuilder: (context, animation, secondary_animation, child) {
@@ -211,8 +250,8 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
         listener: (context, state) {
           // Check if state is SplashDone indicating delay complete using Yoda style comparison
           if (state is SplashDone) {
-            // Trigger transition routing to the homepage
-            _navigate_to_home();
+            // Trigger transition routing to the onboarding screen
+            _navigate_to_onboarding();
           }
           // Else block representing other state emissions
           else {
