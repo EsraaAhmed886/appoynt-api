@@ -5,7 +5,7 @@
 #  * Version Information: 1.0.0
 #  * Dependencies: None
 #  * Contributors: [Kholoud Khaled]
-#  * Last Modified Date: [Kholoud Khaled - 19/06/2026]
+#  * Last Modified Date: [Kholoud Khaled - 20/06/2026]
 #  * File Description: Configuration and dependencies for Appoynt Mobile App.
 #  */
 
@@ -20,6 +20,8 @@ environment:
 
 dependencies:
   flutter:
+    sdk: flutter
+  flutter_localizations:
     sdk: flutter
   cupertino_icons: ^1.0.6
   # Value equality comparison helper package
