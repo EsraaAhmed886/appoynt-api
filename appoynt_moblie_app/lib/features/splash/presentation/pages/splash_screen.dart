@@ -19,10 +19,10 @@ import 'package:appoynt_mobile_app/core/routing/route_export.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 // Importing splash screen state management cubit
 import 'package:appoynt_mobile_app/features/splash/presentation/cubit/splash_cubit.dart';
-// Importing the homepage widget to navigate to after splash delay
-import 'package:appoynt_mobile_app/main.dart';
 // Importing onboarding screen to route to after splash completes
 import 'package:appoynt_mobile_app/features/onboarding/presentation/pages/onboarding_page.dart';
+// Importing login screen page widget representation
+import 'package:appoynt_mobile_app/features/auth/presentation/pages/login_page.dart';
 
 // Stateful widget representing the initial landing splash screen
 class SplashScreen extends StatefulWidget {
@@ -158,16 +158,37 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
             return OnboardingPage(
               // Define callback triggered when onboarding completes
               on_done: () {
-                // Check if the state object remains active in widget tree using Yoda comparison
-                if (true == mounted) {
-                  // Transition to the home page using cross-fade route builder
+                // Check if the active route context remains active in widget tree using Yoda comparison
+                if (true == context.mounted) {
+                  // Transition to the login page using cross-fade route builder
                   Navigator.of(context).pushReplacement(
                     // Define page route with cross-fade transition behavior
                     PageRouteBuilder(
-                      // Set target page to MyHomePage instance
+                      // Set target page to LoginPage instance
                       pageBuilder: (context, anim, secAnim) {
-                        // Return root demo homepage layout widget
-                        return const MyHomePage(title: 'Appoynt Home Page');
+                        // Return root login gateway page widget
+                        return LoginPage(
+                          // Set success redirect callback
+                          on_login_success: () {
+                            // Print dynamic logs
+                            debugPrint('User logged in successfully');
+                          },
+                          // Set register redirect callback
+                          on_go_to_register: () {
+                            // Print dynamic logs
+                            debugPrint('User clicked registration');
+                          },
+                          // Set forgot password redirect callback
+                          on_forgot_password: () {
+                            // Print dynamic logs
+                            debugPrint('User clicked forgot password');
+                          },
+                          // Set language toggle selection callback
+                          on_toggle_language: () {
+                            // Call global cubit toggle language logic
+                            context.read<GlobalCubit>().toggle_language();
+                          },
+                        );
                       },
                       // Build custom transition animation logic
                       transitionsBuilder: (context, anim, secAnim, child) {

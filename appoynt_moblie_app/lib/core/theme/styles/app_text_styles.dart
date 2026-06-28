@@ -100,4 +100,108 @@ class AppTextStyles {
             height: 1.6,
           );
   }
+
+  // Method to fetch dynamically configured title text style for the login page
+  static TextStyle get_login_title(bool is_arabic) {
+    // Resolve dynamic text color token based on active mode
+    const Color text_color = AppColors.text_light_primary;
+    // Return GoogleFonts config based on language check
+    return is_arabic
+        // For Arabic, use Cairo font family
+        ? GoogleFonts.cairo(
+            // Set font size from spacing constants
+            fontSize: AppSpacing.font_size_title,
+            // Set weight parameter using extra bold helper
+            fontWeight: FontWeightHelper.extra_bold,
+            // Apply text color definition token
+            color: text_color,
+          )
+        // For English, use Inter font family
+        : GoogleFonts.inter(
+            // Set font size from spacing constants
+            fontSize: AppSpacing.font_size_title,
+            // Set weight parameter using extra bold helper
+            fontWeight: FontWeightHelper.extra_bold,
+            // Apply text color definition token
+            color: text_color,
+          );
+  }
+
+  // Method to fetch dynamically configured subtitle text style for the login page
+  static TextStyle get_login_subtitle(bool is_arabic) {
+    // Resolve dynamic text color token based on active mode
+    const Color text_color = AppColors.text_light_secondary;
+    // Return GoogleFonts config based on language check
+    return is_arabic
+        // For Arabic, use Cairo font family
+        ? GoogleFonts.cairo(
+            // Set font size from spacing constants
+            fontSize: AppSpacing.font_size_subtitle,
+            // Set weight parameter using regular helper
+            fontWeight: FontWeightHelper.regular,
+            // Apply text color definition token
+            color: text_color,
+          )
+        // For English, use Inter font family
+        : GoogleFonts.inter(
+            // Set font size from spacing constants
+            fontSize: AppSpacing.font_size_subtitle,
+            // Set weight parameter using regular helper
+            fontWeight: FontWeightHelper.regular,
+            // Apply text color definition token
+            color: text_color,
+          );
+  }
+
+  // Method to fetch dynamically configured label text style for input form fields
+  static TextStyle get_field_label(bool is_arabic) {
+    // Resolve dynamic text color token based on active mode
+    const Color text_color = AppColors.text_light_primary;
+    // Return GoogleFonts config based on language check
+    return is_arabic
+        // For Arabic, use Cairo font family
+        ? GoogleFonts.cairo(
+            // Set font size from spacing constants
+            fontSize: AppSpacing.font_size_label,
+            // Set weight parameter using semi bold helper
+            fontWeight: FontWeightHelper.semi_bold,
+            // Apply text color definition token
+            color: text_color,
+          )
+        // For English, use Inter font family
+        : GoogleFonts.inter(
+            // Set font size from spacing constants
+            fontSize: AppSpacing.font_size_label,
+            // Set weight parameter using semi bold helper
+            fontWeight: FontWeightHelper.semi_bold,
+            // Apply text color definition token
+            color: text_color,
+          );
+  }
+
+  // Method to fetch dynamically configured body text style with optional custom colors
+  static TextStyle get_body_medium(bool is_arabic, {Color? custom_color}) {
+    // Resolve fallback secondary text color token
+    final Color text_color = custom_color ?? AppColors.text_light_secondary;
+    // Return GoogleFonts config based on language check
+    return is_arabic
+        // For Arabic, use Cairo font family
+        ? GoogleFonts.cairo(
+            // Set font size from spacing constants
+            fontSize: AppSpacing.font_size_body_medium,
+            // Set weight parameter using regular helper
+            fontWeight: FontWeightHelper.regular,
+            // Apply resolved text color token
+            color: text_color,
+          )
+        // For English, use Inter font family
+        : GoogleFonts.inter(
+            // Set font size from spacing constants
+            fontSize: AppSpacing.font_size_body_medium,
+            // Set weight parameter using regular helper
+            fontWeight: FontWeightHelper.regular,
+            // Apply resolved text color token
+            color: text_color,
+          );
+  }
 }
