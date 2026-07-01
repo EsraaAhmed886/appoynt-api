@@ -2,7 +2,7 @@
  * File Name: layout.tsx
  * Author: Kholoud Khaled
  * Date of Creation: 17/06/2026
- * Version Information: 1.0.0
+ * Version Information: V1.0.0
  * Dependencies: next, next/font/local, ./globals.css
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 17/06/2026]

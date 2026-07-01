@@ -2,7 +2,7 @@
  * File Name: splash_cubit.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/06/2026
- * Version Information: 1.0.0
+ * Version Information: V1.0.0
  * Dependencies:
  *   - package:flutter_bloc/flutter_bloc.dart
  *   - package:equatable/equatable.dart

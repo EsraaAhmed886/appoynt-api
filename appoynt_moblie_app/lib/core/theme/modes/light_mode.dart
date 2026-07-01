@@ -2,7 +2,7 @@
  * File Name: light_mode.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/06/2026
- * Version Information: 1.0.0
+ * Version Information: V1.0.0
  * Dependencies:
  *   - flutter/material.dart
  *   - package:appoynt_mobile_app/core/theme/colors/app_colors.dart

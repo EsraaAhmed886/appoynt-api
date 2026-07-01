@@ -2,7 +2,7 @@
  * File Name: splash_state.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/06/2026
- * Version Information: 1.0.0
+ * Version Information: V1.0.0
  * Dependencies:
  *   - package:appoynt_mobile_app/features/splash/presentation/cubit/splash_cubit.dart
  * Contributors: [Kholoud Khaled]

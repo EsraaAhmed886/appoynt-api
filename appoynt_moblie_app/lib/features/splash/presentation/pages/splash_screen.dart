@@ -2,7 +2,7 @@
  * File Name: splash_screen.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/06/2026
- * Version Information: 1.2.0
+ * Version Information: V1.2.0
  * Dependencies:
  *   - package:appoynt_mobile_app/core/routing/route_export.dart
  *   - package:flutter_bloc/flutter_bloc.dart

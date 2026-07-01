@@ -2,7 +2,7 @@
  * File Name: theme_mode.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/06/2026
- * Version Information: 1.1.0
+ * Version Information: V1.1.0
  * Dependencies:
  *   - flutter/material.dart
  *   - package:flutter_secure_storage/flutter_secure_storage.dart

@@ -2,7 +2,7 @@
  * File Name: app_assets.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/06/2026
- * Version Information: 1.0.0
+ * Version Information: V1.0.0
  * Dependencies: None
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 20/06/2026]

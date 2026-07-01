@@ -2,7 +2,7 @@
  * File Name: app_text_styles.dart
  * Author: Kholoud Khaled
  * Date of Creation: 20/06/2026
- * Version Information: 1.0.0
+ * Version Information: V1.0.0
  * Dependencies:
  *   - package:flutter/material.dart
  *   - package:google_fonts/google_fonts.dart
