@@ -1,3 +1,14 @@
+/*
+ * File Name: globals.css
+ * Author: Kholoud Khaled
+ * Date of Creation: 17/06/2026
+ * Version Information: V1.0.0
+ * Dependencies: tailwindcss
+ * Contributors: [Kholoud Khaled]
+ * Last Modified Date: [Kholoud Khaled - 02/07/2026]
+ * File Description: Defines global styling rules and Tailwind CSS directives.
+ */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

@@ -6,7 +6,7 @@
  * Dependencies:
  *   - package:flutter/material.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/06/2026]
+ * Last Modified Date: [Kholoud Khaled - 02/07/2026]
  * File Description: Defines the abstract contract for application-wide custom localizations.
  */
 
@@ -140,6 +140,69 @@ abstract class AppLocalizations {
 
   // Abstract getter for invalid phone number format validation error label
   String get invalid_phone;
+
+  // Abstract getter for register title label
+  String get register_title;
+
+  // Abstract getter for register subtitle description label
+  String get register_subtitle;
+
+  // Abstract getter for first name input label
+  String get first_name_label;
+
+  // Abstract getter for first name placeholder hint
+  String get first_name_hint;
+
+  // Abstract getter for last name input label
+  String get last_name_label;
+
+  // Abstract getter for last name placeholder hint
+  String get last_name_hint;
+
+  // Abstract getter for email input hint
+  String get email_hint;
+
+  // Abstract getter for phone number input hint
+  String get phone_hint;
+
+  // Abstract getter for password input hint
+  String get password_hint;
+
+  // Abstract getter for confirmation password input label
+  String get confirm_password;
+
+  // Abstract getter for confirmation password placeholder hint
+  String get confirm_password_hint;
+
+  // Abstract getter for terms and conditions agreement sentence prefix
+  String get agree_to_terms;
+
+  // Abstract getter for terms and conditions action link label
+  String get terms_and_conditions;
+
+  // Abstract getter for general language and connector word
+  String get and_connector;
+
+  // Abstract getter for privacy policy action link label
+  String get privacy_policy;
+
+  // Abstract getter for existing account sign in prompt question
+  String get have_account;
+
+  // Abstract getter for sign in action label link
+  String get sign_in;
+
+  // Abstract getter for register creation CTA action button label
+  String get create_my_account;
+
+  // Abstract getter for mandatory validation error on checkbox
+  String get terms_must_agree;
+
+  // Abstract getter for phone number length limits validation warning
+  String get phone_max_error;
+
+  // Abstract getter for confirmation password mismatch validation warning
+  String get password_mismatch;
 }
 
 // Defining a short alias for clean and simple type references

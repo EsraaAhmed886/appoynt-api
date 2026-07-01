@@ -7,7 +7,7 @@
  *   - package:flutter/material.dart
  *   - package:appoynt_mobile_app/core/localization/app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/06/2026]
+ * Last Modified Date: [Kholoud Khaled - 02/07/2026]
  * File Description: English concrete implementation of localizations containing only onboarding strings.
  */
 
@@ -283,5 +283,152 @@ class AppLocalizationsEn extends AppLocalizations {
   String get invalid_phone {
     // Return English phone number validation failure warning
     return 'Please enter a valid phone number';
+  }
+
+  // Override getter returning title label for registration gateway
+  @override
+  String get register_title {
+    // Return English title
+    return 'Create Account';
+  }
+
+  // Override getter returning subtitle details for registration gateway
+  @override
+  String get register_subtitle {
+    // Return English description helper text
+    return 'Fill in your details to get started';
+  }
+
+  // Override getter returning label for first name inputs
+  @override
+  String get first_name_label {
+    // Return English first name input label
+    return 'First Name';
+  }
+
+  // Override getter returning hint for first name inputs
+  @override
+  String get first_name_hint {
+    // Return English first name hint
+    return 'First Name';
+  }
+
+  // Override getter returning label for last name inputs
+  @override
+  String get last_name_label {
+    // Return English last name input label
+    return 'Last Name';
+  }
+
+  // Override getter returning hint for last name inputs
+  @override
+  String get last_name_hint {
+    // Return English last name hint
+    return 'Last Name';
+  }
+
+  // Override getter returning hint helper text for email inputs
+  @override
+  String get email_hint {
+    // Return English email format sample hint
+    return 'example@email.com';
+  }
+
+  // Override getter returning hint helper text for phone inputs
+  @override
+  String get phone_hint {
+    // Return English phone pattern sample hint
+    return '01xxxxxxxxx';
+  }
+
+  // Override getter returning hint helper text for password inputs
+  @override
+  String get password_hint {
+    // Return English password strength guidance hint
+    return 'Enter a strong password';
+  }
+
+  // Override getter returning label for confirmation password inputs
+  @override
+  String get confirm_password {
+    // Return English confirm password input label
+    return 'Confirm Password';
+  }
+
+  // Override getter returning hint helper text for confirmation password inputs
+  @override
+  String get confirm_password_hint {
+    // Return English confirm password hint
+    return 'Re-enter your password';
+  }
+
+  // Override getter returning agreement prefix label for terms acceptance checkbox
+  @override
+  String get agree_to_terms {
+    // Return English agreement prefix sentence
+    return 'I agree to the ';
+  }
+
+  // Override getter returning clickable link text for terms of service documentation
+  @override
+  String get terms_and_conditions {
+    // Return English terms link label
+    return 'Terms & Conditions';
+  }
+
+  // Override getter returning simple connector word for grammatical listings
+  @override
+  String get and_connector {
+    // Return English connector string
+    return ' and ';
+  }
+
+  // Override getter returning clickable link text for privacy policy documentation
+  @override
+  String get privacy_policy {
+    // Return English privacy link label
+    return 'Privacy Policy';
+  }
+
+  // Override getter returning footer question prompt for registered users
+  @override
+  String get have_account {
+    // Return English question sentence
+    return 'Already have an account?';
+  }
+
+  // Override getter returning sign in link text for existing accounts
+  @override
+  String get sign_in {
+    // Return English sign in action word
+    return 'Sign In';
+  }
+
+  // Override getter returning action button label for registration execution
+  @override
+  String get create_my_account {
+    // Return English account creation button text
+    return 'Create My Account';
+  }
+
+  // Override getter returning validation alert message for unselected terms checkbox
+  @override
+  String get terms_must_agree {
+    // Return English warning alert text
+    return 'You must agree to the terms';
+  }
+
+  // Override getter returning validation alert message for exceeded phone digits limit
+  @override
+  String get phone_max_error {
+    // Return English digit restriction warning text
+    return 'Phone number must not exceed 11 digits';
+  }
+
+  // Override getter returning validation alert message for mismatched password inputs
+  @override
+  String get password_mismatch {
+    // Return English credentials mismatch warning text
+    return 'Passwords do not match';
   }
 }

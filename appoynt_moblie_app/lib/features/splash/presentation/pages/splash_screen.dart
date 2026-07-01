@@ -8,8 +8,9 @@
  *   - package:flutter_bloc/flutter_bloc.dart
  *   - package:appoynt_mobile_app/features/splash/presentation/cubit/splash_cubit.dart
  *   - package:appoynt_mobile_app/main.dart
+ *   - package:appoynt_mobile_app/features/auth/presentation/pages/register_page.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/06/2026]
+ * Last Modified Date: [Kholoud Khaled - 02/07/2026]
  * File Description: Presentation page for the splash screen displaying animated Appoynt brand logo with a shiny sweep.
  */
 
@@ -23,6 +24,8 @@ import 'package:appoynt_mobile_app/features/splash/presentation/cubit/splash_cub
 import 'package:appoynt_mobile_app/features/onboarding/presentation/pages/onboarding_page.dart';
 // Importing login screen page widget representation
 import 'package:appoynt_mobile_app/features/auth/presentation/pages/login_page.dart';
+// Importing registration screen page widget representation
+import 'package:appoynt_mobile_app/features/auth/presentation/pages/register_page.dart';
 
 // Stateful widget representing the initial landing splash screen
 class SplashScreen extends StatefulWidget {
@@ -175,8 +178,50 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                           },
                           // Set register redirect callback
                           on_go_to_register: () {
-                            // Print dynamic logs
-                            debugPrint('User clicked registration');
+                            // Check if context remains active in widget tree using Yoda comparison
+                            if (true == context.mounted) {
+                              // Push RegisterPage onto navigation stack
+                              Navigator.of(context).push(
+                                // Create fade transition route builder
+                                PageRouteBuilder(
+                                  // Set target page to RegisterPage instance
+                                  pageBuilder: (context, anim, secAnim) {
+                                    // Return register page layout
+                                    return RegisterPage(
+                                      // Callback to navigate to OTP page
+                                      on_go_to_otp: () {
+                                        // Print log for verification
+                                        debugPrint('User completed registration, go to OTP');
+                                      },
+                                      // Callback to return back to Login
+                                      on_go_to_login: () {
+                                        // Pop the registration screen from route stack
+                                        Navigator.of(context).pop();
+                                      },
+                                      // Callback to toggle language
+                                      on_toggle_language: () {
+                                        // Call global cubit toggle language logic
+                                        context.read<GlobalCubit>().toggle_language();
+                                      },
+                                    );
+                                  },
+                                  // Build transition animations
+                                  transitionsBuilder: (context, anim, secAnim, child) {
+                                    // Return cross-fade transition representation
+                                    return FadeTransition(
+                                      // Bind anim properties
+                                      opacity: anim,
+                                      // child representation
+                                      child: child,
+                                    );
+                                  },
+                                  // Set standard cross-fade transition duration from spacing constants
+                                  transitionDuration: const Duration(milliseconds: AppSpacing.duration_fade_ms),
+                                ),
+                              );
+                            } else {
+                              // Empty action block to satisfy compiler
+                            }
                           },
                           // Set forgot password redirect callback
                           on_forgot_password: () {

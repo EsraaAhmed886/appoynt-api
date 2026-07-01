@@ -8,7 +8,7 @@
  *   - package:google_fonts/google_fonts.dart
  *   - package:appoynt_mobile_app/core/routing/route_export.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/06/2026]
+ * Last Modified Date: [Kholoud Khaled - 02/07/2026]
  * File Description: Typographic directory holding all text style definitions.
  */
 
@@ -201,6 +201,58 @@ class AppTextStyles {
             // Set weight parameter using regular helper
             fontWeight: FontWeightHelper.regular,
             // Apply resolved text color token
+            color: text_color,
+          );
+  }
+
+  // Method to fetch dynamically configured title text style for the register page
+  static TextStyle get_register_title(bool is_arabic) {
+    // Resolve dynamic text color token based on active mode
+    const Color text_color = AppColors.text_light_primary;
+    // Return GoogleFonts config based on language check
+    return is_arabic
+        // For Arabic, use Cairo font family
+        ? GoogleFonts.cairo(
+            // Set font size from spacing constants
+            fontSize: AppSpacing.font_size_title,
+            // Set weight parameter using extra bold helper
+            fontWeight: FontWeightHelper.extra_bold,
+            // Apply text color definition token
+            color: text_color,
+          )
+        // For English, use Inter font family
+        : GoogleFonts.inter(
+            // Set font size from spacing constants
+            fontSize: AppSpacing.font_size_title,
+            // Set weight parameter using extra bold helper
+            fontWeight: FontWeightHelper.extra_bold,
+            // Apply text color definition token
+            color: text_color,
+          );
+  }
+
+  // Method to fetch dynamically configured subtitle text style for the register page
+  static TextStyle get_register_subtitle(bool is_arabic) {
+    // Resolve dynamic text color token based on active mode
+    const Color text_color = AppColors.text_light_secondary;
+    // Return GoogleFonts config based on language check
+    return is_arabic
+        // For Arabic, use Cairo font family
+        ? GoogleFonts.cairo(
+            // Set font size from spacing constants
+            fontSize: AppSpacing.font_size_subtitle,
+            // Set weight parameter using regular helper
+            fontWeight: FontWeightHelper.regular,
+            // Apply text color definition token
+            color: text_color,
+          )
+        // For English, use Inter font family
+        : GoogleFonts.inter(
+            // Set font size from spacing constants
+            fontSize: AppSpacing.font_size_subtitle,
+            // Set weight parameter using regular helper
+            fontWeight: FontWeightHelper.regular,
+            // Apply text color definition token
             color: text_color,
           );
   }
