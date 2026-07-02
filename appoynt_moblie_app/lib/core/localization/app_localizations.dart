@@ -203,6 +203,21 @@ abstract class AppLocalizations {
 
   // Abstract getter for confirmation password mismatch validation warning
   String get password_mismatch;
+
+  // Abstract getter for verification screen title
+  String get enter_your_code;
+
+  // Abstract getter for verification screen description subtitle
+  String get enter_otp_subtitle;
+
+  // Abstract getter for resending countdown trigger link label
+  String get send_code_again;
+
+  // Abstract getter for sent code description information card text
+  String get sent_code_info;
+
+  // Abstract getter for OTP verification action button label
+  String get verify;
 }
 
 // Defining a short alias for clean and simple type references

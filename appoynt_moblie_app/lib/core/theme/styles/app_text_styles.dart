@@ -256,4 +256,82 @@ class AppTextStyles {
             color: text_color,
           );
   }
+
+  // Method to fetch dynamically configured title text style for the OTP page
+  static TextStyle get_otp_title(bool is_arabic) {
+    // Resolve dynamic text color token based on active mode
+    const Color text_color = AppColors.text_light_primary;
+    // Return GoogleFonts config based on language check
+    return is_arabic
+        // For Arabic, use Cairo font family
+        ? GoogleFonts.cairo(
+            // Set font size from spacing constants
+            fontSize: AppSpacing.font_size_title,
+            // Set weight parameter using extra bold helper
+            fontWeight: FontWeightHelper.extra_bold,
+            // Apply text color definition token
+            color: text_color,
+          )
+        // For English, use Inter font family
+        : GoogleFonts.inter(
+            // Set font size from spacing constants
+            fontSize: AppSpacing.font_size_title,
+            // Set weight parameter using extra bold helper
+            fontWeight: FontWeightHelper.extra_bold,
+            // Apply text color definition token
+            color: text_color,
+          );
+  }
+
+  // Method to fetch dynamically configured subtitle text style for the OTP page
+  static TextStyle get_otp_subtitle(bool is_arabic) {
+    // Resolve dynamic text color token based on active mode
+    const Color text_color = AppColors.text_light_secondary;
+    // Return GoogleFonts config based on language check
+    return is_arabic
+        // For Arabic, use Cairo font family
+        ? GoogleFonts.cairo(
+            // Set font size from spacing constants
+            fontSize: AppSpacing.font_size_subtitle,
+            // Set weight parameter using regular helper
+            fontWeight: FontWeightHelper.regular,
+            // Apply text color definition token
+            color: text_color,
+          )
+        // For English, use Inter font family
+        : GoogleFonts.inter(
+            // Set font size from spacing constants
+            fontSize: AppSpacing.font_size_subtitle,
+            // Set weight parameter using regular helper
+            fontWeight: FontWeightHelper.regular,
+            // Apply text color definition token
+            color: text_color,
+          );
+  }
+
+  // Method to fetch dynamically configured timer text style for the OTP page
+  static TextStyle get_otp_timer(bool is_arabic) {
+    // Resolve dynamic text color token based on active mode
+    const Color text_color = AppColors.primary_color;
+    // Return GoogleFonts config based on language check
+    return is_arabic
+        // For Arabic, use Cairo font family
+        ? GoogleFonts.cairo(
+            // Set font size
+            fontSize: 14.0,
+            // Set weight parameter using bold helper
+            fontWeight: FontWeightHelper.bold,
+            // Apply text color definition token
+            color: text_color,
+          )
+        // For English, use Inter font family
+        : GoogleFonts.inter(
+            // Set font size
+            fontSize: 14.0,
+            // Set weight parameter using bold helper
+            fontWeight: FontWeightHelper.bold,
+            // Apply text color definition token
+            color: text_color,
+          );
+  }
 }
