@@ -50,6 +50,96 @@ abstract class AppLocalizations {
 
   // Abstract getter for the onboarding page subtitles list
   List<String> get onboarding_subtitles;
+
+  // Abstract getter for English language code label
+  String get language_code_en;
+
+  // Abstract getter for English language full name label
+  String get language_name_en;
+
+  // Abstract getter for Arabic language code label
+  String get language_code_ar;
+
+  // Abstract getter for Arabic language full name label
+  String get language_name_ar;
+
+  // Abstract getter for password rules header label
+  String get password_must;
+
+  // Abstract getter for password strength tracker indicator label
+  String get password_strength;
+
+  // Abstract getter for weak strength password state label
+  String get strength_weak;
+
+  // Abstract getter for medium strength password state label
+  String get strength_medium;
+
+  // Abstract getter for strong strength password state label
+  String get strength_strong;
+
+  // Abstract getter for too short password validation message label
+  String get too_short;
+
+  // Abstract getter for minimum character length password rule label
+  String get password_rule_min_length;
+
+  // Abstract getter for uppercase character password rule label
+  String get password_rule_uppercase;
+
+  // Abstract getter for lowercase character password rule label
+  String get password_rule_lowercase;
+
+  // Abstract getter for digit number password rule label
+  String get password_rule_number;
+
+  // Abstract getter for special character password rule label
+  String get password_rule_special;
+
+  // Abstract getter for prohibiting Arabic characters password rule label
+  String get password_rule_no_arabic;
+
+  // Abstract getter for welcome back title label
+  String get welcome_back;
+
+  // Abstract getter for login panel helper description label
+  String get login_subtitle;
+
+  // Abstract getter for combined email or phone input label
+  String get email_or_phone;
+
+  // Abstract getter for combined email or phone hint label
+  String get enter_email_or_phone;
+
+  // Abstract getter for standalone email label
+  String get email;
+
+  // Abstract getter for standalone phone number label
+  String get phone;
+
+  // Abstract getter for standalone password label
+  String get password;
+
+  // Abstract getter for forgot password link button label
+  String get forgot_password;
+
+  // Abstract getter for login action button label
+  String get login;
+
+  // Abstract getter for guest sign up prompt label
+  String get no_account;
+
+  // Abstract getter for register sign up link label
+  String get sign_up;
+
+  // Abstract getter for blank input field validation error label
+  String get field_required;
+
+  // Abstract getter for invalid email format validation error label
+  String get invalid_email;
+
+  // Abstract getter for invalid phone number format validation error label
+  String get invalid_phone;
 }
 
 // Defining a short alias for clean and simple type references

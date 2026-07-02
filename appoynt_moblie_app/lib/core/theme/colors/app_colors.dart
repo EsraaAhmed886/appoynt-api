@@ -52,5 +52,11 @@ class AppColors {
 
   // Color representation for inactive dot indicators in pagination
   static const Color dot_inactive = Color(0xFFCDD5E0);
+
+  // Color representation for invalid validation errors or alert messages
+  static const Color error = Color(0xFFE74C3C);
+
+  // Background fill color representation for user input text fields
+  static const Color input_fill = Color(0xFFF7F8F9);
 }
 // End of app_colors.dart

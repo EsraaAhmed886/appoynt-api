@@ -18,6 +18,8 @@
 import 'package:appoynt_mobile_app/core/routing/route_export.dart';
 // Importing initial splash screen landing widget
 import 'package:appoynt_mobile_app/features/splash/presentation/pages/splash_screen.dart';
+// Importing flutter bloc package for state management provider scopes
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Global notifier instance for managing application theme mode changes
 final ThemeModeNotifier theme_mode_notifier = ThemeModeNotifier();
@@ -42,132 +44,48 @@ class MyApp extends StatelessWidget {
   // Build method creating the material application instance with listeners
   @override
   Widget build(BuildContext context) {
-    // Return ListenableBuilder to rebuild MaterialApp when theme changes
-    return ListenableBuilder(
-      // Bind notifier dependency to the global theme mode notifier
-      listenable: theme_mode_notifier,
-      // Builder callback defining UI hierarchy around MaterialApp
-      builder: (context, child) {
-        // Return MaterialApp configured with theme tokens and initial page
-        return MaterialApp(
-          // Setting the application title name
-          title: 'Appoynt',
-          // Disable default debug banner indicator from top corner
-          debugShowCheckedModeBanner: false,
-          // Set light mode theme configuration import
-          theme: light_mode_theme,
-          // Set dark mode theme configuration import
-          darkTheme: dark_mode_theme,
-          // Bind active theme mode property value to dynamic state notifier
-          themeMode: ThemeMode.dark,
-          // Set the localizations delegates to support custom bilingual engine translations
-          localizationsDelegates: app_localizations_delegates,
-          // Define supported locales list for the application context
-          supportedLocales: app_supported_locales,
-          // Defining the landing splash screen as the initial home page
-          home: const SplashScreen(),
-        );
+    // Return BlocProvider setting up global logic cubit on top of tree
+    return BlocProvider<GlobalCubit>(
+      // Create and initialize new global cubit instance
+      create: (context) {
+        // Return initialized global cubit
+        return GlobalCubit();
       },
-    );
-  }
-}
-
-// Defining MyHomePage widget to display the counter UI
-class MyHomePage extends StatefulWidget {
-  // Constructor initializing the widget key and title parameter
-  const MyHomePage({super.key, required this.title});
-
-  // Page title variable definition
-  final String title;
-
-  // Creating the state instance for MyHomePage
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-// Defining state class for MyHomePage widget
-class _MyHomePageState extends State<MyHomePage> {
-  // Declaring counter integer variable initialized to zero
-  int counter_value = 0;
-
-  // Function to increment the counter value
-  void increment_counter() {
-    // Call setState to refresh visual elements
-    setState(() {
-      // Increment the counter state variable
-      counter_value++;
-    });
-  }
-
-  // Build method rendering the counter page layout
-  @override
-  Widget build(BuildContext context) {
-    // Return scaffold container for page layout
-    return Scaffold(
-      // Configure top navigation app bar
-      appBar: AppBar(
-        // Set title text widget
-        title: Text(widget.title),
-        // List of widgets placed in app bar action area
-        actions: [
-          // Icon button to toggle between light and dark themes
-          IconButton(
-            // Set callback function when button is clicked
-            onPressed: () {
-              // Retrieve current theme mode from notifier
-              final ThemeMode current = theme_mode_notifier.current_theme_mode;
-              // Check if current theme is dark mode using Yoda comparison
-              if (ThemeMode.dark == current) {
-                // Set theme mode to light mode
-                theme_mode_notifier.set_theme_mode(ThemeMode.light);
-              }
-              // Else check if current theme is light mode using Yoda comparison
-              else if (ThemeMode.light == current) {
-                // Set theme mode to dark mode
-                theme_mode_notifier.set_theme_mode(ThemeMode.dark);
-              }
-              // Else fall back case representing system theme state
-              else {
-                // Toggle theme mode to dark mode as default action
-                theme_mode_notifier.set_theme_mode(ThemeMode.dark);
-              }
+      // Bind Builder widget to execute next child builds
+      child: BlocBuilder<GlobalCubit, GlobalState>(
+        // Builder mapping the global settings to child app tree
+        builder: (context, state) {
+          // Return ListenableBuilder to rebuild MaterialApp when theme changes
+          return ListenableBuilder(
+            // Bind notifier dependency to the global theme mode notifier
+            listenable: theme_mode_notifier,
+            // Builder callback defining UI hierarchy around MaterialApp
+            builder: (context, child) {
+              // Return MaterialApp configured with theme tokens and initial page
+              return MaterialApp(
+                // Setting the application title name
+                title: 'Appoynt',
+                // Disable default debug banner indicator from top corner
+                debugShowCheckedModeBanner: false,
+                // Apply the active locale from the global state
+                locale: state.active_locale,
+                // Set light mode theme configuration import
+                theme: light_mode_theme,
+                // Set dark mode theme configuration import
+                darkTheme: dark_mode_theme,
+                // Bind active theme mode property value to dynamic state notifier
+                // themeMode: theme_mode_notifier.current_theme_mode,
+                themeMode: ThemeMode.light,
+                // Set the localizations delegates to support custom bilingual engine translations
+                localizationsDelegates: app_localizations_delegates,
+                // Define supported locales list for the application context
+                supportedLocales: app_supported_locales,
+                // Defining the landing splash screen as the initial home page
+                home: const SplashScreen(),
+              );
             },
-            // Icon representing brightness selection state
-            icon: const Icon(Icons.brightness_6),
-          ),
-        ],
-      ),
-      // Center layout container for the main body
-      body: Center(
-        // Column layout for vertical elements placement
-        child: Column(
-          // Center items vertically
-          mainAxisAlignment: MainAxisAlignment.center,
-          // List of widgets inside the column
-          children: <Widget>[
-            // Label displaying instructional static text
-            const Text(
-              // The text string shown above the counter
-              'You have pushed the button this many times:',
-            ),
-            // Text widget presenting the current counter value
-            Text(
-              // Interpolating counter value string representation
-              '$counter_value',
-              // Visual text style settings from theme
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      // Floating button to trigger increment action
-      floatingActionButton: FloatingActionButton(
-        // Action event callback function reference
-        onPressed: increment_counter,
-        // Tooltip description of button
-        tooltip: 'Increment',
-        // Child icon widget
-        child: const Icon(Icons.add),
+          );
+        },
       ),
     );
   }

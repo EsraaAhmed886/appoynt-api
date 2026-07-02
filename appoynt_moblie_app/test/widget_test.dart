@@ -1,30 +1,37 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
+/*
+ * File Name: widget_test.dart
+ * Author: Kholoud Khaled
+ * Date of Creation: 17/06/2026
+ * Version Information: 1.0.0
+ * Dependencies:
+ *   - flutter/material.dart
+ *   - flutter_test/flutter_test.dart
+ * Contributors: [Kholoud Khaled]
+ * Last Modified Date: [Kholoud Khaled - 20/06/2026]
+ * File Description: Widget tests checking that the main application mounts and displays the splash screen.
+ */
 
-import 'package:flutter/material.dart';
+// Importing test library helpers
 import 'package:flutter_test/flutter_test.dart';
-
+// Importing the main application wrapper
 import 'package:appoynt_mobile_app/main.dart';
+// Importing splash screen widget representation
+import 'package:appoynt_mobile_app/features/splash/presentation/pages/splash_screen.dart';
 
+// Main execution entry point for widget tests
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
+  // Define smoke test verifying splash screen mounting
+  testWidgets('App initialization mounts splash screen successfully', (WidgetTester tester) async {
+    // Build the main app tree and trigger a frame rendering
     await tester.pumpWidget(const MyApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+    // Pump stream frames to allow state builder rebuilding MaterialApp
     await tester.pump();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Verify that the splash screen widget is present in tree using Yoda style check
+    expect(find.byType(SplashScreen), findsOneWidget);
+
+    // Let the splash delay timer complete to prevent pending timer assertion errors
+    await tester.pump(const Duration(seconds: 5));
   });
 }

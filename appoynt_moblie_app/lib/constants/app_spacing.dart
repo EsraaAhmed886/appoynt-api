@@ -112,5 +112,38 @@ class AppSpacing {
 
   // Duration in milliseconds for illustration entrance scaling pop
   static const int duration_illustration_pop_ms = 500;
+
+  // Standard height constraint for authentication action button components
+  static const double height_auth_button = 52.0;
+
+  // Layout size constraint representing the brand logo display on login
+  static const double size_logo_login = 300.0;
+
+  // Rounded corner radius value for form input text fields
+  static const double radius_input = 14.0;
+
+  // Typographic font size for input field labels
+  static const double font_size_label = 13.0;
+
+  // Typographic font size for default input field texts
+  static const double font_size_text = 15.0;
+
+  // Typographic font size for welcoming header titles
+  static const double font_size_title = 26.0;
+
+  // Typographic font size for welcoming sub-header subtitles
+  static const double font_size_subtitle = 14.0;
+
+  // Typographic font size for standard body text content
+  static const double font_size_body_medium = 14.0;
+
+  // Typographic font size for forgot password navigation link
+  static const double font_size_forgot_link = 14.0;
+
+  // Standard line thickness definition for default borders
+  static const double border_width_thin = 1.0;
+
+  // Accent line thickness definition for focused component borders
+  static const double border_width_thick = 2.0;
 }
 // End of app_spacing.dart

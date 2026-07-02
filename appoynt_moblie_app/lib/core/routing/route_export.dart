@@ -51,4 +51,7 @@ export 'package:appoynt_mobile_app/core/theme/styles/font_weight_helper.dart';
 
 // Exporting centralized application text styles registry
 export 'package:appoynt_mobile_app/core/theme/styles/app_text_styles.dart';
+
+// Exporting dynamic global configuration state manager cubit
+export 'package:appoynt_mobile_app/core/logic/global_cubit.dart';
 // End of route_export.dart
