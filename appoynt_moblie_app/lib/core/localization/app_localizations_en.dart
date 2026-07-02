@@ -466,4 +466,25 @@ class AppLocalizationsEn extends AppLocalizations {
     // Return English verification action label
     return 'Verify';
   }
+
+  // Override getter returning forgot password screen title
+  @override
+  String get forgot_password_title {
+    // Return English forgot password title
+    return 'Forgot Password?';
+  }
+
+  // Override getter returning forgot password screen descriptive instructions subtitle
+  @override
+  String get forgot_password_subtitle {
+    // Return English forgot password subtitle instructions
+    return 'Enter your phone number to receive a verification code';
+  }
+
+  // Override getter returning forgot password trigger button label text
+  @override
+  String get send_code {
+    // Return English send code label
+    return 'Send Code';
+  }
 }

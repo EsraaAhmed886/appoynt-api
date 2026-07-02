@@ -466,4 +466,25 @@ class AppLocalizationsAr extends AppLocalizations {
     // Return Arabic verification action label
     return 'تحقق';
   }
+
+  // Override getter returning forgot password screen title
+  @override
+  String get forgot_password_title {
+    // Return Arabic forgot password title
+    return 'هل نسيت كلمة المرور؟';
+  }
+
+  // Override getter returning forgot password screen descriptive instructions subtitle
+  @override
+  String get forgot_password_subtitle {
+    // Return Arabic forgot password subtitle instructions
+    return 'أدخل رقم هاتفك لتلقي رمز التحقق';
+  }
+
+  // Override getter returning forgot password trigger button label text
+  @override
+  String get send_code {
+    // Return Arabic send code label
+    return 'إرسال الرمز';
+  }
 }
