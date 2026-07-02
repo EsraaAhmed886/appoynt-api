@@ -1,51 +1,50 @@
 /*
  * File Name: auth_state.dart
  * Author: Kholoud Khaled
- * Date of Creation: 28/05/2026
+ * Date of Creation: 02/07/2026
  * Version Information: V1.0.0
- * Dependencies:
+ * Dependencies: 
  *   - auth_cubit.dart (Part of)
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
- * File Description: Defines the states for the authentication BLoC/Cubit container.
+ * Last Modified Date: [Kholoud Khaled - 02/07/2026]
+ * File Description:
+ *   Defines the various states for the authentication feature.
  */
 
-part of 'auth_cubit.dart'; // Linking this state definition to auth_cubit.dart
+part of 'auth_cubit.dart'; // Declaring that this is part of auth_cubit.dart
 
-// Abstract base class representing all authentication states
+/// Abstract base class for all authentication states.
 abstract class AuthState extends Equatable {
-  // Constant constructor for the abstract state
+  /// Constant constructor for the abstract state.
   const AuthState();
 
   @override
-  // Array defining the properties checked in value comparisons
+  /// Properties for value comparison to enable efficient UI rebuilds.
   List<Object?> get props {
-    // Return empty list by default
     return [];
   }
 }
 
-// Initial state before authentication actions are triggered
+/// The initial state emitted when the auth feature is loaded.
 class AuthInitial extends AuthState {}
 
-// Loading state while login request is in progress
+/// State emitted while an authentication process is in progress.
 class AuthLoading extends AuthState {}
 
-// Success state emitted on successful credential validation
+/// State emitted when an authentication process is successfully completed.
 class AuthSuccess extends AuthState {}
 
-// Error state emitted when authentication attempts fail
+/// State emitted when an authentication process fails.
 class AuthError extends AuthState {
-  // Descriptive warning error message details string
-  final String error_message;
-
-  // Constructor mapping the error message parameter
-  const AuthError({required this.error_message});
+  /// The descriptive error message.
+  final String message;
+  
+  /// Constructor requiring an error message.
+  const AuthError(this.message);
 
   @override
-  // Array defining value comparison variables to check updates
+  /// Adding the message to props for state change detection.
   List<Object?> get props {
-    // Return error message parameter list
-    return [error_message];
+    return [message];
   }
 }

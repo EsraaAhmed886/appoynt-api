@@ -21,6 +21,8 @@ import 'package:appoynt_mobile_app/core/routing/route_export.dart';
 import 'package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart';
 // Importing auth business state controller cubit definitions
 import 'package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart';
+// Importing dependency injection service locator setup representation
+import 'package:appoynt_mobile_app/core/di/service_locator.dart';
 // Importing customized identifier input component field widget
 import 'package:appoynt_mobile_app/features/auth/presentation/widgets/smart_identifier_field.dart';
 // Importing password obfuscation selector input field widget
@@ -323,8 +325,8 @@ class _LoginPageState extends State<LoginPage> {
     return BlocProvider<AuthCubit>(
       // Create and initialize new auth cubit instance
       create: (context) {
-        // Return initialized auth cubit
-        return AuthCubit();
+        // Return initialized auth cubit resolved from service locator container
+        return get_it<AuthCubit>();
       },
       // Bind consumer widget to intercept state changes
       child: BlocConsumer<AuthCubit, AuthState>(

@@ -20,6 +20,8 @@ import 'package:appoynt_mobile_app/core/routing/route_export.dart';
 import 'package:appoynt_mobile_app/features/splash/presentation/pages/splash_screen.dart';
 // Importing global connectivity state wrapper widget representation
 import 'package:appoynt_mobile_app/core/widgets/connectivity_wrapper.dart';
+// Importing dependency injection service locator setup representation
+import 'package:appoynt_mobile_app/core/di/service_locator.dart';
 // Importing flutter bloc package for state management provider scopes
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -30,6 +32,9 @@ final ThemeModeNotifier theme_mode_notifier = ThemeModeNotifier();
 void main() async {
   // Ensure framework services and widget bindings are fully initialized before running async tasks
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize the service locator dependencies container
+  await setup_service_locator();
 
   // Load the persisted theme configuration from secure local storage
   await theme_mode_notifier.load_theme_mode();
