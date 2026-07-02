@@ -487,4 +487,39 @@ class AppLocalizationsEn extends AppLocalizations {
     // Return English send code label
     return 'Send Code';
   }
+
+  // Override getter returning reset password confirmation button label
+  @override
+  String get update_password {
+    // Return English update password text
+    return 'Update Password';
+  }
+
+  // Override getter returning reset password screen title
+  @override
+  String get create_new_password {
+    // Return English create new password title
+    return 'Create New Password';
+  }
+
+  // Override getter returning reset password screen description subtitle
+  @override
+  String get reset_password_subtitle {
+    // Return English reset password subtitle instruction
+    return 'Your new password must be different from previous passwords';
+  }
+
+  // Override getter returning reset password input field label
+  @override
+  String get new_password_label {
+    // Return English new password label
+    return 'New Password';
+  }
+
+  // Override getter returning reset password input placeholder hint
+  @override
+  String get new_password_hint {
+    // Return English new password hint
+    return 'Enter your new password';
+  }
 }
