@@ -257,6 +257,15 @@ abstract class AppLocalizations {
 
   // Abstract getter for skip manual button label
   String get go_to_home;
+
+  // Abstract getter for no internet error screen title
+  String get no_internet_title;
+
+  // Abstract getter for no internet screen instructions subtitle
+  String get no_internet_sub;
+
+  // Abstract getter for retry reconnection trigger button label
+  String get retry;
 }
 
 // Defining a short alias for clean and simple type references

@@ -557,4 +557,25 @@ class AppLocalizationsEn extends AppLocalizations {
     // Return English go to home label
     return 'Go to Home';
   }
+
+  // Override getter returning no internet error screen title
+  @override
+  String get no_internet_title {
+    // Return English no internet title
+    return 'No Internet Connection';
+  }
+
+  // Override getter returning no internet screen instructions subtitle
+  @override
+  String get no_internet_sub {
+    // Return English no internet instructions subtitle
+    return 'Please check your network settings and try again';
+  }
+
+  // Override getter returning retry reconnection trigger button label
+  @override
+  String get retry {
+    // Return English retry label
+    return 'Retry';
+  }
 }

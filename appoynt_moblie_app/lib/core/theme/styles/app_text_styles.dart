@@ -386,4 +386,48 @@ class AppTextStyles {
             color: text_color,
           );
   }
+
+  // Method to fetch dynamically configured title text style for the no internet page
+  static TextStyle get_no_internet_title(bool is_arabic) {
+    // Return GoogleFonts config based on language check
+    return is_arabic
+        // For Arabic, use Cairo font family
+        ? GoogleFonts.cairo(
+            // Set font size
+            fontSize: 24.0,
+            // Set weight parameter using extra bold helper
+            fontWeight: FontWeightHelper.extra_bold,
+          )
+        // For English, use Inter font family
+        : GoogleFonts.inter(
+            // Set font size
+            fontSize: 24.0,
+            // Set weight parameter using extra bold helper
+            fontWeight: FontWeightHelper.extra_bold,
+          );
+  }
+
+  // Method to fetch dynamically configured subtitle text style for the no internet page
+  static TextStyle get_no_internet_subtitle(bool is_arabic) {
+    // Return GoogleFonts config based on language check
+    return is_arabic
+        // For Arabic, use Cairo font family
+        ? GoogleFonts.cairo(
+            // Set font size
+            fontSize: 14.0,
+            // Set weight parameter using regular helper
+            fontWeight: FontWeightHelper.regular,
+            // Set relative line height value for readable Arabic line wrapping
+            height: 1.6,
+          )
+        // For English, use Inter font family
+        : GoogleFonts.inter(
+            // Set font size
+            fontSize: 14.0,
+            // Set weight parameter using regular helper
+            fontWeight: FontWeightHelper.regular,
+            // Set relative line height value for readable English line wrapping
+            height: 1.6,
+          );
+  }
 }

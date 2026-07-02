@@ -18,6 +18,8 @@
 import 'package:appoynt_mobile_app/core/routing/route_export.dart';
 // Importing initial splash screen landing widget
 import 'package:appoynt_mobile_app/features/splash/presentation/pages/splash_screen.dart';
+// Importing global connectivity state wrapper widget representation
+import 'package:appoynt_mobile_app/core/widgets/connectivity_wrapper.dart';
 // Importing flutter bloc package for state management provider scopes
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -82,6 +84,10 @@ class MyApp extends StatelessWidget {
                 supportedLocales: app_supported_locales,
                 // Defining the landing splash screen as the initial home page
                 home: const SplashScreen(),
+                // Wrapping the navigator to globally show NoInternetPage when offline
+                builder: (context, child) {
+                  return ConnectivityWrapper(child: child!);
+                },
               );
             },
           );
