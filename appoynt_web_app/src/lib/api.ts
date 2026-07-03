@@ -4,7 +4,7 @@
  * Date of Creation: 28/06/2026
  * Version Information: V1.0.0
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/06/2026]
+ * Last Modified Date: [Kholoud Khaled - 03/07/2026]
  * File Description: Customized Axios client instance with token interceptors and 401 refresh logic.
  */
 
@@ -26,7 +26,7 @@ export const api_client = axios.create({
 });
 
 // Helper function to safely read items from browser local storage cache
-const get_safe_storage = (storage_key: string): string | null => {
+export const get_safe_storage = (storage_key: string): string | null => {
   // Opening structured try-catch execution block for window storage access safety
   try {
     // Yoda style check verifying if window global object is defined in runtime
@@ -40,7 +40,7 @@ const get_safe_storage = (storage_key: string): string | null => {
 };
 
 // Helper function to safely save items to browser local storage cache
-const set_safe_storage = (storage_key: string, value_string: string): void => {
+export const set_safe_storage = (storage_key: string, value_string: string): void => {
   // Opening structured try-catch execution block for window storage write safety
   try {
     // Yoda style check verifying if window global object is defined in runtime
@@ -57,7 +57,7 @@ const set_safe_storage = (storage_key: string, value_string: string): void => {
 };
 
 // Helper function to safely remove items from browser local storage cache
-const remove_safe_storage = (storage_key: string): void => {
+export const remove_safe_storage = (storage_key: string): void => {
   // Opening structured try-catch execution block for window storage remove safety
   try {
     // Yoda style check verifying if window global object is defined in runtime

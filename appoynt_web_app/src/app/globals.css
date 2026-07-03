@@ -5,7 +5,7 @@
  * Version Information: V1.0.0
  * Dependencies: tailwindcss
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 02/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 03/07/2026]
  * File Description: Defines global styling rules and Tailwind CSS directives.
  */
 
@@ -17,6 +17,8 @@
 
 /* Define global variables for default light mode */
 :root {
+  /* Set light mode brand gradient transition colors */
+  --brand-gradient: linear-gradient(135deg, #0f1f5c 0%, #1d4ed8 55%, #2563eb 100%);
   /* Set light mode primary brand blue color token */
   --app-primary: #0f62fe;
   /* Set light mode body backdrop background color token */
@@ -29,6 +31,8 @@
   --app-text-primary: #171717;
   /* Set light mode secondary descriptor text color token */
   --app-text-secondary: #767676;
+  /* Set light mode input box background color token */
+  --app-input-fill: #f4f4f4;
 }
 
 /* Define media query selector block for operating system dark scheme configurations */
@@ -47,7 +51,21 @@
     --app-text-primary: #ededed;
     /* Set dark mode secondary descriptor text color token */
     --app-text-secondary: #9e9e9e;
+    /* Set dark mode input box background color token */
+    --app-input-fill: #222222;
   }
+}
+
+/* Force global font inheritance for all input and button tags */
+html, body, input, button, textarea, select {
+  /* Default typography family configuration set to Inter variable */
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+
+/* Force Cairo font family when document direction is set to right-to-left */
+[dir="rtl"], [dir="rtl"] body, [dir="rtl"] input, [dir="rtl"] button {
+  /* Dynamic font override mapping to Cairo variables */
+  font-family: var(--font-cairo), sans-serif;
 }
 
 /* Apply global layout styles to body element */
@@ -58,4 +76,29 @@ body {
   background-color: var(--app-background);
   /* Configure smooth rendering for all active color conversions */
   transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Animation for input error shake feedback effect */
+@keyframes shake {
+  /* Start animation keyframe position */
+  0%, 100% {
+    /* Set shift translate value to zero */
+    transform: translateX(0);
+  }
+  /* First shake left transition position */
+  25% {
+    /* Shift element left by four pixels */
+    transform: translateX(-4px);
+  }
+  /* Second shake right transition position */
+  75% {
+    /* Shift element right by four pixels */
+    transform: translateX(4px);
+  }
+}
+
+/* Selector class mapping the custom shake animation keyframes */
+.animate-shake {
+  /* Apply the custom keyframe name with standard duration ease settings */
+  animation: shake 0.4s ease-in-out;
 }
