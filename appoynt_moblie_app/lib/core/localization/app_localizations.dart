@@ -242,6 +242,21 @@ abstract class AppLocalizations {
 
   // Abstract getter for reset password input placeholder hint
   String get new_password_hint;
+
+  // Abstract getter for account created success screen title
+  String get account_created_success;
+
+  // Abstract getter for welcome greeting message
+  String get welcome_to_appoynt;
+
+  // Abstract getter for automatic redirect loader label
+  String get redirecting_automatically;
+
+  // Abstract parameterized method for home redirection timer description text
+  String going_to_home_in(int seconds);
+
+  // Abstract getter for skip manual button label
+  String get go_to_home;
 }
 
 // Defining a short alias for clean and simple type references

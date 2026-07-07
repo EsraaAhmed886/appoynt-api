@@ -522,4 +522,39 @@ class AppLocalizationsAr extends AppLocalizations {
     // Return Arabic new password hint
     return 'أدخل كلمة المرور الجديدة';
   }
+
+  // Override getter returning account created success screen title
+  @override
+  String get account_created_success {
+    // Return Arabic account success title
+    return 'تم إنشاء الحساب بنجاح!';
+  }
+
+  // Override getter returning welcome greeting message
+  @override
+  String get welcome_to_appoynt {
+    // Return Arabic welcome description
+    return 'مرحباً بك في أبوانت';
+  }
+
+  // Override getter returning automatic redirect loader label
+  @override
+  String get redirecting_automatically {
+    // Return Arabic redirecting description
+    return 'جاري إعادة التوجيه تلقائياً...';
+  }
+
+  // Override parameterized method for home redirection timer description text
+  @override
+  String going_to_home_in(int seconds) {
+    // Return Arabic going to home string dynamically
+    return 'الانتقال إلى الصفحة الرئيسية خلال $seconds ثوانٍ...';
+  }
+
+  // Override getter returning skip manual button label
+  @override
+  String get go_to_home {
+    // Return Arabic go to home label
+    return 'الذهاب إلى الرئيسية';
+  }
 }

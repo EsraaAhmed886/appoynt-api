@@ -32,6 +32,8 @@ import 'package:appoynt_mobile_app/features/auth/presentation/pages/otp_page.dar
 import 'package:appoynt_mobile_app/features/auth/presentation/pages/forgot_password_page.dart';
 // Importing Reset Password screen page widget representation
 import 'package:appoynt_mobile_app/features/auth/presentation/pages/reset_password_page.dart';
+// Importing Account Success screen page widget representation
+import 'package:appoynt_mobile_app/features/auth/presentation/pages/account_success_page.dart';
 
 // Stateful widget representing the initial landing splash screen
 class SplashScreen extends StatefulWidget {
@@ -211,25 +213,16 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                                                    on_verified: () {
                                                      // Print log for verification
                                                      debugPrint('OTP verified successfully!');
-                                                     // Navigate transitionally to ResetPasswordPage
+                                                     // Navigate transitionally to AccountSuccessPage
                                                      if (true == context.mounted) {
                                                        Navigator.of(context).pushReplacement(
                                                          // Create cross-fade transition route builder
                                                          PageRouteBuilder(
-                                                           // Set target page to ResetPasswordPage instance
+                                                           // Set target page to AccountSuccessPage instance
                                                            pageBuilder: (context, anim, secAnim) {
-                                                             return ResetPasswordPage(
-                                                               // Pop back
-                                                               on_back: () {
-                                                                 Navigator.of(context).pop();
-                                                               },
-                                                               // Toggle language
-                                                               on_toggle_language: () {
-                                                                 context.read<GlobalCubit>().toggle_language();
-                                                               },
-                                                               // Complete update cycle
-                                                               on_password_updated: () {
-                                                                 // Return back to Login screen
+                                                             return AccountSuccessPage(
+                                                               // Go home / back to login gate
+                                                               on_go_home: () {
                                                                  Navigator.of(context).popUntil((route) => route.isFirst);
                                                                },
                                                              );
@@ -361,11 +354,34 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                                                               on_toggle_language: () {
                                                                 context.read<GlobalCubit>().toggle_language();
                                                               },
-                                                              // Complete update cycle
-                                                              on_password_updated: () {
-                                                                // Return back to Login screen
-                                                                Navigator.of(context).popUntil((route) => route.isFirst);
-                                                              },
+                                                               // Complete update cycle
+                                                               on_password_updated: () {
+                                                                 // Navigate transitionally to AccountSuccessPage
+                                                                 if (true == context.mounted) {
+                                                                   Navigator.of(context).pushReplacement(
+                                                                     // Create cross-fade transition route builder
+                                                                     PageRouteBuilder(
+                                                                       // Set target page to AccountSuccessPage instance
+                                                                       pageBuilder: (context, anim, secAnim) {
+                                                                         return AccountSuccessPage(
+                                                                           // Go home / back to login gate
+                                                                           on_go_home: () {
+                                                                             Navigator.of(context).popUntil((route) => route.isFirst);
+                                                                           },
+                                                                         );
+                                                                       },
+                                                                       // Build cross-fade animation
+                                                                       transitionsBuilder: (context, anim, secAnim, child) {
+                                                                         return FadeTransition(
+                                                                           opacity: anim,
+                                                                           child: child,
+                                                                         );
+                                                                       },
+                                                                       transitionDuration: const Duration(milliseconds: AppSpacing.duration_fade_ms),
+                                                                     ),
+                                                                   );
+                                                                 }
+                                                               },
                                                             );
                                                           },
                                                           // Build cross-fade animation

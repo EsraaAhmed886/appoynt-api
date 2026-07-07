@@ -522,4 +522,39 @@ class AppLocalizationsEn extends AppLocalizations {
     // Return English new password hint
     return 'Enter your new password';
   }
+
+  // Override getter returning account created success screen title
+  @override
+  String get account_created_success {
+    // Return English account success title
+    return 'Account Created Successfully!';
+  }
+
+  // Override getter returning welcome greeting message
+  @override
+  String get welcome_to_appoynt {
+    // Return English welcome description
+    return 'Welcome to Appoynt';
+  }
+
+  // Override getter returning automatic redirect loader label
+  @override
+  String get redirecting_automatically {
+    // Return English redirecting description
+    return 'Redirecting automatically...';
+  }
+
+  // Override parameterized method for home redirection timer description text
+  @override
+  String going_to_home_in(int seconds) {
+    // Return English going to home string dynamically
+    return 'Going to home page in $seconds seconds...';
+  }
+
+  // Override getter returning skip manual button label
+  @override
+  String get go_to_home {
+    // Return English go to home label
+    return 'Go to Home';
+  }
 }
