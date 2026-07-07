@@ -20,8 +20,8 @@ import 'package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart';
 
 // Stateful widget class representing the primary registration gate interface
 class RegisterPage extends StatefulWidget {
-  // Navigation event callback directing users to OTP verification screens
-  final VoidCallback on_go_to_otp;
+  // Navigation event callback directing users to OTP verification screens, passing phone number
+  final ValueChanged<String> on_go_to_otp;
 
   // Navigation event callback returning users back to the login screen
   final VoidCallback on_go_to_login;
@@ -147,7 +147,7 @@ class _RegisterPageState extends State<RegisterPage> {
         _is_loading = false;
       });
       // Execute page navigation callback to OTP confirmation
-      widget.on_go_to_otp();
+      widget.on_go_to_otp(_phone_ctrl.text);
     } else {
       // Empty action block to satisfy compiler
     }

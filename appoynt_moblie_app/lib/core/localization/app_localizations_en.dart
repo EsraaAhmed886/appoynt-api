@@ -431,4 +431,39 @@ class AppLocalizationsEn extends AppLocalizations {
     // Return English credentials mismatch warning text
     return 'Passwords do not match';
   }
+
+  // Override getter returning verification screen title
+  @override
+  String get enter_your_code {
+    // Return English verification title
+    return 'Enter your code';
+  }
+
+  // Override getter returning verification screen description subtitle
+  @override
+  String get enter_otp_subtitle {
+    // Return English description helper text
+    return 'We sent a 6-digit code to your phone number';
+  }
+
+  // Override getter returning resending countdown trigger link label
+  @override
+  String get send_code_again {
+    // Return English resending code label
+    return 'Send code again';
+  }
+
+  // Override getter returning sent code description information card text
+  @override
+  String get sent_code_info {
+    // Return English information card text
+    return 'We have sent a verification code to your phone number. Please enter it to verify your account.';
+  }
+
+  // Override getter returning OTP verification action button label
+  @override
+  String get verify {
+    // Return English verification action label
+    return 'Verify';
+  }
 }

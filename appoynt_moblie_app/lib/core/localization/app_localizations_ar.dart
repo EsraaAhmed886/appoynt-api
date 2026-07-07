@@ -431,4 +431,39 @@ class AppLocalizationsAr extends AppLocalizations {
     // Return Arabic credentials mismatch warning text
     return 'كلمات المرور غير متطابقة';
   }
+
+  // Override getter returning verification screen title
+  @override
+  String get enter_your_code {
+    // Return Arabic verification title
+    return 'أدخل رمز التحقق';
+  }
+
+  // Override getter returning verification screen description subtitle
+  @override
+  String get enter_otp_subtitle {
+    // Return Arabic description helper text
+    return 'لقد أرسلنا رمزاً مكوناً من 6 أرقام إلى رقم هاتفك';
+  }
+
+  // Override getter returning resending countdown trigger link label
+  @override
+  String get send_code_again {
+    // Return Arabic resending code label
+    return 'إعادة إرسال الرمز';
+  }
+
+  // Override getter returning sent code description information card text
+  @override
+  String get sent_code_info {
+    // Return Arabic information card text
+    return 'لقد أرسلنا رمز التحقق إلى رقم هاتفك. يرجى إدخاله للتحقق من حسابك.';
+  }
+
+  // Override getter returning OTP verification action button label
+  @override
+  String get verify {
+    // Return Arabic verification action label
+    return 'تحقق';
+  }
 }
