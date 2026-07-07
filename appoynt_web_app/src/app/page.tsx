@@ -1,15 +1,14 @@
-"use client";
-
 /*
  * File Name: page.tsx
  * Author: Kholoud Khaled
  * Date of Creation: 28/06/2026
- * Version Information: 1.0.0
+ * Version Information: V1.0.0
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 28/06/2026]
  * File Description: Interactive portal verifying redux state, bilingual, and Axios.
  */
 
+"use client";
 // Importing React state and effect hooks from standard React package
 import { useEffect, useState } from "react";
 // Importing Redux hooks to dispatch actions and select store state variables

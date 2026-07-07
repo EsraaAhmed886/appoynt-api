@@ -2,12 +2,13 @@
  * File Name: layout.tsx
  * Author: Kholoud Khaled
  * Date of Creation: 28/06/2026
- * Version Information: 1.0.0
+ * Version Information: V1.0.0
  * Dependencies: next, next/font/google, ./globals.css, @/context/LanguageContext, @/store/StoreProvider
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 28/06/2026]
  * File Description: Defines the master Root Layout configuration for the Web application.
  */
+
 
 // Importing Metadata specifications from next library package
 import type { Metadata } from "next";

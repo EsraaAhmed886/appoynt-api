@@ -2,7 +2,7 @@
  * File Name: dot_indicator.dart
  * Author: Kholoud Khaled
  * Date of Creation: 20/06/2026
- * Version Information: 1.0.0
+ * Version Information: V1.0.0
  * Dependencies:
  *   - package:appoynt_mobile_app/core/routing/route_export.dart
  * Contributors: [Kholoud Khaled]

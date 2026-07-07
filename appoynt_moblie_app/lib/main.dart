@@ -2,7 +2,7 @@
  * File Name: main.dart
  * Author: Kholoud Khaled
  * Date of Creation: 17/06/2026
- * Version Information: 1.0.0
+ * Version Information: V1.0.0
  * Dependencies:
  *   - flutter/material.dart
  *   - package:appoynt_mobile_app/core/theme/modes/light_mode.dart

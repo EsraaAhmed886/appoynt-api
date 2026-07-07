@@ -2,7 +2,7 @@
  * File Name: index.ts
  * Author: Kholoud Khaled
  * Date of Creation: 28/06/2026
- * Version Information: 1.0.0
+ * Version Information: V1.0.0
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 28/06/2026]
  * File Description: Declares common TypeScript interface types for Appoynt web application.

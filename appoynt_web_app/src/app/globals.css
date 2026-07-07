@@ -1,15 +1,14 @@
 /*
  * File Name: globals.css
  * Author: Kholoud Khaled
- * Date of Creation: 28/06/2026
- * Version Information: 1.0.0
- * Dependencies: None
+ * Date of Creation: 17/06/2026
+ * Version Information: V1.0.0
+ * Dependencies: tailwindcss
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/06/2026]
- * File Description: Defines global variables, styles, and body overrides for Appoynt Web.
+ * Last Modified Date: [Kholoud Khaled - 02/07/2026]
+ * File Description: Defines global styling rules and Tailwind CSS directives.
  */
 
-/* Import standard tailwind base styles */
 @tailwind base;
 /* Import standard tailwind components styles */
 @tailwind components;

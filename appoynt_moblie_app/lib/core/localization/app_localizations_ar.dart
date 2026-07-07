@@ -2,12 +2,12 @@
  * File Name: app_localizations_ar.dart
  * Author: Kholoud Khaled
  * Date of Creation: 20/06/2026
- * Version Information: 1.0.0
+ * Version Information: V1.0.0
  * Dependencies:
  *   - package:flutter/material.dart
  *   - package:appoynt_mobile_app/core/localization/app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/06/2026]
+ * Last Modified Date: [Kholoud Khaled - 02/07/2026]
  * File Description: Arabic concrete implementation of localizations containing only onboarding strings.
  */
 
@@ -283,5 +283,152 @@ class AppLocalizationsAr extends AppLocalizations {
   String get invalid_phone {
     // Return Arabic phone number validation failure warning
     return 'يرجى إدخال رقم هاتف صحيح';
+  }
+
+  // Override getter returning title label for registration gateway
+  @override
+  String get register_title {
+    // Return Arabic title
+    return 'إنشاء حساب جديد';
+  }
+
+  // Override getter returning subtitle details for registration gateway
+  @override
+  String get register_subtitle {
+    // Return Arabic description helper text
+    return 'قم بتعبئة بياناتك للبدء';
+  }
+
+  // Override getter returning label for first name inputs
+  @override
+  String get first_name_label {
+    // Return Arabic first name input label
+    return 'الأسم الأول';
+  }
+
+  // Override getter returning hint for first name inputs
+  @override
+  String get first_name_hint {
+    // Return Arabic first name hint
+    return 'الأسم الأول';
+  }
+
+  // Override getter returning label for last name inputs
+  @override
+  String get last_name_label {
+    // Return Arabic last name input label
+    return 'الأسم الثاني';
+  }
+
+  // Override getter returning hint for last name inputs
+  @override
+  String get last_name_hint {
+    // Return Arabic last name hint
+    return 'الأسم الثاني';
+  }
+
+  // Override getter returning hint helper text for email inputs
+  @override
+  String get email_hint {
+    // Return Arabic email format sample hint
+    return 'example@email.com';
+  }
+
+  // Override getter returning hint helper text for phone inputs
+  @override
+  String get phone_hint {
+    // Return Arabic phone pattern sample hint
+    return '01xxxxxxxxx';
+  }
+
+  // Override getter returning hint helper text for password inputs
+  @override
+  String get password_hint {
+    // Return Arabic password strength guidance hint
+    return 'أدخل كلمة مرور قوية';
+  }
+
+  // Override getter returning label for confirmation password inputs
+  @override
+  String get confirm_password {
+    // Return Arabic confirm password input label
+    return 'تأكيد كلمة المرور';
+  }
+
+  // Override getter returning hint helper text for confirmation password inputs
+  @override
+  String get confirm_password_hint {
+    // Return Arabic confirm password hint
+    return 'أعد إدخال كلمة المرور';
+  }
+
+  // Override getter returning agreement prefix label for terms acceptance checkbox
+  @override
+  String get agree_to_terms {
+    // Return Arabic agreement prefix sentence
+    return 'أوافق على ';
+  }
+
+  // Override getter returning clickable link text for terms of service documentation
+  @override
+  String get terms_and_conditions {
+    // Return Arabic terms link label
+    return 'الشروط والأحكام';
+  }
+
+  // Override getter returning simple connector word for grammatical listings
+  @override
+  String get and_connector {
+    // Return Arabic connector string
+    return ' و ';
+  }
+
+  // Override getter returning clickable link text for privacy policy documentation
+  @override
+  String get privacy_policy {
+    // Return Arabic privacy link label
+    return 'سياسة الخصوصية';
+  }
+
+  // Override getter returning footer question prompt for registered users
+  @override
+  String get have_account {
+    // Return Arabic question sentence
+    return 'لديك حساب بالفعل؟';
+  }
+
+  // Override getter returning sign in link text for existing accounts
+  @override
+  String get sign_in {
+    // Return Arabic sign in action word
+    return 'تسجيل الدخول';
+  }
+
+  // Override getter returning action button label for registration execution
+  @override
+  String get create_my_account {
+    // Return Arabic account creation button text
+    return 'إنشاء حسابي';
+  }
+
+  // Override getter returning validation alert message for unselected terms checkbox
+  @override
+  String get terms_must_agree {
+    // Return Arabic warning alert text
+    return 'يجب الموافقة على الشروط';
+  }
+
+  // Override getter returning validation alert message for exceeded phone digits limit
+  @override
+  String get phone_max_error {
+    // Return Arabic digit restriction warning text
+    return 'رقم الهاتف لا يتجاوز 11 رقماً';
+  }
+
+  // Override getter returning validation alert message for mismatched password inputs
+  @override
+  String get password_mismatch {
+    // Return Arabic credentials mismatch warning text
+    return 'كلمات المرور غير متطابقة';
   }
 }
