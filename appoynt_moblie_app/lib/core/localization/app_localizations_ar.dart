@@ -557,4 +557,25 @@ class AppLocalizationsAr extends AppLocalizations {
     // Return Arabic go to home label
     return 'الذهاب إلى الرئيسية';
   }
+
+  // Override getter returning no internet error screen title
+  @override
+  String get no_internet_title {
+    // Return Arabic no internet title
+    return 'لا يوجد اتصال بالإنترنت';
+  }
+
+  // Override getter returning no internet screen instructions subtitle
+  @override
+  String get no_internet_sub {
+    // Return Arabic no internet instructions subtitle
+    return 'يرجى التحقق من إعدادات الشبكة والمحاولة مرة أخرى';
+  }
+
+  // Override getter returning retry reconnection trigger button label
+  @override
+  String get retry {
+    // Return Arabic retry label
+    return 'إعادة المحاولة';
+  }
 }
