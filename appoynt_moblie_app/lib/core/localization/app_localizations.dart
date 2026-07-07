@@ -218,6 +218,15 @@ abstract class AppLocalizations {
 
   // Abstract getter for OTP verification action button label
   String get verify;
+
+  // Abstract getter for forgot password screen title
+  String get forgot_password_title;
+
+  // Abstract getter for forgot password screen subtitle instruction
+  String get forgot_password_subtitle;
+
+  // Abstract getter for forgot password trigger button label
+  String get send_code;
 }
 
 // Defining a short alias for clean and simple type references

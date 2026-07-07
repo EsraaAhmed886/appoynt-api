@@ -28,6 +28,8 @@ import 'package:appoynt_mobile_app/features/auth/presentation/pages/login_page.d
 import 'package:appoynt_mobile_app/features/auth/presentation/pages/register_page.dart';
 // Importing OTP verification screen page widget representation
 import 'package:appoynt_mobile_app/features/auth/presentation/pages/otp_page.dart';
+// Importing Forgot Password screen page widget representation
+import 'package:appoynt_mobile_app/features/auth/presentation/pages/forgot_password_page.dart';
 
 // Stateful widget representing the initial landing splash screen
 class SplashScreen extends StatefulWidget {
@@ -272,8 +274,95 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                           },
                           // Set forgot password redirect callback
                           on_forgot_password: () {
-                            // Print dynamic logs
-                            debugPrint('User clicked forgot password');
+                            // Check if context remains active in widget tree using Yoda comparison
+                            if (true == context.mounted) {
+                              // Push ForgotPasswordPage onto navigation stack
+                              Navigator.of(context).push(
+                                // Create fade transition route builder
+                                PageRouteBuilder(
+                                  // Set target page to ForgotPasswordPage instance
+                                  pageBuilder: (context, anim, secAnim) {
+                                    // Return forgot password page layout
+                                    return ForgotPasswordPage(
+                                      // Callback to return back to Login
+                                      on_back: () {
+                                        // Pop the forgot password screen from route stack
+                                        Navigator.of(context).pop();
+                                      },
+                                      // Callback to toggle language
+                                      on_toggle_language: () {
+                                        // Call global cubit toggle language logic
+                                        context.read<GlobalCubit>().toggle_language();
+                                      },
+                                      // Callback when code has been sent successfully
+                                      on_code_sent: (phone) {
+                                        // Check if context remains active in widget tree
+                                        if (true == context.mounted) {
+                                          // Push OtpPage onto navigation stack
+                                          Navigator.of(context).push(
+                                            // Create fade transition route builder
+                                            PageRouteBuilder(
+                                              // Set target page to OtpPage instance
+                                              pageBuilder: (context, anim, secAnim) {
+                                                // Return OTP verification page layout
+                                                return OtpPage(
+                                                  phone: phone,
+                                                  // Callback when OTP verification succeeds
+                                                  on_verified: () {
+                                                    // Print log for verification
+                                                    debugPrint('OTP verified successfully!');
+                                                    // Pop back to the initial login screen
+                                                    Navigator.of(context).popUntil((route) => route.isFirst);
+                                                  },
+                                                  // Callback to pop OTP screen
+                                                  on_back: () {
+                                                    // Pop the OTP screen from route stack
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  // Callback to toggle language
+                                                  on_toggle_language: () {
+                                                    // Call global cubit toggle language logic
+                                                    context.read<GlobalCubit>().toggle_language();
+                                                  },
+                                                );
+                                              },
+                                              // Build transition animations
+                                              transitionsBuilder: (context, anim, secAnim, child) {
+                                                // Return cross-fade transition representation
+                                                return FadeTransition(
+                                                  // Bind anim properties
+                                                  opacity: anim,
+                                                  // child representation
+                                                  child: child,
+                                                );
+                                              },
+                                              // Set standard cross-fade transition duration from spacing constants
+                                              transitionDuration: const Duration(milliseconds: AppSpacing.duration_fade_ms),
+                                            ),
+                                          );
+                                        } else {
+                                          // Empty action block to satisfy compiler
+                                        }
+                                      },
+                                    );
+                                  },
+                                  // Build transition animations
+                                  transitionsBuilder: (context, anim, secAnim, child) {
+                                    // Return cross-fade transition representation
+                                    return FadeTransition(
+                                      // Bind anim properties
+                                      opacity: anim,
+                                      // child representation
+                                      child: child,
+                                    );
+                                  },
+                                  // Set standard cross-fade transition duration from spacing constants
+                                  transitionDuration: const Duration(milliseconds: AppSpacing.duration_fade_ms),
+                                ),
+                              );
+                            } else {
+                              // Empty action block to satisfy compiler
+                            }
                           },
                           // Set language toggle selection callback
                           on_toggle_language: () {
