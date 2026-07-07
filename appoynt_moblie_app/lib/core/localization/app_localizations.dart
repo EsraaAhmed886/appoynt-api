@@ -227,6 +227,21 @@ abstract class AppLocalizations {
 
   // Abstract getter for forgot password trigger button label
   String get send_code;
+
+  // Abstract getter for reset password confirmation button label
+  String get update_password;
+
+  // Abstract getter for reset password screen title
+  String get create_new_password;
+
+  // Abstract getter for reset password screen description subtitle
+  String get reset_password_subtitle;
+
+  // Abstract getter for reset password input field label
+  String get new_password_label;
+
+  // Abstract getter for reset password input placeholder hint
+  String get new_password_hint;
 }
 
 // Defining a short alias for clean and simple type references

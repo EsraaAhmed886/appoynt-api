@@ -30,6 +30,8 @@ import 'package:appoynt_mobile_app/features/auth/presentation/pages/register_pag
 import 'package:appoynt_mobile_app/features/auth/presentation/pages/otp_page.dart';
 // Importing Forgot Password screen page widget representation
 import 'package:appoynt_mobile_app/features/auth/presentation/pages/forgot_password_page.dart';
+// Importing Reset Password screen page widget representation
+import 'package:appoynt_mobile_app/features/auth/presentation/pages/reset_password_page.dart';
 
 // Stateful widget representing the initial landing splash screen
 class SplashScreen extends StatefulWidget {
@@ -209,8 +211,40 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                                                    on_verified: () {
                                                      // Print log for verification
                                                      debugPrint('OTP verified successfully!');
-                                                     // Pop back to the initial login screen
-                                                     Navigator.of(context).popUntil((route) => route.isFirst);
+                                                     // Navigate transitionally to ResetPasswordPage
+                                                     if (true == context.mounted) {
+                                                       Navigator.of(context).pushReplacement(
+                                                         // Create cross-fade transition route builder
+                                                         PageRouteBuilder(
+                                                           // Set target page to ResetPasswordPage instance
+                                                           pageBuilder: (context, anim, secAnim) {
+                                                             return ResetPasswordPage(
+                                                               // Pop back
+                                                               on_back: () {
+                                                                 Navigator.of(context).pop();
+                                                               },
+                                                               // Toggle language
+                                                               on_toggle_language: () {
+                                                                 context.read<GlobalCubit>().toggle_language();
+                                                               },
+                                                               // Complete update cycle
+                                                               on_password_updated: () {
+                                                                 // Return back to Login screen
+                                                                 Navigator.of(context).popUntil((route) => route.isFirst);
+                                                               },
+                                                             );
+                                                           },
+                                                           // Build cross-fade animation
+                                                           transitionsBuilder: (context, anim, secAnim, child) {
+                                                             return FadeTransition(
+                                                               opacity: anim,
+                                                               child: child,
+                                                             );
+                                                           },
+                                                           transitionDuration: const Duration(milliseconds: AppSpacing.duration_fade_ms),
+                                                         ),
+                                                       );
+                                                     }
                                                    },
                                                    // Callback to pop OTP screen
                                                    on_back: () {
@@ -311,8 +345,40 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                                                   on_verified: () {
                                                     // Print log for verification
                                                     debugPrint('OTP verified successfully!');
-                                                    // Pop back to the initial login screen
-                                                    Navigator.of(context).popUntil((route) => route.isFirst);
+                                                    // Navigate transitionally to ResetPasswordPage
+                                                    if (true == context.mounted) {
+                                                      Navigator.of(context).pushReplacement(
+                                                        // Create cross-fade transition route builder
+                                                        PageRouteBuilder(
+                                                          // Set target page to ResetPasswordPage instance
+                                                          pageBuilder: (context, anim, secAnim) {
+                                                            return ResetPasswordPage(
+                                                              // Pop back
+                                                              on_back: () {
+                                                                Navigator.of(context).pop();
+                                                              },
+                                                              // Toggle language
+                                                              on_toggle_language: () {
+                                                                context.read<GlobalCubit>().toggle_language();
+                                                              },
+                                                              // Complete update cycle
+                                                              on_password_updated: () {
+                                                                // Return back to Login screen
+                                                                Navigator.of(context).popUntil((route) => route.isFirst);
+                                                              },
+                                                            );
+                                                          },
+                                                          // Build cross-fade animation
+                                                          transitionsBuilder: (context, anim, secAnim, child) {
+                                                            return FadeTransition(
+                                                              opacity: anim,
+                                                              child: child,
+                                                            );
+                                                          },
+                                                          transitionDuration: const Duration(milliseconds: AppSpacing.duration_fade_ms),
+                                                        ),
+                                                      );
+                                                    }
                                                   },
                                                   // Callback to pop OTP screen
                                                   on_back: () {

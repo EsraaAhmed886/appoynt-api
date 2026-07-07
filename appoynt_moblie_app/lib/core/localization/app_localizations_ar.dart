@@ -487,4 +487,39 @@ class AppLocalizationsAr extends AppLocalizations {
     // Return Arabic send code label
     return 'إرسال الرمز';
   }
+
+  // Override getter returning reset password confirmation button label
+  @override
+  String get update_password {
+    // Return Arabic update password text
+    return 'تحديث كلمة المرور';
+  }
+
+  // Override getter returning reset password screen title
+  @override
+  String get create_new_password {
+    // Return Arabic create new password title
+    return 'إنشاء كلمة مرور جديدة';
+  }
+
+  // Override getter returning reset password screen description subtitle
+  @override
+  String get reset_password_subtitle {
+    // Return Arabic reset password subtitle instruction
+    return 'يجب أن تكون كلمة المرور الجديدة مختلفة عن كلمات المرور السابقة';
+  }
+
+  // Override getter returning reset password input field label
+  @override
+  String get new_password_label {
+    // Return Arabic new password label
+    return 'كلمة المرور الجديدة';
+  }
+
+  // Override getter returning reset password input placeholder hint
+  @override
+  String get new_password_hint {
+    // Return Arabic new password hint
+    return 'أدخل كلمة المرور الجديدة';
+  }
 }
