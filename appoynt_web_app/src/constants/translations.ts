@@ -5,7 +5,7 @@
  * Version Information: V1.0.0
  * Dependencies: None
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/06/2026]
+ * Last Modified Date: [Kholoud Khaled - 03/07/2026]
  * File Description: Defines English and Arabic localized dictionary collections.
  */
 
@@ -83,8 +83,57 @@ export const translation_en = {
   font_ar_label: "Cairo (Arabic RTL)",
   // English inter font display parameter label
   font_en_label: "Inter (English LTR)",
+  // Title for the login form card container
+  login_title: "Sign in to your account",
+  // Subtitle explaining access rules for patients and clinicians
+  login_subtitle: "Access your dashboard, appointments, and patient records.",
+  // Welcome back greeting message for returning users
+  login_welcome_back: "Welcome back",
+  // Text label for the email identification input field
+  login_email_label: "Email address",
+  // Input placeholder text displaying example email
+  login_email_placeholder: "you@clinic.com",
+  // Text label for the password validation input field
+  login_password_label: "Password",
+  // Input placeholder mask representing password dots
+  login_password_placeholder: "••••••••",
+  // Underlined route link label to reset password
+  login_forgot_password: "Forgot password?",
+  // Persistent login checkbox description label
+  login_remember_me: "Keep me signed in on this device",
+  // Direct trigger button action text to log in
+  login_sign_in_button: "Sign in",
+  // Spinning indicator loading text for auth requests
+  login_signing_in: "Signing in...",
+  // Regulatory HIPAA compliance badge footer label
+  login_security_badge: "Protected with end-to-end encryption · HIPAA compliant",
+  // Primary hero marketing title statement
+  login_hero_title: "A smarter way to manage healthcare, end to end.",
+  // First section line describing standard features
+  login_hero_subtitle_part1: "Connect patients, clinicians, and clinics on one secure platform",
+  // Second section line describing the scheduling platform
+  login_hero_subtitle_part2: "— appointments, records, and care, beautifully orchestrated.",
+  // Label for automated appointment organizer feature
+  login_feature_scheduling: "Effortless appointment scheduling",
+  // Label for medical records directory verification feature
+  login_feature_records: "Unified patient records & history",
+  // Label for standard security certification feature
+  login_feature_security: "HIPAA-grade security by default",
+  // Standard copyright notice for app footer branding
+  login_copyright: "© 2026 Appoynt Health. All rights reserved.",
+  // Error prompt shown when email submission field is empty
+  err_email_required: "Email address or phone is required",
+  // Error prompt shown when password submission field is empty
+  err_password_required: "Password is required",
+  // Combined error prompt shown when both fields are empty
+  err_both_required: "Email and Password are required",
+  // Error prompt shown when backend rejects login parameters
+  err_invalid_credentials: "Invalid email/phone or password",
+  // General validation failure response notification label
+  err_login_failed: "Login failed. Please check your credentials.",
   // Layout footer informational credentials text
-  footer_text: "Developed in config/APPOYNT-68 branch. All changes follow the team re-implementation plan guidelines.",
+  footer_text: "Developed in config/APPOYNT-68 branch. " +
+    "All changes follow the team re-implementation plan guidelines.",
 };
 
 // Declaring translation database for Arabic language localization
@@ -161,6 +210,55 @@ export const translation_ar = {
   font_ar_label: "القاهرة (عربي - من اليمين لليسار)",
   // English inter font display parameter label in Arabic
   font_en_label: "إنتر (إنجليزي - من اليسار لليمين)",
+  // Title for the login form card container in Arabic
+  login_title: "تسجيل الدخول إلى حسابك",
+  // Subtitle explaining access rules for patients and clinicians in Arabic
+  login_subtitle: "الوصول إلى لوحة التحكم والمواعيد وسجلات المرضى الخاصة بك.",
+  // Welcome back greeting message for returning users in Arabic
+  login_welcome_back: "مرحباً بعودتك",
+  // Text label for the email identification input field in Arabic
+  login_email_label: "البريد الإلكتروني",
+  // Input placeholder text displaying example email in Arabic
+  login_email_placeholder: "you@clinic.com",
+  // Text label for the password validation input field in Arabic
+  login_password_label: "كلمة المرور",
+  // Input placeholder mask representing password dots in Arabic
+  login_password_placeholder: "••••••••",
+  // Underlined route link label to reset password in Arabic
+  login_forgot_password: "نسيت كلمة المرور؟",
+  // Persistent login checkbox description label in Arabic
+  login_remember_me: "بقائي مسجلاً للدخول على هذا الجهاز",
+  // Direct trigger button action text to log in in Arabic
+  login_sign_in_button: "تسجيل الدخول",
+  // Spinning indicator loading text for auth requests in Arabic
+  login_signing_in: "جاري تسجيل الدخول...",
+  // Regulatory HIPAA compliance badge footer label in Arabic
+  login_security_badge: "محمي بتشفير طرف إلى طرف · متوافق مع HIPAA",
+  // Primary hero marketing title statement in Arabic
+  login_hero_title: "طريقة أذكى لإدارة الرعاية الصحية، من البداية إلى النهاية.",
+  // First section line describing standard features in Arabic
+  login_hero_subtitle_part1: "ربط المرضى والأطباء والعيادات في منصة واحدة آمنة",
+  // Second section line describing the scheduling platform in Arabic
+  login_hero_subtitle_part2: "— المواعيد والسجلات والرعاية، منظمة بشكل جميل.",
+  // Label for automated appointment organizer feature in Arabic
+  login_feature_scheduling: "جدولة مواعيد سهلة وبدون مجهود",
+  // Label for medical records directory verification feature in Arabic
+  login_feature_records: "سجلات مرضى وتاريخ موحد",
+  // Label for standard security certification feature in Arabic
+  login_feature_security: "أمان بمستوى HIPAA بشكل افتراضي",
+  // Standard copyright notice for app footer branding in Arabic
+  login_copyright: "© 2026 أبوينت هيلث. جميع الحقوق محفوظة.",
+  // Error prompt shown when email submission field is empty in Arabic
+  err_email_required: "البريد الإلكتروني أو رقم الهاتف مطلوب",
+  // Error prompt shown when password submission field is empty in Arabic
+  err_password_required: "كلمة المرور مطلوبة",
+  // Combined error prompt shown when both fields are empty in Arabic
+  err_both_required: "البريد الإلكتروني وكلمة المرور مطلوبان",
+  // Error prompt shown when backend rejects login parameters in Arabic
+  err_invalid_credentials: "البريد الإلكتروني/الهاتف أو كلمة المرور غير صحيحة",
+  // General validation failure response notification label in Arabic
+  err_login_failed: "فشل تسجيل الدخول. يرجى التحقق من بيانات الاعتماد.",
   // Layout footer informational credentials text in Arabic
-  footer_text: "تم التطوير في فرع config/APPOYNT-68. جميع التغييرات تتبع إرشادات خطة إعادة التنفيذ المعتمدة.",
+  footer_text: "تم التطوير في فرع config/APPOYNT-68. " +
+    "جميع التغييرات تتبع إرشادات خطة إعادة التنفيذ المعتمدة.",
 };

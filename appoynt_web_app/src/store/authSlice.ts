@@ -4,12 +4,77 @@
  * Date of Creation: 28/06/2026
  * Version Information: V1.0.0
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/06/2026]
+ * Last Modified Date: [Kholoud Khaled - 03/07/2026]
  * File Description: Defines Redux Toolkit auth slice for managing user login session states.
  */
 
-// Importing createSlice helper function from Redux Toolkit dependency
-import { createSlice } from "@reduxjs/toolkit";
+// Importing createAsyncThunk and createSlice utilities from Redux Toolkit package
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+// Importing AxiosError for exceptions matching safety
+import { AxiosError } from "axios";
+// Importing storage helpers from API configuration utility
+import { set_safe_storage, remove_safe_storage, get_safe_storage } from "@/lib/api";
+// Importing auth endpoints definitions from auth api registry
+import { auth_api } from "@/lib/api/auth.api";
+// Importing login credentials interface type schema
+import type { login_credentials } from "@/types";
+
+// Asynchronous thunk action handler to perform login API verification requests
+export const login_thunk = createAsyncThunk(
+  // The unique string identifier representation of action thunk trigger
+  "auth/login_thunk",
+  // The payload creator callback executing network verification requests
+  async (credentials: login_credentials, { rejectWithValue }) => {
+    // Opening try-catch execution block for volatile network client calls
+    try {
+      // Calling authentication api endpoint passing parameters
+      const response = await auth_api.login_call(credentials);
+      // Extracting data payload wrapper containing authentication details
+      const response_data = response.data;
+      // Destructuring token variables and profiles details from container
+      const { access_token, refresh_token, user_email, user_role } = response_data.data;
+
+      // Saving the JWT access token in browser local storage safely
+      set_safe_storage("appoynt_token", access_token);
+      // Saving the JWT refresh token in browser local storage safely
+      set_safe_storage("appoynt_refresh_token", refresh_token);
+
+      // Returning successfully authenticated payload parameters to reducer
+      return { access_token, user_email, user_role };
+    } catch (network_error) {
+      // Casting general error response to AxiosError type configuration
+      const error_obj = network_error as AxiosError<{ message: string }>;
+      // Extracting descriptive validation message from server response object
+      const message_str = error_obj.response?.data?.message ?? "Login failed";
+      // Propagating rejected warning message down the thunk payload line
+      return rejectWithValue(message_str);
+    }
+  }
+);
+
+// Asynchronous thunk action handler to perform logout API request calls
+export const logout_thunk = createAsyncThunk(
+  // The unique string identifier representation of action thunk trigger
+  "auth/logout_thunk",
+  // The payload creator callback executing logout requests
+  async () => {
+    // Opening try-catch execution block for network client requests
+    try {
+      // Pulling active refresh token from browser local storage safely
+      const refresh_token = get_safe_storage("appoynt_refresh_token") || "";
+      // Triggering backend invalidation call passing active refresh token
+      await auth_api.logout_call(refresh_token);
+    } catch (network_error) {
+      // Print warning notifications to console for analysis checks
+      console.warn("Server logout could not complete successfully:", network_error);
+    } finally {
+      // Wiping JWT access token from browser local storage safely
+      remove_safe_storage("appoynt_token");
+      // Wiping JWT refresh token from browser local storage safely
+      remove_safe_storage("appoynt_refresh_token");
+    }
+  }
+);
 
 // Declaring typing interface structure representing schema of authentication state
 export interface AuthState {
@@ -85,6 +150,64 @@ export const auth_slice = createSlice({
       // Stopping spinners when system triggers error alerts
       state_draft.is_loading = false;
     },
+  },
+  // Configuring extra reducers block to handle async thunk life cycles
+  extraReducers: (builder_instance) => {
+    // Setting up cases block on builder instance
+    builder_instance
+      // Case handling login request pending state
+      .addCase(login_thunk.pending, (state_draft) => {
+        // Setting busy loading spinner flag to true state
+        state_draft.is_loading = true;
+        // Wiping out old validation error messages in state
+        state_draft.error_message = null;
+      })
+      // Case handling login request successful verification state
+      .addCase(login_thunk.fulfilled, (state_draft, action_payload) => {
+        // Turning off busy loading spinner flag
+        state_draft.is_loading = false;
+        // Setting access token in state from thunk response payload
+        state_draft.access_token = action_payload.payload.access_token;
+        // Setting user email in state from thunk response payload
+        state_draft.user_email = action_payload.payload.user_email;
+        // Setting user role in state from thunk response payload
+        state_draft.user_role = action_payload.payload.user_role;
+        // Resetting any active validation warnings
+        state_draft.error_message = null;
+      })
+      // Case handling login request rejected failure state
+      .addCase(login_thunk.rejected, (state_draft, action_payload) => {
+        // Turning off busy loading spinner flag
+        state_draft.is_loading = false;
+        // Injecting returned validation error message string to state
+        state_draft.error_message = action_payload.payload as string;
+      })
+      // Case handling logout request fulfilled state
+      .addCase(logout_thunk.fulfilled, (state_draft) => {
+        // Resetting access token in state
+        state_draft.access_token = null;
+        // Resetting user email in state
+        state_draft.user_email = null;
+        // Resetting user role in state
+        state_draft.user_role = null;
+        // Resetting loading flag in state
+        state_draft.is_loading = false;
+        // Resetting error warning in state
+        state_draft.error_message = null;
+      })
+      // Case handling logout request rejected failure state
+      .addCase(logout_thunk.rejected, (state_draft) => {
+        // Resetting access token in state
+        state_draft.access_token = null;
+        // Resetting user email in state
+        state_draft.user_email = null;
+        // Resetting user role in state
+        state_draft.user_role = null;
+        // Resetting loading flag in state
+        state_draft.is_loading = false;
+        // Resetting error warning in state
+        state_draft.error_message = null;
+      });
   },
 });
 

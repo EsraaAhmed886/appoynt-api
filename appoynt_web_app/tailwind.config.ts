@@ -4,7 +4,7 @@
  * Date of Creation: 28/06/2026
  * Version Information: V1.0.0
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/06/2026]
+ * Last Modified Date: [Kholoud Khaled - 03/07/2026]
  * File Description: Defines design tokens, theme palettes, and font configurations for tailwind.
  */
 
@@ -38,6 +38,8 @@ const tailwind_config: Config = {
           surface: "var(--app-surface)",
           // Dynamic grid layout borders token mapping
           border: "var(--app-border)",
+          // Dynamic input box background color token mapping
+          input_fill: "var(--app-input-fill)",
           // Nested grouping for layout typography text settings
           text: {
             // High contrast text labels configuration
@@ -53,6 +55,13 @@ const tailwind_config: Config = {
         cairo: ["var(--font-cairo)", "sans-serif"],
         // Inter font setting for english content
         inter: ["var(--font-inter)", "sans-serif"],
+        // Standard sans font mapping to Inter Google font variable
+        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+      },
+      // Registering custom background image assets
+      backgroundImage: {
+        // Mapping the custom brand gradient variable to a utility class name
+        "brand-gradient": "var(--brand-gradient)",
       },
     },
   },
