@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="../Appoynt.Application/Appoynt.Application.csproj" Id="aac14067-c551-4265-a550-7edcce2414cf" />
+  <Project Path="../Appoynt.Domain/Appoynt.Domain.csproj" Id="70abb641-907f-4e7f-82ae-8d39b547e626" />
+  <Project Path="../Appoynt.Infrastructure/Appoynt.Infrastructure.csproj" Id="4ba07730-3fd6-40ea-8017-c56b203060d4" />
+  <Project Path="../Appoynt.Tests/Appoynt.Tests.csproj" Id="fd574c89-5d70-4114-843d-987002366271" />
+  <Project Path="Appoynt.API.csproj" />
+</Solution>
