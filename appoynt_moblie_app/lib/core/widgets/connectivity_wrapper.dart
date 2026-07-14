@@ -8,7 +8,7 @@
  *   - package:connectivity_plus/connectivity_plus.dart
  *   - package:appoynt_mobile_app/core/widgets/no_internet_page.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 02/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 10/07/2026]
  * File Description:
  *   A wrapper widget that listens to global connectivity changes and displays 
  *   NoInternetPage when the application goes offline.
@@ -105,16 +105,30 @@ class _ConnectivityWrapperState extends State<ConnectivityWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    // Return NoInternetPage if offline using Yoda comparison checks
-    if (true == _is_offline) {
-      return NoInternetPage(
-        on_retry: () async {
-          await _retry_connection();
-        },
-      );
-    } else {
-      // Return standard application stack if online
-      return widget.child;
-    }
+    // Return standard navigator tree overlaid with NoInternetPage inside a Stack (BUG-013)
+    return Stack(
+      // Keep stack children fully expanded to fill layout parent space
+      fit: StackFit.expand,
+      // Stack children list mapping background and overlay layout widgets
+      children: [
+        // Wrap standard app navigator in IgnorePointer to freeze user interactions when offline
+        IgnorePointer(
+          // Freeze interactions if application connectivity status is offline
+          ignoring: _is_offline,
+          // Render standard app child layout tree
+          child: widget.child,
+        ),
+        // Overlay NoInternetPage dynamically if connection status is offline
+        if (_is_offline)
+          // Render error screen overlay targeting retry callbacks
+          NoInternetPage(
+            // Tap gesture retry connection handler callback
+            on_retry: () async {
+              // Trigger async connection interfaces rechecks
+              await _retry_connection();
+            },
+          ),
+      ],
+    );
   }
 }

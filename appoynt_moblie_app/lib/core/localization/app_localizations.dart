@@ -141,6 +141,21 @@ abstract class AppLocalizations {
   // Abstract getter for invalid phone number format validation error label
   String get invalid_phone;
 
+  // Abstract getter for name length limits validation error label
+  String get name_length_error;
+
+  // Abstract getter for only-letters-allowed name validation error label
+  String get name_letters_only_error;
+
+  // Abstract getter for phone number exact length validation warning label
+  String get phone_must_be_11_digits;
+
+  // Abstract getter for phone number starting characters validation warning label
+  String get phone_must_start_01;
+
+  // Abstract getter for phone operator validation error label
+  String get phone_invalid_operator;
+
   // Abstract getter for register title label
   String get register_title;
 
@@ -258,6 +273,15 @@ abstract class AppLocalizations {
   // Abstract getter for skip manual button label
   String get go_to_home;
 
+  // Abstract getter for password reset successfully screen title
+  String get password_reset_success_title;
+
+  // Abstract getter for password reset successfully screen description
+  String get password_reset_success_body;
+
+  // Abstract getter for redirecting to login page button label
+  String get go_to_login;
+
   // Abstract getter for no internet error screen title
   String get no_internet_title;
 
@@ -266,6 +290,9 @@ abstract class AppLocalizations {
 
   // Abstract getter for retry reconnection trigger button label
   String get retry;
+
+  // Abstract getter for password maximum length validation warning
+  String get password_too_long;
 }
 
 // Defining a short alias for clean and simple type references

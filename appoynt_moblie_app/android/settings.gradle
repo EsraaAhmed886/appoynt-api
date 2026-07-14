@@ -1,25 +1,53 @@
+/*
+ * File Name: settings.gradle
+ * Author: Kholoud Khaled
+ * Date of Creation: 03/07/2026
+ * Version Information: V1.0.0
+ * Dependencies: None
+ * Contributors: [Kholoud Khaled]
+ * Last Modified Date: [Kholoud Khaled - 03/07/2026]
+ * File Description: Defines plugins, repository search spaces, and module inclusions for Gradle build.
+ */
+
+// Configuring the plugin management settings block
 pluginManagement {
+    // Resolving the Flutter SDK absolute path dynamically
     def flutterSdkPath = {
+        // Initializing new properties container instance
         def properties = new Properties()
+        // Opening input stream on local properties file to load variables
         file("local.properties").withInputStream { properties.load(it) }
+        // Querying flutter sdk path property entry
         def flutterSdkPath = properties.getProperty("flutter.sdk")
-        assert flutterSdkPath != null, "flutter.sdk not set in local.properties"
+        // Yoda style assertion ensuring the SDK path is defined
+        assert null != flutterSdkPath, "flutter.sdk not set in local.properties"
+        // Returning resolved path value
         return flutterSdkPath
     }()
 
+    // Including the Flutter tools gradle directory as a build source
     includeBuild("$flutterSdkPath/packages/flutter_tools/gradle")
 
+    // Listing repositories to search for Gradle plugins
     repositories {
+        // Google Maven repository lookup
         google()
+        // Maven Central repository lookup
         mavenCentral()
+        // Gradle Plugin Portal repository lookup
         gradlePluginPortal()
     }
 }
 
+// Defining global plugins settings block
 plugins {
+    // Applying Flutter plugin loader helper version 1.0.0
     id "dev.flutter.flutter-plugin-loader" version "1.0.0"
-    id "com.android.application" version "7.3.0" apply false
-    id "org.jetbrains.kotlin.android" version "1.7.10" apply false
+    // Declaring Android application gradle plugin version 8.3.0 without applying to root
+    id "com.android.application" version "8.3.0" apply false
+    // Declaring Kotlin android gradle plugin version 1.9.22 without applying to root
+    id "org.jetbrains.kotlin.android" version "1.9.22" apply false
 }
 
+// Including the application subproject module
 include ":app"

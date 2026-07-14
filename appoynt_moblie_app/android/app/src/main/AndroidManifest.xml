@@ -1,6 +1,17 @@
+<!--
+ * File Name: AndroidManifest.xml
+ * Author: Kholoud Khaled
+ * Date of Creation: 03/07/2026
+ * Version Information: V1.0.0
+ * Dependencies: None
+ * Contributors: [Kholoud Khaled]
+ * Last Modified Date: [Kholoud Khaled - 03/07/2026]
+ * File Description: Main Android manifest declaring app name, activities, and metadata.
+-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Main application configurations -->
     <application
-        android:label="appoynt_mobile_app"
+        android:label="Appoynt"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

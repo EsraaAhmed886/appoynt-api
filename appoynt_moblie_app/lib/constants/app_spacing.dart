@@ -62,8 +62,8 @@ class AppSpacing {
   // Splash screen total delay duration in milliseconds before navigating
   static const int duration_splash_delay_ms = 4500;
 
-  // Default cross fade transition duration in milliseconds
-  static const int duration_fade_ms = 500;
+  // Default cross fade transition duration in milliseconds (reduced to 250 for faster, snappier transitions)
+  static const int duration_fade_ms = 250;
 
   // Logo box height and width constraint size
   static const double size_logo_box = 380.0;
@@ -117,10 +117,13 @@ class AppSpacing {
   static const double height_auth_button = 52.0;
 
   // Layout size constraint representing the brand logo display on login
-  static const double size_logo_login = 300.0;
+  static const double size_logo_login = 150.0;
 
   // Rounded corner radius value for form input text fields
   static const double radius_input = 14.0;
+
+  // Vertical padding constraint for authentication input text fields (decreased by 2.5px to shrink height by 5px)
+  static const double padding_input_vertical = 13.5;
 
   // Typographic font size for input field labels
   static const double font_size_label = 13.0;

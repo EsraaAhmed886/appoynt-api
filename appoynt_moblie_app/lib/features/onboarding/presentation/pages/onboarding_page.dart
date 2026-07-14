@@ -9,7 +9,7 @@
  *   - package:appoynt_mobile_app/features/onboarding/presentation/widgets/dot_indicator.dart
  *   - package:flutter_bloc/flutter_bloc.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/06/2026]
+ * Last Modified Date: [Kholoud Khaled - 10/07/2026]
  * File Description: Renders the onboarding page screen flow, handling transitions and multilingual layouts.
  */
 
@@ -39,15 +39,11 @@ class OnboardingPage extends StatefulWidget {
 }
 
 // State class managing animations and layout configurations
-class _OnboardingPageState extends State<OnboardingPage> with TickerProviderStateMixin {
+class _OnboardingPageState extends State<OnboardingPage> {
   // Controller managing horizontal page swiping
   final PageController _page_controller = PageController();
-
-  // Controller managing logo or illustration entrance scaling pop
-  late AnimationController _illustration_controller;
-
-  // Animation mapping the scaling path for slides
-  late Animation<double> _illustration_animation;
+  // Persistent page index tracking variable (prevents label reset on completion, BUG-014)
+  int _current_page = 0;
 
   // List holding the static asset paths for the onboarding images
   final List<String> _images = const [
@@ -59,50 +55,11 @@ class _OnboardingPageState extends State<OnboardingPage> with TickerProviderStat
     AppAssets.onboarding_3_light,
   ];
 
-  // Initialize state method launching layout controllers
-  @override
-  void initState() {
-    // Invoke parent widget class initialization logic
-    super.initState();
-
-    // Create animation controller running the scaling transitions
-    _illustration_controller = AnimationController(
-      // Set ticker provider sync dependency
-      vsync: this,
-      // Set duration utilizing central spacing constants
-      duration: const Duration(
-        // Set duration in milliseconds
-        milliseconds: AppSpacing.duration_illustration_pop_ms,
-      ),
-    );
-
-    // Create curve mapping with ease-out elasticity path
-    _illustration_animation = CurvedAnimation(
-      // Set animation parent controller
-      parent: _illustration_controller,
-      // Apply elastic backing transition curve
-      curve: Curves.easeOutBack,
-    );
-
-    // Start running the scale animation sequence forward
-    _illustration_controller.forward();
-  }
-
-  // Helper method resetting and re-running slide animations
-  void _animate_illustration() {
-    // Reset illustration controller values to zero
-    _illustration_controller.reset();
-    // Play scale transitions forward
-    _illustration_controller.forward();
-  }
-
   // Dispose method releasing controller resources to avoid memory leaks
   @override
   void dispose() {
     // Dispose the page view swiping controller resources
     _page_controller.dispose();
-    // Dispose the illustration animation controller resources
-    _illustration_controller.dispose();
     // Invoke parent class dispose logic
     super.dispose();
   }
@@ -138,17 +95,17 @@ class _OnboardingPageState extends State<OnboardingPage> with TickerProviderStat
         },
         // Builder rendering UI components based on active indices
         builder: (context, state) {
-          // Declare index pointer tracker initialized to zero
-          int current_page = 0;
           // Check if emitted state maps index updates
           if (state is OnboardingPageUpdate) {
             // Update page index pointer from state parameters
-            current_page = state.page_index;
+            _current_page = state.page_index;
           }
           // Else block representing other state update fallbacks
           else {
-            // Keep default zero index value
+            // Keep the last active page index value stable without resetting
           }
+          // Local reference pointing to the persistent state field index variable
+          final int current_page = _current_page;
           // Bind boolean checking if active screen represents the final slide index
           final bool is_last = (_images.length - 1) == current_page;
 
@@ -169,6 +126,56 @@ class _OnboardingPageState extends State<OnboardingPage> with TickerProviderStat
               child: Stack(
                 // Position children layered on top of each other
                 children: [
+                  // Background image layer using AnimatedSwitcher to cross-fade illustrations smoothly (resolves Issue 1)
+                  IgnorePointer(
+                    child: Column(
+                      children: [
+                        // Top vertical spacer margin matching PageView content layout
+                        const SizedBox(
+                          height: AppSpacing.spacing_onboarding_top,
+                        ),
+                        // Expanded container matching PageView flex weight ratio
+                        Expanded(
+                          flex: 5,
+                          child: Padding(
+                            // Symmetric padding configurations matching page view illustrations
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.space_xxxl,
+                              vertical: AppSpacing.space_xl,
+                            ),
+                            // Switcher transitioning images using cross-fade duration settings
+                            child: AnimatedSwitcher(
+                              // Define standard cross-fade animation duration
+                              duration: const Duration(
+                                milliseconds: AppSpacing.duration_fade_ms,
+                              ),
+                              // Apply ease-in-out transition curve transitions
+                              switchInCurve: Curves.easeInOut,
+                              switchOutCurve: Curves.easeInOut,
+                              // Render dynamic illustration asset image with key matching current page
+                              child: Image.asset(
+                                // Load active image path dynamically based on dark mode status
+                                AppAssets.get_onboarding_asset(
+                                  current_page,
+                                  is_dark,
+                                ),
+                                // Set unique key representing active page to trigger switcher transitions
+                                key: ValueKey<int>(current_page),
+                                // Maintain image scaling ratio
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ),
+                        ),
+                        // Empty spacer mapping the text column flex weight below
+                        const Spacer(flex: 3),
+                        // Spacing margin height reserved at page bottom matching slider column layouts
+                        const SizedBox(
+                          height: AppSpacing.spacing_bottom_reserve,
+                        ),
+                      ],
+                    ),
+                  ),
                   // PageView builder creating responsive slider content
                   PageView.builder(
                     // Bind horizontal page view controller
@@ -177,8 +184,6 @@ class _OnboardingPageState extends State<OnboardingPage> with TickerProviderStat
                     onPageChanged: (int index) {
                       // Trigger page changed method in onboarding cubit
                       context.read<OnboardingCubit>().page_changed(index);
-                      // Trigger entry animation pop for new slide illustration
-                      _animate_illustration();
                     },
                     // Specify total slide count
                     itemCount: _images.length,
@@ -193,32 +198,12 @@ class _OnboardingPageState extends State<OnboardingPage> with TickerProviderStat
                             // Set space height from central constants
                             height: AppSpacing.spacing_onboarding_top,
                           ),
-                          // Expanded container nesting illustration layout
-                          Expanded(
+                          // Expanded container nesting illustration layout space (actual image is rendered in background stack)
+                          const Expanded(
                             // Allocate layout weight ratio
                             flex: 5,
-                            // Scale transition wrapping the illustration image
-                            child: ScaleTransition(
-                              // Bind scale path to illustration animation
-                              scale: _illustration_animation,
-                              // Padding enclosing the illustration image bounds
-                              child: Padding(
-                                // Symmetric padding configurations
-                                padding: const EdgeInsets.symmetric(
-                                  // Set horizontal padding
-                                  horizontal: AppSpacing.space_xxxl,
-                                  // Set vertical padding
-                                  vertical: AppSpacing.space_xl,
-                                ),
-                                // Render illustration asset image
-                                child: Image.asset(
-                                  // Load active image path from string list dynamically based on dark mode status
-                                  AppAssets.get_onboarding_asset(index, is_dark),
-                                  // Maintain image scaling ratio
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
-                            ),
+                            // Empty child placeholder to preserve layout margins
+                            child: SizedBox.shrink(),
                           ),
                           // Padding widget surrounding indicator dots row
                           Padding(

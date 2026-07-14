@@ -53,6 +53,9 @@ class AppAssets {
   // Path to the third onboarding page illustration image (dark mode fallback)
   static const String onboarding_3_dark = '${_images_path}onboarding3.png';
 
+  // Path to the password reset success checkmark illustration image
+  static const String password_reset_success = '${_images_path}Password-Reset-Successfully.png';
+
   // Method returning the correct onboarding image path based on theme mode
   static String get_onboarding_asset(int index, bool is_dark) {
     // Switch on the onboarding page index to select image path

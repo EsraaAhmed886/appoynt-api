@@ -5,7 +5,7 @@
  * Version Information: V1.0.0
  * Dependencies: flutter/material.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/06/2026]
+ * Last Modified Date: [Kholoud Khaled - 11/07/2026]
  * File Description: Defines centralized color constants and palettes for light and dark theme modes.
  */
 
@@ -58,5 +58,11 @@ class AppColors {
 
   // Background fill color representation for user input text fields
   static const Color input_fill = Color(0xFFF7F8F9);
+
+  // Pale blue color constant representation for unfilled segments in light theme
+  static const Color pale_blue = Color(0xFFD2E3FC);
+
+  // Pale blue color constant representation for unfilled segments in dark theme
+  static const Color pale_blue_dark = Color(0xFF1B2E4F);
 }
 // End of app_colors.dart

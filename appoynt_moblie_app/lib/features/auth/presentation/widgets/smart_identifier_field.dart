@@ -6,20 +6,20 @@
  * Dependencies:
  *   - package:appoynt_mobile_app/core/routing/route_export.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 12/07/2026]
  * File Description: Intelligent Email/Phone input field forcing LTR directionality.
  */
 
 // Importing central barrel configuration mapping design tokens
 import 'package:appoynt_mobile_app/core/routing/route_export.dart';
 
-// Stateless widget rendering the dynamic identifier field with type icon detection
-class SmartIdentifierField extends StatelessWidget {
+// Stateful widget rendering the dynamic identifier field with type icon detection
+class SmartIdentifierField extends StatefulWidget {
   // Controller managing text state modifications
   final TextEditingController controller;
 
-  // Prefix icon displayed at the start of input row
-  final IconData prefix_icon;
+  // Prefix icon displayed at the start of input row (optional)
+  final IconData? prefix_icon;
 
   // Localized label text shown above input box
   final String label;
@@ -37,12 +37,66 @@ class SmartIdentifierField extends StatelessWidget {
   const SmartIdentifierField({
     super.key,
     required this.controller,
-    required this.prefix_icon,
+    this.prefix_icon,
     required this.label,
     required this.hint,
     required this.keyboard_type,
     required this.validator,
   });
+
+  @override
+  // Create state tracking class instance
+  State<SmartIdentifierField> createState() {
+    // Return state class instance
+    return _SmartIdentifierFieldState();
+  }
+}
+
+// State class managing focus state and blur validations
+class _SmartIdentifierFieldState extends State<SmartIdentifierField> {
+  // Focus node to monitor active typing/focus updates
+  late final FocusNode _focus_node;
+
+  // Flag tracking whether user touched/interacted with the field and blurred it
+  bool _touched = false;
+
+  @override
+  // Initialize state registers and focus listeners
+  void initState() {
+    // Invoke parent initialization
+    super.initState();
+    // Instantiate new focus node
+    _focus_node = FocusNode();
+    // Attach listener to track focus changes
+    _focus_node.addListener(_on_focus_changed);
+  }
+
+  // Method executing when focus updates on input field
+  void _on_focus_changed() {
+    // Check if focus was lost using Yoda style check
+    if (false == _focus_node.hasFocus) {
+      // Refresh layout state to trigger validation
+      setState(() {
+        // Mark field as touched
+        _touched = true;
+      });
+    } else {
+      // Empty action block to satisfy compiler
+    }
+    // Refresh layout state for outline border color updates
+    setState(() {});
+  }
+
+  @override
+  // Clean up listeners and dispose focus nodes to avoid memory leaks
+  void dispose() {
+    // Remove focus listener tracker
+    _focus_node.removeListener(_on_focus_changed);
+    // Dispose focus node resources
+    _focus_node.dispose();
+    // Invoke parent dispose logic
+    super.dispose();
+  }
 
   @override
   // Build method drawing form field elements
@@ -62,40 +116,82 @@ class SmartIdentifierField extends StatelessWidget {
         // Text widget rendering field label
         Text(
           // Active label text
-          label,
+          widget.label,
           // Pull centralized style registry
           style: AppTextStyles.get_field_label(is_arabic),
         ),
         // Height divider using spacing constants
         const SizedBox(height: AppSpacing.space_m),
-        // Force text direction layout to LTR to keep prefix icon on the left
-        Directionality(
-          // Set directionality strictly to LTR
-          textDirection: TextDirection.ltr,
-          // Listen to controller text changes to dynamically update text alignment
-          child: ValueListenableBuilder<TextEditingValue>(
-            // Bind value listenable to text controller
-            valueListenable: controller,
-            // Builder method rebuilding on value changes
-            builder: (context, value, child) {
-              // Resolve dynamic text alignment based on empty status and language direction using Yoda style check
-              final TextAlign dynamic_align = (true == value.text.isEmpty && true == is_arabic)
-                  // Right-align placeholder in Arabic mode when empty
-                  ? TextAlign.right
-                  // Left-align inputs and placeholders in other states
-                  : TextAlign.left;
+        // Listen to controller text changes to dynamically update text alignment
+        ValueListenableBuilder<TextEditingValue>(
+          // Bind value listenable to text controller
+          valueListenable: widget.controller,
+          // Builder method rebuilding on value changes
+          builder: (context, value, child) {
+            // Resolve dynamic text alignment to switch based on empty state and locale using Yoda style check
+            final TextAlign dynamic_align = (true == value.text.isEmpty && true == is_arabic)
+                // Right-align placeholder in Arabic mode when empty
+                ? TextAlign.right
+                // Left-align inputs and placeholders in other states
+                : TextAlign.left;
 
-              // TextFormField wrapper
-              return TextFormField(
+            // Return Stack layering shadow background behind the TextFormField
+            return Stack(
+              // Allow child widgets to paint outside stack boundary lines
+              clipBehavior: Clip.none,
+              // Children widgets list
+              children: [
+                // Positioned shadow decorator container matching input box height
+                Positioned(
+                  // Align to top edge
+                  top: 0.0,
+                  // Align to left edge
+                  left: 0.0,
+                  // Align to right edge
+                  right: 0.0,
+                  // Restrict shadow container height to input box area
+                  height: 50.0,
+                  // Shadow background widget
+                  child: Container(
+                    // Visual styling decoration
+                    decoration: BoxDecoration(
+                      // Set corner radius using spacing constants
+                      borderRadius: BorderRadius.circular(AppSpacing.radius_input),
+                      // Shadows list
+                      boxShadow: [
+                        BoxShadow(
+                          // Choose shadow color based on dark mode using Yoda style check
+                          color: true == is_dark
+                              ? Colors.black.withValues(alpha: 0.25)
+                              : Colors.black.withValues(alpha: 0.04),
+                          // Shadow blur radius
+                          blurRadius: 6.0,
+                          // Shadow thickness spread
+                          spreadRadius: 1.0,
+                          // Shadow displacement offset coordinates
+                          offset: const Offset(0.0, 2.0),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                // Render standard TextFormField on top of the shadow decorator
+                TextFormField(
                 // Bind text controller
-                controller: controller,
+                controller: widget.controller,
+                // Bind focus node
+                focusNode: _focus_node,
                 // Bind validator logic
-                validator: validator,
+                validator: widget.validator,
+                // Enable validation modes onBlur once touched using Yoda style checks
+                autovalidateMode: true == _touched
+                    ? AutovalidateMode.onUserInteraction
+                    : AutovalidateMode.disabled,
                 // Bind keyboard configuration
-                keyboardType: keyboard_type,
+                keyboardType: widget.keyboard_type,
                 // Force credential inputs to LTR direction even in Arabic
                 textDirection: TextDirection.ltr,
-                // Set dynamic text alignment to support right-aligned placeholders in Arabic
+                // Set dynamic text alignment
                 textAlign: dynamic_align,
                 // Text styling inside field
                 style: TextStyle(
@@ -107,19 +203,32 @@ class SmartIdentifierField extends StatelessWidget {
                 // Input field decoration configuration
                 decoration: InputDecoration(
                   // Localized placeholder hint string
-                  hintText: hint,
+                  hintText: widget.hint,
                   // Set hints text styling
                   hintStyle: const TextStyle(
                     // Set hint text color using secondary text color
                     color: AppColors.text_light_secondary,
                   ),
-                  // Display resolved detection prefix icon
-                  prefixIcon: Icon(
-                    // prefix icon data
-                    prefix_icon,
-                    // Set icon color using secondary text color
-                    color: AppColors.text_light_secondary,
+                  // Display prefix icon conditionally if provided
+                  prefixIcon: widget.prefix_icon != null
+                      ? Icon(
+                          // prefix icon data
+                          widget.prefix_icon,
+                          // Set icon color using secondary text color
+                          color: AppColors.text_light_secondary,
+                        )
+                      : null,
+                  // Custom error text styling allowing multi-line wrapping
+                  errorStyle: const TextStyle(
+                    // Error color
+                    color: AppColors.error,
+                    // Small size for validation text labels
+                    fontSize: 11.0,
+                    // High readable lines multiplier spacing
+                    height: 1.4,
                   ),
+                  // Allow up to 3 lines of error text wrapping
+                  errorMaxLines: 3,
                   // Enable background color fills
                   filled: true,
                   // Apply dynamic background color fill using Yoda style check
@@ -173,10 +282,11 @@ class SmartIdentifierField extends StatelessWidget {
                     ),
                   ),
                 ),
-              );
-            },
-          ),
-        ),
+              ),
+            ],
+          );
+        },
+      ),
       ],
     );
   }

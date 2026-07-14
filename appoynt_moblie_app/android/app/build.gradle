@@ -1,58 +1,102 @@
+/*
+ * File Name: build.gradle
+ * Author: Kholoud Khaled
+ * Date of Creation: 03/07/2026
+ * Version Information: V1.0.0
+ * Dependencies: None
+ * Contributors: [Kholoud Khaled]
+ * Last Modified Date: [Kholoud Khaled - 03/07/2026]
+ * File Description: Gradle build configuration script for the Android application subproject.
+ */
+
+// Configuring the plugins required for the application build
 plugins {
+    // Applying the Android application gradle plugin
     id "com.android.application"
+    // Applying the Kotlin Android Gradle plugin
     id "kotlin-android"
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    // Applying the Flutter Gradle Plugin after the Android and Kotlin plugins
     id "dev.flutter.flutter-gradle-plugin"
 }
 
-def localProperties = new Properties()
-def localPropertiesFile = rootProject.file("local.properties")
-if (localPropertiesFile.exists()) {
-    localPropertiesFile.withReader("UTF-8") { reader ->
-        localProperties.load(reader)
+// Initializing the local properties container object
+def local_properties = new Properties()
+// Resolving the local.properties file handler path relative to the root project
+def local_properties_file = rootProject.file("local.properties")
+// Checking if local.properties configuration file exists on disk
+if (local_properties_file.exists()) {
+    // Opening reader on local properties file using UTF-8 encoding
+    local_properties_file.withReader("UTF-8") { reader ->
+        // Loading properties variables from the reader stream
+        local_properties.load(reader)
     }
 }
 
-def flutterVersionCode = localProperties.getProperty("flutter.versionCode")
-if (flutterVersionCode == null) {
-    flutterVersionCode = "1"
+// Querying the flutter version code value from properties metadata
+def flutter_version_code = local_properties.getProperty("flutter.versionCode")
+// Yoda style check verifying if version code is null
+if (null == flutter_version_code) {
+    // Setting fallback default build version code value
+    flutter_version_code = "1"
 }
 
-def flutterVersionName = localProperties.getProperty("flutter.versionName")
-if (flutterVersionName == null) {
-    flutterVersionName = "1.0"
+// Querying the flutter version name value from properties metadata
+def flutter_version_name = local_properties.getProperty("flutter.versionName")
+// Yoda style check verifying if version name is null
+if (null == flutter_version_name) {
+    // Setting fallback default build version name string
+    flutter_version_name = "1.0"
 }
 
+// Configuring the Android extension settings block
 android {
+    // Specifying unique package namespace identifier
     namespace = "com.appoynt.appoynt_mobile_app"
+    // Assigning SDK compilation target version from Flutter settings
     compileSdk = flutter.compileSdkVersion
+    // Assigning native NDK tools library compile version from Flutter settings
     ndkVersion = flutter.ndkVersion
 
+    // Configuring Java compiler compatibility properties
     compileOptions {
+        // Setting source compatibility target to Java 1.8
         sourceCompatibility = JavaVersion.VERSION_1_8
+        // Setting target compilation compatibility to Java 1.8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
-    defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.appoynt.appoynt_mobile_app"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
-        versionCode = flutterVersionCode.toInteger()
-        versionName = flutterVersionName
+    // Configuring Kotlin compiler options
+    kotlinOptions {
+        // Enforcing JVM target compatibility to match Java 1.8
+        jvmTarget = "1.8"
     }
 
+    // Configuring build configuration defaults
+    defaultConfig {
+        // Setting application package ID namespace string
+        applicationId = "com.appoynt.appoynt_mobile_app"
+        // Setting minimum supported Android SDK version from Flutter settings
+        minSdk = flutter.minSdkVersion
+        // Setting target execution Android SDK version from Flutter settings
+        targetSdk = flutter.targetSdkVersion
+        // Assigning integer representation version code
+        versionCode = flutter_version_code.toInteger()
+        // Assigning string representation version name
+        versionName = flutter_version_name
+    }
+
+    // Configuring build types and signing targets
     buildTypes {
+        // Configuring release build configuration properties
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+            // Assigning standard debug keystore credentials to allow developer releases
             signingConfig = signingConfigs.debug
         }
     }
 }
 
+// Specifying Flutter specific builder config settings
 flutter {
+    // Setting parent project source directory path
     source = "../.."
 }

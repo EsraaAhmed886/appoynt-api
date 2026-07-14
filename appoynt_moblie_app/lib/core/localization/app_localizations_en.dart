@@ -285,6 +285,41 @@ class AppLocalizationsEn extends AppLocalizations {
     return 'Please enter a valid phone number';
   }
 
+  // Override getter returning name length validation error message
+  @override
+  String get name_length_error {
+    // Return English name length bounds validation warning
+    return 'Name must be between 3 and 50 characters';
+  }
+
+  // Override getter returning name characters validation error message
+  @override
+  String get name_letters_only_error {
+    // Return English name letters only validation warning
+    return 'Name must contain only letters';
+  }
+
+  // Override getter returning phone length validation error message
+  @override
+  String get phone_must_be_11_digits {
+    // Return English phone digits count warning
+    return 'Phone number must be exactly 11 digits';
+  }
+
+  // Override getter returning phone start validation error message
+  @override
+  String get phone_must_start_01 {
+    // Return English phone prefix warning
+    return 'Phone number must start with 01';
+  }
+
+  // Override getter returning phone operator validation error message
+  @override
+  String get phone_invalid_operator {
+    // Return English phone operator type warning
+    return 'Phone number must start with 010, 011, 012, or 015';
+  }
+
   // Override getter returning title label for registration gateway
   @override
   String get register_title {
@@ -344,8 +379,8 @@ class AppLocalizationsEn extends AppLocalizations {
   // Override getter returning hint helper text for password inputs
   @override
   String get password_hint {
-    // Return English password strength guidance hint
-    return 'Enter a strong password';
+    // Return English password placeholder hint
+    return 'Password';
   }
 
   // Override getter returning label for confirmation password inputs
@@ -359,7 +394,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get confirm_password_hint {
     // Return English confirm password hint
-    return 'Re-enter your password';
+    return 'Confirm Password';
   }
 
   // Override getter returning agreement prefix label for terms acceptance checkbox
@@ -520,7 +555,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get new_password_hint {
     // Return English new password hint
-    return 'Enter your new password';
+    return 'Password';
   }
 
   // Override getter returning account created success screen title
@@ -558,6 +593,27 @@ class AppLocalizationsEn extends AppLocalizations {
     return 'Go to Home';
   }
 
+  // Override getter returning password reset successfully screen title
+  @override
+  String get password_reset_success_title {
+    // Return English password reset success title
+    return 'Password Reset Successfully';
+  }
+
+  // Override getter returning password reset successfully screen description
+  @override
+  String get password_reset_success_body {
+    // Return English password reset success description
+    return 'Your password has been updated successfully.\nYou can now sign in with your new password.';
+  }
+
+  // Override getter returning redirecting to login page button label
+  @override
+  String get go_to_login {
+    // Return English go to login button label
+    return 'Go to Login';
+  }
+
   // Override getter returning no internet error screen title
   @override
   String get no_internet_title {
@@ -577,5 +633,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get retry {
     // Return English retry label
     return 'Retry';
+  }
+
+  // Override getter returning password maximum length validation warning
+  @override
+  String get password_too_long {
+    // Return English password too long warning
+    return 'Password must be maximum 30 characters';
   }
 }

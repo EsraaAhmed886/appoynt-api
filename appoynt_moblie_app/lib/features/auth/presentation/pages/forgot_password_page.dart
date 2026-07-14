@@ -7,7 +7,7 @@
  *   - package:appoynt_mobile_app/core/routing/route_export.dart
  *   - package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 02/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 14/07/2026]
  * File Description:
  *   The Forgot Password screen allows users to request a reset code via 
  *   their phone number. It follows the centralized design system and 
@@ -59,6 +59,21 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   Locale? _last_locale;
 
   @override
+  // Initialize state registers and add listener to refresh UI on text updates
+  void initState() {
+    // Invoke parent initialization
+    super.initState();
+    // Register listener mapping text value changes
+    _phone_ctrl.addListener(_on_phone_changed);
+  }
+
+  // Method executing when phone value updates
+  void _on_phone_changed() {
+    // Refresh layout state to update button colors
+    setState(() {});
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     /// Retrieving the current active locale from context.
@@ -76,9 +91,60 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   @override
   void dispose() {
+    // Remove listener from controller
+    _phone_ctrl.removeListener(_on_phone_changed);
     /// Cleaning up the text controller to prevent memory leaks.
     _phone_ctrl.dispose();
     super.dispose(); // Final disposal
+  }
+
+  // Validator function verifying phone digits count limits using Yoda style check
+  String? _validate_phone(String? phone_value, AppStrings strings_catalog) {
+    // Check if input value is null or empty using Yoda style check
+    if (null == phone_value || phone_value.isEmpty) {
+      // Return requirements warning string
+      return strings_catalog.field_required;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+    // Convert Arabic numerals to English digits if any exist
+    String clean_digits = phone_value;
+    // Map of Arabic-Indic to standard English digits
+    final Map<String, String> translation_map = {
+      '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4',
+      '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9'
+    };
+    // Translate each character in map
+    translation_map.forEach((arabic, english) {
+      clean_digits = clean_digits.replaceAll(arabic, english);
+    });
+    // Strip space dividers, symbols, and format modifiers
+    clean_digits = clean_digits.replaceAll(RegExp(r'[^\d]'), '');
+    // Verify phone digit count length matches exactly 11 digits using Yoda style check
+    if (11 != clean_digits.length) {
+      // Return phone count validation warning message
+      return strings_catalog.phone_must_be_11_digits;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+    // Verify that phone number starts with 01 prefix using Yoda style check
+    if (false == clean_digits.startsWith('01')) {
+      // Return prefix starting requirement warning message
+      return strings_catalog.phone_must_start_01;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+    // Retrieve third digit character index point
+    final String third_char = clean_digits[2];
+    // Verify operator digit matches standard Egyptian mobile code using Yoda style check
+    if ('0' != third_char && '1' != third_char && '2' != third_char && '5' != third_char) {
+      // Return operator matching validation error message
+      return strings_catalog.phone_invalid_operator;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+    // Return null representing validation success
+    return null;
   }
 
   /// Handles the form submission and triggers the code sending process.
@@ -149,13 +215,19 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         borderRadius: BorderRadius.circular(10), // Rounded corners
                         border: Border.all(color: border_color), // Subtle border
                       ),
-                      /// Displaying localized arrow direction.
-                      child: Icon(
-                        true == is_arabic
-                            ? Icons.arrow_forward_ios_rounded // RTL back icon
-                            : Icons.arrow_back_ios_new_rounded, // LTR back icon
-                        size: 16,
-                        color: text_primary, // Primary icon color
+                      // RotatedBox to mirror the back chevron icon in Arabic RTL mode (BUG-012)
+                      child: RotatedBox(
+                        // Quarter turns value set to 2 (180 degrees) for English to point to the right
+                        quarterTurns: TextDirection.rtl == Directionality.of(context) ? 0 : 2,
+                        // Chevron back icon widget
+                        child: Icon(
+                          // Back chevron icon representation
+                          Icons.arrow_back_ios_new_rounded,
+                          // Set size constraint
+                          size: 16,
+                          // Primary icon color
+                          color: text_primary,
+                        ),
                       ),
                     ),
                   ),
@@ -206,17 +278,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   is_phone: true,
                   keyboard_type: TextInputType.phone,
                   validator: (v) {
-                    /// Standard validation checks.
-                    if (v == null || v.isEmpty) {
-                      return s.field_required;
-                    }
-                    if (v.length < 10) {
-                      return s.invalid_phone;
-                    }
-                    if (v.length > 11) {
-                      return s.phone_max_error;
-                    }
-                    return null;
+                    return _validate_phone(v, s);
                   },
                 ),
               ),
@@ -224,37 +286,15 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               const SizedBox(height: 32), // Margin before action button
 
               /// Primary action button for sending the reset code.
-              SizedBox(
-                width: double.infinity,
-                height: 52, // Standard accessible height
-                child: ElevatedButton(
-                  /// Disabling the button when loading.
-                  onPressed: _is_loading ? null : _submit,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary_color, // Brand primary color
-                    /// Semi-transparent background when disabled.
-                    disabledBackgroundColor:
-                        AppColors.primary_color.withValues(alpha: 0.6),
-                    elevation: 0, // Flat design approach
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14)), // Rounded corners
-                  ),
-                  /// Displaying either a progress spinner or localized text.
-                  child: true == _is_loading
-                      ? const SizedBox(
-                          width: 22,
-                          height: 22,
-                          child: CircularProgressIndicator(
-                              strokeWidth: 2.5, color: Colors.white),
-                        )
-                      : Text(
-                          s.send_code,
-                          style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white),
-                        ),
-                ),
+              AuthButton(
+                // Localized action string
+                label: s.send_code,
+                // Enable only when phone field is not empty using Yoda style check
+                is_enabled: _phone_ctrl.text.isNotEmpty,
+                // Submission callback
+                on_pressed: _submit,
+                // Loading state indicator
+                is_loading: _is_loading,
               ),
             ],
           ),

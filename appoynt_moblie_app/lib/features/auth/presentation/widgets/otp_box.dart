@@ -6,7 +6,7 @@
  * Dependencies: 
  *   - package:appoynt_mobile_app/core/routing/route_export.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 02/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 10/07/2026]
  * File Description:
  *   A single digit input box designed specifically for OTP verification. 
  *   It features specialized styling and automatic focus management.
@@ -24,13 +24,16 @@ class OtpBox extends StatelessWidget {
   final FocusNode focusNode;
   /// Callback triggered when the digit changes.
   final ValueChanged<String> onChanged;
+  /// Flag to enable/disable the box (BUG-010).
+  final bool enabled;
 
-  /// Constructor requiring controller, focus node, and change callback.
+  /// Constructor requiring controller, focus node, change callback, and optional enablement flag.
   const OtpBox({
     super.key,
     required this.controller,
     required this.focusNode,
     required this.onChanged,
+    this.enabled = true,
   });
 
   @override
@@ -47,6 +50,8 @@ class OtpBox extends StatelessWidget {
         controller: controller, // Linking to external controller
         focusNode: focusNode, // Linking to external focus node
         onChanged: onChanged, // Linking to external change logic
+        // Bind enabled property (BUG-010)
+        enabled: enabled,
         textAlign: TextAlign.center, // Centering the digit
         textDirection: TextDirection.ltr, // Enforcing LTR direction for digits
         keyboardType: TextInputType.number, // Restricting to numeric keyboard
@@ -69,6 +74,17 @@ class OtpBox extends StatelessWidget {
             borderSide: BorderSide(
               // Adaptive border color matching input fields
               color: true == is_dark ? AppColors.border_dark : AppColors.border_light,
+              width: AppSpacing.border_width_thin,
+            ),
+          ),
+          /// Defining the border state when disabled (BUG-010).
+          disabledBorder: OutlineInputBorder(
+            // Rounded corners matching design
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(
+              // Same color as default border when disabled
+              color: true == is_dark ? AppColors.border_dark : AppColors.border_light,
+              // Thin border width
               width: AppSpacing.border_width_thin,
             ),
           ),

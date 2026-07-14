@@ -212,7 +212,7 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get enter_email_or_phone {
     // Return Arabic prompt description hint text
-    return 'أدخل بريدك الإلكتروني أو رقمك';
+    return 'أدخل البريد الإلكترونى أو رقم الهاتف';
   }
 
   // Override getter returning standard label for email inputs
@@ -285,6 +285,41 @@ class AppLocalizationsAr extends AppLocalizations {
     return 'يرجى إدخال رقم هاتف صحيح';
   }
 
+  // Override getter returning name length validation error message
+  @override
+  String get name_length_error {
+    // Return Arabic name length bounds validation warning
+    return 'يجب أن يكون الاسم بين 3 و 50 حرفاً';
+  }
+
+  // Override getter returning name characters validation error message
+  @override
+  String get name_letters_only_error {
+    // Return Arabic name letters only validation warning
+    return 'يجب أن يحتوي الاسم على أحرف فقط';
+  }
+
+  // Override getter returning phone length validation error message
+  @override
+  String get phone_must_be_11_digits {
+    // Return Arabic phone digits count warning
+    return 'يجب أن يكون رقم الهاتف مكوناً من 11 رقماً بالضبط';
+  }
+
+  // Override getter returning phone start validation error message
+  @override
+  String get phone_must_start_01 {
+    // Return Arabic phone prefix warning
+    return 'يجب أن يبدأ رقم الهاتف بـ 01';
+  }
+
+  // Override getter returning phone operator validation error message
+  @override
+  String get phone_invalid_operator {
+    // Return Arabic phone operator type warning
+    return 'يجب أن يبدأ رقم الهاتف بـ 010 أو 011 أو 012 أو 015';
+  }
+
   // Override getter returning title label for registration gateway
   @override
   String get register_title {
@@ -344,8 +379,8 @@ class AppLocalizationsAr extends AppLocalizations {
   // Override getter returning hint helper text for password inputs
   @override
   String get password_hint {
-    // Return Arabic password strength guidance hint
-    return 'أدخل كلمة مرور قوية';
+    // Return Arabic password placeholder hint
+    return 'كلمة المرور';
   }
 
   // Override getter returning label for confirmation password inputs
@@ -359,7 +394,7 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get confirm_password_hint {
     // Return Arabic confirm password hint
-    return 'أعد إدخال كلمة المرور';
+    return 'تأكيد كلمة المرور';
   }
 
   // Override getter returning agreement prefix label for terms acceptance checkbox
@@ -520,7 +555,7 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get new_password_hint {
     // Return Arabic new password hint
-    return 'أدخل كلمة المرور الجديدة';
+    return 'كلمة المرور';
   }
 
   // Override getter returning account created success screen title
@@ -558,6 +593,27 @@ class AppLocalizationsAr extends AppLocalizations {
     return 'الذهاب إلى الرئيسية';
   }
 
+  // Override getter returning password reset successfully screen title
+  @override
+  String get password_reset_success_title {
+    // Return Arabic password reset success title
+    return 'تمت إعادة تعيين كلمة المرور بنجاح';
+  }
+
+  // Override getter returning password reset successfully screen description
+  @override
+  String get password_reset_success_body {
+    // Return Arabic password reset success description
+    return 'تم تحديث كلمة مرورك بنجاح. يمكنك الآن تسجيل الدخول\nباستخدام كلمة مرورك الجديدة.';
+  }
+
+  // Override getter returning redirecting to login page button label
+  @override
+  String get go_to_login {
+    // Return Arabic go to login button label
+    return 'الذهاب إلى تسجيل الدخول';
+  }
+
   // Override getter returning no internet error screen title
   @override
   String get no_internet_title {
@@ -577,5 +633,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get retry {
     // Return Arabic retry label
     return 'إعادة المحاولة';
+  }
+
+  // Override getter returning password maximum length validation warning
+  @override
+  String get password_too_long {
+    // Return Arabic password too long warning
+    return 'يجب ألا تزيد كلمة المرور عن 30 حرفًا';
   }
 }

@@ -7,7 +7,7 @@
  *   - package:appoynt_mobile_app/core/routing/route_export.dart
  *   - package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 02/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 14/07/2026]
  * File Description:
  *   The Reset Password screen allows users to set a new security credential 
  *   after successful verification. It features real-time rule tracking and 
@@ -59,6 +59,22 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   Locale? _last_locale;
 
   @override
+  // Initialize state and add listeners to controllers to refresh layout in real-time
+  void initState() {
+    // Invoke parent initialization
+    super.initState();
+    // Register listener mapping text value changes
+    _password_ctrl.addListener(_on_fields_changed);
+    _confirm_ctrl.addListener(_on_fields_changed);
+  }
+
+  // Method executing when input values change
+  void _on_fields_changed() {
+    // Refresh layout state to update button colors
+    setState(() {});
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     /// Retrieving the current active locale from context.
@@ -76,10 +92,40 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
 
   @override
   void dispose() {
+    // Remove listeners
+    _password_ctrl.removeListener(_on_fields_changed);
+    _confirm_ctrl.removeListener(_on_fields_changed);
     /// Cleaning up controllers to prevent memory leaks.
     _password_ctrl.dispose();
     _confirm_ctrl.dispose();
     super.dispose(); // Final disposal
+  }
+
+  // Validator function verifying password constraints using Yoda style check
+  String? _validate_password(String? password_value, AppStrings strings_catalog) {
+    // Check if input value is null or empty using Yoda style check
+    if (null == password_value || password_value.isEmpty) {
+      // Return requirements warning string
+      return strings_catalog.field_required;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+    // Verify minimum character length bounds using Yoda style check
+    if (8 > password_value.length) {
+      // Return too short warning message
+      return strings_catalog.too_short;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+    // Verify maximum character length bounds using Yoda style check
+    if (30 < password_value.length) {
+      // Return too long warning message
+      return strings_catalog.password_too_long;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+    // Return null representing validation success
+    return null;
   }
 
   /// Handles the form submission and triggers the update process.
@@ -137,38 +183,15 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
           bottom: MediaQuery.of(context).viewInsets.bottom + 24,
           top: 12,
         ),
-        child: SizedBox(
-          width: double.infinity,
-          height: 52, // Standard button height
-          child: ElevatedButton(
-            /// Disabling button when loading.
-            onPressed: _is_loading ? null : _submit,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary_color, // Brand primary color
-              /// Semi-transparent color when disabled.
-              disabledBackgroundColor: AppColors.primary_color.withValues(alpha: 0.6),
-              elevation: 0, // Flat design
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14), // Rounded corners
-              ),
-            ),
-            /// Displaying either a progress spinner or localized text.
-            child: true == _is_loading
-                ? const SizedBox(
-                    width: 22,
-                    height: 22,
-                    child: CircularProgressIndicator(
-                        strokeWidth: 2.5, color: Colors.white),
-                  )
-                : Text(
-                    s.update_password,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
-                  ),
-          ),
+        child: AuthButton(
+          // Localized action string
+          label: s.update_password,
+          // Enable only when both password fields are not empty using Yoda style check
+          is_enabled: _password_ctrl.text.isNotEmpty && _confirm_ctrl.text.isNotEmpty,
+          // Submission callback
+          on_pressed: _submit,
+          // Loading indicator
+          is_loading: _is_loading,
         ),
       ),
 
@@ -206,12 +229,19 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                             borderRadius: BorderRadius.circular(10), // Rounded corners
                             border: Border.all(color: border_color), // Subtle border
                           ),
-                          child: Icon(
-                            true == is_arabic
-                                ? Icons.arrow_forward_ios_rounded // RTL icon
-                                : Icons.arrow_back_ios_new_rounded, // LTR icon
-                            size: 16,
-                            color: text_primary, // Primary color
+                          // RotatedBox to mirror the back chevron icon in Arabic RTL mode (BUG-012)
+                          child: RotatedBox(
+                            // Quarter turns value set to 2 (180 degrees) for English to point to the right
+                            quarterTurns: TextDirection.rtl == Directionality.of(context) ? 0 : 2,
+                            // Chevron back icon widget
+                            child: Icon(
+                              // Back chevron icon representation
+                              Icons.arrow_back_ios_new_rounded,
+                              // Set size constraint
+                              size: 16,
+                              // Primary icon color
+                              color: text_primary,
+                            ),
                           ),
                         ),
                       ),
@@ -255,10 +285,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                     hint: s.new_password_hint,
                     text_input_action: TextInputAction.next,
                     validator: (v) {
-                      if (v == null || v.isEmpty) {
-                        return s.field_required;
-                      }
-                      return null; // Detailed validation handled internally
+                      return _validate_password(v, s);
                     },
                   ),
 

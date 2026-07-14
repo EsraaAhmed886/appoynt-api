@@ -6,7 +6,7 @@
  * Dependencies:
  *   - package:appoynt_mobile_app/core/routing/route_export.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 02/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 12/07/2026]
  * File Description:
  *   Premium password input component with real-time strength analysis,
  *   dark mode support, and requirement checkmarks (RTL/LTR compliant).
@@ -14,6 +14,8 @@
 
 // Importing central design systems barrel configuration definitions
 import 'package:appoynt_mobile_app/core/routing/route_export.dart';
+// Importing standard services for input formatting constraints
+import 'package:flutter/services.dart';
 
 // Stateful password field widget with real-time rules validator layout
 class PasswordFieldWithRules extends StatefulWidget {
@@ -50,34 +52,49 @@ class PasswordFieldWithRules extends StatefulWidget {
   }
 }
 
-// State class managing visibility flags and focus node behaviors
+// State class managing focus state and strength checks
 class _PasswordFieldWithRulesState extends State<PasswordFieldWithRules> {
+  // Focus node to monitor active typing/focus updates
+  late final FocusNode _focus_node;
+
+  // Flag tracking whether user touched/interacted with the field and blurred it
+  bool _touched = false;
+
   // Flag indicating if password text remains hidden
   bool _obscure = true;
 
-  // Focus node to monitor active typing/focus updates
-  final FocusNode _focus_node = FocusNode();
-
   @override
-  // Initialize listeners mapping text changes
+  // Initialize state registers and focus listeners
   void initState() {
-    // Invoke standard base class initialization configurations
+    // Invoke parent initialization
     super.initState();
-    // Register text listener to trigger state changes
-    widget.controller.addListener(_on_text_changed);
-    // Register focus listener to trigger state changes
+    // Instantiate new focus node
+    _focus_node = FocusNode();
+    // Attach listener to track focus changes
     _focus_node.addListener(_on_focus_changed);
+    // Register text listener mapping input changes dynamically
+    widget.controller.addListener(_on_text_changed);
   }
 
-  // Method executing when text input undergoes changes
+  // Method executing when text value changes
   void _on_text_changed() {
-    // Refresh layout state
+    // Refresh layout state to update checklist checkmarks
     setState(() {});
   }
 
   // Method executing when focus updates on input field
   void _on_focus_changed() {
-    // Refresh layout state
+    // Check if focus was lost using Yoda style check
+    if (false == _focus_node.hasFocus) {
+      // Refresh layout state to trigger validation
+      setState(() {
+        // Mark field as touched
+        _touched = true;
+      });
+    } else {
+      // Empty action block to satisfy compiler
+    }
+    // Refresh layout state for strength indicator visibility changes
     setState(() {});
   }
 
@@ -111,10 +128,12 @@ class _PasswordFieldWithRulesState extends State<PasswordFieldWithRules> {
     return RegExp(r'[!@#\$&*~%^()\-_+=]').hasMatch(widget.controller.text);
   }
 
-  // Getter checking that input excludes Arabic characters
+  // Getter checking that input excludes Arabic characters and has text using Yoda style check
   bool get _no_arabic {
-    // Check if no Arabic block characters exist
-    return !RegExp(r'[\u0600-\u06FF]').hasMatch(widget.controller.text);
+    // Retrieve text value representation
+    final String val = widget.controller.text;
+    // Check if value is not empty and has no Arabic characters
+    return val.isNotEmpty && !RegExp(r'[\u0600-\u06FF]').hasMatch(val);
   }
 
   // Getter indicating if all safety validation rules pass using Yoda style check
@@ -179,12 +198,48 @@ class _PasswordFieldWithRulesState extends State<PasswordFieldWithRules> {
         ),
         // Space margin before text field using spacing constants
         const SizedBox(height: AppSpacing.space_m),
-        // Force text direction layout strictly to LTR to keep suffix icon on the right
-        Directionality(
-          // Set directionality strictly to LTR
-          textDirection: TextDirection.ltr,
-          // TextFormField widget configuration
-          child: TextFormField(
+        // Return Stack layering shadow background behind the TextFormField
+        Stack(
+          // Allow child widgets to paint outside stack boundary lines
+          clipBehavior: Clip.none,
+          // Children widgets list
+          children: [
+            // Positioned shadow decorator container matching input box height
+            Positioned(
+              // Align to top edge
+              top: 0.0,
+              // Align to left edge
+              left: 0.0,
+              // Align to right edge
+              right: 0.0,
+              // Restrict shadow container height to input box area
+              height: 50.0,
+              // Shadow background widget
+              child: Container(
+                // Visual styling decoration
+                decoration: BoxDecoration(
+                  // Set corner radius using spacing constants
+                  borderRadius: BorderRadius.circular(AppSpacing.radius_input),
+                  // Shadows list
+                  boxShadow: [
+                    BoxShadow(
+                      // Choose shadow color based on dark mode using Yoda style check
+                      color: true == is_dark
+                          ? Colors.black.withValues(alpha: 0.25)
+                          : Colors.black.withValues(alpha: 0.04),
+                      // Shadow blur radius
+                      blurRadius: 6.0,
+                      // Shadow thickness spread
+                      spreadRadius: 1.0,
+                      // Shadow displacement offset coordinates
+                      offset: const Offset(0.0, 2.0),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            // Render standard TextFormField on top of the shadow decorator
+            TextFormField(
             // Bind controller
             controller: widget.controller,
             // Bind focus node
@@ -193,138 +248,151 @@ class _PasswordFieldWithRulesState extends State<PasswordFieldWithRules> {
             obscureText: _obscure,
             // Bind validator
             validator: widget.validator,
+            // Enable validation modes onBlur once touched using Yoda style checks
+            autovalidateMode: true == _touched
+                ? AutovalidateMode.onUserInteraction
+                : AutovalidateMode.disabled,
             // Keyboard return actions configuration using Yoda style check
             textInputAction: widget.text_input_action ?? TextInputAction.next,
-            // Force inputs to be left-aligned even in Arabic mode
-            textAlign: TextAlign.left,
+            // Limit password length to maximum 30 characters
+            inputFormatters: [
+              LengthLimitingTextInputFormatter(30),
+            ],
+            // Force inputs to LTR direction even in Arabic
+            textDirection: TextDirection.ltr,
+            // Align password bullets dynamically to the right in Arabic RTL mode (BUG-006)
+            textAlign: true == is_arabic ? TextAlign.right : TextAlign.left,
             // Input text styling
             style: TextStyle(
-              // Font size from spacing constants
-              fontSize: AppSpacing.font_size_text,
-              // Select text color based on theme using Yoda style check
-              color: true == is_dark ? AppColors.text_dark_primary : AppColors.text_light_primary,
-            ),
-            // Input field decoration configuration
-            decoration: InputDecoration(
-              // Localized placeholder hint
-              hintText: widget.hint,
-              // Hint text styling
-              hintStyle: TextStyle(
-                // Hint size matches standard inputs
+                // Font size from spacing constants
                 fontSize: AppSpacing.font_size_text,
-                // Select hint color based on theme using Yoda style check
-                color: true == is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary,
+                // Select text color based on theme using Yoda style check
+                color: true == is_dark ? AppColors.text_dark_primary : AppColors.text_light_primary,
               ),
-              // Enable background fills
-              filled: true,
-              // Adapt background colors based on dark mode using Yoda style check
-              fillColor: true == is_dark ? AppColors.surface_dark : AppColors.input_fill,
-              // Suffix icon layout containing toggle action button
-              suffixIcon: IconButton(
-                // Define toggle button press event
-                onPressed: () {
-                  // Refresh layout state
-                  setState(() {
-                    // Toggle visibility flag
-                    _obscure = !_obscure;
-                  });
-                },
-                // Render appropriate visibility icon based on state using Yoda style check
-                icon: Icon(
-                  // Select eye or eye slash icon
-                  true == _obscure
-                      // Hidden state icon
-                      ? Icons.visibility_off_outlined
-                      // Visible state icon
-                      : Icons.visibility_outlined,
-                  // Select icon color based on theme using Yoda style check
+              // Input field decoration configuration
+              decoration: InputDecoration(
+                // Localized placeholder hint
+                hintText: widget.hint,
+                // Hint text styling
+                hintStyle: TextStyle(
+                  // Hint size matches standard inputs
+                  fontSize: AppSpacing.font_size_text,
+                  // Select hint color based on theme using Yoda style check
                   color: true == is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary,
-                  // Set layout size
-                  size: 20.0,
                 ),
-              ),
-              // Default outline border configurations
-              border: OutlineInputBorder(
-                // Set corner radius using spacing constants
-                borderRadius: BorderRadius.circular(AppSpacing.radius_input),
-                // Set border side specifications
-                borderSide: BorderSide(
-                  // Select border color based on theme using Yoda style check
-                  color: true == is_dark ? AppColors.border_dark : AppColors.border_light,
-                  // Set line thickness using spacing constants
-                  width: AppSpacing.border_width_thin,
+                // Enable background color fills
+                filled: true,
+                // Adapt background colors based on dark mode using Yoda style check
+                fillColor: true == is_dark ? AppColors.surface_dark : AppColors.input_fill,
+                // Suffix icon layout containing toggle action button
+                suffixIcon: IconButton(
+                  // Define toggle button press event
+                  onPressed: () {
+                    // Refresh layout state
+                    setState(() {
+                      // Toggle visibility flag
+                      _obscure = !_obscure;
+                    });
+                  },
+                  // Render appropriate visibility icon based on state using Yoda style check
+                  icon: Icon(
+                    // Choose eye or eye slash icon
+                    true == _obscure
+                        // Hidden state icon
+                        ? Icons.visibility_off_outlined
+                        // Visible state icon
+                        : Icons.visibility_outlined,
+                    // Select icon color based on theme using Yoda style check
+                    color: true == is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary,
+                    // Set layout size
+                    size: 20.0,
+                  ),
                 ),
-              ),
-              // Enabled but unfocused border styling dynamically changes based on validation using Yoda style check
-              enabledBorder: OutlineInputBorder(
-                // Set corner radius using spacing constants
-                borderRadius: BorderRadius.circular(AppSpacing.radius_input),
-                // Set border side specifications
-                borderSide: BorderSide(
-                  // Set color token dynamically based on empty state and validation success using Yoda style check
-                  color: true == has_text
-                      ? (true == _all_passed ? AppColors.primary_color : AppColors.error)
-                      : (true == is_dark ? AppColors.border_dark : AppColors.border_light),
-                  // Set line thickness based on active values using Yoda style check
-                  width: true == has_text ? AppSpacing.border_width_thick : AppSpacing.border_width_thin,
+                // Default outline border configurations
+                border: OutlineInputBorder(
+                  // Set corner radius using spacing constants
+                  borderRadius: BorderRadius.circular(AppSpacing.radius_input),
+                  // Set border side specifications
+                  borderSide: BorderSide(
+                    // Select border color based on theme using Yoda style check
+                    color: true == is_dark ? AppColors.border_dark : AppColors.border_light,
+                    // Set line thickness using spacing constants
+                    width: AppSpacing.border_width_thin,
+                  ),
                 ),
-              ),
-              // Focused active input border styling dynamically changes based on validation using Yoda style check
-              focusedBorder: OutlineInputBorder(
-                // Set corner radius using spacing constants
-                borderRadius: BorderRadius.circular(AppSpacing.radius_input),
-                // Set active border side specifications
-                borderSide: BorderSide(
-                  // Set color token based on validation success using Yoda style check
-                  color: true == has_text && false == _all_passed
-                      ? AppColors.error
-                      : AppColors.primary_color,
-                  // Set line thickness using spacing constants
-                  width: AppSpacing.border_width_thick,
+                // Enabled but unfocused border styling dynamically changes based on validation using Yoda style check
+                enabledBorder: OutlineInputBorder(
+                  // Set corner radius using spacing constants
+                  borderRadius: BorderRadius.circular(AppSpacing.radius_input),
+                  // Set border side specifications
+                  borderSide: BorderSide(
+                    // Set color token dynamically based on empty state and validation success using Yoda style check
+                    color: true == has_text
+                        ? (true == _all_passed ? AppColors.primary_color : AppColors.error)
+                        : (true == is_dark ? AppColors.border_dark : AppColors.border_light),
+                    // Set line thickness based on active values using Yoda style check
+                    width: true == has_text ? AppSpacing.border_width_thick : AppSpacing.border_width_thin,
+                  ),
                 ),
-              ),
-              // Validation failed error border styling
-              errorBorder: OutlineInputBorder(
-                // Set corner radius using spacing constants
-                borderRadius: BorderRadius.circular(AppSpacing.radius_input),
-                // Set warning red border line
-                borderSide: const BorderSide(
+                // Focused active input border styling dynamically changes based on validation using Yoda style check
+                focusedBorder: OutlineInputBorder(
+                  // Set corner radius using spacing constants
+                  borderRadius: BorderRadius.circular(AppSpacing.radius_input),
+                  // Set active border side specifications
+                  borderSide: BorderSide(
+                    // Set color token based on validation success using Yoda style check
+                    color: true == has_text && false == _all_passed
+                        ? AppColors.error
+                        : AppColors.primary_color,
+                    // Set line thickness using spacing constants
+                    width: AppSpacing.border_width_thick,
+                  ),
+                ),
+                // Failed validation error border configuration
+                errorBorder: OutlineInputBorder(
+                  // Set corner radius using spacing constants
+                  borderRadius: BorderRadius.circular(AppSpacing.radius_input),
+                  // Set warning error border line
+                  borderSide: const BorderSide(
+                    // Set color token to error
+                    color: AppColors.error,
+                    // Set line thickness using spacing constants
+                    width: AppSpacing.border_width_thin,
+                  ),
+                ),
+                // Failed validation active focused border configuration
+                focusedErrorBorder: OutlineInputBorder(
+                  // Set corner radius using spacing constants
+                  borderRadius: BorderRadius.circular(AppSpacing.radius_input),
+                  // Set thick warning error border line
+                  borderSide: const BorderSide(
+                    // Set color token to error
+                    color: AppColors.error,
+                    // Set line thickness using spacing constants
+                    width: AppSpacing.border_width_thick,
+                  ),
+                ),
+                // Error labels typography styling
+                errorStyle: const TextStyle(
                   // Error color
                   color: AppColors.error,
-                  // Set line thickness using spacing constants
-                  width: AppSpacing.border_width_thin,
+                  // Small size for validation text labels
+                  fontSize: 11.0,
+                  // High readable lines multiplier spacing
+                  height: 1.4,
                 ),
-              ),
-              // Validation failed focused active border styling
-              focusedErrorBorder: OutlineInputBorder(
-                // Set corner radius using spacing constants
-                borderRadius: BorderRadius.circular(AppSpacing.radius_input),
-                // Set thick warning red border line
-                borderSide: const BorderSide(
-                  // Error color
-                  color: AppColors.error,
-                  // Set line thickness using spacing constants
-                  width: AppSpacing.border_width_thick,
+                // Allow up to 3 lines of error text wrapping
+                errorMaxLines: 3,
+                // Internal margins padding layout rules
+                contentPadding: const EdgeInsets.symmetric(
+                  // Horizontal spacing using spacing constants
+                  horizontal: AppSpacing.space_xl,
+                  // Vertical spacing using spacing constants
+                  vertical: AppSpacing.padding_input_vertical,
                 ),
-              ),
-              // Error labels typography styling
-              errorStyle: const TextStyle(
-                // Error color
-                color: AppColors.error,
-                // Small size for validation text labels
-                fontSize: 11.0,
-                // High readable lines multiplier spacing
-                height: 1.4,
-              ),
-              // Internal margins padding layout rules
-              contentPadding: const EdgeInsets.symmetric(
-                // Horizontal spacing using spacing constants
-                horizontal: AppSpacing.space_xl,
-                // Vertical spacing using spacing constants
-                vertical: AppSpacing.space_xl,
               ),
             ),
-          ),
+          ],
         ),
         // Display strength checklist widgets dynamically using Yoda style check
         if (true == _show_extras) ...[
@@ -430,27 +498,10 @@ class _StrengthBarState extends State<_StrengthBar> {
     return val_score;
   }
 
-  // Getter resolving active strength bar colors
+  // Getter resolving active strength bar colors to primary brand color (BUG/RFE)
   Color get _color {
-    // Switch on calculated score values
-    switch (_score) {
-      // Weak category
-      case 1:
-        // Return alert error color
-        return AppColors.error;
-      // Medium category
-      case 2:
-        // Return warnings yellow/orange color
-        return const Color(0xFFF39C12);
-      // Strong category
-      case 3:
-        // Return primary brand color
-        return AppColors.primary_color;
-      // Empty or fallback state
-      default:
-        // Return border divider grey color
-        return AppColors.error;
-    }
+    // Return primary brand color for all active password strength states
+    return AppColors.primary_color;
   }
 
   // Getter resolving active strength label translation strings
@@ -533,13 +584,15 @@ class _StrengthBarState extends State<_StrengthBar> {
                   // Height thickness from spacing constants
                   height: 5.0,
                   // Margins between dividers
-                  margin: EdgeInsets.only(right: index < 2 ? 5.0 : 0.0),
+                  margin: EdgeInsetsDirectional.only(end: index < 2 ? 5.0 : 0.0),
                   // Visual decoration styling
                   decoration: BoxDecoration(
-                    // Set filled or fallback divider background colors using Yoda style check
+                    // Set filled or fallback pale blue background colors using Yoda style check (BUG/RFE)
                     color: true == is_filled
+                        // Filled segments use primary brand color
                         ? bar_color
-                        : (true == is_dark ? AppColors.border_dark : AppColors.border_light),
+                        // Unfilled segments use theme-specific pale blue color
+                        : (true == is_dark ? AppColors.pale_blue_dark : AppColors.pale_blue),
                     // Border curves radius using spacing constants
                     borderRadius: BorderRadius.circular(AppSpacing.radius_s),
                   ),
@@ -675,10 +728,12 @@ class _RulesCardState extends State<_RulesCard> {
     return RegExp(r'[!@#\$&*~%^()\-_+=]').hasMatch(widget.controller.text);
   }
 
-  // Getter checking that input excludes Arabic characters
+  // Getter checking that input excludes Arabic characters and has text using Yoda style check
   bool get _no_arabic {
-    // Check if no Arabic block characters exist
-    return !RegExp(r'[\u0600-\u06FF]').hasMatch(widget.controller.text);
+    // Retrieve text value representation
+    final String val = widget.controller.text;
+    // Check if value is not empty and has no Arabic characters
+    return val.isNotEmpty && !RegExp(r'[\u0600-\u06FF]').hasMatch(val);
   }
 
   // Getter indicating if all safety validation rules pass using Yoda style check
