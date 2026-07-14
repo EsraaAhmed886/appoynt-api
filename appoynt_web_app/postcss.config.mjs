@@ -5,7 +5,7 @@
  * Version Information: V1.0.0
  * Dependencies: None
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 17/06/2026]
+ * Last Modified Date: [Kholoud Khaled - 14/07/2026]
  * File Description: PostCSS configuration settings for Appoynt Web App.
  */
 
@@ -13,8 +13,8 @@
 const postcss_config = {
   // Adding CSS processing plugins settings mapping
   plugins: {
-    // Enable tailwindcss processor
-    tailwindcss: {},
+    // Enable @tailwindcss/postcss processor
+    "@tailwindcss/postcss": {},
   },
 };
 

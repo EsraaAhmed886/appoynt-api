@@ -5,15 +5,30 @@
  * Version Information: V1.0.0
  * Dependencies: tailwindcss
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 03/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 14/07/2026]
  * File Description: Defines global styling rules and Tailwind CSS directives.
  */
 
-@tailwind base;
-/* Import standard tailwind components styles */
-@tailwind components;
-/* Import standard tailwind utility styles */
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  /* Mappings for app design token colors */
+  --color-app-primary: var(--app-primary);
+  --color-app-background: var(--app-background);
+  --color-app-surface: var(--app-surface);
+  --color-app-border: var(--app-border);
+  --color-app-input-fill: var(--app-input-fill);
+  --color-app-text-primary: var(--app-text-primary);
+  --color-app-text-secondary: var(--app-text-secondary);
+
+  /* Mappings for font families */
+  --font-cairo: var(--font-cairo), sans-serif;
+  --font-inter: var(--font-inter), sans-serif;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+
+  /* Mappings for background images */
+  --background-image-brand-gradient: var(--brand-gradient);
+}
 
 /* Define global variables for default light mode */
 :root {

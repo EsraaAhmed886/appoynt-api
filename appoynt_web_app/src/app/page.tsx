@@ -4,7 +4,7 @@
  * Date of Creation: 28/06/2026
  * Version Information: V1.0.0
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/06/2026]
+ * Last Modified Date: [Kholoud Khaled - 14/07/2026]
  * File Description: Interactive portal verifying redux state, bilingual, and Axios.
  */
 
@@ -324,7 +324,7 @@ export default function Home() {
                 {/* Frame row */}
                 <li className="flex items-center justify-between border-b border-app-border pb-2">
                   <span>{translations.param_framework}:</span>
-                  <span className="font-mono text-app-text-primary">Next.js 15.0 (App Router)</span>
+                  <span className="font-mono text-app-text-primary">Next.js 16.2 (App Router)</span>
                 </li>
                 {/* Compiler row */}
                 <li className="flex items-center justify-between border-b border-app-border pb-2">
@@ -334,7 +334,7 @@ export default function Home() {
                 {/* Stylings row */}
                 <li className="flex items-center justify-between border-b border-app-border pb-2">
                   <span>{translations.param_styling}:</span>
-                  <span className="font-mono text-app-text-primary">Tailwind CSS 3.4</span>
+                  <span className="font-mono text-app-text-primary">Tailwind CSS 4.3</span>
                 </li>
                 {/* State Engine row */}
                 <li className="flex items-center justify-between border-b border-app-border pb-2">
