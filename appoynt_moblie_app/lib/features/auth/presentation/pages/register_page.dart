@@ -494,8 +494,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                         // RotatedBox to mirror the back chevron icon in Arabic RTL mode (BUG-012)
                         child: RotatedBox(
-                          // Quarter turns value set to 2 (180 degrees) for English to point to the right
-                          quarterTurns: TextDirection.rtl == Directionality.of(context) ? 0 : 2,
+                          // Quarter turns set to 0 to keep the back chevron pointing left in both languages
+                          quarterTurns: 0,
                           // Chevron back icon widget
                           child: Icon(
                             // Back chevron icon representation
