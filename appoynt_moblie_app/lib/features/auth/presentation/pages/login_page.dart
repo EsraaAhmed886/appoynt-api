@@ -3,13 +3,12 @@
  * Author: Kholoud Khaled
  * Date of Creation: 28/05/2026
  * Version Information: V1.0.0
- * Dependencies:
- *   - package:appoynt_mobile_app/core/routing/route_export.dart
- *   - package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart
- *   - package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart
- *   - package:appoynt_mobile_app/features/auth/presentation/widgets/smart_identifier_field.dart
- *   - package:appoynt_mobile_app/features/auth/presentation/widgets/smart_password_field.dart
- *   - package:flutter_bloc/flutter_bloc.dart
+ * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart,
+ *   package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart,
+ *   package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart,
+ *   package:appoynt_mobile_app/features/auth/presentation/widgets/smart_identifier_field.dart,
+ *   package:appoynt_mobile_app/features/auth/presentation/widgets/smart_password_field.dart,
+ *   package:flutter_bloc/flutter_bloc.dart
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 28/05/2026]
  * File Description: Renders the user login gateway presentation page under BLoC configurations.
@@ -29,6 +28,8 @@ import 'package:appoynt_mobile_app/features/auth/presentation/widgets/smart_iden
 import 'package:appoynt_mobile_app/features/auth/presentation/widgets/smart_password_field.dart';
 // Importing bloc listener and consumer wrapper utilities
 import 'package:flutter_bloc/flutter_bloc.dart';
+// Importing gesture recognizer classes for inline TextSpan links
+import 'package:flutter/gestures.dart';
 
 // Stateful widget class representing the primary login gateway interface
 class LoginPage extends StatefulWidget {
@@ -88,6 +89,14 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
     // Register text listener mapping input type changes dynamically
     _identifier_ctrl.addListener(_detect_input_type);
+    // Register password listener to refresh submit button state in real-time
+    _password_ctrl.addListener(_on_password_changed);
+  }
+
+  // Method executing when password updates
+  void _on_password_changed() {
+    // Refresh state to update button colors
+    setState(() {});
   }
 
   @override
@@ -162,24 +171,6 @@ class _LoginPageState extends State<LoginPage> {
     return RegExp(r'^\d+$').hasMatch(clean_digits) && clean_digits.length >= 3;
   }
 
-  // Getter resolving the appropriate prefix icon from design system
-  IconData get _prefix_icon {
-    // Switch on input type classification state
-    switch (_detected_type) {
-      // Match email category
-      case _InputType.email:
-        // Return email envelope icon
-        return Icons.email_outlined;
-      // Match phone category
-      case _InputType.phone:
-        // Return phone icon
-        return Icons.phone_outlined;
-      // Fallback matching empty or unknown states
-      default:
-        // Return generic person profile icon
-        return Icons.person_outline_rounded;
-    }
-  }
 
   // Method resolving input field label translation string
   String _field_label(AppStrings s) {
@@ -244,10 +235,11 @@ class _LoginPageState extends State<LoginPage> {
 
     // Check email specific structure rules if detected using Yoda style check
     if (_InputType.email == _detected_type) {
-      // Verify syntax characters mapping using Yoda style check
-      if (false ==
-          RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$')
-              .hasMatch(input_value.trim())) {
+      // Verify email pattern syntax characters mapping (BUG-003)
+      final bool matches = RegExp(
+              r'^[a-zA-Z0-9]+([._-][a-zA-Z0-9]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,4}$')
+          .hasMatch(input_value.trim());
+      if (false == matches) {
         // Return invalid email translation warning
         return strings_catalog.invalid_email;
       } else {
@@ -256,13 +248,39 @@ class _LoginPageState extends State<LoginPage> {
     }
     // Check phone specific structure rules if detected using Yoda style check
     else if (_InputType.phone == _detected_type) {
-      // Strip helper visual separators
-      final String clean_digits =
-          input_value.replaceAll(RegExp(r'[\s\-\(\)\+]'), '');
-      // Verify minimum and maximum length threshold using Yoda style check
+      // Convert Arabic numerals to English digits if any exist
+      String clean_digits = input_value;
+      // Map of Arabic-Indic to standard English digits
+      final Map<String, String> translation_map = {
+        '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4',
+        '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9'
+      };
+      // Translate each character in map
+      translation_map.forEach((arabic, english) {
+        clean_digits = clean_digits.replaceAll(arabic, english);
+      });
+      // Strip space dividers and standard phone formatting marks
+      clean_digits = clean_digits.replaceAll(RegExp(r'[^\d]'), '');
+      // Verify phone digit count length matches exactly 11 digits using Yoda style check
       if (11 != clean_digits.length) {
-        // Return invalid phone translation warning
-        return strings_catalog.invalid_phone;
+        // Return phone count validation warning message
+        return strings_catalog.phone_must_be_11_digits;
+      } else {
+        // Empty action block to satisfy compiler
+      }
+      // Verify that phone number starts with 01 prefix using Yoda style check
+      if (false == clean_digits.startsWith('01')) {
+        // Return prefix starting requirement warning message
+        return strings_catalog.phone_must_start_01;
+      } else {
+        // Empty action block to satisfy compiler
+      }
+      // Retrieve third digit character index point
+      final String third_char = clean_digits[2];
+      // Verify operator digit matches standard Egyptian mobile code using Yoda style check
+      if ('0' != third_char && '1' != third_char && '2' != third_char && '5' != third_char) {
+        // Return operator matching validation error message
+        return strings_catalog.phone_invalid_operator;
       } else {
         // Empty action block to satisfy compiler
       }
@@ -298,11 +316,90 @@ class _LoginPageState extends State<LoginPage> {
         );
   }
 
+  // Helper getter checking if all login fields contain valid values dynamically (BUG-008)
+  bool get _is_form_valid {
+    // Retrieve clean text block representation of the identifier
+    final String id = _identifier_ctrl.text.trim();
+    // Retrieve password input value
+    final String pw = _password_ctrl.text;
+    
+    // Check if password has fewer than 8 characters using Yoda comparison style
+    if (8 > pw.length) {
+      // Return false indicating password length requirements are unmet
+      return false;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+    
+    // Check email specific structure rules if email type was detected using Yoda style check
+    if (_InputType.email == _detected_type) {
+      // Verify email pattern syntax characters mapping using Yoda style check
+      final bool email_valid = RegExp(
+              r'^[a-zA-Z0-9]+([._-][a-zA-Z0-9]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,4}$')
+          .hasMatch(id);
+      if (false == email_valid) {
+        // Return false indicating email pattern requirements are unmet
+        return false;
+      } else {
+        // Empty action block to satisfy compiler
+      }
+    }
+    // Check phone specific structure rules if phone type was detected using Yoda style check
+    else if (_InputType.phone == _detected_type) {
+      // Convert Arabic numerals to English digits if any exist
+      String clean_digits = id;
+      // Map of Arabic-Indic to standard English digits
+      final Map<String, String> translation_map = {
+        '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4',
+        '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9'
+      };
+      // Translate each character in map
+      translation_map.forEach((arabic, english) {
+        clean_digits = clean_digits.replaceAll(arabic, english);
+      });
+      // Strip space dividers and standard phone formatting marks
+      clean_digits = clean_digits.replaceAll(RegExp(r'[^\d]'), '');
+      // Verify phone digit count length matches exactly 11 digits using Yoda style check
+      if (11 != clean_digits.length) {
+        // Return false indicating phone length requirements are unmet
+        return false;
+      } else {
+        // Empty action block to satisfy compiler
+      }
+      // Verify that phone number starts with 01 prefix using Yoda style check
+      if (false == clean_digits.startsWith('01')) {
+        // Return false indicating phone prefix requirements are unmet
+        return false;
+      } else {
+        // Empty action block to satisfy compiler
+      }
+      // Retrieve third digit character index point
+      final String third_char = clean_digits[2];
+      // Verify operator digit matches standard Egyptian mobile code using Yoda style check
+      if ('0' != third_char && '1' != third_char && '2' != third_char && '5' != third_char) {
+        // Return false indicating operator requirements are unmet
+        return false;
+      } else {
+        // Empty action block to satisfy compiler
+      }
+    }
+    // Fallback matching empty or unknown states
+    else {
+      // Return false indicating invalid input type format
+      return false;
+    }
+    
+    // Return true since all login form parameters are valid
+    return true;
+  }
+
   @override
   // Clean up controller logic parameters to prevent memory leaks
   void dispose() {
     // Remove input text listener tracking type detections
     _identifier_ctrl.removeListener(_detect_input_type);
+    // Remove password input listener
+    _password_ctrl.removeListener(_on_password_changed);
     // Dispose identifier field controller resources
     _identifier_ctrl.dispose();
     // Dispose password field controller resources
@@ -361,12 +458,12 @@ class _LoginPageState extends State<LoginPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   // Contain visual children list
                   children: [
-                    // Top vertical space margin using spacing constants
-                    const SizedBox(height: AppSpacing.space_l),
+
 
                     // Section positioning language toggle dropdown
                     Align(
-                      // Toggle layout alignments dynamically depending on language code direction using Yoda style check
+                      // Toggle layout alignments dynamically depending on language code
+                      // direction using Yoda style check
                       alignment: true == is_arabic
                           ? Alignment.centerLeft
                           : Alignment.centerRight,
@@ -381,8 +478,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
 
-                    // Space before brand logo display using spacing constants
-                    const SizedBox(height: AppSpacing.space_xl),
+
 
                     // Centered logo layout container
                     Center(
@@ -408,12 +504,13 @@ class _LoginPageState extends State<LoginPage> {
                     ),
 
                     // Space before header texts using spacing constants
-                    const SizedBox(height: AppSpacing.space_xl),
+                    const SizedBox(height: AppSpacing.space_m),
 
-                    // Welcoming header title and subtitle block wrapped in Transform to offset image transparent spacing
+                    // Welcoming header title and subtitle block wrapped in Transform
+                    // to offset image transparent spacing
                     Transform.translate(
-                      // Shift layout up by 60 pixels
-                      offset: const Offset(0.0, -60.0),
+                      // Shift layout up by 20 pixels
+                      offset: const Offset(0.0, -20.0),
                       // Target Center child containing titles
                       child: Center(
                         // Column layout structuring titles vertically
@@ -447,17 +544,18 @@ class _LoginPageState extends State<LoginPage> {
                     ),
 
                     // Space before input fields using spacing constants
-                    const SizedBox(height: AppSpacing.space_xxl),
+                    const SizedBox(height: AppSpacing.space_l),
 
                     // Form container wrapped in Transform to offset logo transparent spacing
                     Transform.translate(
-                      // Shift form layout up by 60 pixels to match welcoming titles
-                      offset: const Offset(0.0, -60.0),
+                      // Shift form layout up by 20 pixels to match welcoming titles
+                      offset: const Offset(0.0, -20.0),
                       // child Form container wrapping fields validation
                       child: Form(
                         // Bind global identification key
                         key: _form_key,
-                        // Toggle validation checks triggers dynamically based on submission attempts using Yoda style check
+                        // Toggle validation checks triggers dynamically based on
+                        // submission attempts using Yoda style check
                         autovalidateMode: true == _form_submitted
                             // Trigger validation checks immediately on text changes
                             ? AutovalidateMode.onUserInteraction
@@ -473,8 +571,8 @@ class _LoginPageState extends State<LoginPage> {
                             SmartIdentifierField(
                               // Bind text controller
                               controller: _identifier_ctrl,
-                              // Bind resolved prefix icon
-                              prefix_icon: _prefix_icon,
+                              // Prefix icon is removed from login screen
+                              prefix_icon: null,
                               // Resolve localized label
                               label: _field_label(s),
                               // Resolve localized hint
@@ -551,12 +649,14 @@ class _LoginPageState extends State<LoginPage> {
                             ),
 
                             // Margin space before main action button using spacing constants
-                            const SizedBox(height: AppSpacing.space_xxl),
+                            const SizedBox(height: AppSpacing.space_l),
 
                             // Submit login auth action button
                             AuthButton(
                               // Localized action string
                               label: s.login,
+                              // Enable only when all form validations are met (BUG-008)
+                              is_enabled: _is_form_valid,
                               // Submission execution gesture callback
                               on_pressed: () {
                                 // Fire submit logic
@@ -567,7 +667,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
 
                             // Space before guest sign up prompt using spacing constants
-                            const SizedBox(height: AppSpacing.space_xl),
+                            const SizedBox(height: AppSpacing.space_l),
 
                             // Redirect navigation link prompting new users to register
                             Center(
@@ -582,27 +682,24 @@ class _LoginPageState extends State<LoginPage> {
                                       AppTextStyles.get_body_medium(is_arabic),
                                   // children array
                                   children: [
-                                    // Inline widget span nesting sign up link
-                                    WidgetSpan(
-                                      // Wrap link inside GestureDetector targeting taps
-                                      child: GestureDetector(
-                                        // Bind registration page navigation callback
-                                        onTap: widget.on_go_to_register,
-                                        // Link text widget
-                                        child: Text(
-                                          // Prefix leading space and localized registration label
-                                          ' ${s.sign_up}',
-                                          // Custom links typography styling
-                                          style: const TextStyle(
-                                            // Set brand color
-                                            color: AppColors.primary_color,
-                                            // Set size using spacing constants
-                                            fontSize: AppSpacing
-                                                .font_size_forgot_link,
-                                            // Emphasize weight helper
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
+                                    // Inline TextSpan nesting sign up link with recognizer to
+                                    // prevent alignment shift
+                                    TextSpan(
+                                      // Prefix leading space and localized registration label
+                                      text: ' ${s.sign_up}',
+                                      // Bind tap event callback
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = widget.on_go_to_register,
+                                      // Custom links typography styling
+                                      style: TextStyle(
+                                        // Apply Cairo or Inter fonts correctly
+                                        fontFamily: AppFonts.by_locale(is_arabic),
+                                        // Set brand color
+                                        color: AppColors.primary_color,
+                                        // Set size using spacing constants
+                                        fontSize: AppSpacing.font_size_forgot_link,
+                                        // Emphasize weight helper
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ],
@@ -611,7 +708,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
 
                             // Final bottom layout safety margins using spacing constants
-                            const SizedBox(height: AppSpacing.space_xxl),
+                            const SizedBox(height: AppSpacing.space_l),
                           ],
                         ),
                       ),

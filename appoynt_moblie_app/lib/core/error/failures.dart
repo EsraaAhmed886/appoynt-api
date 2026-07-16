@@ -3,12 +3,10 @@
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
  * Version Information: V1.0.0
- * Dependencies: 
- *   - package:equatable/equatable.dart
+ * Dependencies: package:equatable/equatable.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 02/07/2026]
- * File Description:
- *   Defines the failure hierarchy used to represent domain-level errors 
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: Defines the failure hierarchy used to represent domain-level errors
  *   throughout the application's clean architecture layers.
  */
 

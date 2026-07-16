@@ -3,14 +3,11 @@
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
  * Version Information: V1.0.0
- * Dependencies:
- *   - None (Pure Dart constant definitions)
+ * Dependencies: None (Pure Dart constant definitions)
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 02/07/2026]
- * File Description:
- *   Centralized repository for all API-related constants, including the base URL, 
- *   endpoints, and standard headers. This allows for quick configuration of 
- *   the backend link.
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: Centralized repository for all API-related constants,
+ *   including the base URL, endpoints, and standard headers.
  */
 
 /// A class that holds all application-wide API configuration constants.

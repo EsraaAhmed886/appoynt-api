@@ -3,18 +3,16 @@
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
  * Version Information: V1.0.0
- * Dependencies: 
- *   - dart:async
- *   - package:appoynt_mobile_app/core/routing/route_export.dart
+ * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart, dart:async
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 02/07/2026]
- * File Description:
- *   A celebratory screen displayed after successful account creation or password 
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: A celebratory screen displayed after successful account creation or password
  *   reset. Features entrance animations and an automatic redirection timer.
  */
 
 import 'dart:async'; // Standard Dart timer for redirection
-import 'package:appoynt_mobile_app/core/routing/route_export.dart'; // Centralized barrel for UI dependencies
+// Centralized barrel for UI dependencies
+import 'package:appoynt_mobile_app/core/routing/route_export.dart';
 
 /// The celebratory screen widget for successful account operations.
 class AccountSuccessPage extends StatefulWidget {
@@ -106,9 +104,15 @@ class _AccountSuccessPageState extends State<AccountSuccessPage>
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     
     /// Dynamically resolved colors.
-    final Color background_color = true == is_dark ? AppColors.background_dark : AppColors.background_light;
-    final Color text_primary = true == is_dark ? AppColors.text_dark_primary : AppColors.text_light_primary;
-    final Color text_secondary = true == is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary;
+    final Color background_color = true == is_dark
+        ? AppColors.background_dark
+        : AppColors.background_light;
+    final Color text_primary = true == is_dark
+        ? AppColors.text_dark_primary
+        : AppColors.text_light_primary;
+    final Color text_secondary = true == is_dark
+        ? AppColors.text_dark_secondary
+        : AppColors.text_light_secondary;
 
     return Scaffold(
       backgroundColor: background_color, // Applying theme background color
@@ -188,7 +192,8 @@ class _AccountSuccessPageState extends State<AccountSuccessPage>
                             child: CircularProgressIndicator(
                               value: _seconds_left / 3, // Calculated progress
                               strokeWidth: 3, // Standard ring thickness
-                              backgroundColor: AppColors.primary_color.withValues(alpha: 0.15), // Muted brand color
+                              backgroundColor: AppColors.primary_color
+                                  .withValues(alpha: 0.15), // Muted brand color
                               color: AppColors.primary_color, // Active brand color
                             ),
                           ),

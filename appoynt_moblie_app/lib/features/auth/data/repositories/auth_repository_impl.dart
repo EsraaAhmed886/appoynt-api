@@ -3,26 +3,26 @@
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
  * Version Information: V1.0.0
- * Dependencies: 
- *   - package:dartz/dartz.dart
- *   - package:dio/dio.dart
- *   - failures.dart
- *   - auth_repository.dart
- *   - user_entity.dart
- *   - auth_remote_datasource.dart
+ * Dependencies: package:dartz/dartz.dart, package:dio/dio.dart, failures.dart,
+ *   auth_repository.dart, user_entity.dart, auth_remote_datasource.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 02/07/2026]
- * File Description:
- *   Concrete implementation of the AuthRepository. It coordinates between 
- *   remote data sources and maps results to domain entities or failures.
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: Concrete implementation of the AuthRepository. It coordinates
+ *   between remote data sources and maps results to domain entities or failures.
  */
 
-import 'package:appoynt_mobile_app/core/error/failures.dart'; // Failure types
-import 'package:appoynt_mobile_app/features/auth/data/datasources/auth_remote_datasource.dart'; // Remote data source
-import 'package:appoynt_mobile_app/features/auth/domain/entities/user_entity.dart'; // Domain entity
-import 'package:appoynt_mobile_app/features/auth/domain/repositories/auth_repository.dart'; // Repository contract
-import 'package:dartz/dartz.dart'; // Functional error handling
-import 'package:dio/dio.dart'; // Network client exceptions
+// Failure types
+import 'package:appoynt_mobile_app/core/error/failures.dart';
+// Remote data source
+import 'package:appoynt_mobile_app/features/auth/data/datasources/auth_remote_datasource.dart';
+// Domain entity
+import 'package:appoynt_mobile_app/features/auth/domain/entities/user_entity.dart';
+// Repository contract
+import 'package:appoynt_mobile_app/features/auth/domain/repositories/auth_repository.dart';
+// Functional error handling
+import 'package:dartz/dartz.dart';
+// Network client exceptions
+import 'package:dio/dio.dart';
 
 /// Concrete implementation of the authentication data repository.
 class AuthRepositoryImpl implements AuthRepository {

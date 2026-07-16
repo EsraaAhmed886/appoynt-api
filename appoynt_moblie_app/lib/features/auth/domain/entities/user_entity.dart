@@ -3,13 +3,10 @@
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
  * Version Information: V1.0.0
- * Dependencies: 
- *   - package:equatable/equatable.dart
+ * Dependencies: package:equatable/equatable.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 02/07/2026]
- * File Description:
- *   Defines the core User entity for the domain layer. This is a pure Dart 
- *   class that represents the data structure of a user within the business logic.
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: Defines the core User entity for the domain layer.
  */
 
 import 'package:equatable/equatable.dart'; // Value-based comparison

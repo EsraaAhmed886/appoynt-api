@@ -5,8 +5,9 @@
  * Version Information: V1.0.0
  * Dependencies: None
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/06/2026]
- * File Description: Defines font family name constants and handles dynamic locale resolution for Cairo and Inter.
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: Defines font family name constants and handles dynamic
+ *   locale resolution for Cairo and Inter.
  */
 
 // Utility class providing centralized registry of font family keys
@@ -25,7 +26,8 @@ class AppFonts {
 
   // Static method returning appropriate font family based on language direction
   static String by_locale(bool is_arabic) {
-    // Return cairo font key if is_arabic is true, else return inter font key using ternary condition
+    // Return cairo font key if is_arabic is true, else return inter font key
+    // using ternary condition
     return is_arabic ? cairo : inter;
   }
 }

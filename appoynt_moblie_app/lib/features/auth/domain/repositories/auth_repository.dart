@@ -3,14 +3,10 @@
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
  * Version Information: V1.0.0
- * Dependencies: 
- *   - package:dartz/dartz.dart
- *   - package:appoynt_mobile_app/core/error/failures.dart
- *   - user_entity.dart
+ * Dependencies: package:dartz/dartz.dart, package:appoynt_mobile_app/core/error/failures.dart, user_entity.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 02/07/2026]
- * File Description:
- *   Abstract interface defining the contract for authentication-related 
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: Abstract interface defining the contract for authentication-related
  *   data operations. Follows the Dependency Inversion principle.
  */
 

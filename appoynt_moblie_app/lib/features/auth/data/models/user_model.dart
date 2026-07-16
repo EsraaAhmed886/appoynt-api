@@ -3,15 +3,14 @@
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
  * Version Information: V1.0.0
- * Dependencies: 
- *   - user_entity.dart
+ * Dependencies: user_entity.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 02/07/2026]
- * File Description:
- *   Data Transfer Object (DTO) for the User entity. Handles JSON mapping.
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: Data Transfer Object (DTO) for the User entity. Handles JSON mapping.
  */
 
-import 'package:appoynt_mobile_app/features/auth/domain/entities/user_entity.dart'; // Base domain entity
+// Base domain entity
+import 'package:appoynt_mobile_app/features/auth/domain/entities/user_entity.dart';
 
 /// Model representing a User with JSON serialization support.
 class UserModel extends UserEntity {

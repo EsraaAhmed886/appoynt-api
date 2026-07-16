@@ -3,19 +3,18 @@
  * Author: Kholoud Khaled
  * Date of Creation: 28/05/2026
  * Version Information: V1.0.0
- * Dependencies:
- *   - package:equatable/equatable.dart
- *   - package:flutter/material.dart
- *   - package:flutter_bloc/flutter_bloc.dart
+ * Dependencies: package:equatable/equatable.dart, package:flutter/material.dart,
+ *   package:flutter_bloc/flutter_bloc.dart
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 28/05/2026]
  * File Description: Manages global configuration changes and notifies listening widgets.
  */
 
+// Importing dart:ui to access system level platform locale features
+import 'dart:ui';
 // Importing standard equatable library dependency for value comparison helper
 import 'package:equatable/equatable.dart';
-// Importing standard material package for Locale definitions
-import 'package:flutter/material.dart';
+
 // Importing flutter bloc package for state management
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -24,13 +23,17 @@ part 'global_state.dart';
 
 // Cubit manager processing global configuration states
 class GlobalCubit extends Cubit<GlobalState> {
-  // Constructor initializing state with English as the default locale
+  // Constructor initializing state with the system/device language as default (BUG/RFE)
   GlobalCubit()
       : super(
-          // Set state to initial GlobalState with English locale parameter
-          const GlobalState(
-            // English default locale parameter
-            active_locale: Locale('en'),
+          // Set state to initial GlobalState parameter configurations
+          GlobalState(
+            // Set the default locale to the device platform language code or fallback to English
+            active_locale: PlatformDispatcher.instance.locale.languageCode.startsWith('ar')
+                // Use Arabic locale if device language starts with ar
+                ? const Locale('ar')
+                // Otherwise use English locale as standard default fallback
+                : const Locale('en'),
           ),
         );
 

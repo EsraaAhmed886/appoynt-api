@@ -3,19 +3,19 @@
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
  * Version Information: V1.0.0
- * Dependencies: 
- *   - package:appoynt_mobile_app/core/routing/route_export.dart
- *   - package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart
+ * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart,
+ *   package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 02/07/2026]
- * File Description:
- *   The Reset Password screen allows users to set a new security credential 
- *   after successful verification. It features real-time rule tracking and 
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: The Reset Password screen allows users to set a new security credential
+ *   after successful verification. It features real-time rule tracking and
  *   follows the centralized design system.
  */
 
-import 'package:appoynt_mobile_app/core/routing/route_export.dart'; // Centralized barrel for UI dependencies and global logic
-import 'package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart'; // Exporting PasswordFieldWithRules and AuthTextField
+// Centralized barrel for UI dependencies and global logic
+import 'package:appoynt_mobile_app/core/routing/route_export.dart';
+// Exporting PasswordFieldWithRules and AuthTextField
+import 'package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart';
 
 /// The main reset password screen widget.
 class ResetPasswordPage extends StatefulWidget {
@@ -59,6 +59,22 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   Locale? _last_locale;
 
   @override
+  // Initialize state and add listeners to controllers to refresh layout in real-time
+  void initState() {
+    // Invoke parent initialization
+    super.initState();
+    // Register listener mapping text value changes
+    _password_ctrl.addListener(_on_fields_changed);
+    _confirm_ctrl.addListener(_on_fields_changed);
+  }
+
+  // Method executing when input values change
+  void _on_fields_changed() {
+    // Refresh layout state to update button colors
+    setState(() {});
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     /// Retrieving the current active locale from context.
@@ -68,18 +84,52 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           _form_key.currentState?.validate();
+        } else {
+          // Do nothing if the widget is no longer mounted
         }
       });
+    } else {
+      // Do nothing since form has not been submitted or locale is unchanged
     }
     _last_locale = locale; // Updating the last known locale
   }
 
   @override
   void dispose() {
+    // Remove listeners
+    _password_ctrl.removeListener(_on_fields_changed);
+    _confirm_ctrl.removeListener(_on_fields_changed);
     /// Cleaning up controllers to prevent memory leaks.
     _password_ctrl.dispose();
     _confirm_ctrl.dispose();
     super.dispose(); // Final disposal
+  }
+
+  // Validator function verifying password constraints using Yoda style check
+  String? _validate_password(String? password_value, AppStrings strings_catalog) {
+    // Check if input value is null or empty using Yoda style check
+    if (null == password_value || password_value.isEmpty) {
+      // Return requirements warning string
+      return strings_catalog.field_required;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+    // Verify minimum character length bounds using Yoda style check
+    if (8 > password_value.length) {
+      // Return too short warning message
+      return strings_catalog.too_short;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+    // Verify maximum character length bounds using Yoda style check
+    if (30 < password_value.length) {
+      // Return too long warning message
+      return strings_catalog.password_too_long;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+    // Return null representing validation success
+    return null;
   }
 
   /// Handles the form submission and triggers the update process.
@@ -89,8 +139,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     });
     
     /// Triggering standard Flutter form validation.
-    if (!_form_key.currentState!.validate()) {
+    if (false == _form_key.currentState!.validate()) {
       return;
+    } else {
+      // Proceed if form is valid
     }
     
     /// Activating the loading state.
@@ -120,10 +172,18 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     
     /// Dynamically resolved colors.
-    final Color background_color = true == is_dark ? AppColors.background_dark : AppColors.background_light;
-    final Color text_primary = true == is_dark ? AppColors.text_dark_primary : AppColors.text_light_primary;
-    final Color card_color = true == is_dark ? AppColors.surface_dark : Colors.white;
-    final Color border_color = true == is_dark ? AppColors.border_dark : AppColors.border_light;
+    final Color background_color = true == is_dark
+        ? AppColors.background_dark
+        : AppColors.background_light;
+    final Color text_primary = true == is_dark
+        ? AppColors.text_dark_primary
+        : AppColors.text_light_primary;
+    final Color card_color = true == is_dark
+        ? AppColors.surface_dark
+        : Colors.white;
+    final Color border_color = true == is_dark
+        ? AppColors.border_dark
+        : AppColors.border_light;
 
     return Scaffold(
       backgroundColor: background_color, // Applying theme background color
@@ -137,38 +197,16 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
           bottom: MediaQuery.of(context).viewInsets.bottom + 24,
           top: 12,
         ),
-        child: SizedBox(
-          width: double.infinity,
-          height: 52, // Standard button height
-          child: ElevatedButton(
-            /// Disabling button when loading.
-            onPressed: _is_loading ? null : _submit,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary_color, // Brand primary color
-              /// Semi-transparent color when disabled.
-              disabledBackgroundColor: AppColors.primary_color.withValues(alpha: 0.6),
-              elevation: 0, // Flat design
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14), // Rounded corners
-              ),
-            ),
-            /// Displaying either a progress spinner or localized text.
-            child: true == _is_loading
-                ? const SizedBox(
-                    width: 22,
-                    height: 22,
-                    child: CircularProgressIndicator(
-                        strokeWidth: 2.5, color: Colors.white),
-                  )
-                : Text(
-                    s.update_password,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
-                  ),
-          ),
+        child: AuthButton(
+          // Localized action string
+          label: s.update_password,
+          // Enable only when both password fields are not empty using Yoda style
+          is_enabled: _password_ctrl.text.isNotEmpty &&
+              _confirm_ctrl.text.isNotEmpty,
+          // Submission callback
+          on_pressed: _submit,
+          // Loading indicator
+          is_loading: _is_loading,
         ),
       ),
 
@@ -206,12 +244,21 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                             borderRadius: BorderRadius.circular(10), // Rounded corners
                             border: Border.all(color: border_color), // Subtle border
                           ),
-                          child: Icon(
-                            true == is_arabic
-                                ? Icons.arrow_forward_ios_rounded // RTL icon
-                                : Icons.arrow_back_ios_new_rounded, // LTR icon
-                            size: 16,
-                            color: text_primary, // Primary color
+                          // RotatedBox to mirror the back chevron icon in Arabic
+                          // RTL mode (BUG-012)
+                          child: RotatedBox(
+                            // Quarter turns set to 0 to keep the back chevron
+                            // pointing left in both languages
+                            quarterTurns: 0,
+                            // Chevron back icon widget
+                            child: Icon(
+                              // Back chevron icon representation
+                              Icons.arrow_back_ios_new_rounded,
+                              // Set size constraint
+                              size: 16,
+                              // Primary icon color
+                              color: text_primary,
+                            ),
                           ),
                         ),
                       ),
@@ -233,13 +280,17 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                         Text(
                           s.create_new_password,
                           textAlign: TextAlign.center,
-                          style: AppTextStyles.get_forgot_password_title(is_arabic), // Reusing stylized typography
+                          // Reusing stylized typography
+                          style:
+                              AppTextStyles.get_forgot_password_title(is_arabic),
                         ),
                         const SizedBox(height: 8), // Vertical spacing
                         Text(
                           s.reset_password_subtitle,
                           textAlign: TextAlign.center,
-                          style: AppTextStyles.get_forgot_password_subtitle(is_arabic), // Reusing body style
+                          // Reusing body style
+                          style: AppTextStyles.get_forgot_password_subtitle(
+                              is_arabic),
                         ),
                       ],
                     ),
@@ -255,10 +306,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                     hint: s.new_password_hint,
                     text_input_action: TextInputAction.next,
                     validator: (v) {
-                      if (v == null || v.isEmpty) {
-                        return s.field_required;
-                      }
-                      return null; // Detailed validation handled internally
+                      return _validate_password(v, s);
                     },
                   ),
 
@@ -272,14 +320,13 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                     is_password: true,
                     text_input_action: TextInputAction.done,
                     validator: (v) {
-                      if (v == null || v.isEmpty) {
+                      if (null == v || v.isEmpty) {
                         return s.field_required;
-                      }
-                      /// Checking if the confirmation matches the original value.
-                      if (v != _password_ctrl.text) {
+                      } else if (v != _password_ctrl.text) {
                         return s.password_mismatch;
+                      } else {
+                        return null;
                       }
-                      return null;
                     },
                   ),
 

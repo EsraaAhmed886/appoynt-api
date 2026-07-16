@@ -3,13 +3,12 @@
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
  * Version Information: V1.0.0
- * Dependencies:
- *   - package:appoynt_mobile_app/core/routing/route_export.dart
- *   - package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart
+ * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart,
+ *   package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart,
+ *   package:flutter/gestures.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 02/07/2026]
- * File Description:
- *   Renders the registration page containing the form fields, terms check box,
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: Renders the registration page containing the form fields, terms check box,
  *   and validations adapting fully to light/dark themes and localizations.
  */
 
@@ -17,6 +16,8 @@
 import 'package:appoynt_mobile_app/core/routing/route_export.dart';
 // Importing shared auth layout button and input fields widgets
 import 'package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart';
+// Importing gesture recognizer classes for inline TextSpan links
+import 'package:flutter/gestures.dart';
 
 // Stateful widget class representing the primary registration gate interface
 class RegisterPage extends StatefulWidget {
@@ -67,6 +68,33 @@ class _RegisterPageState extends State<RegisterPage> {
   // Cache pointer recording last configured locale settings
   Locale? _last_locale;
 
+  // Listener callback to refresh state on text input changes
+  late final VoidCallback _input_listener;
+
+  @override
+  // Initialize state and add listeners to all text fields to refresh build on text updates
+  void initState() {
+    // Invoke parent initialization
+    super.initState();
+    // Instantiate input listener callback
+    _input_listener = () {
+      // Check active state using Yoda style check
+      if (true == mounted) {
+        // Refresh layout state to update button colors
+        setState(() {});
+      } else {
+        // Empty action block to satisfy compiler
+      }
+    };
+    // Attach listener to all controllers
+    _first_name_ctrl.addListener(_input_listener);
+    _last_name_ctrl.addListener(_input_listener);
+    _email_ctrl.addListener(_input_listener);
+    _phone_ctrl.addListener(_input_listener);
+    _password_ctrl.addListener(_input_listener);
+    _confirm_ctrl.addListener(_input_listener);
+  }
+
   @override
   // Track system dependencies changes to trace language switches
   void didChangeDependencies() {
@@ -98,6 +126,13 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   // Clean up controller logic parameters to prevent memory leaks
   void dispose() {
+    // Remove listeners from all controllers
+    _first_name_ctrl.removeListener(_input_listener);
+    _last_name_ctrl.removeListener(_input_listener);
+    _email_ctrl.removeListener(_input_listener);
+    _phone_ctrl.removeListener(_input_listener);
+    _password_ctrl.removeListener(_input_listener);
+    _confirm_ctrl.removeListener(_input_listener);
     // Dispose text controller resources
     _first_name_ctrl.dispose();
     _last_name_ctrl.dispose();
@@ -107,6 +142,99 @@ class _RegisterPageState extends State<RegisterPage> {
     _confirm_ctrl.dispose();
     // Invoke base layout disposal configurations
     super.dispose();
+  }
+
+  // Helper getter checking if all registration fields contain valid values in real-time (BUG-004)
+  bool get _is_form_valid {
+    // Validate first name field using our name rules
+    final String first_name = _first_name_ctrl.text.trim();
+    if (3 > first_name.length || 50 < first_name.length) {
+      return false;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+    if (false == RegExp(r'^[a-zA-Z\u0621-\u064A\s]+$').hasMatch(first_name)) {
+      return false;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+
+    // Validate last name field using our name rules
+    final String last_name = _last_name_ctrl.text.trim();
+    if (3 > last_name.length || 50 < last_name.length) {
+      return false;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+    if (false == RegExp(r'^[a-zA-Z\u0621-\u064A\s]+$').hasMatch(last_name)) {
+      return false;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+
+    // Validate email field using the strict email regex
+    final String email = _email_ctrl.text.trim();
+    final bool is_email_valid = RegExp(
+            r'^[a-zA-Z0-9]+([._-][a-zA-Z0-9]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,4}$')
+        .hasMatch(email);
+    if (false == is_email_valid) {
+      return false;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+
+    // Validate phone number field using the Egyptian mobile format rules
+    String clean_digits = _phone_ctrl.text;
+    final Map<String, String> translation_map = {
+      '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4',
+      '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9'
+    };
+    translation_map.forEach((arabic, english) {
+      clean_digits = clean_digits.replaceAll(arabic, english);
+    });
+    clean_digits = clean_digits.replaceAll(RegExp(r'[^\d]'), '');
+    if (11 != clean_digits.length) {
+      return false;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+    if (false == clean_digits.startsWith('01')) {
+      return false;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+    final String third_char = clean_digits[2];
+    if ('0' != third_char && '1' != third_char && '2' != third_char && '5' != third_char) {
+      return false;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+
+    // Validate password length is at least 8 characters
+    final String password = _password_ctrl.text;
+    if (8 > password.length) {
+      return false;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+
+    // Validate password confirmation match
+    final String confirm_password = _confirm_ctrl.text;
+    if (confirm_password != password) {
+      return false;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+
+    // Validate terms agreement checkbox is checked using Yoda style check
+    if (true != _agree_to_terms) {
+      return false;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+
+    // All validation checks passed successfully
+    return true;
   }
 
   // Method validating input fields and triggering registration submit events
@@ -155,10 +283,26 @@ class _RegisterPageState extends State<RegisterPage> {
 
   // Validator function verifying general name field entries using Yoda style check
   String? _validate_name(String? name_value, AppStrings strings_catalog) {
-    // Check if input value is null or empty
+    // Check if input value is null or empty using Yoda style check
     if (null == name_value || name_value.trim().isEmpty) {
       // Return requirements warning string
       return strings_catalog.field_required;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+    // Retrieve trimmed value representation
+    final String trimmed = name_value.trim();
+    // Validate length rules for min 3 and max 50 constraints using Yoda style check
+    if (3 > trimmed.length || 50 < trimmed.length) {
+      // Return localized length limit error message
+      return strings_catalog.name_length_error;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+    // Validate character rules allowing only letters and spaces using Yoda style check
+    if (false == RegExp(r'^[a-zA-Z\u0621-\u064A\s]+$').hasMatch(trimmed)) {
+      // Return localized letters-only error message
+      return strings_catalog.name_letters_only_error;
     } else {
       // Empty action block to satisfy compiler
     }
@@ -175,8 +319,11 @@ class _RegisterPageState extends State<RegisterPage> {
     } else {
       // Empty action block to satisfy compiler
     }
-    // Verify regex syntax matching check
-    if (false == RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email_value.trim())) {
+    // Verify strict regex syntax matching check (BUG-003)
+    final bool is_email_pattern_valid = RegExp(
+            r'^[a-zA-Z0-9]+([._-][a-zA-Z0-9]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,4}$')
+        .hasMatch(email_value.trim());
+    if (false == is_email_pattern_valid) {
       // Return format warning string
       return strings_catalog.invalid_email;
     } else {
@@ -188,26 +335,46 @@ class _RegisterPageState extends State<RegisterPage> {
 
   // Validator function verifying phone digits count limits using Yoda style check
   String? _validate_phone(String? phone_value, AppStrings strings_catalog) {
-    // Check if input value is null or empty
+    // Check if input value is null or empty using Yoda style check
     if (null == phone_value || phone_value.isEmpty) {
       // Return requirements warning string
       return strings_catalog.field_required;
     } else {
       // Empty action block to satisfy compiler
     }
-    // Strip space dividers and format modifiers
-    final String clean_digits = phone_value.replaceAll(RegExp(r'[\s\-\(\)\+]'), '');
-    // Verify length rules for minimum Egyptian standard digit lengths
-    if (clean_digits.length < 10) {
-      // Return invalid format warnings
-      return strings_catalog.invalid_phone;
+    // Convert Arabic numerals to English digits if any exist
+    String clean_digits = phone_value;
+    // Map of Arabic-Indic to standard English digits
+    final Map<String, String> translation_map = {
+      '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4',
+      '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9'
+    };
+    // Translate each character in map
+    translation_map.forEach((arabic, english) {
+      clean_digits = clean_digits.replaceAll(arabic, english);
+    });
+    // Strip space dividers, symbols, and format modifiers
+    clean_digits = clean_digits.replaceAll(RegExp(r'[^\d]'), '');
+    // Verify phone digit count length matches exactly 11 digits using Yoda style check
+    if (11 != clean_digits.length) {
+      // Return phone count validation warning message
+      return strings_catalog.phone_must_be_11_digits;
     } else {
       // Empty action block to satisfy compiler
     }
-    // Verify maximum bounds digits using Yoda style check
-    if (clean_digits.length > 11) {
-      // Return maximum limit warnings
-      return strings_catalog.phone_max_error;
+    // Verify that phone number starts with 01 prefix using Yoda style check
+    if (false == clean_digits.startsWith('01')) {
+      // Return prefix starting requirement warning message
+      return strings_catalog.phone_must_start_01;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+    // Retrieve third digit character index point
+    final String third_char = clean_digits[2];
+    // Verify operator digit matches standard Egyptian mobile code using Yoda style check
+    if ('0' != third_char && '1' != third_char && '2' != third_char && '5' != third_char) {
+      // Return operator matching validation error message
+      return strings_catalog.phone_invalid_operator;
     } else {
       // Empty action block to satisfy compiler
     }
@@ -217,10 +384,24 @@ class _RegisterPageState extends State<RegisterPage> {
 
   // Validator function verifying password constraints using Yoda style check
   String? _validate_password(String? password_value, AppStrings strings_catalog) {
-    // Check if input value is null or empty
+    // Check if input value is null or empty using Yoda style check
     if (null == password_value || password_value.isEmpty) {
       // Return requirements warning string
       return strings_catalog.field_required;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+    // Verify minimum character length bounds using Yoda style check
+    if (8 > password_value.length) {
+      // Return too short warning message
+      return strings_catalog.too_short;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+    // Verify maximum character length bounds using Yoda style check
+    if (30 < password_value.length) {
+      // Return too long warning message
+      return strings_catalog.password_too_long;
     } else {
       // Empty action block to satisfy compiler
     }
@@ -274,11 +455,10 @@ class _RegisterPageState extends State<RegisterPage> {
           child: Form(
             // Bind global identification key
             key: _form_key,
-            // Toggle validation checks triggers dynamically based on submission attempts using Yoda style check
+            // Toggle validation checks triggers dynamically based on
+            // submission attempts using Yoda style check
             autovalidateMode: true == _form_submitted
-                // Trigger validation checks immediately on text changes
                 ? AutovalidateMode.onUserInteraction
-                // Disable checks during layout setup
                 : AutovalidateMode.disabled,
             // Column layout structuring credentials fields
             child: Column(
@@ -287,7 +467,7 @@ class _RegisterPageState extends State<RegisterPage> {
               // Contain visual children list
               children: [
                 // Top vertical space margin using spacing constants
-                const SizedBox(height: AppSpacing.space_l),
+                const SizedBox(height: AppSpacing.space_s),
 
                 // Top row navigation and language bar
                 Row(
@@ -307,23 +487,40 @@ class _RegisterPageState extends State<RegisterPage> {
                         height: 40.0,
                         // Visual decorations
                         decoration: BoxDecoration(
-                          // Container background adapts to dark mode using Yoda style check
-                          color: true == is_dark ? AppColors.surface_dark : AppColors.background_light,
+                          // Container background adapts to dark mode using
+                          // Yoda style check
+                          color: true == is_dark
+                              ? AppColors.surface_dark
+                              : AppColors.background_light,
                           // Border radius curves using spacing constants
-                          borderRadius: BorderRadius.circular(AppSpacing.radius_l),
-                          // Border colors adapt to dark mode using Yoda style check
+                          borderRadius:
+                              BorderRadius.circular(AppSpacing.radius_l),
+                          // Border colors adapt to dark mode using
+                          // Yoda style check
                           border: Border.all(
-                            color: true == is_dark ? AppColors.border_dark : AppColors.border_light,
+                            color: true == is_dark
+                                ? AppColors.border_dark
+                                : AppColors.border_light,
                           ),
                         ),
-                        // Visual icon centered inside box
-                        child: Icon(
-                          // Back chevron icon
-                          Icons.arrow_back_ios_new_rounded,
-                          // Set layout size
-                          size: 18.0,
-                          // Select icon color dynamically using Yoda style check
-                          color: true == is_dark ? AppColors.text_dark_primary : AppColors.text_light_primary,
+                        // RotatedBox to mirror the back chevron icon in Arabic
+                        // RTL mode (BUG-012)
+                        child: RotatedBox(
+                          // Quarter turns set to 0 to keep the back chevron
+                          // pointing left in both languages
+                          quarterTurns: 0,
+                          // Chevron back icon widget
+                          child: Icon(
+                            // Back chevron icon representation
+                            Icons.arrow_back_ios_new_rounded,
+                            // Set layout size
+                            size: 18.0,
+                            // Select icon color dynamically using
+                            // Yoda style check
+                            color: true == is_dark
+                                ? AppColors.text_dark_primary
+                                : AppColors.text_light_primary,
+                          ),
                         ),
                       ),
                     ),
@@ -339,8 +536,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   ],
                 ),
 
-                // Space before header texts using spacing constants
-                const SizedBox(height: AppSpacing.space_xxl),
+
 
                 // Centered header titles column
                 Center(
@@ -373,7 +569,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
 
                 // Space before input fields using spacing constants
-                const SizedBox(height: AppSpacing.space_xl),
+                const SizedBox(height: AppSpacing.space_m),
 
                 // Row layout placing first and last name fields next to each other
                 Row(
@@ -421,7 +617,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
 
                 // Spacing gap between fields using spacing constants
-                const SizedBox(height: AppSpacing.space_l),
+                const SizedBox(height: AppSpacing.space_m),
 
                 // Email input field widget
                 AuthTextField(
@@ -441,7 +637,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
 
                 // Spacing gap between fields using spacing constants
-                const SizedBox(height: AppSpacing.space_l),
+                const SizedBox(height: AppSpacing.space_m),
 
                 // Phone input field widget
                 AuthTextField(
@@ -461,7 +657,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
 
                 // Spacing gap between fields using spacing constants
-                const SizedBox(height: AppSpacing.space_l),
+                const SizedBox(height: AppSpacing.space_m),
 
                 // Password strength checker input field widget
                 PasswordFieldWithRules(
@@ -479,7 +675,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
 
                 // Spacing gap between fields using spacing constants
-                const SizedBox(height: AppSpacing.space_l),
+                const SizedBox(height: AppSpacing.space_m),
 
                 // Confirmation password input field widget
                 AuthTextField(
@@ -501,7 +697,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
 
                 // Spacing gap before terms agreement using spacing constants
-                const SizedBox(height: AppSpacing.space_xxl),
+                const SizedBox(height: AppSpacing.space_l),
 
                 // GestureDetector wrapping terms checkbox row
                 GestureDetector(
@@ -538,18 +734,28 @@ class _RegisterPageState extends State<RegisterPage> {
                         margin: const EdgeInsets.only(top: 1.0),
                         // Visual decorations
                         decoration: BoxDecoration(
-                          // Dynamic background color matching active state using Yoda style check
+                          // Dynamic background color matching active state using
+                          // Yoda style check
                           color: true == _agree_to_terms
                               ? AppColors.primary_color
-                              : (true == is_dark ? AppColors.surface_dark : AppColors.background_light),
+                              : (true == is_dark
+                                  ? AppColors.surface_dark
+                                  : AppColors.background_light),
                           // Corner radius curves using spacing constants
-                          borderRadius: BorderRadius.circular(AppSpacing.radius_m),
-                          // Border boundaries dynamic color resolving using Yoda style check
+                          borderRadius:
+                              BorderRadius.circular(AppSpacing.radius_m),
+                          // Border boundaries dynamic color resolving using
+                          // Yoda style check
                           border: Border.all(
-                            // Select border color based on error, active, or default states using Yoda style check
+                            // Select border color based on error, active, or
+                            // default states using Yoda style check
                             color: true == _terms_error
                                 ? AppColors.error
-                                : (true == _agree_to_terms ? AppColors.primary_color : (true == is_dark ? AppColors.border_dark : AppColors.border_light)),
+                                : (true == _agree_to_terms
+                                    ? AppColors.primary_color
+                                    : (true == is_dark
+                                        ? AppColors.border_dark
+                                        : AppColors.border_light)),
                             // Border line width
                             width: 1.8,
                           ),
@@ -581,7 +787,9 @@ class _RegisterPageState extends State<RegisterPage> {
                               is_arabic,
                               custom_color: true == _terms_error
                                   ? AppColors.error
-                                  : (true == is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary),
+                                  : (true == is_dark
+                                      ? AppColors.text_dark_secondary
+                                      : AppColors.text_light_secondary),
                             ).copyWith(
                               // Spacing size
                               fontSize: 13.0,
@@ -631,50 +839,54 @@ class _RegisterPageState extends State<RegisterPage> {
                     ],
                   ),
                 ),
-                // Display error warning prompt below checkbox row dynamically using Yoda style check
-                if (true == _terms_error)
-                  // Padding container wrapping text warning
-                  Padding(
-                    // Apply top spacing margin and offset alignments
-                    padding: const EdgeInsets.only(top: 6.0, left: 4.0),
-                    // Row structuring warnings
-                    child: Row(
-                      // children list
-                      children: [
-                        // Alert warning error icon
-                        const Icon(
-                          // Warning circle icon
-                          Icons.error_outline_rounded,
-                          // Set layout size
-                          size: 14.0,
-                          // Error color
-                          color: AppColors.error,
+                // Display error warning prompt below checkbox row dynamically
+                // using Yoda style check
+                true == _terms_error
+                    ? Padding(
+                        // Apply top spacing margin and offset alignments
+                        padding: const EdgeInsets.only(top: 6.0, left: 4.0),
+                        // Row structuring warnings
+                        child: Row(
+                          // children list
+                          children: [
+                            // Alert warning error icon
+                            const Icon(
+                              // Warning circle icon
+                              Icons.error_outline_rounded,
+                              // Set layout size
+                              size: 14.0,
+                              // Error color
+                              color: AppColors.error,
+                            ),
+                            // Spacing gap between icon and label using spacing
+                            // constants
+                            const SizedBox(width: AppSpacing.space_s),
+                            // Text rendering warning alert translations
+                            Text(
+                              // Localized terms check requirement warnings
+                              s.terms_must_agree,
+                              // Text styling
+                              style: const TextStyle(
+                                // Error color
+                                color: AppColors.error,
+                                // Small font size
+                                fontSize: 12.0,
+                              ),
+                            ),
+                          ],
                         ),
-                        // Spacing gap between icon and label using spacing constants
-                        const SizedBox(width: AppSpacing.space_s),
-                        // Text rendering warning alert translations
-                        Text(
-                          // Localized terms check requirement warnings
-                          s.terms_must_agree,
-                          // Text styling
-                          style: const TextStyle(
-                            // Error color
-                            color: AppColors.error,
-                            // Small font size
-                            fontSize: 12.0,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                      )
+                    : const SizedBox.shrink(),
 
                 // Spacing gap before button using spacing constants
-                const SizedBox(height: AppSpacing.space_xl),
+                const SizedBox(height: AppSpacing.space_l),
 
                 // CTA Action button component executing account creations
                 AuthButton(
                   // Localized button text label
                   label: s.create_my_account,
+                  // Enable only when all form fields contain valid values (BUG-004)
+                  is_enabled: _is_form_valid,
                   // Bind submit handler callback
                   on_pressed: _submit,
                   // Bind loading state indicator flag
@@ -682,7 +894,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
 
                 // Spacing gap before footer links using spacing constants
-                const SizedBox(height: AppSpacing.space_xl),
+                const SizedBox(height: AppSpacing.space_l),
 
                 // Navigation footer redirecting users back to sign in gateway
                 Center(
@@ -698,33 +910,32 @@ class _RegisterPageState extends State<RegisterPage> {
                         fontFamily: AppFonts.by_locale(is_arabic),
                         // Spacing size
                         fontSize: 14.0,
-                        // Select secondary text color based on theme using Yoda style check
-                        color: true == is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary,
+                        // Select secondary text color based on theme using
+                        // Yoda style check
+                        color: true == is_dark
+                            ? AppColors.text_dark_secondary
+                            : AppColors.text_light_secondary,
                       ),
                       // children list
                       children: [
-                        // Clickable action anchor span widget
-                        WidgetSpan(
-                          // GestureDetector mapping navigate to login pages
-                          child: GestureDetector(
-                            // Bind navigation event callback
-                            onTap: widget.on_go_to_login,
-                            // Text widget rendering sign in label link
-                            child: Text(
-                              // Localized sign in word
-                              s.sign_in,
-                              // Link text styles
-                              style: TextStyle(
-                                // Apply Cairo or Inter fonts correctly
-                                fontFamily: AppFonts.by_locale(is_arabic),
-                                // Spacing size
-                                fontSize: 14.0,
-                                // High visual brand highlight
-                                color: AppColors.primary_color,
-                                // Bold font weight
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                        // Clickable action anchor span widget with recognizer
+                        // to prevent alignment shift
+                        TextSpan(
+                          // Localized sign in word prefixed with space
+                          text: ' ${s.sign_in}',
+                          // Bind tap event callback
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = widget.on_go_to_login,
+                          // Link text styles
+                          style: TextStyle(
+                            // Apply Cairo or Inter fonts correctly
+                            fontFamily: AppFonts.by_locale(is_arabic),
+                            // Spacing size
+                            fontSize: 14.0,
+                            // High visual brand highlight
+                            color: AppColors.primary_color,
+                            // Bold font weight
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ],
@@ -733,7 +944,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
 
                 // Bottom layout padding space margins using spacing constants
-                const SizedBox(height: AppSpacing.space_xxl),
+                const SizedBox(height: AppSpacing.space_l),
               ],
             ),
           ),

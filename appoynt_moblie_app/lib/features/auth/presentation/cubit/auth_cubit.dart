@@ -3,22 +3,21 @@
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
  * Version Information: V1.0.0
- * Dependencies: 
- *   - package:equatable/equatable.dart
- *   - package:flutter_bloc/flutter_bloc.dart
- *   - login_usecase.dart
- *   - register_usecase.dart
+ * Dependencies: package:equatable/equatable.dart, package:flutter_bloc/flutter_bloc.dart,
+ *   login_usecase.dart, register_usecase.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 02/07/2026]
- * File Description:
- *   Manages the authentication states and business logic for the application. 
- *   It handles user login and registration requests by interacting with the domain layer.
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: Manages the authentication states and business logic for the application.
  */
 
-import 'package:appoynt_mobile_app/features/auth/domain/usecases/login_usecase.dart'; // Login logic
-import 'package:appoynt_mobile_app/features/auth/domain/usecases/register_usecase.dart'; // Registration logic
-import 'package:equatable/equatable.dart'; // Value-based comparison
-import 'package:flutter_bloc/flutter_bloc.dart'; // BLoC state management
+// Login logic
+import 'package:appoynt_mobile_app/features/auth/domain/usecases/login_usecase.dart';
+// Registration logic
+import 'package:appoynt_mobile_app/features/auth/domain/usecases/register_usecase.dart';
+// Value-based comparison
+import 'package:equatable/equatable.dart';
+// BLoC state management
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'auth_state.dart'; // Linking the associated state file
 

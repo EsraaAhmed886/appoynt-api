@@ -3,8 +3,7 @@
  * Author: Kholoud Khaled
  * Date of Creation: 28/05/2026
  * Version Information: V1.0.0
- * Dependencies:
- *   - package:appoynt_mobile_app/core/routing/route_export.dart
+ * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 28/05/2026]
  * File Description: Accessible primary button wrapper supporting loading state indicator spinner.
@@ -24,6 +23,9 @@ class AuthButton extends StatelessWidget {
   // Toggle flag showing circular progress indicator spinner instead of text label
   final bool is_loading;
 
+  // Toggle flag enabling or disabling the button interactions
+  final bool is_enabled;
+
   // Custom background color parameter overriding default brand color settings
   final Color? color;
 
@@ -33,6 +35,7 @@ class AuthButton extends StatelessWidget {
     required this.label,
     required this.on_pressed,
     this.is_loading = false,
+    this.is_enabled = true,
     this.color,
   });
 
@@ -50,8 +53,8 @@ class AuthButton extends StatelessWidget {
       height: AppSpacing.height_auth_button,
       // ElevatedButton core widget
       child: ElevatedButton(
-        // Set press callback and disable interactions during loading using Yoda style check
-        onPressed: true == is_loading
+        // Set press callback and disable interactions if loading or disabled using Yoda check
+        onPressed: (true == is_loading || false == is_enabled)
             // Null callback disables actions
             ? null
             // Trigger standard submission gesture
@@ -61,7 +64,7 @@ class AuthButton extends StatelessWidget {
           // Set container background color using resolved custom override fallback
           backgroundColor: color ?? AppColors.primary_color,
           // Set background color state when disabled or loading
-          disabledBackgroundColor: (color ?? AppColors.primary_color).withValues(alpha: 0.6),
+          disabledBackgroundColor: (color ?? AppColors.primary_color).withValues(alpha: 0.5),
           // Set border corners curvature shape
           shape: RoundedRectangleBorder(
             // Set corner radius using spacing constants
@@ -98,8 +101,10 @@ class AuthButton extends StatelessWidget {
                   fontSize: AppSpacing.font_size_text,
                   // Set semi-bold font weight
                   fontWeight: FontWeight.w600,
-                  // Set text color to white for contrast
-                  color: Colors.white,
+                  // Force white text color with faded opacity when disabled using Yoda style check
+                  color: false == is_enabled
+                      ? Colors.white.withValues(alpha: 0.7)
+                      : Colors.white,
                 ),
               ),
       ),

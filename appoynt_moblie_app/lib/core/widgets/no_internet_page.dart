@@ -3,17 +3,15 @@
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
  * Version Information: V1.0.0
- * Dependencies: 
- *   - package:appoynt_mobile_app/core/routing/route_export.dart
+ * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 02/07/2026]
- * File Description:
- *   A reusable global error screen displayed when the application detects 
- *   a lack of internet connectivity. Features a pulsing WiFi animation 
- *   created with CustomPainter and a retry mechanism.
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: A reusable global error screen displayed when the
+ *   application detects a lack of internet connectivity.
  */
 
-import 'package:appoynt_mobile_app/core/routing/route_export.dart'; // Centralized barrel for UI dependencies
+// Centralized barrel for UI dependencies
+import 'package:appoynt_mobile_app/core/routing/route_export.dart';
 
 /// A global screen widget for handling internet connection failures.
 class NoInternetPage extends StatefulWidget {
@@ -80,6 +78,8 @@ class _NoInternetPageState extends State<NoInternetPage>
         _is_retrying = false;
       });
       widget.on_retry();
+    } else {
+      // Do nothing since widget is no longer in tree
     }
   }
 
@@ -93,9 +93,15 @@ class _NoInternetPageState extends State<NoInternetPage>
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     
     /// Dynamically resolved colors.
-    final Color background_color = true == is_dark ? AppColors.background_dark : AppColors.onboarding_background;
-    final Color text_primary = true == is_dark ? AppColors.text_dark_primary : AppColors.text_light_primary;
-    final Color text_secondary = true == is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary;
+    final Color background_color = true == is_dark
+        ? AppColors.background_dark
+        : AppColors.onboarding_background;
+    final Color text_primary = true == is_dark
+        ? AppColors.text_dark_primary
+        : AppColors.text_light_primary;
+    final Color text_secondary = true == is_dark
+        ? AppColors.text_dark_secondary
+        : AppColors.text_light_secondary;
 
     return Scaffold(
       backgroundColor: background_color, // Applying theme background color

@@ -3,31 +3,33 @@
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
  * Version Information: V1.0.0
- * Dependencies: 
- *   - package:get_it/get_it.dart
- *   - package:dio/dio.dart
- *   - dio_factory.dart
- *   - auth_remote_datasource.dart
- *   - auth_repository_impl.dart
- *   - login_usecase.dart
- *   - register_usecase.dart
- *   - auth_cubit.dart
+ * Dependencies: package:get_it/get_it.dart, package:dio/dio.dart, dio_factory.dart,
+ *   auth_remote_datasource.dart, auth_repository_impl.dart, login_usecase.dart,
+ *   register_usecase.dart, auth_cubit.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 02/07/2026]
- * File Description:
- *   Initializes and manages the singleton instances of services, repositories, 
- *   use cases, and cubits using the GetIt service locator.
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: Initializes and manages the singleton instances of services,
+ *   repositories, use cases, and cubits using the GetIt service locator.
  */
 
-import 'package:appoynt_mobile_app/core/api/dio_factory.dart'; // Configured network client
-import 'package:appoynt_mobile_app/features/auth/data/datasources/auth_remote_datasource.dart'; // Remote source
-import 'package:appoynt_mobile_app/features/auth/data/repositories/auth_repository_impl.dart'; // Repository implementation
-import 'package:appoynt_mobile_app/features/auth/domain/repositories/auth_repository.dart'; // Repository contract
-import 'package:appoynt_mobile_app/features/auth/domain/usecases/login_usecase.dart'; // Business logic
-import 'package:appoynt_mobile_app/features/auth/domain/usecases/register_usecase.dart'; // Business logic
-import 'package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart'; // State management
-import 'package:dio/dio.dart'; // Core network client
-import 'package:get_it/get_it.dart'; // Service locator package
+// Configured network client
+import 'package:appoynt_mobile_app/core/api/dio_factory.dart';
+// Remote source
+import 'package:appoynt_mobile_app/features/auth/data/datasources/auth_remote_datasource.dart';
+// Repository implementation
+import 'package:appoynt_mobile_app/features/auth/data/repositories/auth_repository_impl.dart';
+// Repository contract
+import 'package:appoynt_mobile_app/features/auth/domain/repositories/auth_repository.dart';
+// Business logic for login
+import 'package:appoynt_mobile_app/features/auth/domain/usecases/login_usecase.dart';
+// Business logic for registration
+import 'package:appoynt_mobile_app/features/auth/domain/usecases/register_usecase.dart';
+// State management
+import 'package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart';
+// Core network client
+import 'package:dio/dio.dart';
+// Service locator package
+import 'package:get_it/get_it.dart';
 
 /// Global instance of the service locator.
 final GetIt get_it = GetIt.instance;

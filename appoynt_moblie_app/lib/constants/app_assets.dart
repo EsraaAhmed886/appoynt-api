@@ -5,7 +5,7 @@
  * Version Information: V1.0.0
  * Dependencies: None
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/06/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
  * File Description: Defines constants for image asset paths used in the Appoynt mobile application.
  */
 
@@ -52,6 +52,9 @@ class AppAssets {
 
   // Path to the third onboarding page illustration image (dark mode fallback)
   static const String onboarding_3_dark = '${_images_path}onboarding3.png';
+
+  // Path to the password reset success checkmark illustration image
+  static const String password_reset_success = '${_images_path}Password-Reset-Successfully.png';
 
   // Method returning the correct onboarding image path based on theme mode
   static String get_onboarding_asset(int index, bool is_dark) {

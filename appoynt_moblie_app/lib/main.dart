@@ -3,15 +3,15 @@
  * Author: Kholoud Khaled
  * Date of Creation: 17/06/2026
  * Version Information: V1.0.0
- * Dependencies:
- *   - flutter/material.dart
- *   - package:appoynt_mobile_app/core/theme/modes/light_mode.dart
- *   - package:appoynt_mobile_app/core/theme/modes/dark_mode.dart
- *   - package:appoynt_mobile_app/core/theme/modes/theme_mode.dart
- *   - package:appoynt_mobile_app/features/splash/presentation/pages/splash_screen.dart
+ * Dependencies: flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
+ *   package:appoynt_mobile_app/core/routing/route_export.dart,
+ *   package:appoynt_mobile_app/features/splash/presentation/pages/splash_screen.dart,
+ *   package:appoynt_mobile_app/core/widgets/connectivity_wrapper.dart,
+ *   package:appoynt_mobile_app/core/di/service_locator.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/06/2026]
- * File Description: Entry point of the Appoynt mobile application, configuring themes and initial splash route.
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: Entry point of the Appoynt mobile application,
+ *   configuring themes and initial splash route.
  */
 
 // Importing central presentation and UI barrel exports
@@ -91,6 +91,7 @@ class MyApp extends StatelessWidget {
                 home: const SplashScreen(),
                 // Wrapping the navigator to globally show NoInternetPage when offline
                 builder: (context, child) {
+                  // Return dynamic connectivity widget wrapping children
                   return ConnectivityWrapper(child: child!);
                 },
               );
