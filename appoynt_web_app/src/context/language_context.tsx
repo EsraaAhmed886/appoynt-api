@@ -1,14 +1,15 @@
-"use client";
-
 /*
- * File Name: LanguageContext.tsx
+ * File Name: language_context.tsx
  * Author: Kholoud Khaled
  * Date of Creation: 28/06/2026
  * Version Information: V1.0.0
+ * Dependencies: react, @/constants/translations
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/06/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
  * File Description: Custom bilingual engine (EN/AR) using React Context.
  */
+
+"use client";
 
 // Importing createContext, useContext, useEffect, and useState hooks from react library
 import { createContext, useContext, useEffect, useState } from "react";

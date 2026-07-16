@@ -1,10 +1,11 @@
 /*
- * File Name: authSlice.ts
+ * File Name: auth_slice.ts
  * Author: Kholoud Khaled
  * Date of Creation: 28/06/2026
  * Version Information: V1.0.0
+ * Dependencies: @reduxjs/toolkit, axios, @/lib/api, @/lib/api/auth.api, @/types
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 03/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
  * File Description: Defines Redux Toolkit auth slice for managing user login session states.
  */
 

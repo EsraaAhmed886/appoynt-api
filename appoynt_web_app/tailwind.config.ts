@@ -3,8 +3,9 @@
  * Author: Kholoud Khaled
  * Date of Creation: 28/06/2026
  * Version Information: V1.0.0
+ * Dependencies: tailwindcss
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 03/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
  * File Description: Defines design tokens, theme palettes, and font configurations for tailwind.
  */
 

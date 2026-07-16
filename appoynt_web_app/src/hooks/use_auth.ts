@@ -1,16 +1,12 @@
 /*
- * File Name: useAuth.ts
+ * File Name: use_auth.ts
  * Author: Kholoud Khaled
  * Date of Creation: 03/07/2026
  * Version Information: V1.0.0
- * Dependencies:
- *   - react
- *   - next/navigation
- *   - react-redux
- *   - @/store/authSlice
- *   - @/types
+ * Dependencies: react, next/navigation, react-redux,
+ *   @/store/auth_slice, @/store/index, @/types
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 03/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
  * File Description: A custom authentication hook interfacing components with Redux auth state.
  */
 
@@ -24,14 +20,14 @@ import { useRouter } from "next/navigation";
 // Importing Redux state selector and action dispatcher hooks
 import { useDispatch, useSelector } from "react-redux";
 // Importing async thunk actions and action creators from auth slice
-import { login_thunk, logout_thunk, set_error } from "@/store/authSlice";
+import { login_thunk, logout_thunk, set_error } from "@/store/auth_slice";
 // Importing state interface type definitions
 import type { AppDispatch, RootState } from "@/store/index";
 // Importing credentials interface layout structure
 import type { login_credentials } from "@/types";
 
-// Defining and exporting the useAuth custom react hook function
-export function useAuth() {
+// Defining and exporting the use_auth custom react hook function
+export function use_auth() {
   // Instantiating standard Redux action dispatcher engine hook
   const dispatcher = useDispatch<AppDispatch>();
   // Instantiating Next.js navigation router action helper

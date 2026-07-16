@@ -3,8 +3,10 @@
  * Author: Kholoud Khaled
  * Date of Creation: 28/06/2026
  * Version Information: V1.0.0
+ * Dependencies: react, react-redux, @/context/language_context,
+ *   @/store/auth_slice, @/store/index, @/lib/api
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 14/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
  * File Description: Interactive portal verifying redux state, bilingual, and Axios.
  */
 
@@ -14,9 +16,9 @@ import { useEffect, useState } from "react";
 // Importing Redux hooks to dispatch actions and select store state variables
 import { useDispatch, useSelector } from "react-redux";
 // Importing custom translation hook to query bilingual catalog dictionaries
-import { useTranslation } from "@/context/LanguageContext";
+import { useTranslation } from "@/context/language_context";
 // Importing Redux auth slice action mutations for session management
-import { login_success, logout_action } from "@/store/authSlice";
+import { login_success, logout_action } from "@/store/auth_slice";
 // Importing local store root state interface type configuration
 import type { RootState } from "@/store/index";
 // Importing customized Axios client helper to perform connectivity tests
@@ -24,7 +26,7 @@ import { api_client } from "@/lib/api";
 
 // Declaring and exporting the Home page component function
 export default function Home() {
-  // Pulling translations, current language, and changer handler from context hook
+  // Pulling translations, current language, and changer handler from context
   const { translations, current_locale, change_locale } = useTranslation();
   // Instantiating standard Redux action dispatcher engine trigger hook
   const store_dispatcher = useDispatch();
@@ -33,18 +35,20 @@ export default function Home() {
     // Returning authorization segment slice data
     return global_state.auth;
   });
-  // Declaring state variable to track backend API endpoint connection check state
-  const [api_state, set_api_state] = useState<"checking" | "connected" | "disconnected">("checking");
+  // Declaring state variable to track backend API endpoint connection check
+  const [api_state, set_api_state] = useState<
+    "checking" | "connected" | "disconnected"
+  >("checking");
   // Declaring state variable representing local counter clicks inside UI
   const [local_clicks, set_local_clicks] = useState<number>(0);
 
-  // Hook run on component launch to execute live API connection health verification
+  // Hook run on component launch to execute live API connection health check
   useEffect(() => {
     // Declaring asynchronous callback function to contact backend api routes
     const test_network_connection = async () => {
       // Opening structured try-catch execution block for network requests
       try {
-        // Triggering mock GET network query to test backend health status endpoint
+        // Triggering mock GET network query to test backend health status
         const response_data = await api_client.get("/health");
         // Yoda check to verify if server responds with HTTP OK code
         if (200 === response_data.status) {
@@ -66,8 +70,10 @@ export default function Home() {
   }, []);
 
   // Method handler triggered to inject mock login profiles to verify Redux state
-  const execute_mock_login = (selected_role: "Doctor" | "Receptionist" | "Admin") => {
-    // Dispatching authenticated session action variables with mock payload details
+  const execute_mock_login = (
+    selected_role: "Doctor" | "Receptionist" | "Admin"
+  ) => {
+    // Dispatching authenticated session action variables with mock payload
     store_dispatcher(
       // Calling action creator wrapper and mapping mock variables object
       login_success({
@@ -115,26 +121,59 @@ export default function Home() {
   // Returning interface template structure wrapping all dashboard portal assets
   return (
     // Outer page layout background container styled with design token colors
-    <main className="flex min-h-screen flex-col items-center justify-center p-8 bg-app-background text-app-text-primary font-sans transition-colors duration-200">
+    <main
+      className={[
+        "flex min-h-screen flex-col items-center justify-center p-8",
+        "bg-app-background text-app-text-primary font-sans",
+        "transition-colors duration-200",
+      ].join(" ")}
+    >
       {/* Decorative gradient overlay block to add rich visual depth effects */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(15,98,254,0.03),transparent_60%)] pointer-events-none" />
+      <div
+        className={[
+          "absolute inset-0 pointer-events-none",
+          "bg-[radial-gradient(circle_at_center,rgba(15,98,254,0.03),",
+          "transparent_60%)]",
+        ].join("")}
+      />
 
-      {/* Main card box container applying backdrop blur and transparent borders from tokens */}
-      <div className="z-10 w-full max-w-4xl p-8 rounded-2xl backdrop-blur-md bg-app-surface/40 border border-app-border shadow-2xl space-y-8 transition-colors duration-200">
-        
-        {/* Top header flex box layout containing logo references and lang buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-app-border pb-6">
+      {/* Main card box container applying backdrop blur and transparent borders */}
+      <div
+        className={[
+          "z-10 w-full max-w-4xl p-8 rounded-2xl backdrop-blur-md",
+          "bg-app-surface/40 border border-app-border shadow-2xl",
+          "space-y-8 transition-colors duration-200",
+        ].join(" ")}
+      >
+        {/* Top header flex box layout containing logo and lang buttons */}
+        <div
+          className={[
+            "flex flex-col sm:flex-row items-center justify-between",
+            "gap-4 border-b border-app-border pb-6",
+          ].join(" ")}
+        >
           {/* Site brand identity and logo section */}
           <div className="flex items-center gap-3">
             {/* Visual logo placeholder block container using primary brand color */}
-            <div className="w-10 h-10 rounded-lg bg-app-primary flex items-center justify-center font-bold text-white shadow-lg shadow-blue-500/20">
+            <div
+              className={[
+                "w-10 h-10 rounded-lg bg-app-primary flex items-center",
+                "justify-center font-bold text-white shadow-lg",
+                "shadow-blue-500/20",
+              ].join(" ")}
+            >
               {/* Dynamic logo letter translated based on active language */}
               {translations.logo_letter}
             </div>
             {/* Branding titles */}
             <div>
               {/* Primary title display */}
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-indigo-400 bg-clip-text text-transparent">
+              <h1
+                className={[
+                  "text-2xl font-bold bg-clip-text text-transparent",
+                  "bg-gradient-to-r from-blue-500 to-indigo-400",
+                ].join(" ")}
+              >
                 {translations.app_name}
               </h1>
               {/* System state indicators */}
@@ -145,7 +184,12 @@ export default function Home() {
           </div>
 
           {/* Bilingual selector controller toggle buttons section */}
-          <div className="flex items-center gap-2 bg-app-surface/65 p-1 rounded-lg border border-app-border">
+          <div
+            className={[
+              "flex items-center gap-2 bg-app-surface/65 p-1",
+              "rounded-lg border border-app-border",
+            ].join(" ")}
+          >
             {/* English translation selection toggle button */}
             <button
               // Trigger locale switch logic to english code
@@ -153,7 +197,7 @@ export default function Home() {
                 // Switching language state to English
                 change_locale("en");
               }}
-              // Applying dynamic hover states and background highlights depending on locale
+              // Applying dynamic hover states depending on locale
               className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
                 "en" === current_locale
                   ? "bg-app-primary text-white shadow-md shadow-blue-500/10"
@@ -162,7 +206,7 @@ export default function Home() {
             >
               {translations.lang_english}
             </button>
-            
+
             {/* Arabic translation selection toggle button */}
             <button
               // Trigger locale switch logic to arabic code
@@ -170,7 +214,7 @@ export default function Home() {
                 // Switching language state to Arabic
                 change_locale("ar");
               }}
-              // Applying dynamic hover states and background highlights depending on locale
+              // Applying dynamic hover states depending on locale
               className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
                 "ar" === current_locale
                   ? "bg-app-primary text-white shadow-md shadow-blue-500/10"
@@ -184,7 +228,6 @@ export default function Home() {
 
         {/* Center content grid splitting page controls and info logs */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          
           {/* Left partition managing interactive testing controllers */}
           <div className="space-y-6">
             {/* Header segment for localization and state actions */}
@@ -200,12 +243,17 @@ export default function Home() {
             </div>
 
             {/* Redux State testing controller buttons card segment */}
-            <div className="p-5 rounded-xl bg-app-surface/10 border border-app-border space-y-4">
+            <div
+              className={[
+                "p-5 rounded-xl bg-app-surface/10 border",
+                "border-app-border space-y-4",
+              ].join(" ")}
+            >
               {/* Title description label for Redux state section */}
               <h3 className="text-sm font-semibold text-app-text-primary">
                 {translations.redux_test}
               </h3>
-              
+
               {/* Render actions when user is logged out */}
               {null === auth_profile.access_token ? (
                 // Wrapper div grouping login options
@@ -224,7 +272,11 @@ export default function Home() {
                         execute_mock_login("Doctor");
                       }}
                       // Tailwind aesthetic button tags using design token colors
-                      className="px-2 py-2 bg-app-surface hover:bg-app-border text-app-text-primary rounded-lg text-xs font-medium transition border border-app-border"
+                      className={[
+                        "px-2 py-2 bg-app-surface hover:bg-app-border",
+                        "text-app-text-primary rounded-lg text-xs",
+                        "font-medium transition border border-app-border",
+                      ].join(" ")}
                     >
                       {translations.role_doctor_short}
                     </button>
@@ -236,7 +288,11 @@ export default function Home() {
                         execute_mock_login("Receptionist");
                       }}
                       // Tailwind aesthetic button tags using design token colors
-                      className="px-2 py-2 bg-app-surface hover:bg-app-border text-app-text-primary rounded-lg text-xs font-medium transition border border-app-border"
+                      className={[
+                        "px-2 py-2 bg-app-surface hover:bg-app-border",
+                        "text-app-text-primary rounded-lg text-xs",
+                        "font-medium transition border border-app-border",
+                      ].join(" ")}
                     >
                       {translations.role_receptionist_short}
                     </button>
@@ -248,17 +304,26 @@ export default function Home() {
                         execute_mock_login("Admin");
                       }}
                       // Tailwind aesthetic button tags using design token colors
-                      className="px-2 py-2 bg-app-surface hover:bg-app-border text-app-text-primary rounded-lg text-xs font-medium transition border border-app-border"
+                      className={[
+                        "px-2 py-2 bg-app-surface hover:bg-app-border",
+                        "text-app-text-primary rounded-lg text-xs",
+                        "font-medium transition border border-app-border",
+                      ].join(" ")}
                     >
                       {translations.role_admin_short}
                     </button>
                   </div>
                 </div>
               ) : (
-                // Wrapper layout displaying current active session and logout trigger
+                // Wrapper layout displaying current active session and logout
                 <div className="space-y-3">
                   {/* Displaying information about the current session email */}
-                  <div className="p-3 bg-app-primary/10 border border-app-primary/20 rounded-lg text-xs text-app-primary space-y-1">
+                  <div
+                    className={[
+                      "p-3 bg-app-primary/10 border border-app-primary/20",
+                      "rounded-lg text-xs text-app-primary space-y-1",
+                    ].join(" ")}
+                  >
                     <div>
                       {/* Active profile text */}
                       {translations.active_user}:
@@ -277,7 +342,11 @@ export default function Home() {
                     // Flashing authentication credentials and state settings
                     onClick={execute_logout}
                     // Tailwind red layout button indicators using warning tokens
-                    className="w-full py-2 bg-rose-950/20 hover:bg-rose-900/30 border border-rose-500/20 text-rose-400 rounded-lg text-xs font-medium transition"
+                    className={[
+                      "w-full py-2 bg-rose-950/20 hover:bg-rose-900/30",
+                      "border border-rose-500/20 text-rose-400 rounded-lg",
+                      "text-xs font-medium transition",
+                    ].join(" ")}
                   >
                     {translations.btn_sign_out}
                   </button>
@@ -286,7 +355,12 @@ export default function Home() {
             </div>
 
             {/* Local state interactivity click checks component */}
-            <div className="p-5 rounded-xl bg-app-surface/10 border border-app-border flex items-center justify-between">
+            <div
+              className={[
+                "p-5 rounded-xl bg-app-surface/10 border border-app-border",
+                "flex items-center justify-between",
+              ].join(" ")}
+            >
               {/* Displaying current count tag */}
               <div>
                 {/* Count description title */}
@@ -303,62 +377,88 @@ export default function Home() {
                 // Increments counter state value
                 onClick={handle_increment}
                 // Tailwind design highlight tags
-                className="px-4 py-2 bg-app-primary hover:opacity-90 text-white rounded-lg text-xs font-medium shadow-lg shadow-blue-500/10 transition-all active:scale-95"
+                className={[
+                  "px-4 py-2 bg-app-primary hover:opacity-90 text-white",
+                  "rounded-lg text-xs font-medium shadow-lg",
+                  "shadow-blue-500/10 transition-all active:scale-95",
+                ].join(" ")}
               >
                 {translations.counter_increment}
               </button>
             </div>
           </div>
 
-          {/* Right partition holding network check logs and framework metadata details */}
+          {/* Right partition holding network check logs and metadata */}
           <div className="space-y-6 flex flex-col justify-between">
-            {/* Info table holding setup specifications and active variables state details */}
-            <div className="p-6 rounded-xl bg-app-surface/10 border border-app-border space-y-4 flex-grow">
+            {/* Info table holding setup specs and active variables details */}
+            <div
+              className={[
+                "p-6 rounded-xl bg-app-surface/10 border border-app-border",
+                "space-y-4 flex-grow",
+              ].join(" ")}
+            >
               {/* Section descriptor title */}
               <h3 className="text-sm font-semibold text-app-text-primary">
                 {translations.foundational_stack}
               </h3>
-              
+
               {/* Parameters list arrangement */}
               <ul className="space-y-3 text-xs text-app-text-secondary">
                 {/* Frame row */}
                 <li className="flex items-center justify-between border-b border-app-border pb-2">
                   <span>{translations.param_framework}:</span>
-                  <span className="font-mono text-app-text-primary">Next.js 16.2 (App Router)</span>
+                  <span className="font-mono text-app-text-primary">
+                    Next.js 16.2 (App Router)
+                  </span>
                 </li>
                 {/* Compiler row */}
                 <li className="flex items-center justify-between border-b border-app-border pb-2">
                   <span>{translations.param_language}:</span>
-                  <span className="font-mono text-app-text-primary">React 19 / TypeScript</span>
+                  <span className="font-mono text-app-text-primary">
+                    React 19 / TypeScript
+                  </span>
                 </li>
                 {/* Stylings row */}
                 <li className="flex items-center justify-between border-b border-app-border pb-2">
                   <span>{translations.param_styling}:</span>
-                  <span className="font-mono text-app-text-primary">Tailwind CSS 4.3</span>
+                  <span className="font-mono text-app-text-primary">
+                    Tailwind CSS 4.3
+                  </span>
                 </li>
                 {/* State Engine row */}
                 <li className="flex items-center justify-between border-b border-app-border pb-2">
                   <span>{translations.param_state}:</span>
-                  <span className="font-mono text-app-text-primary">Redux Toolkit (`@reduxjs/toolkit`)</span>
+                  <span className="font-mono text-app-text-primary">
+                    Redux Toolkit (`@reduxjs/toolkit`)
+                  </span>
                 </li>
                 {/* Network Layer row */}
                 <li className="flex items-center justify-between border-b border-app-border pb-2">
                   <span>{translations.param_network}:</span>
-                  <span className="font-mono text-app-text-primary">Axios (`axios` client helper)</span>
+                  <span className="font-mono text-app-text-primary">
+                    Axios (`axios` client helper)
+                  </span>
                 </li>
                 {/* Current Local active selection font display row */}
                 <li className="flex items-center justify-between">
                   <span>{translations.param_font}:</span>
                   <span className="font-mono text-app-text-primary">
                     {/* Dynamic font descriptions */}
-                    {"ar" === current_locale ? translations.font_ar_label : translations.font_en_label}
+                    {"ar" === current_locale
+                      ? translations.font_ar_label
+                      : translations.font_en_label}
                   </span>
                 </li>
               </ul>
             </div>
 
-            {/* Network client Axios connectivity live health check warning banner */}
-            <div className="p-4 rounded-xl bg-app-surface/10 border border-app-border flex items-center justify-between">
+            {/* Network client Axios connectivity live health check warning */}
+            <div
+              className={[
+                "p-4 rounded-xl bg-app-surface/10 border border-app-border",
+                "flex items-center justify-between",
+              ].join(" ")}
+            >
               {/* Check details text labels */}
               <div className="flex items-center gap-2">
                 {/* Circular pulsing status light indicator */}
@@ -378,7 +478,9 @@ export default function Home() {
                 </span>
               </div>
               {/* Endpoint response string indicator */}
-              <span className={`text-xs font-bold font-mono ${status_color_class}`}>
+              <span
+                className={`text-xs font-bold font-mono ${status_color_class}`}
+              >
                 {/* Conditional translations based on status state */}
                 {"connected" === api_state
                   ? translations.api_connected

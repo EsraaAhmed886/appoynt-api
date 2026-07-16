@@ -3,13 +3,14 @@
  * Author: Kholoud Khaled
  * Date of Creation: 28/06/2026
  * Version Information: V1.0.0
+ * Dependencies: None
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 03/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
  * File Description: Declares common TypeScript interface types for Appoynt web application.
  */
 
 // Exporting user session structure representing user session data payload
-export interface UserSession {
+export interface user_session {
   // Username email address of user
   user_email: string;
   // Account role (e.g., Doctor, Receptionist, Admin)
