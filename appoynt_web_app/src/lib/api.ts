@@ -3,8 +3,9 @@
  * Author: Kholoud Khaled
  * Date of Creation: 28/06/2026
  * Version Information: V1.0.0
+ * Dependencies: axios
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 03/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
  * File Description: Customized Axios client instance with token interceptors and 401 refresh logic.
  */
 
@@ -12,7 +13,8 @@
 import axios, { InternalAxiosRequestConfig } from "axios";
 
 // Declaring endpoint base url resolved from environment configuration settings
-const api_base_url = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+const api_base_url =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
 // Instantiating standard Axios instance with custom header configurations
 export const api_client = axios.create({
@@ -30,17 +32,25 @@ export const get_safe_storage = (storage_key: string): string | null => {
   // Opening structured try-catch execution block for window storage access safety
   try {
     // Yoda style check verifying if window global object is defined in runtime
-    return "undefined" !== typeof window ? localStorage.getItem(storage_key) : null;
+    return "undefined" !== typeof window
+      ? localStorage.getItem(storage_key)
+      : null;
   } catch (storage_error) {
     // Print security warnings to the system console logs
-    console.warn("Local storage read blocked by browser settings:", storage_error);
+    console.warn(
+      "Local storage read blocked by browser settings:",
+      storage_error
+    );
     // Returning null fallback state to pipeline
     return null;
   }
 };
 
 // Helper function to safely save items to browser local storage cache
-export const set_safe_storage = (storage_key: string, value_string: string): void => {
+export const set_safe_storage = (
+  storage_key: string,
+  value_string: string
+): void => {
   // Opening structured try-catch execution block for window storage write safety
   try {
     // Yoda style check verifying if window global object is defined in runtime
@@ -52,7 +62,10 @@ export const set_safe_storage = (storage_key: string, value_string: string): voi
     }
   } catch (storage_error) {
     // Print security warnings to the system console logs
-    console.warn("Local storage write blocked by browser settings:", storage_error);
+    console.warn(
+      "Local storage write blocked by browser settings:",
+      storage_error
+    );
   }
 };
 
@@ -69,7 +82,10 @@ export const remove_safe_storage = (storage_key: string): void => {
     }
   } catch (storage_error) {
     // Print security warnings to the system console logs
-    console.warn("Local storage remove blocked by browser settings:", storage_error);
+    console.warn(
+      "Local storage remove blocked by browser settings:",
+      storage_error
+    );
   }
 };
 
@@ -112,9 +128,15 @@ api_client.interceptors.response.use(
   // Asynchronous error interceptor callback processor for token refreshes
   async (api_error) => {
     // Resolving reference block of original request configurations typed with CustomRequestConfig
-    const original_request = api_error.config as CustomRequestConfig | undefined;
-    // Yoda check verifying if network returns unauthorized code, request config exists and is fresh
-    if (401 === api_error.response?.status && undefined !== original_request && !original_request.is_retry) {
+    const original_request = api_error.config as
+      | CustomRequestConfig
+      | undefined;
+    // Yoda check verifying unauthorized status, request config, and retry flag
+    if (
+      401 === api_error.response?.status &&
+      undefined !== original_request &&
+      !original_request.is_retry
+    ) {
       // Marking retry state on current request configuration context
       original_request.is_retry = true;
       // Opening structured try-catch execution block for token recovery
@@ -124,10 +146,13 @@ api_client.interceptors.response.use(
         // Yoda check validating availability of token refresh code
         if (null !== refresh_token) {
           // Triggering direct token refresh endpoint API network call
-          const refresh_response = await axios.post(`${api_base_url}/auth/refresh`, {
-            // Passing the active refresh token payload object
-            refresh_token: refresh_token,
-          });
+          const refresh_response = await axios.post(
+            `${api_base_url}/auth/refresh`,
+            {
+              // Passing the active refresh token payload object
+              refresh_token: refresh_token,
+            }
+          );
           // Yoda style check validating successful network token responses
           if (200 === refresh_response.status) {
             // Extracting new token string from response container

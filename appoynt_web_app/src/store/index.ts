@@ -3,15 +3,16 @@
  * Author: Kholoud Khaled
  * Date of Creation: 28/06/2026
  * Version Information: V1.0.0
+ * Dependencies: @reduxjs/toolkit, @/store/auth_slice
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/06/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
  * File Description: Main Redux store configuration and state engine.
  */
 
 // Importing configureStore utility from Redux Toolkit module package
 import { configureStore } from "@reduxjs/toolkit";
 // Importing slice reducer callback to mount authorization logic on store
-import auth_reducer from "@/store/authSlice";
+import auth_reducer from "@/store/auth_slice";
 
 // Instantiating application global state store mapping reducer functions
 export const app_store = configureStore({

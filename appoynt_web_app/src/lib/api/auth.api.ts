@@ -3,11 +3,9 @@
  * Author: Kholoud Khaled
  * Date of Creation: 03/07/2026
  * Version Information: V1.0.0
- * Dependencies:
- *   - @/lib/api
- *   - @/types
+ * Dependencies: @/lib/api, @/types
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 03/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
  * File Description: Defines the collection of authentication-related API endpoints.
  */
 

@@ -3,21 +3,14 @@
  * Author: Kholoud Khaled
  * Date of Creation: 03/07/2026
  * Version Information: V1.0.0
- * Dependencies:
- *   - react
- *   - next/image
- *   - lucide-react
- *   - @/hooks/use_auth
- *   - @/context/LanguageContext
- *   - @/types
+ * Dependencies: react, next/image, lucide-react,
+ *   @/hooks/use_auth, @/context/language_context, @/types
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 03/07/2026]
- * File Description:
- *   Interactive login page using Redux-integrated use_auth hook,
- *   design tokens, and bilingual context.
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: Interactive login page using Redux-integrated use_auth
+ *   hook, design tokens, and bilingual context.
  */
 
-// Enabling client-side rendering mode for Next.js App Router context
 "use client";
 
 // Importing React state, form submit event, and memoization hooks
@@ -35,14 +28,14 @@ import {
   ShieldCheck,
 } from "lucide-react";
 // Importing type-safe custom authorization hook controller
-import { useAuth } from "@/hooks/useAuth";
+import { use_auth } from "@/hooks/use_auth";
 // Importing custom translation context interface hook utility
-import { useTranslation } from "@/context/LanguageContext";
+import { useTranslation } from "@/context/language_context";
 // Importing credentials structure layout schema definition type
 import type { login_credentials } from "@/types";
 
-// Defining and exporting the main LoginPage react component block
-export default function LoginPage() {
+// Defining and exporting the main login_page react component block
+export default function login_page() {
   // Pulling active authentication tools and loading variables from custom hook
   const {
     // Destructuring login action caller
@@ -53,9 +46,9 @@ export default function LoginPage() {
     error_message,
     // Destructuring error dismission callback handler
     dismiss_error,
-  } = useAuth();
+  } = use_auth();
 
-  // Pulling localized translation dictionary catalogs from language engine context
+  // Pulling localized translation catalogs from language engine context
   const {
     // Active translations object database
     translations,
@@ -95,27 +88,22 @@ export default function LoginPage() {
     if (null !== error_message) {
       // Returning standard invalid credentials warning message
       return translations.err_invalid_credentials;
-    }
-    // Yoda check validating if both submission inputs fail validation checks
-    if (
+    } else if (
       true === validation_errors.email_address &&
       true === validation_errors.secret_password
     ) {
       // Returning unified both fields required warning message label
       return translations.err_both_required;
-    }
-    // Yoda check validating if email address identification field is empty
-    if (true === validation_errors.email_address) {
+    } else if (true === validation_errors.email_address) {
       // Returning email required warning message label
       return translations.err_email_required;
-    }
-    // Yoda check validating if password verification field is empty
-    if (true === validation_errors.secret_password) {
+    } else if (true === validation_errors.secret_password) {
       // Returning password required warning message label
       return translations.err_password_required;
+    } else {
+      // Fallback state returning null value when credentials verify
+      return null;
     }
-    // Fallback state returning null value when credentials verify successfully
-    return null;
   }, [error_message, validation_errors, translations]);
 
   // Method handler executing submit actions on credentials form validation checks
@@ -123,16 +111,23 @@ export default function LoginPage() {
     // Preventing default browser form post reload action triggers
     event_obj.preventDefault();
     // Instantiating temporary tracking container mapping validation fields
-    const new_errors: { email_address?: boolean; secret_password?: boolean } = {};
+    const new_errors: {
+      email_address?: boolean;
+      secret_password?: boolean;
+    } = {};
     // Yoda check validating if email address input content contains length
     if (0 === login_params.email_address.trim().length) {
       // Flagging email address input as invalid error state
       new_errors.email_address = true;
+    } else {
+      // Email is provided
     }
     // Yoda check validating if secret password input content contains length
     if (0 === login_params.secret_password.trim().length) {
       // Flagging secret password input as invalid error state
       new_errors.secret_password = true;
+    } else {
+      // Password is provided
     }
     // Updating validation errors state tracker parameters
     set_validation_errors(new_errors);
@@ -140,12 +135,13 @@ export default function LoginPage() {
     if (0 < Object.keys(new_errors).length) {
       // Blocking thunk pipeline trigger calls
       return;
+    } else {
+      // Attempting login thunk execution mapping parameters
+      await login(login_params);
     }
-    // Attempting login thunk execution mapping parameters
-    await login(login_params);
   };
 
-  // Higher-order method handler updating parameters state values on inputs adjustments
+  // Higher-order method handler updating parameters state values
   const handle_change = (field_key: keyof login_credentials) => {
     // Returning event callback processor receiver
     return (event_obj: React.ChangeEvent<HTMLInputElement>) => {
@@ -195,14 +191,18 @@ export default function LoginPage() {
   return (
     // Root container wrapping layout sections mapping font variables
     <div
-      className={`min-h-screen flex flex-row bg-app-background text-app-text-primary ${
-        is_rtl ? "font-cairo" : "font-sans"
-      }`}
+      className={[
+        "min-h-screen flex flex-row bg-app-background text-app-text-primary",
+        is_rtl ? "font-cairo" : "font-sans",
+      ].join(" ")}
     >
-      {/* ── Left Panel: Branded Hero Section ─────────────────────────────────── */}
+      {/* ── Left Panel: Hero Section ────────────────────────────── */}
       <div
         // Container block utilizing custom styling classes and token gradient
-        className="hidden lg:flex lg:w-1/2 flex-col justify-between p-10 relative overflow-hidden"
+        className={[
+          "hidden lg:flex lg:w-1/2 flex-col justify-between",
+          "p-10 relative overflow-hidden",
+        ].join(" ")}
         // Applying brand gradient background directly for compiler robustness
         style={{ background: "var(--brand-gradient)" }}
       >
@@ -240,12 +240,17 @@ export default function LoginPage() {
               width={66}
               // Absolute height matching box bounds
               height={66}
-              // Contain layout class to avoid edge clippings with no internal padding
+              // Contain layout class to avoid edge clippings
               className="object-contain p-0"
             />
           </div>
           {/* Main system title label */}
-          <span className={`text-white font-bold text-2xl tracking-wide uppercase ${is_rtl ? "font-cairo" : "font-sans"}`}>
+          <span
+            className={[
+              "text-white font-bold text-2xl tracking-wide uppercase",
+              is_rtl ? "font-cairo" : "font-sans",
+            ].join(" ")}
+          >
             {translations.app_name}
           </span>
         </div>
@@ -291,7 +296,10 @@ export default function LoginPage() {
               return (
                 <li key={item_index} className="flex items-center gap-3">
                   {/* Bubble wrapper for icons */}
-                  <span className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center">
+                  <span className={[
+                    "w-9 h-9 rounded-full bg-white/10",
+                    "flex items-center justify-center",
+                  ].join(" ")}>
                     {/* Injecting features icon node */}
                     {icon_node}
                   </span>
@@ -305,22 +313,23 @@ export default function LoginPage() {
           </ul>
         </div>
 
-        {/* Copyright branding label aligned to dynamic starting border direction */}
+        {/* Copyright branding label aligned to dynamic starting border */}
         <p
-          className={`relative z-10 text-blue-300 text-sm w-full ${
-            is_rtl ? "text-right" : "text-left"
-          }`}
+          className={[
+            "relative z-10 text-blue-300 text-sm w-full",
+            is_rtl ? "text-right" : "text-left",
+          ].join(" ")}
         >
           {/* Copyright notice string translation */}
           {translations.login_copyright}
         </p>
       </div>
 
-      {/* ── Right Panel: Login Interaction Area ──────────────────────────────── */}
+      {/* ── Right Panel: Login Interaction Area ────────────────── */}
       <div className="flex-1 flex flex-col items-center justify-center bg-white px-6 py-12">
         {/* Interaction layout box wrapper sizing bounds */}
         <div className="w-full max-w-md">
-          {/* Top header region containing language toggle button selector */}
+          {/* Top header region containing language toggle button */}
           <div className="w-full flex justify-end mb-4">
             {/* Switch switcher trigger layout button */}
             <button
@@ -368,13 +377,13 @@ export default function LoginPage() {
           </p>
 
           {/* 
-              ── Reserved Error Space ────────────────────────────────────────── 
+              ── Reserved Error Space ──────────────────────────────────
               Guarantees fixed vertical boundaries preventing content shifting.
           */}
           <div className="h-10 mt-4 mb-2 flex items-center">
             {/* Yoda check validating error state parameters for display */}
             {null !== active_error_message && (
-              // Warning notification feedback modal container using light rose theme
+              // Warning notification feedback modal container
               <div
                 // Warning panel classes
                 className={[
@@ -491,7 +500,7 @@ export default function LoginPage() {
                         : "border-slate-300",
                     ].join(" ")}
                   />
-                  {/* Visibility toggler button placed physically on LTR right side */}
+                  {/* Visibility toggler button placed physically on right side */}
                   <button
                     type="button"
                     // Toggling visibility boolean state trigger parameters
@@ -503,7 +512,10 @@ export default function LoginPage() {
                       });
                     }}
                     // Button absolute alignment position classes
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-blue-600 transition-colors"
+                    className={[
+                      "absolute right-3 top-1/2 -translate-y-1/2",
+                      "text-slate-400 hover:text-blue-600 transition-colors",
+                    ].join(" ")}
                   >
                     {/* Conditional eye icon visibility rendering */}
                     {true === show_password ? (
@@ -513,7 +525,7 @@ export default function LoginPage() {
                     )}
                   </button>
                 </div>
-                {/* Forgot password access link wrapper positioned dynamically */}
+                {/* Forgot password access link wrapper */}
                 <div
                   className={`w-full flex ${
                     is_rtl ? "justify-start" : "justify-end"
@@ -524,7 +536,10 @@ export default function LoginPage() {
                     // Forgot password reset URL route location path
                     href="/auth/forgot-password"
                     // Link styling class settings
-                    className="text-sm text-blue-600 hover:text-blue-700 font-bold transition-colors underline-offset-4 hover:underline"
+                    className={[
+                      "text-sm text-blue-600 hover:text-blue-700 font-bold",
+                      "transition-colors underline-offset-4 hover:underline",
+                    ].join(" ")}
                   >
                     {/* Forgot password translation label text */}
                     {translations.login_forgot_password}
@@ -533,7 +548,10 @@ export default function LoginPage() {
               </div>
 
               {/* Remember me persistent session checker select badge */}
-              <label className="flex items-center gap-2.5 cursor-pointer select-none group w-fit">
+              <label className={[
+                "flex items-center gap-2.5 cursor-pointer",
+                "select-none group w-fit",
+              ].join(" ")}>
                 {/* Select state input element */}
                 <input
                   // Checkbox layout type representation
@@ -543,10 +561,16 @@ export default function LoginPage() {
                   // Change selection listener callback
                   onChange={handle_change("remember_me")}
                   // Checkbox layout styling classes
-                  className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer transition-colors"
+                  className={[
+                    "w-4 h-4 rounded border-slate-300 text-blue-600",
+                    "focus:ring-blue-500 cursor-pointer transition-colors",
+                  ].join(" ")}
                 />
                 {/* Checkbox description label text */}
-                <span className="text-sm text-slate-600 group-hover:text-slate-800 transition-colors font-medium">
+                <span className={[
+                  "text-sm text-slate-600 group-hover:text-slate-800",
+                  "transition-colors font-medium",
+                ].join(" ")}>
                   {/* Remember me translation text */}
                   {translations.login_remember_me}
                 </span>
@@ -557,7 +581,7 @@ export default function LoginPage() {
                 type="submit"
                 // Disable button triggers when loading calls are busy
                 disabled={true === is_loading}
-                // Button styling design tokens transition configurations using brand blue
+                // Button styling design tokens transition configurations
                 className={[
                   "w-full py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700",
                   "text-white font-bold text-sm transition-all shadow-md",

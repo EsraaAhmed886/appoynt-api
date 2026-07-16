@@ -1,14 +1,15 @@
-"use client";
-
 /*
- * File Name: StoreProvider.tsx
+ * File Name: store_provider.tsx
  * Author: Kholoud Khaled
  * Date of Creation: 28/06/2026
  * Version Information: V1.0.0
+ * Dependencies: react, react-redux, @/store/index
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/06/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
  * File Description: Client component wrapping react-redux Provider for Next.js App Router.
  */
+
+"use client";
 
 // Importing React node utility type from standard React package
 import React from "react";

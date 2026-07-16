@@ -3,21 +3,21 @@
  * Author: Kholoud Khaled
  * Date of Creation: 28/06/2026
  * Version Information: V1.0.0
- * Dependencies: next, next/font/google, ./globals.css, @/context/LanguageContext, @/store/StoreProvider
+ * Dependencies: next, next/font/google, ./globals.css,
+ *   @/context/language_context, @/store/store_provider
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/06/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
  * File Description: Defines the master Root Layout configuration for the Web application.
  */
-
 
 // Importing Metadata specifications from next library package
 import type { Metadata } from "next";
 // Importing Google fonts loader hooks from next compiler assets
 import { Inter, Cairo } from "next/font/google";
 // Importing custom LanguageProvider context wrapper component function
-import { LanguageProvider } from "@/context/LanguageContext";
+import { LanguageProvider } from "@/context/language_context";
 // Importing client state store provider wrapper container
-import { StoreProvider } from "@/store/StoreProvider";
+import { StoreProvider } from "@/store/store_provider";
 // Importing global CSS layouts definitions file
 import "./globals.css";
 
@@ -66,9 +66,9 @@ export default function RootLayout({
         // Assembling combined font classes along with browser antialiasing rules
         className={`${font_inter.variable} ${font_cairo.variable} antialiased`}
       >
-        {/* Wrapping application pages hierarchy inside Redux state engine context */}
+        {/* Wrapping application pages hierarchy inside Redux state engine */}
         <StoreProvider>
-          {/* Wrapping application pages layout inside Bilingual localization context */}
+          {/* Wrapping application pages layout inside Bilingual localization */}
           <LanguageProvider>
             {/* Injecting current page child elements into layout container */}
             {children}
