@@ -3,13 +3,10 @@
  * Author: Kholoud Khaled
  * Date of Creation: 28/05/2026
  * Version Information: V1.0.0
- * Dependencies:
- *   - auth_button.dart
- *   - global_language_button.dart
- *   - auth_text_field.dart
- *   - password_field_with_rules.dart
+ * Dependencies: auth_button.dart, global_language_button.dart,
+ *   auth_text_field.dart, password_field_with_rules.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 02/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
  * File Description: Barrel file exporting reusable authentication UI components.
  */
 

@@ -3,10 +3,11 @@
  * Author: Kholoud Khaled
  * Date of Creation: 19/06/2026
  * Version Information: V1.0.0
- * Dependencies: flutter/material.dart
+ * Dependencies: package:flutter/material.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 11/07/2026]
- * File Description: Defines centralized color constants and palettes for light and dark theme modes.
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: Defines centralized color constants and palettes
+ *   for light and dark theme modes.
  */
 
 // Importing the flutter material package to utilize the Color class

@@ -3,10 +3,9 @@
  * Author: Kholoud Khaled
  * Date of Creation: 20/06/2026
  * Version Information: V1.0.0
- * Dependencies:
- *   - package:flutter/material.dart
+ * Dependencies: package:flutter/material.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 02/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
  * File Description: Defines the abstract contract for application-wide custom localizations.
  */
 

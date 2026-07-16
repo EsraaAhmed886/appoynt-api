@@ -3,10 +3,9 @@
  * Author: Kholoud Khaled
  * Date of Creation: 28/05/2026
  * Version Information: V1.0.0
- * Dependencies:
- *   - package:appoynt_mobile_app/core/routing/route_export.dart
+ * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 12/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
  * File Description: Intelligent Email/Phone input field forcing LTR directionality.
  */
 
@@ -128,12 +127,14 @@ class _SmartIdentifierFieldState extends State<SmartIdentifierField> {
           valueListenable: widget.controller,
           // Builder method rebuilding on value changes
           builder: (context, value, child) {
-            // Resolve dynamic text alignment to switch based on empty state and locale using Yoda style check
-            final TextAlign dynamic_align = (true == value.text.isEmpty && true == is_arabic)
-                // Right-align placeholder in Arabic mode when empty
-                ? TextAlign.right
-                // Left-align inputs and placeholders in other states
-                : TextAlign.left;
+            // Resolve dynamic text alignment to switch based on empty state and
+            // locale using Yoda style check
+            final TextAlign dynamic_align =
+                (true == value.text.isEmpty && true == is_arabic)
+                    // Right-align placeholder in Arabic mode when empty
+                    ? TextAlign.right
+                    // Left-align placeholders in other states
+                    : TextAlign.left;
 
             // Return Stack layering shadow background behind the TextFormField
             return Stack(
@@ -156,7 +157,8 @@ class _SmartIdentifierFieldState extends State<SmartIdentifierField> {
                     // Visual styling decoration
                     decoration: BoxDecoration(
                       // Set corner radius using spacing constants
-                      borderRadius: BorderRadius.circular(AppSpacing.radius_input),
+                      borderRadius:
+                          BorderRadius.circular(AppSpacing.radius_input),
                       // Shadows list
                       boxShadow: [
                         BoxShadow(
@@ -197,8 +199,10 @@ class _SmartIdentifierFieldState extends State<SmartIdentifierField> {
                 style: TextStyle(
                   // Set font size using spacing constants
                   fontSize: AppSpacing.font_size_text,
-                  // Apply theme-appropriate text color token using Yoda style check
-                  color: true == is_dark ? AppColors.text_dark_primary : AppColors.text_light_primary,
+                  // Apply theme-appropriate text color token using Yoda style
+                  color: true == is_dark
+                      ? AppColors.text_dark_primary
+                      : AppColors.text_light_primary,
                 ),
                 // Input field decoration configuration
                 decoration: InputDecoration(
@@ -232,15 +236,20 @@ class _SmartIdentifierFieldState extends State<SmartIdentifierField> {
                   // Enable background color fills
                   filled: true,
                   // Apply dynamic background color fill using Yoda style check
-                  fillColor: true == is_dark ? AppColors.surface_dark : AppColors.input_fill,
+                  fillColor: true == is_dark
+                      ? AppColors.surface_dark
+                      : AppColors.input_fill,
                   // Standard enabled border configuration
                   enabledBorder: OutlineInputBorder(
                     // Set standard corner curves radius using spacing constants
-                    borderRadius: BorderRadius.circular(AppSpacing.radius_input),
+                    borderRadius:
+                        BorderRadius.circular(AppSpacing.radius_input),
                     // Set line border color options using Yoda style check
                     borderSide: BorderSide(
                       // Set color token dynamically
-                      color: true == is_dark ? AppColors.border_dark : AppColors.border_light,
+                      color: true == is_dark
+                          ? AppColors.border_dark
+                          : AppColors.border_light,
                       // Set border line thickness using spacing constants
                       width: AppSpacing.border_width_thin,
                     ),
@@ -248,7 +257,8 @@ class _SmartIdentifierFieldState extends State<SmartIdentifierField> {
                   // Focused active border configuration
                   focusedBorder: OutlineInputBorder(
                     // Set standard corner curves radius using spacing constants
-                    borderRadius: BorderRadius.circular(AppSpacing.radius_input),
+                    borderRadius:
+                        BorderRadius.circular(AppSpacing.radius_input),
                     // Set active brand primary border line
                     borderSide: const BorderSide(
                       // Set color token to primary brand
@@ -260,7 +270,8 @@ class _SmartIdentifierFieldState extends State<SmartIdentifierField> {
                   // Failed validation error border configuration
                   errorBorder: OutlineInputBorder(
                     // Set standard corner curves radius using spacing constants
-                    borderRadius: BorderRadius.circular(AppSpacing.radius_input),
+                    borderRadius:
+                        BorderRadius.circular(AppSpacing.radius_input),
                     // Set warning error border line
                     borderSide: const BorderSide(
                       // Set color token to error
@@ -272,7 +283,8 @@ class _SmartIdentifierFieldState extends State<SmartIdentifierField> {
                   // Failed validation active focused border configuration
                   focusedErrorBorder: OutlineInputBorder(
                     // Set standard corner curves radius using spacing constants
-                    borderRadius: BorderRadius.circular(AppSpacing.radius_input),
+                    borderRadius:
+                        BorderRadius.circular(AppSpacing.radius_input),
                     // Set thick warning error border line
                     borderSide: const BorderSide(
                       // Set color token to error

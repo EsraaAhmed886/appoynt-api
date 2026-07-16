@@ -3,12 +3,11 @@
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
  * Version Information: V1.0.0
- * Dependencies:
- *   - package:appoynt_mobile_app/core/routing/route_export.dart
+ * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart,
+ *   package:flutter/services.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 12/07/2026]
- * File Description:
- *   Premium password input component with real-time strength analysis,
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: Premium password input component with real-time strength analysis,
  *   dark mode support, and requirement checkmarks (RTL/LTR compliant).
  */
 
@@ -191,9 +190,12 @@ class _PasswordFieldWithRulesState extends State<PasswordFieldWithRules> {
           // Active label text
           widget.label,
           // Pull centralized style registry with theme-adaptive colors
+          // Pull centralized style registry with theme-adaptive colors
           style: AppTextStyles.get_field_label(is_arabic).copyWith(
             // Select label color based on theme using Yoda style check
-            color: true == is_dark ? AppColors.text_dark_primary : AppColors.text_light_primary,
+            color: true == is_dark
+                ? AppColors.text_dark_primary
+                : AppColors.text_light_primary,
           ),
         ),
         // Space margin before text field using spacing constants
@@ -219,7 +221,8 @@ class _PasswordFieldWithRulesState extends State<PasswordFieldWithRules> {
                 // Visual styling decoration
                 decoration: BoxDecoration(
                   // Set corner radius using spacing constants
-                  borderRadius: BorderRadius.circular(AppSpacing.radius_input),
+                  borderRadius:
+                      BorderRadius.circular(AppSpacing.radius_input),
                   // Shadows list
                   boxShadow: [
                     BoxShadow(
@@ -262,13 +265,15 @@ class _PasswordFieldWithRulesState extends State<PasswordFieldWithRules> {
             textDirection: TextDirection.ltr,
             // Align password bullets dynamically to the right in Arabic RTL mode (BUG-006)
             textAlign: true == is_arabic ? TextAlign.right : TextAlign.left,
-            // Input text styling
-            style: TextStyle(
-                // Font size from spacing constants
-                fontSize: AppSpacing.font_size_text,
-                // Select text color based on theme using Yoda style check
-                color: true == is_dark ? AppColors.text_dark_primary : AppColors.text_light_primary,
-              ),
+                // Text styling inside field
+                style: TextStyle(
+                  // Set font size using spacing constants
+                  fontSize: AppSpacing.font_size_text,
+                  // Select text color based on theme using Yoda style check
+                  color: true == is_dark
+                      ? AppColors.text_dark_primary
+                      : AppColors.text_light_primary,
+                ),
               // Input field decoration configuration
               decoration: InputDecoration(
                 // Localized placeholder hint
@@ -278,12 +283,16 @@ class _PasswordFieldWithRulesState extends State<PasswordFieldWithRules> {
                   // Hint size matches standard inputs
                   fontSize: AppSpacing.font_size_text,
                   // Select hint color based on theme using Yoda style check
-                  color: true == is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary,
+                  color: true == is_dark
+                      ? AppColors.text_dark_secondary
+                      : AppColors.text_light_secondary,
                 ),
                 // Enable background color fills
                 filled: true,
                 // Adapt background colors based on dark mode using Yoda style check
-                fillColor: true == is_dark ? AppColors.surface_dark : AppColors.input_fill,
+                fillColor: true == is_dark
+                    ? AppColors.surface_dark
+                    : AppColors.input_fill,
                 // Suffix icon layout containing toggle action button
                 suffixIcon: IconButton(
                   // Define toggle button press event
@@ -303,7 +312,9 @@ class _PasswordFieldWithRulesState extends State<PasswordFieldWithRules> {
                         // Visible state icon
                         : Icons.visibility_outlined,
                     // Select icon color based on theme using Yoda style check
-                    color: true == is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary,
+                    color: true == is_dark
+                        ? AppColors.text_dark_secondary
+                        : AppColors.text_light_secondary,
                     // Set layout size
                     size: 20.0,
                   ),
@@ -315,32 +326,45 @@ class _PasswordFieldWithRulesState extends State<PasswordFieldWithRules> {
                   // Set border side specifications
                   borderSide: BorderSide(
                     // Select border color based on theme using Yoda style check
-                    color: true == is_dark ? AppColors.border_dark : AppColors.border_light,
+                    color: true == is_dark
+                        ? AppColors.border_dark
+                        : AppColors.border_light,
                     // Set line thickness using spacing constants
                     width: AppSpacing.border_width_thin,
                   ),
                 ),
-                // Enabled but unfocused border styling dynamically changes based on validation using Yoda style check
+                // Enabled but unfocused border styling dynamically changes
+                // based on validation using Yoda style check
                 enabledBorder: OutlineInputBorder(
                   // Set corner radius using spacing constants
                   borderRadius: BorderRadius.circular(AppSpacing.radius_input),
                   // Set border side specifications
                   borderSide: BorderSide(
-                    // Set color token dynamically based on empty state and validation success using Yoda style check
+                    // Set color token dynamically based on empty state and
+                    // validation success using Yoda style check
                     color: true == has_text
-                        ? (true == _all_passed ? AppColors.primary_color : AppColors.error)
-                        : (true == is_dark ? AppColors.border_dark : AppColors.border_light),
-                    // Set line thickness based on active values using Yoda style check
-                    width: true == has_text ? AppSpacing.border_width_thick : AppSpacing.border_width_thin,
+                        ? (true == _all_passed
+                            ? AppColors.primary_color
+                            : AppColors.error)
+                        : (true == is_dark
+                            ? AppColors.border_dark
+                            : AppColors.border_light),
+                    // Set line thickness based on active values using
+                    // Yoda style check
+                    width: true == has_text
+                        ? AppSpacing.border_width_thick
+                        : AppSpacing.border_width_thin,
                   ),
                 ),
-                // Focused active input border styling dynamically changes based on validation using Yoda style check
+                // Focused active input border styling dynamically changes
+                // based on validation using Yoda style check
                 focusedBorder: OutlineInputBorder(
                   // Set corner radius using spacing constants
                   borderRadius: BorderRadius.circular(AppSpacing.radius_input),
                   // Set active border side specifications
                   borderSide: BorderSide(
-                    // Set color token based on validation success using Yoda style check
+                    // Set color token based on validation success using Yoda
+                    // style check
                     color: true == has_text && false == _all_passed
                         ? AppColors.error
                         : AppColors.primary_color,
@@ -351,7 +375,9 @@ class _PasswordFieldWithRulesState extends State<PasswordFieldWithRules> {
                 // Failed validation error border configuration
                 errorBorder: OutlineInputBorder(
                   // Set corner radius using spacing constants
-                  borderRadius: BorderRadius.circular(AppSpacing.radius_input),
+                  // Set corner radius using spacing constants
+                  borderRadius:
+                      BorderRadius.circular(AppSpacing.radius_input),
                   // Set warning error border line
                   borderSide: const BorderSide(
                     // Set color token to error
@@ -363,7 +389,9 @@ class _PasswordFieldWithRulesState extends State<PasswordFieldWithRules> {
                 // Failed validation active focused border configuration
                 focusedErrorBorder: OutlineInputBorder(
                   // Set corner radius using spacing constants
-                  borderRadius: BorderRadius.circular(AppSpacing.radius_input),
+                  // Set corner radius using spacing constants
+                  borderRadius:
+                      BorderRadius.circular(AppSpacing.radius_input),
                   // Set thick warning error border line
                   borderSide: const BorderSide(
                     // Set color token to error
@@ -394,7 +422,8 @@ class _PasswordFieldWithRulesState extends State<PasswordFieldWithRules> {
             ),
           ],
         ),
-        // Display strength checklist widgets dynamically using Yoda style check
+        // Display strength checklist widgets dynamically using
+        // Yoda style check
         if (true == _show_extras) ...[
           // Vertical space divider using spacing constants
           const SizedBox(height: AppSpacing.space_m),
@@ -404,6 +433,9 @@ class _PasswordFieldWithRulesState extends State<PasswordFieldWithRules> {
           const SizedBox(height: AppSpacing.space_l),
           // Requirements checklist card widget
           _RulesCard(controller: widget.controller, s: s),
+        ] else ...[
+          // Do nothing if checklist is not shown
+          const SizedBox.shrink(),
         ],
       ],
     );
@@ -587,7 +619,8 @@ class _StrengthBarState extends State<_StrengthBar> {
                   margin: EdgeInsetsDirectional.only(end: index < 2 ? 5.0 : 0.0),
                   // Visual decoration styling
                   decoration: BoxDecoration(
-                    // Set filled or fallback pale blue background colors using Yoda style check (BUG/RFE)
+                    // Set filled or fallback pale blue background colors
+                    // using Yoda style check (BUG/RFE)
                     color: true == is_filled
                         // Filled segments use primary brand color
                         ? bar_color
@@ -617,7 +650,9 @@ class _StrengthBarState extends State<_StrengthBar> {
                   // Text styling
                   style: AppTextStyles.get_body_medium(
                     is_arabic,
-                    custom_color: true == is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary,
+                    custom_color: true == is_dark
+                        ? AppColors.text_dark_secondary
+                        : AppColors.text_light_secondary,
                   ).copyWith(
                     // Small size label
                     fontSize: 11.0,
@@ -763,7 +798,8 @@ class _RulesCardState extends State<_RulesCard> {
     final bool is_arabic = widget.s.is_arabic;
     // Check if system brightness matches dark mode
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
-    // Resolve dynamic border colors depending on aggregate validation success using Yoda style check
+    // Resolve dynamic border colors depending on aggregate validation success
+    // using Yoda style check
     final Color border_color = true == _all_passed
         // Success color
         ? AppColors.primary_color
@@ -789,7 +825,9 @@ class _RulesCardState extends State<_RulesCard> {
           // Shadow layout description
           BoxShadow(
             // Shadow color adapts to brightness modes using Yoda style check
-            color: true == is_dark ? Colors.black.withValues(alpha: 0.3) : AppColors.text_light_primary.withValues(alpha: 0.07),
+            color: true == is_dark
+                ? Colors.black.withValues(alpha: 0.3)
+                : AppColors.text_light_primary.withValues(alpha: 0.07),
             // Blur spread radius using spacing constants
             blurRadius: AppSpacing.radius_l,
             // Shadow displacement offset coordinates
@@ -810,11 +848,14 @@ class _RulesCardState extends State<_RulesCard> {
             // Localized header prompt
             widget.s.password_must,
             // Text styling
+            // Text styling
             style: AppTextStyles.get_field_label(is_arabic).copyWith(
               // Bold font weight helper
               fontWeight: FontWeightHelper.bold,
               // Select label color based on theme using Yoda style check
-              color: true == is_dark ? AppColors.text_dark_primary : AppColors.text_light_primary,
+              color: true == is_dark
+                  ? AppColors.text_dark_primary
+                  : AppColors.text_light_primary,
             ),
           ),
           // Vertical space divider using spacing constants

@@ -3,13 +3,11 @@
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
  * Version Information: V1.0.0
- * Dependencies:
- *   - package:appoynt_mobile_app/core/routing/route_export.dart
- *   - package:flutter/services.dart
+ * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart,
+ *   package:flutter/services.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 12/07/2026]
- * File Description:
- *   Standardized, premium text input component designed for authentication forms.
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: Standardized, premium text input component designed for authentication forms.
  *   Provides automatic dark mode adaptation, LTR forcing for credentials, and localized fonts.
  */
 
@@ -145,7 +143,9 @@ class _AuthTextFieldState extends State<AuthTextField> {
           // Pull centralized style registry with theme-adaptive colors
           style: AppTextStyles.get_field_label(is_arabic).copyWith(
             // Select label color based on theme using Yoda style check
-            color: true == is_dark ? AppColors.text_dark_primary : AppColors.text_light_primary,
+            color: true == is_dark
+                ? AppColors.text_dark_primary
+                : AppColors.text_light_primary,
           ),
         ),
         // Space margin before text field using spacing constants
@@ -156,9 +156,12 @@ class _AuthTextFieldState extends State<AuthTextField> {
           valueListenable: widget.controller,
           // Builder method rebuilding on value changes
           builder: (context, value, child) {
-            // Resolve text alignment dynamically depending on LTR checks using Yoda style check (BUG-006 / Confirm Password)
+            // Resolve text alignment dynamically depending on LTR checks
+            // using Yoda style check (BUG-006 / Confirm Password)
             final TextAlign dynamic_align = true == force_ltr
-                ? (true == widget.is_password && true == is_arabic ? TextAlign.right : TextAlign.left)
+                ? (true == widget.is_password && true == is_arabic
+                    ? TextAlign.right
+                    : TextAlign.left)
                 : (true == is_arabic ? TextAlign.right : TextAlign.left);
 
             // Return Stack layering shadow background behind the TextFormField
@@ -182,7 +185,8 @@ class _AuthTextFieldState extends State<AuthTextField> {
                     // Visual styling decoration
                     decoration: BoxDecoration(
                       // Set corner radius using spacing constants
-                      borderRadius: BorderRadius.circular(AppSpacing.radius_input),
+                      borderRadius:
+                          BorderRadius.circular(AppSpacing.radius_input),
                       // Shadows list
                       boxShadow: [
                         BoxShadow(
@@ -242,7 +246,9 @@ class _AuthTextFieldState extends State<AuthTextField> {
                     // Font size from spacing constants
                     fontSize: AppSpacing.font_size_text,
                     // Select text color based on theme using Yoda style check
-                    color: true == is_dark ? AppColors.text_dark_primary : AppColors.text_light_primary,
+                    color: true == is_dark
+                        ? AppColors.text_dark_primary
+                        : AppColors.text_light_primary,
                   ),
                   // Text field decoration settings
                   decoration: InputDecoration(
@@ -253,24 +259,31 @@ class _AuthTextFieldState extends State<AuthTextField> {
                       // Hint size matches standard inputs
                       fontSize: AppSpacing.font_size_text,
                       // Select hint color based on theme using Yoda style check
-                      color: true == is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary,
+                      color: true == is_dark
+                          ? AppColors.text_dark_secondary
+                          : AppColors.text_light_secondary,
                     ),
                     // Enable background color fills
                     filled: true,
                     // Adapt background colors based on dark mode using Yoda style check
-                    fillColor: true == is_dark ? AppColors.surface_dark : AppColors.input_fill,
+                    fillColor: true == is_dark
+                        ? AppColors.surface_dark
+                        : AppColors.input_fill,
                     // Optional prefix icon rendering
                     prefixIcon: null != widget.prefix_icon
                         ? Icon(
                             // Icon data representation
                             widget.prefix_icon,
                             // Select icon color dynamically using Yoda style check
-                            color: true == is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary,
+                            color: true == is_dark
+                                ? AppColors.text_dark_secondary
+                                : AppColors.text_light_secondary,
                             // Set layout size
                             size: 20.0,
                           )
                         : null,
-                    // Suffix icon rendering visibility toggler if password is active using Yoda style check
+                    // Suffix icon rendering visibility toggler if password is
+                    // active using Yoda style check
                     suffixIcon: true == widget.is_password
                         ? IconButton(
                             // Define toggle handler
@@ -290,7 +303,9 @@ class _AuthTextFieldState extends State<AuthTextField> {
                                   // Eye on icon
                                   : Icons.visibility_outlined,
                               // Select icon color dynamically using Yoda style check
-                              color: true == is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary,
+                              color: true == is_dark
+                                  ? AppColors.text_dark_secondary
+                                  : AppColors.text_light_secondary,
                               // Set layout size
                               size: 20.0,
                             ),
@@ -299,11 +314,15 @@ class _AuthTextFieldState extends State<AuthTextField> {
                     // Default outline border configurations
                     border: OutlineInputBorder(
                       // Set corner radius using spacing constants
-                      borderRadius: BorderRadius.circular(AppSpacing.radius_input),
-                      // Set border side specifications
-                      borderSide: BorderSide(
-                        // Select border color based on theme using Yoda style check
-                        color: true == is_dark ? AppColors.border_dark : AppColors.border_light,
+                    // Set corner radius using spacing constants
+                    borderRadius:
+                        BorderRadius.circular(AppSpacing.radius_input),
+                    // Set border side specifications
+                    borderSide: BorderSide(
+                      // Select border color based on theme using Yoda style check
+                      color: true == is_dark
+                          ? AppColors.border_dark
+                          : AppColors.border_light,
                         // Set line thickness using spacing constants
                         width: AppSpacing.border_width_thin,
                       ),
@@ -311,11 +330,15 @@ class _AuthTextFieldState extends State<AuthTextField> {
                     // Enabled but unfocused border styling
                     enabledBorder: OutlineInputBorder(
                       // Set corner radius using spacing constants
-                      borderRadius: BorderRadius.circular(AppSpacing.radius_input),
-                      // Set border side specifications
-                      borderSide: BorderSide(
-                        // Select border color based on theme using Yoda style check
-                        color: true == is_dark ? AppColors.border_dark : AppColors.border_light,
+                    // Set corner radius using spacing constants
+                    borderRadius:
+                        BorderRadius.circular(AppSpacing.radius_input),
+                    // Set border side specifications
+                    borderSide: BorderSide(
+                      // Select border color based on theme using Yoda style check
+                      color: true == is_dark
+                          ? AppColors.border_dark
+                          : AppColors.border_light,
                         // Set line thickness using spacing constants
                         width: AppSpacing.border_width_thin,
                       ),
@@ -323,7 +346,9 @@ class _AuthTextFieldState extends State<AuthTextField> {
                     // Focused active input border styling
                     focusedBorder: OutlineInputBorder(
                       // Set corner radius using spacing constants
-                      borderRadius: BorderRadius.circular(AppSpacing.radius_input),
+                      // Set corner radius using spacing constants
+                      borderRadius:
+                          BorderRadius.circular(AppSpacing.radius_input),
                       // Highlight with primary brand color border
                       borderSide: const BorderSide(
                         // Primary brand color
@@ -335,7 +360,9 @@ class _AuthTextFieldState extends State<AuthTextField> {
                     // Validation failed error border styling
                     errorBorder: OutlineInputBorder(
                       // Set corner radius using spacing constants
-                      borderRadius: BorderRadius.circular(AppSpacing.radius_input),
+                      // Set corner radius using spacing constants
+                      borderRadius:
+                          BorderRadius.circular(AppSpacing.radius_input),
                       // Set warning red border line
                       borderSide: const BorderSide(
                         // Error color
@@ -347,7 +374,9 @@ class _AuthTextFieldState extends State<AuthTextField> {
                     // Validation failed focused active border styling
                     focusedErrorBorder: OutlineInputBorder(
                       // Set corner radius using spacing constants
-                      borderRadius: BorderRadius.circular(AppSpacing.radius_input),
+                      // Set corner radius using spacing constants
+                      borderRadius:
+                          BorderRadius.circular(AppSpacing.radius_input),
                       // Set thick warning red border line
                       borderSide: const BorderSide(
                         // Error color

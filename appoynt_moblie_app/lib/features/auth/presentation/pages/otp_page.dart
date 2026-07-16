@@ -3,22 +3,23 @@
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
  * Version Information: V1.0.0
- * Dependencies: 
- *   - package:appoynt_mobile_app/core/routing/route_export.dart
- *   - package:appoynt_mobile_app/features/auth/presentation/widgets/otp_box.dart
- *   - package:appoynt_mobile_app/core/widgets/auth/global_language_button.dart
+ * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart,
+ *   package:appoynt_mobile_app/features/auth/presentation/widgets/otp_box.dart,
+ *   package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 14/07/2026]
- * File Description:
- *   The OTP Verification screen. It handles the input of a 6-digit code, 
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: The OTP Verification screen. It handles the input of a 6-digit code,
  *   manages a resend timer, and follows the centralized design system.
  */
 
 import 'dart:async'; // Importing standard Dart timers
 import 'package:flutter/services.dart'; // Importing standard Flutter services for keyboard events
-import 'package:appoynt_mobile_app/core/routing/route_export.dart'; // Centralized barrel for UI dependencies
-import 'package:appoynt_mobile_app/features/auth/presentation/widgets/otp_box.dart'; // Specialized input widget
-import 'package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart'; // Centralized auth widgets barrel file
+// Centralized barrel for UI dependencies
+import 'package:appoynt_mobile_app/core/routing/route_export.dart';
+// Specialized input widget
+import 'package:appoynt_mobile_app/features/auth/presentation/widgets/otp_box.dart';
+// Centralized auth widgets barrel file
+import 'package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart';
 
 /// The main OTP verification screen widget.
 class OtpPage extends StatefulWidget {
@@ -79,7 +80,8 @@ class _OtpPageState extends State<OtpPage> {
       c.addListener(_on_otp_changed);
     }
 
-    // Attach onKeyEvent listeners to all FocusNodes to orchestrate backspace navigation naturally (BUG-009)
+    // Attach onKeyEvent listeners to FocusNodes to orchestrate
+    // backspace navigation naturally (BUG-009)
     for (int i = 0; i < 6; i++) {
       // Set key event handler on focus node
       _nodes[i].onKeyEvent = (node, event) {
@@ -183,14 +185,17 @@ class _OtpPageState extends State<OtpPage> {
       // Empty action block to satisfy compiler
     }
 
-    // Shift focus backwards logic was removed here and is handled by FocusNode.onKeyEvent instead (BUG-009)
+    // Shift focus backwards logic was removed here and is handled
+    // by FocusNode.onKeyEvent instead (BUG-009)
   }
 
   /// Orchestrates the verification process.
   void _verify() async {
     /// Blocking execution if the code is incomplete.
-    if (!_is_filled) {
+    if (false == _is_filled) {
       return;
+    } else {
+      // Proceed with verification if OTP is complete
     }
 
     /// Activating the loading state.
@@ -271,9 +276,11 @@ class _OtpPageState extends State<OtpPage> {
                         border:
                             Border.all(color: border_color), // Subtle border
                       ),
-                      // RotatedBox to mirror the back chevron icon in Arabic RTL mode (BUG-012)
+                      // RotatedBox to mirror the back chevron icon in Arabic
+                      // RTL mode (BUG-012)
                       child: RotatedBox(
-                        // Quarter turns set to 0 to keep the back chevron pointing left in both languages
+                        // Quarter turns set to 0 to keep the back chevron
+                        // pointing left in both languages
                         quarterTurns: 0,
                         // Chevron back icon widget
                         child: Icon(
@@ -366,7 +373,8 @@ class _OtpPageState extends State<OtpPage> {
                       ),
                     ),
                   ),
-                  // Conditionally show spacing and timer widget only if countdown remains active (BUG-005)
+                  // Conditionally show spacing and timer widget only if countdown
+                  // remains active (BUG-005)
                   if (_seconds_left > 0) ...[
                     // Horizontal spacing gap
                     const SizedBox(width: 6),

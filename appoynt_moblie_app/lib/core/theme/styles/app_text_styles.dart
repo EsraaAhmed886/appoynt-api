@@ -3,12 +3,10 @@
  * Author: Kholoud Khaled
  * Date of Creation: 20/06/2026
  * Version Information: V1.0.0
- * Dependencies:
- *   - package:flutter/material.dart
- *   - package:google_fonts/google_fonts.dart
- *   - package:appoynt_mobile_app/core/routing/route_export.dart
+ * Dependencies: package:google_fonts/google_fonts.dart,
+ *   package:appoynt_mobile_app/core/routing/route_export.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 02/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
  * File Description: Typographic directory holding all text style definitions.
  */
 

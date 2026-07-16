@@ -3,19 +3,19 @@
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
  * Version Information: V1.0.0
- * Dependencies: 
- *   - package:appoynt_mobile_app/core/routing/route_export.dart
- *   - package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart
+ * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart,
+ *   package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 14/07/2026]
- * File Description:
- *   The Reset Password screen allows users to set a new security credential 
- *   after successful verification. It features real-time rule tracking and 
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: The Reset Password screen allows users to set a new security credential
+ *   after successful verification. It features real-time rule tracking and
  *   follows the centralized design system.
  */
 
-import 'package:appoynt_mobile_app/core/routing/route_export.dart'; // Centralized barrel for UI dependencies and global logic
-import 'package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart'; // Exporting PasswordFieldWithRules and AuthTextField
+// Centralized barrel for UI dependencies and global logic
+import 'package:appoynt_mobile_app/core/routing/route_export.dart';
+// Exporting PasswordFieldWithRules and AuthTextField
+import 'package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart';
 
 /// The main reset password screen widget.
 class ResetPasswordPage extends StatefulWidget {
@@ -84,8 +84,12 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           _form_key.currentState?.validate();
+        } else {
+          // Do nothing if the widget is no longer mounted
         }
       });
+    } else {
+      // Do nothing since form has not been submitted or locale is unchanged
     }
     _last_locale = locale; // Updating the last known locale
   }
@@ -135,8 +139,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     });
     
     /// Triggering standard Flutter form validation.
-    if (!_form_key.currentState!.validate()) {
+    if (false == _form_key.currentState!.validate()) {
       return;
+    } else {
+      // Proceed if form is valid
     }
     
     /// Activating the loading state.
@@ -166,10 +172,18 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     
     /// Dynamically resolved colors.
-    final Color background_color = true == is_dark ? AppColors.background_dark : AppColors.background_light;
-    final Color text_primary = true == is_dark ? AppColors.text_dark_primary : AppColors.text_light_primary;
-    final Color card_color = true == is_dark ? AppColors.surface_dark : Colors.white;
-    final Color border_color = true == is_dark ? AppColors.border_dark : AppColors.border_light;
+    final Color background_color = true == is_dark
+        ? AppColors.background_dark
+        : AppColors.background_light;
+    final Color text_primary = true == is_dark
+        ? AppColors.text_dark_primary
+        : AppColors.text_light_primary;
+    final Color card_color = true == is_dark
+        ? AppColors.surface_dark
+        : Colors.white;
+    final Color border_color = true == is_dark
+        ? AppColors.border_dark
+        : AppColors.border_light;
 
     return Scaffold(
       backgroundColor: background_color, // Applying theme background color
@@ -186,8 +200,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
         child: AuthButton(
           // Localized action string
           label: s.update_password,
-          // Enable only when both password fields are not empty using Yoda style check
-          is_enabled: _password_ctrl.text.isNotEmpty && _confirm_ctrl.text.isNotEmpty,
+          // Enable only when both password fields are not empty using Yoda style
+          is_enabled: _password_ctrl.text.isNotEmpty &&
+              _confirm_ctrl.text.isNotEmpty,
           // Submission callback
           on_pressed: _submit,
           // Loading indicator
@@ -229,9 +244,11 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                             borderRadius: BorderRadius.circular(10), // Rounded corners
                             border: Border.all(color: border_color), // Subtle border
                           ),
-                          // RotatedBox to mirror the back chevron icon in Arabic RTL mode (BUG-012)
+                          // RotatedBox to mirror the back chevron icon in Arabic
+                          // RTL mode (BUG-012)
                           child: RotatedBox(
-                            // Quarter turns set to 0 to keep the back chevron pointing left in both languages
+                            // Quarter turns set to 0 to keep the back chevron
+                            // pointing left in both languages
                             quarterTurns: 0,
                             // Chevron back icon widget
                             child: Icon(
@@ -263,13 +280,17 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                         Text(
                           s.create_new_password,
                           textAlign: TextAlign.center,
-                          style: AppTextStyles.get_forgot_password_title(is_arabic), // Reusing stylized typography
+                          // Reusing stylized typography
+                          style:
+                              AppTextStyles.get_forgot_password_title(is_arabic),
                         ),
                         const SizedBox(height: 8), // Vertical spacing
                         Text(
                           s.reset_password_subtitle,
                           textAlign: TextAlign.center,
-                          style: AppTextStyles.get_forgot_password_subtitle(is_arabic), // Reusing body style
+                          // Reusing body style
+                          style: AppTextStyles.get_forgot_password_subtitle(
+                              is_arabic),
                         ),
                       ],
                     ),
@@ -299,14 +320,13 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                     is_password: true,
                     text_input_action: TextInputAction.done,
                     validator: (v) {
-                      if (v == null || v.isEmpty) {
+                      if (null == v || v.isEmpty) {
                         return s.field_required;
-                      }
-                      /// Checking if the confirmation matches the original value.
-                      if (v != _password_ctrl.text) {
+                      } else if (v != _password_ctrl.text) {
                         return s.password_mismatch;
+                      } else {
+                        return null;
                       }
-                      return null;
                     },
                   ),
 

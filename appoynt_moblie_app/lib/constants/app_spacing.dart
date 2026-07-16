@@ -5,7 +5,7 @@
  * Version Information: V1.0.0
  * Dependencies: None
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/06/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
  * File Description: Defines centralized dimension, spacing, border radius, and animation constants.
  */
 
@@ -62,7 +62,8 @@ class AppSpacing {
   // Splash screen total delay duration in milliseconds before navigating
   static const int duration_splash_delay_ms = 4500;
 
-  // Default cross fade transition duration in milliseconds (reduced to 250 for faster, snappier transitions)
+  // Default cross fade transition duration in milliseconds (reduced to 250
+  // for faster, snappier transitions)
   static const int duration_fade_ms = 250;
 
   // Logo box height and width constraint size
@@ -122,7 +123,8 @@ class AppSpacing {
   // Rounded corner radius value for form input text fields
   static const double radius_input = 14.0;
 
-  // Vertical padding constraint for authentication input text fields (decreased by 2.5px to shrink height by 5px)
+  // Vertical padding constraint for authentication input text fields
+  // (decreased by 2.5px to shrink height by 5px)
   static const double padding_input_vertical = 13.5;
 
   // Typographic font size for input field labels

@@ -3,20 +3,20 @@
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
  * Version Information: V1.0.0
- * Dependencies: 
- *   - package:dartz/dartz.dart
- *   - package:equatable/equatable.dart
- *   - package:appoynt_mobile_app/core/error/failures.dart
+ * Dependencies: package:dartz/dartz.dart, package:equatable/equatable.dart,
+ *   package:appoynt_mobile_app/core/error/failures.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 02/07/2026]
- * File Description:
- *   Defines the base abstract contract for all business logic UseCases 
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: Defines the base abstract contract for all business logic UseCases
  *   in the application, following the Clean Architecture pattern.
  */
 
-import 'package:dartz/dartz.dart'; // Importing dartz for functional error handling (Either type)
-import 'package:equatable/equatable.dart'; // Importing Equatable for value-based parameter comparison
-import 'package:appoynt_mobile_app/core/error/failures.dart'; // Importing failure definitions for error states
+// Importing dartz for functional error handling (Either type)
+import 'package:dartz/dartz.dart';
+// Importing Equatable for value-based parameter comparison
+import 'package:equatable/equatable.dart';
+// Importing failure definitions for error states
+import 'package:appoynt_mobile_app/core/error/failures.dart';
 
 /// Abstract base class that all UseCases must implement.
 /// [Type] defines the success result type.

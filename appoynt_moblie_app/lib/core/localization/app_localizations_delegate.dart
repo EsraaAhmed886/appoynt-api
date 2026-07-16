@@ -3,15 +3,15 @@
  * Author: Kholoud Khaled
  * Date of Creation: 20/06/2026
  * Version Information: V1.0.0
- * Dependencies:
- *   - package:flutter/material.dart
- *   - package:flutter_localizations/flutter_localizations.dart
- *   - package:appoynt_mobile_app/core/localization/app_localizations.dart
- *   - package:appoynt_mobile_app/core/localization/app_localizations_en.dart
- *   - package:appoynt_mobile_app/core/localization/app_localizations_ar.dart
+ * Dependencies: package:flutter/material.dart,
+ *   package:flutter_localizations/flutter_localizations.dart,
+ *   package:appoynt_mobile_app/core/localization/app_localizations.dart,
+ *   package:appoynt_mobile_app/core/localization/app_localizations_en.dart,
+ *   package:appoynt_mobile_app/core/localization/app_localizations_ar.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/06/2026]
- * File Description: Delegate factory that registers and loads custom translation dictionaries based on system locale.
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: Delegate factory that registers and loads custom
+ *   translation dictionaries based on system locale.
  */
 
 // Importing core material framework widgets

@@ -3,12 +3,10 @@
  * Author: Kholoud Khaled
  * Date of Creation: 05/07/2026
  * Version Information: V1.0.0
- * Dependencies:
- *   - package:appoynt_mobile_app/core/routing/route_export.dart
+ * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 10/07/2026]
- * File Description:
- *   A celebratory screen displayed after successful password reset.
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: A celebratory screen displayed after successful password reset.
  *   Features entrance animations and a manual redirection button back to login.
  */
 

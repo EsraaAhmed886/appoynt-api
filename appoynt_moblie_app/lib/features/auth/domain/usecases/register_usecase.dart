@@ -3,24 +3,25 @@
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
  * Version Information: V1.0.0
- * Dependencies: 
- *   - package:dartz/dartz.dart
- *   - package:appoynt_mobile_app/core/error/failures.dart
- *   - package:appoynt_mobile_app/core/usecases/usecase.dart
- *   - auth_repository.dart
- *   - user_entity.dart
+ * Dependencies: package:dartz/dartz.dart, package:appoynt_mobile_app/core/error/failures.dart,
+ *   package:appoynt_mobile_app/core/usecases/usecase.dart, auth_repository.dart, user_entity.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 02/07/2026]
- * File Description:
- *   Represents the registration business logic action.
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: Represents the registration business logic action.
  */
 
-import 'package:appoynt_mobile_app/core/error/failures.dart'; // Failure definitions
-import 'package:appoynt_mobile_app/core/usecases/usecase.dart'; // Base use case class
-import 'package:appoynt_mobile_app/features/auth/domain/entities/user_entity.dart'; // User entity
-import 'package:appoynt_mobile_app/features/auth/domain/repositories/auth_repository.dart'; // Auth repository contract
-import 'package:dartz/dartz.dart'; // Functional programming support
-import 'package:equatable/equatable.dart'; // Value-based comparison
+// Failure definitions
+import 'package:appoynt_mobile_app/core/error/failures.dart';
+// Base use case class
+import 'package:appoynt_mobile_app/core/usecases/usecase.dart';
+// User entity
+import 'package:appoynt_mobile_app/features/auth/domain/entities/user_entity.dart';
+// Auth repository contract
+import 'package:appoynt_mobile_app/features/auth/domain/repositories/auth_repository.dart';
+// Functional programming support
+import 'package:dartz/dartz.dart';
+// Value-based comparison
+import 'package:equatable/equatable.dart';
 
 /// UseCase for performing user registration.
 class RegisterUseCase extends UseCase<UserEntity, RegisterParams> {

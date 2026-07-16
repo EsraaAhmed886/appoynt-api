@@ -3,21 +3,20 @@
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
  * Version Information: V1.0.0
- * Dependencies:
- *   - package:flutter/material.dart
- *   - package:connectivity_plus/connectivity_plus.dart
- *   - package:appoynt_mobile_app/core/widgets/no_internet_page.dart
+ * Dependencies: package:flutter/material.dart,
+ *   package:connectivity_plus/connectivity_plus.dart,
+ *   package:appoynt_mobile_app/core/widgets/no_internet_page.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 10/07/2026]
- * File Description:
- *   A wrapper widget that listens to global connectivity changes and displays 
- *   NoInternetPage when the application goes offline.
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: A wrapper widget that listens to global connectivity changes
+ *   and displays NoInternetPage when the application goes offline.
  */
 
 import 'dart:async'; // Subscription handling import
 import 'package:flutter/material.dart'; // Standard Flutter material widgets
 import 'package:connectivity_plus/connectivity_plus.dart'; // Connectivity listener library
-import 'package:appoynt_mobile_app/core/widgets/no_internet_page.dart'; // Fallback No Internet UI representation
+// Fallback No Internet UI representation
+import 'package:appoynt_mobile_app/core/widgets/no_internet_page.dart';
 
 /// Root wrapper stateful widget checking connection status dynamically.
 class ConnectivityWrapper extends StatefulWidget {
@@ -78,7 +77,8 @@ class _ConnectivityWrapperState extends State<ConnectivityWrapper> {
   /// Updates connection status state after analyzing the results list.
   void _update_connection_status(List<ConnectivityResult> results) {
     // Parse list to check if none is the only active status
-    final bool offline = results.isEmpty || (1 == results.length && ConnectivityResult.none == results.first);
+    final bool offline = results.isEmpty ||
+        (1 == results.length && ConnectivityResult.none == results.first);
     
     // Toggle state properties if a mismatch is detected using Yoda comparison
     if (offline != _is_offline) {
@@ -119,15 +119,15 @@ class _ConnectivityWrapperState extends State<ConnectivityWrapper> {
           child: widget.child,
         ),
         // Overlay NoInternetPage dynamically if connection status is offline
-        if (_is_offline)
-          // Render error screen overlay targeting retry callbacks
-          NoInternetPage(
-            // Tap gesture retry connection handler callback
-            on_retry: () async {
-              // Trigger async connection interfaces rechecks
-              await _retry_connection();
-            },
-          ),
+        true == _is_offline
+            ? NoInternetPage(
+                // Tap gesture retry connection handler callback
+                on_retry: () async {
+                  // Trigger async connection interfaces rechecks
+                  await _retry_connection();
+                },
+              )
+            : const SizedBox.shrink(),
       ],
     );
   }

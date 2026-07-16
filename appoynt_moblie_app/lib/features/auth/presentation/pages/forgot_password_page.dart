@@ -3,19 +3,19 @@
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
  * Version Information: V1.0.0
- * Dependencies: 
- *   - package:appoynt_mobile_app/core/routing/route_export.dart
- *   - package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart
+ * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart,
+ *   package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 14/07/2026]
- * File Description:
- *   The Forgot Password screen allows users to request a reset code via 
- *   their phone number. It follows the centralized design system and 
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: The Forgot Password screen allows users to request a reset code via
+ *   their phone number. It follows the centralized design system and
  *   supports full bilingual localization.
  */
 
-import 'package:appoynt_mobile_app/core/routing/route_export.dart'; // Centralized barrel for UI dependencies and global logic
-import 'package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart'; // Barrel file exporting AuthTextField
+// Centralized barrel for UI dependencies and global logic
+import 'package:appoynt_mobile_app/core/routing/route_export.dart';
+// Barrel file exporting AuthTextField
+import 'package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart';
 
 /// The main forgot password screen widget.
 class ForgotPasswordPage extends StatefulWidget {
@@ -83,8 +83,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           _form_key.currentState?.validate();
+        } else {
+          // Do nothing if the widget is no longer mounted
         }
       });
+    } else {
+      // Do nothing since form has not been submitted or locale is unchanged
     }
     _last_locale = locale; // Updating the last known locale
   }
@@ -154,8 +158,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     });
     
     /// Triggering standard Flutter form validation.
-    if (!_form_key.currentState!.validate()) {
+    if (false == _form_key.currentState!.validate()) {
       return;
+    } else {
+      // Proceed with submission if form is valid
     }
     
     /// Activating the loading state.
@@ -185,10 +191,18 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     
     /// Dynamically resolved colors.
-    final Color background_color = true == is_dark ? AppColors.background_dark : AppColors.background_light;
-    final Color text_primary = true == is_dark ? AppColors.text_dark_primary : AppColors.text_light_primary;
-    final Color card_color = true == is_dark ? AppColors.surface_dark : Colors.white;
-    final Color border_color = true == is_dark ? AppColors.border_dark : AppColors.border_light;
+    final Color background_color = true == is_dark
+        ? AppColors.background_dark
+        : AppColors.background_light;
+    final Color text_primary = true == is_dark
+        ? AppColors.text_dark_primary
+        : AppColors.text_light_primary;
+    final Color card_color = true == is_dark
+        ? AppColors.surface_dark
+        : Colors.white;
+    final Color border_color = true == is_dark
+        ? AppColors.border_dark
+        : AppColors.border_light;
 
     return Scaffold(
       backgroundColor: background_color, // Applying theme background color
@@ -215,9 +229,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         borderRadius: BorderRadius.circular(10), // Rounded corners
                         border: Border.all(color: border_color), // Subtle border
                       ),
-                      // RotatedBox to mirror the back chevron icon in Arabic RTL mode (BUG-012)
+                      // RotatedBox to mirror the back chevron icon in Arabic
+                      // RTL mode (BUG-012)
                       child: RotatedBox(
-                        // Quarter turns set to 0 to keep the back chevron pointing left in both languages
+                        // Quarter turns set to 0 to keep the back chevron
+                        // pointing left in both languages
                         quarterTurns: 0,
                         // Chevron back icon widget
                         child: Icon(

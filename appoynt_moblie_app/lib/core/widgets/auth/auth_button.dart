@@ -3,8 +3,7 @@
  * Author: Kholoud Khaled
  * Date of Creation: 28/05/2026
  * Version Information: V1.0.0
- * Dependencies:
- *   - package:appoynt_mobile_app/core/routing/route_export.dart
+ * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 28/05/2026]
  * File Description: Accessible primary button wrapper supporting loading state indicator spinner.

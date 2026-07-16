@@ -3,10 +3,10 @@
  * Author: Kholoud Khaled
  * Date of Creation: 28/05/2026
  * Version Information: V1.0.0
- * Dependencies:
- *   - package:appoynt_mobile_app/core/routing/route_export.dart
+ * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart,
+ *   package:flutter/services.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 12/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
  * File Description: Secure Password input field forcing LTR directionality with visibility toggles.
  */
 
@@ -142,7 +142,8 @@ class _SmartPasswordFieldState extends State<SmartPasswordField> {
                     // Visual styling decoration
                     decoration: BoxDecoration(
                       // Set corner radius using spacing constants
-                      borderRadius: BorderRadius.circular(AppSpacing.radius_input),
+                      borderRadius:
+                          BorderRadius.circular(AppSpacing.radius_input),
                       // Shadows list
                       boxShadow: [
                         BoxShadow(
@@ -187,8 +188,10 @@ class _SmartPasswordFieldState extends State<SmartPasswordField> {
                 style: TextStyle(
                   // Set font size using spacing constants
                   fontSize: AppSpacing.font_size_text,
-                  // Apply theme-appropriate text color token using Yoda style check
-                  color: true == is_dark ? AppColors.text_dark_primary : AppColors.text_light_primary,
+                  // Apply theme-appropriate text color token using Yoda style
+                  color: true == is_dark
+                      ? AppColors.text_dark_primary
+                      : AppColors.text_light_primary,
                 ),
                 // Input field decoration configuration
                 decoration: InputDecoration(
@@ -235,15 +238,20 @@ class _SmartPasswordFieldState extends State<SmartPasswordField> {
                   // Enable background color fills
                   filled: true,
                   // Apply dynamic background color fill using Yoda style check
-                  fillColor: true == is_dark ? AppColors.surface_dark : AppColors.input_fill,
+                  fillColor: true == is_dark
+                      ? AppColors.surface_dark
+                      : AppColors.input_fill,
                   // Standard enabled border configuration
                   enabledBorder: OutlineInputBorder(
                     // Set standard corner curves radius using spacing constants
-                    borderRadius: BorderRadius.circular(AppSpacing.radius_input),
+                    borderRadius:
+                        BorderRadius.circular(AppSpacing.radius_input),
                     // Set line border color options using Yoda style check
                     borderSide: BorderSide(
                       // Set color token dynamically
-                      color: true == is_dark ? AppColors.border_dark : AppColors.border_light,
+                      color: true == is_dark
+                          ? AppColors.border_dark
+                          : AppColors.border_light,
                       // Set border line thickness using spacing constants
                       width: AppSpacing.border_width_thin,
                     ),
@@ -251,7 +259,8 @@ class _SmartPasswordFieldState extends State<SmartPasswordField> {
                   // Focused active border configuration
                   focusedBorder: OutlineInputBorder(
                     // Set standard corner curves radius using spacing constants
-                    borderRadius: BorderRadius.circular(AppSpacing.radius_input),
+                    borderRadius:
+                        BorderRadius.circular(AppSpacing.radius_input),
                     // Set active brand primary border line
                     borderSide: const BorderSide(
                       // Set color token to primary brand
@@ -263,7 +272,8 @@ class _SmartPasswordFieldState extends State<SmartPasswordField> {
                   // Failed validation error border configuration
                   errorBorder: OutlineInputBorder(
                     // Set standard corner curves radius using spacing constants
-                    borderRadius: BorderRadius.circular(AppSpacing.radius_input),
+                    borderRadius:
+                        BorderRadius.circular(AppSpacing.radius_input),
                     // Set warning error border line
                     borderSide: const BorderSide(
                       // Set color token to error
@@ -275,7 +285,8 @@ class _SmartPasswordFieldState extends State<SmartPasswordField> {
                   // Failed validation active focused border configuration
                   focusedErrorBorder: OutlineInputBorder(
                     // Set standard corner curves radius using spacing constants
-                    borderRadius: BorderRadius.circular(AppSpacing.radius_input),
+                    borderRadius:
+                        BorderRadius.circular(AppSpacing.radius_input),
                     // Set thick warning error border line
                     borderSide: const BorderSide(
                       // Set color token to error

@@ -3,8 +3,7 @@
  * Author: Kholoud Khaled
  * Date of Creation: 28/05/2026
  * Version Information: V1.0.0
- * Dependencies:
- *   - package:appoynt_mobile_app/core/routing/route_export.dart
+ * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 28/05/2026]
  * File Description: Renders the language toggle dropdown popup menu capsule.
@@ -83,7 +82,8 @@ class GlobalLanguageButton extends StatelessWidget {
         // Arabic code label
         : localizations.language_code_ar;
 
-    // Resolve alternate language full name spelling based on locale direction check using Yoda style
+    // Resolve alternate language full name spelling based on locale direction check
+    // using Yoda style check
     final String other_full = true == is_arabic
         // English full name spelling
         ? localizations.language_name_en

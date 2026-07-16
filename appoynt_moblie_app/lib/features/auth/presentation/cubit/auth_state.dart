@@ -3,15 +3,13 @@
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
  * Version Information: V1.0.0
- * Dependencies: 
- *   - auth_cubit.dart (Part of)
+ * Dependencies: auth_cubit.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 02/07/2026]
- * File Description:
- *   Defines the various states for the authentication feature.
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: Defines the various states for the authentication feature.
  */
 
-part of 'auth_cubit.dart'; // Declaring that this is part of auth_cubit.dart
+part of 'auth_cubit.dart';
 
 /// Abstract base class for all authentication states.
 abstract class AuthState extends Equatable {

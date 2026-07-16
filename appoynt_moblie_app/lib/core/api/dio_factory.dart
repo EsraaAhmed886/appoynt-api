@@ -3,15 +3,10 @@
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
  * Version Information: V1.0.0
- * Dependencies: 
- *   - package:dio/dio.dart
- *   - package:flutter/foundation.dart
- *   - api_constants.dart
+ * Dependencies: package:dio/dio.dart, package:flutter/foundation.dart, api_constants.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 02/07/2026]
- * File Description:
- *   A factory class that configures and provides a singleton instance of 
- *   the Dio client. Uses debugPrint for reliable logging across all platforms.
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: A factory class that configures and provides a singleton instance of the Dio client.
  */
 
 import 'package:appoynt_mobile_app/core/api/api_constants.dart'; // Centralized API constants

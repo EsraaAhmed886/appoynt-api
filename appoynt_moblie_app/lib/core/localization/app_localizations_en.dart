@@ -3,12 +3,12 @@
  * Author: Kholoud Khaled
  * Date of Creation: 20/06/2026
  * Version Information: V1.0.0
- * Dependencies:
- *   - package:flutter/material.dart
- *   - package:appoynt_mobile_app/core/localization/app_localizations.dart
+ * Dependencies: package:flutter/material.dart,
+ *   package:appoynt_mobile_app/core/localization/app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 02/07/2026]
- * File Description: English concrete implementation of localizations containing only onboarding strings.
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: English concrete implementation of localizations
+ *   containing onboarding and authentication strings.
  */
 
 // Importing standard material framework libraries
@@ -69,9 +69,10 @@ class AppLocalizationsEn extends AppLocalizations {
   List<String> get onboarding_subtitles {
     // Return list of paragraphs explaining app value propositions
     return const [
-      'Find trusted healthcare and book your appointment in just a few taps.', // Page 1 description
-      'Track your real-time queue and get updates so you always know when it\'s your turn.', // Page 2 description
-      'All your records, payments and reminders — all in one safe place.', // Page 3 description
+      'Find trusted healthcare and book your appointment in just a few taps.',
+      // Page 2 description
+      'Track your real-time queue and get updates so you always know when it\'s your turn.',
+      'All your records, payments and reminders — all in one safe place.',
     ];
   }
 
@@ -492,7 +493,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get sent_code_info {
     // Return English information card text
-    return 'We have sent a verification code to your phone number. Please enter it to verify your account.';
+    return 'We have sent a verification code to your phone number. '
+        'Please enter it to verify your account.';
   }
 
   // Override getter returning OTP verification action button label
@@ -604,7 +606,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get password_reset_success_body {
     // Return English password reset success description
-    return 'Your password has been updated successfully.\nYou can now sign in with your new password.';
+    return 'Your password has been updated successfully.\n'
+        'You can now sign in with your new password.';
   }
 
   // Override getter returning redirecting to login page button label

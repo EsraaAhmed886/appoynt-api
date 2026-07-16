@@ -3,12 +3,11 @@
  * Author: Kholoud Khaled
  * Date of Creation: 28/05/2026
  * Version Information: V1.0.0
- * Dependencies:
- *   - package:equatable/equatable.dart
- *   - package:flutter/material.dart
+ * Dependencies: package:equatable/equatable.dart, package:flutter/material.dart
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 28/05/2026]
- * File Description: Defines the configuration states for global settings, such as current locale (language).
+ * File Description: Defines the configuration states for global settings,
+ *   such as current locale (language).
  */
 
 part of 'global_cubit.dart'; // Linking this state definition to global_cubit.dart

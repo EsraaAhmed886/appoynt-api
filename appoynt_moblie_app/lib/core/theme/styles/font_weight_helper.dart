@@ -3,11 +3,11 @@
  * Author: Kholoud Khaled
  * Date of Creation: 20/06/2026
  * Version Information: V1.0.0
- * Dependencies:
- *   - package:flutter/material.dart
+ * Dependencies: package:flutter/material.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/06/2026]
- * File Description: centralizes standard font weight constant mapping keys to ensure design system consistency.
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: Centralizes standard font weight constant mapping
+ *   keys to ensure design system consistency.
  */
 
 // Importing core material framework graphics libraries

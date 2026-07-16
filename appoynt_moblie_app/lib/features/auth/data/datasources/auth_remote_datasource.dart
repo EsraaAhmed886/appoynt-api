@@ -3,15 +3,11 @@
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
  * Version Information: V1.0.0
- * Dependencies: 
- *   - package:dio/dio.dart
- *   - api_constants.dart
- *   - user_model.dart
+ * Dependencies: package:dio/dio.dart, api_constants.dart, user_model.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 02/07/2026]
- * File Description:
- *   Handles all remote data operations related to authentication by communicating 
- *   directly with the backend API using the Dio client.
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: Handles all remote data operations related to authentication
+ *   by communicating directly with the backend API using the Dio client.
  */
 
 import 'package:appoynt_mobile_app/core/api/api_constants.dart'; // Endpoints and base settings

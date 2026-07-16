@@ -3,12 +3,12 @@
  * Author: Kholoud Khaled
  * Date of Creation: 20/06/2026
  * Version Information: V1.0.0
- * Dependencies:
- *   - package:flutter/material.dart
- *   - package:appoynt_mobile_app/core/localization/app_localizations.dart
+ * Dependencies: package:flutter/material.dart,
+ *   package:appoynt_mobile_app/core/localization/app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 02/07/2026]
- * File Description: Arabic concrete implementation of localizations containing only onboarding strings.
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: Arabic concrete implementation of localizations
+ *   containing onboarding and authentication strings.
  */
 
 // Importing standard material framework libraries
@@ -69,9 +69,12 @@ class AppLocalizationsAr extends AppLocalizations {
   List<String> get onboarding_subtitles {
     // Return list of Arabic paragraphs explaining app value propositions
     return const [
-      'ابحث عن رعاية صحية موثوقة واحجز موعدك في بضع نقرات فقط.', // Page 1 description text in Arabic
-      'تابع دورك في الوقت الفعلي واحصل على تحديثات حتى تعرف دائماً متى يحين دورك.', // Page 2 description text in Arabic
-      'جميع سجلاتك ومدفوعاتك وتذكيراتك — كلها في مكان آمن واحد.', // Page 3 description text in Arabic
+      // Page 1 description text in Arabic
+      'ابحث عن رعاية صحية موثوقة واحجز موعدك في بضع نقرات فقط.',
+      // Page 2 description text in Arabic
+      'تابع دورك في الوقت الفعلي واحصل على تحديثات حتى تعرف دائماً متى يحين دورك.',
+      // Page 3 description text in Arabic
+      'جميع سجلاتك ومدفوعاتك وتذكيراتك — كلها في مكان آمن واحد.',
     ];
   }
 

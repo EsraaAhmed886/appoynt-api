@@ -3,11 +3,9 @@
  * Author: Kholoud Khaled
  * Date of Creation: 19/06/2026
  * Version Information: V1.1.0
- * Dependencies:
- *   - flutter/material.dart
- *   - package:flutter_secure_storage/flutter_secure_storage.dart
+ * Dependencies: package:flutter/material.dart, package:flutter_secure_storage/flutter_secure_storage.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 19/06/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
  * File Description: Defines the theme mode state manager notifier with persistent storage backup.
  */
 

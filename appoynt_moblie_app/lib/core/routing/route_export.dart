@@ -3,17 +3,17 @@
  * Author: Kholoud Khaled
  * Date of Creation: 19/06/2026
  * Version Information: V1.0.0
- * Dependencies:
- *   - flutter/material.dart
- *   - package:appoynt_mobile_app/constants/app_assets.dart
- *   - package:appoynt_mobile_app/constants/app_spacing.dart
- *   - package:appoynt_mobile_app/core/theme/colors/app_colors.dart
- *   - package:appoynt_mobile_app/core/theme/modes/light_mode.dart
- *   - package:appoynt_mobile_app/core/theme/modes/dark_mode.dart
- *   - package:appoynt_mobile_app/core/theme/modes/theme_mode.dart
+ * Dependencies: flutter/material.dart,
+ *   package:appoynt_mobile_app/constants/app_assets.dart,
+ *   package:appoynt_mobile_app/constants/app_spacing.dart,
+ *   package:appoynt_mobile_app/core/theme/colors/app_colors.dart,
+ *   package:appoynt_mobile_app/core/theme/modes/light_mode.dart,
+ *   package:appoynt_mobile_app/core/theme/modes/dark_mode.dart,
+ *   package:appoynt_mobile_app/core/theme/modes/theme_mode.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/06/2026]
- * File Description: Acts as a central global barrel file for the application's foundational UI layer.
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: Acts as a central global barrel file for the
+ *   application's foundational UI layer.
  */
 
 // Exporting standard material library framework for UI components

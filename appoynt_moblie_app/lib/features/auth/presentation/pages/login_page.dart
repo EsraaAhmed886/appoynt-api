@@ -3,15 +3,14 @@
  * Author: Kholoud Khaled
  * Date of Creation: 28/05/2026
  * Version Information: V1.0.0
- * Dependencies:
- *   - package:appoynt_mobile_app/core/routing/route_export.dart
- *   - package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart
- *   - package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart
- *   - package:appoynt_mobile_app/features/auth/presentation/widgets/smart_identifier_field.dart
- *   - package:appoynt_mobile_app/features/auth/presentation/widgets/smart_password_field.dart
- *   - package:flutter_bloc/flutter_bloc.dart
+ * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart,
+ *   package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart,
+ *   package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart,
+ *   package:appoynt_mobile_app/features/auth/presentation/widgets/smart_identifier_field.dart,
+ *   package:appoynt_mobile_app/features/auth/presentation/widgets/smart_password_field.dart,
+ *   package:flutter_bloc/flutter_bloc.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 10/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
  * File Description: Renders the user login gateway presentation page under BLoC configurations.
  */
 
@@ -236,10 +235,11 @@ class _LoginPageState extends State<LoginPage> {
 
     // Check email specific structure rules if detected using Yoda style check
     if (_InputType.email == _detected_type) {
-      // Verify email pattern syntax characters mapping using Yoda style check (BUG-003)
-      if (false ==
-          RegExp(r'^[a-zA-Z0-9]+([._-][a-zA-Z0-9]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,4}$')
-              .hasMatch(input_value.trim())) {
+      // Verify email pattern syntax characters mapping (BUG-003)
+      final bool matches = RegExp(
+              r'^[a-zA-Z0-9]+([._-][a-zA-Z0-9]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,4}$')
+          .hasMatch(input_value.trim());
+      if (false == matches) {
         // Return invalid email translation warning
         return strings_catalog.invalid_email;
       } else {
@@ -334,7 +334,9 @@ class _LoginPageState extends State<LoginPage> {
     // Check email specific structure rules if email type was detected using Yoda style check
     if (_InputType.email == _detected_type) {
       // Verify email pattern syntax characters mapping using Yoda style check
-      final bool email_valid = RegExp(r'^[a-zA-Z0-9]+([._-][a-zA-Z0-9]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,4}$').hasMatch(id);
+      final bool email_valid = RegExp(
+              r'^[a-zA-Z0-9]+([._-][a-zA-Z0-9]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,4}$')
+          .hasMatch(id);
       if (false == email_valid) {
         // Return false indicating email pattern requirements are unmet
         return false;
@@ -460,7 +462,8 @@ class _LoginPageState extends State<LoginPage> {
 
                     // Section positioning language toggle dropdown
                     Align(
-                      // Toggle layout alignments dynamically depending on language code direction using Yoda style check
+                      // Toggle layout alignments dynamically depending on language code
+                      // direction using Yoda style check
                       alignment: true == is_arabic
                           ? Alignment.centerLeft
                           : Alignment.centerRight,
@@ -503,7 +506,8 @@ class _LoginPageState extends State<LoginPage> {
                     // Space before header texts using spacing constants
                     const SizedBox(height: AppSpacing.space_m),
 
-                    // Welcoming header title and subtitle block wrapped in Transform to offset image transparent spacing
+                    // Welcoming header title and subtitle block wrapped in Transform
+                    // to offset image transparent spacing
                     Transform.translate(
                       // Shift layout up by 20 pixels
                       offset: const Offset(0.0, -20.0),
@@ -550,7 +554,8 @@ class _LoginPageState extends State<LoginPage> {
                       child: Form(
                         // Bind global identification key
                         key: _form_key,
-                        // Toggle validation checks triggers dynamically based on submission attempts using Yoda style check
+                        // Toggle validation checks triggers dynamically based on
+                        // submission attempts using Yoda style check
                         autovalidateMode: true == _form_submitted
                             // Trigger validation checks immediately on text changes
                             ? AutovalidateMode.onUserInteraction
@@ -677,7 +682,8 @@ class _LoginPageState extends State<LoginPage> {
                                       AppTextStyles.get_body_medium(is_arabic),
                                   // children array
                                   children: [
-                                    // Inline TextSpan nesting sign up link with recognizer to prevent alignment shift
+                                    // Inline TextSpan nesting sign up link with recognizer to
+                                    // prevent alignment shift
                                     TextSpan(
                                       // Prefix leading space and localized registration label
                                       text: ' ${s.sign_up}',

@@ -3,13 +3,12 @@
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
  * Version Information: V1.0.0
- * Dependencies:
- *   - package:appoynt_mobile_app/core/routing/route_export.dart
- *   - package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart
+ * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart,
+ *   package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart,
+ *   package:flutter/gestures.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 14/07/2026]
- * File Description:
- *   Renders the registration page containing the form fields, terms check box,
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: Renders the registration page containing the form fields, terms check box,
  *   and validations adapting fully to light/dark themes and localizations.
  */
 
@@ -175,7 +174,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
     // Validate email field using the strict email regex
     final String email = _email_ctrl.text.trim();
-    if (false == RegExp(r'^[a-zA-Z0-9]+([._-][a-zA-Z0-9]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,4}$').hasMatch(email)) {
+    final bool is_email_valid = RegExp(
+            r'^[a-zA-Z0-9]+([._-][a-zA-Z0-9]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,4}$')
+        .hasMatch(email);
+    if (false == is_email_valid) {
       return false;
     } else {
       // Empty action block to satisfy compiler
@@ -318,7 +320,10 @@ class _RegisterPageState extends State<RegisterPage> {
       // Empty action block to satisfy compiler
     }
     // Verify strict regex syntax matching check (BUG-003)
-    if (false == RegExp(r'^[a-zA-Z0-9]+([._-][a-zA-Z0-9]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,4}$').hasMatch(email_value.trim())) {
+    final bool is_email_pattern_valid = RegExp(
+            r'^[a-zA-Z0-9]+([._-][a-zA-Z0-9]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,4}$')
+        .hasMatch(email_value.trim());
+    if (false == is_email_pattern_valid) {
       // Return format warning string
       return strings_catalog.invalid_email;
     } else {
@@ -450,11 +455,10 @@ class _RegisterPageState extends State<RegisterPage> {
           child: Form(
             // Bind global identification key
             key: _form_key,
-            // Toggle validation checks triggers dynamically based on submission attempts using Yoda style check
+            // Toggle validation checks triggers dynamically based on
+            // submission attempts using Yoda style check
             autovalidateMode: true == _form_submitted
-                // Trigger validation checks immediately on text changes
                 ? AutovalidateMode.onUserInteraction
-                // Disable checks during layout setup
                 : AutovalidateMode.disabled,
             // Column layout structuring credentials fields
             child: Column(
@@ -483,18 +487,27 @@ class _RegisterPageState extends State<RegisterPage> {
                         height: 40.0,
                         // Visual decorations
                         decoration: BoxDecoration(
-                          // Container background adapts to dark mode using Yoda style check
-                          color: true == is_dark ? AppColors.surface_dark : AppColors.background_light,
+                          // Container background adapts to dark mode using
+                          // Yoda style check
+                          color: true == is_dark
+                              ? AppColors.surface_dark
+                              : AppColors.background_light,
                           // Border radius curves using spacing constants
-                          borderRadius: BorderRadius.circular(AppSpacing.radius_l),
-                          // Border colors adapt to dark mode using Yoda style check
+                          borderRadius:
+                              BorderRadius.circular(AppSpacing.radius_l),
+                          // Border colors adapt to dark mode using
+                          // Yoda style check
                           border: Border.all(
-                            color: true == is_dark ? AppColors.border_dark : AppColors.border_light,
+                            color: true == is_dark
+                                ? AppColors.border_dark
+                                : AppColors.border_light,
                           ),
                         ),
-                        // RotatedBox to mirror the back chevron icon in Arabic RTL mode (BUG-012)
+                        // RotatedBox to mirror the back chevron icon in Arabic
+                        // RTL mode (BUG-012)
                         child: RotatedBox(
-                          // Quarter turns set to 0 to keep the back chevron pointing left in both languages
+                          // Quarter turns set to 0 to keep the back chevron
+                          // pointing left in both languages
                           quarterTurns: 0,
                           // Chevron back icon widget
                           child: Icon(
@@ -502,8 +515,11 @@ class _RegisterPageState extends State<RegisterPage> {
                             Icons.arrow_back_ios_new_rounded,
                             // Set layout size
                             size: 18.0,
-                            // Select icon color dynamically using Yoda style check
-                            color: true == is_dark ? AppColors.text_dark_primary : AppColors.text_light_primary,
+                            // Select icon color dynamically using
+                            // Yoda style check
+                            color: true == is_dark
+                                ? AppColors.text_dark_primary
+                                : AppColors.text_light_primary,
                           ),
                         ),
                       ),
@@ -718,18 +734,28 @@ class _RegisterPageState extends State<RegisterPage> {
                         margin: const EdgeInsets.only(top: 1.0),
                         // Visual decorations
                         decoration: BoxDecoration(
-                          // Dynamic background color matching active state using Yoda style check
+                          // Dynamic background color matching active state using
+                          // Yoda style check
                           color: true == _agree_to_terms
                               ? AppColors.primary_color
-                              : (true == is_dark ? AppColors.surface_dark : AppColors.background_light),
+                              : (true == is_dark
+                                  ? AppColors.surface_dark
+                                  : AppColors.background_light),
                           // Corner radius curves using spacing constants
-                          borderRadius: BorderRadius.circular(AppSpacing.radius_m),
-                          // Border boundaries dynamic color resolving using Yoda style check
+                          borderRadius:
+                              BorderRadius.circular(AppSpacing.radius_m),
+                          // Border boundaries dynamic color resolving using
+                          // Yoda style check
                           border: Border.all(
-                            // Select border color based on error, active, or default states using Yoda style check
+                            // Select border color based on error, active, or
+                            // default states using Yoda style check
                             color: true == _terms_error
                                 ? AppColors.error
-                                : (true == _agree_to_terms ? AppColors.primary_color : (true == is_dark ? AppColors.border_dark : AppColors.border_light)),
+                                : (true == _agree_to_terms
+                                    ? AppColors.primary_color
+                                    : (true == is_dark
+                                        ? AppColors.border_dark
+                                        : AppColors.border_light)),
                             // Border line width
                             width: 1.8,
                           ),
@@ -761,7 +787,9 @@ class _RegisterPageState extends State<RegisterPage> {
                               is_arabic,
                               custom_color: true == _terms_error
                                   ? AppColors.error
-                                  : (true == is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary),
+                                  : (true == is_dark
+                                      ? AppColors.text_dark_secondary
+                                      : AppColors.text_light_secondary),
                             ).copyWith(
                               // Spacing size
                               fontSize: 13.0,
@@ -811,42 +839,44 @@ class _RegisterPageState extends State<RegisterPage> {
                     ],
                   ),
                 ),
-                // Display error warning prompt below checkbox row dynamically using Yoda style check
-                if (true == _terms_error)
-                  // Padding container wrapping text warning
-                  Padding(
-                    // Apply top spacing margin and offset alignments
-                    padding: const EdgeInsets.only(top: 6.0, left: 4.0),
-                    // Row structuring warnings
-                    child: Row(
-                      // children list
-                      children: [
-                        // Alert warning error icon
-                        const Icon(
-                          // Warning circle icon
-                          Icons.error_outline_rounded,
-                          // Set layout size
-                          size: 14.0,
-                          // Error color
-                          color: AppColors.error,
+                // Display error warning prompt below checkbox row dynamically
+                // using Yoda style check
+                true == _terms_error
+                    ? Padding(
+                        // Apply top spacing margin and offset alignments
+                        padding: const EdgeInsets.only(top: 6.0, left: 4.0),
+                        // Row structuring warnings
+                        child: Row(
+                          // children list
+                          children: [
+                            // Alert warning error icon
+                            const Icon(
+                              // Warning circle icon
+                              Icons.error_outline_rounded,
+                              // Set layout size
+                              size: 14.0,
+                              // Error color
+                              color: AppColors.error,
+                            ),
+                            // Spacing gap between icon and label using spacing
+                            // constants
+                            const SizedBox(width: AppSpacing.space_s),
+                            // Text rendering warning alert translations
+                            Text(
+                              // Localized terms check requirement warnings
+                              s.terms_must_agree,
+                              // Text styling
+                              style: const TextStyle(
+                                // Error color
+                                color: AppColors.error,
+                                // Small font size
+                                fontSize: 12.0,
+                              ),
+                            ),
+                          ],
                         ),
-                        // Spacing gap between icon and label using spacing constants
-                        const SizedBox(width: AppSpacing.space_s),
-                        // Text rendering warning alert translations
-                        Text(
-                          // Localized terms check requirement warnings
-                          s.terms_must_agree,
-                          // Text styling
-                          style: const TextStyle(
-                            // Error color
-                            color: AppColors.error,
-                            // Small font size
-                            fontSize: 12.0,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                      )
+                    : const SizedBox.shrink(),
 
                 // Spacing gap before button using spacing constants
                 const SizedBox(height: AppSpacing.space_l),
@@ -880,12 +910,16 @@ class _RegisterPageState extends State<RegisterPage> {
                         fontFamily: AppFonts.by_locale(is_arabic),
                         // Spacing size
                         fontSize: 14.0,
-                        // Select secondary text color based on theme using Yoda style check
-                        color: true == is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary,
+                        // Select secondary text color based on theme using
+                        // Yoda style check
+                        color: true == is_dark
+                            ? AppColors.text_dark_secondary
+                            : AppColors.text_light_secondary,
                       ),
                       // children list
                       children: [
-                        // Clickable action anchor span widget with recognizer to prevent alignment shift
+                        // Clickable action anchor span widget with recognizer
+                        // to prevent alignment shift
                         TextSpan(
                           // Localized sign in word prefixed with space
                           text: ' ${s.sign_in}',
