@@ -644,4 +644,251 @@ class AppLocalizationsAr extends AppLocalizations {
     // Return Arabic password too long warning
     return 'يجب ألا تزيد كلمة المرور عن 30 حرفًا';
   }
+
+  // TODO: START OF DUMMY HOME SCREEN LOCALIZATION OVERRIDES - REMOVE ONCE FINAL HOME IS COMPLETED
+  // Override getter returning bottom navigation home label in Arabic
+  @override
+  String get dummy_home_tab_label {
+    // Return Arabic bottom navigation home tab label
+    return 'الرئيسية';
+  }
+
+  // Override getter returning bottom navigation appointments label in Arabic
+  @override
+  String get dummy_appointments_tab_label {
+    // Return Arabic bottom navigation appointments tab label
+    return 'المواعيد';
+  }
+
+  // Override getter returning bottom navigation queue label in Arabic
+  @override
+  String get dummy_queue_tab_label {
+    // Return Arabic bottom navigation queue tab label
+    return 'الطابور';
+  }
+
+  // Override getter returning bottom navigation records label in Arabic
+  @override
+  String get dummy_records_tab_label {
+    // Return Arabic bottom navigation records tab label
+    return 'السجلات';
+  }
+
+  // Override getter returning bottom navigation profile label in Arabic
+  @override
+  String get dummy_profile_tab_label {
+    // Return Arabic bottom navigation profile tab label
+    return 'الحساب';
+  }
+
+  // Override getter returning greeting time welcome text in Arabic
+  @override
+  String get dummy_good_morning {
+    // Return Arabic greeting time welcome text
+    return 'صباح الخير 👋';
+  }
+
+  // Override getter returning welcome banner subtitle text in Arabic
+  @override
+  String get dummy_welcome_to_appoynt_home {
+    // Return Arabic welcome banner subtitle text
+    return 'مرحباً بك في أبوانت';
+  }
+
+  // Override getter returning search field placeholder hint text in Arabic
+  @override
+  String get dummy_search_hint {
+    // Return Arabic search field placeholder hint text
+    return 'ابحث عن الأطباء، التخصصات...';
+  }
+
+  // Override getter returning book appointment action button label in Arabic
+  @override
+  String get dummy_book_appointment {
+    // Return Arabic book appointment action button label
+    return 'حجز\nموعد';
+  }
+
+  // Override getter returning queue status action button label in Arabic
+  @override
+  String get dummy_my_queue {
+    // Return Arabic queue status action button label
+    return 'طابوري';
+  }
+
+  // Override getter returning video call action button label in Arabic
+  @override
+  String get dummy_video_consult {
+    // Return Arabic video call action button label
+    return 'استشارة\nمرئية';
+  }
+
+  // Override getter returning medical records action button label in Arabic
+  @override
+  String get dummy_my_records {
+    // Return Arabic medical records action button label
+    return 'سجلاتي';
+  }
+
+  // Override getter returning appointment banner title label in Arabic
+  @override
+  String get dummy_next_appointment {
+    // Return Arabic appointment banner title label
+    return 'الموعد القادم';
+  }
+
+  // Override getter returning primary physician name in Arabic
+  @override
+  String get dummy_dr_ahmed_hassan {
+    // Return Arabic primary physician name
+    return 'د. أحمد حسن';
+  }
+
+  // Override getter returning physician specialty and timing details in Arabic
+  @override
+  String get dummy_general_medicine_today {
+    // Return Arabic physician specialty and timing details
+    return 'طب عام • اليوم، ٣:٠٠ م';
+  }
+
+  // Override getter returning view details navigation button label in Arabic
+  @override
+  String get dummy_view_details {
+    // Return Arabic view details navigation button label
+    return 'عرض التفاصيل';
+  }
+
+  // Override getter returning specialty categorization header label in Arabic
+  @override
+  String get dummy_specialties {
+    // Return Arabic specialty categorization header label
+    return 'التخصصات';
+  }
+
+  // Override getter returning view all items navigation link label in Arabic
+  @override
+  String get dummy_see_all {
+    // Return Arabic view all items navigation link label
+    return 'عرض الكل';
+  }
+
+  // Override getter returning cardiology specialty category name in Arabic
+  @override
+  String get dummy_cardiology {
+    // Return Arabic cardiology specialty category name
+    return 'القلب';
+  }
+
+  // Override getter returning neurology specialty category name in Arabic
+  @override
+  String get dummy_neurology {
+    // Return Arabic neurology specialty category name
+    return 'الأعصاب';
+  }
+
+  // Override getter returning pediatrics specialty category name in Arabic
+  @override
+  String get dummy_pediatrics {
+    // Return Arabic pediatrics specialty category name
+    return 'الأطفال';
+  }
+
+  // Override getter returning ophthalmology specialty category name in Arabic
+  @override
+  String get dummy_eye_care {
+    // Return Arabic ophthalmology specialty category name
+    return 'العيون';
+  }
+
+  // Override getter returning orthopedic specialty category name in Arabic
+  @override
+  String get dummy_orthopedic {
+    // Return Arabic orthopedic specialty category name
+    return 'العظام';
+  }
+
+  // Override getter returning featured physicians header label in Arabic
+  @override
+  String get dummy_top_doctors {
+    // Return Arabic featured physicians header label
+    return 'أبرز الأطباء';
+  }
+
+  // Override getter returning cardiologist practitioner name in Arabic
+  @override
+  String get dummy_dr_sarah_johnson {
+    // Return Arabic cardiologist practitioner name
+    return 'د. سارة جونسون';
+  }
+
+  // Override getter returning cardiologist specialty title in Arabic
+  @override
+  String get dummy_cardiologist {
+    // Return Arabic cardiologist specialty title
+    return 'طبيبة قلب';
+  }
+
+  // Override getter returning cardiology practice length details in Arabic
+  @override
+  String get dummy_years_experience_sarah {
+    // Return Arabic cardiology practice length details
+    return '١٢ سنة خبرة';
+  }
+
+  // Override getter returning neurologist practitioner name in Arabic
+  @override
+  String get dummy_dr_mohammed_ali {
+    // Return Arabic neurologist practitioner name
+    return 'د. محمد علي';
+  }
+
+  // Override getter returning neurologist specialty title in Arabic
+  @override
+  String get dummy_neurologist {
+    // Return Arabic neurologist specialty title
+    return 'طبيب أعصاب';
+  }
+
+  // Override getter returning neurology practice length details in Arabic
+  @override
+  String get dummy_years_experience_mohammed {
+    // Return Arabic neurology practice length details
+    return '٩ سنوات خبرة';
+  }
+
+  // Override getter returning pediatrician practitioner name in Arabic
+  @override
+  String get dummy_dr_fatima_ahmed {
+    // Return Arabic pediatrician practitioner name
+    return 'د. فاطمة أحمد';
+  }
+
+  // Override getter returning pediatrician specialty title in Arabic
+  @override
+  String get dummy_pediatrician {
+    // Return Arabic pediatrician specialty title
+    return 'طبيبة أطفال';
+  }
+
+  // Override getter returning pediatrics practice length details in Arabic
+  @override
+  String get dummy_years_experience_fatima {
+    // Return Arabic pediatrics practice length details
+    return '٧ سنوات خبرة';
+  }
+
+  // Override getter returning appointment book action trigger label in Arabic
+  @override
+  String get dummy_book {
+    // Return Arabic appointment book action trigger label
+    return 'حجز';
+  }
+
+  // Override getter returning feature under construction info label in Arabic
+  @override
+  String get dummy_coming_soon {
+    // Return Arabic feature under construction info label
+    return 'قريباً';
+  }
+  // TODO: END OF DUMMY HOME SCREEN LOCALIZATION OVERRIDES
 }

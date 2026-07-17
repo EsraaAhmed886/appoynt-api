@@ -54,4 +54,9 @@ export 'package:appoynt_mobile_app/core/theme/styles/app_text_styles.dart';
 
 // Exporting dynamic global configuration state manager cubit
 export 'package:appoynt_mobile_app/core/logic/global_cubit.dart';
+
+// TODO: START OF DUMMY HOME SCREEN EXPORT - REMOVE ONCE FINAL HOME IS COMPLETED
+// Exporting temporary dummy home page layout widget representation
+export 'package:appoynt_mobile_app/features/home/presentation/pages/home_page.dart';
+// TODO: END OF DUMMY HOME SCREEN EXPORT
 // End of route_export.dart

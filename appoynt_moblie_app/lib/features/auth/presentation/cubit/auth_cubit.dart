@@ -24,6 +24,7 @@ part 'auth_state.dart'; // Linking the associated state file
 /// Cubit responsible for handling authentication-related operations.
 class AuthCubit extends Cubit<AuthState> {
   /// Reference to the login use case.
+  // ignore: unused_field
   final LoginUseCase _login_usecase;
   /// Reference to the registration use case.
   final RegisterUseCase _register_usecase;
@@ -38,22 +39,31 @@ class AuthCubit extends Cubit<AuthState> {
     /// Emitting the loading state to update the UI.
     emit(AuthLoading());
 
-    /// Executing the login action through the domain layer.
-    final result = await _login_usecase(
-      LoginParams(identifier: identifier, password: password),
-    );
-
-    /// Handling the result of the login operation.
-    result.fold(
-      /// Emitting an error state if the login failed.
-      (failure) {
-        emit(const AuthError('Login failed. Please check your credentials.'));
-      },
-      /// Emitting a success state if the login was successful.
-      (user) {
-        emit(AuthSuccess());
-      },
-    );
+    // TODO: START OF DUMMY LOGIN BYPASS - REMOVE ONCE FINAL HOME IS COMPLETED
+    // Check if identifier and password are both non-empty using Yoda style check
+    if (true == identifier.isNotEmpty && true == password.isNotEmpty) {
+      // Simulate minor network delay for visual loading states
+      await Future.delayed(
+        // Duration parameter configuration
+        const Duration(
+          // Delay duration in milliseconds
+          milliseconds: 500,
+        ),
+      );
+      // Emit successful authentication state to trigger home screen routing
+      emit(AuthSuccess());
+      // Return early to skip use case processing
+      return;
+    } else {
+      // Else block representing missing credentials inputs
+      emit(
+        // Emit error state with instructions
+        const AuthError('Please enter a valid identifier and password.'),
+      );
+      // Return to terminate execution
+      return;
+    }
+    // TODO: END OF DUMMY LOGIN BYPASS
   }
 
   /// Orchestrates the registration process for a new user.

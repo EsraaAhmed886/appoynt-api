@@ -292,6 +292,113 @@ abstract class AppLocalizations {
 
   // Abstract getter for password maximum length validation warning
   String get password_too_long;
+
+  // TODO: START OF DUMMY HOME SCREEN LOCALIZATION GETTERS - REMOVE ONCE FINAL HOME IS COMPLETED
+  // Abstract getter for bottom navigation home label
+  String get dummy_home_tab_label;
+
+  // Abstract getter for bottom navigation appointments label
+  String get dummy_appointments_tab_label;
+
+  // Abstract getter for bottom navigation queue label
+  String get dummy_queue_tab_label;
+
+  // Abstract getter for bottom navigation records label
+  String get dummy_records_tab_label;
+
+  // Abstract getter for bottom navigation profile label
+  String get dummy_profile_tab_label;
+
+  // Abstract getter for greeting time welcome text
+  String get dummy_good_morning;
+
+  // Abstract getter for welcome banner subtitle text
+  String get dummy_welcome_to_appoynt_home;
+
+  // Abstract getter for search field placeholder hint text
+  String get dummy_search_hint;
+
+  // Abstract getter for book appointment action button label
+  String get dummy_book_appointment;
+
+  // Abstract getter for queue status action button label
+  String get dummy_my_queue;
+
+  // Abstract getter for video call action button label
+  String get dummy_video_consult;
+
+  // Abstract getter for medical records action button label
+  String get dummy_my_records;
+
+  // Abstract getter for appointment banner title label
+  String get dummy_next_appointment;
+
+  // Abstract getter for primary physician name
+  String get dummy_dr_ahmed_hassan;
+
+  // Abstract getter for physician specialty and timing details
+  String get dummy_general_medicine_today;
+
+  // Abstract getter for view details navigation button label
+  String get dummy_view_details;
+
+  // Abstract getter for specialty categorization header label
+  String get dummy_specialties;
+
+  // Abstract getter for view all items navigation link label
+  String get dummy_see_all;
+
+  // Abstract getter for cardiology specialty category name
+  String get dummy_cardiology;
+
+  // Abstract getter for neurology specialty category name
+  String get dummy_neurology;
+
+  // Abstract getter for pediatrics specialty category name
+  String get dummy_pediatrics;
+
+  // Abstract getter for ophthalmology specialty category name
+  String get dummy_eye_care;
+
+  // Abstract getter for orthopedic specialty category name
+  String get dummy_orthopedic;
+
+  // Abstract getter for featured physicians header label
+  String get dummy_top_doctors;
+
+  // Abstract getter for cardiologist practitioner name
+  String get dummy_dr_sarah_johnson;
+
+  // Abstract getter for cardiologist specialty title
+  String get dummy_cardiologist;
+
+  // Abstract getter for cardiology practice length details
+  String get dummy_years_experience_sarah;
+
+  // Abstract getter for neurologist practitioner name
+  String get dummy_dr_mohammed_ali;
+
+  // Abstract getter for neurologist specialty title
+  String get dummy_neurologist;
+
+  // Abstract getter for neurology practice length details
+  String get dummy_years_experience_mohammed;
+
+  // Abstract getter for pediatrician practitioner name
+  String get dummy_dr_fatima_ahmed;
+
+  // Abstract getter for pediatrician specialty title
+  String get dummy_pediatrician;
+
+  // Abstract getter for pediatrics practice length details
+  String get dummy_years_experience_fatima;
+
+  // Abstract getter for appointment book action trigger label
+  String get dummy_book;
+
+  // Abstract getter for feature under construction info label
+  String get dummy_coming_soon;
+  // TODO: END OF DUMMY HOME SCREEN LOCALIZATION GETTERS
 }
 
 // Defining a short alias for clean and simple type references

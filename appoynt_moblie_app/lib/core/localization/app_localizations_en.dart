@@ -644,4 +644,251 @@ class AppLocalizationsEn extends AppLocalizations {
     // Return English password too long warning
     return 'Password must be maximum 30 characters';
   }
+
+  // TODO: START OF DUMMY HOME SCREEN LOCALIZATION OVERRIDES - REMOVE ONCE FINAL HOME IS COMPLETED
+  // Override getter returning bottom navigation home label in English
+  @override
+  String get dummy_home_tab_label {
+    // Return English bottom navigation home tab label
+    return 'Home';
+  }
+
+  // Override getter returning bottom navigation appointments label in English
+  @override
+  String get dummy_appointments_tab_label {
+    // Return English bottom navigation appointments tab label
+    return 'Appointments';
+  }
+
+  // Override getter returning bottom navigation queue label in English
+  @override
+  String get dummy_queue_tab_label {
+    // Return English bottom navigation queue tab label
+    return 'Queue';
+  }
+
+  // Override getter returning bottom navigation records label in English
+  @override
+  String get dummy_records_tab_label {
+    // Return English bottom navigation records tab label
+    return 'Records';
+  }
+
+  // Override getter returning bottom navigation profile label in English
+  @override
+  String get dummy_profile_tab_label {
+    // Return English bottom navigation profile tab label
+    return 'Profile';
+  }
+
+  // Override getter returning greeting time welcome text in English
+  @override
+  String get dummy_good_morning {
+    // Return English greeting time welcome text
+    return 'Good Morning 👋';
+  }
+
+  // Override getter returning welcome banner subtitle text in English
+  @override
+  String get dummy_welcome_to_appoynt_home {
+    // Return English welcome banner subtitle text
+    return 'Welcome to Appoynt';
+  }
+
+  // Override getter returning search field placeholder hint text in English
+  @override
+  String get dummy_search_hint {
+    // Return English search field placeholder hint text
+    return 'Search doctors, specialties...';
+  }
+
+  // Override getter returning book appointment action button label in English
+  @override
+  String get dummy_book_appointment {
+    // Return English book appointment action button label
+    return 'Book\nAppointment';
+  }
+
+  // Override getter returning queue status action button label in English
+  @override
+  String get dummy_my_queue {
+    // Return English queue status action button label
+    return 'My\nQueue';
+  }
+
+  // Override getter returning video call action button label in English
+  @override
+  String get dummy_video_consult {
+    // Return English video call action button label
+    return 'Video\nConsult';
+  }
+
+  // Override getter returning medical records action button label in English
+  @override
+  String get dummy_my_records {
+    // Return English medical records action button label
+    return 'My\nRecords';
+  }
+
+  // Override getter returning appointment banner title label in English
+  @override
+  String get dummy_next_appointment {
+    // Return English appointment banner title label
+    return 'Next Appointment';
+  }
+
+  // Override getter returning primary physician name in English
+  @override
+  String get dummy_dr_ahmed_hassan {
+    // Return English primary physician name
+    return 'Dr. Ahmed Hassan';
+  }
+
+  // Override getter returning physician specialty and timing details in English
+  @override
+  String get dummy_general_medicine_today {
+    // Return English physician specialty and timing details
+    return 'General Medicine • Today, 3:00 PM';
+  }
+
+  // Override getter returning view details navigation button label in English
+  @override
+  String get dummy_view_details {
+    // Return English view details navigation button label
+    return 'View Details';
+  }
+
+  // Override getter returning specialty categorization header label in English
+  @override
+  String get dummy_specialties {
+    // Return English specialty categorization header label
+    return 'Specialties';
+  }
+
+  // Override getter returning view all items navigation link label in English
+  @override
+  String get dummy_see_all {
+    // Return English view all items navigation link label
+    return 'See All';
+  }
+
+  // Override getter returning cardiology specialty category name in English
+  @override
+  String get dummy_cardiology {
+    // Return English cardiology specialty category name
+    return 'Cardiology';
+  }
+
+  // Override getter returning neurology specialty category name in English
+  @override
+  String get dummy_neurology {
+    // Return English neurology specialty category name
+    return 'Neurology';
+  }
+
+  // Override getter returning pediatrics specialty category name in English
+  @override
+  String get dummy_pediatrics {
+    // Return English pediatrics specialty category name
+    return 'Pediatrics';
+  }
+
+  // Override getter returning ophthalmology specialty category name in English
+  @override
+  String get dummy_eye_care {
+    // Return English ophthalmology specialty category name
+    return 'Eye Care';
+  }
+
+  // Override getter returning orthopedic specialty category name in English
+  @override
+  String get dummy_orthopedic {
+    // Return English orthopedic specialty category name
+    return 'Orthopedic';
+  }
+
+  // Override getter returning featured physicians header label in English
+  @override
+  String get dummy_top_doctors {
+    // Return English featured physicians header label
+    return 'Top Doctors';
+  }
+
+  // Override getter returning cardiologist practitioner name in English
+  @override
+  String get dummy_dr_sarah_johnson {
+    // Return English cardiologist practitioner name
+    return 'Dr. Sarah Johnson';
+  }
+
+  // Override getter returning cardiologist specialty title in English
+  @override
+  String get dummy_cardiologist {
+    // Return English cardiologist specialty title
+    return 'Cardiologist';
+  }
+
+  // Override getter returning cardiology practice length details in English
+  @override
+  String get dummy_years_experience_sarah {
+    // Return English cardiology practice length details
+    return '12 years';
+  }
+
+  // Override getter returning neurologist practitioner name in English
+  @override
+  String get dummy_dr_mohammed_ali {
+    // Return English neurologist practitioner name
+    return 'Dr. Mohammed Ali';
+  }
+
+  // Override getter returning neurologist specialty title in English
+  @override
+  String get dummy_neurologist {
+    // Return English neurologist specialty title
+    return 'Neurologist';
+  }
+
+  // Override getter returning neurology practice length details in English
+  @override
+  String get dummy_years_experience_mohammed {
+    // Return English neurology practice length details
+    return '9 years';
+  }
+
+  // Override getter returning pediatrician practitioner name in English
+  @override
+  String get dummy_dr_fatima_ahmed {
+    // Return English pediatrician practitioner name
+    return 'Dr. Fatima Ahmed';
+  }
+
+  // Override getter returning pediatrician specialty title in English
+  @override
+  String get dummy_pediatrician {
+    // Return English pediatrician specialty title
+    return 'Pediatrician';
+  }
+
+  // Override getter returning pediatrics practice length details in English
+  @override
+  String get dummy_years_experience_fatima {
+    // Return English pediatrics practice length details
+    return '7 years';
+  }
+
+  // Override getter returning appointment book action trigger label in English
+  @override
+  String get dummy_book {
+    // Return English appointment book action trigger label
+    return 'Book';
+  }
+
+  // Override getter returning feature under construction info label in English
+  @override
+  String get dummy_coming_soon {
+    // Return English feature under construction info label
+    return 'Coming Soon';
+  }
+  // TODO: END OF DUMMY HOME SCREEN LOCALIZATION OVERRIDES
 }

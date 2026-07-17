@@ -150,5 +150,178 @@ class AppSpacing {
 
   // Accent line thickness definition for focused component borders
   static const double border_width_thick = 2.0;
+
+  // TODO: START OF DUMMY HOME SCREEN SPACING TOKENS - REMOVE ONCE FINAL HOME IS COMPLETED
+  // Standard padding constraint for home tab contents
+  static const double dummy_padding_home = 20.0;
+
+  // Standard vertical spacing spacing between content sections on home page
+  static const double dummy_spacing_home = 20.0;
+
+  // Container height and width for notification bell icon
+  static const double dummy_size_notification_bell = 44.0;
+
+  // Container height for search text field on home page
+  static const double dummy_height_search_bar = 50.0;
+
+  // Font size for labels in the bottom navigation items
+  static const double dummy_font_size_nav_label = 10.0;
+
+  // Font size for greeting title text on home screen
+  static const double dummy_font_size_welcome = 22.0;
+
+  // Size of the notification icon inside the bell container
+  static const double dummy_size_icon_notification = 22.0;
+
+  // Size of the icons inside the bottom navigation bar
+  static const double dummy_size_icon_nav = 24.0;
+
+  // Larger spacing between sections on the home screen
+  static const double dummy_spacing_large = 28.0;
+
+  // Height constraint for horizontal specialties list view
+  static const double dummy_height_specialties_list = 90.0;
+
+  // Size constraint for the coming soon circle widget
+  static const double dummy_size_coming_soon_circle = 80.0;
+
+  // Size constraint for the coming soon icon widget
+  static const double dummy_size_coming_soon_icon = 38.0;
+
+  // Diameter of the doctor profile avatar icon
+  static const double dummy_size_doctor_avatar = 54.0;
+
+  // Tiny layout spacer dimension
+  static const double dummy_space_tiny = 3.0;
+
+  // Small layout spacer dimension
+  static const double dummy_space_small = 6.0;
+
+  // Padding inside small badge elements like buttons
+  static const double dummy_padding_small_badge = 7.0;
+
+  // Line height height spacing for bottom navigation text labels
+  static const double dummy_line_height_nav = 1.3;
+
+  // Blur radius for bottom navigation container shadow
+  static const double dummy_bottom_nav_blur_radius = 20.0;
+
+  // Vertical offset offset of bottom navigation shadow
+  static const double dummy_bottom_nav_shadow_offset_y = -4.0;
+
+  // Horizontal padding around bottom navigation layout row
+  static const double dummy_bottom_nav_padding_horizontal = 8.0;
+
+  // Vertical padding around bottom navigation layout row
+  static const double dummy_bottom_nav_padding_vertical = 8.0;
+
+  // Horizontal padding within bottom navigation items
+  static const double dummy_bottom_nav_item_padding_horizontal = 16.0;
+
+  // Vertical padding within bottom navigation items
+  static const double dummy_bottom_nav_item_padding_vertical = 8.0;
+
+  // Border radius for bottom navigation item backgrounds
+  static const double dummy_bottom_nav_item_radius = 20.0;
+
+  // Size constraint of notification alert badge dot
+  static const double dummy_notification_badge_size = 8.0;
+
+  // Offset position of notification alert badge dot
+  static const double dummy_notification_badge_offset = 8.0;
+
+  // Border radius for search text field container
+  static const double dummy_search_bar_radius = 14.0;
+
+  // Left side padding constraint within search text field container
+  static const double dummy_search_bar_padding_left = 14.0;
+
+  // Width spacer between search icon and text hint
+  static const double dummy_search_bar_spacing = 10.0;
+
+  // Vertical padding inside quick action buttons
+  static const double dummy_quick_action_padding_vertical = 14.0;
+
+  // Border radius for quick action button container
+  static const double dummy_quick_action_radius = 14.0;
+
+  // Size of the icon inside quick action buttons
+  static const double dummy_quick_action_icon_size = 26.0;
+
+  // Space between quick action buttons inside horizontal row
+  static const double dummy_quick_action_spacing = 12.0;
+
+  // Padding inside appointment banner container
+  static const double dummy_banner_padding = 16.0;
+
+  // Border radius for appointment banner container
+  static const double dummy_banner_radius = 16.0;
+
+  // Size of calendar icon in appointment banner
+  static const double dummy_banner_icon_size = 64.0;
+
+  // Right side spacing margin for specialty category chips
+  static const double dummy_specialty_chip_margin_right = 12.0;
+
+  // Horizontal padding inside specialty category chips
+  static const double dummy_specialty_chip_padding_horizontal = 16.0;
+
+  // Vertical padding inside specialty category chips
+  static const double dummy_specialty_chip_padding_vertical = 12.0;
+
+  // Border radius for specialty category chips container
+  static const double dummy_specialty_chip_radius = 14.0;
+
+  // Padding inside doctor card container
+  static const double dummy_doctor_card_padding = 14.0;
+
+  // Border radius for doctor card container
+  static const double dummy_doctor_card_radius = 16.0;
+
+  // Diameter of avatar inside doctor card components
+  static const double dummy_doctor_card_avatar_size = 54.0;
+
+  // Icon size of placeholder avatar inside doctor cards
+  static const double dummy_doctor_card_avatar_icon_size = 28.0;
+
+  // Star icon size inside doctor rating elements
+  static const double dummy_doctor_card_rating_icon_size = 14.0;
+
+  // Work bag icon size inside doctor experience elements
+  static const double dummy_doctor_card_work_icon_size = 13.0;
+
+  // Horizontal padding inside doctor card CTA button
+  static const double dummy_doctor_card_btn_padding_horizontal = 14.0;
+
+  // Vertical padding inside doctor card CTA button
+  static const double dummy_doctor_card_btn_padding_vertical = 8.0;
+
+  // Border radius for doctor card CTA button
+  static const double dummy_doctor_card_btn_radius = 20.0;
+
+  // Radius for circular border decorations on coming soon screen
+  static const double dummy_coming_soon_radius = 40.0;
+
+  // Opacity value for selected bottom navigation item background
+  static const double dummy_opacity_active = 0.1;
+
+  // Opacity value for notification bell badge layout overlay
+  static const double dummy_opacity_bell_badge = 0.3;
+
+  // Opacity value for doctor card placeholder profile avatar background
+  static const double dummy_opacity_avatar = 0.12;
+
+  // Opacity value for quick action card icon background
+  static const double dummy_opacity_badge = 0.08;
+
+  // Opacity value for quick action card outline borders
+  static const double dummy_opacity_border = 0.15;
+
+  // Font size for specialty chip label text
+  static const double dummy_font_size_specialty = 11.0;
+
+  // Font size for doctor card rating subtext
+  static const double dummy_font_size_rating = 12.0;
+  // TODO: END OF DUMMY HOME SCREEN SPACING TOKENS
 }
 // End of app_spacing.dart

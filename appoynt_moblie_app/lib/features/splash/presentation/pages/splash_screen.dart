@@ -212,13 +212,44 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
         // Define page route with cross-fade transition behavior
         PageRouteBuilder(
           // Set target page to LoginPage instance
-          pageBuilder: (context, anim, secAnim) {
+          pageBuilder: (login_route_context, anim, secAnim) {
             // Return root login gateway page widget
             return LoginPage(
               // Set success redirect callback
               on_login_success: () {
-                // Print dynamic logs
-                debugPrint('User logged in successfully');
+                // TODO: START OF DUMMY HOME ROUTING - REMOVE ONCE FINAL HOME IS COMPLETED
+                // Check if context remains active in widget tree using Yoda comparison
+                if (true == login_route_context.mounted) {
+                  // Navigate to the home screen replacing the login page
+                  Navigator.of(login_route_context).pushReplacement(
+                    // Define page route with cross-fade transition behavior
+                    PageRouteBuilder(
+                      // Set target page to HomePage instance
+                      pageBuilder: (context, anim, secAnim) {
+                        // Return home page layout widget
+                        return const HomePage();
+                      },
+                      // Define transition transition builder representation
+                      transitionsBuilder: (context, anim, secAnim, child) {
+                        // Return fade transition representation
+                        return FadeTransition(
+                          // Bind opacity property factor to active transition animation
+                          opacity: anim,
+                          // Pass child widget layout
+                          child: child,
+                        );
+                      },
+                      // Define transition duration settings
+                      transitionDuration: const Duration(
+                        // Set transition milliseconds count
+                        milliseconds: AppSpacing.duration_fade_ms,
+                      ),
+                    ),
+                  );
+                } else {
+                  // Empty block to satisfy compiler
+                }
+                // TODO: END OF DUMMY HOME ROUTING
               },
               // Set register redirect callback
               on_go_to_register: () {
