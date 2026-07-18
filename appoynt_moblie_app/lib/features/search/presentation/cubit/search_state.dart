@@ -35,6 +35,22 @@ enum SearchStatus {
   offlineError,
 }
 
+// Enum representing the sorting options on search screen
+enum SearchSortOption {
+  // Sort by date of addition (newest first)
+  recentlyAdded,
+  // Sort by doctor name alphabetically ascending
+  nameAToZ,
+  // Sort by doctor name alphabetically descending
+  nameZToA,
+  // Sort by highest rating score first
+  ratingHighToLow,
+  // Sort by consultation fee lowest first
+  feeLowToHigh,
+  // Sort by consultation fee highest first
+  feeHighToLow,
+}
+
 // Immutable state model containing search criteria and suggestion parameters
 class SearchState extends Equatable {
   // Current raw search input text
@@ -49,6 +65,10 @@ class SearchState extends Equatable {
   final String selected_price_range;
   // Selected doctor rating filter value
   final String selected_rating;
+  // Selected search sort option
+  final SearchSortOption selected_sort_option;
+  // Flag indicating if the user has explicitly requested to see filtered results
+  final bool show_filtered_results_explicitly;
   // List of search history items retrieved from store
   final List<SearchHistoryItem> recent_searches;
   // Autocomplete doctor suggestions list
@@ -68,6 +88,8 @@ class SearchState extends Equatable {
     required this.selected_gender,
     required this.selected_price_range,
     required this.selected_rating,
+    required this.selected_sort_option,
+    required this.show_filtered_results_explicitly,
     required this.recent_searches,
     required this.suggestions,
     required this.status,
@@ -91,6 +113,10 @@ class SearchState extends Equatable {
       selected_price_range: '',
       // Empty rating filter
       selected_rating: '',
+      // Default to recently added sort
+      selected_sort_option: SearchSortOption.recentlyAdded,
+      // Default to hidden filtered results if query is empty
+      show_filtered_results_explicitly: false,
       // Empty recent history searches list
       recent_searches: [],
       // Empty autocomplete doctor suggestion list
@@ -112,6 +138,8 @@ class SearchState extends Equatable {
     String? selected_gender,
     String? selected_price_range,
     String? selected_rating,
+    SearchSortOption? selected_sort_option,
+    bool? show_filtered_results_explicitly,
     List<SearchHistoryItem>? recent_searches,
     List<DoctorSuggestion>? suggestions,
     SearchStatus? status,
@@ -132,6 +160,10 @@ class SearchState extends Equatable {
       selected_price_range: selected_price_range ?? this.selected_price_range,
       // Map rating filter selection
       selected_rating: selected_rating ?? this.selected_rating,
+      // Map sort option selection
+      selected_sort_option: selected_sort_option ?? this.selected_sort_option,
+      // Map explicit show results flag
+      show_filtered_results_explicitly: show_filtered_results_explicitly ?? this.show_filtered_results_explicitly,
       // Map historical searches list
       recent_searches: recent_searches ?? this.recent_searches,
       // Map suggestion results list
@@ -155,6 +187,8 @@ class SearchState extends Equatable {
       selected_gender,
       selected_price_range,
       selected_rating,
+      selected_sort_option,
+      show_filtered_results_explicitly,
       recent_searches,
       suggestions,
       status,

@@ -5,7 +5,7 @@
  * Version Information: V1.0.0
  * Dependencies: None
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 17/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 19/07/2026]
  * File Description: Defines centralized dimension, spacing, border radius, and animation constants.
  */
 
@@ -144,6 +144,12 @@ class AppSpacing {
 
   // Typographic font size for forgot password navigation link
   static const double font_size_forgot_link = 14.0;
+
+  // Typographic font size for small body text content
+  static const double font_size_body_small = 12.0;
+
+  // Typographic font size for standard dialog/bottom sheet titles
+  static const double font_size_dialog_title = 18.0;
 
   // Standard line thickness definition for default borders
   static const double border_width_thin = 1.0;
@@ -362,5 +368,20 @@ class AppSpacing {
 
   // Corner radius layout configuration for suggestions container card layer
   static const double search_card_radius = 16.0;
+
+  // Width and height dimension constraint for search result doctor card avatar (72px)
+  static const double doctor_card_avatar_size = 72.0;
+
+  // Corner radius layout configuration for search result doctor card avatar (36px for perfect circle)
+  static const double doctor_card_avatar_radius = 36.0;
+
+  // Icon size for fallback/placeholder states inside doctor card avatar (36px)
+  static const double doctor_card_avatar_icon_size = 36.0;
+
+  // Image decode cache width/height constraint for doctor card avatar to optimize memory usage (150px)
+  static const double doctor_card_avatar_cache_size = 150.0;
+
+  // Fixed height for validation error container below subtitle to prevent layout shifts (40px)
+  static const double error_container_height = 40.0;
 }
 // End of app_spacing.dart

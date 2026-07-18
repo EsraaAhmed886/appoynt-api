@@ -6,7 +6,7 @@
  * Dependencies: package:equatable/equatable.dart, package:flutter_bloc/flutter_bloc.dart,
  *   login_usecase.dart, register_usecase.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 19/07/2026]
  * File Description: Manages the authentication states and business logic for the application.
  */
 
@@ -40,8 +40,8 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoading());
 
     // TODO: START OF DUMMY LOGIN BYPASS - REMOVE ONCE FINAL HOME IS COMPLETED
-    // Check if identifier and password are both non-empty using Yoda style check
-    if (true == identifier.isNotEmpty && true == password.isNotEmpty) {
+    // Verify credentials match static criteria using Yoda style comparison
+    if ("admin@gmail.com" == identifier && "123asdASD!@#" == password) {
       // Simulate minor network delay for visual loading states
       await Future.delayed(
         // Duration parameter configuration
@@ -55,10 +55,10 @@ class AuthCubit extends Cubit<AuthState> {
       // Return early to skip use case processing
       return;
     } else {
-      // Else block representing missing credentials inputs
+      // Emit error state with instructions for invalid credentials
       emit(
         // Emit error state with instructions
-        const AuthError('Please enter a valid identifier and password.'),
+        const AuthError('Invalid phone number or password.'),
       );
       // Return to terminate execution
       return;

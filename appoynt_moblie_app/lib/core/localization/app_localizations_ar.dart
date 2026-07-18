@@ -1149,4 +1149,106 @@ class AppLocalizationsAr extends AppLocalizations {
   String get search_filter_apply {
     return 'تطبيق الفلاتر';
   }
+
+  // Override getter returning sort bottom sheet title in Arabic
+  @override
+  String get search_sort_title {
+    return 'ترتيب حسب';
+  }
+
+  // Override getter returning recently added sort option label in Arabic
+  @override
+  String get search_sort_recently_added {
+    return 'أضيف حديثاً';
+  }
+
+  // Override getter returning recently added sort option description in Arabic
+  @override
+  String get search_sort_recently_added_desc {
+    return 'عرض الأطباء الذين تم إضافتهم مؤخراً';
+  }
+
+  // Override getter returning name A-Z sort option label in Arabic
+  @override
+  String get search_sort_name_a_to_z {
+    return 'الاسم: من أ إلى ي';
+  }
+
+  // Override getter returning name A-Z sort option description in Arabic
+  @override
+  String get search_sort_name_a_to_z_desc {
+    return 'ترتيب الأطباء أبجدياً تصاعدياً';
+  }
+
+  // Override getter returning name Z-A sort option label in Arabic
+  @override
+  String get search_sort_name_z_to_a {
+    return 'الاسم: من ي إلى أ';
+  }
+
+  // Override getter returning name Z-A sort option description in Arabic
+  @override
+  String get search_sort_name_z_to_a_desc {
+    return 'ترتيب الأطباء أبجدياً تنازلياً';
+  }
+
+  // Override getter returning rating high-to-low sort option label in Arabic
+  @override
+  String get search_sort_rating_high_to_low {
+    return 'التقييم: الأعلى أولاً';
+  }
+
+  // Override getter returning rating high-to-low sort option description in Arabic
+  @override
+  String get search_sort_rating_high_to_low_desc {
+    return 'ترتيب الأطباء حسب التقييم الأعلى أولاً';
+  }
+
+  // Override getter returning fee low-to-high sort option label in Arabic
+  @override
+  String get search_sort_fee_low_to_high {
+    return 'سعر الكشف: الأقل إلى الأعلى';
+  }
+
+  // Override getter returning fee low-to-high sort option description in Arabic
+  @override
+  String get search_sort_fee_low_to_high_desc {
+    return 'ترتيب الكشف من الأرخص إلى الأغلى';
+  }
+
+  // Override getter returning fee high-to-low sort option label in Arabic
+  @override
+  String get search_sort_fee_high_to_low {
+    return 'سعر الكشف: الأعلى إلى الأقل';
+  }
+
+  // Override getter returning fee high-to-low sort option description in Arabic
+  @override
+  String get search_sort_fee_high_to_low_desc {
+    return 'ترتيب الكشف من الأغلى إلى الأرخص';
+  }
+
+  // Override getter returning available today status indicator in Arabic
+  @override
+  String get search_doctor_available_today {
+    return 'متاح اليوم';
+  }
+
+  // Override getter returning unavailable today status indicator in Arabic
+  @override
+  String get search_doctor_unavailable_today {
+    return 'غير متاح اليوم';
+  }
+
+  // Override getter returning booking CTA button label in Arabic
+  @override
+  String get search_doctor_book_now {
+    return 'احجز الآن';
+  }
+
+  // Override getter returning doctor reviews label text in Arabic
+  @override
+  String get search_doctor_reviews {
+    return 'تقييم';
+  }
 }

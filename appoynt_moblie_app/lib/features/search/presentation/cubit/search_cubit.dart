@@ -27,32 +27,77 @@ class SearchCubit extends Cubit<SearchState> {
   Timer? _debounce_timer;
 
   // Static mock doctor database records driven by design schemas
-  static const List<Map<String, String>> _mock_doctors_database = [
-    {
-      "doctorId": "doc_1",
-      "name": "Dr. Sarah Chen",
-      "avatarUrl": "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=150&auto=format&fit=crop",
-    },
-    {
-      "doctorId": "doc_2",
-      "name": "Dr. Samuel Lee",
-      "avatarUrl": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?q=80&w=150&auto=format&fit=crop",
-    },
-    {
-      "doctorId": "doc_3",
-      "name": "Dr. Sophie Dubois",
-      "avatarUrl": "https://images.unsplash.com/photo-1594824813573-246434de83fb?q=80&w=150&auto=format&fit=crop",
-    },
-    {
-      "doctorId": "doc_4",
-      "name": "Dr. Susan Al-Fayed",
-      "avatarUrl": "https://images.unsplash.com/photo-1527613426441-4da17471b66d?q=80&w=150&auto=format&fit=crop",
-    },
-    {
-      "doctorId": "doc_5",
-      "name": "Dr. Sebastian Keller",
-      "avatarUrl": "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=150&auto=format&fit=crop",
-    },
+  static const List<DoctorSuggestion> _mock_doctors_database = [
+    DoctorSuggestion(
+      doctor_id: "doc_1",
+      name: "Dr Sara Hassan",
+      avatar_url: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=150&auto=format&fit=crop",
+      specialty: "Dermatologist",
+      location: "Nasr City : abbas el akad",
+      rating: 4.6,
+      reviews_count: 180,
+      fee: 500,
+      is_available_today: true,
+      is_favorite: false,
+      gender: "Female",
+      created_at: 1784257200000,
+    ),
+    DoctorSuggestion(
+      doctor_id: "doc_2",
+      name: "Dr. Samer Youssef",
+      avatar_url: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?q=80&w=150&auto=format&fit=crop",
+      specialty: "Dermatologist",
+      location: "Nasr City : abbas el akad",
+      rating: 4.6,
+      reviews_count: 180,
+      fee: 500,
+      is_available_today: false,
+      is_favorite: false,
+      gender: "Male",
+      created_at: 1784256200000,
+    ),
+    DoctorSuggestion(
+      doctor_id: "doc_3",
+      name: "Dr. Sarah Chen",
+      avatar_url: "https://images.unsplash.com/photo-1594824813573-246434de83fb?q=80&w=150&auto=format&fit=crop",
+      specialty: "Cardiology",
+      location: "Cairo",
+      rating: 4.9,
+      reviews_count: 220,
+      fee: 800,
+      is_available_today: true,
+      is_favorite: true,
+      gender: "Female",
+      created_at: 1784255200000,
+    ),
+    DoctorSuggestion(
+      doctor_id: "doc_4",
+      name: "Dr. Samuel Lee",
+      avatar_url: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=150&auto=format&fit=crop",
+      specialty: "Neurology",
+      location: "Alexandria",
+      rating: 4.2,
+      reviews_count: 95,
+      fee: 350,
+      is_available_today: false,
+      is_favorite: false,
+      gender: "Male",
+      created_at: 1784254200000,
+    ),
+    DoctorSuggestion(
+      doctor_id: "doc_5",
+      name: "Dr. Sebastian Keller",
+      avatar_url: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?q=80&w=150&auto=format&fit=crop",
+      specialty: "Pediatrics",
+      location: "Giza",
+      rating: 4.8,
+      reviews_count: 140,
+      fee: 150,
+      is_available_today: true,
+      is_favorite: false,
+      gender: "Male",
+      created_at: 1784253200000,
+    ),
   ];
 
   // Constructor initializing starting parameters values representation
@@ -93,11 +138,151 @@ class SearchCubit extends Cubit<SearchState> {
     emit(state.copyWith(
       // Bind recent searches property
       recent_searches: mock_history,
-      // Default to history loaded status if query is currently empty
-      status: true == state.query.isEmpty && true == state.selected_location_id.isEmpty && true == state.selected_specialty_id.isEmpty
+      // Default to history loaded status if query and all filters are currently empty
+      status: true == state.query.isEmpty &&
+              true == state.selected_location_id.isEmpty &&
+              true == state.selected_specialty_id.isEmpty &&
+              true == state.selected_gender.isEmpty &&
+              true == state.selected_price_range.isEmpty &&
+              true == state.selected_rating.isEmpty
           ? SearchStatus.historyLoaded
           : state.status,
     ));
+  }
+
+  // Helper method compiling results matching all search and filter criteria
+  void _perform_search_and_filter() {
+    // Check if query is active using Yoda comparison
+    final bool has_query = true == state.query.isNotEmpty;
+    // Check if any filters are active using Yoda comparisons
+    final bool has_filters = true == state.selected_location_id.isNotEmpty ||
+        true == state.selected_specialty_id.isNotEmpty ||
+        true == state.selected_gender.isNotEmpty ||
+        true == state.selected_price_range.isNotEmpty ||
+        true == state.selected_rating.isNotEmpty;
+
+    // Fallback to initial/history state if query and filters are empty
+    if (false == has_query && false == has_filters) {
+      emit(state.copyWith(
+        suggestions: const [],
+        status: true == state.recent_searches.isEmpty
+            ? SearchStatus.initial
+            : SearchStatus.historyLoaded,
+      ));
+      return;
+    }
+
+    // Check if query is empty and filters are set, but user hasn't explicitly clicked to show results (State C)
+    if (false == has_query && true == has_filters && false == state.show_filtered_results_explicitly) {
+      emit(state.copyWith(
+        suggestions: const [],
+        status: SearchStatus.filtersOnly,
+      ));
+      return;
+    }
+
+    // Start filtering from mock database list
+    List<DoctorSuggestion> results = List.from(_mock_doctors_database);
+
+    // 1. Filter by query matches (check name and specialty)
+    if (true == has_query) {
+      results = results.where((doc) {
+        return doc.name.toLowerCase().contains(state.query.toLowerCase()) ||
+            doc.specialty.toLowerCase().contains(state.query.toLowerCase());
+      }).toList();
+    }
+
+    // 2. Filter by location matches
+    if (true == state.selected_location_id.isNotEmpty) {
+      results = results.where((doc) {
+        return doc.location.toLowerCase().contains(state.selected_location_id.toLowerCase());
+      }).toList();
+    }
+
+    // 3. Filter by specialty matches
+    if (true == state.selected_specialty_id.isNotEmpty) {
+      results = results.where((doc) {
+        return doc.specialty.toLowerCase().contains(state.selected_specialty_id.toLowerCase());
+      }).toList();
+    }
+
+    // 4. Filter by gender matches
+    if (true == state.selected_gender.isNotEmpty) {
+      results = results.where((doc) {
+        return doc.gender.toLowerCase() == state.selected_gender.toLowerCase();
+      }).toList();
+    }
+
+    // 5. Filter by price range matches
+    if (true == state.selected_price_range.isNotEmpty) {
+      results = results.where((doc) {
+        if ("Under 100" == state.selected_price_range) {
+          return doc.fee < 100;
+        } else if ("100-200" == state.selected_price_range) {
+          return doc.fee >= 100 && doc.fee <= 200;
+        } else if ("200-500" == state.selected_price_range) {
+          return doc.fee >= 200 && doc.fee <= 500;
+        } else if ("Above 500" == state.selected_price_range) {
+          return doc.fee > 500;
+        }
+        return true;
+      }).toList();
+    }
+
+    // 6. Filter by rating matches
+    if (true == state.selected_rating.isNotEmpty) {
+      results = results.where((doc) {
+        if ("5 Stars" == state.selected_rating) {
+          return doc.rating == 5.0;
+        } else if ("4+ Stars" == state.selected_rating) {
+          return doc.rating >= 4.0;
+        } else if ("3+ Stars" == state.selected_rating) {
+          return doc.rating >= 3.0;
+        }
+        return true;
+      }).toList();
+    }
+
+    // 7. Apply selected sorting option logic
+    switch (state.selected_sort_option) {
+      case SearchSortOption.recentlyAdded:
+        // Sort by creation timestamp descending (newest first)
+        results.sort((a, b) => b.created_at.compareTo(a.created_at));
+        break;
+      case SearchSortOption.nameAToZ:
+        // Sort by name alphabetically ascending
+        results.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+        break;
+      case SearchSortOption.nameZToA:
+        // Sort by name alphabetically descending
+        results.sort((a, b) => b.name.toLowerCase().compareTo(a.name.toLowerCase()));
+        break;
+      case SearchSortOption.ratingHighToLow:
+        // Sort by rating score descending
+        results.sort((a, b) => b.rating.compareTo(a.rating));
+        break;
+      case SearchSortOption.feeLowToHigh:
+        // Sort by consultation fee ascending
+        results.sort((a, b) => a.fee.compareTo(b.fee));
+        break;
+      case SearchSortOption.feeHighToLow:
+        // Sort by consultation fee descending
+        results.sort((a, b) => b.fee.compareTo(a.fee));
+        break;
+    }
+
+    // Emit suggestionsLoaded if we have matching results, else empty
+    if (true == results.isEmpty) {
+      emit(state.copyWith(
+        suggestions: const [],
+        status: SearchStatus.empty,
+      ));
+    } else {
+      emit(state.copyWith(
+        suggestions: results,
+        status: SearchStatus.suggestionsLoaded,
+      ));
+    }
   }
 
   // Triggers when user types search characters values options
@@ -113,32 +298,16 @@ class SearchCubit extends Cubit<SearchState> {
 
     // Handle empty input queries representation scenarios
     if (true == normalized.isEmpty) {
-      // Check if location or specialty filters remain active using Yoda style check
-      if (true == state.selected_location_id.isNotEmpty || true == state.selected_specialty_id.isNotEmpty) {
-        // Emit filters-only state status trigger
-        emit(state.copyWith(
-          // Reset recommendations list
-          suggestions: const [],
-          // Set filters-only status representation
-          status: SearchStatus.filtersOnly,
-        ));
-      } else {
-        // Else fall back to displaying search history list
-        emit(state.copyWith(
-          // Reset recommendations list
-          suggestions: const [],
-          // Set history loaded status representation
-          status: SearchStatus.historyLoaded,
-        ));
-      }
+      // Re-perform filtering immediately without debounce delay
+      _perform_search_and_filter();
       // Return early to skip debouncing executions
       return;
     }
 
     // Abort search requests if character count is below minimum length threshold
     if (normalized.length < 2) {
-      // Reset recommendations list but preserve input value
-      emit(state.copyWith(suggestions: const []));
+      // Re-perform filtering immediately to clear query bounds but preserve filters
+      _perform_search_and_filter();
       // Terminate execution flow
       return;
     }
@@ -154,7 +323,7 @@ class SearchCubit extends Cubit<SearchState> {
         milliseconds: 400,
       ),
       () async {
-        // Check if query hasn't changed before emitting loading state to verify request freshness
+        // Check if query hasn't changed using Yoda style check
         if (state.query != searched_query) {
           // Terminate stale request execution
           return;
@@ -191,76 +360,37 @@ class SearchCubit extends Cubit<SearchState> {
           return;
         }
 
-        // Initialize matching suggestions list
-        final List<DoctorSuggestion> matching_suggestions = [];
-
-        // Loop through local mock database records to perform query matching
-        for (final Map<String, String> doc in _mock_doctors_database) {
-          // Resolve doctor name value
-          final String doc_name = doc["name"] ?? "";
-          // Resolve doctor ID token
-          final String doc_id = doc["doctorId"] ?? "";
-          // Resolve avatar image resource link
-          final String doc_avatar = doc["avatarUrl"] ?? "";
-
-          // Perform case-insensitive containment match check
-          if (true == doc_name.toLowerCase().contains(searched_query.toLowerCase())) {
-            // Append suggestion mapping schema parameters
-            matching_suggestions.add(
-              // Instantiate suggestions entity representation
-              DoctorSuggestion(
-                // Bind ID
-                doctor_id: doc_id,
-                // Bind name
-                name: doc_name,
-                // Bind avatar Url
-                avatar_url: doc_avatar,
-              ),
-            );
-          }
-        }
-
-        // Check if matching suggestions returned empty elements using Yoda style check
-        if (true == matching_suggestions.isEmpty) {
-          // Emit empty results state
-          emit(state.copyWith(
-            // Reset suggestions
-            suggestions: const [],
-            // Set empty results status representation
-            status: SearchStatus.empty,
-          ));
-        } else {
-          // Emit suggestions loaded status list
-          emit(state.copyWith(
-            // Bind resolved items list
-            suggestions: matching_suggestions,
-            // Set success status representation
-            status: SearchStatus.suggestionsLoaded,
-          ));
-        }
+        // Execute search filtering and sorting logic
+        _perform_search_and_filter();
       },
     );
   }
 
   // Updates active Location filter parameter
   void select_location(String location_id) {
-    // Emit modified Location identifier
-    emit(state.copyWith(selected_location_id: location_id));
-    // Re-trigger query lookup to apply filter constraints update
-    on_query_changed(state.query);
+    // Emit modified Location identifier and reset explicit show results flag
+    emit(state.copyWith(
+      selected_location_id: location_id,
+      show_filtered_results_explicitly: false,
+    ));
+    // Apply changes immediately
+    _perform_search_and_filter();
   }
 
   // Updates active Specialty filter parameter
   void select_specialty(String specialty_id) {
-    // Emit modified Specialty identifier
-    emit(state.copyWith(selected_specialty_id: specialty_id));
-    // Re-trigger query lookup to apply filter constraints update
-    on_query_changed(state.query);
+    // Emit modified Specialty identifier and reset explicit show results flag
+    emit(state.copyWith(
+      selected_specialty_id: specialty_id,
+      show_filtered_results_explicitly: false,
+    ));
+    // Apply changes immediately
+    _perform_search_and_filter();
   }
 
   // Clears Location and Specialty filters, including advanced filters
   void clear_filters() {
-    // Emit empty filter settings
+    // Emit empty filter settings and reset explicit show results flag
     emit(state.copyWith(
       // Clear location
       selected_location_id: "",
@@ -272,9 +402,10 @@ class SearchCubit extends Cubit<SearchState> {
       selected_price_range: "",
       // Clear rating selection
       selected_rating: "",
+      show_filtered_results_explicitly: false,
     ));
-    // Refresh search results
-    on_query_changed(state.query);
+    // Apply changes immediately
+    _perform_search_and_filter();
   }
 
   // Updates and applies advanced filters criteria set
@@ -283,14 +414,57 @@ class SearchCubit extends Cubit<SearchState> {
     required String price_range,
     required String rating,
   }) {
-    // Emit modified advanced filter settings
+    // Emit modified advanced filter settings and reset explicit show results flag
     emit(state.copyWith(
       selected_gender: gender,
       selected_price_range: price_range,
       selected_rating: rating,
+      show_filtered_results_explicitly: false,
     ));
-    // Re-trigger query lookup to apply filter constraints update
-    on_query_changed(state.query);
+    // Apply changes immediately
+    _perform_search_and_filter();
+  }
+
+  // Explicitly triggers transition from filters-only state to suggestions/results list (State C to State B)
+  void reveal_filtered_results() {
+    // Set explicit show results flag to true
+    emit(state.copyWith(show_filtered_results_explicitly: true));
+    // Run search filtering logic to populate Suggestions list
+    _perform_search_and_filter();
+  }
+
+  // Updates and applies selected sort option
+  void select_sort_option(SearchSortOption option) {
+    // Emit modified sorting option
+    emit(state.copyWith(selected_sort_option: option));
+    // Re-apply filtering and sorting logic
+    _perform_search_and_filter();
+  }
+
+  // Toggles the favorite flag of a mock doctor in the database and updates state results
+  void toggle_favorite(String doctor_id) {
+    // We can update the status of the doctor in our mock suggestions results list
+    final List<DoctorSuggestion> updated_suggestions = state.suggestions.map((doc) {
+      if (doc.doctor_id == doctor_id) {
+        return DoctorSuggestion(
+          doctor_id: doc.doctor_id,
+          name: doc.name,
+          avatar_url: doc.avatar_url,
+          specialty: doc.specialty,
+          location: doc.location,
+          rating: doc.rating,
+          reviews_count: doc.reviews_count,
+          fee: doc.fee,
+          is_available_today: doc.is_available_today,
+          is_favorite: !doc.is_favorite,
+          gender: doc.gender,
+          created_at: doc.created_at,
+        );
+      }
+      return doc;
+    }).toList();
+
+    emit(state.copyWith(suggestions: updated_suggestions));
   }
 
   // Saves current query string and filters to persistent history list

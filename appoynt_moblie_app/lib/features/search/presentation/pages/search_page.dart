@@ -2,11 +2,11 @@
  * File Name: search_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 17/07/2026
- * Version Information: V1.0.0
+ * Version Information: V1.1.0
  * Dependencies: flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
- *   search_cubit.dart, search_state.dart, app_spacing.dart, app_colors.dart
+ *   search_cubit.dart, search_state.dart, app_spacing.dart, app_colors.dart, app_network_image.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 17/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 19/07/2026]
  * File Description: Renders the dedicated Search Screen with dynamic states (A, B, C), inputs, and filters.
  */
 
@@ -26,12 +26,16 @@ import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
 // Import search history item entity definition
 import 'package:appoynt_mobile_app/features/search/domain/entities/search_history_item.dart';
+// Import doctor suggestion data entity schema
+import 'package:appoynt_mobile_app/features/search/domain/entities/doctor_suggestion.dart';
 // Import business logic cubit manager
 import 'package:appoynt_mobile_app/features/search/presentation/cubit/search_cubit.dart';
 // Import search state definitions class
 import 'package:appoynt_mobile_app/features/search/presentation/cubit/search_state.dart';
 // Import reusable bottom navigation bar component
 import 'package:appoynt_mobile_app/core/widgets/app_bottom_nav_bar.dart';
+// Import reusable performance-optimized network image widget
+import 'package:appoynt_mobile_app/core/widgets/app_network_image.dart';
 
 // Main search screen gateway page widget
 class SearchPage extends StatefulWidget {
@@ -794,161 +798,57 @@ class _SearchPageState extends State<SearchPage> {
 
       // Show suggestions list cards matching queries input (State B Autocomplete suggestions)
       case SearchStatus.suggestionsLoaded:
-        // Wrap suggestion items list inside padding layout container
-        return Padding(
-          // Edges margin padding configs
-          padding: const EdgeInsets.symmetric(
-            // Horizontal padding
-            horizontal: AppSpacing.space_xl,
-            // Vertical padding
-            vertical: AppSpacing.space_m,
-          ),
-          // Scrollable layout listing card items and CTAs
-          child: SingleChildScrollView(
-            // List widget children
-            child: Container(
-              // Bounding shape styling configs options representation
-              decoration: BoxDecoration(
-                // Pure white card layers fill matching tokens
-                color: true == is_dark ? AppColors.surface_dark : AppColors.search_card_bg,
-                // Rounded card corners shape values
-                borderRadius: BorderRadius.circular(
-                  // Radius token value
-                  AppSpacing.search_card_radius,
-                ),
-                // Shadow elevation options configurations representation
-                boxShadow: const [
-                  // Shadow element mapping token
-                  BoxShadow(
-                    // Shadow color value representation
-                    color: AppColors.dummy_shadow_color,
-                    // Blur radius
-                    blurRadius: AppSpacing.dummy_bottom_nav_blur_radius,
-                  ),
-                ],
-              ),
-              // Vertical stack compiling suggestions list rows
-              child: Column(
-                // Align children
-                children: [
-                  // Generate suggestion doctor cards list (strictly Driven by DB Contract suggestion schemas)
-                  ...state.suggestions.map((doc) {
-                    // Return rows layouts
-                    return Container(
-                      // Set height constraint matching specifications (Height 68px each)
-                      height: AppSpacing.search_row_height,
-                      // Padding inside rows container edges
-                      padding: const EdgeInsets.symmetric(
-                        // Horizontal boundary offset
-                        horizontal: AppSpacing.space_xl,
-                      ),
-                      // Divider line separating suggestion elements
-                      decoration: BoxDecoration(
-                        // Bottom divider borders details configuration options
-                        border: Border(
-                          // Line separator details mapping
-                          bottom: BorderSide(
-                            // Separator color matching dividers theme
-                            color: true == is_dark ? AppColors.border_dark : AppColors.border_light,
-                            // Standard thin line width
-                            width: AppSpacing.border_width_thin,
+        return Column(
+          children: [
+            // Sort by header row
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                InkWell(
+                  onTap: () {
+                    _show_sort_by_modal(context, cubit, state, localizations, is_dark);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.space_xl,
+                      vertical: AppSpacing.space_m,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "${localizations.search_sort_title}: ${_get_sort_label(state.selected_sort_option, localizations)}",
+                          style: TextStyle(
+                            fontSize: AppSpacing.font_size_body_medium,
+                            fontWeight: FontWeight.bold,
+                            color: true == is_dark ? AppColors.text_dark_primary : AppColors.text_light_primary,
                           ),
                         ),
-                      ),
-                      // Row horizontal layout listing avatar and doctor name
-                      child: Row(
-                        // Children widgets
-                        children: [
-                          // Circular Doctor Avatar container picture representation (40px x 40px)
-                          const CircleAvatar(
-                            // Radius size mapping avatar diameter (50% border radius)
-                            radius: 20.0,
-                            // Background placeholder image color fill
-                            backgroundColor: AppColors.search_chip_bg,
-                            // profile graphics icon symbol (representing doctor thumbnail placeholder)
-                            child: Icon(
-                              // Person rounded icon token
-                              Icons.person_rounded,
-                              // Color matching theme headers text
-                              color: AppColors.text_light_secondary,
-                            ),
-                          ),
-                          // Separator spacing vertical box
-                          const SizedBox(
-                            // Spacer width value
-                            width: AppSpacing.space_xl,
-                          ),
-                          // Doctor Name text label representation (14px Medium, Dark Slate)
-                          Text(
-                            // Display name text string value (from Suggestion Entity model schema)
-                            doc.name,
-                            // Typographic text parameters options
-                            style: const TextStyle(
-                              // Font size matching standard text description labels
-                              fontSize: AppSpacing.font_size_forgot_link,
-                              // Medium typographic weight
-                              fontWeight: FontWeight.w500,
-                              // Dark slate color representation
-                              color: AppColors.search_text_slate,
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }),
-                  // View All Results trigger button row (Bottom of suggestions list card)
-                  InkWell(
-                    // Click handler callback routing to results (simulated print toast)
-                    onTap: () {
-                      // Save search query parameter string value to history records store
-                      cubit.save_search_to_history(state.query);
-                      // print debug statement representing redirect trigger actions
-                      debugPrint("Navigating to Full Search Results for query: ${state.query}");
-                    },
-                    // Row contents container
-                    child: Padding(
-                      // Padding constraints configurations mapping token values
-                      padding: const EdgeInsets.symmetric(
-                        // Horizontal padding offset
-                        horizontal: AppSpacing.space_xl,
-                        // Vertical padding offset
-                        vertical: AppSpacing.space_xl,
-                      ),
-                      // Horizontal row alignment
-                      child: Row(
-                        // Align labels text
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        // Widgets listing
-                        children: [
-                          // Trigger action button label
-                          Text(
-                            // Localized view all search results string
-                            localizations.search_view_all_results,
-                            // Label style configurations
-                            style: const TextStyle(
-                              // Primary brand accent color
-                              color: AppColors.primary_color,
-                              // Bold weight
-                              fontWeight: FontWeight.bold,
-                              // Small label size
-                              fontSize: AppSpacing.font_size_label,
-                            ),
-                          ),
-                          // Right navigation pointer arrow icon (right chevron)
-                          const Icon(
-                            // Chevron icon token
-                            Icons.chevron_right_rounded,
-                            // Match primary brand accent colors
-                            color: AppColors.primary_color,
-                          ),
-                        ],
-                      ),
+                        const SizedBox(width: AppSpacing.space_s),
+                        Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          color: true == is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary,
+                        ),
+                      ],
                     ),
                   ),
-                ],
+                ),
+              ],
+            ),
+            // Scrollable list view of Doctor Cards
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.space_xl,
+                ),
+                itemCount: state.suggestions.length,
+                itemBuilder: (context, index) {
+                  final doc = state.suggestions[index];
+                  return _build_doctor_card(context, cubit, doc, localizations, is_dark);
+                },
               ),
             ),
-          ),
+          ],
         );
 
       // Show filter-only CTA button when query is empty but filter is active (State C)
@@ -979,8 +879,8 @@ class _SearchPageState extends State<SearchPage> {
               ElevatedButton(
                 // Click handler callback routing to results (simulated print toast)
                 onPressed: () {
-                  // print redirect action details representation
-                  debugPrint("View filtered results: Location=${state.selected_location_id}, Specialty=${state.selected_specialty_id}");
+                  // Forward reveal request to search cubit to trigger results list (State C to State B)
+                  cubit.reveal_filtered_results();
                 },
                 // Button style options representation
                 style: ElevatedButton.styleFrom(
@@ -1590,6 +1490,404 @@ class _SearchPageState extends State<SearchPage> {
           ),
         ),
       ),
+    );
+  }
+
+  // Helper method returning the localized string representation of a sorting option
+  String _get_sort_label(SearchSortOption option, AppLocalizations localizations) {
+    switch (option) {
+      case SearchSortOption.recentlyAdded:
+        return localizations.search_sort_recently_added;
+      case SearchSortOption.nameAToZ:
+        return localizations.search_sort_name_a_to_z;
+      case SearchSortOption.nameZToA:
+        return localizations.search_sort_name_z_to_a;
+      case SearchSortOption.ratingHighToLow:
+        return localizations.search_sort_rating_high_to_low;
+      case SearchSortOption.feeLowToHigh:
+        return localizations.search_sort_fee_low_to_high;
+      case SearchSortOption.feeHighToLow:
+        return localizations.search_sort_fee_high_to_low;
+    }
+  }
+
+  // Renders the bottom sheet sorting options list modal dialog
+  void _show_sort_by_modal(
+    BuildContext context,
+    SearchCubit cubit,
+    SearchState state,
+    AppLocalizations localizations,
+    bool is_dark,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: is_dark ? AppColors.surface_dark : Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppSpacing.dummy_doctor_card_radius),
+        ),
+      ),
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const SizedBox(height: AppSpacing.space_xl),
+                Center(
+                  child: Text(
+                    localizations.search_sort_title,
+                    style: TextStyle(
+                      fontSize: AppSpacing.font_size_dialog_title,
+                      fontWeight: FontWeight.bold,
+                      color: is_dark ? AppColors.text_dark_primary : AppColors.text_light_primary,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.space_xl),
+                Expanded(
+                  child: ListView(
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space_xl),
+                    children: [
+                      _build_sort_option_tile(
+                        context,
+                        cubit,
+                        state,
+                        SearchSortOption.recentlyAdded,
+                        localizations.search_sort_recently_added,
+                        localizations.search_sort_recently_added_desc,
+                        Icons.access_time_rounded,
+                        is_dark,
+                      ),
+                      _build_sort_option_tile(
+                        context,
+                        cubit,
+                        state,
+                        SearchSortOption.nameAToZ,
+                        localizations.search_sort_name_a_to_z,
+                        localizations.search_sort_name_a_to_z_desc,
+                        Icons.sort_by_alpha_rounded,
+                        is_dark,
+                      ),
+                      _build_sort_option_tile(
+                        context,
+                        cubit,
+                        state,
+                        SearchSortOption.nameZToA,
+                        localizations.search_sort_name_z_to_a,
+                        localizations.search_sort_name_z_to_a_desc,
+                        Icons.sort_by_alpha_rounded,
+                        is_dark,
+                      ),
+                      _build_sort_option_tile(
+                        context,
+                        cubit,
+                        state,
+                        SearchSortOption.ratingHighToLow,
+                        localizations.search_sort_rating_high_to_low,
+                        localizations.search_sort_rating_high_to_low_desc,
+                        Icons.star_outline_rounded,
+                        is_dark,
+                      ),
+                      _build_sort_option_tile(
+                        context,
+                        cubit,
+                        state,
+                        SearchSortOption.feeLowToHigh,
+                        localizations.search_sort_fee_low_to_high,
+                        localizations.search_sort_fee_low_to_high_desc,
+                        Icons.arrow_downward_rounded,
+                        is_dark,
+                      ),
+                      _build_sort_option_tile(
+                        context,
+                        cubit,
+                        state,
+                        SearchSortOption.feeHighToLow,
+                        localizations.search_sort_fee_high_to_low,
+                        localizations.search_sort_fee_high_to_low_desc,
+                        Icons.arrow_upward_rounded,
+                        is_dark,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.space_xl),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  // Renders a single sorting option list tile component
+  Widget _build_sort_option_tile(
+    BuildContext context,
+    SearchCubit cubit,
+    SearchState state,
+    SearchSortOption option,
+    String title,
+    String description,
+    IconData icon,
+    bool is_dark,
+  ) {
+    final bool is_selected = state.selected_sort_option == option;
+    return InkWell(
+      onTap: () {
+        cubit.select_sort_option(option);
+        Navigator.pop(context);
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.space_l),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              size: AppSpacing.search_nav_icon_size,
+              color: is_selected
+                  ? AppColors.primary_color
+                  : (is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary),
+            ),
+            const SizedBox(width: AppSpacing.space_xl),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: AppSpacing.font_size_forgot_link,
+                      fontWeight: is_selected ? FontWeight.bold : FontWeight.w500,
+                      color: is_selected
+                          ? AppColors.primary_color
+                          : (is_dark ? AppColors.text_dark_primary : AppColors.text_light_primary),
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.border_width_thin),
+                  Text(
+                    description,
+                    style: TextStyle(
+                      fontSize: AppSpacing.font_size_body_small,
+                      color: is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              true == is_selected
+                  ? Icons.radio_button_checked_rounded
+                  : Icons.radio_button_off_rounded,
+              color: true == is_selected
+                  ? AppColors.primary_color
+                  : (is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary),
+              size: AppSpacing.search_nav_icon_size,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Builds a high-fidelity Doctor Card container displaying search item parameters
+  Widget _build_doctor_card(
+    BuildContext context,
+    SearchCubit cubit,
+    DoctorSuggestion doc,
+    AppLocalizations localizations,
+    bool is_dark,
+  ) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppSpacing.space_xl),
+      padding: const EdgeInsets.all(AppSpacing.space_xl),
+      decoration: BoxDecoration(
+        color: is_dark ? AppColors.surface_dark : Colors.white,
+        borderRadius: BorderRadius.circular(AppSpacing.dummy_doctor_card_radius),
+        border: Border.all(
+          color: is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
+          width: AppSpacing.border_width_thin,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Doctor Avatar Image (Performance-optimized, 72x72px circular layout)
+              AppNetworkImage(
+                // Set image url endpoint
+                image_url: doc.avatar_url,
+                // Layout width derived from design spacing tokens
+                width: AppSpacing.doctor_card_avatar_size,
+                // Layout height derived from design spacing tokens
+                height: AppSpacing.doctor_card_avatar_size,
+                // Outer corner radius shape derived from spacing tokens
+                border_radius: AppSpacing.doctor_card_avatar_radius,
+                // Downscale width for decode memory management to optimize RAM
+                cache_width: AppSpacing.doctor_card_avatar_cache_size.toInt(),
+                // Downscale height for decode memory management to optimize RAM
+                cache_height: AppSpacing.doctor_card_avatar_cache_size.toInt(),
+                // Default fallback icon when loading fails or offline
+                fallback_icon: Icons.person_rounded,
+              ),
+              const SizedBox(width: AppSpacing.space_xl),
+              // Doctor Metadata Column
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            doc.name,
+                            style: TextStyle(
+                              fontSize: AppSpacing.font_size_forgot_link,
+                              fontWeight: FontWeight.bold,
+                              color: is_dark ? AppColors.text_dark_primary : const Color(0xFF1E3A8A),
+                            ),
+                          ),
+                        ),
+                        // Heart Favorite Toggle Icon
+                        InkWell(
+                          onTap: () {
+                            cubit.toggle_favorite(doc.doctor_id);
+                          },
+                          child: Icon(
+                            true == doc.is_favorite
+                                ? Icons.favorite_rounded
+                                : Icons.favorite_border_rounded,
+                            color: true == doc.is_favorite
+                                ? const Color(0xFFEF4444)
+                                : (is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary),
+                            size: AppSpacing.search_nav_icon_size,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacing.space_s),
+                    // Specialty
+                    _build_doctor_detail_row(
+                      Icons.medical_services_outlined,
+                      doc.specialty,
+                      is_dark,
+                    ),
+                    const SizedBox(height: AppSpacing.space_xs),
+                    // Location
+                    _build_doctor_detail_row(
+                      Icons.location_on_outlined,
+                      doc.location,
+                      is_dark,
+                    ),
+                    const SizedBox(height: AppSpacing.space_xs),
+                    // Rating & Reviews Count
+                    _build_doctor_detail_row(
+                      Icons.star_rounded,
+                      "${doc.rating} (${doc.reviews_count} ${localizations.search_doctor_reviews})",
+                      is_dark,
+                      iconColor: const Color(0xFF3B82F6), // Blue star color matching the mockup!
+                    ),
+                    const SizedBox(height: AppSpacing.space_xs),
+                    // Consultation Fee
+                    _build_doctor_detail_row(
+                      Icons.payments_outlined,
+                      "${doc.fee} EGP",
+                      is_dark,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.space_xl),
+          // Bottom Row: Availability Status and Book Now CTA
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // Availability text
+              Text(
+                true == doc.is_available_today
+                    ? localizations.search_doctor_available_today
+                    : localizations.search_doctor_unavailable_today,
+                style: TextStyle(
+                  fontSize: AppSpacing.font_size_body_medium,
+                  fontWeight: FontWeight.w600,
+                  color: true == doc.is_available_today
+                      ? const Color(0xFF10B981) // Green status text
+                      : const Color(0xFF94A3B8), // Gray status text
+                ),
+              ),
+              // Book Now button
+              ElevatedButton(
+                onPressed: () {
+                  // Pop a simple toast/snackbar simulated event
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        "Booking appointment with ${doc.name}...",
+                      ),
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: true == doc.is_available_today
+                      ? const Color(0xFF1E3A8A) // Dark blue button when available
+                      : const Color(0xFF3B82F6).withValues(alpha: 0.6), // Light blue button when unavailable
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24.0),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.space_xxl,
+                    vertical: AppSpacing.space_l,
+                  ),
+                  elevation: 0,
+                ),
+                child: Text(
+                  localizations.search_doctor_book_now,
+                  style: const TextStyle(
+                    fontSize: AppSpacing.font_size_body_medium,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Helper details row layout displaying icon and label
+  Widget _build_doctor_detail_row(
+    IconData icon,
+    String text,
+    bool is_dark, {
+    Color? iconColor,
+  }) {
+    return Row(
+      children: [
+        Icon(
+          icon,
+          size: AppSpacing.font_size_body_medium,
+          color: iconColor ?? const Color(0xFF3B82F6), // Blue icon highlight
+        ),
+        const SizedBox(width: AppSpacing.space_s),
+        Expanded(
+          child: Text(
+            text,
+            style: TextStyle(
+              fontSize: AppSpacing.font_size_body_small,
+              color: is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

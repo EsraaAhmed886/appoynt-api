@@ -1149,4 +1149,106 @@ class AppLocalizationsEn extends AppLocalizations {
   String get search_filter_apply {
     return 'Apply Filters';
   }
+
+  // Override getter returning sort bottom sheet title in English
+  @override
+  String get search_sort_title {
+    return 'Sort by';
+  }
+
+  // Override getter returning recently added sort option label in English
+  @override
+  String get search_sort_recently_added {
+    return 'Recently Added';
+  }
+
+  // Override getter returning recently added sort option description in English
+  @override
+  String get search_sort_recently_added_desc {
+    return 'Show doctors you added most recently';
+  }
+
+  // Override getter returning name A-Z sort option label in English
+  @override
+  String get search_sort_name_a_to_z {
+    return 'Name: A to Z';
+  }
+
+  // Override getter returning name A-Z sort option description in English
+  @override
+  String get search_sort_name_a_to_z_desc {
+    return 'Sort doctors by name from A to Z';
+  }
+
+  // Override getter returning name Z-A sort option label in English
+  @override
+  String get search_sort_name_z_to_a {
+    return 'Name: Z to A';
+  }
+
+  // Override getter returning name Z-A sort option description in English
+  @override
+  String get search_sort_name_z_to_a_desc {
+    return 'Sort doctors by name from Z to A';
+  }
+
+  // Override getter returning rating high-to-low sort option label in English
+  @override
+  String get search_sort_rating_high_to_low {
+    return 'Rating: High to Low';
+  }
+
+  // Override getter returning rating high-to-low sort option description in English
+  @override
+  String get search_sort_rating_high_to_low_desc {
+    return 'Sort doctors by highest rating first';
+  }
+
+  // Override getter returning fee low-to-high sort option label in English
+  @override
+  String get search_sort_fee_low_to_high {
+    return 'Consultation Fee: Low to High';
+  }
+
+  // Override getter returning fee low-to-high sort option description in English
+  @override
+  String get search_sort_fee_low_to_high_desc {
+    return 'Sort from lowest fee to highest';
+  }
+
+  // Override getter returning fee high-to-low sort option label in English
+  @override
+  String get search_sort_fee_high_to_low {
+    return 'Consultation Fee: High to Low';
+  }
+
+  // Override getter returning fee high-to-low sort option description in English
+  @override
+  String get search_sort_fee_high_to_low_desc {
+    return 'Sort from highest fee to lowest';
+  }
+
+  // Override getter returning available today status indicator in English
+  @override
+  String get search_doctor_available_today {
+    return 'Available Today';
+  }
+
+  // Override getter returning unavailable today status indicator in English
+  @override
+  String get search_doctor_unavailable_today {
+    return 'Unavailable Today';
+  }
+
+  // Override getter returning booking CTA button label in English
+  @override
+  String get search_doctor_book_now {
+    return 'Book Now';
+  }
+
+  // Override getter returning doctor reviews label text in English
+  @override
+  String get search_doctor_reviews {
+    return 'reviews';
+  }
 }

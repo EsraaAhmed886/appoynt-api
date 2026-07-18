@@ -124,5 +124,11 @@ class AppColors {
 
   // Muted gray color representation for uppercase typography section headers
   static const Color search_text_muted = Color(0xFF888888);
+
+  // Border outline color for circular doctor avatar in light mode
+  static const Color avatar_border_light = Color(0xFF94A3B8);
+
+  // Border outline color for circular doctor avatar in dark mode
+  static const Color avatar_border_dark = Color(0xFF475569);
 }
 // End of app_colors.dart

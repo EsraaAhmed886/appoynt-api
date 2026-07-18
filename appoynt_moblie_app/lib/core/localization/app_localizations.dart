@@ -516,6 +516,57 @@ abstract class AppLocalizations {
 
   // Abstract getter for advanced filters apply action button label
   String get search_filter_apply;
+
+  // Abstract getter for sort bottom sheet title
+  String get search_sort_title;
+
+  // Abstract getter for recently added sort option label
+  String get search_sort_recently_added;
+
+  // Abstract getter for recently added sort option description
+  String get search_sort_recently_added_desc;
+
+  // Abstract getter for name A-Z sort option label
+  String get search_sort_name_a_to_z;
+
+  // Abstract getter for name A-Z sort option description
+  String get search_sort_name_a_to_z_desc;
+
+  // Abstract getter for name Z-A sort option label
+  String get search_sort_name_z_to_a;
+
+  // Abstract getter for name Z-A sort option description
+  String get search_sort_name_z_to_a_desc;
+
+  // Abstract getter for rating high-to-low sort option label
+  String get search_sort_rating_high_to_low;
+
+  // Abstract getter for rating high-to-low sort option description
+  String get search_sort_rating_high_to_low_desc;
+
+  // Abstract getter for fee low-to-high sort option label
+  String get search_sort_fee_low_to_high;
+
+  // Abstract getter for fee low-to-high sort option description
+  String get search_sort_fee_low_to_high_desc;
+
+  // Abstract getter for fee high-to-low sort option label
+  String get search_sort_fee_high_to_low;
+
+  // Abstract getter for fee high-to-low sort option description
+  String get search_sort_fee_high_to_low_desc;
+
+  // Abstract getter for available today status indicator
+  String get search_doctor_available_today;
+
+  // Abstract getter for unavailable today status indicator
+  String get search_doctor_unavailable_today;
+
+  // Abstract getter for booking CTA button label
+  String get search_doctor_book_now;
+
+  // Abstract getter for doctor reviews label text
+  String get search_doctor_reviews;
 }
 
 // Defining a short alias for clean and simple type references
