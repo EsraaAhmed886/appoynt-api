@@ -5,7 +5,7 @@
  * Version Information: V1.0.0
  * Dependencies: None
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 17/07/2026]
  * File Description: Defines centralized dimension, spacing, border radius, and animation constants.
  */
 
@@ -323,5 +323,44 @@ class AppSpacing {
   // Font size for doctor card rating subtext
   static const double dummy_font_size_rating = 12.0;
   // TODO: END OF DUMMY HOME SCREEN SPACING TOKENS
+
+  // Height dimension representation for the top search input bar
+  static const double search_bar_height = 48.0;
+
+  // Corner radius layout configuration for the top search input bar (matching Home Screen 14px radius)
+  static const double search_bar_radius = 14.0;
+
+  // Height dimension representation for Location and Specialty filter chips
+  static const double search_chip_height = 38.0;
+
+  // Corner radius layout configuration for Location and Specialty filter chips
+  static const double search_chip_radius = 12.0;
+
+  // Total height constraint dimension for fixed bottom navigation bar
+  static const double search_nav_height = 84.0;
+
+  // Width and height dimension constraint for circular doctor avatar images
+  static const double search_avatar_size = 40.0;
+
+  // Width and height dimension constraint for bottom navigation icons
+  static const double search_nav_icon_size = 24.0;
+
+  // Typographic font size for micro labels inside bottom navigation bar
+  static const double search_nav_label_font = 11.0;
+
+  // Vertical spacing offset between bottom navigation icon and text label
+  static const double search_nav_label_top = 4.0;
+
+  // Typographic font size for uppercase recent searches section title
+  static const double search_recent_title_font = 12.0;
+
+  // Height dimension representation for each doctor autocomplete suggestion row list item
+  static const double search_row_height = 68.0;
+
+  // Horizontal gap offset spacing between Location and Specialty filter chips
+  static const double search_chips_gap = 8.0;
+
+  // Corner radius layout configuration for suggestions container card layer
+  static const double search_card_radius = 16.0;
 }
 // End of app_spacing.dart

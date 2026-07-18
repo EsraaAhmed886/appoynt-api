@@ -41,210 +41,122 @@ class _HomePageState extends State<HomePage> {
     // Resolve dark mode status using brightness context queries
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
 
-    // Define the list of navigation items for the bottom navigation bar
-    final List<_NavItem> nav_items = [
-      // Home tab item declaration
-      _NavItem(
-        // Unselected icon token representation
-        icon: Icons.home_outlined,
-        // Selected icon token representation
-        active_icon: Icons.home_rounded,
-        // Localized text label string
-        label: localizations.dummy_home_tab_label,
-      ),
-      // Appointments tab item declaration
-      _NavItem(
-        // Unselected icon token representation
-        icon: Icons.calendar_month_outlined,
-        // Selected icon token representation
-        active_icon: Icons.calendar_month_rounded,
-        // Localized text label string
-        label: localizations.dummy_appointments_tab_label,
-      ),
-      // Queue tab item declaration
-      _NavItem(
-        // Unselected icon token representation
-        icon: Icons.queue_outlined,
-        // Selected icon token representation
-        active_icon: Icons.queue_rounded,
-        // Localized text label string
-        label: localizations.dummy_queue_tab_label,
-      ),
-      // Records tab item declaration
-      _NavItem(
-        // Unselected icon token representation
-        icon: Icons.folder_outlined,
-        // Selected icon token representation
-        active_icon: Icons.folder_rounded,
-        // Localized text label string
-        label: localizations.dummy_records_tab_label,
-      ),
-      // Profile tab item declaration
-      _NavItem(
-        // Unselected icon token representation
-        icon: Icons.person_outline_rounded,
-        // Selected icon token representation
-        active_icon: Icons.person_rounded,
-        // Localized text label string
-        label: localizations.dummy_profile_tab_label,
-      ),
-    ];
-
     // Return the root Scaffold page container layout settings
     return Scaffold(
       // Apply background color dynamically based on dark mode configuration
       backgroundColor: true == is_dark
           ? AppColors.background_dark
           : AppColors.background_light,
-      // Build the bottom navigation bar widget
-      bottomNavigationBar: _build_bottom_nav(nav_items, is_dark),
+      // Build the bottom navigation bar widget using the reusable AppBottomNavBar component
+      bottomNavigationBar: AppBottomNavBar(
+        // Pass active selected index
+        selected_index: _selected_index,
+        // On tap update local state and index tracker
+        on_tap: (index) {
+          // Check if search tab is tapped using Yoda style check (index 2)
+          if (2 == index) {
+            // TODO: START OF DUMMY HOME ROUTING - REMOVE ONCE FINAL HOME IS COMPLETED
+            // Check if context remains mounted using Yoda style check
+            if (true == context.mounted) {
+              // Route to the dedicated search page using slide/fade transition
+              Navigator.of(context).push<int>(
+                // Page route transition configs
+                PageRouteBuilder(
+                  // Target search page constructor mapping builder
+                  pageBuilder: (context, anim, secAnim) {
+                    // Return SearchPage widget instance
+                    return const SearchPage();
+                  },
+                  // Transition builder animating cross-fade layout sweep
+                  transitionsBuilder: (context, anim, secAnim, child) {
+                    // Return fade transition
+                    return FadeTransition(
+                      // Bind opacity factor to active transition
+                      opacity: anim,
+                      // Child display layout widget
+                      child: child,
+                    );
+                  },
+                  // Transition duration configs milliseconds limit
+                  transitionDuration: const Duration(
+                    // Delay milliseconds count
+                    milliseconds: AppSpacing.duration_fade_ms,
+                  ),
+                ),
+              ).then((result_index) {
+                // Check if a result index was returned and widget remains active
+                if (result_index != null && true == context.mounted) {
+                  // Rebuild screen selecting the requested tab index
+                  setState(() {
+                    // Update index selection
+                    _selected_index = result_index;
+                  });
+                } else {
+                  // Empty block
+                }
+              });
+            }
+            // TODO: END OF DUMMY HOME ROUTING
+          } else {
+            // Check if view remains mounted using Yoda style check
+            if (true == context.mounted) {
+              // Update state representation
+              setState(() {
+                // Bind index
+                _selected_index = index;
+              });
+            } else {
+              // Empty block
+            }
+          }
+        },
+      ),
       // Wrap content area within a safe area display container
       body: SafeArea(
         // Render the tab content based on the selected index
         child: 0 == _selected_index
             // Home tab content representation
-            ? _HomeTab()
+            ? _HomeTab(
+                onSearchReturn: (index) {
+                  // Check if view remains active using Yoda style check
+                  if (true == context.mounted) {
+                    setState(() {
+                      // Update selected index
+                      _selected_index = index;
+                    });
+                  } else {
+                    // Empty block
+                  }
+                },
+              )
             // Construction/Coming soon tab representation for other items
-            : _ComingSoonTab(label: nav_items[_selected_index].label),
+            : _ComingSoonTab(
+                // Localized category label mapping active selection
+                label: 1 == _selected_index
+                    ? localizations.dummy_appointments_tab_label
+                    : 2 == _selected_index
+                        ? localizations.dummy_search_tab_label
+                        : 3 == _selected_index
+                            ? localizations.dummy_favorite_tab_label
+                            : localizations.dummy_profile_tab_label,
+              ),
       ),
     );
   }
 
   // Builder method generating the customized bottom navigation bar widget
-  Widget _build_bottom_nav(List<_NavItem> nav_items, bool is_dark) {
-    // Return container applying custom shadows and colors decoration bounds
-    return Container(
-      // Apply layout styling decorations to bottom nav wrapper box
-      decoration: BoxDecoration(
-        // Set container background color based on active dark theme status
-        color: true == is_dark ? AppColors.surface_dark : AppColors.background_light,
-        // Apply shadow parameters array
-        boxShadow: const [
-          // Shadow element representing bottom nav border elevation
-          BoxShadow(
-            // Shadow color offset using dummy constant token
-            color: AppColors.dummy_shadow_color,
-            // Blur radius offset using dummy constant token
-            blurRadius: AppSpacing.dummy_bottom_nav_blur_radius,
-            // Offset coordinates for the elevation projection
-            offset: Offset(
-              // Horizontal offset coordinate
-              0.0,
-              // Vertical offset coordinate
-              AppSpacing.dummy_bottom_nav_shadow_offset_y,
-            ),
-          ),
-        ],
-      ),
-      // Wrap children inside a safe area container
-      child: SafeArea(
-        // Add vertical and horizontal padding around navigation row layout
-        child: Padding(
-          // Apply symmetric padding bounds using dummy tokens
-          padding: const EdgeInsets.symmetric(
-            // Horizontal padding value
-            horizontal: AppSpacing.dummy_bottom_nav_padding_horizontal,
-            // Vertical padding value
-            vertical: AppSpacing.dummy_bottom_nav_padding_vertical,
-          ),
-          // Align navigation children items horizontally inside row layout
-          child: Row(
-            // Position items evenly across container width bounds
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            // Map the navigation items to interactive widgets list
-            children: nav_items.asMap().entries.map((e) {
-              // Resolve active selection status of target map entry
-              final bool is_selected = e.key == _selected_index;
-              // Return interactive detector capturing tap gesture event handlers
-              return GestureDetector(
-                // Update state on user tap interaction
-                onTap: () {
-                  // Rebuild layout updating selection track state value
-                  setState(() {
-                    // Set active selected index representation
-                    _selected_index = e.key;
-                  });
-                },
-                // Animated container rendering smooth active indicators transitions
-                child: AnimatedContainer(
-                  // Set speed duration parameters
-                  duration: const Duration(
-                    // Set transition milliseconds count
-                    milliseconds: AppSpacing.duration_fade_ms,
-                  ),
-                  // Set padding within container box bounds
-                  padding: const EdgeInsets.symmetric(
-                    // Horizontal padding value
-                    horizontal: AppSpacing.dummy_bottom_nav_item_padding_horizontal,
-                    // Vertical padding value
-                    vertical: AppSpacing.dummy_bottom_nav_item_padding_vertical,
-                  ),
-                  // Apply rounded decoration borders to active nav button
-                  decoration: BoxDecoration(
-                    // Highlight selected item container with primary accent tint
-                    color: true == is_selected
-                        ? AppColors.primary_color.withValues(alpha: AppSpacing.dummy_opacity_active)
-                        : Colors.transparent,
-                    // Rounded corner radius settings mapping index indicator shapes
-                    borderRadius: BorderRadius.circular(
-                      // Radius value from dummy configuration token
-                      AppSpacing.dummy_bottom_nav_item_radius,
-                    ),
-                  ),
-                  // Stack elements inside vertical column container layout
-                  child: Column(
-                    // Minimize vertical space consumed by nav child nodes
-                    mainAxisSize: MainAxisSize.min,
-                    // Place nav elements inside layout array
-                    children: [
-                      // Navigation icon widget representation
-                      Icon(
-                        // Determine active representation icon based on selection status
-                        true == is_selected ? e.value.active_icon : e.value.icon,
-                        // Apply brand primary colors on selected tab icon
-                        color: true == is_selected
-                            ? AppColors.primary_color
-                            : AppColors.dummy_unselected_item_color,
-                        // Set constant icon size boundaries
-                        size: AppSpacing.dummy_size_icon_nav,
-                      ),
-                      // Space separator height spacer
-                      const SizedBox(
-                        // Height spacing value
-                        height: AppSpacing.space_s,
-                      ),
-                      // Text widget showing navigation category name
-                      Text(
-                        // Label text string
-                        e.value.label,
-                        // Label typographic style attributes
-                        style: TextStyle(
-                          // Typography size matching design specifications
-                          fontSize: AppSpacing.dummy_font_size_nav_label,
-                          // Dynamic weight highlighting selected category titles
-                          fontWeight: true == is_selected
-                              ? FontWeight.w700
-                              : FontWeight.w400,
-                          // Color matching indicator highlight states
-                          color: true == is_selected
-                              ? AppColors.primary_color
-                              : AppColors.dummy_unselected_item_color,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }).toList(),
-          ),
-        ),
-      ),
-    );
-  }
 }
 
 // Class representation of HomeTab layout layout showing widgets
 class _HomeTab extends StatelessWidget {
+  // Callback when a navigation index is returned from search screen
+  final ValueChanged<int> onSearchReturn;
+
+  // Constructor mapping properties
+  const _HomeTab({
+    required this.onSearchReturn,
+  });
+
   // Build method drawing the Home tab contents layout hierarchy
   @override
   Widget build(BuildContext context) {
@@ -390,63 +302,112 @@ class _HomeTab extends StatelessWidget {
             // Margin height spacing
             height: AppSpacing.dummy_spacing_home,
           ),
-          // Container mimicking search bar text field layout
-          Container(
-            // Container height constraint
-            height: AppSpacing.dummy_height_search_bar,
-            // Card decorations style mappings
-            decoration: BoxDecoration(
-              // Dynamic background surface color
-              color: true == is_dark ? AppColors.surface_dark : AppColors.background_light,
-              // Rounded container corners configurations
-              borderRadius: BorderRadius.circular(
-                // Radius token value
-                AppSpacing.dummy_search_bar_radius,
-              ),
-              // Border line boundary decoration options
-              border: Border.all(
-                // Border outline colors matching dividers
-                color: true == is_dark ? AppColors.border_dark : AppColors.border_light,
-                // Explicit border width definition
-                width: AppSpacing.border_width_thin,
-              ),
-            ),
-            // Horizontal row placing search indicator and text
-            child: Row(
-              // Align elements vertically centered inside box
-              children: [
-                // Left margin space separator
-                const SizedBox(
-                  // Width spacer value
-                  width: AppSpacing.dummy_search_bar_padding_left,
-                ),
-                // Search icon graphic asset representation
-                const Icon(
-                  // Search icon graphic representation
-                  Icons.search_rounded,
-                  // Icon color matching subtext descriptions
-                  color: AppColors.text_light_secondary,
-                  // Icon size constraint
-                  size: AppSpacing.dummy_size_icon_notification,
-                ),
-                // Separator space between icon and label text
-                const SizedBox(
-                  // Width spacer value
-                  width: AppSpacing.dummy_search_bar_spacing,
-                ),
-                // Placeholder label text display option
-                Text(
-                  // Search label text string
-                  localizations.dummy_search_hint,
-                  // Typographic text parameters options
-                  style: const TextStyle(
-                    // Small text body size
-                    fontSize: AppSpacing.font_size_body_medium,
-                    // Subdued color representing text inputs hint layout
-                    color: AppColors.text_light_secondary,
+          // GestureDetector intercepting tap trigger to route to search page
+          GestureDetector(
+            // On tap callback navigation handler
+            onTap: () {
+              // TODO: START OF DUMMY HOME ROUTING - REMOVE ONCE FINAL HOME IS COMPLETED
+              // Check if context remains mounted using Yoda style check
+              if (true == context.mounted) {
+                // Route to the dedicated search page using slide/fade transition
+                Navigator.of(context).push<int>(
+                  // Page route transition configs
+                  PageRouteBuilder(
+                    // Target search page constructor mapping builder
+                    pageBuilder: (context, anim, secAnim) {
+                      // Return SearchPage widget instance
+                      return const SearchPage();
+                    },
+                    // Transition builder animating cross-fade layout sweep
+                    transitionsBuilder: (context, anim, secAnim, child) {
+                      // Return fade transition
+                      return FadeTransition(
+                        // Bind opacity factor to active transition
+                        opacity: anim,
+                        // Child display layout widget
+                        child: child,
+                      );
+                    },
+                    // Transition duration configs milliseconds limit
+                    transitionDuration: const Duration(
+                      // Delay milliseconds count
+                      milliseconds: AppSpacing.duration_fade_ms,
+                    ),
+                  ),
+                ).then((result_index) {
+                  // If a result index was returned, forward it through callback
+                  if (result_index != null) {
+                    onSearchReturn(result_index);
+                  } else {
+                    // Empty block
+                  }
+                });
+              }
+              // TODO: END OF DUMMY HOME ROUTING
+            },
+            // Hero widget establishing search bar morph transition trigger
+            child: Hero(
+              // Hero unique identifier tag
+              tag: "search_bar",
+              // Container mimicking search bar text field layout
+              child: Container(
+                // Container height constraint
+                height: AppSpacing.dummy_height_search_bar,
+                // Card decorations style mappings
+                decoration: BoxDecoration(
+                  // Dynamic background surface color
+                  color: true == is_dark ? AppColors.surface_dark : AppColors.background_light,
+                  // Rounded container corners configurations
+                  borderRadius: BorderRadius.circular(
+                    // Radius token value
+                    AppSpacing.dummy_search_bar_radius,
+                  ),
+                  // Border line boundary decoration options
+                  border: Border.all(
+                    // Border outline colors matching dividers
+                    color: true == is_dark ? AppColors.border_dark : AppColors.border_light,
+                    // Explicit border width definition
+                    width: AppSpacing.border_width_thin,
                   ),
                 ),
-              ],
+                // Horizontal row placing search indicator and text
+                child: Row(
+                  // Align elements vertically centered inside box
+                  children: [
+                    // Left margin space separator
+                    const SizedBox(
+                      // Width spacer value
+                      width: AppSpacing.dummy_search_bar_padding_left,
+                    ),
+                    // Search icon graphic asset representation
+                    const Icon(
+                      // Search icon graphic representation
+                      Icons.search_rounded,
+                      // Icon color matching subtext descriptions
+                      color: AppColors.text_light_secondary,
+                      // Icon size constraint
+                      size: AppSpacing.dummy_size_icon_notification,
+                    ),
+                    // Separator space between icon and label text
+                    const SizedBox(
+                      // Width spacer value
+                      width: AppSpacing.dummy_search_bar_spacing,
+                    ),
+                    // Placeholder label text display option
+                    Text(
+                      // Search label text string
+                      localizations.dummy_search_hint,
+                      // Typographic text parameters options
+                      style: const TextStyle(
+                        // Small text body size
+                        fontSize: AppSpacing.font_size_body_medium,
+                        // Subdued color representing text inputs hint layout
+                        color: AppColors.text_light_secondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
           // Section vertical separator spacing layout
@@ -1391,21 +1352,6 @@ class _DoctorCard extends StatelessWidget {
   }
 }
 
-// NavItem definition schema class mapping tab properties
-class _NavItem {
-  // Unselected icon graphic representation representation
-  final IconData icon;
-  // Selected icon graphic representation representation
-  final IconData active_icon;
-  // Localized navigation tab label text representation
-  final String label;
 
-  // Constructor mapping required properties
-  const _NavItem({
-    required this.icon,
-    required this.active_icon,
-    required this.label,
-  });
-}
 
 // TODO: END OF DUMMY HOME SCREEN IMPLEMENTATION

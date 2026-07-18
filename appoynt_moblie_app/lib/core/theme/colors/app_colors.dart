@@ -5,7 +5,7 @@
  * Version Information: V1.0.0
  * Dependencies: package:flutter/material.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 17/07/2026]
  * File Description: Defines centralized color constants and palettes
  *   for light and dark theme modes.
  */
@@ -100,5 +100,29 @@ class AppColors {
   // Light brand text secondary color representation for the unselected bottom navigation items
   static const Color dummy_unselected_item_color = Color(0xFF767676);
   // TODO: END OF DUMMY HOME SCREEN COLOR TOKENS
+
+  // Color representation for autocomplete suggestions card background
+  static const Color search_card_bg = Color(0xFFFFFFFF);
+
+  // Color representation for default filter chip background fill
+  static const Color search_chip_bg = Color(0xFFF5F5F5);
+
+  // Color representation for highlighted active filter chip background fill
+  static const Color search_chip_active_bg = Color(0xFFE0F2F1);
+
+  // Color representation for default filter chip labels and icons text
+  static const Color search_chip_text_color = Color(0xFF757575);
+
+  // Dark slate color representation for doctor autocomplete suggestion row text labels
+  static const Color search_text_slate = Color(0xFF2C3E50);
+
+  // Color representation for alert confirmation dialogue background fill
+  static const Color search_alert_modal_bg = Color(0xFFFFFFFF);
+
+  // Color representation for modal barrier dark overlay transparency tint
+  static const Color search_modal_barrier = Color(0x80000000);
+
+  // Muted gray color representation for uppercase typography section headers
+  static const Color search_text_muted = Color(0xFF888888);
 }
 // End of app_colors.dart

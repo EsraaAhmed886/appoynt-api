@@ -5,7 +5,7 @@
  * Version Information: V1.0.0
  * Dependencies: package:flutter/material.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 17/07/2026]
  * File Description: Defines the abstract contract for application-wide custom localizations.
  */
 
@@ -300,6 +300,12 @@ abstract class AppLocalizations {
   // Abstract getter for bottom navigation appointments label
   String get dummy_appointments_tab_label;
 
+  // Abstract getter for bottom navigation search label
+  String get dummy_search_tab_label;
+
+  // Abstract getter for bottom navigation favorites label
+  String get dummy_favorite_tab_label;
+
   // Abstract getter for bottom navigation queue label
   String get dummy_queue_tab_label;
 
@@ -399,6 +405,117 @@ abstract class AppLocalizations {
   // Abstract getter for feature under construction info label
   String get dummy_coming_soon;
   // TODO: END OF DUMMY HOME SCREEN LOCALIZATION GETTERS
+
+  // Abstract getter for search filter chip location label text
+  String get search_location_chip;
+
+  // Abstract getter for search filter chip specialty label text
+  String get search_specialty_chip;
+
+  // Abstract getter for uppercase recent searches section label title
+  String get search_recent_searches_title;
+
+  // Abstract getter for recent search history clear list trigger label text
+  String get search_clear_action;
+
+  // Abstract getter for recent search history clear confirmation modal warning
+  String get search_clear_all_confirm_title;
+
+  // Abstract getter for alert modal cancel action button label
+  String get search_cancel_button;
+
+  // Abstract getter for alert modal confirm clear action button label
+  String get search_clear_all_button;
+
+  // Abstract getter for search screen page title text
+  String get search_screen_title;
+
+  // Abstract getter for search screen page subtitle text
+  String get search_screen_subtitle;
+
+  // Abstract getter for search screen text field placeholder hint text
+  String get search_screen_hint;
+
+  // Abstract getter for search screen location filter default selection value
+  String get search_location_default;
+
+  // Abstract getter for search screen specialty filter default selection value
+  String get search_specialty_default;
+
+  // Abstract getter for suggestions card list view all results trigger label text
+  String get search_view_all_results;
+
+  // Abstract getter for filters-only state primary action button label
+  String get search_view_all_filtered_results;
+
+  // Abstract getter for bottom navigation profile tab label
+  String get search_tab_profile;
+
+  // Abstract getter for bottom navigation appointment tab label
+  String get search_tab_appointment;
+
+  // Abstract getter for bottom navigation search tab label
+  String get search_tab_search;
+
+  // Abstract getter for bottom navigation favorites tab label
+  String get search_tab_favorites;
+
+  // Abstract getter for bottom navigation home tab label
+  String get search_tab_home;
+
+  // Abstract getter for autocomplete empty matching results indicator text label
+  String get search_no_results;
+
+  // Abstract getter for offline network connectivity failure warning details
+  String get search_offline_error;
+
+  // Abstract getter for offline failure retry action trigger label
+  String get search_retry_button;
+
+  // Abstract getter for advanced filters bottom sheet title
+  String get search_filter_title;
+
+  // Abstract getter for advanced filters gender section title
+  String get search_filter_gender_title;
+
+  // Abstract getter for advanced filters gender Male option
+  String get search_filter_gender_male;
+
+  // Abstract getter for advanced filters gender Female option
+  String get search_filter_gender_female;
+
+  // Abstract getter for advanced filters price section title
+  String get search_filter_price_title;
+
+  // Abstract getter for advanced filters price option: Under 100 EGP
+  String get search_filter_price_under_100;
+
+  // Abstract getter for advanced filters price option: 100 - 200 EGP
+  String get search_filter_price_100_200;
+
+  // Abstract getter for advanced filters price option: 200 - 500 EGP
+  String get search_filter_price_200_500;
+
+  // Abstract getter for advanced filters price option: Above 500 EGP
+  String get search_filter_price_above_500;
+
+  // Abstract getter for advanced filters rating section title
+  String get search_filter_rating_title;
+
+  // Abstract getter for advanced filters rating option: 5 Stars
+  String get search_filter_rating_5;
+
+  // Abstract getter for advanced filters rating option: 4 Stars & Above
+  String get search_filter_rating_4;
+
+  // Abstract getter for advanced filters rating option: 3 Stars & Above
+  String get search_filter_rating_3;
+
+  // Abstract getter for advanced filters reset action button label
+  String get search_filter_reset;
+
+  // Abstract getter for advanced filters apply action button label
+  String get search_filter_apply;
 }
 
 // Defining a short alias for clean and simple type references

@@ -6,7 +6,7 @@
  * Dependencies: package:flutter/material.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 17/07/2026]
  * File Description: English concrete implementation of localizations
  *   containing onboarding and authentication strings.
  */
@@ -660,6 +660,20 @@ class AppLocalizationsEn extends AppLocalizations {
     return 'Appointments';
   }
 
+  // Override getter returning bottom navigation search label in English
+  @override
+  String get dummy_search_tab_label {
+    // Return English bottom navigation search tab label
+    return 'Search';
+  }
+
+  // Override getter returning bottom navigation favorites label in English
+  @override
+  String get dummy_favorite_tab_label {
+    // Return English bottom navigation favorites tab label
+    return 'Favorite';
+  }
+
   // Override getter returning bottom navigation queue label in English
   @override
   String get dummy_queue_tab_label {
@@ -891,4 +905,248 @@ class AppLocalizationsEn extends AppLocalizations {
     return 'Coming Soon';
   }
   // TODO: END OF DUMMY HOME SCREEN LOCALIZATION OVERRIDES
+
+  // Override getter returning search filter chip location label text in English
+  @override
+  String get search_location_chip {
+    // Return English search location label
+    return 'Location';
+  }
+
+  // Override getter returning search filter chip specialty label text in English
+  @override
+  String get search_specialty_chip {
+    // Return English search specialty label
+    return 'Specialty';
+  }
+
+  // Override getter returning uppercase recent searches section label title in English
+  @override
+  String get search_recent_searches_title {
+    // Return English recent searches title
+    return 'RECENT SEARCHES';
+  }
+
+  // Override getter returning recent search history clear list trigger label text in English
+  @override
+  String get search_clear_action {
+    // Return English clear history label
+    return 'Clear';
+  }
+
+  // Override getter returning recent search history clear confirmation modal warning in English
+  @override
+  String get search_clear_all_confirm_title {
+    // Return English clear confirmation dialog message
+    return 'Clear all recent search history?';
+  }
+
+  // Override getter returning alert modal cancel action button label in English
+  @override
+  String get search_cancel_button {
+    // Return English cancel button text
+    return 'Cancel';
+  }
+
+  // Override getter returning alert modal confirm clear action button label in English
+  @override
+  String get search_clear_all_button {
+    // Return English clear all button text
+    return 'Clear All';
+  }
+
+  // Override getter returning suggestions card list view all results trigger label text in English
+  @override
+  String get search_view_all_results {
+    // Return English view all search results label
+    return 'View All Search Results';
+  }
+
+  // Override getter returning filters-only state primary action button label in English
+  @override
+  String get search_view_all_filtered_results {
+    // Return English view all filtered results button text
+    return 'View all filtered results';
+  }
+
+  // Override getter returning bottom navigation profile tab label in English
+  @override
+  String get search_tab_profile {
+    // Return English profile label
+    return 'Profile';
+  }
+
+  // Override getter returning bottom navigation appointment tab label in English
+  @override
+  String get search_tab_appointment {
+    // Return English appointment label
+    return 'Appointment';
+  }
+
+  // Override getter returning bottom navigation search tab label in English
+  @override
+  String get search_tab_search {
+    // Return English search label
+    return 'Search';
+  }
+
+  // Override getter returning bottom navigation favorites tab label in English
+  @override
+  String get search_tab_favorites {
+    // Return English favorites label
+    return 'Favorites';
+  }
+
+  // Override getter returning bottom navigation home tab label in English
+  @override
+  String get search_tab_home {
+    // Return English home label
+    return 'Home';
+  }
+
+  // Override getter returning autocomplete empty matching results indicator text label in English
+  @override
+  String get search_no_results {
+    // Return English no results message
+    return 'No results found.';
+  }
+
+  // Override getter returning offline network connectivity failure warning details in English
+  @override
+  String get search_offline_error {
+    // Return English offline error message
+    return 'Network connection lost. Please try again.';
+  }
+
+  // Override getter returning offline failure retry action trigger label in English
+  @override
+  String get search_retry_button {
+    // Return English retry button text
+    return 'Retry';
+  }
+
+  // Override getter returning search screen page title text in English
+  @override
+  String get search_screen_title {
+    // Return English search screen title
+    return 'Search';
+  }
+
+  // Override getter returning search screen page subtitle text in English
+  @override
+  String get search_screen_subtitle {
+    // Return English search screen subtitle
+    return 'Find doctors, clinics, specialties and more';
+  }
+
+  // Override getter returning search screen text field placeholder hint text in English
+  @override
+  String get search_screen_hint {
+    // Return English search screen hint
+    return 'Find a Doctor, Specialty, Clinic, Hospital, Lab or Pharmacy';
+  }
+
+  // Override getter returning search screen location filter default selection value in English
+  @override
+  String get search_location_default {
+    // Return English default location filter
+    return 'Cairo, Egypt';
+  }
+
+  // Override getter returning search screen specialty filter default selection value in English
+  @override
+  String get search_specialty_default {
+    // Return English default specialty filter
+    return 'All Specialties';
+  }
+
+  // Override getter returning advanced filters bottom sheet title in English
+  @override
+  String get search_filter_title {
+    return 'Advanced Filters';
+  }
+
+  // Override getter returning advanced filters gender section title in English
+  @override
+  String get search_filter_gender_title {
+    return 'Doctor Gender';
+  }
+
+  // Override getter returning advanced filters gender Male option in English
+  @override
+  String get search_filter_gender_male {
+    return 'Male';
+  }
+
+  // Override getter returning advanced filters gender Female option in English
+  @override
+  String get search_filter_gender_female {
+    return 'Female';
+  }
+
+  // Override getter returning advanced filters price section title in English
+  @override
+  String get search_filter_price_title {
+    return 'Consultation Fee';
+  }
+
+  // Override getter returning advanced filters price option: Under 100 EGP in English
+  @override
+  String get search_filter_price_under_100 {
+    return 'Under 100 EGP';
+  }
+
+  // Override getter returning advanced filters price option: 100 - 200 EGP in English
+  @override
+  String get search_filter_price_100_200 {
+    return '100 - 200 EGP';
+  }
+
+  // Override getter returning advanced filters price option: 200 - 500 EGP in English
+  @override
+  String get search_filter_price_200_500 {
+    return '200 - 500 EGP';
+  }
+
+  // Override getter returning advanced filters price option: Above 500 EGP in English
+  @override
+  String get search_filter_price_above_500 {
+    return 'Above 500 EGP';
+  }
+
+  // Override getter returning advanced filters rating section title in English
+  @override
+  String get search_filter_rating_title {
+    return 'Doctor Rating';
+  }
+
+  // Override getter returning advanced filters rating option: 5 Stars in English
+  @override
+  String get search_filter_rating_5 {
+    return '5 Stars';
+  }
+
+  // Override getter returning advanced filters rating option: 4 Stars & Above in English
+  @override
+  String get search_filter_rating_4 {
+    return '4 Stars & Above';
+  }
+
+  // Override getter returning advanced filters rating option: 3 Stars & Above in English
+  @override
+  String get search_filter_rating_3 {
+    return '3 Stars & Above';
+  }
+
+  // Override getter returning advanced filters reset action button label in English
+  @override
+  String get search_filter_reset {
+    return 'Reset';
+  }
+
+  // Override getter returning advanced filters apply action button label in English
+  @override
+  String get search_filter_apply {
+    return 'Apply Filters';
+  }
 }

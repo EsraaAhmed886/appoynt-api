@@ -6,7 +6,7 @@
  * Dependencies: package:flutter/material.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 17/07/2026]
  * File Description: Arabic concrete implementation of localizations
  *   containing onboarding and authentication strings.
  */
@@ -660,6 +660,20 @@ class AppLocalizationsAr extends AppLocalizations {
     return 'المواعيد';
   }
 
+  // Override getter returning bottom navigation search label in Arabic
+  @override
+  String get dummy_search_tab_label {
+    // Return Arabic bottom navigation search tab label
+    return 'البحث';
+  }
+
+  // Override getter returning bottom navigation favorites label in Arabic
+  @override
+  String get dummy_favorite_tab_label {
+    // Return Arabic bottom navigation favorites label in Arabic
+    return 'المفضلة';
+  }
+
   // Override getter returning bottom navigation queue label in Arabic
   @override
   String get dummy_queue_tab_label {
@@ -891,4 +905,248 @@ class AppLocalizationsAr extends AppLocalizations {
     return 'قريباً';
   }
   // TODO: END OF DUMMY HOME SCREEN LOCALIZATION OVERRIDES
+
+  // Override getter returning search filter chip location label text in Arabic
+  @override
+  String get search_location_chip {
+    // Return Arabic search location label
+    return 'الموقع';
+  }
+
+  // Override getter returning search filter chip specialty label text in Arabic
+  @override
+  String get search_specialty_chip {
+    // Return Arabic search specialty label
+    return 'التخصص';
+  }
+
+  // Override getter returning uppercase recent searches section label title in Arabic
+  @override
+  String get search_recent_searches_title {
+    // Return Arabic recent searches title
+    return 'عمليات البحث الأخيرة';
+  }
+
+  // Override getter returning recent search history clear list trigger label text in Arabic
+  @override
+  String get search_clear_action {
+    // Return Arabic clear history label
+    return 'مسح';
+  }
+
+  // Override getter returning recent search history clear confirmation modal warning in Arabic
+  @override
+  String get search_clear_all_confirm_title {
+    // Return Arabic clear confirmation dialog message
+    return 'هل تريد مسح سجل البحث بالكامل؟';
+  }
+
+  // Override getter returning alert modal cancel action button label in Arabic
+  @override
+  String get search_cancel_button {
+    // Return Arabic cancel button text
+    return 'إلغاء';
+  }
+
+  // Override getter returning alert modal confirm clear action button label in Arabic
+  @override
+  String get search_clear_all_button {
+    // Return Arabic clear all button text
+    return 'مسح الكل';
+  }
+
+  // Override getter returning suggestions card list view all results trigger label text in Arabic
+  @override
+  String get search_view_all_results {
+    // Return Arabic view all search results label
+    return 'عرض جميع نتائج البحث';
+  }
+
+  // Override getter returning filters-only state primary action button label in Arabic
+  @override
+  String get search_view_all_filtered_results {
+    // Return Arabic view all filtered results button text
+    return 'عرض جميع النتائج المصفاة';
+  }
+
+  // Override getter returning bottom navigation profile tab label in Arabic
+  @override
+  String get search_tab_profile {
+    // Return Arabic profile label
+    return 'الحساب';
+  }
+
+  // Override getter returning bottom navigation appointment tab label in Arabic
+  @override
+  String get search_tab_appointment {
+    // Return Arabic appointment label
+    return 'المواعيد';
+  }
+
+  // Override getter returning bottom navigation search tab label in Arabic
+  @override
+  String get search_tab_search {
+    // Return Arabic search label
+    return 'البحث';
+  }
+
+  // Override getter returning bottom navigation favorites tab label in Arabic
+  @override
+  String get search_tab_favorites {
+    // Return Arabic favorites label
+    return 'المفضلة';
+  }
+
+  // Override getter returning bottom navigation home tab label in Arabic
+  @override
+  String get search_tab_home {
+    // Return Arabic home label
+    return 'الرئيسية';
+  }
+
+  // Override getter returning autocomplete empty matching results indicator text label in Arabic
+  @override
+  String get search_no_results {
+    // Return Arabic no results message
+    return 'لم يتم العثور على نتائج.';
+  }
+
+  // Override getter returning offline network connectivity failure warning details in Arabic
+  @override
+  String get search_offline_error {
+    // Return Arabic offline error message
+    return 'فقد الاتصال بالشبكة. يرجى المحاولة مرة أخرى.';
+  }
+
+  // Override getter returning offline failure retry action trigger label in Arabic
+  @override
+  String get search_retry_button {
+    // Return Arabic retry button text
+    return 'إعادة المحاولة';
+  }
+
+  // Override getter returning search screen page title text in Arabic
+  @override
+  String get search_screen_title {
+    // Return Arabic search screen title
+    return 'البحث';
+  }
+
+  // Override getter returning search screen page subtitle text in Arabic
+  @override
+  String get search_screen_subtitle {
+    // Return Arabic search screen subtitle
+    return 'ابحث عن الأطباء والعيادات والتخصصات والمزيد';
+  }
+
+  // Override getter returning search screen text field placeholder hint text in Arabic
+  @override
+  String get search_screen_hint {
+    // Return Arabic search screen hint
+    return 'ابحث عن طبيب، تخصص، عيادة، مستشفى، مختبر أو صيدلية';
+  }
+
+  // Override getter returning search screen location filter default selection value in Arabic
+  @override
+  String get search_location_default {
+    // Return Arabic default location filter
+    return 'القاهرة، مصر';
+  }
+
+  // Override getter returning search screen specialty filter default selection value in Arabic
+  @override
+  String get search_specialty_default {
+    // Return Arabic default specialty filter
+    return 'جميع التخصصات';
+  }
+
+  // Override getter returning advanced filters bottom sheet title in Arabic
+  @override
+  String get search_filter_title {
+    return 'الفلاتر المتقدمة';
+  }
+
+  // Override getter returning advanced filters gender section title in Arabic
+  @override
+  String get search_filter_gender_title {
+    return 'جنس الطبيب';
+  }
+
+  // Override getter returning advanced filters gender Male option in Arabic
+  @override
+  String get search_filter_gender_male {
+    return 'ذكر';
+  }
+
+  // Override getter returning advanced filters gender Female option in Arabic
+  @override
+  String get search_filter_gender_female {
+    return 'أنثى';
+  }
+
+  // Override getter returning advanced filters price section title in Arabic
+  @override
+  String get search_filter_price_title {
+    return 'سعر الكشف';
+  }
+
+  // Override getter returning advanced filters price option: Under 100 EGP in Arabic
+  @override
+  String get search_filter_price_under_100 {
+    return 'أقل من 100 جنيه';
+  }
+
+  // Override getter returning advanced filters price option: 100 - 200 EGP in Arabic
+  @override
+  String get search_filter_price_100_200 {
+    return '100 - 200 جنيه';
+  }
+
+  // Override getter returning advanced filters price option: 200 - 500 EGP in Arabic
+  @override
+  String get search_filter_price_200_500 {
+    return '200 - 500 جنيه';
+  }
+
+  // Override getter returning advanced filters price option: Above 500 EGP in Arabic
+  @override
+  String get search_filter_price_above_500 {
+    return 'أكثر من 500 جنيه';
+  }
+
+  // Override getter returning advanced filters rating section title in Arabic
+  @override
+  String get search_filter_rating_title {
+    return 'تقييم الطبيب';
+  }
+
+  // Override getter returning advanced filters rating option: 5 Stars in Arabic
+  @override
+  String get search_filter_rating_5 {
+    return '5 نجوم';
+  }
+
+  // Override getter returning advanced filters rating option: 4 Stars & Above in Arabic
+  @override
+  String get search_filter_rating_4 {
+    return '4 نجوم وأكثر';
+  }
+
+  // Override getter returning advanced filters rating option: 3 Stars & Above in Arabic
+  @override
+  String get search_filter_rating_3 {
+    return '3 نجوم وأكثر';
+  }
+
+  // Override getter returning advanced filters reset action button label in Arabic
+  @override
+  String get search_filter_reset {
+    return 'إعادة ضبط';
+  }
+
+  // Override getter returning advanced filters apply action button label in Arabic
+  @override
+  String get search_filter_apply {
+    return 'تطبيق الفلاتر';
+  }
 }

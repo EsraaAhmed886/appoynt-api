@@ -11,7 +11,7 @@
  *   package:appoynt_mobile_app/core/theme/modes/dark_mode.dart,
  *   package:appoynt_mobile_app/core/theme/modes/theme_mode.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 17/07/2026]
  * File Description: Acts as a central global barrel file for the
  *   application's foundational UI layer.
  */
@@ -58,5 +58,9 @@ export 'package:appoynt_mobile_app/core/logic/global_cubit.dart';
 // TODO: START OF DUMMY HOME SCREEN EXPORT - REMOVE ONCE FINAL HOME IS COMPLETED
 // Exporting temporary dummy home page layout widget representation
 export 'package:appoynt_mobile_app/features/home/presentation/pages/home_page.dart';
+// Exporting reusable bottom navigation bar component
+export 'package:appoynt_mobile_app/core/widgets/app_bottom_nav_bar.dart';
 // TODO: END OF DUMMY HOME SCREEN EXPORT
+// Exporting dedicated search page widget representation
+export 'package:appoynt_mobile_app/features/search/presentation/pages/search_page.dart';
 // End of route_export.dart
