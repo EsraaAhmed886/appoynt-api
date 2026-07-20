@@ -50,25 +50,20 @@
   --app-input-fill: #f4f4f4;
 }
 
-/* Define media query selector block for operating system dark scheme configurations */
-@media (prefers-color-scheme: dark) {
-  /* Apply dark theme variables to root node container */
-  :root {
-    /* Set dark mode primary brand blue color token */
-    --app-primary: #0f62fe;
-    /* Set dark mode body backdrop background color token */
-    --app-background: #121212;
-    /* Set dark mode surface container color token */
-    --app-surface: #1e1e1e;
-    /* Set dark mode border and separator color token */
-    --app-border: #2c2c2c;
-    /* Set dark mode main primary label text color token */
-    --app-text-primary: #ededed;
-    /* Set dark mode secondary descriptor text color token */
-    --app-text-secondary: #9e9e9e;
-    /* Set dark mode input box background color token */
-    --app-input-fill: #222222;
-  }
+.dark {
+  --app-primary: #0f62fe;
+
+  --app-background: #121212;
+
+  --app-surface: #1e1e1e;
+
+  --app-border: #2c2c2c;
+
+  --app-text-primary: #ededed;
+
+  --app-text-secondary: #9e9e9e;
+
+  --app-input-fill: #222222;
 }
 
 /* Force global font inheritance for all input and button tags */
