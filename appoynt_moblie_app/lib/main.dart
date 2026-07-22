@@ -81,8 +81,7 @@ class MyApp extends StatelessWidget {
                 // Set dark mode theme configuration import
                 darkTheme: dark_mode_theme,
                 // Bind active theme mode property value to dynamic state notifier
-                // themeMode: theme_mode_notifier.current_theme_mode,
-                themeMode: ThemeMode.light,
+                themeMode: theme_mode_notifier.current_theme_mode,
                 // Set the localizations delegates to support custom bilingual engine translations
                 localizationsDelegates: app_localizations_delegates,
                 // Define supported locales list for the application context

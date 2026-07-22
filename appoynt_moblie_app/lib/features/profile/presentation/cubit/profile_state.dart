@@ -1,0 +1,105 @@
+/*
+ * File Name: profile_state.dart
+ * Author: Kholoud Khaled
+ * Date of Creation: 19/07/2026
+ * Version Information: V1.0.0
+ * Dependencies: package:appoynt_mobile_app/features/profile/domain/entities/patient_profile.dart
+ * Contributors: [Kholoud Khaled]
+ * Last Modified Date: [Kholoud Khaled - 19/07/2026]
+ * File Description: Defines the states for the Patient Profile BLoC/Cubit pattern.
+ */
+
+// Importing the PatientProfile domain entity
+import 'package:appoynt_mobile_app/features/profile/domain/entities/patient_profile.dart';
+
+// Represents the state status enumeration options
+enum ProfileStatus {
+  // Initial state before action begins
+  initial,
+  // Fetching profile details from mock repo/backend
+  loading,
+  // Successful data loading completed
+  success,
+  // Loading failure occurred
+  error,
+  // Submitting update payload
+  updating,
+  // Successful update completed
+  updateSuccess,
+  // Update payload submission failed
+  updateError,
+  // Password validation/update in progress
+  passwordUpdating,
+  // Password updated successfully
+  passwordSuccess,
+  // Password update failed
+  passwordError,
+}
+
+// State class representation for Profile feature block operations
+class ProfileState {
+  // Active status tracker value
+  final ProfileStatus status;
+  // Patient details model representing saved backend record
+  final PatientProfile profile;
+  // Temp draft model representation during editing
+  final PatientProfile temp_profile;
+  // Error label string description for alerts
+  final String? error_message;
+  // Dirty flag status mapping unsaved edits comparison
+  final bool is_dirty;
+
+  // Constructor mapping the variables
+  const ProfileState({
+    required this.status,
+    required this.profile,
+    required this.temp_profile,
+    this.error_message,
+    required this.is_dirty,
+  });
+
+  // Factory constructor representing the default starting state layout config
+  factory ProfileState.initial() {
+    // Return initial status with empty profile representations
+    return ProfileState(
+      // Bind status parameter
+      status: ProfileStatus.initial,
+      // Map empty profile structure
+      profile: PatientProfile.empty(),
+      // Map empty profile layout structures draft
+      temp_profile: PatientProfile.empty(),
+      // Null error message representation
+      error_message: null,
+      // False flag defaults
+      is_dirty: false,
+    );
+  }
+
+  // Generate a duplicate state instance overriding properties
+  ProfileState copyWith({
+    // Optional status update
+    ProfileStatus? status,
+    // Optional profile update
+    PatientProfile? profile,
+    // Optional temp_profile update
+    PatientProfile? temp_profile,
+    // Optional error_message update
+    String? error_message,
+    // Optional dirty flag update
+    bool? is_dirty,
+  }) {
+    // Return new copy of state representation instance
+    return ProfileState(
+      // Apply status override or keep current state value
+      status: status ?? this.status,
+      // Apply profile override or keep current profile instance
+      profile: profile ?? this.profile,
+      // Apply temp draft override or keep current draft instance
+      temp_profile: temp_profile ?? this.temp_profile,
+      // Apply error message override or keep current description
+      error_message: error_message ?? this.error_message,
+      // Apply dirty status override or keep current flag
+      is_dirty: is_dirty ?? this.is_dirty,
+    );
+  }
+}

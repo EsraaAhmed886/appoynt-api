@@ -36,6 +36,12 @@ class AuthTextField extends StatefulWidget {
   // Flag indicating if text field maps phone inputs
   final bool is_phone;
 
+  // Flag indicating if text field maps National ID inputs
+  final bool is_national_id;
+
+  // Custom input formatters list
+  final List<TextInputFormatter>? input_formatters;
+
   // Validator function mapping input rules validation checks
   final String? Function(String?)? validator;
 
@@ -44,6 +50,9 @@ class AuthTextField extends StatefulWidget {
 
   // Keyboard return actions configuration
   final TextInputAction? text_input_action;
+
+  // Flag determining if text field interactions are enabled
+  final bool enabled;
 
   // Constructor mapping standard parameters
   const AuthTextField({
@@ -54,9 +63,12 @@ class AuthTextField extends StatefulWidget {
     this.prefix_icon,
     this.is_password = false,
     this.is_phone = false,
+    this.is_national_id = false,
+    this.input_formatters,
     this.validator,
     this.keyboard_type,
     this.text_input_action,
+    this.enabled = true,
   });
 
   @override
@@ -95,29 +107,27 @@ class _AuthTextFieldState extends State<AuthTextField> {
     if (false == _focus_node.hasFocus) {
       // Refresh layout state to trigger validation
       setState(() {
-        // Mark field as touched
+        // Set touched flag
         _touched = true;
       });
     } else {
-      // Empty action block to satisfy compiler
+      // Empty block
     }
-    // Refresh layout state for outline border color updates
-    setState(() {});
   }
 
   @override
-  // Clean up listeners and dispose focus nodes to avoid memory leaks
+  // Dispose focus node resources when widget unmounts
   void dispose() {
-    // Remove focus listener tracker
+    // Remove focus listener
     _focus_node.removeListener(_on_focus_changed);
-    // Dispose focus node resources
+    // Dispose focus node instance
     _focus_node.dispose();
-    // Invoke parent dispose logic
+    // Call parent dispose
     super.dispose();
   }
 
   @override
-  // Build method drawing input components
+  // Build component tree layout
   Widget build(BuildContext context) {
     // Check if system locale is set to Arabic
     final bool is_arabic = AppLocalizations.of(context).is_arabic;
@@ -128,6 +138,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
     // Check if field is credential input to force LTR configuration using Yoda style comparison
     final bool force_ltr = true == widget.is_password ||
         true == widget.is_phone ||
+        true == widget.is_national_id ||
         TextInputType.emailAddress == widget.keyboard_type;
 
     // Return Column layout structuring labels and input fields
@@ -157,11 +168,13 @@ class _AuthTextFieldState extends State<AuthTextField> {
           // Builder method rebuilding on value changes
           builder: (context, value, child) {
             // Resolve text alignment dynamically depending on LTR checks
-            // using Yoda style check (BUG-006 / Confirm Password)
+            final bool is_empty = value.text.isEmpty;
             final TextAlign dynamic_align = true == force_ltr
-                ? (true == widget.is_password && true == is_arabic
+                ? (true == is_empty && true == is_arabic
                     ? TextAlign.right
-                    : TextAlign.left)
+                    : (true == widget.is_password && true == is_arabic
+                        ? TextAlign.right
+                        : TextAlign.left))
                 : (true == is_arabic ? TextAlign.right : TextAlign.left);
 
             // Return Stack layering shadow background behind the TextFormField
@@ -207,6 +220,8 @@ class _AuthTextFieldState extends State<AuthTextField> {
                 ),
                 // Render standard TextFormField on top of the shadow decorator
                 TextFormField(
+                // Bind interactions enabled flag
+                enabled: widget.enabled,
                 // Bind controller
                 controller: widget.controller,
                 // Bind focus node
@@ -228,13 +243,14 @@ class _AuthTextFieldState extends State<AuthTextField> {
                             : TextInputType.text),
                 // Resolve keyboard return action using Yoda style check
                 textInputAction: widget.text_input_action ?? TextInputAction.next,
-                // Format digits-only if phone field is active using Yoda style check
-                inputFormatters: true == widget.is_phone
-                    ? [
-                        // Use custom Egyptian phone input formatter
-                        PhoneInputFormatter(),
-                      ]
-                    : null,
+                // Format digits-only or custom formatters
+                inputFormatters: widget.input_formatters ??
+                    (true == widget.is_phone
+                        ? [
+                            // Use custom Egyptian phone input formatter
+                            PhoneInputFormatter(),
+                          ]
+                        : null),
                 // Force input directionality text rules
                 textDirection: true == force_ltr
                     ? TextDirection.ltr

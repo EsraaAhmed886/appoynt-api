@@ -383,5 +383,32 @@ class AppSpacing {
 
   // Fixed height for validation error container below subtitle to prevent layout shifts (40px)
   static const double error_container_height = 40.0;
+
+  // Height dimension constraint for profile header banner area (200px)
+  static const double profile_header_height = 200.0;
+
+  // Circular radius dimension for patient avatar layout in profile view (50px)
+  static const double profile_avatar_radius = 50.0;
+
+  // Circular radius dimension for patient avatar layout in profile edit mode (60px)
+  static const double profile_edit_avatar_radius = 60.0;
+
+  // Spacing padding offset dimension constraint for profile row cards (16px)
+  static const double profile_card_padding = 16.0;
+
+  // Small icon display size constraint (16px)
+  static const double icon_size_s = 16.0;
+
+  // Medium icon display size constraint (24px)
+  static const double icon_size_m = 24.0;
+
+  // Large icon display size constraint (32px)
+  static const double icon_size_l = 32.0;
+
+  // Extra large icon display size constraint (40px)
+  static const double icon_size_xl = 40.0;
+
+  // Double extra large icon display size constraint (48px)
+  static const double icon_size_xxl = 48.0;
 }
 // End of app_spacing.dart

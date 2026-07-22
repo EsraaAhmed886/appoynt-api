@@ -14,6 +14,12 @@
 
 // Importing central UI and route exports barrel file
 import 'package:appoynt_mobile_app/core/routing/route_export.dart';
+// Importing BLoC provider library
+import 'package:flutter_bloc/flutter_bloc.dart';
+// Importing profile Cubit declaration
+import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart';
+// Importing ProfilePage widget screen definition
+import 'package:appoynt_mobile_app/features/profile/presentation/pages/profile_page.dart';
 
 // Defining the HomePage stateful widget representation
 class HomePage extends StatefulWidget {
@@ -129,17 +135,26 @@ class _HomePageState extends State<HomePage> {
                   }
                 },
               )
-            // Construction/Coming soon tab representation for other items
-            : _ComingSoonTab(
-                // Localized category label mapping active selection
-                label: 1 == _selected_index
-                    ? localizations.dummy_appointments_tab_label
-                    : 2 == _selected_index
-                        ? localizations.dummy_search_tab_label
-                        : 3 == _selected_index
-                            ? localizations.dummy_favorite_tab_label
-                            : localizations.dummy_profile_tab_label,
-              ),
+            : 4 == _selected_index
+                // Instantiate the Profile tab wrapped in its Cubit state controller
+                ? BlocProvider<ProfileCubit>(
+                    // Create Cubit state controller instance
+                    create: (context) {
+                      // Return new ProfileCubit
+                      return ProfileCubit();
+                    },
+                    // Renders the ProfilePage main screen widget
+                    child: const ProfilePage(),
+                  )
+                // Construction/Coming soon tab representation for other items
+                : _ComingSoonTab(
+                    // Localized category label mapping active selection
+                    label: 1 == _selected_index
+                        ? localizations.dummy_appointments_tab_label
+                        : 2 == _selected_index
+                            ? localizations.dummy_search_tab_label
+                            : localizations.dummy_favorite_tab_label,
+                  ),
       ),
     );
   }

@@ -48,6 +48,18 @@ class AppColors {
   // Divider and border color constant representation for the dark theme mode
   static const Color border_dark = Color(0xFF2C2C2C);
 
+  // Distinct darker slate-gray background tint for inner bounding boxes in Light Mode
+  static const Color inner_container_light = Color(0xFFCBD5E1);
+
+  // Background color constant representation for inner bounding boxes in Dark Mode
+  static const Color inner_container_dark = Color(0xFF262626);
+
+  // Defined 1px border outline for inner track containers in Light Mode
+  static const Color inner_container_border_light = Color(0xFF94A3B8);
+
+  // Defined 1px border outline for inner track containers in Dark Mode
+  static const Color inner_container_border_dark = Color(0xFF3B4252);
+
   // Background color constant for the onboarding screens layout
   static const Color onboarding_background = Color(0xFFF0F3FA);
 
