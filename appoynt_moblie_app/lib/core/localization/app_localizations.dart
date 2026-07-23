@@ -608,6 +608,7 @@ abstract class AppLocalizations {
   String get profile_gender_prefer_not;
   String get profile_smoking_yes;
   String get profile_smoking_no;
+  String get profile_smoking_ex;
   String get profile_error_name_empty;
   String get profile_error_name_length;
   String get profile_error_name_letters_only;
@@ -722,6 +723,30 @@ abstract class AppLocalizations {
 
   // Prescriptions Localizations
   String get prescriptions_title;
+  String get prescriptions_add_btn;
+  String get prescriptions_empty_title;
+  String get prescriptions_empty_subtitle;
+  String get prescriptions_empty_cta;
+  String get prescriptions_modal_title;
+  String get prescriptions_field_name_label;
+  String get prescriptions_field_name_hint;
+  String get prescriptions_field_freq_label;
+  String get prescriptions_field_duration_label;
+  String get prescriptions_field_duration_hint;
+  String get prescriptions_field_doctor_label;
+  String get prescriptions_field_doctor_hint;
+  String get prescriptions_field_rx_label;
+  String get prescriptions_freq_once;
+  String get prescriptions_freq_twice;
+  String get prescriptions_freq_every8;
+  String get prescriptions_freq_as_needed;
+  String get prescriptions_status_active;
+  String get prescriptions_save_btn;
+  String get prescriptions_delete_confirm_title;
+  String get prescriptions_delete_confirm_body;
+  String get prescriptions_delete_confirm_yes;
+  String get prescriptions_delete_confirm_no;
+  // Legacy keys retained for backward compatibility
   String get prescriptions_add_medication;
   String get prescriptions_added_title;
 
@@ -737,6 +762,13 @@ abstract class AppLocalizations {
   String get tests_select_date_btn;
   String get tests_upload_doc_btn;
   String get tests_confirm_upload_btn;
+  String get tests_empty_title;
+  String get tests_empty_subtitle;
+  String get tests_empty_cta;
+  String get tests_upload_new_cta;
+  String get tests_file_attached_toast;
+  String get tests_error_no_file;
+  String get tests_success_upload;
 
   // Chronic Conditions Localizations
   String get chronic_title;

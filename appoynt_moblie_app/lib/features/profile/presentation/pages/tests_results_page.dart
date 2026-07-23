@@ -53,77 +53,31 @@ class _TestsResultsPageState extends State<TestsResultsPage> {
 
     // Return root Scaffold layout container
     return Scaffold(
-      // Background colors
       backgroundColor: true == is_dark ? AppColors.background_dark : AppColors.background_light,
-      // App bar details
-      appBar: AppBar(
-        // Center title
-        centerTitle: true,
-        // Title label text
-        title: Text(
-          // Tests results title string
-          localizations.tests_title,
-          // Styles
-          style: TextStyle(
-            // Size standard
-            fontSize: AppSpacing.font_size_title,
-            // bold weight
-            fontWeight: FontWeight.w700,
-            // Color parameters
-            color: true == is_dark ? AppColors.text_dark_primary : AppColors.text_light_primary,
-          ),
-        ),
-        // Suffix action button trigger for uploads
-        actions: [
-          // Suffix upload icon
-          IconButton(
-            // Upload symbol icon selector
-            icon: const Icon(
-              // Upload icon token
-              Icons.file_upload_outlined,
-              // Color primary
-              color: AppColors.primary_color,
-              // Standard size
-              size: AppSpacing.icon_size_m,
-            ),
-            // Navigate to upload page screen
-            onPressed: () {
-              // Open upload result page routing wrapped in ProfileCubit
-              Navigator.of(context).push(
-                // Route configurations
-                MaterialPageRoute(
-                  // Constructor mapping
-                  builder: (route_context) {
-                    // Return AddTestResultPage page widget wrapped in ProfileCubit
-                    return BlocProvider.value(
-                      // Provide existing ProfileCubit instance
-                      value: context.read<ProfileCubit>(),
-                      // Target page
-                      child: AddTestResultPage(
-                        // Pass current tab type context
-                        initial_type: 0 == _active_tab ? 'lab_test' : 'scan',
-                      ),
-                    );
-                  },
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-      // BLoC builder rendering filtered medical reports items
-      body: BlocBuilder<ProfileCubit, ProfileState>(
-        // Rebuild builder
-        builder: (context, state) {
-          // Filter results list matching active tab category type
-          final List<TestResult> filtered_list = 0 == _active_tab
-              ? state.profile.lab_tests
-              : state.profile.scans;
-
-          // Main vertical display stack
-          return Column(
-            // Stacking layout elements
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space_xl),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const SizedBox(height: AppSpacing.space_m),
+              CustomProfileAppBar(
+                title: localizations.tests_title,
+              ),
+              const SizedBox(height: AppSpacing.space_xl),
+              Expanded(
+                child: BlocBuilder<ProfileCubit, ProfileState>(
+                  builder: (context, state) {
+                    final List<TestResult> filtered_list = 0 == _active_tab
+                        ? state.profile.lab_tests
+                        : state.profile.scans;
+
+                    final String cta_label = true == filtered_list.isEmpty
+                        ? localizations.tests_empty_cta
+                        : localizations.tests_upload_new_cta;
+
+                    return Column(
+                      children: [
               // Horizontal custom toggle capsule bar mapping tabs selection options
               Container(
                 // Spacing margins
@@ -411,10 +365,54 @@ class _TestsResultsPageState extends State<TestsResultsPage> {
                           );
                         },
                       ),
+                      ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: AppSpacing.space_m),
+                          child: SizedBox(
+                            width: double.infinity,
+                            height: AppSpacing.height_auth_button,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (route_context) {
+                                      return BlocProvider.value(
+                                        value: context.read<ProfileCubit>(),
+                                        child: AddTestResultPage(
+                                          initial_type:
+                                              0 == _active_tab ? 'lab_test' : 'scan',
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.primary_color,
+                                elevation: 0.0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16.0),
+                                ),
+                              ),
+                              child: Text(
+                                cta_label,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: AppSpacing.font_size_action_button,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ),
             ],
-          );
-        },
+          ),
+        ),
       ),
     );
   }

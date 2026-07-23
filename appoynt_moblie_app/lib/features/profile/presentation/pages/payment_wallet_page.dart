@@ -79,78 +79,8 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                   // children list
                   children: [
                     // Top header row placing circular back button and screen title
-                    Row(
-                      // Distribute items
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      // children list
-                      children: [
-                        // Back button gesture detector
-                        GestureDetector(
-                          // POP route on tap
-                          onTap: () {
-                            // pop navigation
-                            Navigator.of(context).pop();
-                          },
-                          // Circular button container
-                          child: Container(
-                            // Fixed width
-                            width: 44.0,
-                            // Fixed height
-                            height: 44.0,
-                            // Styles
-                            decoration: BoxDecoration(
-                              // Dark/Light surface color fills
-                              color: true == is_dark
-                                  ? AppColors.surface_dark
-                                  : Colors.white,
-                              // Circular borders shape
-                              shape: BoxShape.circle,
-                              // Card soft shadows
-                              boxShadow: [
-                                BoxShadow(
-                                  // Shadow colors
-                                  color: true == is_dark
-                                      ? Colors.black26
-                                      : Colors.black.withValues(alpha: 0.05),
-                                  // Blur spread
-                                  blurRadius: 8.0,
-                                  // Spread offsets
-                                  offset: const Offset(0.0, 2.0),
-                                ),
-                              ],
-                            ),
-                            // Chevron arrow icon graphic
-                            child: Icon(
-                              // Arrow left symbol
-                              Icons.arrow_back_rounded,
-                              // Dynamic color
-                              color: true == is_dark
-                                  ? Colors.white
-                                  : AppColors.text_light_primary,
-                              // Size
-                              size: AppSpacing.icon_size_m,
-                            ),
-                          ),
-                        ),
-                        // Screen Title Text widget
-                        Text(
-                          // Localized title
-                          localizations.profile_payment_wallet,
-                          // Typography options
-                          style: TextStyle(
-                            // Header size
-                            fontSize: 18.0,
-                            // Bolder font weight
-                            fontWeight: FontWeight.w800,
-                            // Dynamic colors
-                            color: true == is_dark
-                                  ? Colors.white
-                                  : AppColors.text_light_primary,
-                          ),
-                        ),
-                        // Balancer spacer matching back button dimensions
-                        const SizedBox(width: 44.0),
-                      ],
+                    CustomProfileAppBar(
+                      title: localizations.profile_payment_wallet,
                     ),
                     // Spacing offset
                     const SizedBox(height: AppSpacing.space_xl),

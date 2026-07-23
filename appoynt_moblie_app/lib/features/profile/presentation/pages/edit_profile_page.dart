@@ -452,76 +452,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     // Top vertical space margin
                     const SizedBox(height: AppSpacing.space_s),
                     // Top row containing custom back button
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // Back chevron navigation trigger
-                        GestureDetector(
-                          onTap: () async {
-                            final bool allow = await _on_will_pop();
-                            if (true == allow && context.mounted) {
-                              Navigator.of(context).pop();
-                            }
-                          },
-                          child: Container(
-                            width: 40.0,
-                            height: 40.0,
-                            decoration: BoxDecoration(
-                              color: true == is_dark
-                                  ? AppColors.surface_dark
-                                  : AppColors.background_light,
-                              borderRadius:
-                                  BorderRadius.circular(AppSpacing.radius_l),
-                              border: Border.all(
-                                color: true == is_dark
-                                    ? AppColors.border_dark
-                                    : AppColors.border_light,
-                              ),
-                            ),
-                            child: RotatedBox(
-                              quarterTurns: 0,
-                              child: Icon(
-                                Icons.arrow_back_ios_new_rounded,
-                                size: 18.0,
-                                color: true == is_dark
-                                    ? AppColors.text_dark_primary
-                                    : AppColors.text_light_primary,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox.shrink(),
-                      ],
-                    ),
-                    const SizedBox(height: AppSpacing.space_m),
-                    // Centered headers
-                    Center(
-                      child: Column(
-                        children: [
-                          Text(
-                            localizations.profile_update_profile_button,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 24.0,
-                              fontWeight: FontWeight.bold,
-                              color: true == is_dark
-                                  ? AppColors.text_dark_primary
-                                  : AppColors.text_light_primary,
-                            ),
-                          ),
-                          const SizedBox(height: AppSpacing.space_s),
-                          Text(
-                            "Update your personal information details",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 14.0,
-                              color: true == is_dark
-                                  ? AppColors.text_dark_secondary
-                                  : AppColors.text_light_secondary,
-                            ),
-                          ),
-                        ],
-                      ),
+                    CustomProfileAppBar(
+                      title: localizations.profile_update_profile_button,
+                      onBackPressed: () async {
+                        final bool allow = await _on_will_pop();
+                        if (true == allow && context.mounted) {
+                          Navigator.of(context).pop();
+                        }
+                      },
                     ),
                     const SizedBox(height: AppSpacing.space_xl),
                     // Profile edit mode avatar picker widget mockup
@@ -697,7 +635,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           return localizations.profile_error_national_id_empty;
                         } else if (false ==
                             RegExp(r'^\d{14}$').hasMatch(trimmed)) {
-                          return localizations.profile_error_national_id_invalid;
+                          return localizations
+                              .profile_error_national_id_invalid;
                         } else {
                           return null;
                         }
@@ -773,77 +712,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             : AppColors.text_light_primary,
                       ),
                     ),
-                    // Gender Options radio group selection mapping layout VR-05 / FLT-15 specs
-                    Row(
-                      // Option layout spaces
-                      children: [
-                        // Radio button Male choice option
-                        Radio<String>(
-                          // Option value matching API standard value
-                          value: 'Male',
-                          // Bind active selection tracker
-                          groupValue: state.temp_profile.gender,
-                          // Handle change dispatching update copy to Cubit state
-                          onChanged: (value) {
-                            // Verify status is not null
-                            if (value != null) {
-                              // Call update_temp_profile copy
-                              context.read<ProfileCubit>().update_temp_profile(
-                                    // Clone profile structure with override
-                                    state.temp_profile.copyWith(gender: value),
-                                  );
-                            } else {
-                              // Empty block
-                            }
-                          },
-                        ),
-                        // Label description Male
-                        Text(localizations.profile_gender_male),
-                        // Radio button Female choice option
-                        Radio<String>(
-                          // Option value matching API standard value
-                          value: 'Female',
-                          // Bind active selection tracker
-                          groupValue: state.temp_profile.gender,
-                          // Handle change dispatching update copy
-                          onChanged: (value) {
-                            // Verify
-                            if (value != null) {
-                              // Dispatch updates
-                              context.read<ProfileCubit>().update_temp_profile(
-                                    // Clone profile structure with override
-                                    state.temp_profile.copyWith(gender: value),
-                                  );
-                            } else {
-                              // Empty block
-                            }
-                          },
-                        ),
-                        // Label description Female
-                        Text(localizations.profile_gender_female),
-                        // Radio button Prefer Not To Say choice option
-                        Radio<String>(
-                          // Option value matching API standard value
-                          value: 'Prefer not to say',
-                          // Bind active selection tracker
-                          groupValue: state.temp_profile.gender,
-                          // Handle change dispatching update copy
-                          onChanged: (value) {
-                            // Verify
-                            if (value != null) {
-                              // Dispatch updates
-                              context.read<ProfileCubit>().update_temp_profile(
-                                    // Clone profile structure with override
-                                    state.temp_profile.copyWith(gender: value),
-                                  );
-                            } else {
-                              // Empty block
-                            }
-                          },
-                        ),
-                        // Label description Prefer Not
-                        Text(localizations.profile_gender_prefer_not),
+                    const SizedBox(height: 8.0),
+                    _build_segmented_chips<String>(
+                      values: ['Male', 'Female', 'Prefer not to say'],
+                      labels: [
+                        localizations.profile_gender_male,
+                        localizations.profile_gender_female,
+                        localizations.profile_gender_prefer_not,
                       ],
+                      selectedValue: state.temp_profile.gender,
+                      onChanged: (value) {
+                        context.read<ProfileCubit>().update_temp_profile(
+                              state.temp_profile.copyWith(gender: value),
+                            );
+                      },
+                      is_dark: is_dark,
                     ),
                     // Section divider space
                     const SizedBox(
@@ -923,55 +806,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             : AppColors.primary_color,
                       ),
                     ),
-                    // Smoking Option radio buttons group selection
-                    Row(
-                      // Option layout spaces
-                      children: [
-                        // Radio button Yes choice option
-                        Radio<String>(
-                          // Option value matching API standard value
-                          value: 'Yes',
-                          // Bind active selection tracker
-                          groupValue: state.temp_profile.smoking,
-                          // Handle change dispatching update copy to Cubit state
-                          onChanged: (value) {
-                            // Verify status is not null
-                            if (value != null) {
-                              // Call update_temp_profile copy
-                              context.read<ProfileCubit>().update_temp_profile(
-                                    // Clone profile structure with override
-                                    state.temp_profile.copyWith(smoking: value),
-                                  );
-                            } else {
-                              // Empty block
-                            }
-                          },
-                        ),
-                        // Label description Yes
-                        Text(localizations.profile_smoking_yes),
-                        // Radio button No choice option
-                        Radio<String>(
-                          // Option value matching API standard value
-                          value: 'No',
-                          // Bind active selection tracker
-                          groupValue: state.temp_profile.smoking,
-                          // Handle change dispatching update copy
-                          onChanged: (value) {
-                            // Verify
-                            if (value != null) {
-                              // Dispatch updates
-                              context.read<ProfileCubit>().update_temp_profile(
-                                    // Clone profile structure with override
-                                    state.temp_profile.copyWith(smoking: value),
-                                  );
-                            } else {
-                              // Empty block
-                            }
-                          },
-                        ),
-                        // Label description No
-                        Text(localizations.profile_smoking_no),
+                    const SizedBox(height: 8.0),
+                    _build_segmented_chips<String>(
+                      values: ['Yes', 'No', 'Ex-Smoker'],
+                      labels: [
+                        localizations.profile_smoking_yes,
+                        localizations.profile_smoking_no,
+                        localizations.profile_smoking_ex,
                       ],
+                      selectedValue: state.temp_profile.smoking,
+                      onChanged: (value) {
+                        context.read<ProfileCubit>().update_temp_profile(
+                              state.temp_profile.copyWith(smoking: value),
+                            );
+                      },
+                      is_dark: is_dark,
                     ),
                     // Spacing gap before button
                     const SizedBox(height: AppSpacing.space_l),
@@ -994,6 +843,65 @@ class _EditProfilePageState extends State<EditProfilePage> {
             ),
           );
         },
+      ),
+    );
+  }
+
+  // Private helper to render modern responsive segmented toggle chips with 48px height
+  Widget _build_segmented_chips<T>({
+    required List<T> values,
+    required List<String> labels,
+    required T selectedValue,
+    required ValueChanged<T> onChanged,
+    required bool is_dark,
+  }) {
+    return Container(
+      height: 48.0,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: is_dark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
+        borderRadius: BorderRadius.circular(12.0),
+        border: Border.all(
+          color: is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
+          width: 1.0,
+        ),
+      ),
+      padding: const EdgeInsets.all(4.0),
+      child: Row(
+        children: List.generate(values.length, (index) {
+          final T value = values[index];
+          final String label = labels[index];
+          final bool is_selected = value == selectedValue;
+
+          return Expanded(
+            child: GestureDetector(
+              onTap: () => onChanged(value),
+              child: Container(
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: is_selected
+                      ? AppColors.primary_color
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 13.0,
+                    fontWeight: FontWeight.bold,
+                    color: is_selected
+                        ? Colors.white
+                        : (is_dark
+                            ? Colors.white70
+                            : AppColors.text_light_primary),
+                  ),
+                ),
+              ),
+            ),
+          );
+        }),
       ),
     );
   }

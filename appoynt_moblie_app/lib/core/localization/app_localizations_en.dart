@@ -1333,6 +1333,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get profile_smoking_no => 'No';
   @override
+  String get profile_smoking_ex => 'Ex-Smoker';
+  @override
   String get profile_error_name_empty => 'First Name cannot be empty.';
   @override
   String get profile_error_name_length => 'First Name must be between 3 and 50 characters.';
@@ -1557,6 +1559,55 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get prescriptions_title => 'Prescription List';
   @override
+  String get prescriptions_add_btn => '+ Add New Medication';
+  @override
+  String get prescriptions_empty_title => 'No Active Prescriptions';
+  @override
+  String get prescriptions_empty_subtitle =>
+      'Keep track of your current medications and treatment plans in one place.';
+  @override
+  String get prescriptions_empty_cta => '+ Add Your First Medication';
+  @override
+  String get prescriptions_modal_title => 'Add New Medication';
+  @override
+  String get prescriptions_field_name_label => 'Medication Name & Strength';
+  @override
+  String get prescriptions_field_name_hint => 'e.g., Panadol Extra 500mg';
+  @override
+  String get prescriptions_field_freq_label => 'Frequency';
+  @override
+  String get prescriptions_field_duration_label => 'Treatment Duration (Days)';
+  @override
+  String get prescriptions_field_duration_hint => 'e.g., 7 Days or Ongoing';
+  @override
+  String get prescriptions_field_doctor_label => 'Prescribing Doctor (Optional)';
+  @override
+  String get prescriptions_field_doctor_hint => 'e.g., Dr. Andrew Fletcher';
+  @override
+  String get prescriptions_field_rx_label =>
+      'Upload Rx Document / Photo (Optional)';
+  @override
+  String get prescriptions_freq_once => 'Once Daily';
+  @override
+  String get prescriptions_freq_twice => 'Twice Daily';
+  @override
+  String get prescriptions_freq_every8 => 'Every 8 Hours';
+  @override
+  String get prescriptions_freq_as_needed => 'As Needed';
+  @override
+  String get prescriptions_status_active => 'Active';
+  @override
+  String get prescriptions_save_btn => 'Save Prescription';
+  @override
+  String get prescriptions_delete_confirm_title => 'Remove Medication?';
+  @override
+  String get prescriptions_delete_confirm_body =>
+      'This medication will be permanently removed from your list.';
+  @override
+  String get prescriptions_delete_confirm_yes => 'Remove';
+  @override
+  String get prescriptions_delete_confirm_no => 'Cancel';
+  @override
   String get prescriptions_add_medication => 'Add medication';
   @override
   String get prescriptions_added_title => 'Added Prescription';
@@ -1584,6 +1635,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tests_upload_doc_btn => 'Upload document from device';
   @override
   String get tests_confirm_upload_btn => 'Confirm Upload';
+  @override
+  String get tests_empty_title => 'No Scans or Reports Found';
+  @override
+  String get tests_empty_subtitle => 'Upload and archive your medical lab results and radiology scans to keep your health history organized for your doctors.';
+  @override
+  String get tests_empty_cta => '+ Upload First Scan / Report';
+  @override
+  String get tests_upload_new_cta => '+ Upload New Scan / Report';
+  @override
+  String get tests_file_attached_toast => 'Document file attached from device.';
+  @override
+  String get tests_error_no_file => 'Please upload a document file from your device.';
+  @override
+  String get tests_success_upload => 'Document uploaded successfully.';
 
   // Chronic Conditions Localizations English Overrides
   @override

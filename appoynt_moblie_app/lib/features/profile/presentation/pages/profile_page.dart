@@ -144,60 +144,13 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          // Top bar Row placing circular back button and centered Title
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              // Circular back button gesture detector
-                              GestureDetector(
-                                onTap: () {
-                                  // POP navigation if canPop, or fallback
-                                  if (Navigator.of(context).canPop()) {
-                                    Navigator.of(context).pop();
-                                  }
-                                },
-                                child: Container(
-                                  width: 44.0,
-                                  height: 44.0,
-                                  decoration: BoxDecoration(
-                                    color: true == is_dark
-                                        ? AppColors.surface_dark
-                                        : Colors.white,
-                                    shape: BoxShape.circle,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: true == is_dark
-                                            ? Colors.black26
-                                            : Colors.black
-                                                .withValues(alpha: 0.05),
-                                        blurRadius: 8.0,
-                                        offset: const Offset(0.0, 2.0),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Icon(
-                                    Icons.arrow_back_rounded,
-                                    color: true == is_dark
-                                        ? Colors.white
-                                        : AppColors.text_light_primary,
-                                    size: AppSpacing.icon_size_m,
-                                  ),
-                                ),
-                              ),
-                              // Centered screen title Text
-                              Text(
-                                localizations.profile_title,
-                                style: TextStyle(
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.w800,
-                                  color: true == is_dark
-                                      ? Colors.white
-                                      : AppColors.text_light_primary,
-                                ),
-                              ),
-                              // Balanced spacer box keeping title centered
-                              const SizedBox(width: 44.0),
-                            ],
+                          // Top bar Row placing centered Title only (no back
+                          // button on root tab — there is no prior route to
+                          // pop to; the tab is managed by BottomNavigationBar)
+                          CustomProfileAppBar(
+                            title: localizations.profile_title,
+                            // Suppress back button on root bottom-nav tab
+                            show_back_button: false,
                           ),
                           // Spacing margin gap before photo avatar
                           const SizedBox(height: AppSpacing.space_xl),

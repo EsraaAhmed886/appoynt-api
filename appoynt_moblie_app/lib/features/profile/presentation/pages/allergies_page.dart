@@ -2,21 +2,24 @@
  * File Name: allergies_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/07/2026
- * Version Information: V1.0.0
+ * Version Information: V1.2.0
  * Dependencies: package:flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart,
+ *   package:appoynt_mobile_app/core/widgets/auth/auth_text_field.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 19/07/2026]
- * File Description: Defines the Allergies page layout allowing patients to add food and medication allergies.
+ * Last Modified Date: [Kholoud Khaled - 22/07/2026]
+ * File Description: Redesigned Medical Allergies page with master switch, modular category cards, quick-add chips, and severity-coded tags.
  */
 
 // Importing BLoC libraries
 import 'package:flutter_bloc/flutter_bloc.dart';
-// Importing localizations
+// Importing localizations and design tokens
 import 'package:appoynt_mobile_app/core/routing/route_export.dart';
-// Importing Cubit controller
+// Importing AuthTextField component
+import 'package:appoynt_mobile_app/core/widgets/auth/auth_text_field.dart';
+// Importing Cubit controller and state
 import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart';
 
@@ -25,461 +28,565 @@ class AllergiesPage extends StatefulWidget {
   // Constructor mapping key
   const AllergiesPage({super.key});
 
-  // State builder definition
   @override
   State<AllergiesPage> createState() {
-    // Return state instance representation
     return _AllergiesPageState();
   }
 }
 
 // Concrete state tracker implementation class for the AllergiesPage
 class _AllergiesPageState extends State<AllergiesPage> {
-  // Text controllers mapping inputs for food and medication allergies
+  // Text controllers mapping inputs for categories
   final TextEditingController _food_controller = TextEditingController();
-  // Medication allergy text controller
   final TextEditingController _medication_controller = TextEditingController();
+  final TextEditingController _environmental_controller =
+      TextEditingController();
 
-  // Dispose controllers freeing system resource locks
+  // Master switch status tracking "No Known Medical Allergies"
+  bool _no_known_allergies = false;
+
+  // Active allergy items list models with severity levels (Mild / Severe)
+  final List<Map<String, String>> _food_allergies = [
+    {'name': 'Peanuts', 'severity': 'Severe'},
+    {'name': 'Dairy', 'severity': 'Mild'},
+  ];
+
+  final List<Map<String, String>> _medication_allergies = [
+    {'name': 'Penicillin', 'severity': 'Severe'},
+  ];
+
+  final List<Map<String, String>> _environmental_allergies = [
+    {'name': 'Pollen', 'severity': 'Mild'},
+  ];
+
+  // Preset popular quick-add options
+  final List<String> _popular_food = [
+    'Peanuts',
+    'Dairy',
+    'Gluten',
+    'Eggs',
+    'Shellfish',
+    'Soy'
+  ];
+  final List<String> _popular_medication = [
+    'Penicillin',
+    'Aspirin',
+    'Ibuprofen',
+    'Sulfa',
+    'Codeine'
+  ];
+  final List<String> _popular_environmental = [
+    'Dust Mites',
+    'Pollen',
+    'Cat Dander',
+    'Mold',
+    'Latex'
+  ];
+
   @override
   void dispose() {
-    // Dispose text field controllers
     _food_controller.dispose();
     _medication_controller.dispose();
-    // Call base dispose
+    _environmental_controller.dispose();
     super.dispose();
   }
 
-  // Draw widget views structures
-  @override
-  Widget build(BuildContext context) {
-    // Resolve localized labels context
-    final AppLocalizations localizations = AppLocalizations.of(context);
-    // Resolve theme brightness modes status
-    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+  // Helper adding a tag chip to a specific category
+  void _add_allergy_chip(String tag, List<Map<String, String>> list,
+      TextEditingController controller) {
+    final String clean_tag = tag.trim();
+    if (clean_tag.isNotEmpty &&
+        false ==
+            list.any((item) =>
+                item['name']?.toLowerCase() == clean_tag.toLowerCase())) {
+      setState(() {
+        list.add({'name': clean_tag, 'severity': 'Mild'});
+      });
+      controller.clear();
+    }
+  }
 
-    // Return root Scaffold layout container
-    return Scaffold(
-      // Background colors
-      backgroundColor: true == is_dark ? AppColors.background_dark : AppColors.background_light,
-      // App bar details
-      appBar: AppBar(
-        // Center title
-        centerTitle: true,
-        // Title label text
-        title: Text(
-          // Allergies title string
-          localizations.allergies_title,
-          // Styles
-          style: TextStyle(
-            // Size standard
-            fontSize: AppSpacing.font_size_title,
-            // bold weight
-            fontWeight: FontWeight.w700,
-            // Color parameters
-            color: true == is_dark ? AppColors.text_dark_primary : AppColors.text_light_primary,
+  // Helper toggling severity level between Mild and Severe
+  void _toggle_severity(Map<String, String> item) {
+    setState(() {
+      item['severity'] = 'Mild' == item['severity'] ? 'Severe' : 'Mild';
+    });
+  }
+
+  // Helper building a modular category card layout
+  Widget _build_category_card({
+    required BuildContext context,
+    required String title,
+    required IconData icon,
+    required TextEditingController controller,
+    required String hint_text,
+    required List<String> popular_options,
+    required List<Map<String, String>> active_list,
+    required bool is_disabled,
+    required bool is_dark,
+  }) {
+    return AnimatedOpacity(
+      duration: const Duration(milliseconds: 200),
+      opacity: true == is_disabled ? 0.45 : 1.0,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: AppSpacing.space_l),
+        padding: const EdgeInsets.all(AppSpacing.space_l),
+        decoration: BoxDecoration(
+          color: true == is_dark ? AppColors.surface_dark : Colors.white,
+          borderRadius: BorderRadius.circular(16.0),
+          border: Border.all(
+            color: true == is_dark
+                ? AppColors.border_dark
+                : const Color(0xFFE2E8F0),
+            width: AppSpacing.border_width_thin,
           ),
+          boxShadow: [
+            BoxShadow(
+              color: true == is_dark
+                  ? Colors.black.withValues(alpha: 0.2)
+                  : Colors.black.withValues(alpha: 0.04),
+              blurRadius: 8.0,
+              offset: const Offset(0.0, 2.0),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Category Header Row
+            Row(
+              children: [
+                Container(
+                  width: 36.0,
+                  height: 36.0,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary_color.withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(icon, color: AppColors.primary_color, size: 20.0),
+                ),
+                const SizedBox(width: 10.0),
+                Expanded(
+                  child: Text(
+                    title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.bold,
+                      color: true == is_dark
+                          ? Colors.white
+                          : AppColors.text_light_primary,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.space_m),
+
+            // Single Search / Input Field with + button
+            IgnorePointer(
+              ignoring: is_disabled,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: AuthTextField(
+                      label: '',
+                      hint: hint_text,
+                      controller: controller,
+                    ),
+                  ),
+                  const SizedBox(width: 8.0),
+                  Container(
+                    height: 50.0,
+                    width: 50.0,
+                    decoration: BoxDecoration(
+                      color: AppColors.primary_color,
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.add_rounded, color: Colors.white),
+                      onPressed: () {
+                        _add_allergy_chip(
+                            controller.text, active_list, controller);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.space_m),
+
+            // Quick-Add Popular Options Chips Carousel
+            Text(
+              'Popular Options',
+              style: TextStyle(
+                fontSize: 11.0,
+                fontWeight: FontWeight.w600,
+                color: true == is_dark
+                    ? Colors.white54
+                    : AppColors.text_light_secondary,
+              ),
+            ),
+            const SizedBox(height: 6.0),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: popular_options.map((option) {
+                  final bool is_added = active_list.any((item) =>
+                      item['name']?.toLowerCase() == option.toLowerCase());
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 6.0),
+                    child: ActionChip(
+                      elevation: 0.0,
+                      pressElevation: 0.0,
+                      backgroundColor: true == is_added
+                          ? AppColors.primary_color.withValues(alpha: 0.12)
+                          : (true == is_dark
+                              ? AppColors.background_dark
+                              : const Color(0xFFF1F5F9)),
+                      side: BorderSide(
+                        color: true == is_added
+                            ? AppColors.primary_color
+                            : Colors.transparent,
+                        width: 1.0,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      label: Text(
+                        '+ $option',
+                        style: TextStyle(
+                          fontSize: 11.0,
+                          fontWeight: FontWeight.w600,
+                          color: true == is_added
+                              ? AppColors.primary_color
+                              : (true == is_dark
+                                  ? Colors.white70
+                                  : AppColors.text_light_primary),
+                        ),
+                      ),
+                      onPressed: true == is_disabled
+                          ? null
+                          : () {
+                              if (false == is_added) {
+                                _add_allergy_chip(
+                                    option, active_list, controller);
+                              }
+                            },
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.space_m),
+
+            // Active Severity-Coded Allergy Chips Wrap List
+            if (active_list.isNotEmpty) ...[
+              Text(
+                'Active Allergies (Tap tag to toggle severity)',
+                style: TextStyle(
+                  fontSize: 11.0,
+                  fontWeight: FontWeight.w600,
+                  color: true == is_dark
+                      ? Colors.white54
+                      : AppColors.text_light_secondary,
+                ),
+              ),
+              const SizedBox(height: 8.0),
+              Wrap(
+                spacing: 8.0,
+                runSpacing: 8.0,
+                children: active_list.map((item) {
+                  final bool is_severe = 'Severe' == item['severity'];
+                  final Color dot_color = true == is_severe
+                      ? const Color(0xFFEF4444)
+                      : const Color(0xFFF59E0B);
+                  final Color chip_bg = true == is_severe
+                      ? const Color(0xFFFEF2F2)
+                      : const Color(0xFFFFFBEB);
+                  final Color border_color = true == is_severe
+                      ? const Color(0xFFFCA5A5)
+                      : const Color(0xFFFDE68A);
+
+                  return GestureDetector(
+                    onTap: true == is_disabled
+                        ? null
+                        : () => _toggle_severity(item),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10.0, vertical: 6.0),
+                      decoration: BoxDecoration(
+                        color: true == is_dark
+                            ? AppColors.background_dark
+                            : chip_bg,
+                        borderRadius: BorderRadius.circular(20.0),
+                        border: Border.all(
+                          color: true == is_dark
+                              ? dot_color.withValues(alpha: 0.5)
+                              : border_color,
+                          width: 1.0,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Severity Colored Dot Indicator
+                          Container(
+                            width: 8.0,
+                            height: 8.0,
+                            decoration: BoxDecoration(
+                              color: dot_color,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          const SizedBox(width: 6.0),
+                          Text(
+                            '${item['name']} • ${item['severity']}',
+                            style: TextStyle(
+                              fontSize: 12.0,
+                              fontWeight: FontWeight.bold,
+                              color: true == is_dark
+                                  ? Colors.white
+                                  : AppColors.text_light_primary,
+                            ),
+                          ),
+                          const SizedBox(width: 4.0),
+                          // Inline close icon (X) to delete chip
+                          GestureDetector(
+                            onTap: true == is_disabled
+                                ? null
+                                : () {
+                                    setState(() {
+                                      active_list.remove(item);
+                                    });
+                                  },
+                            child: Icon(
+                              Icons.close_rounded,
+                              size: 16.0,
+                              color: true == is_dark
+                                  ? Colors.white54
+                                  : AppColors.text_light_secondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
+          ],
         ),
       ),
-      // BLoC builder rendering dynamic list chips
-      body: BlocBuilder<ProfileCubit, ProfileState>(
-        // Rebuild builder
-        builder: (context, state) {
-          // Scrollable view layout
-          return Column(
-            // Linear column stacking sections
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations localizations = AppLocalizations.of(context);
+    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+
+    return Scaffold(
+      backgroundColor:
+          true == is_dark ? AppColors.background_dark : const Color(0xFFF8FAFC),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space_xl),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Expanded scroll area
+              const SizedBox(height: AppSpacing.space_m),
+              CustomProfileAppBar(
+                title: localizations.allergies_title,
+              ),
+              const SizedBox(height: AppSpacing.space_xl),
               Expanded(
-                // Scrollable details list
-                child: SingleChildScrollView(
-                  // Padding offset margin boundaries
-                  padding: const EdgeInsets.symmetric(
-                    // Horizontal offset bounds
-                    horizontal: AppSpacing.space_m,
-                    // Vertical offset bounds
-                    vertical: AppSpacing.space_m,
+                child: BlocBuilder<ProfileCubit, ProfileState>(
+                  builder: (context, state) {
+                    return SingleChildScrollView(
+                      padding: EdgeInsets.zero,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                // Top Master Switch Card: "No Known Medical Allergies"
+                Container(
+                  margin: const EdgeInsets.only(bottom: AppSpacing.space_l),
+                  padding: const EdgeInsets.all(AppSpacing.space_l),
+                  decoration: BoxDecoration(
+                    color:
+                        true == is_dark ? AppColors.surface_dark : Colors.white,
+                    borderRadius: BorderRadius.circular(16.0),
+                    border: Border.all(
+                      color: true == _no_known_allergies
+                          ? AppColors.primary_color
+                          : (true == is_dark
+                              ? AppColors.border_dark
+                              : const Color(0xFFE2E8F0)),
+                      width: true == _no_known_allergies ? 2.0 : 1.0,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: true == is_dark
+                            ? Colors.black.withValues(alpha: 0.2)
+                            : Colors.black.withValues(alpha: 0.04),
+                        blurRadius: 8.0,
+                        offset: const Offset(0.0, 2.0),
+                      ),
+                    ],
                   ),
-                  // Column stack grouping fields
-                  child: Column(
-                    // Align elements start boundary coordinates
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    // children array list
+                  child: Row(
                     children: [
-                      // Food allergies Section Header display label
-                      Text(
-                        // Section title
-                        localizations.allergies_food_section,
-                        // Styles
-                        style: TextStyle(
-                          // Size body standard
-                          fontSize: AppSpacing.font_size_body_medium,
-                          // bold weight
-                          fontWeight: FontWeight.w700,
-                          // Color styling
-                          color: true == is_dark ? AppColors.text_dark_primary : AppColors.primary_color,
+                      Container(
+                        width: 40.0,
+                        height: 40.0,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary_color.withValues(alpha: 0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.shield_outlined,
+                          color: AppColors.primary_color,
+                          size: 22.0,
                         ),
                       ),
-                      // Separator gap
-                      const SizedBox(
-                        // Spacing height
-                        height: AppSpacing.space_xs,
-                      ),
-                      // Add allergy subtitle
-                      Text(
-                        // Localized subtitle
-                        localizations.allergies_add_allergy,
-                        // style specs
-                        style: const TextStyle(
-                          // Small body size font
-                          fontSize: AppSpacing.font_size_body_small,
-                          // Subdued colors
-                          color: AppColors.text_light_secondary,
-                        ),
-                      ),
-                      // Spacer gap
-                      const SizedBox(
-                        // Spacing height
-                        height: AppSpacing.space_s,
-                      ),
-                      // Input row combining food text input and save button next to it
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          // Expanded input box with shadow stack
-                          Expanded(
-                            child: Stack(
-                              clipBehavior: Clip.none,
-                              children: [
-                                Positioned(
-                                  top: 0.0,
-                                  left: 0.0,
-                                  right: 0.0,
-                                  height: 50.0,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(AppSpacing.radius_input),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: true == is_dark
-                                              ? Colors.black.withValues(alpha: 0.25)
-                                              : Colors.black.withValues(alpha: 0.04),
-                                          blurRadius: 6.0,
-                                          spreadRadius: 1.0,
-                                          offset: const Offset(0.0, 2.0),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                TextFormField(
-                                  controller: _food_controller,
-                                  style: TextStyle(
-                                    fontSize: AppSpacing.font_size_text,
-                                    color: true == is_dark
-                                        ? AppColors.text_dark_primary
-                                        : AppColors.text_light_primary,
-                                  ),
-                                  decoration: InputDecoration(
-                                    hintText: localizations.allergies_placeholder,
-                                    filled: true,
-                                    fillColor: true == is_dark
-                                        ? AppColors.surface_dark
-                                        : AppColors.input_fill,
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(AppSpacing.radius_input),
-                                      borderSide: BorderSide(
-                                        color: true == is_dark ? AppColors.border_dark : AppColors.border_light,
-                                        width: AppSpacing.border_width_thin,
-                                      ),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(AppSpacing.radius_input),
-                                      borderSide: BorderSide(
-                                        color: true == is_dark ? AppColors.border_dark : AppColors.border_light,
-                                        width: AppSpacing.border_width_thin,
-                                      ),
-                                    ),
-                                    contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: AppSpacing.space_xl,
-                                      vertical: AppSpacing.padding_input_vertical,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          // Horizontal gap
-                          const SizedBox(
-                            width: AppSpacing.space_s,
-                          ),
-                          // Save button capsule layout
-                          ElevatedButton(
-                            onPressed: () {
-                              context.read<ProfileCubit>().add_allergy(
-                                    _food_controller.text,
-                                    'food',
-                                  );
-                              _food_controller.clear();
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primary_color,
-                              elevation: 0.0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(AppSpacing.radius_m),
-                              ),
-                            ),
-                            child: Text(
-                              localizations.allergies_save_btn,
-                              style: const TextStyle(
-                                color: Colors.white,
+                      const SizedBox(width: 12.0),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'No Known Medical Allergies',
+                              style: TextStyle(
+                                fontSize: 14.0,
                                 fontWeight: FontWeight.bold,
+                                color: true == is_dark
+                                    ? Colors.white
+                                    : AppColors.text_light_primary,
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      // Spacing gap before tags listing
-                      const SizedBox(
-                        height: AppSpacing.space_s,
-                      ),
-                      // Wrap container holding added food allergy items chips tags
-                      Wrap(
-                        spacing: AppSpacing.space_xs,
-                        children: state.profile.food_allergies.map((allergy) {
-                          return Chip(
-                            label: Text(allergy),
-                            backgroundColor: true == is_dark ? AppColors.surface_dark : Colors.grey[200],
-                            deleteIcon: const Icon(
-                              Icons.cancel_rounded,
-                              size: 18.0,
+                            const SizedBox(height: 2.0),
+                            const Text(
+                              'لا يوجد لدي حساسية معروفة',
+                              style: TextStyle(
+                                fontSize: 12.0,
+                                color: AppColors.text_light_secondary,
+                              ),
                             ),
-                            onDeleted: () {
-                              context.read<ProfileCubit>().remove_allergy(allergy, 'food');
-                            },
-                          );
-                        }).toList(),
-                      ),
-                      // Section vertical divider offset
-                      const SizedBox(
-                        // Divider height
-                        height: AppSpacing.space_xl,
-                      ),
-                      // Medication allergies Section Header display label
-                      Text(
-                        // Section title
-                        localizations.allergies_medication_section,
-                        // Styles
-                        style: TextStyle(
-                          // Size body standard
-                          fontSize: AppSpacing.font_size_body_medium,
-                          // bold weight
-                          fontWeight: FontWeight.w700,
-                          // Color styling
-                          color: true == is_dark ? AppColors.text_dark_primary : AppColors.primary_color,
+                          ],
                         ),
                       ),
-                      // Separator gap
-                      const SizedBox(
-                        // Spacing height
-                        height: AppSpacing.space_xs,
-                      ),
-                      // Add allergy subtitle
-                      Text(
-                        // Localized subtitle
-                        localizations.allergies_add_allergy,
-                        // style specs
-                        style: const TextStyle(
-                          // Small body size font
-                          fontSize: AppSpacing.font_size_body_small,
-                          // Subdued colors
-                          color: AppColors.text_light_secondary,
-                        ),
-                      ),
-                      // Spacer gap
-                      const SizedBox(
-                        // Spacing height
-                        height: AppSpacing.space_s,
-                      ),
-                      // Input row combining medication text input and save button next to it
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          // Expanded input box with shadow stack
-                          Expanded(
-                            child: Stack(
-                              clipBehavior: Clip.none,
-                              children: [
-                                Positioned(
-                                  top: 0.0,
-                                  left: 0.0,
-                                  right: 0.0,
-                                  height: 50.0,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(AppSpacing.radius_input),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: true == is_dark
-                                              ? Colors.black.withValues(alpha: 0.25)
-                                              : Colors.black.withValues(alpha: 0.04),
-                                          blurRadius: 6.0,
-                                          spreadRadius: 1.0,
-                                          offset: const Offset(0.0, 2.0),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                TextFormField(
-                                  controller: _medication_controller,
-                                  style: TextStyle(
-                                    fontSize: AppSpacing.font_size_text,
-                                    color: true == is_dark
-                                        ? AppColors.text_dark_primary
-                                        : AppColors.text_light_primary,
-                                  ),
-                                  decoration: InputDecoration(
-                                    hintText: localizations.allergies_placeholder,
-                                    filled: true,
-                                    fillColor: true == is_dark
-                                        ? AppColors.surface_dark
-                                        : AppColors.input_fill,
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(AppSpacing.radius_input),
-                                      borderSide: BorderSide(
-                                        color: true == is_dark ? AppColors.border_dark : AppColors.border_light,
-                                        width: AppSpacing.border_width_thin,
-                                      ),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(AppSpacing.radius_input),
-                                      borderSide: BorderSide(
-                                        color: true == is_dark ? AppColors.border_dark : AppColors.border_light,
-                                        width: AppSpacing.border_width_thin,
-                                      ),
-                                    ),
-                                    contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: AppSpacing.space_xl,
-                                      vertical: AppSpacing.padding_input_vertical,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          // Horizontal gap
-                          const SizedBox(
-                            width: AppSpacing.space_s,
-                          ),
-                          // Save button capsule layout
-                          ElevatedButton(
-                            onPressed: () {
-                              context.read<ProfileCubit>().add_allergy(
-                                    _medication_controller.text,
-                                    'medication',
-                                  );
-                              _medication_controller.clear();
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primary_color,
-                              elevation: 0.0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(AppSpacing.radius_m),
-                              ),
-                            ),
-                            child: Text(
-                              localizations.allergies_save_btn,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      // Spacing gap before tags listing
-                      const SizedBox(
-                        height: AppSpacing.space_s,
-                      ),
-                      // Wrap container holding added medication allergy items chips tags
-                      Wrap(
-                        spacing: AppSpacing.space_xs,
-                        children: state.profile.medication_allergies.map((allergy) {
-                          return Chip(
-                            label: Text(allergy),
-                            backgroundColor: true == is_dark ? AppColors.surface_dark : Colors.grey[200],
-                            deleteIcon: const Icon(
-                              Icons.cancel_rounded,
-                              size: 18.0,
-                            ),
-                            onDeleted: () {
-                              context.read<ProfileCubit>().remove_allergy(allergy, 'medication');
-                            },
-                          );
-                        }).toList(),
+                      Switch.adaptive(
+                        value: _no_known_allergies,
+                        activeTrackColor: AppColors.primary_color,
+                        onChanged: (val) {
+                          setState(() {
+                            _no_known_allergies = val;
+                          });
+                        },
                       ),
                     ],
                   ),
                 ),
-              ),
-              // Big bottom action status update button mockup representing status update triggers
-              Padding(
-                // Spacing offsets constraints
-                padding: const EdgeInsets.symmetric(
-                  // Horizontal padding
-                  horizontal: AppSpacing.space_m,
-                  // Vertical padding
-                  vertical: AppSpacing.space_m,
+
+                // Category Card 1: Food Allergies
+                _build_category_card(
+                  context: context,
+                  title: 'Food Allergies (حساسية الأطعمة)',
+                  icon: Icons.restaurant_rounded,
+                  controller: _food_controller,
+                  hint_text: 'e.g., Peanuts, Dairy, Shellfish',
+                  popular_options: _popular_food,
+                  active_list: _food_allergies,
+                  is_disabled: _no_known_allergies,
+                  is_dark: is_dark,
                 ),
-                // Gradient options styling decorations wrapping button
-                child: SizedBox(
-                  // Full width available
-                  width: double.infinity,
-                  // Height dimensions matching standard buttons
-                  height: AppSpacing.height_auth_button,
-                  // ElevatedButton
-                  child: ElevatedButton(
-                    // Route back to profile screen on click
-                    onPressed: () {
-                      // Pop allergies screen layout
-                      Navigator.of(context).pop();
-                    },
-                    // Style configurations
-                    style: ElevatedButton.styleFrom(
-                      // primary blue
-                      backgroundColor: AppColors.primary_color,
-                      // Clear shadows
-                      elevation: 0.0,
-                      // Curvature shape configurations
-                      shape: RoundedRectangleBorder(
-                        // Radius parameter value
-                        borderRadius: BorderRadius.circular(
-                          // standard spacing radius token
-                          AppSpacing.radius_l,
-                        ),
-                      ),
-                    ),
-                    // Button label
-                    child: Text(
-                      // Localized submit button label
-                      localizations.allergies_update_status_btn,
-                      // Styles
-                      style: const TextStyle(
-                        // Color white
-                        color: Colors.white,
-                        // Size action button font
-                        fontSize: AppSpacing.font_size_action_button,
-                        // Bold typography weight
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
+
+                // Category Card 2: Medication Allergies
+                _build_category_card(
+                  context: context,
+                  title: 'Medication Allergies (حساسية الأدوية)',
+                  icon: Icons.medication_rounded,
+                  controller: _medication_controller,
+                  hint_text: 'e.g., Penicillin, Aspirin, Ibuprofen',
+                  popular_options: _popular_medication,
+                  active_list: _medication_allergies,
+                  is_disabled: _no_known_allergies,
+                  is_dark: is_dark,
                 ),
-              ),
-            ],
+
+                // Category Card 3: Environmental & Seasonal Allergies
+                _build_category_card(
+                  context: context,
+                  title: 'Environmental & Seasonal (حساسية البيئة الغبار)',
+                  icon: Icons.grass_rounded,
+                  controller: _environmental_controller,
+                  hint_text: 'e.g., Dust Mites, Pollen, Cat Dander',
+                  popular_options: _popular_environmental,
+                  active_list: _environmental_allergies,
+                  is_disabled: _no_known_allergies,
+                  is_dark: is_dark,
+                ),
+              ],
+            ),
           );
         },
+      ),
+    ),
+  ],
+),
+        ),
+      ),
+      // Unified Primary Bottom CTA Button
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.space_xl),
+          child: SizedBox(
+            width: double.infinity,
+            height: AppSpacing.height_auth_button,
+            child: ElevatedButton(
+              onPressed: () {
+                final profile_cubit = context.read<ProfileCubit>();
+                if (true == _no_known_allergies) {
+                  profile_cubit.add_allergy('None', 'food');
+                } else {
+                  for (final item in _food_allergies) {
+                    profile_cubit.add_allergy(
+                        '${item['name']} (${item['severity']})', 'food');
+                  }
+                  for (final item in _medication_allergies) {
+                    profile_cubit.add_allergy(
+                        '${item['name']} (${item['severity']})', 'medication');
+                  }
+                }
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Allergy Profile saved successfully.'),
+                    backgroundColor: AppColors.primary_color,
+                  ),
+                );
+                Navigator.of(context).pop();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary_color,
+                elevation: 0.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.0),
+                ),
+              ),
+              child: const Text(
+                'Save Allergy Profile',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: AppSpacing.font_size_action_button,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

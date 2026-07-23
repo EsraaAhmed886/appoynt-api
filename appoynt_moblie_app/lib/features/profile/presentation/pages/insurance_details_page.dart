@@ -9,7 +9,7 @@
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart,
  *   package:appoynt_mobile_app/features/profile/domain/entities/insurance_card.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 19/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 22/07/2026]
  * File Description: Defines the Insurance List screen displaying covered health policies.
  */
 
@@ -142,286 +142,96 @@ class _InsuranceDetailsPageState extends State<InsuranceDetailsPage> {
               itemBuilder: (context, index) {
                 // Resolve insurance card details reference
                 final InsuranceCard card = state.profile.insurance_cards[index];
-                // Return card container layout outline
+                // Return floating insurance asset card with 16px radius, border, and single chevron action
                 return Container(
-                  // Padding within card
-                  padding: const EdgeInsets.all(AppSpacing.space_m),
-                  // Margin between cards
                   margin: const EdgeInsets.symmetric(
-                    // Vertical space gap
                     vertical: AppSpacing.space_s,
                   ),
-                  // Style configurations
                   decoration: BoxDecoration(
-                    // Surface background colors
                     color: true == is_dark ? AppColors.surface_dark : Colors.white,
-                    // Rounded corners configuration
-                    borderRadius: BorderRadius.circular(
-                      // Corner radius token
-                      AppSpacing.radius_l,
+                    borderRadius: BorderRadius.circular(16.0),
+                    border: Border.all(
+                      color: true == is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
+                      width: AppSpacing.border_width_thin,
                     ),
-                    // soft shadows
                     boxShadow: [
                       BoxShadow(
                         color: true == is_dark
                             ? Colors.black.withValues(alpha: 0.25)
                             : Colors.black.withValues(alpha: 0.04),
-                        blurRadius: 6.0,
-                        spreadRadius: 1.0,
+                        blurRadius: 8.0,
                         offset: const Offset(0.0, 2.0),
                       ),
                     ],
                   ),
-                  // Horizontal row displaying card details and actions
-                  child: Row(
-                    // Row elements
-                    children: [
-                      // Blue heart shield icon badge representing coverage options
-                      Container(
-                        // Badge width
-                        width: 48.0,
-                        // Badge height
-                        height: 48.0,
-                        // Layout style configurations
-                        decoration: BoxDecoration(
-                          // Brand primary blue background with slight opacity
-                          color: AppColors.primary_color.withValues(alpha: 0.1),
-                          // Shape settings circular
-                          shape: BoxShape.circle,
-                        ),
-                        // Plus plus icon graphic centered inside badge
-                        child: const Icon(
-                          // Heart plus icon token
-                          Icons.favorite_rounded,
-                          // Color primary
-                          color: AppColors.primary_color,
-                          // Standard size
-                          size: AppSpacing.icon_size_m,
-                        ),
-                      ),
-                      // Spacer horizontal gap
-                      const SizedBox(
-                        // Spacer width offset
-                        width: AppSpacing.space_m,
-                      ),
-                      // Details text fields column taking remaining width space
-                      Expanded(
-                        // Column stack grouping titles vertically
-                        child: Column(
-                          // Align text labels to start coordinates
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          // children array
-                          children: [
-                            // Card name label
-                            Text(
-                              // Bind card name
-                              card.card_name,
-                              // style
-                              style: TextStyle(
-                                // Medium body size
-                                fontSize: AppSpacing.font_size_body_medium,
-                                // bold weight
-                                fontWeight: FontWeight.w700,
-                                // Dynamic text color adjusting to dark/light surfaces
-                                color: true == is_dark
-                                    ? AppColors.text_dark_primary
-                                    : AppColors.text_light_primary,
-                              ),
-                            ),
-                            // Spacer gap
-                            const SizedBox(
-                              // Spacing height
-                              height: AppSpacing.space_xs,
-                            ),
-                            // Provider name label
-                            Text(
-                              // Bind provider
-                              card.provider_name,
-                              // style
-                              style: const TextStyle(
-                                // Small body size font
-                                fontSize: AppSpacing.font_size_body_small,
-                                // Secondary color styling
-                                color: AppColors.text_light_secondary,
-                              ),
-                            ),
-                            // Spacer gap
-                            const SizedBox(
-                              // Spacing height
-                              height: AppSpacing.space_xs,
-                            ),
-                            // Expiry date label text
-                            Text(
-                              // Localized expiry date string format
-                              '${localizations.insurance_expiry_label} ${card.expiry_date}',
-                              // style
-                              style: const TextStyle(
-                                // Small body size font
-                                fontSize: AppSpacing.font_size_body_small,
-                                // Secondary color styling
-                                color: AppColors.text_light_secondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      // Spacer horizontal gap
-                      const SizedBox(
-                        // Separator width value
-                        width: AppSpacing.space_s,
-                      ),
-                      // Column stacking View button and Edit/Delete icon buttons
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(16.0),
+                    onTap: () {
+                      _show_card_options_sheet(context, card, index);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(AppSpacing.space_m),
+                      child: Row(
                         children: [
-                          // Outlined View button
-                          SizedBox(
-                            height: 32.0,
-                            child: OutlinedButton(
-                              // View attached document on click
-                              onPressed: () {
-                                // Show document feedback dialog mockup
-                                showDialog(
-                                  // Context
-                                  context: context,
-                                  // Builder
-                                  builder: (dialog_context) {
-                                    // Return dialog
-                                    return AlertDialog(
-                                      // Title
-                                      title: Text(card.card_name),
-                                      // Content detail path
-                                      content: Text('File Path: ${card.document_path}\nPolicy Code: ${card.card_number}'),
-                                      // Actions
-                                      actions: [
-                                        // OK button
-                                        TextButton(
-                                          // Pop dialog
-                                          onPressed: () {
-                                            // Close modal
-                                            Navigator.of(dialog_context).pop();
-                                          },
-                                          // label
-                                          child: const Text('OK'),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              },
-                              // Style configs
-                              style: OutlinedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space_m),
-                                // outline border colors
-                                side: const BorderSide(
-                                  // primary blue
-                                  color: AppColors.primary_color,
-                                  // thickness
-                                  width: AppSpacing.border_width_thin,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(AppSpacing.radius_m),
-                                ),
-                              ),
-                              // Label text
-                              child: Text(
-                                // Localized View label
-                                localizations.insurance_view_btn,
-                                // style
-                                style: const TextStyle(
-                                  // primary blue
-                                  color: AppColors.primary_color,
-                                  // bold weight
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 12.0,
-                                ),
-                              ),
+                          // Circular heart icon badge
+                          Container(
+                            width: 48.0,
+                            height: 48.0,
+                            decoration: BoxDecoration(
+                              color: AppColors.primary_color.withValues(alpha: 0.1),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.favorite_rounded,
+                              color: AppColors.primary_color,
+                              size: AppSpacing.icon_size_m,
                             ),
                           ),
-                          const SizedBox(height: AppSpacing.space_xs),
-                          // Row displaying Edit & Delete buttons
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              // Edit button
-                              IconButton(
-                                constraints: const BoxConstraints(),
-                                padding: EdgeInsets.zero,
-                                icon: const Icon(
-                                  Icons.edit_rounded,
-                                  color: AppColors.primary_color,
-                                  size: 20.0,
+                          const SizedBox(width: AppSpacing.space_m),
+                          // Details text column
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  card.card_name,
+                                  style: TextStyle(
+                                    fontSize: AppSpacing.font_size_body_medium,
+                                    fontWeight: FontWeight.w700,
+                                    color: true == is_dark
+                                        ? AppColors.text_dark_primary
+                                        : AppColors.text_light_primary,
+                                  ),
                                 ),
-                                onPressed: () {
-                                  // Open edit card page screen wrapped in ProfileCubit provider
-                                  Navigator.of(context).push(
-                                    // Route configurations
-                                    MaterialPageRoute(
-                                      // Constructor mapping
-                                      builder: (route_context) {
-                                        // Return AddInsuranceCardPage widget wrapped in ProfileCubit
-                                        return BlocProvider.value(
-                                          // Provide existing ProfileCubit instance
-                                          value: context.read<ProfileCubit>(),
-                                          // Target page in edit mode
-                                          child: AddInsuranceCardPage(
-                                            edit_index: index,
-                                            card_to_edit: card,
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  );
-                                },
-                              ),
-                              const SizedBox(width: AppSpacing.space_m),
-                              // Delete button
-                              IconButton(
-                                constraints: const BoxConstraints(),
-                                padding: EdgeInsets.zero,
-                                icon: const Icon(
-                                  Icons.delete_outline_rounded,
-                                  color: AppColors.error,
-                                  size: 20.0,
+                                const SizedBox(height: AppSpacing.space_xs),
+                                Text(
+                                  card.provider_name,
+                                  style: const TextStyle(
+                                    fontSize: AppSpacing.font_size_body_small,
+                                    color: AppColors.text_light_secondary,
+                                  ),
                                 ),
-                                onPressed: () {
-                                  // Confirm deletion dialog popup
-                                  showDialog(
-                                    context: context,
-                                    builder: (dialog_context) {
-                                      return AlertDialog(
-                                        title: const Text('Delete Insurance'),
-                                        content: const Text('Are you sure you want to remove this insurance card?'),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.of(dialog_context).pop();
-                                            },
-                                            child: const Text('Cancel'),
-                                          ),
-                                          TextButton(
-                                            onPressed: () {
-                                              // Remove card from cubit list index
-                                              context.read<ProfileCubit>().remove_insurance_card(index);
-                                              // Dismiss confirmation modal
-                                              Navigator.of(dialog_context).pop();
-                                            },
-                                            child: const Text(
-                                              'Delete',
-                                              style: TextStyle(color: AppColors.error),
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                },
-                              ),
-                            ],
+                                const SizedBox(height: AppSpacing.space_xs),
+                                Text(
+                                  '${localizations.insurance_expiry_label} ${card.expiry_date}',
+                                  style: const TextStyle(
+                                    fontSize: AppSpacing.font_size_body_small,
+                                    color: AppColors.text_light_secondary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.space_s),
+                          // Single primary Details chevron action icon
+                          Icon(
+                            Icons.chevron_right_rounded,
+                            color: true == is_dark ? Colors.white60 : AppColors.primary_color,
+                            size: 24.0,
                           ),
                         ],
                       ),
-                    ],
+                    ),
                   ),
                 );
               },
@@ -429,6 +239,126 @@ class _InsuranceDetailsPageState extends State<InsuranceDetailsPage> {
           }
         },
       ),
+    );
+  }
+
+  // Helper method presenting bottom modal sheet with options when an insurance card is tapped
+  void _show_card_options_sheet(BuildContext context, InsuranceCard card, int index) {
+    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: true == is_dark ? AppColors.surface_dark : Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+      ),
+      builder: (sheet_context) {
+        return Padding(
+          padding: const EdgeInsets.all(AppSpacing.space_xl),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 40.0,
+                  height: 4.0,
+                  decoration: BoxDecoration(
+                    color: true == is_dark ? Colors.white30 : Colors.black12,
+                    borderRadius: BorderRadius.circular(2.0),
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.space_m),
+              Text(
+                card.card_name,
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                  color: true == is_dark ? Colors.white : AppColors.text_light_primary,
+                ),
+              ),
+              Text(
+                card.provider_name,
+                style: const TextStyle(
+                  fontSize: 13.0,
+                  color: AppColors.text_light_secondary,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.space_l),
+              ListTile(
+                leading: const Icon(Icons.file_present_rounded, color: AppColors.primary_color),
+                title: const Text('View Document'),
+                onTap: () {
+                  Navigator.of(sheet_context).pop();
+                  showDialog(
+                    context: context,
+                    builder: (dialog_context) {
+                      return AlertDialog(
+                        title: Text(card.card_name),
+                        content: Text('File Path: ${card.document_path}\nPolicy Code: ${card.card_number}'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(dialog_context).pop(),
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.edit_rounded, color: AppColors.primary_color),
+                title: const Text('Edit Insurance'),
+                onTap: () {
+                  Navigator.of(sheet_context).pop();
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (route_context) => BlocProvider.value(
+                        value: context.read<ProfileCubit>(),
+                        child: AddInsuranceCardPage(
+                          edit_index: index,
+                          card_to_edit: card,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.delete_outline_rounded, color: AppColors.error),
+                title: const Text('Delete Card', style: TextStyle(color: AppColors.error)),
+                onTap: () {
+                  Navigator.of(sheet_context).pop();
+                  showDialog(
+                    context: context,
+                    builder: (dialog_context) {
+                      return AlertDialog(
+                        title: const Text('Delete Insurance'),
+                        content: const Text('Are you sure you want to remove this insurance card?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(dialog_context).pop(),
+                            child: const Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              context.read<ProfileCubit>().remove_insurance_card(index);
+                              Navigator.of(dialog_context).pop();
+                            },
+                            child: const Text('Delete', style: TextStyle(color: AppColors.error)),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

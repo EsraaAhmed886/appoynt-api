@@ -2,15 +2,15 @@
  * File Name: security_privacy_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 20/07/2026
- * Version Information: V1.1.0
+ * Version Information: V1.2.0
  * Dependencies: package:flutter/material.dart,
  *   dart:ui,
  *   package:appoynt_mobile_app/core/routing/route_export.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/07/2026]
- * File Description: Redesigned floating card dashboard displaying biometric adaptive toggles, password inputs, and account deletion warnings with blurs.
+ * Last Modified Date: [Kholoud Khaled - 23/07/2026]
+ * File Description: Completely refactored Security & Privacy screen with categorized cards, M3 styled settings, auto-lock timeouts, active sessions, and Danger Zone.
  */
 
 // Importing global route exports
@@ -32,543 +32,541 @@ class SecurityPrivacyPage extends StatefulWidget {
   const SecurityPrivacyPage({super.key});
 
   @override
-  // Create state tracker instance
   State<SecurityPrivacyPage> createState() {
-    // Return state class instance
     return _SecurityPrivacyPageState();
   }
 }
 
 // State class managing biometric switches and modal displays
 class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
-  // Face ID/biometrics toggler switch
+  // Toggle states
   bool _biometrics_enabled = false;
+  bool _two_factor_enabled = true;
+
+  // Selected dropdown choices states
+  String _auto_lock_timeout = 'immediately';
+  String _doctor_access = 'full_access';
+
+  // Helper method displaying native account deletion popup modal dialog with blurred screen backdrop
+  void _show_delete_account_dialog(BuildContext context) {
+    final AppLocalizations localizations = AppLocalizations.of(context);
+    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+
+    showDialog(
+      context: context,
+      builder: (dialog_context) {
+        return BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+          child: AlertDialog(
+            backgroundColor: is_dark ? AppColors.surface_dark : Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.0),
+            ),
+            title: Text(
+              localizations.profile_delete_account_dialog_title,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: AppColors.error,
+              ),
+            ),
+            content: Text(
+              localizations.profile_delete_account_warning,
+              style: TextStyle(
+                fontSize: 13.0,
+                color: is_dark ? Colors.white70 : AppColors.text_light_secondary,
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(dialog_context).pop();
+                },
+                child: Text(
+                  localizations.profile_cancel_button,
+                  style: TextStyle(
+                    color: is_dark ? Colors.white54 : AppColors.text_light_secondary,
+                  ),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(dialog_context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Account deletion process initiated.'),
+                      backgroundColor: AppColors.error,
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.error,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                ),
+                child: Text(
+                  localizations.profile_delete_account,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // Section Group Card layout helper container
+  Widget _build_section_card({
+    required List<Widget> children,
+    required bool is_dark,
+  }) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: is_dark ? AppColors.surface_dark : Colors.white,
+        borderRadius: BorderRadius.circular(16.0),
+        border: Border.all(
+          color: is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
+          width: 1.0,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: is_dark ? Colors.black.withValues(alpha: 0.2) : Colors.black.withValues(alpha: 0.03),
+            blurRadius: 10.0,
+            spreadRadius: 1.0,
+            offset: const Offset(0.0, 2.0),
+          ),
+        ],
+      ),
+      child: Column(
+        children: children,
+      ),
+    );
+  }
+
+  // Row option item styling widget builder
+  Widget _build_setting_row({
+    required Widget leadingIcon,
+    required String title,
+    String? subtitle,
+    Widget? trailing,
+    VoidCallback? onTap,
+    required bool is_dark,
+  }) {
+    final rowContent = Row(
+      children: [
+        // Soft-tinted leading icon container (10% opacity primary color background)
+        Container(
+          width: 40.0,
+          height: 40.0,
+          decoration: BoxDecoration(
+            color: AppColors.primary_color.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          child: leadingIcon,
+        ),
+        const SizedBox(width: 12.0),
+        // Title & Subtitle details
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.bold,
+                  color: is_dark ? Colors.white : AppColors.text_light_primary,
+                ),
+              ),
+              if (subtitle != null) ...[
+                const SizedBox(height: 2.0),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    fontSize: 12.0,
+                    color: is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary,
+                    height: 1.3,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+        if (trailing != null) ...[
+          const SizedBox(width: 8.0),
+          trailing,
+        ],
+      ],
+    );
+
+    if (onTap != null) {
+      return InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16.0),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
+          child: rowContent,
+        ),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
+      child: rowContent,
+    );
+  }
 
   @override
-  // Build widget layout tree
   Widget build(BuildContext context) {
     // Resolve localizations context properties
     final AppLocalizations localizations = AppLocalizations.of(context);
     // Resolve theme brightness mode
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
 
+    // Localized Headers & Titles
+    final String sec_account_title = localizations.is_arabic ? "أمان الحساب" : "ACCOUNT SECURITY";
+    final String sec_privacy_title = localizations.is_arabic ? "خصوصية البيانات الطبية" : "MEDICAL DATA PRIVACY";
+    final String sec_danger_title = localizations.is_arabic ? "إجراءات حساسة" : "DANGER ZONE";
+
+    final String biometric_title = localizations.is_arabic ? "المصادقة البيومترية" : "Biometric Authentication";
+    final String biometric_subtitle = localizations.is_arabic 
+        ? "بصمة الوجه / الإصبع للدخول السريع" 
+        : "Biometric Authentication (Face ID / Fingerprint)";
+
+    final String tfa_title = localizations.is_arabic ? "التحقق بخطوتين" : "Two-Factor Authentication";
+    final String tfa_enabled = localizations.is_arabic ? "مفعّل" : "Enabled";
+    final String tfa_disabled = localizations.is_arabic ? "معطّل" : "Disabled";
+
+    final String change_password_label = localizations.is_arabic ? "تغيير كلمة المرور" : "Change Password";
+    final String change_password_subtitle = localizations.is_arabic 
+        ? "تحديث بيانات وكلمة مرور حسابك" 
+        : "Update password credentials";
+
+    final String autolock_title = localizations.is_arabic ? "القفل التلقائي للتطبيق" : "Auto-Lock App Timeout";
+    final String autolock_immediately = localizations.is_arabic ? "فوري" : "Immediately";
+    final String autolock_5mins = localizations.is_arabic ? "بعد 5 دقائق" : "After 5 Mins";
+
+    final String doc_access_title = localizations.is_arabic ? "صلاحيات دخول الطبيب" : "Doctor Access Permissions";
+    final String doc_access_full = localizations.is_arabic ? "وصول كامل" : "Full Access";
+    final String doc_access_request = localizations.is_arabic ? "يتطلب إذن" : "Requires Request";
+
+    final String active_devices_title = localizations.is_arabic ? "الأجهزة النشطة حالياً" : "Active Logged-in Devices";
+    final String active_devices_subtitle = localizations.is_arabic 
+        ? "آيفون 15 • القاهرة، مصر" 
+        : "iPhone 15 • Cairo";
+    final String manage_sessions = localizations.is_arabic ? "إدارة الجلسات" : "Manage Sessions";
+
+    final String export_data_title = localizations.is_arabic ? "تصدير البيانات الطبية" : "Export Medical Data";
+    final String export_data_subtitle = localizations.is_arabic 
+        ? "طلب نسخة بصيغة PDF أو JSON لسجلك الطبي" 
+        : "Request PDF/JSON health log archive";
+
+    final String delete_account_title = localizations.is_arabic ? "حذف الحساب نهائياً" : "Delete Account";
+    final String delete_account_subtitle = localizations.is_arabic 
+        ? "سيتم مسح جميع بياناتك وسجلاتك الطبية نهائياً ولا يمكن استرجاعها" 
+        : "Permanently erase your personal medical logs and account";
+
+    final Color dividerColor = is_dark ? AppColors.border_dark : const Color(0xFFF1F5F9);
+
     // Return root Scaffold layout container
     return Scaffold(
-      // Apply background color dynamically based on dark modes
-      backgroundColor:
-          true == is_dark ? AppColors.background_dark : const Color(0xFFF1F5F9),
-      // Body wrap in safe area and scroll view
+      backgroundColor: is_dark ? AppColors.background_dark : const Color(0xFFF8FAFC),
       body: SafeArea(
-        // Scroll view protecting layout bounds
         child: SingleChildScrollView(
-          // Outer padding margins (strictly 16px lateral padding)
           child: Padding(
-            // Margins boundaries
             padding: const EdgeInsets.symmetric(
-              // Horizontal offset (16px)
               horizontal: AppSpacing.space_xl,
-              // Vertical offset
               vertical: AppSpacing.space_m,
             ),
-            // Column stack grouping layouts
             child: BlocBuilder<ProfileCubit, ProfileState>(
-              // Builder callback
               builder: (bloc_context, state) {
-                // Column stacking widgets
                 return Column(
-                  // Align left coordinates
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  // children list
                   children: [
                     // Top header row placing circular back button and screen title
-                    Row(
-                      // Distribute items
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      // children list
-                      children: [
-                        // Back button gesture detector
-                        GestureDetector(
-                          // POP route on tap
-                          onTap: () {
-                            // pop navigation
-                            Navigator.of(context).pop();
-                          },
-                          // Circular button container
-                          child: Container(
-                            // Fixed width
-                            width: 44.0,
-                            // Fixed height
-                            height: 44.0,
-                            // Styles
-                            decoration: BoxDecoration(
-                              // Dark/Light surface color fills
-                              color: true == is_dark
-                                  ? AppColors.surface_dark
-                                  : Colors.white,
-                              // Circular borders shape
-                              shape: BoxShape.circle,
-                              // Card soft shadows
-                              boxShadow: [
-                                BoxShadow(
-                                  // Shadow colors
-                                  color: true == is_dark
-                                      ? Colors.black26
-                                      : Colors.black.withValues(alpha: 0.05),
-                                  // Blur spread
-                                  blurRadius: 8.0,
-                                  // Spread offsets
-                                  offset: const Offset(0.0, 2.0),
-                                ),
-                              ],
-                            ),
-                            // Chevron arrow icon graphic
-                            child: Icon(
-                              // Arrow left symbol
-                              Icons.arrow_back_rounded,
-                              // Dynamic color
-                              color: true == is_dark
-                                  ? Colors.white
-                                  : AppColors.text_light_primary,
-                              // Size
-                              size: AppSpacing.icon_size_m,
-                            ),
-                          ),
-                        ),
-                        // Screen Title Text widget
-                        Text(
-                          // Localized title
-                          localizations.profile_security_privacy,
-                          // Typography options
-                          style: TextStyle(
-                            // Header size
-                            fontSize: 18.0,
-                            // Bolder font weight
-                            fontWeight: FontWeight.w800,
-                            // Dynamic colors
-                            color: true == is_dark
-                                ? Colors.white
-                                : AppColors.text_light_primary,
-                          ),
-                        ),
-                        // Balancer spacer matching back button dimensions
-                        const SizedBox(width: 44.0),
-                      ],
+                    CustomProfileAppBar(
+                      title: localizations.profile_security_privacy,
                     ),
-                    // Spacing offset
-                    const SizedBox(height: AppSpacing.space_xl),
+                    const SizedBox(height: 24.0),
 
-                    // CARD A: Floating Biometrics Card
-                    Container(
-                      // Padding margins
-                      margin: const EdgeInsets.only(bottom: 16.0),
-                      // Padding inside card (spacious 16px internal padding)
-                      padding: const EdgeInsets.all(16.0),
-                      // Card decorations styling
-                      decoration: BoxDecoration(
-                        // Dynamic surface colors
-                        color: true == is_dark
-                            ? AppColors.surface_dark
-                            : Colors.white,
-                        // Corners radius curvature
-                        borderRadius: BorderRadius.circular(16.0),
-                        // Ambient soft shadows list
-                        boxShadow: [
-                          BoxShadow(
-                            // Shadow colors adapting to dark mode
-                            color: true == is_dark
-                                ? Colors.black.withValues(alpha: 0.2)
-                                : Colors.black.withValues(alpha: 0.05),
-                            // Blur spread
-                            blurRadius: 10.0,
-                            // Offset coordinates position
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                        // Outline border lines
-                        border: Border.all(
-                          // Border colors matching theme mode
-                          color: true == is_dark
-                              ? AppColors.border_dark
-                              : const Color(0xFFE2E8F0),
-                          // Boundary line thickness
-                          width: AppSpacing.border_width_thin,
-                        ),
+                    // SECTION 1: ACCOUNT SECURITY Header
+                    Text(
+                      sec_account_title,
+                      style: const TextStyle(
+                        fontSize: 11.0,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFF94A3B8),
+                        letterSpacing: 1.0,
                       ),
-                      // Horizontal row placing icon, description, and Switch component
-                      child: Row(
-                        // children list
-                        children: [
-                          // Rounded container housing fingerprint/biometric icon
-                          Container(
-                            // Width
-                            width: 44.0,
-                            // Height
-                            height: 44.0,
-                            // Style
-                            decoration: BoxDecoration(
-                              // Light transparent primary color
-                              color: AppColors.primary_color
-                                  .withValues(alpha: 0.08),
-                              // Rounded corners
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                            // Shield biometrics icon
-                            child: const Icon(
-                              // fingerprint icon representation
-                              Icons.fingerprint_rounded,
-                              // Color
-                              color: AppColors.primary_color,
-                              // Size
-                              size: 22.0,
-                            ),
-                          ),
-                          // Spacing gap width
-                          const SizedBox(width: 12.0),
-                          // Label stack column taking remaining width
-                          Expanded(
-                            // Column stack
-                            child: Column(
-                              // Align left coordinates
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              // children list
-                              children: [
-                                // Title label text
-                                Text(
-                                  // Localized biometrics key
-                                  localizations.profile_face_id,
-                                  // Typography
-                                  style: TextStyle(
-                                    // Medium body size
-                                    fontSize: 14.0,
-                                    // Bold weight
-                                    fontWeight: FontWeight.bold,
-                                    // Dynamic colors
-                                    color: true == is_dark
-                                        ? Colors.white
-                                        : AppColors.text_light_primary,
-                                  ),
-                                ),
-                                // Spacing gap height
-                                const SizedBox(height: 4.0),
-                                // Subtitle detail description (proportional micro-font 12px)
-                                const Text(
-                                  // Professional medical account copywriting
-                                  'Enable biometric authentication for quick and secure account access',
-                                  // Typography
-                                  style: TextStyle(
-                                    // Micro-font size
-                                    fontSize: 12.0,
-                                    // Muted color
-                                    color: AppColors.text_light_secondary,
-                                    // Explicit line height to prevent overlapping
-                                    height: 1.3,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          // Spacing gap width
-                          const SizedBox(width: 8.0),
-                          // Sleek proportional Switch toggle component (Material 3/iOS standard adaptive)
-                          Switch.adaptive(
-                            // Status value mapping variable
+                    ),
+                    const SizedBox(height: 12.0),
+                    // SECTION 1: ACCOUNT SECURITY CARD
+                    _build_section_card(
+                      is_dark: is_dark,
+                      children: [
+                        // Biometric Authentication
+                        _build_setting_row(
+                          is_dark: is_dark,
+                          leadingIcon: const Icon(Icons.fingerprint_rounded, color: AppColors.primary_color, size: 20.0),
+                          title: biometric_title,
+                          subtitle: biometric_subtitle,
+                          trailing: Switch.adaptive(
                             value: _biometrics_enabled,
-                            // Toggle status on click
                             onChanged: (val) {
-                              // Trigger rebuild
                               setState(() {
-                                // Update value
                                 _biometrics_enabled = val;
                               });
                             },
-                            // Active track color primary brand blue
                             activeTrackColor: AppColors.primary_color,
-                            // Active thumb color white contrast
                             activeThumbColor: Colors.white,
                           ),
-                        ],
-                      ),
-                    ),
-
-                    // CARD B: Floating Change Password Card
-                    Container(
-                      // Padding margins
-                      margin: const EdgeInsets.only(bottom: 16.0),
-                      // Card decorations styling
-                      decoration: BoxDecoration(
-                        // Dynamic surface colors
-                        color: true == is_dark
-                            ? AppColors.surface_dark
-                            : Colors.white,
-                        // Corners radius curvature
-                        borderRadius: BorderRadius.circular(16.0),
-                        // Ambient soft shadows list
-                        boxShadow: [
-                          BoxShadow(
-                            // Shadow colors adapting to dark mode
-                            color: true == is_dark
-                                ? Colors.black.withValues(alpha: 0.2)
-                                : Colors.black.withValues(alpha: 0.05),
-                            // Blur spread
-                            blurRadius: 10.0,
-                            // Offset coordinates position
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                        // Outline border lines
-                        border: Border.all(
-                          // Border colors matching theme mode
-                          color: true == is_dark
-                              ? AppColors.border_dark
-                              : const Color(0xFFE2E8F0),
-                          // Boundary line thickness
-                          width: AppSpacing.border_width_thin,
                         ),
-                      ),
-                      // InkWell wrapper to trigger click action
-                      child: Material(
-                        // Transparent colors
-                        color: Colors.transparent,
-                        // Clickable area
-                        child: InkWell(
-                          // Curved corners radius
-                          borderRadius: BorderRadius.circular(16.0),
-                          // Click handler trigger change password screen layout navigation
+                        Divider(height: 1.0, indent: 68.0, endIndent: 16.0, color: dividerColor),
+                        // Two-Factor Authentication
+                        _build_setting_row(
+                          is_dark: is_dark,
+                          leadingIcon: const Icon(Icons.security_rounded, color: AppColors.primary_color, size: 20.0),
+                          title: tfa_title,
+                          subtitle: _two_factor_enabled ? tfa_enabled : tfa_disabled,
+                          trailing: Icon(
+                            Icons.chevron_right_rounded,
+                            color: is_dark ? Colors.white30 : AppColors.text_light_secondary,
+                          ),
                           onTap: () {
-                            // Push navigate to ChangePasswordPage layout screen
+                            setState(() {
+                              _two_factor_enabled = !_two_factor_enabled;
+                            });
+                          },
+                        ),
+                        Divider(height: 1.0, indent: 68.0, endIndent: 16.0, color: dividerColor),
+                        // Change Password
+                        _build_setting_row(
+                          is_dark: is_dark,
+                          leadingIcon: const Icon(Icons.lock_reset_rounded, color: AppColors.primary_color, size: 20.0),
+                          title: change_password_label,
+                          subtitle: change_password_subtitle,
+                          trailing: Icon(
+                            Icons.chevron_right_rounded,
+                            color: is_dark ? Colors.white30 : AppColors.text_light_secondary,
+                          ),
+                          onTap: () {
                             Navigator.of(context).push(
-                              // Route builder
                               MaterialPageRoute(
-                                // Builder constructor
                                 builder: (route_context) => BlocProvider.value(
-                                  // Carry cubit block context forward
                                   value: context.read<ProfileCubit>(),
-                                  // Change password page widget
                                   child: const ChangePasswordPage(),
                                 ),
                               ),
                             );
                           },
-                          // Card design padding offsets (breathable 16px internal padding)
-                          child: Padding(
-                            // Padding
-                            padding: const EdgeInsets.all(16.0),
-                            // Horizontal alignment row placing icon, details column, and chevron arrow
-                            child: Row(
-                              // children details
-                              children: [
-                                // Soft circular background padding container for the leading icon
-                                Container(
-                                  // Width
-                                  width: 44.0,
-                                  // Height
-                                  height: 44.0,
-                                  // Layout shape style decoration
-                                  decoration: BoxDecoration(
-                                    // Soft circular background tint
-                                    color: AppColors.primary_color
-                                        .withValues(alpha: 0.08),
-                                    // Circular shape
-                                    shape: BoxShape.circle,
-                                  ),
-                                  // Lock reset icon centered
-                                  child: const Icon(
-                                    // Lock reset icon graphic representation
-                                    Icons.lock_reset_rounded,
-                                    // Primary brand color
-                                    color: AppColors.primary_color,
-                                    // Size
-                                    size: 22.0,
-                                  ),
-                                ),
-                                // Horizontal spacer gap width
-                                const SizedBox(width: 12.0),
-                                // Details column taking remaining space
-                                Expanded(
-                                  // Column
-                                  child: Column(
-                                    // Align left coordinates
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    // children
-                                    children: [
-                                      // Section title label
-                                      Text(
-                                        // Localized password change key
-                                        localizations.password_change_title,
-                                        // Typographic settings
-                                        style: TextStyle(
-                                          // Size body
-                                          fontSize: 14.0,
-                                          // Bold weight
-                                          fontWeight: FontWeight.bold,
-                                          // Dynamic colors
-                                          color: true == is_dark
-                                              ? Colors.white
-                                              : AppColors.text_light_primary,
-                                        ),
-                                      ),
-                                      // Spacer gap height
-                                      const SizedBox(height: 4.0),
-                                      // Subtitle description detail (12px micro-font)
-                                      const Text(
-                                        // Subtitle text copy
-                                        'Update account password key credentials',
-                                        // Styles
-                                        style: TextStyle(
-                                          // Micro-font size
-                                          fontSize: 12.0,
-                                          // Muted secondary colors
-                                          color: AppColors.text_light_secondary,
-                                          // Line height spacing
-                                          height: 1.3,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                // Spacing partition gap width
-                                const SizedBox(width: 8.0),
-                                // Right directional chevron indicator
-                                Icon(
-                                  // Arrow chevron point right
-                                  Icons.chevron_right_rounded,
-                                  // Secondary color tint
-                                  color: true == is_dark
-                                      ? Colors.white30
-                                      : AppColors.text_light_secondary,
-                                ),
-                              ],
+                        ),
+                        Divider(height: 1.0, indent: 68.0, endIndent: 16.0, color: dividerColor),
+                        // Auto-Lock Timeout
+                        _build_setting_row(
+                          is_dark: is_dark,
+                          leadingIcon: const Icon(Icons.timer_outlined, color: AppColors.primary_color, size: 20.0),
+                          title: autolock_title,
+                          trailing: DropdownButton<String>(
+                            value: _auto_lock_timeout,
+                            dropdownColor: is_dark ? AppColors.surface_dark : Colors.white,
+                            underline: const SizedBox(),
+                            icon: const Icon(Icons.arrow_drop_down_rounded, color: AppColors.primary_color),
+                            style: const TextStyle(
+                              color: AppColors.primary_color,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13.0,
                             ),
+                            items: [
+                              DropdownMenuItem(
+                                value: 'immediately',
+                                child: Text(autolock_immediately),
+                              ),
+                              DropdownMenuItem(
+                                value: '5_mins',
+                                child: Text(autolock_5mins),
+                              ),
+                            ],
+                            onChanged: (val) {
+                              if (val != null) {
+                                setState(() {
+                                  _auto_lock_timeout = val;
+                                });
+                              }
+                            },
                           ),
                         ),
+                      ],
+                    ),
+                    const SizedBox(height: 24.0),
+
+                    // SECTION 2: MEDICAL DATA PRIVACY Header
+                    Text(
+                      sec_privacy_title,
+                      style: const TextStyle(
+                        fontSize: 11.0,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFF94A3B8),
+                        letterSpacing: 1.0,
                       ),
                     ),
-
-                    // CARD C: Floating Delete Account Card (Isolated at the bottom with breathing room)
-                    Container(
-                      // Margin spacing at the bottom (isolated action block)
-                      margin: const EdgeInsets.only(top: 24.0, bottom: 16.0),
-                      // Card decorations styling
-                      decoration: BoxDecoration(
-                        // Dynamic surface colors
-                        color: true == is_dark
-                            ? AppColors.surface_dark
-                            : Colors.white,
-                        // Corners radius curvature
-                        borderRadius: BorderRadius.circular(16.0),
-                        // Ambient soft shadows list
-                        boxShadow: [
-                          BoxShadow(
-                            // Shadow colors adapting to dark mode
-                            color: true == is_dark
-                                ? Colors.black.withValues(alpha: 0.2)
-                                : Colors.black.withValues(alpha: 0.03),
-                            // Blur spread
-                            blurRadius: 10.0,
-                            // Offset coordinates position
-                            offset: const Offset(0, 4),
+                    const SizedBox(height: 12.0),
+                    // SECTION 2: MEDICAL DATA PRIVACY CARD
+                    _build_section_card(
+                      is_dark: is_dark,
+                      children: [
+                        // Doctor Access Permissions
+                        _build_setting_row(
+                          is_dark: is_dark,
+                          leadingIcon: const Icon(Icons.remove_red_eye_outlined, color: AppColors.primary_color, size: 20.0),
+                          title: doc_access_title,
+                          trailing: DropdownButton<String>(
+                            value: _doctor_access,
+                            dropdownColor: is_dark ? AppColors.surface_dark : Colors.white,
+                            underline: const SizedBox(),
+                            icon: const Icon(Icons.arrow_drop_down_rounded, color: AppColors.primary_color),
+                            style: const TextStyle(
+                              color: AppColors.primary_color,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13.0,
+                            ),
+                            items: [
+                              DropdownMenuItem(
+                                value: 'full_access',
+                                child: Text(doc_access_full),
+                              ),
+                              DropdownMenuItem(
+                                value: 'requires_request',
+                                child: Text(doc_access_request),
+                              ),
+                            ],
+                            onChanged: (val) {
+                              if (val != null) {
+                                setState(() {
+                                  _doctor_access = val;
+                                });
+                              }
+                            },
                           ),
-                        ],
-                        // Outline border lines (using low-saturated red error outline)
+                        ),
+                        Divider(height: 1.0, indent: 68.0, endIndent: 16.0, color: dividerColor),
+                        // Active Logged-in Devices
+                        _build_setting_row(
+                          is_dark: is_dark,
+                          leadingIcon: const Icon(Icons.devices_rounded, color: AppColors.primary_color, size: 20.0),
+                          title: active_devices_title,
+                          subtitle: active_devices_subtitle,
+                          trailing: Icon(
+                            Icons.chevron_right_rounded,
+                            color: is_dark ? Colors.white30 : AppColors.text_light_secondary,
+                          ),
+                          onTap: () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(manage_sessions),
+                                backgroundColor: AppColors.primary_color,
+                              ),
+                            );
+                          },
+                        ),
+                        Divider(height: 1.0, indent: 68.0, endIndent: 16.0, color: dividerColor),
+                        // Export Medical Data
+                        _build_setting_row(
+                          is_dark: is_dark,
+                          leadingIcon: const Icon(Icons.download_rounded, color: AppColors.primary_color, size: 20.0),
+                          title: export_data_title,
+                          subtitle: export_data_subtitle,
+                          trailing: Icon(
+                            Icons.chevron_right_rounded,
+                            color: is_dark ? Colors.white30 : AppColors.text_light_secondary,
+                          ),
+                          onTap: () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(localizations.is_arabic ? 'جاري تحضير ملف البيانات الطبية للتصدير...' : 'Preparing medical data archive...'),
+                                backgroundColor: AppColors.primary_color,
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24.0),
+
+                    // SECTION 3: DANGER ZONE Header
+                    Text(
+                      sec_danger_title,
+                      style: const TextStyle(
+                        fontSize: 11.0,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFF94A3B8),
+                        letterSpacing: 1.0,
+                      ),
+                    ),
+                    const SizedBox(height: 12.0),
+                    // SECTION 3: DANGER ZONE Isolated Container
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: is_dark ? const Color(0xFF7F1D1D).withValues(alpha: 0.15) : const Color(0xFFFEF2F2),
+                        borderRadius: BorderRadius.circular(16.0),
                         border: Border.all(
-                          // Error red color outline
-                          color: AppColors.error.withValues(alpha: 0.3),
-                          // Boundary line thickness
-                          width: AppSpacing.border_width_thin,
+                          color: is_dark ? const Color(0xFF991B1B) : const Color(0xFFFCA5A5),
+                          width: 1.0,
                         ),
                       ),
-                      // InkWell wrapper to catch press events
-                      child: Material(
-                        // Transparent colors
-                        color: Colors.transparent,
-                        // Clickable area
-                        child: InkWell(
-                          // Curved corners radius
-                          borderRadius: BorderRadius.circular(16.0),
-                          // Trigger account deletion dialog on tap
-                          onTap: () {
-                            // Invoke warning alert dialog popup
-                            _show_delete_account_dialog(context);
-                          },
-                          // Card design padding offsets (spacious 16px internal padding)
-                          child: Padding(
-                            // Padding bounds
-                            padding: const EdgeInsets.all(16.0),
-                            // Horizontal row placing icon and description details
-                            child: Row(
-                              // children details
-                              children: [
-                                // Soft background container wrapping the delete icon
-                                Container(
-                                  // Width
-                                  width: 44.0,
-                                  // Height
-                                  height: 44.0,
-                                  // Layout shape style decoration
-                                  decoration: BoxDecoration(
-                                    // Soft red background tint
-                                    color:
-                                        AppColors.error.withValues(alpha: 0.08),
-                                    // Circular shape
-                                    shape: BoxShape.circle,
-                                  ),
-                                  // Delete account icon centered
-                                  child: const Icon(
-                                    // Delete account icon representation
-                                    Icons.no_accounts_rounded,
-                                    // Error color red
-                                    color: AppColors.error,
-                                    // Size
-                                    size: 20.0,
-                                  ),
+                      child: InkWell(
+                        onTap: () {
+                          _show_delete_account_dialog(context);
+                        },
+                        borderRadius: BorderRadius.circular(16.0),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 40.0,
+                                height: 40.0,
+                                decoration: BoxDecoration(
+                                  color: AppColors.error.withValues(alpha: 0.1),
+                                  shape: BoxShape.circle,
                                 ),
-                                // Horizontal spacer gap width
-                                const SizedBox(width: 12.0),
-                                // Details column taking remaining width space
-                                Expanded(
-                                  // Column stack
-                                  child: Column(
-                                    // Align left coordinates
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    // children
-                                    children: [
-                                      // Warning header Title
-                                      Text(
-                                        // Localized delete account string key
-                                        localizations.profile_delete_account,
-                                        // Typographic settings
-                                        style: const TextStyle(
-                                          // Size body
-                                          fontSize: 14.0,
-                                          // Bold weight
-                                          fontWeight: FontWeight.bold,
-                                          // Error red warning colors
-                                          color: AppColors.error,
-                                        ),
-                                      ),
-                                      // Spacer gap height
-                                      const SizedBox(height: 4.0),
-                                      // Subtitle description detail (proportional 12px micro-font)
-                                      const Text(
-                                        // User-centric legal privacy copywriting text
-                                        'Permanently erase your personal data and account logs according to privacy compliance rules',
-                                        // Styles
-                                        style: TextStyle(
-                                          // Micro-font size
-                                          fontSize: 12.0,
-                                          // Muted secondary colors
-                                          color: AppColors.text_light_secondary,
-                                          // Line height spacing
-                                          height: 1.3,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                child: const Icon(
+                                  Icons.no_accounts_rounded,
+                                  color: AppColors.error,
+                                  size: 20.0,
                                 ),
-                              ],
-                            ),
+                              ),
+                              const SizedBox(width: 12.0),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      delete_account_title,
+                                      style: const TextStyle(
+                                        fontSize: 14.0,
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColors.error,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4.0),
+                                    Text(
+                                      delete_account_subtitle,
+                                      style: TextStyle(
+                                        fontSize: 12.0,
+                                        color: is_dark ? Colors.white70 : const Color(0xFF64748B),
+                                        height: 1.3,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -580,124 +578,6 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
           ),
         ),
       ),
-    );
-  }
-
-  // Helper method displaying native account deletion popup modal dialog with blurred screen backdrop
-  void _show_delete_account_dialog(BuildContext context) {
-    // Resolve localized strings
-    final AppLocalizations localizations = AppLocalizations.of(context);
-    // Resolve theme brightness modes status
-    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
-
-    // Open blurred dialog
-    showDialog(
-      // Bind context
-      context: context,
-      // Dialog builder constructor
-      builder: (dialog_context) {
-        // BackdropFilter supplying premium blur effect on background screens
-        return BackdropFilter(
-          // Blur parameters values
-          filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-          // Dialog container
-          child: AlertDialog(
-            // Dialog surface color matching theme mode
-            backgroundColor:
-                true == is_dark ? AppColors.surface_dark : Colors.white,
-            // Curved corners contours
-            shape: RoundedRectangleBorder(
-              // 16px corner radius bounds
-              borderRadius: BorderRadius.circular(16.0),
-            ),
-            // Warning header title label
-            title: Text(
-              // Title string key
-              localizations.profile_delete_account_dialog_title,
-              // Typography
-              style: const TextStyle(
-                // Bold weight
-                fontWeight: FontWeight.bold,
-                // Danger red warning colors
-                color: AppColors.error,
-              ),
-            ),
-            // Description content details text widget
-            content: Text(
-              // warning details string key
-              localizations.profile_delete_account_warning,
-              // style
-              style: TextStyle(
-                // Size
-                fontSize: 13.0,
-                // Colors
-                color: true == is_dark
-                    ? Colors.white70
-                    : AppColors.text_light_secondary,
-              ),
-            ),
-            // Danger actions action triggers list
-            actions: [
-              // Muted Cancel button
-              TextButton(
-                // Close dialog onTap
-                onPressed: () {
-                  // POP context dialog
-                  Navigator.of(dialog_context).pop();
-                },
-                // Cancel string
-                child: Text(
-                  // Label cancellation key
-                  localizations.profile_cancel_button,
-                  // Muted style options
-                  style: TextStyle(
-                    // Muted color theme
-                    color: true == is_dark
-                        ? Colors.white54
-                        : AppColors.text_light_secondary,
-                  ),
-                ),
-              ),
-              // Destructive Red Delete execution trigger button
-              ElevatedButton(
-                // Confirm delete action onTap
-                onPressed: () {
-                  // POP context dialog
-                  Navigator.of(dialog_context).pop();
-                  // Show status SnackBar toast
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    // SnackBar configurations
-                    const SnackBar(
-                      // Delete message
-                      content: Text('Account deletion process initiated.'),
-                      // Warning red color background
-                      backgroundColor: AppColors.error,
-                    ),
-                  );
-                },
-                // Style attributes conforming to destructive red colors
-                style: ElevatedButton.styleFrom(
-                  // Red background color fill
-                  backgroundColor: AppColors.error,
-                  // Curves radius contours
-                  shape: RoundedRectangleBorder(
-                    // Rounded curves radius
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                ),
-                // Centered button title label Text
-                child: Text(
-                  // Localized delete label key
-                  localizations.profile_delete_account,
-                  // Text color contrast white
-                  style: const TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }

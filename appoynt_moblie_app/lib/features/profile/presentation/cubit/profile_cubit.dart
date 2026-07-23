@@ -9,7 +9,7 @@
  *   package:appoynt_mobile_app/features/profile/domain/entities/insurance_card.dart,
  *   package:appoynt_mobile_app/features/profile/domain/entities/test_result.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 19/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 22/07/2026]
  * File Description: Implement the Patient Profile Cubit orchestrating UI updates, validations, and saves.
  */
 
@@ -116,8 +116,20 @@ class ProfileCubit extends Cubit<ProfileState> {
       food_allergies: ['Peanuts'],
       // Medication allergies array
       medication_allergies: ['Penicillin'],
-      // Prescriptions array
-      prescriptions: ['Panadol 500mg'],
+      // Prescriptions array (rich map schema with clinical metadata)
+      prescriptions: [
+        {
+          'id': '1',
+          'name': 'Panadol Extra 500mg',
+          'dosage': '1 Tablet',
+          'frequency': 'Twice Daily',
+          'duration': '7 Days',
+          'status': 'Active',
+          'doctor': 'Dr. Ahmed Hassan',
+          'date': '20 Jul 2026',
+          'attachment': null,
+        }
+      ],
       // Lab test list
       lab_tests: [],
       // Scan test list
@@ -442,18 +454,19 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
-  // Add medical prescriptions drug item to patient medications list
-  void add_prescription(String medication_name) {
-    // Verify drug name is valid after trim checks
-    if (medication_name.trim().isEmpty) {
-      // Return early
+  // Add rich prescription map entry to the patient medications list
+  void add_prescription(Map<String, dynamic> prescription_data) {
+    // Verify medication name is valid after trim checks
+    final String name = (prescription_data['name'] as String? ?? '').trim();
+    // Return early if the name field is empty
+    if (name.isEmpty) {
       return;
     } else {
-      // Clone medications array list appending drug entry
-      final List<String> updated_list =
-          List<String>.from(state.profile.prescriptions)
-            ..add(medication_name.trim());
-      // Clone profile structures
+      // Clone prescriptions list appending new rich entry
+      final List<Map<String, dynamic>> updated_list =
+          List<Map<String, dynamic>>.from(state.profile.prescriptions)
+            ..add(prescription_data);
+      // Clone profile structures with updated list
       final PatientProfile updated_profile =
           state.profile.copyWith(prescriptions: updated_list);
       // Emit updated states
@@ -471,12 +484,16 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
-  // Remove medical prescriptions drug item from patient medications list
-  void remove_prescription(String medication_name) {
-    final List<String> updated_list =
-        List<String>.from(state.profile.prescriptions)..remove(medication_name);
+  // Remove a prescription entry by its unique id field from the list
+  void remove_prescription(String prescription_id) {
+    // Filter out the entry matching the given id
+    final List<Map<String, dynamic>> updated_list =
+        List<Map<String, dynamic>>.from(state.profile.prescriptions)
+          ..removeWhere((item) => item['id'] == prescription_id);
+    // Clone profile with filtered list
     final PatientProfile updated_profile =
         state.profile.copyWith(prescriptions: updated_list);
+    // Emit updated state
     emit(
       state.copyWith(
         status: ProfileStatus.success,
@@ -488,7 +505,15 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   // Add diagnostic reports tests or scans file attachment metadata
   void add_test_result(
-      String doc_name, String upload_date, String file_path, String scan_type) {
+      String doc_name,
+      String upload_date,
+      String file_path,
+      String scan_type, {
+      String? facility_name,
+      String status = 'normal',
+      String? doctor_name,
+      String? notes,
+  }) {
     // Verify attachment name parameter is valid
     if (doc_name.trim().isEmpty) {
       // Return early
@@ -504,6 +529,14 @@ class ProfileCubit extends Cubit<ProfileState> {
         document_path: file_path,
         // Bind result type indicator
         type: scan_type,
+        // Bind facility name
+        facility_name: facility_name,
+        // Bind result status
+        status: status,
+        // Bind prescribing doctor
+        doctor_name: doctor_name,
+        // Bind additional notes
+        notes: notes,
       );
       // Check scan type classification using Yoda comparisons
       if ('lab_test' == scan_type) {
@@ -582,6 +615,25 @@ class ProfileCubit extends Cubit<ProfileState> {
         ),
       );
     }
+  }
+
+  // Update a list field inside the patient profile dynamically
+  void update_profile_field(String field, List<String> values) {
+    PatientProfile updated_profile = state.profile;
+    if ('food_allergies' == field) {
+      updated_profile = state.profile.copyWith(food_allergies: values);
+    } else if ('medication_allergies' == field) {
+      updated_profile = state.profile.copyWith(medication_allergies: values);
+    } else if ('chronic_conditions' == field) {
+      updated_profile = state.profile.copyWith(chronic_conditions: values);
+    }
+    emit(
+      state.copyWith(
+        status: ProfileStatus.success,
+        profile: updated_profile,
+        temp_profile: updated_profile,
+      ),
+    );
   }
 
   // Add insurance card coverage information models

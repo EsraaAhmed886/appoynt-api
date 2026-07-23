@@ -200,79 +200,8 @@ class _MedicalContextPageState extends State<MedicalContextPage> {
                   // children
                   children: [
                     // Top header row placing circular back button and screen title
-                    Row(
-                      // Distribute space
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      // elements
-                      children: [
-                        // Back chevron button gesture detector wrapper
-                        GestureDetector(
-                          // POP route context on tap
-                          onTap: () {
-                            // POP navigation
-                            Navigator.of(context).pop();
-                          },
-                          // Circular button container styling
-                          child: Container(
-                            // Fixed width
-                            width: 44.0,
-                            // Fixed height
-                            height: 44.0,
-                            // Styles
-                            decoration: BoxDecoration(
-                              // Dark/Light surface color fills
-                              color: true == is_dark
-                                  ? AppColors.surface_dark
-                                  : Colors.white,
-                              // Shape circle
-                              shape: BoxShape.circle,
-                              // Soft shadow drop
-                              boxShadow: [
-                                // Shadow offset
-                                BoxShadow(
-                                  // Color
-                                  color: true == is_dark
-                                      ? Colors.black26
-                                      : Colors.black.withValues(alpha: 0.05),
-                                  // Blur spread
-                                  blurRadius: 8.0,
-                                  // Position offsets
-                                  offset: const Offset(0.0, 2.0),
-                                ),
-                              ],
-                            ),
-                            // Chevron icon
-                            child: Icon(
-                              // Chevron left
-                              Icons.arrow_back_rounded,
-                              // Dynamic color
-                              color: true == is_dark
-                                  ? Colors.white
-                                  : AppColors.text_light_primary,
-                              // Size
-                              size: AppSpacing.icon_size_m,
-                            ),
-                          ),
-                        ),
-                        // Screen Title Text widget
-                        Text(
-                          // Localized title
-                          localizations.profile_medical_history,
-                          // Typography options
-                          style: TextStyle(
-                            // Header size
-                            fontSize: 18.0,
-                            // Bolder font weight
-                            fontWeight: FontWeight.w800,
-                            // Dynamic color
-                            color: true == is_dark
-                                ? Colors.white
-                                : AppColors.text_light_primary,
-                          ),
-                        ),
-                        // Balancer spacer matching back button dimensions
-                        const SizedBox(width: 44.0),
-                      ],
+                    CustomProfileAppBar(
+                      title: localizations.profile_medical_history,
                     ),
                     // Height gap spacer
                     const SizedBox(height: AppSpacing.space_xl),

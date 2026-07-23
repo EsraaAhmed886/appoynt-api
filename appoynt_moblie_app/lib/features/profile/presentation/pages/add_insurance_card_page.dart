@@ -8,7 +8,7 @@
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 19/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 22/07/2026]
  * File Description: Defines the upload form screen to attach new health insurance policy cards.
  */
 
@@ -320,7 +320,7 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
                     // Card Name TextFormField input card
                     AuthTextField(
                       label: localizations.insurance_card_name_label,
-                      hint: localizations.allergies_placeholder,
+                      hint: 'e.g., MetLife Executive Plan',
                       controller: _name_controller,
                       validator: (value) {
                         if (true == (value ?? '').trim().isEmpty) {
@@ -337,7 +337,7 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
                     // Card Number TextFormField input card
                     AuthTextField(
                       label: localizations.insurance_card_number_label,
-                      hint: localizations.allergies_placeholder,
+                      hint: 'e.g., POL-987654321',
                       controller: _number_controller,
                       validator: (value) {
                         if (true == (value ?? '').trim().isEmpty) {
@@ -371,14 +371,14 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
                       // Separator height value
                       height: AppSpacing.space_xs,
                     ),
-                    // Select Provider green outline button mockup picker
+                    // Select Provider dropdown container picker
                     GestureDetector(
                       // Launch provider bottom sheet on tap
                       onTap: () {
                         // Show picker sheet
                         _show_provider_picker(context);
                       },
-                      // Outlined container card displaying green text/borders or select label
+                      // Outlined container card displaying dropdown field styling
                       child: Container(
                         // banner width
                         width: double.infinity,
@@ -388,32 +388,38 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
                         decoration: BoxDecoration(
                           // Solid white or dark surface backgrounds
                           color: true == is_dark ? AppColors.surface_dark : Colors.white,
-                          // Rounded border edges configurations
+                          // Rounded border edges configurations (12px radius)
                           borderRadius: BorderRadius.circular(
-                            // Circular boundary radius parameter value
-                            AppSpacing.radius_m,
+                            AppSpacing.radius_input,
                           ),
-                          // Primary outline borders
+                          // Subtle 1px neutral border
                           border: Border.all(
-                            // primary blue brand color
-                            color: AppColors.primary_color,
-                            // outline borders thickness
-                            width: AppSpacing.border_width_thick,
+                            color: true == is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
+                            width: AppSpacing.border_width_thin,
                           ),
                         ),
-                        // Center row containing provider label text
-                        child: Center(
-                          // Label text in primary blue
-                          child: Text(
-                            // Display chosen provider name or default Select Provider label
-                            _selected_provider.isEmpty ? localizations.insurance_select_provider_btn : _selected_provider,
-                            // style
-                            style: const TextStyle(
-                              // primary color
-                              color: AppColors.primary_color,
-                              // bold weight
-                              fontWeight: FontWeight.w700,
-                            ),
+                        // Row containing chosen provider name and trailing chevron
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space_m),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                _selected_provider.isEmpty ? 'Select Insurance Provider' : _selected_provider,
+                                style: TextStyle(
+                                  color: _selected_provider.isEmpty
+                                      ? AppColors.text_light_secondary
+                                      : (true == is_dark ? Colors.white : AppColors.text_light_primary),
+                                  fontSize: AppSpacing.font_size_text,
+                                  fontWeight: _selected_provider.isEmpty ? FontWeight.w400 : FontWeight.w600,
+                                ),
+                              ),
+                              Icon(
+                                Icons.keyboard_arrow_down_rounded,
+                                color: true == is_dark ? Colors.white60 : const Color(0xFF64748B),
+                                size: AppSpacing.icon_size_m,
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -442,7 +448,7 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
                       // Separator height value
                       height: AppSpacing.space_xs,
                     ),
-                    // Custom Upload from device button container card displaying green text/borders
+                    // Neutral slate-gray upload document button
                     GestureDetector(
                       // Simulate file choice on tap
                       onTap: () {
@@ -462,7 +468,7 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
                           ),
                         );
                       },
-                      // Outlined container card displaying green outline borders
+                      // Neutral slate-gray border outline
                       child: Container(
                         // banner width
                         width: double.infinity,
@@ -471,18 +477,15 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
                         // Layout decorations details
                         decoration: BoxDecoration(
                           // Solid white or dark surface backgrounds
-                          color: true == is_dark ? AppColors.surface_dark : Colors.white,
+                          color: true == is_dark ? AppColors.surface_dark : const Color(0xFFF8FAFC),
                           // Rounded border edges configurations
                           borderRadius: BorderRadius.circular(
-                            // Circular boundary radius parameter value
-                            AppSpacing.radius_m,
+                            AppSpacing.radius_input,
                           ),
-                          // Primary outline borders
+                          // Neutral slate-gray outline border
                           border: Border.all(
-                            // primary blue brand color
-                            color: AppColors.primary_color,
-                            // outline borders thickness
-                            width: AppSpacing.border_width_thick,
+                            color: true == is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
+                            width: AppSpacing.border_width_thin,
                           ),
                         ),
                         // Center row containing upload icon and label text
@@ -491,30 +494,22 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           // Inner elements list
                           children: [
-                            // Upload icon graphic asset representation in primary blue
-                            const Icon(
-                              // upload arrow icon token
+                            // Upload icon graphic representation in slate-gray
+                            Icon(
                               Icons.file_upload_outlined,
-                              // primary blue color
-                              color: AppColors.primary_color,
-                              // Icon display size bounds
+                              color: true == is_dark ? Colors.white70 : const Color(0xFF475569),
                               size: AppSpacing.icon_size_m,
                             ),
                             // Separator spacing gap
                             const SizedBox(
-                              // width spacer
                               width: AppSpacing.space_s,
                             ),
-                            // Label description in primary blue
+                            // Label description in slate-gray
                             Text(
-                              // Localized upload action label string
                               localizations.insurance_upload_doc_btn,
-                              // style
-                              style: const TextStyle(
-                                // primary blue color
-                                color: AppColors.primary_color,
-                                // bold weight
-                                fontWeight: FontWeight.w700,
+                              style: TextStyle(
+                                color: true == is_dark ? Colors.white70 : const Color(0xFF475569),
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ],

@@ -1333,6 +1333,8 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get profile_smoking_no => 'لا';
   @override
+  String get profile_smoking_ex => 'مدخن سابق';
+  @override
   String get profile_error_name_empty => 'الاسم الأول لا يمكن أن يكون فارغًا.';
   @override
   String get profile_error_name_length => 'يجب أن يكون الاسم الأول بين 3 و 50 حرفًا.';
@@ -1557,6 +1559,54 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get prescriptions_title => 'قائمة الروشتات';
   @override
+  String get prescriptions_add_btn => '+ إضافة دواء جديد';
+  @override
+  String get prescriptions_empty_title => 'لا توجد أدوية مضافة';
+  @override
+  String get prescriptions_empty_subtitle =>
+      'تابع أدويتك الحالية وخطط علاجك في مكان واحد.';
+  @override
+  String get prescriptions_empty_cta => '+ إضافة أول دواء لك';
+  @override
+  String get prescriptions_modal_title => 'إضافة دواء جديد';
+  @override
+  String get prescriptions_field_name_label => 'اسم الدواء والجرعة';
+  @override
+  String get prescriptions_field_name_hint => 'مثال: بنادول إكسترا 500mg';
+  @override
+  String get prescriptions_field_freq_label => 'التكرار';
+  @override
+  String get prescriptions_field_duration_label => 'مدة العلاج (أيام)';
+  @override
+  String get prescriptions_field_duration_hint => 'مثال: 7 أيام أو مستمر';
+  @override
+  String get prescriptions_field_doctor_label => 'الطبيب المعالج (اختياري)';
+  @override
+  String get prescriptions_field_doctor_hint => 'مثال: دكتور أحمد حسن';
+  @override
+  String get prescriptions_field_rx_label => 'رفع صورة الروشتة (اختياري)';
+  @override
+  String get prescriptions_freq_once => 'مرة يومياً';
+  @override
+  String get prescriptions_freq_twice => 'مرتان يومياً';
+  @override
+  String get prescriptions_freq_every8 => 'كل 8 ساعات';
+  @override
+  String get prescriptions_freq_as_needed => 'عند الحاجة';
+  @override
+  String get prescriptions_status_active => 'فعّال';
+  @override
+  String get prescriptions_save_btn => 'حفظ الروشتة';
+  @override
+  String get prescriptions_delete_confirm_title => 'حذف الدواء؟';
+  @override
+  String get prescriptions_delete_confirm_body =>
+      'سيتم حذف هذا الدواء من قائمتك بشكل دائم.';
+  @override
+  String get prescriptions_delete_confirm_yes => 'حذف';
+  @override
+  String get prescriptions_delete_confirm_no => 'إلغاء';
+  @override
   String get prescriptions_add_medication => 'إضافة دواء';
   @override
   String get prescriptions_added_title => 'الروشتة المضافة';
@@ -1584,6 +1634,20 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tests_upload_doc_btn => 'تحميل المستند من الجهاز';
   @override
   String get tests_confirm_upload_btn => 'تأكيد التحميل';
+  @override
+  String get tests_empty_title => 'لا توجد تقارير أو أشعة مضافة';
+  @override
+  String get tests_empty_subtitle => 'قم برفع وتقارير الفحوصات والأشعة الخاصة بك ليسهل الوصول إليها ومشاركتها مع طبيبك.';
+  @override
+  String get tests_empty_cta => '+ إضافة نتيجة أو تقرير جديد';
+  @override
+  String get tests_upload_new_cta => '+ إضافة نتيجة أو تقرير جديد';
+  @override
+  String get tests_file_attached_toast => 'تم إرفاق الملف بنجاح.';
+  @override
+  String get tests_error_no_file => 'يرجى تحميل ملف تقرير من جهازك.';
+  @override
+  String get tests_success_upload => 'تم رفع المستند بنجاح.';
 
   // Chronic Conditions Localizations Arabic Overrides
   @override

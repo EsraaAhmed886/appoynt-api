@@ -6,7 +6,7 @@
  * Dependencies: package:flutter/material.dart,
  *   package:appoynt_mobile_app/core/routing/route_export.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 22/07/2026]
  * File Description: Dedicated page to input new credit card details with strict Luhn and CVV validations.
  */
 
@@ -99,12 +99,12 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
     final int month = int.tryParse(parts[0]) ?? 0;
     // Parse year offset mapped to 2000s
     final int year = (int.tryParse(parts[1]) ?? 0) + 2000;
-    
+
     // Constant current date rules bounds (strictly 2026/07)
     const int current_year = 2026;
     // Current month July
     const int current_month = 7;
-    
+
     // Validate year limit
     if (year < current_year) {
       // Card has expired
@@ -184,102 +184,25 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
       backgroundColor: true == is_dark
           ? AppColors.background_dark
           : AppColors.surface_light.withValues(alpha: 0.5),
-      // App Bar title details
-      appBar: AppBar(
-        // Transparent colors background
-        backgroundColor: Colors.transparent,
-        // No elevations
-        elevation: 0.0,
-        // Disable leading
-        automaticallyImplyLeading: false,
-        // Title space boundaries
-        titleSpacing: 16.0,
-        // Row of header elements
-        title: Row(
-          // Distribute items
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          // children list
-          children: [
-            // Back button gesture detector
-            GestureDetector(
-              // POP route on tap
-              onTap: () {
-                // pop navigation
-                Navigator.of(context).pop();
-              },
-              // Circular button container
-              child: Container(
-                // Fixed width
-                width: 44.0,
-                // Fixed height
-                height: 44.0,
-                // Styles
-                decoration: BoxDecoration(
-                  // Dark/Light surface color fills
-                  color: true == is_dark
-                      ? AppColors.surface_dark
-                      : Colors.white,
-                  // Circular borders shape
-                  shape: BoxShape.circle,
-                  // Card soft shadows
-                  boxShadow: [
-                    BoxShadow(
-                      // Shadow colors
-                      color: true == is_dark
-                          ? Colors.black26
-                          : Colors.black.withValues(alpha: 0.05),
-                      // Blur spread
-                      blurRadius: 8.0,
-                      // Spread offsets
-                      offset: const Offset(0.0, 2.0),
-                    ),
-                  ],
-                ),
-                // Chevron arrow icon graphic
-                child: Icon(
-                  // Arrow left symbol
-                  Icons.arrow_back_rounded,
-                  // Dynamic color
-                  color: true == is_dark
-                      ? Colors.white
-                      : AppColors.text_light_primary,
-                  // Size
-                  size: AppSpacing.icon_size_m,
-                ),
-              ),
-            ),
-            // Screen Title Text widget
-            Text(
-              // Header title
-              'Add New Card',
-              // Typography options
-              style: TextStyle(
-                // Header size
-                fontSize: 16.0,
-                // Bolder font weight
-                fontWeight: FontWeight.w800,
-                // Dynamic colors
-                color: true == is_dark
-                    ? Colors.white
-                    : AppColors.text_light_primary,
-              ),
-            ),
-            // Balancer spacer matching back button dimensions
-            const SizedBox(width: 44.0),
-          ],
-        ),
-      ),
       // Body content form layout
       body: SafeArea(
-        // Scroll view protecting dimensions
-        child: SingleChildScrollView(
-          // Padding offsets
-          padding: const EdgeInsets.symmetric(
-            // Horizontal 16px limits padding
-            horizontal: AppSpacing.space_xl,
-            // Vertical padding
-            vertical: AppSpacing.space_m,
-          ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space_xl),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: AppSpacing.space_m),
+              const CustomProfileAppBar(
+                title: 'Add New Card',
+              ),
+              const SizedBox(height: AppSpacing.space_xl),
+              Expanded(
+                child: SingleChildScrollView(
+                  // Padding offsets
+                  padding: const EdgeInsets.symmetric(
+                    // Vertical padding only since horizontal padding is on parent
+                    vertical: AppSpacing.space_m,
+                  ),
           // Form validation state wrap
           child: Form(
             // Bind global key
@@ -311,7 +234,7 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
                   // Controller link
                   controller: _holder_controller,
                   // Hint holder text
-                  hint: 'Kareem Mangood',
+                  hint: 'e.g., Kholoud Khaled',
                   // User icon vector
                   icon: Icons.person_outline_rounded,
                   // Validation callback block
@@ -345,7 +268,7 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
                   // Controller link
                   controller: _number_controller,
                   // Hint number text
-                  hint: '4000 1234 5678 9010',
+                  hint: '4532 •••• •••• 8899',
                   // Credit card logo vector representation
                   icon: Icons.credit_card_rounded,
                   // Force LTR alignment status
@@ -397,7 +320,7 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
                             // Controller link
                             controller: _expiry_controller,
                             // Hint format MM/YY
-                            hint: 'MM/YY',
+                            hint: 'MM/YY (e.g. 12/28)',
                             // Calendar vector icon
                             icon: Icons.calendar_month_outlined,
                             // Force LTR text
@@ -405,7 +328,8 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
                             // Validation callback block
                             validator: (val) {
                               // Verify expiry limits and date formatting
-                              if (null == val || false == _validate_expiry(val)) {
+                              if (null == val ||
+                                  false == _validate_expiry(val)) {
                                 // Return strict error
                                 return 'Card has expired or date format is invalid.';
                               }
@@ -443,7 +367,7 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
                             // Controller link
                             controller: _cvv_controller,
                             // Hint mask CVV
-                            hint: '***',
+                            hint: '••• (e.g. 123)',
                             // Lock icon vector representation
                             icon: Icons.lock_outline_rounded,
                             // Force LTR text
@@ -494,7 +418,8 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           // SnackBar specs
                           const SnackBar(
-                            content: Text('New card saved securely to profile.'),
+                            content:
+                                Text('New card saved securely to profile.'),
                           ),
                         );
                       }
@@ -527,6 +452,10 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
                 ),
               ],
             ),
+          ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -599,7 +528,8 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
             // Size body normal
             fontSize: 13.0,
             // Colors
-            color: true == is_dark ? Colors.white : AppColors.text_light_primary,
+            color:
+                true == is_dark ? Colors.white : AppColors.text_light_primary,
           ),
           // Input decorations settings
           decoration: InputDecoration(

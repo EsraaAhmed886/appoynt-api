@@ -158,79 +158,8 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                 // children lists
                 children: [
                   // Custom back chevron navigation row
-                  Row(
-                    // Distribute space
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    // Elements
-                    children: [
-                      // Circular back button gesture detector wrapper
-                      GestureDetector(
-                        // POP context route on tap
-                        onTap: () {
-                          // POP navigation
-                          Navigator.of(context).pop();
-                        },
-                        // Outer container circle layout
-                        child: Container(
-                          // Fixed width size
-                          width: 44.0,
-                          // Fixed height size
-                          height: 44.0,
-                          // Decoration details
-                          decoration: BoxDecoration(
-                            // Colors surface adaptions
-                            color: true == is_dark
-                                ? AppColors.surface_dark
-                                : Colors.white,
-                            // Circle shape
-                            shape: BoxShape.circle,
-                            // Drop shadows
-                            boxShadow: [
-                              // Soft shadow
-                              BoxShadow(
-                                // Color
-                                color: true == is_dark
-                                    ? Colors.black26
-                                    : Colors.black.withValues(alpha: 0.05),
-                                // Blur spreads
-                                blurRadius: 8.0,
-                                // Offsets position
-                                offset: const Offset(0.0, 2.0),
-                              ),
-                            ],
-                          ),
-                          // Arrow back icon representation
-                          child: Icon(
-                            // Chevron left symbol
-                            Icons.arrow_back_rounded,
-                            // Dynamic color
-                            color: true == is_dark
-                                ? Colors.white
-                                : AppColors.text_light_primary,
-                            // Size
-                            size: AppSpacing.icon_size_m,
-                          ),
-                        ),
-                      ),
-                      // Navigation screen title label
-                      Text(
-                        // Title string
-                        'Add Family Member',
-                        // Typographic options
-                        style: TextStyle(
-                          // Header size
-                          fontSize: 18.0,
-                          // Bold weights
-                          fontWeight: FontWeight.w800,
-                          // Colors
-                          color: true == is_dark
-                              ? Colors.white
-                              : AppColors.text_light_primary,
-                        ),
-                      ),
-                      // Balance spacer layout
-                      const SizedBox(width: 44.0),
-                    ],
+                  const CustomProfileAppBar(
+                    title: 'Add Family Member',
                   ),
                   // Spacing gap height
                   const SizedBox(height: AppSpacing.space_xl),

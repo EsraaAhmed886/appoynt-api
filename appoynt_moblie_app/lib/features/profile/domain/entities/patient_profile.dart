@@ -41,8 +41,9 @@ class PatientProfile {
   final List<String> food_allergies;
   // Medication allergies categories listed
   final List<String> medication_allergies;
-  // Prescriptions medications listed
-  final List<String> prescriptions;
+  // Prescriptions medications listed (rich schema: name, dosage, frequency,
+  // duration, status, doctor, date, attachment)
+  final List<Map<String, dynamic>> prescriptions;
   // Lab tests details records list
   final List<TestResult> lab_tests;
   // Scanning medical results list
@@ -163,8 +164,8 @@ class PatientProfile {
     List<String>? food_allergies,
     // Optional medication allergies update
     List<String>? medication_allergies,
-    // Optional prescriptions list update
-    List<String>? prescriptions,
+    // Optional prescriptions list update (rich map schema)
+    List<Map<String, dynamic>>? prescriptions,
     // Optional lab tests update
     List<TestResult>? lab_tests,
     // Optional scans update

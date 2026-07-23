@@ -60,8 +60,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   }
 
   // Validate the complexity and matching rules for the new password input field
-  String? _validate_new_password(
-      String? value, String current_pw, PatientProfile profile, AppLocalizations localizations) {
+  String? _validate_new_password(String? value, String current_pw,
+      PatientProfile? profile, AppLocalizations localizations) {
     // Clean string entry representation
     final String password = value ?? '';
     // Check if empty
@@ -79,31 +79,43 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
       // Numbers check
       final bool has_digit = password.contains(RegExp(r'[0-9]'));
       // Symbols check
-      final bool has_special = password.contains(RegExp(r'[!@#\$%^&*(),.?":{}|<>]'));
+      final bool has_special =
+          password.contains(RegExp(r'[!@#\$%^&*(),.?":{}|<>]'));
       // Validate criteria matches
-      if (false == has_upper || false == has_lower || false == has_digit || false == has_special) {
+      if (false == has_upper ||
+          false == has_lower ||
+          false == has_digit ||
+          false == has_special) {
         // Return complexity error msg
         return localizations.password_new_complexity;
       } else {
         // Check unsupported space or Arabic inputs
         if (password.contains(' ') ||
             password.contains(RegExp(r'[\u0600-\u06FF]')) ||
-            password.contains(RegExp(r'[\u2600-\u27BF]|[\u{1F300}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]', unicode: true))) {
+            password.contains(RegExp(
+                r'[\u2600-\u27BF]|[\u{1F300}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]',
+                unicode: true))) {
           // Return unsupported char warning msg
           return localizations.password_new_unsupported;
         } else {
-          // Check personal information leakage containment rules
-          final String first_name = profile.first_name.trim().toLowerCase();
+          // Safe null checks on profile properties to prevent TypeError in JS compiled Dart
+          final String first_name =
+              (profile?.first_name ?? '').trim().toLowerCase();
           // Clean last name
-          final String last_name = profile.last_name.trim().toLowerCase();
+          final String last_name =
+              (profile?.last_name ?? '').trim().toLowerCase();
           // Extract email local part
-          final String email_local = profile.email.split('@').first.trim().toLowerCase();
+          final String raw_email = profile?.email ?? '';
+          final String email_local = raw_email.contains('@')
+              ? raw_email.split('@').first.trim().toLowerCase()
+              : raw_email.trim().toLowerCase();
           // Clean current input lowercased
           final String password_lower = password.toLowerCase();
           // Validate personal names leakage criteria
           if ((first_name.isNotEmpty && password_lower.contains(first_name)) ||
               (last_name.isNotEmpty && password_lower.contains(last_name)) ||
-              (email_local.isNotEmpty && password_lower.contains(email_local))) {
+              (email_local.isNotEmpty &&
+                  password_lower.contains(email_local))) {
             // Return leak error msg
             return localizations.password_new_personal_info;
           } else if (password == current_pw) {
@@ -113,7 +125,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
             // Check no more than 2 identical consecutive characters (e.g. aaa is invalid)
             for (int i = 0; i < password.length - 2; i++) {
               // Compare adjacent characters
-              if (password[i] == password[i + 1] && password[i] == password[i + 2]) {
+              if (password[i] == password[i + 1] &&
+                  password[i] == password[i + 2]) {
                 // Return sequential characters warning
                 return localizations.password_new_pattern;
               } else {
@@ -131,7 +144,9 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               // Check ascending sequence (e.g., a-b-c)
               if (code_1 == code_0 + 1 && code_2 == code_1 + 1) {
                 // Ensure it is alphanumeric
-                if ((code_0 >= 97 && code_2 <= 122) || (code_0 >= 65 && code_2 <= 90) || (code_0 >= 48 && code_2 <= 57)) {
+                if ((code_0 >= 97 && code_2 <= 122) ||
+                    (code_0 >= 65 && code_2 <= 90) ||
+                    (code_0 >= 48 && code_2 <= 57)) {
                   // Return sequential pattern warning
                   return localizations.password_new_pattern;
                 } else {
@@ -143,7 +158,9 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               // Check descending sequence (e.g., c-b-a)
               if (code_1 == code_0 - 1 && code_2 == code_1 - 1) {
                 // Ensure it is alphanumeric
-                if ((code_2 >= 97 && code_0 <= 122) || (code_2 >= 65 && code_0 <= 90) || (code_2 >= 48 && code_0 <= 57)) {
+                if ((code_2 >= 97 && code_0 <= 122) ||
+                    (code_2 >= 65 && code_0 <= 90) ||
+                    (code_2 >= 48 && code_0 <= 57)) {
                   // Return sequential pattern warning
                   return localizations.password_new_pattern;
                 } else {
@@ -188,9 +205,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     // Return root Scaffold layout container
     return Scaffold(
       // Apply background color dynamically based on dark modes
-      backgroundColor: true == is_dark
-          ? AppColors.background_dark
-          : const Color(0xFFF1F5F9),
+      backgroundColor:
+          true == is_dark ? AppColors.background_dark : const Color(0xFFF1F5F9),
       // Body wrap in safe area and scroll view
       body: SafeArea(
         // Scroll view protecting layout bounds
@@ -230,7 +246,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     // SnackBar settings
                     SnackBar(
                       // Localized error message or fallback
-                      content: Text(state.error_message ?? localizations.password_current_incorrect),
+                      content: Text(state.error_message ??
+                          localizations.password_current_incorrect),
                       // Error color fill
                       backgroundColor: AppColors.error,
                     ),
@@ -255,78 +272,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Top header row placing circular back button and screen title
-                      Row(
-                        // Distribute items
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        // children list
-                        children: [
-                          // Back button gesture detector
-                          GestureDetector(
-                            // POP route on tap
-                            onTap: () {
-                              // pop navigation
-                              Navigator.of(context).pop();
-                            },
-                            // Circular button container
-                            child: Container(
-                              // Fixed width
-                              width: 44.0,
-                              // Fixed height
-                              height: 44.0,
-                              // Styles
-                              decoration: BoxDecoration(
-                                // Dark/Light surface color fills
-                                color: true == is_dark
-                                    ? AppColors.surface_dark
-                                    : Colors.white,
-                                // Circular borders shape
-                                shape: BoxShape.circle,
-                                // Card soft shadows
-                                boxShadow: [
-                                  BoxShadow(
-                                    // Shadow colors
-                                    color: true == is_dark
-                                        ? Colors.black26
-                                        : Colors.black.withValues(alpha: 0.05),
-                                    // Blur spread
-                                    blurRadius: 8.0,
-                                    // Spread offsets
-                                    offset: const Offset(0.0, 2.0),
-                                  ),
-                                ],
-                              ),
-                              // Chevron arrow icon graphic
-                              child: Icon(
-                                // Arrow left symbol
-                                Icons.arrow_back_rounded,
-                                // Dynamic color
-                                color: true == is_dark
-                                    ? Colors.white
-                                    : AppColors.text_light_primary,
-                                // Size
-                                size: AppSpacing.icon_size_m,
-                              ),
-                            ),
-                          ),
-                          // Screen Title Text widget
-                          Text(
-                            // Localized title
-                            localizations.password_change_title,
-                            // Typography options
-                            style: TextStyle(
-                              // Header size
-                              fontSize: 18.0,
-                              // Bolder font weight
-                              fontWeight: FontWeight.w800,
-                              // Dynamic colors
-                              color: true == is_dark
-                                  ? Colors.white
-                                  : AppColors.text_light_primary,
-                            ),
-                          ),
-                          // Balancer spacer matching back button dimensions
-                          const SizedBox(width: 44.0),
-                        ],
+                      CustomProfileAppBar(
+                        title: localizations.password_change_title,
                       ),
                       // Spacing offset
                       const SizedBox(height: AppSpacing.space_xl),
@@ -399,13 +346,17 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                         // ElevatedButton
                         child: ElevatedButton(
                           // Click submits password changes or disables during load actions
-                          onPressed: ProfileStatus.passwordUpdating == state.status ? null : _submit_change_pw,
+                          onPressed:
+                              ProfileStatus.passwordUpdating == state.status
+                                  ? null
+                                  : _submit_change_pw,
                           // Style configurations
                           style: ElevatedButton.styleFrom(
                             // primary blue
                             backgroundColor: AppColors.primary_color,
                             // disabled background color
-                            disabledBackgroundColor: AppColors.primary_color.withValues(alpha: 0.5),
+                            disabledBackgroundColor:
+                                AppColors.primary_color.withValues(alpha: 0.5),
                             // Clear shadows
                             elevation: 0.0,
                             // Curvature shape configurations
@@ -437,7 +388,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                     // Color white
                                     color: Colors.white,
                                     // Size action button font
-                                    fontSize: AppSpacing.font_size_action_button,
+                                    fontSize:
+                                        AppSpacing.font_size_action_button,
                                     // Bold typography weight
                                     fontWeight: FontWeight.w700,
                                   ),

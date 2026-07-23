@@ -60,6 +60,8 @@ export 'package:appoynt_mobile_app/core/logic/global_cubit.dart';
 export 'package:appoynt_mobile_app/features/home/presentation/pages/home_page.dart';
 // Exporting reusable bottom navigation bar component
 export 'package:appoynt_mobile_app/core/widgets/app_bottom_nav_bar.dart';
+// Exporting custom profile app bar component
+export 'package:appoynt_mobile_app/core/widgets/custom_profile_app_bar.dart';
 // TODO: END OF DUMMY HOME SCREEN EXPORT
 // Exporting dedicated search page widget representation
 export 'package:appoynt_mobile_app/features/search/presentation/pages/search_page.dart';

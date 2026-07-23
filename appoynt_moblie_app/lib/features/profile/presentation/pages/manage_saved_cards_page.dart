@@ -8,7 +8,7 @@
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 22/07/2026]
  * File Description: Redesigned page to manage saved payment cards with realistic physical card previews and default status togglers.
  */
 
@@ -64,91 +64,20 @@ class _ManageSavedCardsPageState extends State<ManageSavedCardsPage> {
       backgroundColor: true == is_dark
           ? AppColors.background_dark
           : AppColors.surface_light.withValues(alpha: 0.5),
-      // App Bar structure configuration
-      appBar: AppBar(
-        // Transparent colors background
-        backgroundColor: Colors.transparent,
-        // No elevations
-        elevation: 0.0,
-        // Disable default back chevron to use custom styled widget
-        automaticallyImplyLeading: false,
-        // Custom header title row layout placing circular back button and screen title
-        titleSpacing: 16.0,
-        // Row of header elements
-        title: Row(
-          // Distribute items
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          // children list
-          children: [
-            // Back button gesture detector
-            GestureDetector(
-              // POP route on tap
-              onTap: () {
-                // pop navigation
-                Navigator.of(context).pop();
-              },
-              // Circular button container
-              child: Container(
-                // Fixed width
-                width: 44.0,
-                // Fixed height
-                height: 44.0,
-                // Styles
-                decoration: BoxDecoration(
-                  // Dark/Light surface color fills
-                  color: true == is_dark
-                      ? AppColors.surface_dark
-                      : Colors.white,
-                  // Circular borders shape
-                  shape: BoxShape.circle,
-                  // Card soft shadows
-                  boxShadow: [
-                    BoxShadow(
-                      // Shadow colors
-                      color: true == is_dark
-                          ? Colors.black26
-                          : Colors.black.withValues(alpha: 0.05),
-                      // Blur spread
-                      blurRadius: 8.0,
-                      // Spread offsets
-                      offset: const Offset(0.0, 2.0),
-                    ),
-                  ],
-                ),
-                // Chevron arrow icon graphic
-                child: Icon(
-                  // Arrow left symbol
-                  Icons.arrow_back_rounded,
-                  // Dynamic color
-                  color: true == is_dark
-                      ? Colors.white
-                      : AppColors.text_light_primary,
-                  // Size
-                  size: AppSpacing.icon_size_m,
-                ),
-              ),
-            ),
-            // Screen Title Text widget
-            const Text(
-              // Header title
-              'Manage Saved Cards',
-              // Typography options
-              style: TextStyle(
-                // Header size
-                fontSize: 16.0,
-                // Bolder font weight
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            // Balancer spacer matching back button dimensions
-            const SizedBox(width: 44.0),
-          ],
-        ),
-      ),
       // Body content stack
       body: SafeArea(
-        // Stack layout placing list and sticky button at bottom
-        child: Stack(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space_xl),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: AppSpacing.space_m),
+              const CustomProfileAppBar(
+                title: 'Manage Saved Cards',
+              ),
+              const SizedBox(height: AppSpacing.space_xl),
+              Expanded(
+                child: Stack(
           // Stack children list
           children: [
             // List view scrollable container
@@ -442,8 +371,8 @@ class _ManageSavedCardsPageState extends State<ManageSavedCardsPage> {
                                     icon: const Icon(
                                       // Delete Outline rounded symbol representation
                                       Icons.delete_outline_rounded,
-                                      // Error red color theme
-                                      color: AppColors.error,
+                                      // Sleek low-opacity white color
+                                      color: Colors.white70,
                                       // Size
                                       size: 20.0,
                                     ),
@@ -521,7 +450,11 @@ class _ManageSavedCardsPageState extends State<ManageSavedCardsPage> {
                 ),
               ),
             ),
-          ],
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
