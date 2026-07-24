@@ -24,8 +24,14 @@ import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_c
 
 // Stateful widget representing the standalone Add Prescription page
 class AddPrescriptionPage extends StatefulWidget {
+  // Optional prescription data for edit mode
+  final Map<String, dynamic>? prescription;
+
   // Default constructor
-  const AddPrescriptionPage({super.key});
+  const AddPrescriptionPage({
+    super.key,
+    this.prescription,
+  });
 
   // State builder factory
   @override
@@ -54,6 +60,30 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
 
   // Tracks the mock Rx attachment file name (null = no file attached)
   String? _attachment_name;
+
+  @override
+  void initState() {
+    super.initState();
+    // Pre-populate form controllers and state tracking fields if in Edit Mode (Yoda style check)
+    if (null != widget.prescription) {
+      final Map<String, dynamic> rx = widget.prescription!;
+      _name_controller.text = rx['name'] as String? ?? '';
+      _dosage_controller.text = rx['dosage'] as String? ?? '';
+      _doctor_controller.text = rx['doctor'] as String? ?? '';
+      _selected_frequency = rx['frequency'] as String? ?? 'Twice Daily';
+      _attachment_name = rx['attachment'] as String?;
+
+      // Strip " Days" suffix if it exists to populate the number input cleanly
+      final String duration_raw = rx['duration'] as String? ?? '';
+      if (duration_raw.endsWith(' Days')) {
+        _duration_controller.text = duration_raw.replaceAll(' Days', '');
+      } else {
+        _duration_controller.text = duration_raw;
+      }
+    } else {
+      // Empty block
+    }
+  }
 
   // Dispose all controllers to release memory resources on widget teardown
   @override
@@ -91,10 +121,24 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
           ? 'Self-Recorded'
           : _doctor_controller.text.trim();
 
+      // Check if in Edit Mode (Yoda style check)
+      final bool is_edit = null != widget.prescription;
+      final String rx_id = true == is_edit
+          ? (widget.prescription!['id'] as String? ??
+              DateTime.now().millisecondsSinceEpoch.toString())
+          : DateTime.now().millisecondsSinceEpoch.toString();
+      final String rx_status = true == is_edit
+          ? (widget.prescription!['status'] as String? ??
+              localizations.prescriptions_status_active)
+          : localizations.prescriptions_status_active;
+      final String rx_date = true == is_edit
+          ? (widget.prescription!['date'] as String? ?? 'Today')
+          : 'Today';
+
       // Build the rich prescription data map matching the entity schema
       final Map<String, dynamic> rx_data = {
         // Unique timestamp-based ID field
-        'id': DateTime.now().millisecondsSinceEpoch.toString(),
+        'id': rx_id,
         // Medication name with dosage strength string
         'name': name,
         // Dosage amount resolved string
@@ -104,17 +148,23 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
         // Resolved duration label string
         'duration': duration,
         // Status defaults to Active for new prescriptions
-        'status': localizations.prescriptions_status_active,
+        'status': rx_status,
         // Doctor name or self-recorded fallback
         'doctor': doctor,
         // Date string set to today
-        'date': 'Today',
+        'date': rx_date,
         // Optional Rx file attachment name
         'attachment': _attachment_name,
       };
 
-      // Dispatch the rich map payload to the ProfileCubit
-      save_context.read<ProfileCubit>().add_prescription(rx_data);
+      if (true == is_edit) {
+        // Dispatch the update prescription action to cubit
+        save_context.read<ProfileCubit>().update_prescription(rx_id, rx_data);
+      } else {
+        // Dispatch the rich map payload to the ProfileCubit
+        save_context.read<ProfileCubit>().add_prescription(rx_data);
+      }
+
       // Pop back to the Prescription List screen
       Navigator.of(save_context).pop();
     }
@@ -129,6 +179,18 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
     final AppLocalizations localizations = AppLocalizations.of(context);
     // Resolve theme brightness flag
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+    final bool is_ar = localizations.is_arabic;
+    final bool is_edit = null != widget.prescription;
+
+    // Resolve dynamic page title copy
+    final String page_title = true == is_edit
+        ? (true == is_ar ? 'تعديل بيانات الدواء' : 'Edit Medication')
+        : localizations.prescriptions_modal_title;
+
+    // Resolve dynamic button label copy
+    final String cta_label = true == is_edit
+        ? (true == is_ar ? 'تحديث الدواء' : 'Update Prescription')
+        : localizations.prescriptions_save_btn;
 
     // Build localized frequency chip labels from localization dictionary
     final List<String> freq_options = [
@@ -157,7 +219,7 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
               // ── Standard back navigation header ─────────────────────
               CustomProfileAppBar(
                 // Localized page title
-                title: localizations.prescriptions_modal_title,
+                title: page_title,
               ),
               const SizedBox(height: AppSpacing.space_xl),
 
@@ -438,7 +500,7 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
                           ),
                           child: Text(
                             // Localized save button label
-                            localizations.prescriptions_save_btn,
+                            cta_label,
                             style: const TextStyle(
                               // White text on blue fill
                               color: Colors.white,

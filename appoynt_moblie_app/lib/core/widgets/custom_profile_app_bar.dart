@@ -64,6 +64,9 @@ class CustomProfileAppBar extends StatelessWidget {
             const SizedBox(width: 40.0),
           ],
 
+        // Spacing gap to prevent overlapping or crowding on narrow devices
+        const SizedBox(width: 12.0),
+
         // ── Center Slot: Page Title Text ────────────────────────────────────
         Expanded(
           child: Center(
@@ -78,7 +81,7 @@ class CustomProfileAppBar extends StatelessWidget {
                 // Large bold heading size
                 fontSize: 18.0,
                 // Heavy bold weight
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.bold,
                 // Adaptive text color
                 color: true == is_dark
                     ? Colors.white
@@ -87,6 +90,9 @@ class CustomProfileAppBar extends StatelessWidget {
             ),
           ),
         ),
+
+        // Spacing gap to maintain symmetry
+        const SizedBox(width: 12.0),
 
         // ── Trailing Slot: 40px balancer spacer ────────────────────────────
         // Always present to keep the title visually centered regardless of

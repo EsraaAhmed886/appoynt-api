@@ -48,6 +48,9 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
     final AppLocalizations localizations = AppLocalizations.of(context);
     // Resolve theme brightness mode
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+    // Resolve saved cards list from cubit reactively
+    final List<Map<String, dynamic>> saved_cards =
+        context.watch<ProfileCubit>().state.profile.payment_cards;
 
     // Return root Scaffold layout container
     return Scaffold(
@@ -341,222 +344,146 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                               padding: const EdgeInsets.symmetric(horizontal: 16.0),
                               // Align cards in a row
                               child: Row(
-                                // children list
-                                children: [
-                                  // Card 1 (Visa Primary default)
-                                  Container(
-                                    // Fixed width
-                                    width: 190.0,
-                                    // Inner padding (breathable layout)
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 14.0,
-                                      vertical: 14.0,
-                                    ),
-                                    // Decorator outline styling
-                                    decoration: BoxDecoration(
-                                      // Light gray surface or dark themed container background
-                                      color: true == is_dark
-                                          ? Colors.white10
-                                          : AppColors.surface_light,
-                                      // Rounded corners (strict 16px symmetry)
-                                      borderRadius: BorderRadius.circular(16.0),
-                                      // Blue primary color border indicating default cards status
-                                      border: Border.all(
-                                        color: AppColors.primary_color,
-                                        width: 1.5,
-                                      ),
-                                    ),
-                                    // Horizontal row placing logo silhouette and card text info
-                                    child: Row(
-                                      // children list
-                                      children: [
-                                        // High-fidelity custom VISA logo design
-                                        Text(
-                                          // Visa brand name
-                                          'VISA',
-                                          // Typography styling
-                                          style: TextStyle(
-                                            // Monospace
-                                            fontFamily: 'monospace',
-                                            // Heavy weight
-                                            fontWeight: FontWeight.w900,
-                                            // Italic angle
-                                            fontStyle: FontStyle.italic,
-                                            // Size
-                                            fontSize: 15.0,
-                                            // Custom brand blue color or white
-                                            color: true == is_dark
-                                                ? Colors.white
-                                                : const Color(0xFF1A1F71),
+                                children: saved_cards.isEmpty
+                                    ? [
+                                        Padding(
+                                          padding: const EdgeInsets.only(left: 16.0),
+                                          child: Text(
+                                            true == is_dark ? 'No saved cards' : 'No saved cards',
+                                            style: const TextStyle(
+                                              fontSize: 12.0,
+                                              color: AppColors.text_light_secondary,
+                                            ),
                                           ),
                                         ),
-                                        // Horizontal spacer
-                                        const SizedBox(width: 12.0),
-                                        // Masked details column text
-                                        Expanded(
-                                          // Column
-                                          child: Column(
-                                            // Align left coordinates
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            // Center alignments
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            // details children list
-                                            children: [
-                                              // Masked number Text
-                                              const Text(
-                                                // digits
-                                                'Visa **** 4321',
-                                                // Style
-                                                style: TextStyle(
-                                                  fontSize: 11.0,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
+                                      ]
+                                    : saved_cards.map((card) {
+                                        // Resolve brand name dynamically based on number prefix
+                                        final String raw_num = (card['number'] ?? '').replaceAll(' ', '');
+                                        final String detected_brand = raw_num.startsWith('4')
+                                            ? 'Visa'
+                                            : (raw_num.startsWith('5') ? 'Mastercard' : (card['brand'] ?? 'Visa'));
+                                        // Resolve default status
+                                        final bool is_default = 'true' == card['is_default'];
+
+                                        // Return the dynamic card container with horizontal margins separating cards
+                                        return Padding(
+                                          padding: const EdgeInsets.only(right: 12.0),
+                                          child: Container(
+                                            // Fixed width
+                                            width: 190.0,
+                                            // Inner padding
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 14.0,
+                                              vertical: 14.0,
+                                            ),
+                                            // Decorator outline styling
+                                            decoration: BoxDecoration(
+                                              // Background color adapts to default status & theme
+                                              color: true == is_default
+                                                  ? (true == is_dark ? Colors.white10 : AppColors.surface_light)
+                                                  : (true == is_dark ? AppColors.inner_container_dark : AppColors.inner_container_light),
+                                              // Rounded corners
+                                              borderRadius: BorderRadius.circular(16.0),
+                                              // Border outline based on default status
+                                              border: Border.all(
+                                                color: true == is_default
+                                                    ? AppColors.primary_color
+                                                    : (true == is_dark ? AppColors.inner_container_border_dark : AppColors.inner_container_border_light),
+                                                width: true == is_default ? 1.5 : 1.0,
                                               ),
-                                              // Default badge capsule pill container
-                                              Container(
-                                                // Margins
-                                                margin: const EdgeInsets.only(top: 2.0),
-                                                // Inner padding
-                                                padding: const EdgeInsets.symmetric(
-                                                  horizontal: 5.0,
-                                                  vertical: 1.5,
-                                                ),
-                                                // Badge style
-                                                decoration: BoxDecoration(
-                                                  // Pastel primary background shade
-                                                  color: AppColors.primary_color
-                                                      .withValues(alpha: 0.1),
-                                                  // Rounded corners radius
-                                                  borderRadius: BorderRadius.circular(4.0),
-                                                ),
-                                                // Localized Default label Text
-                                                child: Text(
-                                                  // Localized default string
-                                                  localizations.profile_default_card,
-                                                  // Style
-                                                  style: const TextStyle(
-                                                    // Small text size
-                                                    fontSize: 8.0,
-                                                    // Primary color
-                                                    color: AppColors.primary_color,
-                                                    // Bold
-                                                    fontWeight: FontWeight.bold,
+                                            ),
+                                            // Row grouping card logo and text info
+                                            child: Row(
+                                              children: [
+                                                // Dynamic card network branding logo
+                                                if (true == ('Visa' == detected_brand))
+                                                  Text(
+                                                    'VISA',
+                                                    style: TextStyle(
+                                                      fontFamily: 'monospace',
+                                                      fontWeight: FontWeight.w900,
+                                                      fontStyle: FontStyle.italic,
+                                                      fontSize: 15.0,
+                                                      color: true == is_dark
+                                                          ? Colors.white
+                                                          : const Color(0xFF1A1F71),
+                                                    ),
+                                                  )
+                                                else
+                                                  SizedBox(
+                                                    width: 32.0,
+                                                    child: Stack(
+                                                      alignment: Alignment.centerLeft,
+                                                      children: [
+                                                        Container(
+                                                          width: 14.0,
+                                                          height: 14.0,
+                                                          decoration: const BoxDecoration(
+                                                            color: Color(0xFFEB001B),
+                                                            shape: BoxShape.circle,
+                                                          ),
+                                                        ),
+                                                        Positioned(
+                                                          left: 8.0,
+                                                          child: Container(
+                                                            width: 14.0,
+                                                            height: 14.0,
+                                                            decoration: BoxDecoration(
+                                                              color: const Color(0xFFF79E1B).withValues(alpha: 0.85),
+                                                              shape: BoxShape.circle,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                const SizedBox(width: 8.0),
+                                                // Masked details text
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      Text(
+                                                        '$detected_brand **** ${raw_num.length >= 4 ? raw_num.substring(raw_num.length - 4) : "****"}',
+                                                        style: const TextStyle(
+                                                          fontSize: 11.0,
+                                                          fontWeight: FontWeight.bold,
+                                                        ),
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow.ellipsis,
+                                                      ),
+                                                      if (true == is_default) ...[
+                                                        // Default badge capsule pill container
+                                                        Container(
+                                                          margin: const EdgeInsets.only(top: 2.0),
+                                                          padding: const EdgeInsets.symmetric(
+                                                            horizontal: 5.0,
+                                                            vertical: 1.5,
+                                                          ),
+                                                          decoration: BoxDecoration(
+                                                            color: AppColors.primary_color.withValues(alpha: 0.1),
+                                                            borderRadius: BorderRadius.circular(4.0),
+                                                          ),
+                                                          child: Text(
+                                                            localizations.profile_default_card,
+                                                            style: const TextStyle(
+                                                              fontSize: 8.0,
+                                                              color: AppColors.primary_color,
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ],
                                                   ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  // Spacing gap spacer
-                                  const SizedBox(width: 12.0),
-                                  // Card 2 (Mastercard Secondary)
-                                  Container(
-                                    // Fixed width
-                                    width: 190.0,
-                                    // Inner padding (breathable layout)
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 14.0,
-                                      vertical: 14.0,
-                                    ),
-                                    // Decorator outline layout
-                                    decoration: BoxDecoration(
-                                      // Inner container background
-                                      color: true == is_dark
-                                          ? AppColors.inner_container_dark
-                                          : AppColors.inner_container_light,
-                                      // Rounded corners (strict 16px symmetry)
-                                      borderRadius: BorderRadius.circular(16.0),
-                                      // Soft border
-                                      border: Border.all(
-                                        color: true == is_dark
-                                            ? AppColors.inner_container_border_dark
-                                            : AppColors.inner_container_border_light,
-                                        width: 1.0,
-                                      ),
-                                    ),
-                                    // Horizontal row placing icon and name details
-                                    child: Row(
-                                      // children list
-                                      children: [
-                                        // Mastercard overlapping circles logo representation
-                                        SizedBox(
-                                          // Fixed space width
-                                          width: 32.0,
-                                          // Stack container
-                                          child: Stack(
-                                            // Align center
-                                            alignment: Alignment.centerLeft,
-                                            // Circles children list
-                                            children: [
-                                              // Red circle
-                                              Container(
-                                                // Width
-                                                width: 14.0,
-                                                // Height
-                                                height: 14.0,
-                                                // Shape
-                                                decoration: const BoxDecoration(
-                                                  // Brand red color
-                                                  color: Color(0xFFEB001B),
-                                                  // Circle
-                                                  shape: BoxShape.circle,
-                                                ),
-                                              ),
-                                              // Orange circle offset
-                                              Positioned(
-                                                // Shift alignment left boundary
-                                                left: 8.0,
-                                                // Orange circle
-                                                child: Container(
-                                                  // Width
-                                                  width: 14.0,
-                                                  // Height
-                                                  height: 14.0,
-                                                  // Shape
-                                                  decoration: BoxDecoration(
-                                                    // Brand orange colors
-                                                    color: const Color(0xFFF79E1B)
-                                                        .withValues(alpha: 0.85),
-                                                    // Circle
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        // Horizontal spacer
-                                        const SizedBox(width: 8.0),
-                                        // Details column
-                                        const Expanded(
-                                          // Column
-                                          child: Column(
-                                            // Align left coordinates
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            // Center alignments
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            // children list
-                                            children: [
-                                              // Masked number Text
-                                              Text(
-                                                // digits
-                                                'Mastercard **** 8877',
-                                                // Style
-                                                style: TextStyle(
-                                                  fontSize: 11.0,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                                        );
+                                      }).toList(),
                               ),
                             ),
                           ),

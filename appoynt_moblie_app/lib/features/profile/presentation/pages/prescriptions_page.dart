@@ -636,13 +636,24 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                   children: [
                     // Low-opacity edit icon button placeholder
                     Opacity(
-                      // 50% opacity for de-emphasis
-                      opacity: 0.5,
+                      // 70% opacity matching other active action buttons
+                      opacity: 0.7,
                       child: IconButton(
                         // Compact visual density
                         visualDensity: VisualDensity.compact,
-                        // TODO: Navigate to edit prescription flow
-                        onPressed: () {},
+                        // Navigate to edit prescription flow passing current details map
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute<void>(
+                              builder: (route_context) => BlocProvider.value(
+                                value: context.read<ProfileCubit>(),
+                                child: AddPrescriptionPage(
+                                  prescription: rx,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
                         icon: const Icon(
                           // Edit pencil icon
                           Icons.edit_outlined,

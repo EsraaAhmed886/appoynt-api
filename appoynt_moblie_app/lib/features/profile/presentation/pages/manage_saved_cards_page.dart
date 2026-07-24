@@ -12,8 +12,12 @@
  * File Description: Redesigned page to manage saved payment cards with realistic physical card previews and default status togglers.
  */
 
+// Importing BLoC state management library
+import 'package:flutter_bloc/flutter_bloc.dart';
 // Importing global route exports
 import 'package:appoynt_mobile_app/core/routing/route_export.dart';
+// Importing ProfileCubit
+import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart';
 // Importing add card sub-page form layout
 import 'package:appoynt_mobile_app/features/profile/presentation/pages/add_saved_card_page.dart';
 
@@ -32,31 +36,16 @@ class ManageSavedCardsPage extends StatefulWidget {
 
 // State class managing saved cards list and simulation dialogs
 class _ManageSavedCardsPageState extends State<ManageSavedCardsPage> {
-  // Mock list of cards representing visual states
-  final List<Map<String, String>> _saved_cards = [
-    {
-      'id': '1',
-      'brand': 'Visa',
-      'number': '4000 1234 5678 4321',
-      'expiry': '12/2029',
-      'holder': 'Kareem Mangood',
-      'is_default': 'true',
-    },
-    {
-      'id': '2',
-      'brand': 'Mastercard',
-      'number': '5105 4321 8765 8877',
-      'expiry': '08/2028',
-      'holder': 'Kareem Mangood',
-      'is_default': 'false',
-    },
-  ];
+  // Local state variables have been moved to ProfileCubit state management for global synchrony
 
   @override
   // Build widget layout tree
   Widget build(BuildContext context) {
     // Resolve theme brightness mode
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+    // Resolve saved cards list from cubit reactively
+    final List<Map<String, dynamic>> saved_cards =
+        context.watch<ProfileCubit>().state.profile.payment_cards;
 
     // Return root Scaffold layout container
     return Scaffold(
@@ -92,31 +81,25 @@ class _ManageSavedCardsPageState extends State<ManageSavedCardsPage> {
               // Scroll list builder
               child: ListView.builder(
                 // Length of cards
-                itemCount: _saved_cards.length,
+                itemCount: saved_cards.length,
                 // Builder callback
                 itemBuilder: (list_context, index) {
                   // Reference index card map details
-                  final card = _saved_cards[index];
-                  // Resolve brand name
-                  final String brand = card['brand'] ?? 'Visa';
+                  final card = saved_cards[index];
+                  // Detect card brand dynamically based on number prefix (Prefix 4 -> Visa, Prefix 5 -> Mastercard)
+                  final String raw_num = (card['number'] ?? '').replaceAll(' ', '');
+                  final String detected_brand = raw_num.startsWith('4')
+                      ? 'Visa'
+                      : (raw_num.startsWith('5') ? 'Mastercard' : (card['brand'] ?? 'Visa'));
                   // Resolve default status
                   final bool is_default = 'true' == card['is_default'];
 
                   // Realistic Credit Card preview layout
                   return GestureDetector(
-                    // Toggle default payment method on tap
+                    // Toggle default payment method on tap immediately updating global state
                     onTap: () {
-                      // Update state
-                      setState(() {
-                        // Set selection
-                        _saved_cards[index]['is_default'] = 'true';
-                        // Set others to false
-                        for (int i = 0; i < _saved_cards.length; i++) {
-                          if (i != index) {
-                            _saved_cards[i]['is_default'] = 'false';
-                          }
-                        }
-                      });
+                      final String card_id = card['id'] ?? '';
+                      context.read<ProfileCubit>().set_default_card(card_id);
                     },
                     // AspectRatio widget enforcing 16:9 credit card dimensions
                     child: AspectRatio(
@@ -133,7 +116,7 @@ class _ManageSavedCardsPageState extends State<ManageSavedCardsPage> {
                           // Corners radius (16px corner radius)
                           borderRadius: BorderRadius.circular(16.0),
                           // Premium dual-tone matte linear gradient backgrounds
-                          gradient: true == ('Visa' == brand)
+                          gradient: true == ('Visa' == detected_brand)
                               ? const LinearGradient(
                                   // Begin Alignment
                                   begin: Alignment.topLeft,
@@ -255,14 +238,81 @@ class _ManageSavedCardsPageState extends State<ManageSavedCardsPage> {
                                       // Size standard
                                       size: 20.0,
                                     ),
+                                    const SizedBox(width: 12.0),
+                                    // Crisp authentic brand logo
+                                    if (true == ('Visa' == detected_brand))
+                                      const Text(
+                                        'VISA',
+                                        style: TextStyle(
+                                          fontFamily: 'monospace',
+                                          fontWeight: FontWeight.w900,
+                                          fontStyle: FontStyle.italic,
+                                          fontSize: 16.0,
+                                          color: Colors.white,
+                                          letterSpacing: 0.5,
+                                        ),
+                                      )
+                                    else
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          SizedBox(
+                                            width: 22.0,
+                                            height: 14.0,
+                                            child: Stack(
+                                              alignment: Alignment.centerLeft,
+                                              children: [
+                                                Container(
+                                                  width: 12.0,
+                                                  height: 12.0,
+                                                  decoration: const BoxDecoration(
+                                                    color: Color(0xFFEB001B),
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                ),
+                                                Positioned(
+                                                  left: 8.0,
+                                                  child: Container(
+                                                    width: 12.0,
+                                                    height: 12.0,
+                                                    decoration: const BoxDecoration(
+                                                      color: Color(0xFFF79E1B),
+                                                      shape: BoxShape.circle,
+                                                  ),
+                                                ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          const SizedBox(width: 4.0),
+                                          const Text(
+                                            'mastercard',
+                                            style: TextStyle(
+                                              fontSize: 9.0,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                   ],
                                 ),
                               ],
                             ),
-                            // Middle row: spaced credit card masked numbers (Monospace font)
+                            // Middle row: spaced credit card masked numbers (Monospace font) with 4-digit grouping
                             Text(
                               // Card digits string
-                              card['number'] ?? '',
+                              (() {
+                                final String cleaned = (card['number'] ?? '').replaceAll(' ', '');
+                                final StringBuffer sb = StringBuffer();
+                                for (int i = 0; i < cleaned.length; i++) {
+                                  if (i > 0 && i % 4 == 0) {
+                                    sb.write(' ');
+                                  }
+                                  sb.write(cleaned[i]);
+                                }
+                                return sb.toString();
+                              })(),
                               // Typography
                               style: const TextStyle(
                                 // Monospace
@@ -379,7 +429,7 @@ class _ManageSavedCardsPageState extends State<ManageSavedCardsPage> {
                                     // Trigger deletion warning dialog popup onTap
                                     onPressed: () {
                                       // Show confirmation warning popup
-                                      _confirm_card_deletion(context, card['number'] ?? '', index);
+                                      _confirm_card_deletion(context, card['number'] ?? '', card['id'] ?? '');
                                     },
                                   ),
                                 ),
@@ -461,7 +511,7 @@ class _ManageSavedCardsPageState extends State<ManageSavedCardsPage> {
   }
 
   // Deletion confirmation warning alert modal dialogue frame
-  void _confirm_card_deletion(BuildContext context, String card_number, int index) {
+  void _confirm_card_deletion(BuildContext context, String card_number, String card_id) {
     // Show standard modal alert dialogue popup
     showDialog(
       // context
@@ -500,11 +550,8 @@ class _ManageSavedCardsPageState extends State<ManageSavedCardsPage> {
               onPressed: () {
                 // POP alert popup frame
                 Navigator.of(dialog_context).pop();
-                // Perform state variable list update
-                setState(() {
-                  // Delete index card item target
-                  _saved_cards.removeAt(index);
-                });
+                // Perform state variable list update via cubit
+                context.read<ProfileCubit>().remove_payment_card(card_id);
                 // Show success status indicator message toast feedback
                 ScaffoldMessenger.of(context).showSnackBar(
                   // Toast configs

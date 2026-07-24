@@ -636,66 +636,63 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
     return Scaffold(
       backgroundColor:
           true == is_dark ? AppColors.background_dark : const Color(0xFFF8FAFC),
-      appBar: AppBar(
-        centerTitle: true,
-        elevation: 0.0,
-        backgroundColor:
-            true == is_dark ? AppColors.surface_dark : Colors.white,
-        title: Text(
-          localizations.chronic_title,
-          style: TextStyle(
-            fontSize: AppSpacing.font_size_title,
-            fontWeight: FontWeight.w700,
-            color: true == is_dark
-                ? AppColors.text_dark_primary
-                : AppColors.text_light_primary,
-          ),
-        ),
-      ),
-      body: BlocBuilder<ProfileCubit, ProfileState>(
-        builder: (context, state) {
-          return Column(
-            children: [
-              // Search & Custom Add Input Bar
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.space_l,
-                  vertical: AppSpacing.space_m,
+      body: SafeArea(
+        child: BlocBuilder<ProfileCubit, ProfileState>(
+          builder: (context, state) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Top navigation header sitting directly on native screen canvas
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.space_xl,
+                    vertical: AppSpacing.space_m,
+                  ),
+                  child: CustomProfileAppBar(
+                    title: localizations.chronic_title,
+                  ),
                 ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: AuthTextField(
-                        label: '',
-                        hint: search_hint,
-                        controller: _search_controller,
-                      ),
-                    ),
-                    if (_search_query.isNotEmpty) ...[
-                      const SizedBox(width: 8.0),
-                      Container(
-                        height: 50.0,
-                        width: 50.0,
-                        decoration: BoxDecoration(
-                          color: AppColors.primary_color,
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        child: IconButton(
-                          icon:
-                              const Icon(Icons.add_rounded, color: Colors.white),
-                          onPressed: _add_custom_condition,
+
+                // Search & Custom Add Input Bar
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.space_xl,
+                    vertical: AppSpacing.space_s,
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: AuthTextField(
+                          label: '',
+                          hint: search_hint,
+                          controller: _search_controller,
                         ),
                       ),
+                      if (_search_query.isNotEmpty) ...[
+                        const SizedBox(width: 8.0),
+                        Container(
+                          height: 50.0,
+                          width: 50.0,
+                          decoration: BoxDecoration(
+                            color: AppColors.primary_color,
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          child: IconButton(
+                            icon:
+                                const Icon(Icons.add_rounded, color: Colors.white),
+                            onPressed: _add_custom_condition,
+                          ),
+                        ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
-              ),
 
               Expanded(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.space_l,
+                    horizontal: AppSpacing.space_xl,
                     vertical: AppSpacing.space_s,
                   ),
                   child: Column(
@@ -824,6 +821,7 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
           );
         },
       ),
+    ),
       // Locked Primary Bottom Save Action Button
       bottomNavigationBar: SafeArea(
         child: Padding(

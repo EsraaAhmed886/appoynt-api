@@ -154,6 +154,25 @@ class ProfileCubit extends Cubit<ProfileState> {
       ],
       // Empty mock avatar URL path
       avatar_url: '',
+      // Default initial payment cards list
+      payment_cards: [
+        {
+          'id': '1',
+          'brand': 'Visa',
+          'number': '4000 1234 5678 4321',
+          'expiry': '12/2029',
+          'holder': 'Kareem Mangood',
+          'is_default': 'true',
+        },
+        {
+          'id': '2',
+          'brand': 'Mastercard',
+          'number': '5105 4321 8765 8877',
+          'expiry': '08/2028',
+          'holder': 'Kareem Mangood',
+          'is_default': 'false',
+        },
+      ],
     );
     // Emit successfully loaded state updates
     emit(
@@ -494,6 +513,104 @@ class ProfileCubit extends Cubit<ProfileState> {
     final PatientProfile updated_profile =
         state.profile.copyWith(prescriptions: updated_list);
     // Emit updated state
+    emit(
+      state.copyWith(
+        status: ProfileStatus.success,
+        profile: updated_profile,
+        temp_profile: updated_profile,
+      ),
+    );
+  }
+
+  // Update an existing prescription entry in the patient medications list
+  void update_prescription(
+      String prescription_id, Map<String, dynamic> updated_data) {
+    // Clone prescriptions list mapping the target element to its new state
+    final List<Map<String, dynamic>> updated_list =
+        state.profile.prescriptions.map((item) {
+      if (item['id'] == prescription_id) {
+        return updated_data;
+      } else {
+        return item;
+      }
+    }).toList();
+
+    // Clone profile structures with updated list
+    final PatientProfile updated_profile =
+        state.profile.copyWith(prescriptions: updated_list);
+
+    // Emit updated states
+    emit(
+      state.copyWith(
+        status: ProfileStatus.success,
+        profile: updated_profile,
+        temp_profile: updated_profile,
+      ),
+    );
+  }
+
+  // Set the default payment card by updating the list of cards in state
+  void set_default_card(String card_id) {
+    // Clone and map payment cards list setting the target card to true and others to false
+    final List<Map<String, dynamic>> updated_cards =
+        state.profile.payment_cards.map((card) {
+      // Map to mutable map so we can set values
+      final Map<String, dynamic> mutable_card = Map<String, dynamic>.from(card);
+      if (card['id'] == card_id) {
+        mutable_card['is_default'] = 'true';
+      } else {
+        mutable_card['is_default'] = 'false';
+      }
+      return mutable_card;
+    }).toList();
+
+    // Clone profile structures with updated list
+    final PatientProfile updated_profile =
+        state.profile.copyWith(payment_cards: updated_cards);
+
+    // Emit updated states
+    emit(
+      state.copyWith(
+        status: ProfileStatus.success,
+        profile: updated_profile,
+        temp_profile: updated_profile,
+      ),
+    );
+  }
+
+  // Add a new payment card to the patient profile
+  void add_payment_card(Map<String, dynamic> card_data) {
+    // Clone payment cards list appending new card
+    final List<Map<String, dynamic>> updated_cards =
+        List<Map<String, dynamic>>.from(state.profile.payment_cards)
+          ..add(card_data);
+
+    // Clone profile structures with updated list
+    final PatientProfile updated_profile =
+        state.profile.copyWith(payment_cards: updated_cards);
+
+    // Emit updated states
+    emit(
+      state.copyWith(
+        status: ProfileStatus.success,
+        profile: updated_profile,
+        temp_profile: updated_profile,
+      ),
+    );
+  }
+
+  // Remove a payment card from the patient profile by its unique id
+  void remove_payment_card(String card_id) {
+    // Clone payment cards list removing the target card
+    final List<Map<String, dynamic>> updated_cards =
+        List<Map<String, dynamic>>.from(state.profile.payment_cards)
+          ..removeWhere((card) => card['id'] == card_id);
+
+    // Clone profile structures with updated list
+    final PatientProfile updated_profile =
+        state.profile.copyWith(payment_cards: updated_cards);
+
+    // Emit updated states
     emit(
       state.copyWith(
         status: ProfileStatus.success,

@@ -42,6 +42,7 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
       'relationship': 'Self (Primary)',
       'is_primary': true,
       'age': '28 Yrs',
+      'dob': '20/7/1998',
       'gender': 'Male',
       'medical_id': 'ID: #8821',
       'icon': Icons.person_rounded,
@@ -53,6 +54,7 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
       'relationship': 'Son',
       'is_primary': false,
       'age': '4 Yrs',
+      'dob': '15/3/2022',
       'gender': 'Male',
       'medical_id': 'ID: #8822',
       'icon': Icons.child_care_rounded,
@@ -64,6 +66,7 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
       'relationship': 'Spouse',
       'is_primary': false,
       'age': '26 Yrs',
+      'dob': '12/11/2000',
       'gender': 'Female',
       'medical_id': 'ID: #8823',
       'icon': Icons.face_3_rounded,
@@ -276,7 +279,7 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
                                                 child: Text(
                                                   member['name'] as String,
                                                   style: TextStyle(
-                                                    fontSize: 15.0,
+                                                    fontSize: 16.0,
                                                     fontWeight: FontWeight.w700,
                                                     color: true == is_dark
                                                         ? Colors.white
@@ -355,7 +358,9 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
                                             Navigator.of(context).push(
                                               MaterialPageRoute(
                                                 builder: (route_context) =>
-                                                    const AddFamilyMemberPage(),
+                                                    AddFamilyMemberPage(
+                                                  member: member,
+                                                ),
                                               ),
                                             );
                                           },

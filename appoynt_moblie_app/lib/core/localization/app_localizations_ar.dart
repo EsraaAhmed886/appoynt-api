@@ -1327,7 +1327,7 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get profile_gender_female => 'أنثى';
   @override
-  String get profile_gender_prefer_not => 'أفضل عدم القول';
+  String get profile_gender_prefer_not => 'آخر';
   @override
   String get profile_smoking_yes => 'نعم';
   @override
@@ -1365,7 +1365,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   // Section 2: Medical Context & Permissions
   @override
-  String get profile_dependents_title => 'أفراد العائلة والتابعين';
+  String get profile_dependents_title => 'أفراد العائلة';
   @override
   String get profile_add_dependent_button => 'إضافة فرد عائلة';
   @override

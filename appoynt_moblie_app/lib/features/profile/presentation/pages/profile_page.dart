@@ -12,6 +12,8 @@
  * File Description: Defines the Patient Profile View Mode screen showing summaries and medical sections.
  */
 
+// Importing standard I/O for File operations
+import 'dart:io';
 // Importing dart ui for image filter backdrop blur
 import 'dart:ui';
 // Importing BLoC library
@@ -194,10 +196,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                 borderRadius: BorderRadius.circular(50.0),
                                 // Render network image or fallback icon
                                 child: state.profile.avatar_url.isNotEmpty
-                                    ? Image.network(
-                                        state.profile.avatar_url,
-                                        fit: BoxFit.cover,
-                                      )
+                                    ? (true == state.profile.avatar_url.startsWith('http')
+                                        ? Image.network(
+                                            state.profile.avatar_url,
+                                            fit: BoxFit.cover,
+                                          )
+                                        : Image.file(
+                                            File(state.profile.avatar_url),
+                                            fit: BoxFit.cover,
+                                          ))
                                     : Container(
                                         // Surface fallback fill
                                         color: AppColors.primary_color
@@ -926,10 +933,15 @@ class _ProfilePageState extends State<ProfilePage> {
                     borderRadius: BorderRadius.circular(120.0),
                     // Render image network or fallback icon
                     child: avatar_url.isNotEmpty
-                        ? Image.network(
-                            avatar_url,
-                            fit: BoxFit.cover,
-                          )
+                        ? (true == avatar_url.startsWith('http')
+                            ? Image.network(
+                                avatar_url,
+                                fit: BoxFit.cover,
+                              )
+                            : Image.file(
+                                File(avatar_url),
+                                fit: BoxFit.cover,
+                              ))
                         : Container(
                             // Surface fallback fill
                             color:

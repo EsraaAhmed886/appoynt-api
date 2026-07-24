@@ -12,8 +12,12 @@
  * File Description: Defines the Edit Profile layout form fields, validators, and unsaved changes dialogs.
  */
 
+// Importing standard I/O for File operations
+import 'dart:io';
 // Importing BLoC state builders
 import 'package:flutter_bloc/flutter_bloc.dart';
+// Importing official Image Picker library package
+import 'package:image_picker/image_picker.dart';
 // Importing services for text input formatters
 import 'package:flutter/services.dart';
 // Importing routing and localizations
@@ -201,8 +205,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 onTap: () {
                   // Dismiss modal overlay sheet
                   Navigator.of(context).pop();
-                  // Trigger mock selection sequence
-                  _simulate_image_selection();
+                  // Trigger camera picker source sequence
+                  _pick_profile_image(ImageSource.camera);
                 },
               ),
               // Choose Gallery list item option
@@ -216,8 +220,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 onTap: () {
                   // Dismiss modal overlay sheet
                   Navigator.of(context).pop();
-                  // Trigger mock selection sequence
-                  _simulate_image_selection();
+                  // Trigger gallery selection sequence
+                  _pick_profile_image(ImageSource.gallery);
                 },
               ),
               // Bottom offset padding layout spacing box
@@ -229,49 +233,85 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 
-  // Simulated picker logic updating avatar state
-  void _simulate_image_selection() async {
-    // Show circular loading indicator dialog
-    showDialog(
-      // context mapping
-      context: context,
-      // prohibit user dismiss interaction during progress
-      barrierDismissible: false,
-      // loading content layout builder
-      builder: (BuildContext context) {
-        // center placement
-        return const Center(
-          // pulsing loader indicator
-          child: CircularProgressIndicator(),
+  // Triggers image picking from camera or gallery and updates avatar path
+  Future<void> _pick_profile_image(ImageSource source) async {
+    // Instantiate new ImagePicker controller helper representation
+    final ImagePicker image_picker = ImagePicker();
+
+    try {
+      // Pick image file asynchronously using selected source
+      final XFile? picked_file = await image_picker.pickImage(
+        // Source input parameter camera or gallery
+        source: source,
+        // Image quality constraints to avoid memory exhaustion (FLT-03)
+        imageQuality: 85,
+        // Maximum width constraints
+        maxWidth: 800,
+        // Maximum height constraints
+        maxHeight: 800,
+      );
+
+      // Verify if a file was successfully chosen using Yoda style check
+      if (null != picked_file) {
+        // Show circular loading indicator dialog
+        if (mounted) {
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: AppColors.primary_color,
+                ),
+              );
+            },
+          );
+        } else {
+          // Empty block
+        }
+
+        // Simulate short local loading transition delay
+        await Future.delayed(const Duration(milliseconds: 300));
+
+        // Verify mount status of widget before dispatching updates
+        if (mounted) {
+          // Dismiss circular loader dialog
+          Navigator.of(context).pop();
+          // Resolve ProfileCubit block context controller
+          final cubit = context.read<ProfileCubit>();
+          // Dispatch avatar path update to Cubit state to trigger dirty tracking checks
+          cubit.update_temp_profile(
+            // Clone temp profile with selected local image file path override
+            cubit.state.temp_profile.copyWith(
+              avatar_url: picked_file.path,
+            ),
+          );
+          // Show snackbar notifying success state
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Profile picture selected successfully!'),
+              backgroundColor: AppColors.primary_color,
+            ),
+          );
+        } else {
+          // Empty block
+        }
+      } else {
+        // User cancelled selection
+      }
+    } catch (error) {
+      // Catch blocks must never be left empty; log error
+      debugPrint("Error picking profile image: $error");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Failed to pick image: $error"),
+            backgroundColor: Colors.red,
+          ),
         );
-      },
-    );
-    // Simulate delay of uploading sequence task
-    await Future.delayed(const Duration(milliseconds: 500));
-    // Verify mount status of widget before dispatching updates
-    if (mounted) {
-      // Dismiss circular loader dialog
-      Navigator.of(context).pop();
-      // Resolve ProfileCubit and current temp profile
-      final cubit = context.read<ProfileCubit>();
-      // Dispatch avatar path update to Cubit state to trigger dirty tracking checks
-      cubit.update_temp_profile(
-        // Clone temp profile with modified avatar url override
-        cubit.state.temp_profile
-            .copyWith(avatar_url: 'https://picsum.photos/200'),
-      );
-      // Show snackbar notifying success state
-      ScaffoldMessenger.of(context).showSnackBar(
-        // SnackBar layout details
-        const SnackBar(
-          // success string alert text description
-          content: Text('Profile picture updated successfully!'),
-          // Themed color fill matching brand primary blue
-          backgroundColor: AppColors.primary_color,
-        ),
-      );
-    } else {
-      // Empty block
+      } else {
+        // Empty block
+      }
     }
   }
 
@@ -483,8 +523,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 ),
                                 image: state.temp_profile.avatar_url.isNotEmpty
                                     ? DecorationImage(
-                                        image: NetworkImage(
-                                            state.temp_profile.avatar_url),
+                                        image: true == state.temp_profile.avatar_url.startsWith('http')
+                                            ? NetworkImage(state.temp_profile.avatar_url) as ImageProvider
+                                            : FileImage(File(state.temp_profile.avatar_url)),
                                         fit: BoxFit.cover,
                                       )
                                     : null,
@@ -878,24 +919,30 @@ class _EditProfilePageState extends State<EditProfilePage> {
               onTap: () => onChanged(value),
               child: Container(
                 alignment: Alignment.center,
+                // Reduced horizontal padding to accommodate longer labels on narrow screens
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 decoration: BoxDecoration(
                   color: is_selected
                       ? AppColors.primary_color
                       : Colors.transparent,
                   borderRadius: BorderRadius.circular(8.0),
                 ),
-                child: Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 13.0,
-                    fontWeight: FontWeight.bold,
-                    color: is_selected
-                        ? Colors.white
-                        : (is_dark
-                            ? Colors.white70
-                            : AppColors.text_light_primary),
+                // FittedBox dynamically scales text down to prevent truncation
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 13.0,
+                      fontWeight: FontWeight.bold,
+                      color: is_selected
+                          ? Colors.white
+                          : (is_dark
+                              ? Colors.white70
+                              : AppColors.text_light_primary),
+                    ),
                   ),
                 ),
               ),

@@ -54,6 +54,8 @@ class PatientProfile {
   final List<InsuranceCard> insurance_cards;
   // Avatar photo path or remote URL
   final String avatar_url;
+  // Saved payment cards list (rich map schema: id, brand, number, expiry, holder, is_default)
+  final List<Map<String, dynamic>> payment_cards;
 
   // Constructor initializing all profile property mappings
   const PatientProfile({
@@ -93,6 +95,8 @@ class PatientProfile {
     required this.insurance_cards,
     // Require avatar url
     required this.avatar_url,
+    // Require payment cards list
+    required this.payment_cards,
   });
 
   // Helper factory method creating an initial empty/dummy profile instance
@@ -135,6 +139,25 @@ class PatientProfile {
       insurance_cards: [],
       // Empty avatar url path representation
       avatar_url: '',
+      // Initial default saved payment cards list
+      payment_cards: [
+        {
+          'id': '1',
+          'brand': 'Visa',
+          'number': '4000 1234 5678 4321',
+          'expiry': '12/2029',
+          'holder': 'Kareem Mangood',
+          'is_default': 'true',
+        },
+        {
+          'id': '2',
+          'brand': 'Mastercard',
+          'number': '5105 4321 8765 8877',
+          'expiry': '08/2028',
+          'holder': 'Kareem Mangood',
+          'is_default': 'false',
+        },
+      ],
     );
   }
 
@@ -176,6 +199,8 @@ class PatientProfile {
     List<InsuranceCard>? insurance_cards,
     // Optional avatar photo path update
     String? avatar_url,
+    // Optional payment cards list update
+    List<Map<String, dynamic>>? payment_cards,
   }) {
     // Return new modified PatientProfile instance mapping properties
     return PatientProfile(
@@ -215,6 +240,8 @@ class PatientProfile {
       insurance_cards: insurance_cards ?? this.insurance_cards,
       // Apply avatar url override or keep current value
       avatar_url: avatar_url ?? this.avatar_url,
+      // Apply payment cards override or keep current list
+      payment_cards: payment_cards ?? this.payment_cards,
     );
   }
 }

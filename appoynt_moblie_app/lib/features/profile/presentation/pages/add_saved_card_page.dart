@@ -12,6 +12,10 @@
 
 // Importing global route exports
 import 'package:appoynt_mobile_app/core/routing/route_export.dart';
+// Importing ProfileCubit for saving new payment card
+import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart';
+// Importing flutter_bloc for read context extension method
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Stateful widget displaying credit card add form layout
 class AddSavedCardPage extends StatefulWidget {
@@ -203,256 +207,296 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
                     // Vertical padding only since horizontal padding is on parent
                     vertical: AppSpacing.space_m,
                   ),
-          // Form validation state wrap
-          child: Form(
-            // Bind global key
-            key: _form_key,
-            // Dynamic validation mode configs
-            autovalidateMode: true == _validated_once
-                ? AutovalidateMode.onUserInteraction
-                : AutovalidateMode.disabled,
-            // Input elements column
-            child: Column(
-              // Align left coordinates
-              crossAxisAlignment: CrossAxisAlignment.start,
-              // children details
-              children: [
-                // Section Title: Holder Info
-                const Text(
-                  // Label holder name
-                  'Cardholder Name',
-                  // Style specs
-                  style: TextStyle(
-                    fontSize: 12.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                // Gap spacer height
-                const SizedBox(height: 6.0),
-                // Custom input textbox stack
-                _build_secure_input(
-                  // Controller link
-                  controller: _holder_controller,
-                  // Hint holder text
-                  hint: 'e.g., Kholoud Khaled',
-                  // User icon vector
-                  icon: Icons.person_outline_rounded,
-                  // Validation callback block
-                  validator: (val) {
-                    // Check alphabetical name structure
-                    if (null == val || false == _validate_cardholder(val)) {
-                      // Return strict validation error
-                      return 'Please enter the full name as written on the card.';
-                    }
-                    // Valid status
-                    return null;
-                  },
-                ),
-                // Height spacer gap
-                const SizedBox(height: 16.0),
+                  // Form validation state wrap
+                  child: Form(
+                    // Bind global key
+                    key: _form_key,
+                    // Dynamic validation mode configs
+                    autovalidateMode: true == _validated_once
+                        ? AutovalidateMode.onUserInteraction
+                        : AutovalidateMode.disabled,
+                    // Input elements column
+                    child: Column(
+                      // Align left coordinates
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      // children details
+                      children: [
+                        // Section Title: Holder Info
+                        const Text(
+                          // Label holder name
+                          'Cardholder Name',
+                          // Style specs
+                          style: TextStyle(
+                            fontSize: 12.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        // Gap spacer height
+                        const SizedBox(height: 6.0),
+                        // Custom input textbox stack
+                        _build_secure_input(
+                          // Controller link
+                          controller: _holder_controller,
+                          // Hint holder text
+                          hint: 'e.g., Kholoud Khaled',
+                          // User icon vector
+                          icon: Icons.person_outline_rounded,
+                          // Validation callback block
+                          validator: (val) {
+                            // Check alphabetical name structure
+                            if (null == val ||
+                                false == _validate_cardholder(val)) {
+                              // Return strict validation error
+                              return 'Please enter the full name as written on the card.';
+                            }
+                            // Valid status
+                            return null;
+                          },
+                        ),
+                        // Height spacer gap
+                        const SizedBox(height: 16.0),
 
-                // Section Title: Card Number
-                const Text(
-                  // Label card number
-                  'Card Number',
-                  // Style specs
-                  style: TextStyle(
-                    fontSize: 12.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                // Gap spacer height
-                const SizedBox(height: 6.0),
-                // Custom input textbox stack (forced LTR/credentials alignment)
-                _build_secure_input(
-                  // Controller link
-                  controller: _number_controller,
-                  // Hint number text
-                  hint: '4532 •••• •••• 8899',
-                  // Credit card logo vector representation
-                  icon: Icons.credit_card_rounded,
-                  // Force LTR alignment status
-                  force_ltr: true,
-                  // Digit values type
-                  keyboard_type: TextInputType.number,
-                  // Validation callback block
-                  validator: (val) {
-                    // Verify Luhn algorithm criteria
-                    if (null == val || false == _luhn_check(val)) {
-                      // Return strict error
-                      return 'Please enter a valid 16-digit card number.';
-                    }
-                    // Valid status
-                    return null;
-                  },
-                ),
-                // Height spacer gap
-                const SizedBox(height: 16.0),
+                        // Section Title: Card Number
+                        const Text(
+                          // Label card number
+                          'Card Number',
+                          // Style specs
+                          style: TextStyle(
+                            fontSize: 12.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        // Gap spacer height
+                        const SizedBox(height: 6.0),
+                        // Custom input textbox stack (forced LTR/credentials alignment)
+                        _build_secure_input(
+                          // Controller link
+                          controller: _number_controller,
+                          // Hint number text
+                          hint: '4532 •••• •••• 8899',
+                          // Credit card logo vector representation
+                          icon: Icons.credit_card_rounded,
+                          // Force LTR alignment status
+                          force_ltr: true,
+                          // Digit values type
+                          keyboard_type: TextInputType.number,
+                          // Validation callback block
+                          validator: (val) {
+                            // Verify Luhn algorithm criteria
+                            if (null == val || false == _luhn_check(val)) {
+                              // Return strict error
+                              return 'Please enter a valid 16-digit card number.';
+                            }
+                            // Valid status
+                            return null;
+                          },
+                        ),
+                        // Height spacer gap
+                        const SizedBox(height: 16.0),
 
-                // Expiry and CVV side-by-side row
-                Row(
-                  // Align coordinates
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  // children list
-                  children: [
-                    // Expiry Column
-                    Expanded(
-                      // Stack layout
-                      child: Column(
-                        // Align left
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        // children details
-                        children: [
-                          // Label Expiry text
-                          const Text(
-                            // Label
-                            'Expiry Date',
-                            // Style
-                            style: TextStyle(
-                              fontSize: 12.0,
-                              fontWeight: FontWeight.bold,
+                        // Expiry and CVV side-by-side row
+                        Row(
+                          // Align coordinates
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          // children list
+                          children: [
+                            // Expiry Column
+                            Expanded(
+                              // Stack layout
+                              child: Column(
+                                // Align left
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                // children details
+                                children: [
+                                  // Label Expiry text
+                                  const Text(
+                                    // Label
+                                    'Expiry Date',
+                                    // Style
+                                    style: TextStyle(
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  // Spacer height gap
+                                  const SizedBox(height: 6.0),
+                                  // Input box (forced LTR)
+                                  _build_secure_input(
+                                    // Controller link
+                                    controller: _expiry_controller,
+                                    // Hint format MM/YY
+                                    hint: 'MM/YY (e.g. 12/28)',
+                                    // Calendar vector icon
+                                    icon: Icons.calendar_month_outlined,
+                                    // Force LTR text
+                                    force_ltr: true,
+                                    // Validation callback block
+                                    validator: (val) {
+                                      // Verify expiry limits and date formatting
+                                      if (null == val ||
+                                          false == _validate_expiry(val)) {
+                                        // Return strict error
+                                        return 'Card has expired or date format is invalid.';
+                                      }
+                                      // Valid status
+                                      return null;
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                            // Horizontal gap spacer
+                            const SizedBox(width: 16.0),
+                            // CVV Column
+                            Expanded(
+                              // Stack layout
+                              child: Column(
+                                // Align left
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                // children details
+                                children: [
+                                  // Label CVV text
+                                  const Text(
+                                    // Label
+                                    'CVV',
+                                    // Style
+                                    style: TextStyle(
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  // Spacer height gap
+                                  const SizedBox(height: 6.0),
+                                  // Input box (forced LTR/Secure CVV mask digits)
+                                  _build_secure_input(
+                                    // Controller link
+                                    controller: _cvv_controller,
+                                    // Hint mask CVV
+                                    hint: '••• (e.g. 123)',
+                                    // Lock icon vector representation
+                                    icon: Icons.lock_outline_rounded,
+                                    // Force LTR text
+                                    force_ltr: true,
+                                    // Hide CVV typing character values
+                                    obscure_text: true,
+                                    // Limit numbers
+                                    keyboard_type: TextInputType.number,
+                                    // Validation callback block
+                                    validator: (val) {
+                                      // Verify CVV criteria length
+                                      if (null == val ||
+                                          false == _validate_cvv(val)) {
+                                        // Return strict error
+                                        return 'Invalid CVV code.';
+                                      }
+                                      // Valid status
+                                      return null;
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        // Height spacer padding offset
+                        const SizedBox(height: 36.0),
+
+                        // Save Card Action Button solid CTA
+                        SizedBox(
+                          // Full width
+                          width: double.infinity,
+                          // Height dimensions standard
+                          height: 50.0,
+                          // Elevated button solid
+                          child: ElevatedButton(
+                            // Action tap trigger validation loop
+                            onPressed: () {
+                              // Mark form as verified once
+                              setState(() {
+                                // Toggle state check
+                                _validated_once = true;
+                              });
+                              // Verify form validation criteria states
+                              if (true == _form_key.currentState!.validate()) {
+                                final String raw_num =
+                                    _number_controller.text.trim();
+                                // Format with 4-digit grouping if it's just raw digits
+                                String formatted_num =
+                                    raw_num.replaceAll(' ', '');
+                                final String brand =
+                                    formatted_num.startsWith('4')
+                                        ? 'Visa'
+                                        : (formatted_num.startsWith('5')
+                                            ? 'Mastercard'
+                                            : 'Visa');
+
+                                // Ensure 4-digit grouping spacing
+                                final StringBuffer sb = StringBuffer();
+                                for (int i = 0; i < formatted_num.length; i++) {
+                                  if (i > 0 && i % 4 == 0) {
+                                    sb.write(' ');
+                                  }
+                                  sb.write(formatted_num[i]);
+                                }
+                                formatted_num = sb.toString();
+
+                                final Map<String, dynamic> card_data = {
+                                  'id': DateTime.now()
+                                      .millisecondsSinceEpoch
+                                      .toString(),
+                                  'brand': brand,
+                                  'number': formatted_num,
+                                  'expiry': _expiry_controller.text.trim(),
+                                  'holder': _holder_controller.text.trim(),
+                                  'is_default': 'false',
+                                };
+
+                                // Dispatch add_payment_card on cubit context
+                                context
+                                    .read<ProfileCubit>()
+                                    .add_payment_card(card_data);
+
+                                // Pop subpage return back
+                                Navigator.of(context).pop();
+                                // Show success SnackBar status feedback
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  // SnackBar specs
+                                  const SnackBar(
+                                    content: Text(
+                                        'New card saved securely to profile.'),
+                                  ),
+                                );
+                              }
+                            },
+                            // Style matching primary brand blue theme colors
+                            style: ElevatedButton.styleFrom(
+                              // Blue primary color fill
+                              backgroundColor: AppColors.primary_color,
+                              // Curves
+                              shape: RoundedRectangleBorder(
+                                // Rounded radius bounds
+                                borderRadius: BorderRadius.circular(25.0),
+                              ),
+                            ),
+                            // Centered CTA label Text
+                            child: const Text(
+                              // Save Card string
+                              'Securely Save Card',
+                              // Typography
+                              style: TextStyle(
+                                // Color white high contrast
+                                color: Colors.white,
+                                // Medium
+                                fontSize: 14.0,
+                                // Bold
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                          // Spacer height gap
-                          const SizedBox(height: 6.0),
-                          // Input box (forced LTR)
-                          _build_secure_input(
-                            // Controller link
-                            controller: _expiry_controller,
-                            // Hint format MM/YY
-                            hint: 'MM/YY (e.g. 12/28)',
-                            // Calendar vector icon
-                            icon: Icons.calendar_month_outlined,
-                            // Force LTR text
-                            force_ltr: true,
-                            // Validation callback block
-                            validator: (val) {
-                              // Verify expiry limits and date formatting
-                              if (null == val ||
-                                  false == _validate_expiry(val)) {
-                                // Return strict error
-                                return 'Card has expired or date format is invalid.';
-                              }
-                              // Valid status
-                              return null;
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    // Horizontal gap spacer
-                    const SizedBox(width: 16.0),
-                    // CVV Column
-                    Expanded(
-                      // Stack layout
-                      child: Column(
-                        // Align left
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        // children details
-                        children: [
-                          // Label CVV text
-                          const Text(
-                            // Label
-                            'CVV',
-                            // Style
-                            style: TextStyle(
-                              fontSize: 12.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          // Spacer height gap
-                          const SizedBox(height: 6.0),
-                          // Input box (forced LTR/Secure CVV mask digits)
-                          _build_secure_input(
-                            // Controller link
-                            controller: _cvv_controller,
-                            // Hint mask CVV
-                            hint: '••• (e.g. 123)',
-                            // Lock icon vector representation
-                            icon: Icons.lock_outline_rounded,
-                            // Force LTR text
-                            force_ltr: true,
-                            // Hide CVV typing character values
-                            obscure_text: true,
-                            // Limit numbers
-                            keyboard_type: TextInputType.number,
-                            // Validation callback block
-                            validator: (val) {
-                              // Verify CVV criteria length
-                              if (null == val || false == _validate_cvv(val)) {
-                                // Return strict error
-                                return 'Invalid CVV code.';
-                              }
-                              // Valid status
-                              return null;
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                // Height spacer padding offset
-                const SizedBox(height: 36.0),
-
-                // Save Card Action Button solid CTA
-                SizedBox(
-                  // Full width
-                  width: double.infinity,
-                  // Height dimensions standard
-                  height: 50.0,
-                  // Elevated button solid
-                  child: ElevatedButton(
-                    // Action tap trigger validation loop
-                    onPressed: () {
-                      // Mark form as verified once
-                      setState(() {
-                        // Toggle state check
-                        _validated_once = true;
-                      });
-                      // Verify form validation criteria states
-                      if (true == _form_key.currentState!.validate()) {
-                        // Pop subpage return back
-                        Navigator.of(context).pop();
-                        // Show success SnackBar status feedback
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          // SnackBar specs
-                          const SnackBar(
-                            content:
-                                Text('New card saved securely to profile.'),
-                          ),
-                        );
-                      }
-                    },
-                    // Style matching primary brand blue theme colors
-                    style: ElevatedButton.styleFrom(
-                      // Blue primary color fill
-                      backgroundColor: AppColors.primary_color,
-                      // Curves
-                      shape: RoundedRectangleBorder(
-                        // Rounded radius bounds
-                        borderRadius: BorderRadius.circular(25.0),
-                      ),
-                    ),
-                    // Centered CTA label Text
-                    child: const Text(
-                      // Save Card string
-                      'Securely Save Card',
-                      // Typography
-                      style: TextStyle(
-                        // Color white high contrast
-                        color: Colors.white,
-                        // Medium
-                        fontSize: 14.0,
-                        // Bold
-                        fontWeight: FontWeight.bold,
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
                 ),
               ),
             ],
