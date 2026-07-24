@@ -2,11 +2,14 @@
  * File Name: forgot_password_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
- * Version Information: V1.0.0
+ * Version Information: V1.1.0
  * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart,
- *   package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart
+ *   package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart,
+ *   package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart,
+ *   package:appoynt_mobile_app/core/di/service_locator.dart,
+ *   package:flutter_bloc/flutter_bloc.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 23/07/2026]
  * File Description: The Forgot Password screen allows users to request a reset code via
  *   their phone number. It follows the centralized design system and
  *   supports full bilingual localization.
@@ -16,6 +19,12 @@
 import 'package:appoynt_mobile_app/core/routing/route_export.dart';
 // Barrel file exporting AuthTextField
 import 'package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart';
+// Importing bloc consumer and provider utilities
+import 'package:flutter_bloc/flutter_bloc.dart';
+// Importing auth business state controller cubit definitions
+import 'package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart';
+// Importing dependency injection service locator setup representation
+import 'package:appoynt_mobile_app/core/di/service_locator.dart';
 
 /// The main forgot password screen widget.
 class ForgotPasswordPage extends StatefulWidget {
@@ -48,9 +57,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   
   /// Controller for the phone number input field.
   final TextEditingController _phone_ctrl = TextEditingController();
-  
-  /// Flag tracking whether a code request is currently in progress.
-  bool _is_loading = false;
   
   /// Flag to track whether at least one submission attempt occurred.
   bool _form_submitted = false;
@@ -152,7 +158,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   }
 
   /// Handles the form submission and triggers the code sending process.
-  void _submit() async {
+  void _submit(BuildContext submission_context) {
     setState(() {
       _form_submitted = true; // Marking form as submitted
     });
@@ -164,21 +170,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       // Proceed with submission if form is valid
     }
     
-    /// Activating the loading state.
-    setState(() {
-      _is_loading = true;
-    });
-    
-    /// Simulating a network request for sending the reset code.
-    await Future.delayed(const Duration(seconds: 2));
-    
-    if (mounted) {
-      /// Deactivating loading and triggering the code sent callback.
-      setState(() {
-        _is_loading = false;
-      });
-      widget.on_code_sent(_phone_ctrl.text.trim());
-    }
+    // Dispatch forgot password event to AuthCubit
+    submission_context.read<AuthCubit>().forgot_password(_phone_ctrl.text.trim());
   }
 
   @override
@@ -194,127 +187,148 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     final Color background_color = true == is_dark
         ? AppColors.background_dark
         : AppColors.background_light;
-    final Color text_primary = true == is_dark
-        ? AppColors.text_dark_primary
-        : AppColors.text_light_primary;
-    final Color card_color = true == is_dark
-        ? AppColors.surface_dark
-        : Colors.white;
-    final Color border_color = true == is_dark
-        ? AppColors.border_dark
-        : AppColors.border_light;
 
-    return Scaffold(
-      backgroundColor: background_color, // Applying theme background color
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24), // Content padding
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 12), // Top margin
-
-              /// Navigation and language control row.
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  /// Stylized back button.
-                  GestureDetector(
-                    onTap: widget.on_back,
-                    child: Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        color: card_color, // Adaptive background
-                        borderRadius: BorderRadius.circular(10), // Rounded corners
-                        border: Border.all(color: border_color), // Subtle border
-                      ),
-                      // RotatedBox to mirror the back chevron icon in Arabic
-                      // RTL mode (BUG-012)
-                      child: RotatedBox(
-                        // Quarter turns set to 0 to keep the back chevron
-                        // pointing left in both languages
-                        quarterTurns: 0,
-                        // Chevron back icon widget
-                        child: Icon(
-                          // Back chevron icon representation
-                          Icons.arrow_back_ios_new_rounded,
-                          // Set size constraint
-                          size: 16,
-                          // Primary icon color
-                          color: text_primary,
-                        ),
-                      ),
-                    ),
-                  ),
-                  /// Globally centralized language switching button.
-                  GlobalLanguageButton(
-                    is_arabic: is_arabic,
-                    on_tap: widget.on_toggle_language,
-                    light: false, // Standard dark mode icons
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 36), // Space before title
-
-              /// Header section with centered title and instructions.
-              Center(
+    // Return BlocProvider setting up AuthCubit on top of the tree
+    return BlocProvider<AuthCubit>(
+      // Create and initialize new auth cubit instance
+      create: (context) {
+        // Return initialized auth cubit resolved from service locator container
+        return get_it<AuthCubit>();
+      },
+      // Bind consumer widget to intercept state changes
+      child: BlocConsumer<AuthCubit, AuthState>(
+        // Listener callback intercepts transition changes
+        listener: (context, state) {
+          // Check if request succeeds using Yoda style check
+          if (state is AuthSuccess) {
+            // Trigger code sent navigation callback
+            widget.on_code_sent(_phone_ctrl.text.trim());
+          } else {
+            // Empty action block to satisfy compiler
+          }
+        },
+        // Builder rendering UI components based on state updates
+        builder: (context, state) {
+          // Return Scaffold container layout settings
+          return Scaffold(
+            backgroundColor: background_color, // Applying theme background color
+            body: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24), // Content padding
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    /// Displaying the localized title.
-                    Text(
-                      s.forgot_password_title,
-                      style: AppTextStyles.get_forgot_password_title(is_arabic),
+                    const SizedBox(height: 12), // Top margin
+
+                    /// Navigation and language control row.
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        /// Stylized back button.
+                        // Reusable squircle back button component
+                        AppBackButton(onTap: widget.on_back),
+                        /// Globally centralized language switching button.
+                        GlobalLanguageButton(
+                          is_arabic: is_arabic,
+                          on_tap: widget.on_toggle_language,
+                          light: false, // Standard dark mode icons
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 8), // Vertical spacing
-                    /// Displaying the localized descriptive subtitle.
-                    Text(
-                      s.forgot_password_subtitle,
-                      textAlign: TextAlign.center,
-                      style: AppTextStyles.get_forgot_password_subtitle(is_arabic),
+
+                    const SizedBox(height: 36), // Space before title
+
+                    /// Header section with centered title and instructions.
+                    Center(
+                      child: Column(
+                        children: [
+                          /// Displaying the localized title.
+                          Text(
+                            s.forgot_password_title,
+                            style: AppTextStyles.get_forgot_password_title(is_arabic),
+                          ),
+                          const SizedBox(height: 8), // Vertical spacing
+                          /// Displaying the localized descriptive subtitle.
+                          Text(
+                            s.forgot_password_subtitle,
+                            textAlign: TextAlign.center,
+                            style: AppTextStyles.get_forgot_password_subtitle(is_arabic),
+                          ),
+                          // Spacing/Container block for validation error feedback message (FR-15 / Logic Log)
+                          const SizedBox(height: AppSpacing.space_s),
+                          // Fixed-height container to prevent layout shifting
+                          SizedBox(
+                            // Fixed height derived from spacing tokens to satisfy stable UI constraint
+                            height: AppSpacing.error_container_height,
+                            // Draw error feedback text inside center coordinates
+                            child: Center(
+                              // Render error message if state is AuthError (Yoda style check)
+                              child: Text(
+                                // Bind message or empty string based on state type
+                                true == (state is AuthError)
+                                    ? (state as AuthError).message
+                                    : '',
+                                // Center align paragraph
+                                textAlign: TextAlign.center,
+                                // Apply styling configurations
+                                style: const TextStyle(
+                                  // Set brand warning color
+                                  color: AppColors.error,
+                                  // Scale size relative to labels
+                                  fontSize: AppSpacing.font_size_label,
+                                  // Emphasize text weight
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 20), // Margin before input field
+
+                    /// The phone number input form.
+                    Form(
+                      key: _form_key,
+                      /// Toggling auto-validation mode after the first attempt.
+                      autovalidateMode: _form_submitted
+                          ? AutovalidateMode.always
+                          : AutovalidateMode.disabled,
+                      child: AuthTextField(
+                        label: s.phone,
+                        hint: s.phone_hint,
+                        controller: _phone_ctrl,
+                        is_phone: true,
+                        keyboard_type: TextInputType.phone,
+                        validator: (v) {
+                          return _validate_phone(v, s);
+                        },
+                      ),
+                    ),
+
+                    const SizedBox(height: 32), // Margin before action button
+
+                    /// Primary action button for sending the reset code.
+                    AuthButton(
+                      // Localized action string
+                      label: s.send_code,
+                      // Enable only when phone field is not empty using Yoda style check
+                      is_enabled: _phone_ctrl.text.isNotEmpty,
+                      // Submission callback
+                      on_pressed: () {
+                        // Submit form under context
+                        _submit(context);
+                      },
+                      // Loading state indicator
+                      is_loading: state is AuthLoading,
                     ),
                   ],
                 ),
               ),
-
-              const SizedBox(height: 36), // Margin before input field
-
-              /// The phone number input form.
-              Form(
-                key: _form_key,
-                /// Toggling auto-validation mode after the first attempt.
-                autovalidateMode: _form_submitted
-                    ? AutovalidateMode.always
-                    : AutovalidateMode.disabled,
-                child: AuthTextField(
-                  label: s.phone,
-                  hint: s.phone_hint,
-                  controller: _phone_ctrl,
-                  is_phone: true,
-                  keyboard_type: TextInputType.phone,
-                  validator: (v) {
-                    return _validate_phone(v, s);
-                  },
-                ),
-              ),
-
-              const SizedBox(height: 32), // Margin before action button
-
-              /// Primary action button for sending the reset code.
-              AuthButton(
-                // Localized action string
-                label: s.send_code,
-                // Enable only when phone field is not empty using Yoda style check
-                is_enabled: _phone_ctrl.text.isNotEmpty,
-                // Submission callback
-                on_pressed: _submit,
-                // Loading state indicator
-                is_loading: _is_loading,
-              ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }

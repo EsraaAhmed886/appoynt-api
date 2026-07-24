@@ -410,5 +410,26 @@ class AppSpacing {
 
   // Double extra large icon display size constraint (48px)
   static const double icon_size_xxl = 48.0;
+
+  // Width dimension for the custom calendar date picker dialog (320px)
+  static const double calendar_dialog_width = 320.0;
+
+  // Spacing border radius for custom calendar date picker card (20px)
+  static const double calendar_dialog_radius = 20.0;
+
+  // Cell width representation for custom calendar grid cells (36px)
+  static const double calendar_grid_cell_size = 36.0;
+
+  // Custom calendar date picker day text size (13px)
+  static const double calendar_day_font_size = 13.0;
+
+  // Custom calendar title month/year font size (16px)
+  static const double calendar_title_font_size = 16.0;
+
+  // Custom calendar action buttons height (40px)
+  static const double calendar_action_button_height = 40.0;
+
+  // Spacing padding offset dimension for custom calendar dialog layout (20px)
+  static const double calendar_dialog_padding = 20.0;
 }
 // End of app_spacing.dart

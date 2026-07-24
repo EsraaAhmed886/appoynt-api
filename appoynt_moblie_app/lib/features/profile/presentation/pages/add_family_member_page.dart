@@ -12,6 +12,8 @@
 
 // Importing global route export barrel configuration
 import 'package:appoynt_mobile_app/core/routing/route_export.dart';
+// Importing custom date picker
+import 'package:appoynt_mobile_app/core/widgets/app_date_picker.dart';
 
 // Stateful widget representing the full screen Add Family Member page
 class AddFamilyMemberPage extends StatefulWidget {
@@ -465,8 +467,8 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                                 ),
                                 // Date picker trigger onTap
                                 onTap: () async {
-                                  // Resolve showDatePicker future
-                                  final DateTime? picked_date = await showDatePicker(
+                                  // Resolve showAppDatePicker future using Yoda comparisons and correct limits
+                                  final DateTime? picked_date = await showAppDatePicker(
                                     // Bind context
                                     context: context,
                                     // Starting default date

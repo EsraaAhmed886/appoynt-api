@@ -2,11 +2,14 @@
  * File Name: reset_password_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
- * Version Information: V1.0.0
+ * Version Information: V1.1.0
  * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart,
- *   package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart
+ *   package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart,
+ *   package:flutter_bloc/flutter_bloc.dart,
+ *   package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart,
+ *   package:appoynt_mobile_app/core/di/service_locator.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 23/07/2026]
  * File Description: The Reset Password screen allows users to set a new security credential
  *   after successful verification. It features real-time rule tracking and
  *   follows the centralized design system.
@@ -16,6 +19,12 @@
 import 'package:appoynt_mobile_app/core/routing/route_export.dart';
 // Exporting PasswordFieldWithRules and AuthTextField
 import 'package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart';
+// Importing bloc consumer and provider utilities
+import 'package:flutter_bloc/flutter_bloc.dart';
+// Importing auth business state controller cubit definitions
+import 'package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart';
+// Importing dependency injection service locator setup representation
+import 'package:appoynt_mobile_app/core/di/service_locator.dart';
 
 /// The main reset password screen widget.
 class ResetPasswordPage extends StatefulWidget {
@@ -48,9 +57,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   /// Controllers for the new password and its confirmation.
   final TextEditingController _password_ctrl = TextEditingController();
   final TextEditingController _confirm_ctrl = TextEditingController();
-  
-  /// Flag tracking whether an update request is currently in progress.
-  bool _is_loading = false;
   
   /// Flag to track whether at least one submission attempt occurred.
   bool _form_submitted = false;
@@ -133,7 +139,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   }
 
   /// Handles the form submission and triggers the update process.
-  void _submit() async {
+  void _submit(BuildContext submission_context) {
     setState(() {
       _form_submitted = true; // Marking form as submitted
     });
@@ -145,21 +151,8 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       // Proceed if form is valid
     }
     
-    /// Activating the loading state.
-    setState(() {
-      _is_loading = true;
-    });
-    
-    /// Simulating a network request for password update.
-    await Future.delayed(const Duration(seconds: 2));
-    
-    if (mounted) {
-      /// Deactivating loading and triggering the success callback.
-      setState(() {
-        _is_loading = false;
-      });
-      widget.on_password_updated();
-    }
+    // Dispatch reset password event to AuthCubit
+    submission_context.read<AuthCubit>().reset_password(new_password: _password_ctrl.text);
   }
 
   @override
@@ -175,167 +168,188 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     final Color background_color = true == is_dark
         ? AppColors.background_dark
         : AppColors.background_light;
-    final Color text_primary = true == is_dark
-        ? AppColors.text_dark_primary
-        : AppColors.text_light_primary;
-    final Color card_color = true == is_dark
-        ? AppColors.surface_dark
-        : Colors.white;
-    final Color border_color = true == is_dark
-        ? AppColors.border_dark
-        : AppColors.border_light;
 
-    return Scaffold(
-      backgroundColor: background_color, // Applying theme background color
-      
-      /// Using bottomNavigationBar to keep the action button fixed above the keyboard.
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.only(
-          left: 24,
-          right: 24,
-          /// Adjusting bottom padding dynamically based on keyboard presence.
-          bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-          top: 12,
-        ),
-        child: AuthButton(
-          // Localized action string
-          label: s.update_password,
-          // Enable only when both password fields are not empty using Yoda style
-          is_enabled: _password_ctrl.text.isNotEmpty &&
-              _confirm_ctrl.text.isNotEmpty,
-          // Submission callback
-          on_pressed: _submit,
-          // Loading indicator
-          is_loading: _is_loading,
-        ),
-      ),
+    // Return BlocProvider setting up AuthCubit on top of the tree
+    return BlocProvider<AuthCubit>(
+      // Create and initialize new auth cubit instance
+      create: (context) {
+        // Return initialized auth cubit resolved from service locator container
+        return get_it<AuthCubit>();
+      },
+      // Bind consumer widget to intercept state changes
+      child: BlocConsumer<AuthCubit, AuthState>(
+        // Listener callback intercepts transition changes
+        listener: (context, state) {
+          // Check if reset password succeeds using Yoda style check
+          if (state is AuthSuccess) {
+            // Trigger password updated success callback
+            widget.on_password_updated();
+          } else {
+            // Empty action block to satisfy compiler
+          }
+        },
+        // Builder rendering UI components based on state updates
+        builder: (context, state) {
+          // Return Scaffold container layout settings
+          return Scaffold(
+            backgroundColor: background_color, // Applying theme background color
+            
+            /// Using bottomNavigationBar to keep the action button fixed above the keyboard.
+            bottomNavigationBar: Padding(
+              padding: EdgeInsets.only(
+                left: 24,
+                right: 24,
+                /// Adjusting bottom padding dynamically based on keyboard presence.
+                bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+                top: 12,
+              ),
+              child: AuthButton(
+                // Localized action string
+                label: s.update_password,
+                // Enable only when both password fields are not empty using Yoda style
+                is_enabled: _password_ctrl.text.isNotEmpty &&
+                    _confirm_ctrl.text.isNotEmpty,
+                // Submission callback
+                on_pressed: () {
+                  // Submit form under context
+                  _submit(context);
+                },
+                // Loading indicator
+                is_loading: state is AuthLoading,
+              ),
+            ),
 
-      body: SafeArea(
-        child: GestureDetector(
-          /// Dismissing keyboard when tapping outside input fields.
-          onTap: () {
-            FocusScope.of(context).unfocus();
-          },
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24), // Content padding
-            child: Form(
-              key: _form_key,
-              /// Toggling auto-validation mode after the first attempt.
-              autovalidateMode: _form_submitted
-                  ? AutovalidateMode.always
-                  : AutovalidateMode.disabled,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 12), // Top margin
-
-                  /// Navigation and language control row.
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      /// Stylized back button.
-                      GestureDetector(
-                        onTap: widget.on_back,
-                        child: Container(
-                          width: 36,
-                          height: 36,
-                          decoration: BoxDecoration(
-                            color: card_color, // Adaptive background
-                            borderRadius: BorderRadius.circular(10), // Rounded corners
-                            border: Border.all(color: border_color), // Subtle border
-                          ),
-                          // RotatedBox to mirror the back chevron icon in Arabic
-                          // RTL mode (BUG-012)
-                          child: RotatedBox(
-                            // Quarter turns set to 0 to keep the back chevron
-                            // pointing left in both languages
-                            quarterTurns: 0,
-                            // Chevron back icon widget
-                            child: Icon(
-                              // Back chevron icon representation
-                              Icons.arrow_back_ios_new_rounded,
-                              // Set size constraint
-                              size: 16,
-                              // Primary icon color
-                              color: text_primary,
-                            ),
-                          ),
-                        ),
-                      ),
-                      /// Globally centralized language switching button.
-                      GlobalLanguageButton(
-                        is_arabic: is_arabic,
-                        on_tap: widget.on_toggle_language,
-                        light: false, // Standard dark icons
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 32), // Space before titles
-
-                  /// Header section containing title and instructions.
-                  Center(
+            body: SafeArea(
+              child: GestureDetector(
+                /// Dismissing keyboard when tapping outside input fields.
+                onTap: () {
+                  FocusScope.of(context).unfocus();
+                },
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 24), // Content padding
+                  child: Form(
+                    key: _form_key,
+                    /// Toggling auto-validation mode after the first attempt.
+                    autovalidateMode: _form_submitted
+                        ? AutovalidateMode.always
+                        : AutovalidateMode.disabled,
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          s.create_new_password,
-                          textAlign: TextAlign.center,
-                          // Reusing stylized typography
-                          style:
-                              AppTextStyles.get_forgot_password_title(is_arabic),
+                        const SizedBox(height: 12), // Top margin
+
+                        /// Navigation and language control row.
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            /// Stylized back button.
+                            // Reusable squircle back button component
+                            AppBackButton(onTap: widget.on_back),
+                            /// Globally centralized language switching button.
+                            GlobalLanguageButton(
+                              is_arabic: is_arabic,
+                              on_tap: widget.on_toggle_language,
+                              light: false, // Standard dark icons
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 8), // Vertical spacing
-                        Text(
-                          s.reset_password_subtitle,
-                          textAlign: TextAlign.center,
-                          // Reusing body style
-                          style: AppTextStyles.get_forgot_password_subtitle(
-                              is_arabic),
+
+                        const SizedBox(height: 32), // Space before titles
+
+                        /// Header section containing title and instructions.
+                        Center(
+                          child: Column(
+                            children: [
+                              Text(
+                                s.create_new_password,
+                                textAlign: TextAlign.center,
+                                // Reusing stylized typography
+                                style:
+                                    AppTextStyles.get_forgot_password_title(is_arabic),
+                              ),
+                              const SizedBox(height: 8), // Vertical spacing
+                              Text(
+                                s.reset_password_subtitle,
+                                textAlign: TextAlign.center,
+                                // Reusing body style
+                                style: AppTextStyles.get_forgot_password_subtitle(
+                                    is_arabic),
+                              ),
+                              // Spacing/Container block for validation error feedback message (FR-15 / Logic Log)
+                              const SizedBox(height: AppSpacing.space_s),
+                              // Fixed-height container to prevent layout shifting
+                              SizedBox(
+                                // Fixed height derived from spacing tokens to satisfy stable UI constraint
+                                height: AppSpacing.error_container_height,
+                                // Draw error feedback text inside center coordinates
+                                child: Center(
+                                  // Render error message if state is AuthError (Yoda style check)
+                                  child: Text(
+                                    // Bind message or empty string based on state type
+                                    true == (state is AuthError)
+                                        ? (state as AuthError).message
+                                        : '',
+                                    // Center align paragraph
+                                    textAlign: TextAlign.center,
+                                    // Apply styling configurations
+                                    style: const TextStyle(
+                                      // Set brand warning color
+                                      color: AppColors.error,
+                                      // Scale size relative to labels
+                                      fontSize: AppSpacing.font_size_label,
+                                      // Emphasize text weight
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
+
+                        const SizedBox(height: 20), // Margin before fields
+
+                        /// Specialized password input field with real-time requirement tracking.
+                        PasswordFieldWithRules(
+                          key: const ValueKey('reset_password_field'),
+                          controller: _password_ctrl,
+                          label: s.new_password_label,
+                          hint: s.new_password_hint,
+                          text_input_action: TextInputAction.next,
+                          validator: (v) {
+                            return _validate_password(v, s);
+                          },
+                        ),
+
+                        const SizedBox(height: 16), // Space between fields
+
+                        /// Confirmation field to ensure password entry matches.
+                        AuthTextField(
+                          label: s.confirm_password,
+                          hint: s.confirm_password_hint,
+                          controller: _confirm_ctrl,
+                          is_password: true,
+                          text_input_action: TextInputAction.done,
+                          validator: (v) {
+                            if (null == v || v.isEmpty) {
+                              return s.field_required;
+                            } else if (v != _password_ctrl.text) {
+                              return s.password_mismatch;
+                            } else {
+                              return null;
+                            }
+                          },
+                        ),
+
+                        const SizedBox(height: 24), // Bottom padding for scroll
                       ],
                     ),
                   ),
-
-                  const SizedBox(height: 32), // Margin before fields
-
-                  /// Specialized password input field with real-time requirement tracking.
-                  PasswordFieldWithRules(
-                    key: const ValueKey('reset_password_field'),
-                    controller: _password_ctrl,
-                    label: s.new_password_label,
-                    hint: s.new_password_hint,
-                    text_input_action: TextInputAction.next,
-                    validator: (v) {
-                      return _validate_password(v, s);
-                    },
-                  ),
-
-                  const SizedBox(height: 16), // Space between fields
-
-                  /// Confirmation field to ensure password entry matches.
-                  AuthTextField(
-                    label: s.confirm_password,
-                    hint: s.confirm_password_hint,
-                    controller: _confirm_ctrl,
-                    is_password: true,
-                    text_input_action: TextInputAction.done,
-                    validator: (v) {
-                      if (null == v || v.isEmpty) {
-                        return s.field_required;
-                      } else if (v != _password_ctrl.text) {
-                        return s.password_mismatch;
-                      } else {
-                        return null;
-                      }
-                    },
-                  ),
-
-                  const SizedBox(height: 24), // Bottom padding for scroll
-                ],
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

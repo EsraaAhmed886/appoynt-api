@@ -2,12 +2,15 @@
  * File Name: otp_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
- * Version Information: V1.0.0
+ * Version Information: V1.1.0
  * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart,
  *   package:appoynt_mobile_app/features/auth/presentation/widgets/otp_box.dart,
- *   package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart
+ *   package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart,
+ *   package:flutter_bloc/flutter_bloc.dart,
+ *   package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart,
+ *   package:appoynt_mobile_app/core/di/service_locator.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 23/07/2026]
  * File Description: The OTP Verification screen. It handles the input of a 6-digit code,
  *   manages a resend timer, and follows the centralized design system.
  */
@@ -20,6 +23,12 @@ import 'package:appoynt_mobile_app/core/routing/route_export.dart';
 import 'package:appoynt_mobile_app/features/auth/presentation/widgets/otp_box.dart';
 // Centralized auth widgets barrel file
 import 'package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart';
+// Importing bloc consumer and provider utilities
+import 'package:flutter_bloc/flutter_bloc.dart';
+// Importing auth business state controller cubit definitions
+import 'package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart';
+// Importing dependency injection service locator setup representation
+import 'package:appoynt_mobile_app/core/di/service_locator.dart';
 
 /// The main OTP verification screen widget.
 class OtpPage extends StatefulWidget {
@@ -64,9 +73,6 @@ class _OtpPageState extends State<OtpPage> {
 
   /// Reference to the active timer instance.
   Timer? _timer;
-
-  /// Flag tracking whether a verification request is in progress.
-  bool _is_loading = false;
 
   @override
   void initState() {
@@ -190,7 +196,7 @@ class _OtpPageState extends State<OtpPage> {
   }
 
   /// Orchestrates the verification process.
-  void _verify() async {
+  void _verify(BuildContext verification_context) {
     /// Blocking execution if the code is incomplete.
     if (false == _is_filled) {
       return;
@@ -198,21 +204,8 @@ class _OtpPageState extends State<OtpPage> {
       // Proceed with verification if OTP is complete
     }
 
-    /// Activating the loading state.
-    setState(() {
-      _is_loading = true;
-    });
-
-    /// Simulating a network request for OTP validation.
-    await Future.delayed(const Duration(seconds: 2));
-
-    if (mounted) {
-      /// Deactivating loading and triggering the success callback.
-      setState(() {
-        _is_loading = false;
-      });
-      widget.on_verified();
-    }
+    // Dispatch verify otp event to AuthCubit
+    verification_context.read<AuthCubit>().verify_otp(_otp);
   }
 
   /// Converts the raw seconds count into a MM:SS formatted string.
@@ -235,203 +228,223 @@ class _OtpPageState extends State<OtpPage> {
     final Color background_color = true == is_dark
         ? AppColors.background_dark
         : AppColors.background_light;
-    final Color text_primary = true == is_dark
-        ? AppColors.text_dark_primary
-        : AppColors.text_light_primary;
     final Color text_secondary = true == is_dark
         ? AppColors.text_dark_secondary
         : AppColors.text_light_secondary;
-    final Color border_color =
-        true == is_dark ? AppColors.border_dark : AppColors.border_light;
-    final Color card_color =
-        true == is_dark ? AppColors.surface_dark : Colors.white;
 
-    return Scaffold(
-      backgroundColor: background_color, // Applying theme background color
-      body: SafeArea(
-        child: Padding(
-          padding:
-              const EdgeInsets.symmetric(horizontal: 24), // Content padding
-          child: Column(
-            crossAxisAlignment:
-                CrossAxisAlignment.center, // Centering all children
-            children: [
-              const SizedBox(height: 12), // Top margin
+    // Return BlocProvider setting up AuthCubit on top of the tree
+    return BlocProvider<AuthCubit>(
+      // Create and initialize new auth cubit instance
+      create: (context) {
+        // Return initialized auth cubit resolved from service locator container
+        return get_it<AuthCubit>();
+      },
+      // Bind consumer widget to intercept state changes
+      child: BlocConsumer<AuthCubit, AuthState>(
+        // Listener callback intercepts transition changes
+        listener: (context, state) {
+          // Check if verification succeeds using Yoda style check
+          if (state is AuthSuccess) {
+            // Trigger OTP verification success callback
+            widget.on_verified();
+          } else {
+            // Empty action block to satisfy compiler
+          }
+        },
+        // Builder rendering UI components based on state updates
+        builder: (context, state) {
+          // Return Scaffold container layout settings
+          return Scaffold(
+            backgroundColor: background_color, // Applying theme background color
+            body: SafeArea(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24), // Content padding
+                child: Column(
+                  crossAxisAlignment:
+                      CrossAxisAlignment.center, // Centering all children
+                  children: [
+                    const SizedBox(height: 12), // Top margin
 
-              /// Navigation and language control row.
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  /// Standard back button with localized icon direction.
-                  GestureDetector(
-                    onTap: widget.on_back,
-                    child: Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        color:
-                            card_color, // Standard white background or dark surface
-                        borderRadius:
-                            BorderRadius.circular(10), // Rounded corners
-                        border:
-                            Border.all(color: border_color), // Subtle border
-                      ),
-                      // RotatedBox to mirror the back chevron icon in Arabic
-                      // RTL mode (BUG-012)
-                      child: RotatedBox(
-                        // Quarter turns set to 0 to keep the back chevron
-                        // pointing left in both languages
-                        quarterTurns: 0,
-                        // Chevron back icon widget
-                        child: Icon(
-                          // Back chevron icon representation
-                          Icons.arrow_back_ios_new_rounded,
-                          // Set size constraint
-                          size: 16,
-                          // Primary icon color
-                          color: text_primary,
+                    /// Navigation and language control row.
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        /// Standard back button with localized icon direction.
+                        // Reusable squircle back button component
+                        AppBackButton(onTap: widget.on_back),
+
+                        /// Globally centralized language switching button.
+                        GlobalLanguageButton(
+                          is_arabic: is_arabic,
+                          on_tap: widget.on_toggle_language,
+                          light: false, // Standard dark mode icons
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 40), // Space before title
+
+                    /// Header section containing title and descriptive subtitle.
+                    Text(
+                      s.enter_your_code,
+                      style: AppTextStyles.get_otp_title(
+                          is_arabic), // Localized typography
+                    ),
+                    const SizedBox(height: 8), // Vertical spacing
+                    Text(
+                      s.enter_otp_subtitle,
+                      textAlign: TextAlign.center,
+                      style: AppTextStyles.get_otp_subtitle(
+                          is_arabic), // Localized body style
+                    ),
+                    // Spacing/Container block for validation error feedback message (FR-15 / Logic Log)
+                    const SizedBox(height: AppSpacing.space_s),
+                    // Fixed-height container to prevent layout shifting
+                    SizedBox(
+                      // Fixed height derived from spacing tokens to satisfy stable UI constraint
+                      height: AppSpacing.error_container_height,
+                      // Draw error feedback text inside center coordinates
+                      child: Center(
+                        // Render error message if state is AuthError (Yoda style check)
+                        child: Text(
+                          // Bind message or empty string based on state type
+                          true == (state is AuthError)
+                              ? (state as AuthError).message
+                              : '',
+                          // Center align paragraph
+                          textAlign: TextAlign.center,
+                          // Apply styling configurations
+                          style: const TextStyle(
+                            // Set brand warning color
+                            color: AppColors.error,
+                            // Scale size relative to labels
+                            fontSize: AppSpacing.font_size_label,
+                            // Emphasize text weight
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
-                  ),
 
-                  /// Globally centralized language switching button.
-                  GlobalLanguageButton(
-                    is_arabic: is_arabic,
-                    on_tap: widget.on_toggle_language,
-                    light: false, // Standard dark mode icons
-                  ),
-                ],
-              ),
+                    const SizedBox(height: 20), // Space before input grid
 
-              const SizedBox(height: 40), // Space before title
-
-              /// Header section containing title and descriptive subtitle.
-              Text(
-                s.enter_your_code,
-                style: AppTextStyles.get_otp_title(
-                    is_arabic), // Localized typography
-              ),
-              const SizedBox(height: 8), // Vertical spacing
-              Text(
-                s.enter_otp_subtitle,
-                textAlign: TextAlign.center,
-                style: AppTextStyles.get_otp_subtitle(
-                    is_arabic), // Localized body style
-              ),
-
-              const SizedBox(height: 40), // Space before input grid
-
-              /// The 6-box OTP entry grid, explicitly forced to LTR for consistent numeric entry.
-              Directionality(
-                textDirection: TextDirection.ltr,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: List.generate(
-                    6,
-                    (i) => OtpBox(
-                      // Mapping text controller
-                      controller: _ctrls[i],
-                      // Mapping focus node
-                      focusNode: _nodes[i],
-                      // Mapping change logic
-                      onChanged: (v) =>
-                          _on_digit_changed(i, v),
-                      // Enable sequentially based on previous field filled status (BUG-010)
-                      enabled: 0 == i || _ctrls[i - 1].text.isNotEmpty,
-                    ),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 28), // Space before timer row
-
-              /// Resend action row with active countdown.
-              Row(
-                // Center row elements horizontally
-                mainAxisAlignment: MainAxisAlignment.center,
-                // Children list
-                children: [
-                  /// Clickable label for resending the code (enabled only when timer is 0).
-                  GestureDetector(
-                    // Trigger timer restart on tap if time is up
-                    onTap: 0 == _seconds_left ? _start_timer : null,
-                    // Text label widget
-                    child: Text(
-                      // Localized label string
-                      s.send_code_again,
-                      // Styling configurations
-                      style: TextStyle(
-                        // Font size
-                        fontSize: 14,
-                        // Emphasized bold weight
-                        fontWeight: FontWeight.w700,
-                        /// Highlighting color based on availability.
-                        color: 0 == _seconds_left
-                            ? AppColors.primary_color
-                            : text_secondary,
+                    /// The 6-box OTP entry grid, explicitly forced to LTR for consistent numeric entry.
+                    Directionality(
+                      textDirection: TextDirection.ltr,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: List.generate(
+                          6,
+                          (i) => OtpBox(
+                            // Mapping text controller
+                            controller: _ctrls[i],
+                            // Mapping focus node
+                            focusNode: _nodes[i],
+                            // Mapping change logic
+                            onChanged: (v) =>
+                                _on_digit_changed(i, v),
+                            // Enable sequentially based on previous field filled status (BUG-010)
+                            enabled: 0 == i || _ctrls[i - 1].text.isNotEmpty,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                  // Conditionally show spacing and timer widget only if countdown
-                  // remains active (BUG-005)
-                  if (_seconds_left > 0) ...[
-                    // Horizontal spacing gap
-                    const SizedBox(width: 6),
-                    // Timer text label widget showing countdown seconds left
-                    Text(
-                      // Format remaining seconds as MM:SS
-                      _format_time(_seconds_left),
-                      // Localized timer text style
-                      style: AppTextStyles.get_otp_timer(is_arabic),
+
+                    const SizedBox(height: 28), // Space before timer row
+
+                    /// Resend action row with active countdown.
+                    Row(
+                      // Center row elements horizontally
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      // Children list
+                      children: [
+                        /// Clickable label for resending the code (enabled only when timer is 0).
+                        GestureDetector(
+                          // Trigger timer restart on tap if time is up
+                          onTap: 0 == _seconds_left ? _start_timer : null,
+                          // Text label widget
+                          child: Text(
+                            // Localized label string
+                            s.send_code_again,
+                            // Styling configurations
+                            style: TextStyle(
+                              // Font size
+                              fontSize: 14,
+                              // Emphasized bold weight
+                              fontWeight: FontWeight.w700,
+                              /// Highlighting color based on availability.
+                              color: 0 == _seconds_left
+                                  ? AppColors.primary_color
+                                  : text_secondary,
+                            ),
+                          ),
+                        ),
+                        // Conditionally show spacing and timer widget only if countdown
+                        // remains active (BUG-005)
+                        if (_seconds_left > 0) ...[
+                          // Horizontal spacing gap
+                          const SizedBox(width: 6),
+                          // Timer text label widget showing countdown seconds left
+                          Text(
+                            // Format remaining seconds as MM:SS
+                            _format_time(_seconds_left),
+                            // Localized timer text style
+                            style: AppTextStyles.get_otp_timer(is_arabic),
+                          ),
+                        ],
+                      ],
                     ),
+
+                    const SizedBox(height: 20), // Margin before info card
+
+                    /// Information card providing context about the sent code.
+                    Container(
+                      width: double.infinity,
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                      decoration: BoxDecoration(
+                        /// Subtle brand-themed background fill.
+                        color: AppColors.primary_color.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        s.sent_code_info,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 13,
+
+                          /// Using a slightly transparent variant of primary color.
+                          color: AppColors.primary_color.withValues(alpha: 0.9),
+                          height: 1.5,
+                        ),
+                      ),
+                    ),
+
+                    const Spacer(), // Pushing the button to the bottom
+
+                    /// Primary verification action button.
+                    AuthButton(
+                      // Localized action string
+                      label: s.verify,
+                      // Enable only when all 6 boxes are completed using Yoda style check
+                      is_enabled: _is_filled,
+                      // Submission callback
+                      on_pressed: () {
+                        // Trigger verification under context
+                        _verify(context);
+                      },
+                      // Loading state indicator
+                      is_loading: state is AuthLoading,
+                    ),
+
+                    const SizedBox(height: 32), // Bottom safe margin
                   ],
-                ],
-              ),
-
-              const SizedBox(height: 20), // Margin before info card
-
-              /// Information card providing context about the sent code.
-              Container(
-                width: double.infinity,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                decoration: BoxDecoration(
-                  /// Subtle brand-themed background fill.
-                  color: AppColors.primary_color.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  s.sent_code_info,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 13,
-
-                    /// Using a slightly transparent variant of primary color.
-                    color: AppColors.primary_color.withValues(alpha: 0.9),
-                    height: 1.5,
-                  ),
                 ),
               ),
-
-              const Spacer(), // Pushing the button to the bottom
-
-              /// Primary verification action button.
-              AuthButton(
-                // Localized action string
-                label: s.verify,
-                // Enable only when all 6 boxes are completed using Yoda style check
-                is_enabled: _is_filled,
-                // Submission callback
-                on_pressed: _verify,
-                // Loading state indicator
-                is_loading: _is_loading,
-              ),
-
-              const SizedBox(height: 32), // Bottom safe margin
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }

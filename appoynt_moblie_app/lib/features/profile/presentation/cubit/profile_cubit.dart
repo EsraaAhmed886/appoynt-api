@@ -505,14 +505,14 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   // Add diagnostic reports tests or scans file attachment metadata
   void add_test_result(
-      String doc_name,
-      String upload_date,
-      String file_path,
-      String scan_type, {
-      String? facility_name,
-      String status = 'normal',
-      String? doctor_name,
-      String? notes,
+    String doc_name,
+    String upload_date,
+    String file_path,
+    String scan_type, {
+    String? facility_name,
+    String status = 'normal',
+    String? doctor_name,
+    String? notes,
   }) {
     // Verify attachment name parameter is valid
     if (doc_name.trim().isEmpty) {

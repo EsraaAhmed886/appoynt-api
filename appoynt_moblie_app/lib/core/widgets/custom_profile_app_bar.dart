@@ -50,56 +50,13 @@ class CustomProfileAppBar extends StatelessWidget {
       // Space out leading, center, and trailing slots evenly
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // ── Leading Slot: Circular Back Button OR Empty Spacer ─────────────
+        // ── Leading Slot: Squircle Back Button OR Empty Spacer ─────────────
         // When show_back_button is false (root tab), render an invisible
         // 40px spacer to maintain symmetric title centering.
         if (true == show_back_button) ...
           [
-            // Back button GestureDetector tap target
-            GestureDetector(
-              // Use custom handler if provided, else fall back to maybePop
-              onTap: onBackPressed ?? () => Navigator.of(context).maybePop(),
-              child: Container(
-                // Circular button size
-                width: 40.0,
-                height: 40.0,
-                // Circular decoration with shadow
-                decoration: BoxDecoration(
-                  // Surface background adapts to theme
-                  color: true == is_dark ? AppColors.surface_dark : Colors.white,
-                  // Perfect circle shape
-                  shape: BoxShape.circle,
-                  // Thin border outline
-                  border: Border.all(
-                    color: true == is_dark
-                        ? AppColors.border_dark
-                        : const Color(0xFFE2E8F0),
-                    // Border width
-                    width: 1.0,
-                  ),
-                  // Soft ambient shadow
-                  boxShadow: [
-                    BoxShadow(
-                      color: true == is_dark
-                          ? Colors.black26
-                          : Colors.black.withValues(alpha: 0.05),
-                      // Blur spread
-                      blurRadius: 8.0,
-                      // Vertical offset
-                      offset: const Offset(0.0, 2.0),
-                    ),
-                  ],
-                ),
-                child: Icon(
-                  // Standard left-pointing back arrow
-                  Icons.arrow_back,
-                  // Adaptive icon color
-                  color: true == is_dark ? Colors.white : AppColors.text_light_primary,
-                  // Icon display size
-                  size: 20.0,
-                ),
-              ),
-            ),
+            // Standardized reusable squircle back button
+            AppBackButton(onTap: onBackPressed),
           ]
         else ...
           [
@@ -136,6 +93,76 @@ class CustomProfileAppBar extends StatelessWidget {
         // whether the back button is shown on the leading side.
         const SizedBox(width: 40.0),
       ],
+    );
+  }
+}
+
+/// A standardized Squircle Back Button component matching modern design specifications.
+class AppBackButton extends StatelessWidget {
+  /// Optional click callback override
+  final VoidCallback? onTap;
+
+  /// Constructor mapping standard callback handler
+  const AppBackButton({
+    super.key,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Resolve dark theme brightness mode configuration
+    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+
+    // GestureDetector intercepts user navigation tap gestures
+    return GestureDetector(
+      // Execute callback or default to popping navigation stack
+      onTap: onTap ?? () => Navigator.of(context).maybePop(),
+      child: Container(
+        // Standard touch target side dimension constraint (40px)
+        width: 40.0,
+        // Standard touch target height constraint (40px)
+        height: 40.0,
+        // Visual container styling decoration
+        decoration: BoxDecoration(
+          // Resolve background color adapting to theme mode (Yoda style check)
+          color: true == is_dark ? AppColors.surface_dark : Colors.white,
+          // Rounded Rectangle Squircle corners derived from spacing tokens (12px)
+          borderRadius: BorderRadius.circular(AppSpacing.radius_l),
+          // Subtle border outline bounds resolving
+          border: Border.all(
+            // Resolve border color adapting to theme mode (Yoda style check)
+            color: true == is_dark
+                ? AppColors.border_dark
+                : const Color(0xFFE2E8F0),
+            // Thin border line width derived from spacing tokens (1px)
+            width: AppSpacing.border_width_thin,
+          ),
+          // Soft ambient drop-shadow
+          boxShadow: [
+            BoxShadow(
+              // Resolve shadow color adapting to theme mode (Yoda style check)
+              color: true == is_dark
+                  ? Colors.black26
+                  : Colors.black.withValues(alpha: 0.05),
+              // Blur spread
+              blurRadius: 8.0,
+              // Shadow offset coordinates (2px offset)
+              offset: const Offset(0.0, 2.0),
+            ),
+          ],
+        ),
+        // Position icon centered inside bounds
+        child: Icon(
+          // Use modern clean angular back chevron
+          Icons.arrow_back_ios_new_rounded,
+          // Select icon color dynamically (Yoda style check)
+          color: true == is_dark ? Colors.white : AppColors.text_light_primary,
+          // Chevron display size constraint (18px)
+          size: 18.0,
+          // Text direction override for automatic RTL/LTR flipping
+          textDirection: Directionality.of(context),
+        ),
+      ),
     );
   }
 }
