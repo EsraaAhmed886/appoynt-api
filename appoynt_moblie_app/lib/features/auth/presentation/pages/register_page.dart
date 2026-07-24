@@ -457,10 +457,6 @@ class _RegisterPageState extends State<RegisterPage> {
         builder: (context, state) {
           // Return Scaffold container layout settings
           return Scaffold(
-            // Apply background color dynamics adapting to brightness modes using Yoda style check
-            backgroundColor: true == is_dark
-                ? AppColors.background_dark
-                : AppColors.background_light,
             // Wrap contents in SafeArea layout structure to bypass top display notches
             body: SafeArea(
               // Wrap contents inside horizontal margins spacing scroll view

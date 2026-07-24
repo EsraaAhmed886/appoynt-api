@@ -179,14 +179,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     /// Retrieving localized strings and directionality info.
     final s = AppStrings.of(context);
     final bool is_arabic = s.is_arabic;
-    
-    /// Check if system brightness matches dark mode.
-    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
-    
-    /// Dynamically resolved colors.
-    final Color background_color = true == is_dark
-        ? AppColors.background_dark
-        : AppColors.background_light;
 
     // Return BlocProvider setting up AuthCubit on top of the tree
     return BlocProvider<AuthCubit>(
@@ -211,7 +203,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         builder: (context, state) {
           // Return Scaffold container layout settings
           return Scaffold(
-            backgroundColor: background_color, // Applying theme background color
             body: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24), // Content padding

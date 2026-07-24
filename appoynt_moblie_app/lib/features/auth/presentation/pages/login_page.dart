@@ -436,8 +436,6 @@ class _LoginPageState extends State<LoginPage> {
     final AppLocalizations s = AppLocalizations.of(context);
     // Check if Arabic directionality is active
     final bool is_arabic = s.is_arabic;
-    // Check if system brightness is dark mode
-    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
 
     // Return BlocProvider setting up AuthCubit on top of tree
     return BlocProvider<AuthCubit>(
@@ -462,10 +460,6 @@ class _LoginPageState extends State<LoginPage> {
         builder: (context, state) {
           // Return Scaffold container layout settings
           return Scaffold(
-            // Apply background color dynamics adapting to brightness modes using Yoda style check
-            backgroundColor: true == is_dark
-                ? AppColors.background_dark
-                : AppColors.background_light,
             // Wrap contents in SafeArea layout structure to bypass top display notches
             body: SafeArea(
               // Wrap contents inside horizontal margins spacing scroll view

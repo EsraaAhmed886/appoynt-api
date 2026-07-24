@@ -106,14 +106,24 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
       'Allianz Egypt',
     ];
 
+    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+
     // Show modal sheet overlay builder
     showModalBottomSheet(
       // Context
       context: context,
+      backgroundColor: Colors.transparent,
+      barrierColor: AppColors.barrier_color,
       // Builder
       builder: (sheet_context) {
         // Return scrollable list wrapping items
         return Container(
+          decoration: BoxDecoration(
+            color: is_dark ? AppColors.surface_dark : Colors.white,
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(24.0),
+            ),
+          ),
           // Wrap padding margins offsets
           padding: const EdgeInsets.symmetric(
             // Horizontal padding
@@ -271,8 +281,6 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
 
     // Return root Scaffold layout container
     return Scaffold(
-      // Background colors
-      backgroundColor: true == is_dark ? AppColors.background_dark : AppColors.background_light,
       // App bar details
       appBar: AppBar(
         // Center title

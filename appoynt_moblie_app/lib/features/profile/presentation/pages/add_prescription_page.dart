@@ -201,9 +201,6 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
     ];
 
     return Scaffold(
-      // Canvas background color adapts to theme mode
-      backgroundColor:
-          true == is_dark ? AppColors.background_dark : const Color(0xFFF8FAFC),
       // Primary form body wrapped in safe area
       body: SafeArea(
         child: Padding(

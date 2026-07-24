@@ -49,10 +49,6 @@ class _ManageSavedCardsPageState extends State<ManageSavedCardsPage> {
 
     // Return root Scaffold layout container
     return Scaffold(
-      // Apply background color dynamically based on dark modes
-      backgroundColor: true == is_dark
-          ? AppColors.background_dark
-          : AppColors.surface_light.withValues(alpha: 0.5),
       // Body content stack
       body: SafeArea(
         child: Padding(

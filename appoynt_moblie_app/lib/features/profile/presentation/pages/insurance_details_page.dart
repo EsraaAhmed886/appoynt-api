@@ -50,8 +50,6 @@ class _InsuranceDetailsPageState extends State<InsuranceDetailsPage> {
 
     // Return root Scaffold layout container
     return Scaffold(
-      // Background colors
-      backgroundColor: true == is_dark ? AppColors.background_dark : AppColors.background_light,
       // App bar details
       appBar: AppBar(
         // Center title
@@ -248,14 +246,17 @@ class _InsuranceDetailsPageState extends State<InsuranceDetailsPage> {
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: true == is_dark ? AppColors.surface_dark : Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
-      ),
+      backgroundColor: Colors.transparent,
+      barrierColor: AppColors.barrier_color,
       builder: (sheet_context) {
-        return Padding(
-          padding: const EdgeInsets.all(AppSpacing.space_xl),
-          child: Column(
+        return Container(
+          decoration: BoxDecoration(
+            color: true == is_dark ? AppColors.surface_dark : Colors.white,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24.0)),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.space_xl),
+            child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -357,8 +358,9 @@ class _InsuranceDetailsPageState extends State<InsuranceDetailsPage> {
               ),
             ],
           ),
-        );
-      },
+        ),
+      );
+    },
     );
   }
 }

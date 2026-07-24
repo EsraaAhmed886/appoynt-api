@@ -157,17 +157,18 @@ class _EditProfilePageState extends State<EditProfilePage> {
     showModalBottomSheet(
       // context parameter
       context: context,
-      // background color depending on theme brightness
-      backgroundColor: true == is_dark ? AppColors.surface_dark : Colors.white,
-      // Rounded borders at top coordinates
-      shape: const RoundedRectangleBorder(
-        // top radius specs
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
-      ),
+      backgroundColor: Colors.transparent,
+      barrierColor: AppColors.barrier_color,
       // bottom sheet layout builder
       builder: (BuildContext context) {
-        // Safe area wrapper
-        return SafeArea(
+        // Return Container providing sheet background and rounded corners
+        return Container(
+          decoration: BoxDecoration(
+            color: true == is_dark ? AppColors.surface_dark : Colors.white,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24.0)),
+          ),
+          // Safe area wrapper
+          child: SafeArea(
           // Vertical layout column
           child: Column(
             // Minimizing height layout constraints
@@ -228,8 +229,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
               const SizedBox(height: AppSpacing.space_m),
             ],
           ),
-        );
-      },
+        ),
+      );
+    },
     );
   }
 
@@ -462,10 +464,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
         builder: (context, state) {
           // Scaffold display layout setup
           return Scaffold(
-            // Background surface colors
-            backgroundColor: true == is_dark
-                ? AppColors.background_dark
-                : AppColors.background_light,
             // Form layout body containing fields scroll areas
             body: Form(
               // Bind global key

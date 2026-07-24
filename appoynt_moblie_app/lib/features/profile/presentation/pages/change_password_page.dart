@@ -199,14 +199,9 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   Widget build(BuildContext context) {
     // Resolve localized labels context
     final AppLocalizations localizations = AppLocalizations.of(context);
-    // Resolve theme brightness modes status
-    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
 
     // Return root Scaffold layout container
     return Scaffold(
-      // Apply background color dynamically based on dark modes
-      backgroundColor:
-          true == is_dark ? AppColors.background_dark : const Color(0xFFF1F5F9),
       // Body wrap in safe area and scroll view
       body: SafeArea(
         // Scroll view protecting layout bounds

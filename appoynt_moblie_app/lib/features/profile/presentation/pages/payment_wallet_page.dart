@@ -54,10 +54,6 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
 
     // Return root Scaffold layout container
     return Scaffold(
-      // Apply background color dynamically based on dark modes
-      backgroundColor: true == is_dark
-          ? AppColors.background_dark
-          : const Color(0xFFF1F5F9),
       // Body wrap in safe area and scroll view
       body: SafeArea(
         // Scroll view protecting layout bounds

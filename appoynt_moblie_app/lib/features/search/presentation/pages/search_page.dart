@@ -139,8 +139,6 @@ class _SearchPageState extends State<SearchPage> {
 
           // Return base scaffold widget applying off-white background
           return Scaffold(
-            // Dynamic background layout color matching theme modes
-            backgroundColor: true == is_dark ? AppColors.background_dark : AppColors.background_light,
             // Stack overlaying alert confirmation dialogs above body (BR-11/FR-15 wrapper)
             body: Stack(
               // Draw child layouts
@@ -580,22 +578,25 @@ class _SearchPageState extends State<SearchPage> {
     // Array listing available locations data mocks
     final List<String> locations = ["Cairo", "Giza", "Alexandria"];
 
+    // Resolve theme brightness modes status
+    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+
     // Render bottom sheet dialog
     showModalBottomSheet(
       // Expose build context
       context: context,
-      // Design configurations parameters options
-      shape: const RoundedRectangleBorder(
-        // Rounded top corners borders representation
-        borderRadius: BorderRadius.vertical(
-          // Radius value
-          top: Radius.circular(AppSpacing.dummy_doctor_card_radius),
-        ),
-      ),
+      backgroundColor: Colors.transparent,
+      barrierColor: AppColors.barrier_color,
       // Widget builder compiling selector rows list
       builder: (context) {
         // Return column list listing options
         return Container(
+          decoration: BoxDecoration(
+            color: is_dark ? AppColors.surface_dark : Colors.white,
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(24.0),
+            ),
+          ),
           // Padding container edges configurations
           padding: const EdgeInsets.symmetric(
             // Vertical padding
@@ -652,22 +653,25 @@ class _SearchPageState extends State<SearchPage> {
     // Array listing available specialties data mocks
     final List<String> specialties = ["Cardiology", "Neurology", "Pediatrics"];
 
+    // Resolve theme brightness modes status
+    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+
     // Render bottom sheet dialog
     showModalBottomSheet(
       // Expose build context
       context: context,
-      // Design configurations parameters options
-      shape: const RoundedRectangleBorder(
-        // Rounded top corners borders representation
-        borderRadius: BorderRadius.vertical(
-          // Radius value
-          top: Radius.circular(AppSpacing.dummy_doctor_card_radius),
-        ),
-      ),
+      backgroundColor: Colors.transparent,
+      barrierColor: AppColors.barrier_color,
       // Widget builder compiling selector rows list
       builder: (context) {
         // Return column list listing options
         return Container(
+          decoration: BoxDecoration(
+            color: is_dark ? AppColors.surface_dark : Colors.white,
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(24.0),
+            ),
+          ),
           // Padding container edges configurations
           padding: const EdgeInsets.symmetric(
             // Vertical padding
@@ -1213,16 +1217,19 @@ class _SearchPageState extends State<SearchPage> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(AppSpacing.dummy_doctor_card_radius),
-        ),
-      ),
+      backgroundColor: Colors.transparent,
+      barrierColor: AppColors.barrier_color,
       builder: (context) {
         // Return StatefulBuilder to enable local state updates inside modal
         return StatefulBuilder(
           builder: (context, setModalState) {
             return Container(
+              decoration: BoxDecoration(
+                color: is_dark ? AppColors.surface_dark : Colors.white,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(24.0),
+                ),
+              ),
               padding: const EdgeInsets.all(AppSpacing.space_xl),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -1521,18 +1528,21 @@ class _SearchPageState extends State<SearchPage> {
   ) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: is_dark ? AppColors.surface_dark : Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(AppSpacing.dummy_doctor_card_radius),
-        ),
-      ),
+      backgroundColor: Colors.transparent,
+      barrierColor: AppColors.barrier_color,
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setModalState) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+            return Container(
+              decoration: BoxDecoration(
+                color: is_dark ? AppColors.surface_dark : Colors.white,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(24.0),
+                ),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const SizedBox(height: AppSpacing.space_xl),
                 Center(
@@ -1615,12 +1625,13 @@ class _SearchPageState extends State<SearchPage> {
                 ),
                 const SizedBox(height: AppSpacing.space_xl),
               ],
-            );
-          },
-        );
-      },
-    );
-  }
+            ),
+          );
+        },
+      );
+    },
+  );
+}
 
   // Renders a single sorting option list tile component
   Widget _build_sort_option_tile(

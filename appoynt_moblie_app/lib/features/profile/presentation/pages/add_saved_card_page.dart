@@ -179,15 +179,8 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
   @override
   // Build widget layout tree
   Widget build(BuildContext context) {
-    // Resolve theme brightness mode
-    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
-
     // Return root Scaffold layout container
     return Scaffold(
-      // Background colors mapping
-      backgroundColor: true == is_dark
-          ? AppColors.background_dark
-          : AppColors.surface_light.withValues(alpha: 0.5),
       // Body content form layout
       body: SafeArea(
         child: Padding(

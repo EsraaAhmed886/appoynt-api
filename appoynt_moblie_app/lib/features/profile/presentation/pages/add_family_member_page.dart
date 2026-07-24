@@ -101,10 +101,6 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
 
     // Return root Scaffold container
     return Scaffold(
-      // Dynamic background surface colors
-      backgroundColor: true == is_dark
-          ? AppColors.background_dark
-          : AppColors.surface_light.withValues(alpha: 0.5),
       // Sticky bottom navigation bar for the Save Profile button
       bottomNavigationBar: SafeArea(
         // Sticky container wrapper

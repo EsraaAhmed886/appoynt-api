@@ -44,16 +44,19 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
   void _show_language_bottom_sheet(BuildContext context, AppLocalizations localizations, bool is_dark) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: is_dark ? AppColors.surface_dark : Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
-      ),
+      backgroundColor: Colors.transparent,
+      barrierColor: AppColors.barrier_color,
       builder: (modal_context) {
         final bool is_arabic = localizations.is_arabic;
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
+        return Container(
+          decoration: BoxDecoration(
+            color: is_dark ? AppColors.surface_dark : Colors.white,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24.0)),
+          ),
+          child: SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
               const SizedBox(height: 12.0),
               Center(
                 child: Container(
@@ -99,8 +102,9 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
               const SizedBox(height: 20.0),
             ],
           ),
-        );
-      },
+        ),
+      );
+    },
     );
   }
 
@@ -108,19 +112,22 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
   void _show_theme_bottom_sheet(BuildContext context, AppLocalizations localizations, bool is_dark) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: is_dark ? AppColors.surface_dark : Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
-      ),
+      backgroundColor: Colors.transparent,
+      barrierColor: AppColors.barrier_color,
       builder: (modal_context) {
         return ListenableBuilder(
           listenable: theme_mode_notifier,
           builder: (builder_context, child) {
             final ThemeMode currentMode = theme_mode_notifier.current_theme_mode;
-            return SafeArea(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
+            return Container(
+              decoration: BoxDecoration(
+                color: is_dark ? AppColors.surface_dark : Colors.white,
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(24.0)),
+              ),
+              child: SafeArea(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
                   const SizedBox(height: 12.0),
                   Center(
                     child: Container(
@@ -174,12 +181,13 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
                   const SizedBox(height: 20.0),
                 ],
               ),
-            );
-          },
-        );
-      },
-    );
-  }
+            ),
+          );
+        },
+      );
+    },
+  );
+}
 
   // Show legal & terms modal bottom sheet
   void _show_legal_modal({
@@ -191,14 +199,17 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
   }) {
     showModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
-      ),
-      backgroundColor: is_dark ? AppColors.surface_dark : Colors.white,
+      backgroundColor: Colors.transparent,
+      barrierColor: AppColors.barrier_color,
       builder: (modal_context) {
-        return Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
+        return Container(
+          decoration: BoxDecoration(
+            color: is_dark ? AppColors.surface_dark : Colors.white,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24.0)),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -254,10 +265,11 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
               ),
             ],
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
+    },
+  );
+}
 
   // Section Group Card layout helper container
   Widget _build_section_card({
@@ -402,7 +414,6 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
 
     // Return root Scaffold layout container
     return Scaffold(
-      backgroundColor: is_dark ? AppColors.background_dark : const Color(0xFFF8FAFC),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(

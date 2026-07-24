@@ -125,9 +125,6 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      // Canvas background color adapts to theme mode
-      backgroundColor:
-          true == is_dark ? AppColors.background_dark : const Color(0xFFF8FAFC),
       // ── Sticky bottom "+ Add New Medication" action bar ─────────────────
       bottomNavigationBar: SafeArea(
         // Apply 16px padding on all sides for safe inset clearance

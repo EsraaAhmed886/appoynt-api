@@ -159,15 +159,9 @@ class _MedicalContextPageState extends State<MedicalContextPage> {
   Widget build(BuildContext context) {
     // Resolve localizations context properties
     final AppLocalizations localizations = AppLocalizations.of(context);
-    // Resolve theme brightness mode
-    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
 
     // Return root Scaffold layout container
     return Scaffold(
-      // Background colors
-      backgroundColor: true == is_dark
-          ? AppColors.background_dark
-          : const Color(0xFFF1F5F9),
       // SafeArea protect
       body: SafeArea(
         // Scroll view

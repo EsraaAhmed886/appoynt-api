@@ -275,7 +275,6 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
 
     // Return root Scaffold layout container
     return Scaffold(
-      backgroundColor: is_dark ? AppColors.background_dark : const Color(0xFFF8FAFC),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(

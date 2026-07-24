@@ -21,6 +21,12 @@ class AppColors {
   // Background color constant representation for the light theme mode
   static const Color background_light = Color(0xFFFFFFFF);
 
+  // Background color constant representation for the light theme mode scaffold
+  static const Color scaffold_light = Color(0xFFF8FAFC);
+
+  // Soft, modern dimming barrier overlay color representation (black with 0.3 opacity)
+  static const Color barrier_color = Color(0x4D000000);
+
   // Background color constant representation for the dark theme mode (lighter dark gray)
   static const Color background_dark = Color(0xFF121212);
 

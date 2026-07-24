@@ -131,9 +131,6 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
 
     // Return root Scaffold layout container
     return Scaffold(
-      // Background canvas contrast color
-      backgroundColor:
-          true == is_dark ? AppColors.background_dark : const Color(0xFFF1F5F9),
       // SafeArea protecting mobile notch bounds
       body: SafeArea(
         // Padding safe side margins

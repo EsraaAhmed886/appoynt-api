@@ -442,9 +442,6 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
 
     // Return root Scaffold layout container
     return Scaffold(
-      // Background colors canvas
-      backgroundColor:
-          is_dark ? AppColors.background_dark : const Color(0xFFF8FAFC),
       // App bar details
       appBar: AppBar(
         centerTitle: true,

@@ -44,15 +44,9 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     // Resolve localizations context configuration
     final AppLocalizations localizations = AppLocalizations.of(context);
-    // Resolve dark mode status using brightness context queries
-    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
 
     // Return the root Scaffold page container layout settings
     return Scaffold(
-      // Apply background color dynamically based on dark mode configuration
-      backgroundColor: true == is_dark
-          ? AppColors.background_dark
-          : AppColors.background_light,
       // Build the bottom navigation bar widget using the reusable AppBottomNavBar component
       bottomNavigationBar: AppBottomNavBar(
         // Pass active selected index

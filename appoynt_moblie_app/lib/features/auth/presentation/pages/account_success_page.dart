@@ -103,10 +103,6 @@ class _AccountSuccessPageState extends State<AccountSuccessPage>
     /// Check if system brightness matches dark mode.
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     
-    /// Dynamically resolved colors.
-    final Color background_color = true == is_dark
-        ? AppColors.background_dark
-        : AppColors.background_light;
     final Color text_primary = true == is_dark
         ? AppColors.text_dark_primary
         : AppColors.text_light_primary;
@@ -115,7 +111,6 @@ class _AccountSuccessPageState extends State<AccountSuccessPage>
         : AppColors.text_light_secondary;
 
     return Scaffold(
-      backgroundColor: background_color, // Applying theme background color
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 32), // content padding

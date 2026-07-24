@@ -389,8 +389,6 @@ class _AllergiesPageState extends State<AllergiesPage> {
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor:
-          true == is_dark ? AppColors.background_dark : const Color(0xFFF8FAFC),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space_xl),

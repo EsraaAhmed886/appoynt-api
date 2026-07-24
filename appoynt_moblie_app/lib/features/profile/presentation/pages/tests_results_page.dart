@@ -53,7 +53,6 @@ class _TestsResultsPageState extends State<TestsResultsPage> {
 
     // Return root Scaffold layout container
     return Scaffold(
-      backgroundColor: true == is_dark ? AppColors.background_dark : AppColors.background_light,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space_xl),

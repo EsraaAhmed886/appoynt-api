@@ -225,9 +225,6 @@ class _OtpPageState extends State<OtpPage> {
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
 
     /// Dynamically resolved color schemes.
-    final Color background_color = true == is_dark
-        ? AppColors.background_dark
-        : AppColors.background_light;
     final Color text_secondary = true == is_dark
         ? AppColors.text_dark_secondary
         : AppColors.text_light_secondary;
@@ -255,7 +252,6 @@ class _OtpPageState extends State<OtpPage> {
         builder: (context, state) {
           // Return Scaffold container layout settings
           return Scaffold(
-            backgroundColor: background_color, // Applying theme background color
             body: SafeArea(
               child: Padding(
                 padding:

@@ -103,10 +103,6 @@ class _PasswordSuccessPageState extends State<PasswordSuccessPage>
     // Check if standard system brightness matches dark theme mode
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
 
-    // Resolve ambient layout background color token using Yoda style check
-    final Color background_color =
-        true == is_dark ? AppColors.background_dark : AppColors.background_light;
-
     // Resolve primary text color token using Yoda style check
     final Color text_primary =
         true == is_dark ? AppColors.text_dark_primary : AppColors.text_light_primary;
@@ -117,8 +113,6 @@ class _PasswordSuccessPageState extends State<PasswordSuccessPage>
 
     // Return scaffold setting background color
     return Scaffold(
-      // Apply theme background color
-      backgroundColor: background_color,
       // SafeArea container to prevent notch overlays
       body: SafeArea(
         // Padding widget structuring content spacing bounds

@@ -634,8 +634,6 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
         : 'Chronic Conditions profile saved successfully.';
 
     return Scaffold(
-      backgroundColor:
-          true == is_dark ? AppColors.background_dark : const Color(0xFFF8FAFC),
       body: SafeArea(
         child: BlocBuilder<ProfileCubit, ProfileState>(
           builder: (context, state) {

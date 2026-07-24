@@ -124,10 +124,6 @@ class _ProfilePageState extends State<ProfilePage> {
         } else {
           // Render success patient details layout configurations
           return Scaffold(
-            // Apply background color dynamically based on dark modes
-            backgroundColor: true == is_dark
-                ? AppColors.background_dark
-                : const Color(0xFFF1F5F9),
             // SingleChildScrollView protecting text displays layout boundaries
             body: SingleChildScrollView(
               // Set column listing sections

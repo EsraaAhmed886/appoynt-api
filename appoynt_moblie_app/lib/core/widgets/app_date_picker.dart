@@ -550,6 +550,8 @@ Future<DateTime?> showAppDatePicker({
   return showDialog<DateTime>(
     // Pass active build context
     context: context,
+    // Apply soft dimming overlay barrier color
+    barrierColor: AppColors.barrier_color,
     // Enable clicks outside boundaries dismissals
     barrierDismissible: true,
     // Dialog content builder
