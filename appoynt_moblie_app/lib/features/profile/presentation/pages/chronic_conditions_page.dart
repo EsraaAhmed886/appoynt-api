@@ -644,9 +644,11 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
               children: [
                 // Top navigation header sitting directly on native screen canvas
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.space_xl,
-                    vertical: AppSpacing.space_m,
+                  padding: const EdgeInsets.only(
+                    left: AppSpacing.space_xl,
+                    right: AppSpacing.space_xl,
+                    top: AppSpacing.space_xl,
+                    bottom: AppSpacing.space_m,
                   ),
                   child: CustomProfileAppBar(
                     title: localizations.chronic_title,

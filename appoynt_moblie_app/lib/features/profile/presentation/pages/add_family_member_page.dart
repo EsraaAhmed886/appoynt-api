@@ -181,9 +181,11 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
           // Scroll padding boundaries
           child: Padding(
             // Margins space
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.space_xl,
-              vertical: AppSpacing.space_m,
+            padding: const EdgeInsets.only(
+              left: AppSpacing.space_xl,
+              right: AppSpacing.space_xl,
+              top: AppSpacing.space_xl,
+              bottom: AppSpacing.space_m,
             ),
             // Form layout wrapper
             child: Form(

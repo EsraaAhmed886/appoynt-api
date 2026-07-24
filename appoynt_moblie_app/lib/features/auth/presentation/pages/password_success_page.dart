@@ -119,15 +119,6 @@ class _PasswordSuccessPageState extends State<PasswordSuccessPage>
     return Scaffold(
       // Apply theme background color
       backgroundColor: background_color,
-      // Transparent appbar containing custom back arrow
-      appBar: AppBar(
-        // Transparent fill settings
-        backgroundColor: Colors.transparent,
-        // Flat shadow settings
-        elevation: 0.0,
-        // Disable automatic leading icon implication (BUG-011)
-        automaticallyImplyLeading: false,
-      ),
       // SafeArea container to prevent notch overlays
       body: SafeArea(
         // Padding widget structuring content spacing bounds

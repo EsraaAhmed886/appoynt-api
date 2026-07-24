@@ -138,9 +138,11 @@ class _ProfilePageState extends State<ProfilePage> {
                   SafeArea(
                     // Inner padding
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.space_xl,
-                        vertical: AppSpacing.space_m,
+                      padding: const EdgeInsets.only(
+                        left: AppSpacing.space_xl,
+                        right: AppSpacing.space_xl,
+                        top: AppSpacing.space_xl,
+                        bottom: AppSpacing.space_m,
                       ),
                       // Column aligning top row, avatar, name, and email details
                       child: Column(

@@ -214,7 +214,7 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Top gap spacer before AppBar
-              const SizedBox(height: AppSpacing.space_m),
+              const SizedBox(height: AppSpacing.space_xl),
 
               // ── Standard back navigation header ─────────────────────
               CustomProfileAppBar(

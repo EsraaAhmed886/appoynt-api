@@ -490,7 +490,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   // inputs list array
                   children: [
                     // Top vertical space margin
-                    const SizedBox(height: AppSpacing.space_s),
+                    const SizedBox(height: AppSpacing.space_xl),
                     // Top row containing custom back button
                     CustomProfileAppBar(
                       title: localizations.profile_update_profile_button,

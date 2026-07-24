@@ -157,12 +157,12 @@ class _SearchPageState extends State<SearchPage> {
                       children: [
                         // Padding container hosting search bar and filter chips
                         Padding(
-                          // Edges padding configuration matching layout rules
-                          padding: const EdgeInsets.symmetric(
-                            // Horizontal padding offset
-                            horizontal: AppSpacing.space_xl,
-                            // Vertical padding offset
-                            vertical: AppSpacing.space_l,
+                          // Edges padding configuration matching layout rules (including top notch safety spacing)
+                          padding: const EdgeInsets.only(
+                            left: AppSpacing.space_xl,
+                            right: AppSpacing.space_xl,
+                            top: AppSpacing.space_xl,
+                            bottom: AppSpacing.space_l,
                           ),
                           // Vertical layout listing search bar and chips
                           child: Column(

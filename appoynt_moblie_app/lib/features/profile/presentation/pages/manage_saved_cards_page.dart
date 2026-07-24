@@ -60,7 +60,7 @@ class _ManageSavedCardsPageState extends State<ManageSavedCardsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: AppSpacing.space_m),
+              const SizedBox(height: AppSpacing.space_xl),
               const CustomProfileAppBar(
                 title: 'Manage Saved Cards',
               ),

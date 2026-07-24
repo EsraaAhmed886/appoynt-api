@@ -195,7 +195,7 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: AppSpacing.space_m),
+              const SizedBox(height: AppSpacing.space_xl),
               const CustomProfileAppBar(
                 title: 'Add New Card',
               ),

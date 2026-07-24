@@ -214,11 +214,11 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
           // Outer padding margins (strictly 16px lateral padding)
           child: Padding(
             // Margins boundaries
-            padding: const EdgeInsets.symmetric(
-              // Horizontal offset (16px)
-              horizontal: AppSpacing.space_xl,
-              // Vertical offset
-              vertical: AppSpacing.space_m,
+            padding: const EdgeInsets.only(
+              left: AppSpacing.space_xl,
+              right: AppSpacing.space_xl,
+              top: AppSpacing.space_xl,
+              bottom: AppSpacing.space_m,
             ),
             // BLoC consumer tracking password status
             child: BlocConsumer<ProfileCubit, ProfileState>(

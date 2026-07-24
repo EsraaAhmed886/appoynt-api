@@ -465,8 +465,13 @@ class _RegisterPageState extends State<RegisterPage> {
             body: SafeArea(
               // Wrap contents inside horizontal margins spacing scroll view
               child: SingleChildScrollView(
-                // Apply layout horizontal padding margins using spacing constants
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space_xxl),
+                // Apply layout padding margins using spacing constants (including top notch spacing)
+                padding: const EdgeInsets.only(
+                  left: AppSpacing.space_xxl,
+                  right: AppSpacing.space_xxl,
+                  top: AppSpacing.space_xl,
+                  bottom: AppSpacing.space_xl,
+                ),
                 // child Form container wrapping fields validation
                 child: Form(
                   // Bind global identification key

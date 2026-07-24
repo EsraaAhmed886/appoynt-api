@@ -279,9 +279,11 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.space_xl,
-              vertical: AppSpacing.space_m,
+            padding: const EdgeInsets.only(
+              left: AppSpacing.space_xl,
+              right: AppSpacing.space_xl,
+              top: AppSpacing.space_xl,
+              bottom: AppSpacing.space_m,
             ),
             child: BlocBuilder<ProfileCubit, ProfileState>(
               builder: (bloc_context, state) {

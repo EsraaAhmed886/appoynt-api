@@ -138,9 +138,11 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
       body: SafeArea(
         // Padding safe side margins
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.space_xl,
-            vertical: AppSpacing.space_m,
+          padding: const EdgeInsets.only(
+            left: AppSpacing.space_xl,
+            right: AppSpacing.space_xl,
+            top: AppSpacing.space_xl,
+            bottom: AppSpacing.space_m,
           ),
           // Column grouping header bar and vertical list
           child: Column(

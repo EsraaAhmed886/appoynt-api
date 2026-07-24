@@ -406,9 +406,11 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.space_xl,
-              vertical: AppSpacing.space_m,
+            padding: const EdgeInsets.only(
+              left: AppSpacing.space_xl,
+              right: AppSpacing.space_xl,
+              top: AppSpacing.space_xl,
+              bottom: AppSpacing.space_m,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

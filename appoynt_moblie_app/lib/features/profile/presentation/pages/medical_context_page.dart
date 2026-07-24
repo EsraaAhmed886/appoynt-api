@@ -175,11 +175,11 @@ class _MedicalContextPageState extends State<MedicalContextPage> {
           // Padding
           child: Padding(
             // Margins strictly at 16px safe side boundaries
-            padding: const EdgeInsets.symmetric(
-              // Horizontal boundaries padding
-              horizontal: AppSpacing.space_xl,
-              // Vertical boundaries padding
-              vertical: AppSpacing.space_m,
+            padding: const EdgeInsets.only(
+              left: AppSpacing.space_xl,
+              right: AppSpacing.space_xl,
+              top: AppSpacing.space_xl,
+              bottom: AppSpacing.space_m,
             ),
             // Bloc builder
             child: BlocBuilder<ProfileCubit, ProfileState>(

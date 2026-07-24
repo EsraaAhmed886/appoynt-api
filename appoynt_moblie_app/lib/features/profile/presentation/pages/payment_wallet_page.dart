@@ -65,11 +65,12 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
           // Outer padding margins (strictly 16px boundaries)
           child: Padding(
             // Margins boundaries
-            padding: const EdgeInsets.symmetric(
+            padding: const EdgeInsets.only(
               // Horizontal offset
-              horizontal: AppSpacing.space_xl,
-              // Vertical offset
-              vertical: AppSpacing.space_m,
+              left: AppSpacing.space_xl,
+              right: AppSpacing.space_xl,
+              top: AppSpacing.space_xl,
+              bottom: AppSpacing.space_m,
             ),
             // Column stack grouping layouts
             child: BlocBuilder<ProfileCubit, ProfileState>(

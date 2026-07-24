@@ -236,7 +236,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(height: 12), // Top margin
+                        const SizedBox(height: AppSpacing.space_xl), // Top margin notch spacing
 
                         /// Navigation and language control row.
                         Row(

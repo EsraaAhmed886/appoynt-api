@@ -397,7 +397,7 @@ class _AllergiesPageState extends State<AllergiesPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: AppSpacing.space_m),
+              const SizedBox(height: AppSpacing.space_xl),
               CustomProfileAppBar(
                 title: localizations.allergies_title,
               ),

@@ -60,7 +60,7 @@ class _TestsResultsPageState extends State<TestsResultsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: AppSpacing.space_m),
+              const SizedBox(height: AppSpacing.space_xl),
               CustomProfileAppBar(
                 title: localizations.tests_title,
               ),
