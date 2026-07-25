@@ -5,7 +5,7 @@
  * Version        : v1.0.0
  * Dependencies   : None
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 24/07/2026
+ * Last Modified  : Mustafa Mahmoud - 25/07/2026
  * Description    : Defines stable error codes for authentication features,
  *                  including registration, login, password recovery, OTP,
  *                  refresh tokens, and account verification.
@@ -192,6 +192,11 @@ public static class AuthenticationErrorCodes
     /// Indicates that an OTP resend request was made before the resend timer elapsed.
     /// </summary>
     public const string OtpResendNotAvailable = "auth.otp.resend_not_available";
+
+    /// <summary>
+    /// Indicates that an OTP could not be delivered by the configured sender.
+    /// </summary>
+    public const string OtpDeliveryUnavailable = "auth.otp.delivery_unavailable";
 
     #endregion
 

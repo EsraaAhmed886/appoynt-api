@@ -3,20 +3,26 @@
  * Author         : Mustafa Mahmoud
  * Created Date   : 22/07/2026
  * Version        : v1.0.0
- * Dependencies   : JwtOptions, JwtTokenService, JWT Bearer Authentication
+ * Dependencies   : JwtOptions, JwtTokenService, RegistrationService,
+ *                  LoginService, ISmsSender,
+ *                  JWT Bearer Authentication
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 22/07/2026
+ * Last Modified  : Mustafa Mahmoud - 24/07/2026
  * Description    : Registers authentication services used by the
  *                  application.
  */
 
 using System.Text;
 using Appoynt.Application.Common.Interfaces;
+using Appoynt.Application.Features.Authentication.Login;
+using Appoynt.Application.Features.Authentication.Otp;
+using Appoynt.Application.Features.Authentication.Registration;
 using Appoynt.Infrastructure.Authentication;
 using Appoynt.Infrastructure.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -84,6 +90,20 @@ internal static class AuthenticationDependencyInjection
             });
 
         services.AddScoped<ITokenService, JwtTokenService>();
+        services.AddScoped<IRegistrationService, RegistrationService>();
+        services.AddScoped<ILoginService, LoginService>();
+        services.AddScoped<IOtpService, OtpService>();
+        services.AddScoped<DevelopmentSmsSender>();
+        services.AddScoped<UnavailableSmsSender>();
+        services.AddScoped<ISmsSender>(serviceProvider =>
+        {
+            IHostEnvironment environment =
+                serviceProvider.GetRequiredService<IHostEnvironment>();
+
+            return environment.IsDevelopment()
+                ? serviceProvider.GetRequiredService<DevelopmentSmsSender>()
+                : serviceProvider.GetRequiredService<UnavailableSmsSender>();
+        });
 
         return services;
     }

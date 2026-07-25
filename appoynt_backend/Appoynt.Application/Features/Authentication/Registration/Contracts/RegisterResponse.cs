@@ -6,19 +6,15 @@
  * Dependencies   : None
  * Contributors   : [Mustafa Mahmoud]
  * Last Modified  : Mustafa Mahmoud - 24/07/2026
- * Description    : Defines the successful patient-registration response.
+ * Description    : Defines the successful response contract for patient
+ *                  registration.
  */
 
 namespace Appoynt.Application.Features.Authentication.Registration.Contracts;
 
 /// <summary>
-/// Represents the result of a successful patient registration.
+/// Represents the result of successfully creating a patient account.
 /// </summary>
-/// <remarks>
-/// This response intentionally does not contain an access token, verification
-/// result, or sensitive account information. Mobile-phone verification belongs
-/// to the future SMS OTP milestone.
-/// </remarks>
 public sealed class RegisterResponse
 {
     /// <summary>

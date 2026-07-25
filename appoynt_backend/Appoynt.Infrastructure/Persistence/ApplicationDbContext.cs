@@ -5,9 +5,9 @@
  * Version        : v1.0.0
  * Dependencies   : Entity Framework Core, ASP.NET Core Identity,
  *                  ICurrentUserService, IDateTimeProvider,
- *                  ApplicationUser, BaseEntity
+ *                  ApplicationUser, BaseEntity, OtpChallenge
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 21/07/2026
+ * Last Modified  : Mustafa Mahmoud - 25/07/2026
  * Description    : Represents the application's primary database context.
  *                  Responsible for entity mapping, persistence operations,
  *                  auditing, and soft-delete behavior.
@@ -98,6 +98,11 @@ public class ApplicationDbContext
     /// Gets the refresh tokens issued for application users.
     /// </summary>
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+
+    /// <summary>
+    /// Gets the mobile one-time-password challenges issued to users.
+    /// </summary>
+    public DbSet<OtpChallenge> OtpChallenges => Set<OtpChallenge>();
 
     #endregion
 
