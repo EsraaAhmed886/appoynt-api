@@ -362,27 +362,23 @@ class _MedicalContextPageState extends State<MedicalContextPage> {
                     // Spacing gap (strictly 16px)
                     const SizedBox(height: 16.0),
 
-                    // CARD E: MetLife Egypt Health Insurance Card or Category Card depending on count
+                    // CARD E: Shared InsuranceCardWidget or NoInsuranceCardWidget depending on count
                     true == state.profile.insurance_cards.isEmpty
-                        ? _MedicalCategoryCard(
+                        ? NoInsuranceCardWidget(
                             // Title
                             title: localizations.profile_insurance_details,
-                            // Wallet card icon
-                            icon: Icons.wallet_membership_rounded,
-                            // Blue color accent
-                            iconColor: Colors.blue,
-                            // Background tint
-                            iconBgColor: Colors.blue.withValues(alpha: 0.1),
                             // Localized count badge
-                            badgeText: _get_insurance_count_label(0, localizations),
+                            badgeText:
+                                _get_insurance_count_label(0, localizations),
                             // Navigate onTap
                             onTap: () {
-                              // Push navigate
+                              // Push navigate to insurance details screen layout onTap
                               Navigator.of(context).push(
                                 // Route builder
                                 MaterialPageRoute(
                                   // Builder constructor
-                                  builder: (route_context) => BlocProvider.value(
+                                  builder: (route_context) =>
+                                      BlocProvider.value(
                                     // Carry cubit block context forward
                                     value: context.read<ProfileCubit>(),
                                     // Insurance details page screen
@@ -392,7 +388,11 @@ class _MedicalContextPageState extends State<MedicalContextPage> {
                               );
                             },
                           )
-                        : GestureDetector(
+                        : InsuranceCardWidget(
+                            // Insurance card model data
+                            card: state.profile.insurance_cards.first,
+                            // Render styled digital gradient card
+                            isGradientStyle: true,
                             // Push navigate to insurance details screen layout onTap
                             onTap: () {
                               // Push navigate
@@ -400,7 +400,8 @@ class _MedicalContextPageState extends State<MedicalContextPage> {
                                 // Route builder
                                 MaterialPageRoute(
                                   // Builder constructor
-                                  builder: (route_context) => BlocProvider.value(
+                                  builder: (route_context) =>
+                                      BlocProvider.value(
                                     // Carry cubit block context forward
                                     value: context.read<ProfileCubit>(),
                                     // Insurance details page screen
@@ -409,199 +410,6 @@ class _MedicalContextPageState extends State<MedicalContextPage> {
                                 ),
                               );
                             },
-                            // Gradient container card
-                            child: Container(
-                              // Full width fill
-                              width: double.infinity,
-                              // Spacing padding inside MetLife Egypt card
-                              padding: const EdgeInsets.all(AppSpacing.space_xl),
-                              // Linear gradient details
-                              decoration: BoxDecoration(
-                                // MetLife premium dark navy to teal gradient finish
-                                gradient: const LinearGradient(
-                                  // Start angle
-                                  begin: Alignment.topLeft,
-                                  // End angle
-                                  end: Alignment.bottomRight,
-                                  // Gradient colors
-                                  colors: [
-                                    Color(0xFF0F2042), // Premium Dark Navy
-                                    Color(0xFF0D5E6F), // Deep Teal
-                                  ],
-                                ),
-                                // Corner radius Curvature
-                                borderRadius: BorderRadius.circular(16.0),
-                                // Soft shadow offsets
-                                boxShadow: const [
-                                  // Shadow options
-                                  BoxShadow(
-                                    // Dark color transparent shade
-                                    color: Colors.black12,
-                                    // Blur spread
-                                    blurRadius: 10.0,
-                                    // Position coordinate offsets
-                                    offset: Offset(0.0, 4.0),
-                                  ),
-                                ],
-                              ),
-                              // Card elements column
-                              child: Column(
-                                // Start align
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                // children
-                                children: [
-                                  // Upper card title header row displaying logo details and badge
-                                  Row(
-                                    // Distribute elements
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    // Row children
-                                    children: [
-                                      // MetLife Egypt Title uppercase label
-                                      const Text(
-                                        // Egypt MetLife provider descriptor
-                                        'METLIFE EGYPT HEALTH CARD',
-                                        // Typography
-                                        style: TextStyle(
-                                          // Colors white transparency
-                                          color: Colors.white70,
-                                          // Tiny size
-                                          fontSize: 10.0,
-                                          // Bold weights
-                                          fontWeight: FontWeight.bold,
-                                          // Horizontal character spacing offset
-                                          letterSpacing: 1.0,
-                                        ),
-                                      ),
-                                      // Sharp vector security verification shield in top-right corner
-                                      Container(
-                                        // Padding
-                                        padding: const EdgeInsets.all(4.0),
-                                        // Shape
-                                        decoration: const BoxDecoration(
-                                          // White translucent circle backplate
-                                          color: Colors.white12,
-                                          // Circle shape
-                                          shape: BoxShape.circle,
-                                        ),
-                                        // Shield icon vector representation
-                                        child: const Icon(
-                                          // Verified user shield symbol
-                                          Icons.verified_user_rounded,
-                                          // Gold color
-                                          color: Color(0xFFFFD700),
-                                          // Size
-                                          size: 16.0,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  // Height spacer gap
-                                  const SizedBox(height: AppSpacing.space_l),
-                                  // Provider Name Title Text widget
-                                  Text(
-                                    // Provider name mapping target provider
-                                    state.profile.insurance_cards.first.provider_name,
-                                    // Style
-                                    style: const TextStyle(
-                                      // Colors
-                                      color: Colors.white,
-                                      // Bold size
-                                      fontSize: 18.0,
-                                      // Heavy weight
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  // Height spacer gap
-                                  const SizedBox(height: AppSpacing.space_m),
-                                  // Structure policy details rows
-                                  Row(
-                                    // Distribute items
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    // children
-                                    children: [
-                                      // Policy info column
-                                      Column(
-                                        // Start align
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        // children
-                                        children: [
-                                          // Uppercase micro-fonts (10px, muted opacity) directly above actual values
-                                          const Text(
-                                            // POLICY NUMBER label
-                                            'POLICY NUMBER',
-                                            // Typographic specs
-                                            style: TextStyle(
-                                              // Muted white colors
-                                              color: Colors.white60,
-                                              // Micro size
-                                              fontSize: 10.0,
-                                              // Bold
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          // Spacer gap height
-                                          const SizedBox(height: 4.0),
-                                          // Policy value text widget with high-contrast typography
-                                          Text(
-                                            // Card identification number mapping details
-                                            state.profile.insurance_cards.first.card_number,
-                                            // Style
-                                            style: const TextStyle(
-                                              // High-contrast typography color
-                                              color: Colors.white,
-                                              // Size
-                                              fontSize: 13.0,
-                                              // Bolder weights
-                                              fontWeight: FontWeight.bold,
-                                              // Monospace text alignments
-                                              fontFamily: 'monospace',
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      // Expiry info column
-                                      Column(
-                                        // Start align
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        // children
-                                        children: [
-                                          // Uppercase micro-fonts (10px, muted opacity) directly above actual values
-                                          const Text(
-                                            // EXPIRY DATE label
-                                            'EXPIRY DATE',
-                                            // Typographic specs
-                                            style: TextStyle(
-                                              // Muted white colors
-                                              color: Colors.white60,
-                                              // Micro size
-                                              fontSize: 10.0,
-                                              // Bold
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          // Spacer gap height
-                                          const SizedBox(height: 4.0),
-                                          // Expiry date text widget with high-contrast typography
-                                          Text(
-                                            // Expiring date string representation
-                                            state.profile.insurance_cards.first.expiry_date,
-                                            // Style
-                                            style: const TextStyle(
-                                              // High-contrast typography color
-                                              color: Colors.white,
-                                              // Size
-                                              fontSize: 13.0,
-                                              // Bolder weights
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
                           ),
                   ],
                 );

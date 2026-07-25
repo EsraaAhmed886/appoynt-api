@@ -54,6 +54,9 @@ class AuthTextField extends StatefulWidget {
   // Flag determining if text field interactions are enabled
   final bool enabled;
 
+  // Flag indicating if standard shadow decorator should be displayed
+  final bool show_shadow;
+
   // Constructor mapping standard parameters
   const AuthTextField({
     super.key,
@@ -69,6 +72,7 @@ class AuthTextField extends StatefulWidget {
     this.keyboard_type,
     this.text_input_action,
     this.enabled = true,
+    this.show_shadow = true,
   });
 
   @override
@@ -185,41 +189,43 @@ class _AuthTextFieldState extends State<AuthTextField> {
               clipBehavior: Clip.none,
               // Children widgets list
               children: [
-                // Positioned shadow decorator container matching input box height
-                Positioned(
-                  // Align to top edge
-                  top: 0.0,
-                  // Align to left edge
-                  left: 0.0,
-                  // Align to right edge
-                  right: 0.0,
-                  // Restrict shadow container height to input box area
-                  height: 50.0,
-                  // Shadow background widget
-                  child: Container(
-                    // Visual styling decoration
-                    decoration: BoxDecoration(
-                      // Set corner radius using spacing constants
-                      borderRadius:
-                          BorderRadius.circular(AppSpacing.radius_input),
-                      // Shadows list
-                      boxShadow: [
-                        BoxShadow(
-                          // Choose shadow color based on dark mode using Yoda style check
-                          color: true == is_dark
-                              ? Colors.black.withValues(alpha: 0.25)
-                              : Colors.black.withValues(alpha: 0.04),
-                          // Shadow blur radius
-                          blurRadius: 6.0,
-                          // Shadow thickness spread
-                          spreadRadius: 1.0,
-                          // Shadow displacement offset coordinates
-                          offset: const Offset(0.0, 2.0),
-                        ),
-                      ],
+                if (true == widget.show_shadow) ...[
+                  // Positioned shadow decorator container matching input box height
+                  Positioned(
+                    // Align to top edge
+                    top: 0.0,
+                    // Align to left edge
+                    left: 0.0,
+                    // Align to right edge
+                    right: 0.0,
+                    // Restrict shadow container height to input box area
+                    height: 50.0,
+                    // Shadow background widget
+                    child: Container(
+                      // Visual styling decoration
+                      decoration: BoxDecoration(
+                        // Set corner radius using spacing constants
+                        borderRadius:
+                            BorderRadius.circular(AppSpacing.radius_input),
+                        // Shadows list
+                        boxShadow: [
+                          BoxShadow(
+                            // Choose shadow color based on dark mode using Yoda style check
+                            color: true == is_dark
+                                ? Colors.black.withValues(alpha: 0.25)
+                                : Colors.black.withValues(alpha: 0.04),
+                            // Shadow blur radius
+                            blurRadius: 6.0,
+                            // Shadow thickness spread
+                            spreadRadius: 1.0,
+                            // Shadow displacement offset coordinates
+                            offset: const Offset(0.0, 2.0),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
+                ],
                 // Render standard TextFormField on top of the shadow decorator
                 TextFormField(
                   // Bind interactions enabled flag

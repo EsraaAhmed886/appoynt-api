@@ -23,6 +23,7 @@ import 'package:appoynt_mobile_app/core/widgets/auth/auth_text_field.dart';
 import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart';
 
+
 // Chronic Conditions Page layout stateful widget representation
 class ChronicConditionsPage extends StatefulWidget {
   // Constructor mapping key
@@ -813,6 +814,7 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                           );
                         },
                       ),
+                      const SizedBox(height: 80.0),
                     ],
                   ),
                 ),
@@ -822,49 +824,46 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
         },
       ),
     ),
-      // Locked Primary Bottom Save Action Button
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.space_l),
-          child: SizedBox(
-            width: double.infinity,
-            height: AppSpacing.height_auth_button,
-            child: ElevatedButton(
-              onPressed: () {
-                final List<String> conditions_to_save = [];
-                if (false == _no_chronic_conditions) {
-                  _condition_details.forEach((name, details) {
-                    conditions_to_save.add('$name (${details['year']} • ${details['status']})');
-                  });
-                }
+      bottomNavigationBar: StickyBottomBar(
+        child: SizedBox(
+          width: double.infinity,
+          height: AppSpacing.height_auth_button,
+          child: ElevatedButton(
+            onPressed: () {
+              final List<String> conditions_to_save = [];
+              if (false == _no_chronic_conditions) {
+                _condition_details.forEach((name, details) {
+                  conditions_to_save.add(
+                      '$name (${details['year']} • ${details['status']})');
+                });
+              }
 
-                context.read<ProfileCubit>().update_profile_field(
-                      'chronic_conditions',
-                      conditions_to_save,
-                    );
+              context.read<ProfileCubit>().update_profile_field(
+                    'chronic_conditions',
+                    conditions_to_save,
+                  );
 
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(snackbar_message),
-                    backgroundColor: AppColors.primary_color,
-                  ),
-                );
-                Navigator.of(context).pop();
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary_color,
-                elevation: 0.0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16.0),
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(snackbar_message),
+                  backgroundColor: AppColors.primary_color,
                 ),
+              );
+              Navigator.of(context).pop();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary_color,
+              elevation: 0.0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0),
               ),
-              child: Text(
-                save_button_label,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: AppSpacing.font_size_action_button,
-                  fontWeight: FontWeight.w700,
-                ),
+            ),
+            child: Text(
+              save_button_label,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: AppSpacing.font_size_action_button,
+                fontWeight: FontWeight.w700,
               ),
             ),
           ),

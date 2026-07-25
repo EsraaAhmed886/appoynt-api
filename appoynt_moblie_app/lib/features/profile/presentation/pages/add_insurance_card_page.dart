@@ -81,11 +81,31 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
     _selected_provider = widget.card_to_edit != null ? widget.card_to_edit!.provider_name : '';
     // Bind uploaded file path details
     _uploaded_document_path = widget.card_to_edit != null ? widget.card_to_edit!.document_path : '';
+
+    // Attach listeners for dynamic form validity updates
+    _name_controller.addListener(_on_form_changed);
+    _number_controller.addListener(_on_form_changed);
+  }
+
+  // Listener callback triggering setState on form changes
+  void _on_form_changed() {
+    setState(() {});
+  }
+
+  // Getter evaluating full form validity state
+  bool get _is_form_valid {
+    return _name_controller.text.trim().isNotEmpty &&
+        _number_controller.text.trim().isNotEmpty &&
+        _selected_provider.isNotEmpty &&
+        _uploaded_document_path.isNotEmpty;
   }
 
   // Dispose controllers freeing system resources
   @override
   void dispose() {
+    // Remove form change listeners
+    _name_controller.removeListener(_on_form_changed);
+    _number_controller.removeListener(_on_form_changed);
     // Dispose text field controllers
     _name_controller.dispose();
     // Dispose number controller
@@ -189,24 +209,18 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
     if (true == _form_key.currentState?.validate()) {
       // Check if provider was chosen using check variables
       if (_selected_provider.isEmpty) {
-        // Show feedback warning warning message info
+        // Show feedback warning message info
         ScaffoldMessenger.of(context).showSnackBar(
-          // SnackBar settings
           const SnackBar(
-            // Warning message text
             content: Text('Please select an insurance provider.'),
-            // Error background color
             backgroundColor: AppColors.error,
           ),
         );
       } else if (_uploaded_document_path.isEmpty) {
         // Check if document was uploaded
         ScaffoldMessenger.of(context).showSnackBar(
-          // SnackBar settings
           const SnackBar(
-            // Warning message text
             content: Text('Please upload insurance documents.'),
-            // Error background color
             backgroundColor: AppColors.error,
           ),
         );
@@ -215,50 +229,33 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
         if (widget.edit_index != null) {
           // Dispatch updated card parameters to Cubit controller
           context.read<ProfileCubit>().edit_insurance_card(
-                // index parameters
                 widget.edit_index!,
-                // Card Name text
                 _name_controller.text,
-                // Card Number policy code text
                 _number_controller.text,
-                // Provider brand name choice
                 _selected_provider,
-                // attached file path
                 _uploaded_document_path,
-                // Maintain current expiry date or set mockup default
                 widget.card_to_edit?.expiry_date ?? '26 December 2026',
               );
           // Show success notification message info
           ScaffoldMessenger.of(context).showSnackBar(
-            // SnackBar settings
             const SnackBar(
-              // Success label text
               content: Text('Insurance card updated successfully.'),
-              // Primary color
               backgroundColor: AppColors.primary_color,
             ),
           );
         } else {
           // Dispatch insurance policy details to Cubit controller to add new card
           context.read<ProfileCubit>().add_insurance_card(
-                // Card Name text
                 _name_controller.text,
-                // Card Number policy code text
                 _number_controller.text,
-                // Provider brand name choice
                 _selected_provider,
-                // attached file path
                 _uploaded_document_path,
-                // Expiry date mockup (e.g. 1 year from now)
                 '26 December 2026',
               );
           // Show success notification message info
           ScaffoldMessenger.of(context).showSnackBar(
-            // SnackBar settings
             const SnackBar(
-              // Success label text
               content: Text('Insurance card added successfully.'),
-              // Primary color
               backgroundColor: AppColors.primary_color,
             ),
           );
@@ -266,8 +263,6 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
         // Pop addition form screen layout returning back to list screen
         Navigator.of(context).pop();
       }
-    } else {
-      // Form entries are invalid
     }
   }
 
@@ -281,351 +276,256 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
 
     // Return root Scaffold layout container
     return Scaffold(
-      // App bar details
-      appBar: AppBar(
-        // Center title
-        centerTitle: true,
-        // Title label text
-        title: Text(
-          // Add card title string or Edit title depending on edit status
-          widget.edit_index != null ? 'Edit Insurance' : localizations.insurance_add_title,
-          // Styles
-          style: TextStyle(
-            // Size standard
-            fontSize: AppSpacing.font_size_title,
-            // bold weight
-            fontWeight: FontWeight.w700,
-            // Color parameters
-            color: true == is_dark ? AppColors.text_dark_primary : AppColors.text_light_primary,
+      // Fixed sticky bottom action bar containing full-width CTA button
+      bottomNavigationBar: StickyBottomBar(
+        child: SizedBox(
+          width: double.infinity,
+          height: AppSpacing.height_auth_button,
+          child: ElevatedButton(
+            // Enable button only when form is completely valid
+            onPressed: true == _is_form_valid ? _submit_insurance : null,
+            style: ElevatedButton.styleFrom(
+              // Vibrant blue when enabled, muted gray when disabled (#E2E8F0)
+              backgroundColor: true == _is_form_valid
+                  ? AppColors.primary_color
+                  : const Color(0xFFE2E8F0),
+              elevation: 0.0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppSpacing.radius_l),
+              ),
+            ),
+            child: Text(
+              // Localized "Save Card" action button text label
+              localizations.insurance_save_card_btn,
+              style: TextStyle(
+                // White text when enabled, muted gray text when disabled
+                color: true == _is_form_valid ? Colors.white : const Color(0xFF94A3B8),
+                fontSize: AppSpacing.font_size_action_button,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
           ),
         ),
       ),
-      // Scrollable view wrapping addition form fields
-      body: Form(
-        // Bind global key
-        key: _form_key,
-        // Scrollable area wrapping inputs
-        child: Column(
-          // Stack vertical layouts
-          children: [
-            // Expanded inputs list area
-            Expanded(
-              // SingleChildScrollView protecting boundary lines
-              child: SingleChildScrollView(
-                // Padding offsets padding margin bounds within borders
-                padding: const EdgeInsets.symmetric(
-                  // Horizontal offset bounds
-                  horizontal: AppSpacing.space_m,
-                  // Vertical offset bounds
-                  vertical: AppSpacing.space_m,
+      // Body wrapped in SafeArea and strict 16px lateral padding
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space_xl),
+          child: Form(
+            key: _form_key,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: AppSpacing.space_xl),
+                // Standardized Squircle Back Button AppBar component
+                CustomProfileAppBar(
+                  title: widget.edit_index != null
+                      ? 'Edit Insurance'
+                      : localizations.insurance_add_title,
                 ),
-                // Column stack grouping inputs
-                child: Column(
-                  // Align elements start coordinates
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  // children list array
-                  children: [
-                    // Card Name TextFormField input card
-                    AuthTextField(
-                      label: localizations.insurance_card_name_label,
-                      hint: 'e.g., MetLife Executive Plan',
-                      controller: _name_controller,
-                      validator: (value) {
-                        if (true == (value ?? '').trim().isEmpty) {
-                          return 'Card Name cannot be empty.';
-                        } else {
-                          return null;
-                        }
-                      },
-                    ),
-                    // Spacing gap
-                    const SizedBox(
-                      height: AppSpacing.space_m,
-                    ),
-                    // Card Number TextFormField input card
-                    AuthTextField(
-                      label: localizations.insurance_card_number_label,
-                      hint: 'e.g., POL-987654321',
-                      controller: _number_controller,
-                      validator: (value) {
-                        if (true == (value ?? '').trim().isEmpty) {
-                          return 'Card Number cannot be empty.';
-                        } else {
-                          return null;
-                        }
-                      },
-                    ),
-                    // Spacing gap
-                    const SizedBox(
-                      // Spacing height
-                      height: AppSpacing.space_m,
-                    ),
-                    // Select Provider Label display
-                    Text(
-                      // Localized Select Provider title
-                      localizations.insurance_select_provider_btn,
-                      // Style typographic parameters options
-                      style: TextStyle(
-                        // Body standard size
-                        fontSize: AppSpacing.font_size_body_medium,
-                        // bold weight
-                        fontWeight: FontWeight.w700,
-                        // Colors
-                        color: true == is_dark ? AppColors.text_dark_primary : AppColors.text_light_primary,
-                      ),
-                    ),
-                    // Spacing horizontal separator offset
-                    const SizedBox(
-                      // Separator height value
-                      height: AppSpacing.space_xs,
-                    ),
-                    // Select Provider dropdown container picker
-                    GestureDetector(
-                      // Launch provider bottom sheet on tap
-                      onTap: () {
-                        // Show picker sheet
-                        _show_provider_picker(context);
-                      },
-                      // Outlined container card displaying dropdown field styling
-                      child: Container(
-                        // banner width
-                        width: double.infinity,
-                        // card height
-                        height: AppSpacing.dummy_height_search_bar,
-                        // Layout decorations details
-                        decoration: BoxDecoration(
-                          // Solid white or dark surface backgrounds
-                          color: true == is_dark ? AppColors.surface_dark : Colors.white,
-                          // Rounded border edges configurations (12px radius)
-                          borderRadius: BorderRadius.circular(
-                            AppSpacing.radius_input,
-                          ),
-                          // Subtle 1px neutral border
-                          border: Border.all(
-                            color: true == is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
-                            width: AppSpacing.border_width_thin,
+                const SizedBox(height: AppSpacing.space_l),
+                // Form fields wrapped in SingleChildScrollView
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Card Name TextFormField input field
+                        AuthTextField(
+                          label: localizations.insurance_card_name_label,
+                          hint: 'e.g., MetLife Executive Plan',
+                          controller: _name_controller,
+                          validator: (value) {
+                            if (true == (value ?? '').trim().isEmpty) {
+                              return 'Card Name cannot be empty.';
+                            } else {
+                              return null;
+                            }
+                          },
+                        ),
+                        const SizedBox(height: AppSpacing.space_m),
+                        // Card Number TextFormField input field
+                        AuthTextField(
+                          label: localizations.insurance_card_number_label,
+                          hint: 'e.g., POL-987654321',
+                          controller: _number_controller,
+                          validator: (value) {
+                            if (true == (value ?? '').trim().isEmpty) {
+                              return 'Card Number cannot be empty.';
+                            } else {
+                              return null;
+                            }
+                          },
+                        ),
+                        const SizedBox(height: AppSpacing.space_m),
+                        // Select Provider Label display
+                        Text(
+                          localizations.insurance_select_provider_btn,
+                          style: TextStyle(
+                            fontSize: AppSpacing.font_size_body_medium,
+                            fontWeight: FontWeight.w700,
+                            color: true == is_dark
+                                ? AppColors.text_dark_primary
+                                : AppColors.text_light_primary,
                           ),
                         ),
-                        // Row containing chosen provider name and trailing chevron
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space_m),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                _selected_provider.isEmpty ? 'Select Insurance Provider' : _selected_provider,
-                                style: TextStyle(
-                                  color: _selected_provider.isEmpty
-                                      ? AppColors.text_light_secondary
-                                      : (true == is_dark ? Colors.white : AppColors.text_light_primary),
-                                  fontSize: AppSpacing.font_size_text,
-                                  fontWeight: _selected_provider.isEmpty ? FontWeight.w400 : FontWeight.w600,
-                                ),
+                        const SizedBox(height: AppSpacing.space_xs),
+                        // Select Provider dropdown container picker
+                        GestureDetector(
+                          onTap: () {
+                            _show_provider_picker(context);
+                          },
+                          child: Container(
+                            width: double.infinity,
+                            height: AppSpacing.dummy_height_search_bar,
+                            decoration: BoxDecoration(
+                              color: true == is_dark
+                                  ? AppColors.surface_dark
+                                  : Colors.white,
+                              borderRadius: BorderRadius.circular(
+                                AppSpacing.radius_input,
                               ),
-                              Icon(
-                                Icons.keyboard_arrow_down_rounded,
-                                color: true == is_dark ? Colors.white60 : const Color(0xFF64748B),
-                                size: AppSpacing.icon_size_m,
+                              border: Border.all(
+                                color: true == is_dark
+                                    ? AppColors.border_dark
+                                    : const Color(0xFFE2E8F0),
+                                width: AppSpacing.border_width_thin,
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: AppSpacing.space_m),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    _selected_provider.isEmpty
+                                        ? 'Select Insurance Provider'
+                                        : _selected_provider,
+                                    style: TextStyle(
+                                      color: _selected_provider.isEmpty
+                                          ? AppColors.text_light_secondary
+                                          : (true == is_dark
+                                              ? Colors.white
+                                              : AppColors.text_light_primary),
+                                      fontSize: AppSpacing.font_size_text,
+                                      fontWeight: _selected_provider.isEmpty
+                                          ? FontWeight.w400
+                                          : FontWeight.w600,
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.keyboard_arrow_down_rounded,
+                                    color: true == is_dark
+                                        ? Colors.white60
+                                        : const Color(0xFF64748B),
+                                    size: AppSpacing.icon_size_m,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.space_m),
+                        // Upload Insurance documents Label display
+                        Text(
+                          'Upload Insurance Documents',
+                          style: TextStyle(
+                            fontSize: AppSpacing.font_size_body_medium,
+                            fontWeight: FontWeight.w700,
+                            color: true == is_dark
+                                ? AppColors.text_dark_primary
+                                : AppColors.text_light_primary,
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.space_xs),
+                        // Neutral slate-gray upload document button
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _uploaded_document_path =
+                                  '/mock/device/upload_insurance_card.pdf';
+                            });
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                    'Insurance document file attached from device.'),
+                                backgroundColor: AppColors.primary_color,
+                              ),
+                            );
+                          },
+                          child: Container(
+                            width: double.infinity,
+                            height: AppSpacing.dummy_height_search_bar,
+                            decoration: BoxDecoration(
+                              color: true == is_dark
+                                  ? AppColors.surface_dark
+                                  : const Color(0xFFF8FAFC),
+                              borderRadius: BorderRadius.circular(
+                                AppSpacing.radius_input,
+                              ),
+                              border: Border.all(
+                                color: true == is_dark
+                                    ? AppColors.border_dark
+                                    : const Color(0xFFE2E8F0),
+                                width: AppSpacing.border_width_thin,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.file_upload_outlined,
+                                  color: true == is_dark
+                                      ? Colors.white70
+                                      : const Color(0xFF475569),
+                                  size: AppSpacing.icon_size_m,
+                                ),
+                                const SizedBox(width: AppSpacing.space_s),
+                                Text(
+                                  localizations.insurance_upload_doc_btn,
+                                  style: TextStyle(
+                                    color: true == is_dark
+                                        ? Colors.white70
+                                        : const Color(0xFF475569),
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        if (_uploaded_document_path.isNotEmpty) ...[
+                          const SizedBox(height: AppSpacing.space_s),
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.check_circle_outline_rounded,
+                                color: AppColors.dummy_custom_green,
+                                size: AppSpacing.icon_size_s,
+                              ),
+                              const SizedBox(width: AppSpacing.space_xs),
+                              Expanded(
+                                child: Text(
+                                  'File: ${_uploaded_document_path.split("/").last} attached.',
+                                  style: const TextStyle(
+                                    color: AppColors.dummy_custom_green,
+                                    fontSize: AppSpacing.font_size_body_small,
+                                  ),
+                                ),
                               ),
                             ],
                           ),
-                        ),
-                      ),
-                    ),
-                    // Spacing gap
-                    const SizedBox(
-                      // Spacing height
-                      height: AppSpacing.space_m,
-                    ),
-                    // Upload Insurance documents Label display
-                    Text(
-                      // Localized upload label
-                      'Upload Insurance Documents',
-                      // Style typographic parameters options
-                      style: TextStyle(
-                        // Body standard size
-                        fontSize: AppSpacing.font_size_body_medium,
-                        // bold weight
-                        fontWeight: FontWeight.w700,
-                        // Colors
-                        color: true == is_dark ? AppColors.text_dark_primary : AppColors.text_light_primary,
-                      ),
-                    ),
-                    // Spacing horizontal separator offset
-                    const SizedBox(
-                      // Separator height value
-                      height: AppSpacing.space_xs,
-                    ),
-                    // Neutral slate-gray upload document button
-                    GestureDetector(
-                      // Simulate file choice on tap
-                      onTap: () {
-                        // Update mock path trigger
-                        setState(() {
-                          // Bind mockup file path
-                          _uploaded_document_path = '/mock/device/upload_insurance_card.pdf';
-                        });
-                        // Show feedback notification message info
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          // SnackBar settings
-                          const SnackBar(
-                            // Message text
-                            content: Text('Insurance document file attached from device.'),
-                            // Primary color
-                            backgroundColor: AppColors.primary_color,
-                          ),
-                        );
-                      },
-                      // Neutral slate-gray border outline
-                      child: Container(
-                        // banner width
-                        width: double.infinity,
-                        // card height
-                        height: AppSpacing.dummy_height_search_bar,
-                        // Layout decorations details
-                        decoration: BoxDecoration(
-                          // Solid white or dark surface backgrounds
-                          color: true == is_dark ? AppColors.surface_dark : const Color(0xFFF8FAFC),
-                          // Rounded border edges configurations
-                          borderRadius: BorderRadius.circular(
-                            AppSpacing.radius_input,
-                          ),
-                          // Neutral slate-gray outline border
-                          border: Border.all(
-                            color: true == is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
-                            width: AppSpacing.border_width_thin,
-                          ),
-                        ),
-                        // Center row containing upload icon and label text
-                        child: Row(
-                          // Align items centered inside container card layout bounds
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          // Inner elements list
-                          children: [
-                            // Upload icon graphic representation in slate-gray
-                            Icon(
-                              Icons.file_upload_outlined,
-                              color: true == is_dark ? Colors.white70 : const Color(0xFF475569),
-                              size: AppSpacing.icon_size_m,
-                            ),
-                            // Separator spacing gap
-                            const SizedBox(
-                              width: AppSpacing.space_s,
-                            ),
-                            // Label description in slate-gray
-                            Text(
-                              localizations.insurance_upload_doc_btn,
-                              style: TextStyle(
-                                color: true == is_dark ? Colors.white70 : const Color(0xFF475569),
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    // Show mock upload verification check badge if file path is not empty
-                    if (_uploaded_document_path.isNotEmpty) ...[
-                      // Separator spacing
-                      const SizedBox(
-                        // Height offset
-                        height: AppSpacing.space_s,
-                      ),
-                      // Text label displaying attached mockup path in green color check indicators
-                      Row(
-                        // elements
-                        children: [
-                          // Check badge icon
-                          const Icon(
-                            // Check icon token
-                            Icons.check_circle_outline_rounded,
-                            // green color
-                            color: AppColors.dummy_custom_green,
-                            // size
-                            size: AppSpacing.icon_size_s,
-                          ),
-                          // separator
-                          const SizedBox(
-                            // width spacer
-                            width: AppSpacing.space_xs,
-                          ),
-                          // attached message
-                          Expanded(
-                            // text
-                            child: Text(
-                              // attached filename path
-                              'File: ${_uploaded_document_path.split("/").last} attached.',
-                              // green style
-                              style: const TextStyle(
-                                // green color
-                                color: AppColors.dummy_custom_green,
-                                // small body size
-                                fontSize: AppSpacing.font_size_body_small,
-                              ),
-                            ),
-                          ),
                         ],
-                      ),
-                    ] else ...[
-                      // Empty lists elements
-                      const SizedBox.shrink(),
-                    ],
-                  ],
-                ),
-              ),
-            ),
-            // Primary action submit button representing Add Card trigger
-            Padding(
-              // Spacing offsets constraints
-              padding: const EdgeInsets.symmetric(
-                // Horizontal padding
-                horizontal: AppSpacing.space_m,
-                // Vertical padding
-                vertical: AppSpacing.space_m,
-              ),
-              // Button sized layout wrapper
-              child: SizedBox(
-                // Full width available
-                width: double.infinity,
-                // Height dimensions matching standard buttons
-                height: AppSpacing.height_auth_button,
-                // ElevatedButton
-                child: ElevatedButton(
-                  // Submit insurance card results form on click
-                  onPressed: _submit_insurance,
-                  // Style configurations
-                  style: ElevatedButton.styleFrom(
-                    // primary blue
-                    backgroundColor: AppColors.primary_color,
-                    // Clear shadows
-                    elevation: 0.0,
-                    // Curvature shape configurations
-                    shape: RoundedRectangleBorder(
-                      // Radius parameter value
-                      borderRadius: BorderRadius.circular(
-                        // standard spacing radius token
-                        AppSpacing.radius_l,
-                      ),
-                    ),
-                  ),
-                  // Button label
-                  child: Text(
-                    // Localized submit button label or Edit button label depending on status
-                    widget.edit_index != null ? 'Save Changes' : localizations.insurance_add_card_btn,
-                    // Styles
-                    style: const TextStyle(
-                      // Color white
-                      color: Colors.white,
-                      // Size action button font
-                      fontSize: AppSpacing.font_size_action_button,
-                      // Bold typography weight
-                      fontWeight: FontWeight.w700,
+                        const SizedBox(height: AppSpacing.space_xl),
+                      ],
                     ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

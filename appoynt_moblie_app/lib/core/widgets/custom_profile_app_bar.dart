@@ -30,6 +30,9 @@ class CustomProfileAppBar extends StatelessWidget {
   // Defaults to true for all secondary/child screens.
   final bool show_back_button;
 
+  // Optional trailing action widget slot (e.g. icon button)
+  final Widget? action;
+
   // Constructor mapping standard parameters
   const CustomProfileAppBar({
     super.key,
@@ -39,6 +42,8 @@ class CustomProfileAppBar extends StatelessWidget {
     this.onBackPressed,
     // Show back button by default; pass false on root tabs
     this.show_back_button = true,
+    // Optional trailing action widget
+    this.action,
   });
 
   @override
@@ -94,10 +99,8 @@ class CustomProfileAppBar extends StatelessWidget {
         // Spacing gap to maintain symmetry
         const SizedBox(width: 12.0),
 
-        // ── Trailing Slot: 40px balancer spacer ────────────────────────────
-        // Always present to keep the title visually centered regardless of
-        // whether the back button is shown on the leading side.
-        const SizedBox(width: 40.0),
+        // ── Trailing Slot: Optional Action Widget OR 40px balancer spacer ───
+        action ?? const SizedBox(width: 40.0),
       ],
     );
   }

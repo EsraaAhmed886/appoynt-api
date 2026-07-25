@@ -101,27 +101,10 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
 
     // Return root Scaffold container
     return Scaffold(
-      // Sticky bottom navigation bar for the Save Profile button
-      bottomNavigationBar: SafeArea(
-        // Sticky container wrapper
-        child: Container(
-          // Border outline spacing
-          padding: const EdgeInsets.all(AppSpacing.space_xl),
-          // Decoration details
-          decoration: BoxDecoration(
-            // Matching dark/light background styles
-            color: true == is_dark ? AppColors.surface_dark : Colors.white,
-            // Thin top border outline line separation
-            border: Border(
-              top: BorderSide(
-                color: true == is_dark
-                    ? AppColors.border_dark
-                    : AppColors.border_light.withValues(alpha: 0.5),
-                width: AppSpacing.border_width_thin,
-              ),
-            ),
-          ),
-          // Prominent Save Profile CTA button
+      bottomNavigationBar: StickyBottomBar(
+        child: SizedBox(
+          width: double.infinity,
+          height: 50.0,
           child: ElevatedButton(
             // Trigger validations and pop context route on tap
             onPressed: () {
@@ -145,12 +128,10 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
             style: ElevatedButton.styleFrom(
               // Accent primary background color
               backgroundColor: AppColors.primary_color,
-              // Fixed heights constraints matching auth button tokens
-              minimumSize: const Size(double.infinity, 50.0),
               // Curved radius shape
               shape: RoundedRectangleBorder(
                 // Rounded corner radius
-                borderRadius: BorderRadius.circular(AppSpacing.radius_l),
+                borderRadius: BorderRadius.circular(12.0),
               ),
             ),
             // Bold button label text widget
@@ -814,6 +795,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                       ],
                     ),
                   ),
+                  const SizedBox(height: 80.0),
                 ],
               ),
             ),

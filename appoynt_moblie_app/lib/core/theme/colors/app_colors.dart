@@ -148,5 +148,14 @@ class AppColors {
 
   // Border outline color for circular doctor avatar in dark mode
   static const Color avatar_border_dark = Color(0xFF475569);
+
+  // Soft border slate gray color representation
+  static const Color slate_200 = Color(0xFFE2E8F0);
+
+  // Icon color representation for the dark theme mode
+  static const Color icon_dark = Color(0xFF9E9E9E);
+
+  // Icon color representation for the light theme mode
+  static const Color icon_light = Color(0xFF767676);
 }
 // End of app_colors.dart

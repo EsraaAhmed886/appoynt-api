@@ -18,8 +18,6 @@ import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
 // Importing official Image Picker library package
 import 'package:image_picker/image_picker.dart';
-// Importing services for text input formatters
-import 'package:flutter/services.dart';
 // Importing routing and localizations
 import 'package:appoynt_mobile_app/core/routing/route_export.dart';
 // Importing Cubit controller
@@ -27,7 +25,7 @@ import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_c
 import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart';
 // Importing reusable text field widgets
 import 'package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart';
-
+import 'package:appoynt_mobile_app/core/widgets/app_date_picker.dart';
 // Patient Profile Editor form screen stateful widget representation
 class EditProfilePage extends StatefulWidget {
   // Constructor mapping key
@@ -61,6 +59,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
   late TextEditingController _height_controller;
   // Phone text controller
   late TextEditingController _phone_controller;
+  // Date of birth text controller
+  late TextEditingController _dob_controller;
 
   // Track if fields listeners are active
   bool _listeners_attached = false;
@@ -86,6 +86,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     _weight_controller = TextEditingController(text: state.profile.weight);
     _height_controller = TextEditingController(text: state.profile.height);
     _phone_controller = TextEditingController(text: state.profile.phone);
+    _dob_controller = TextEditingController(text: '05/12/1997');
   }
 
   // Attach text change listeners after controllers binding
@@ -100,6 +101,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       _national_id_controller.addListener(_on_fields_changed);
       _weight_controller.addListener(_on_fields_changed);
       _height_controller.addListener(_on_fields_changed);
+      _dob_controller.addListener(_on_fields_changed);
       // Mark bound
       _listeners_attached = true;
     } else {
@@ -118,6 +120,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     _national_id_controller.removeListener(_on_fields_changed);
     _weight_controller.removeListener(_on_fields_changed);
     _height_controller.removeListener(_on_fields_changed);
+    _dob_controller.removeListener(_on_fields_changed);
     // Dispose text field controllers
     _first_name_controller.dispose();
     _last_name_controller.dispose();
@@ -127,6 +130,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     _weight_controller.dispose();
     _height_controller.dispose();
     _phone_controller.dispose();
+    _dob_controller.dispose();
     // Call base dispose
     super.dispose();
   }
@@ -408,480 +412,351 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Widget build(BuildContext context) {
     // Resolve localized strings dictionary
     final AppLocalizations localizations = AppLocalizations.of(context);
-    // Resolve theme brightness modes status
+    // Determine if dark mode is active
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
-
     // Attach listeners to controllers safely
     _attach_listeners();
-
-    // Return PopScope intercepting back navigation actions
-    return PopScope(
-      // Configure block popping if dirty
-      canPop: false,
-      // Intercept navigation pop trigger
-      onPopInvokedWithResult: (didPop, result) async {
-        // Verify pop wasn't handled already using Yoda checks
-        if (true == didPop) {
-          // Return early
-          return;
-        } else {
-          // Trigger pop check handler
+    // Return a SafeArea wrapping PopScope to handle top margin and safe area
+    return SafeArea(
+      child: PopScope(
+        // Disallow popping if there are unsaved changes
+        canPop: false,
+        onPopInvokedWithResult: (bool didPop, dynamic result) async {
+          if (didPop) return;
           final bool allow = await _on_will_pop();
-          // If allowed, pop screen safely
+          // Pop the screen if allowed and widget is still mounted
           if (true == allow && context.mounted) {
-            // Dismiss editor screen layout
             Navigator.of(context).pop();
           } else {
-            // Block navigation return
+            // Navigation blocked
           }
-        }
-      },
-      // Root Scaffold sheet container
-      child: BlocConsumer<ProfileCubit, ProfileState>(
-        // Listen to success updates triggering routing
-        listener: (context, state) {
-          // Check if successfully updated profile details using Yoda check
-          if (ProfileStatus.updateSuccess == state.status) {
-            // Reset cubit status back to success standard
-            context.read<ProfileCubit>().reset_status();
-            // Show feedback notification message info
-            ScaffoldMessenger.of(context).showSnackBar(
-              // SnackBar settings
-              SnackBar(
-                // Localized success message
-                content: Text(localizations.profile_change_success_msg),
-                // Themed color fill
-                backgroundColor: AppColors.primary_color,
+        },
+        // Main content wrapped in BlocConsumer to react to profile state changes
+        child: BlocConsumer<ProfileCubit, ProfileState>(
+          listener: (context, state) {
+            // Show a success snackbar when profile update succeeds
+            if (ProfileStatus.updateSuccess == state.status) {
+              context.read<ProfileCubit>().reset_status();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(localizations.profile_change_success_msg),
+                  backgroundColor: AppColors.primary_color,
+                ),
+              );
+              Navigator.of(context).pop();
+            }
+          },
+          builder: (context, state) {
+            // Scaffold provides the page layout structure
+            return Scaffold(
+              body: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space_xl),
+                child: Form(
+                  key: _form_key,
+                  autovalidateMode: _form_submitted
+                      ? AutovalidateMode.onUserInteraction
+                      : AutovalidateMode.disabled,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: AppSpacing.space_xl),
+                      CustomProfileAppBar(
+                        title: localizations.edit_profile_title,
+                      ),
+                      const SizedBox(height: AppSpacing.space_xl),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          padding: EdgeInsets.zero,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Center container for avatar photo editor
+                              Center(
+                                child: Stack(
+                                  children: [
+                                    GestureDetector(
+                                      onTap: _upload_photo,
+                                      child: Container(
+                                        width: 100.0,
+                                        height: 100.0,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                            color: AppColors.primary_color,
+                                            width: 2.0,
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: is_dark
+                                                  ? Colors.black54
+                                                  : Colors.black12,
+                                              blurRadius: 8.0,
+                                              offset: const Offset(0.0, 2.0),
+                                            ),
+                                          ],
+                                        ),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(50.0),
+                                          child: state.temp_profile.avatar_url.isNotEmpty
+                                              ? (state.temp_profile.avatar_url.startsWith('http')
+                                                  ? Image.network(
+                                                      state.temp_profile.avatar_url,
+                                                      fit: BoxFit.cover,
+                                                    )
+                                                  : Image.file(
+                                                      File(state.temp_profile.avatar_url),
+                                                      fit: BoxFit.cover,
+                                                    ))
+                                              : Container(
+                                                  color: AppColors.primary_color.withValues(alpha: 0.1),
+                                                  child: const Icon(
+                                                    Icons.person_rounded,
+                                                    color: AppColors.primary_color,
+                                                    size: 50.0,
+                                                  ),
+                                                ),
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      bottom: 0,
+                                      right: 0,
+                                      child: GestureDetector(
+                                        onTap: _upload_photo,
+                                        child: Container(
+                                          padding: const EdgeInsets.all(6.0),
+                                          decoration: const BoxDecoration(
+                                            color: AppColors.primary_color,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: const Icon(
+                                            Icons.camera_alt_rounded,
+                                            color: Colors.white,
+                                            size: 16.0,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: AppSpacing.space_xl),
+                              // Single grouped card container holding all form fields
+                              Container(
+                                padding: const EdgeInsets.all(16.0),
+                                decoration: BoxDecoration(
+                                  color: is_dark ? AppColors.surface_dark : Colors.white,
+                                  borderRadius: BorderRadius.circular(16.0),
+                                  border: Border.all(
+                                    color: is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
+                                    width: 1.0,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: is_dark
+                                          ? Colors.black.withValues(alpha: 0.2)
+                                          : Colors.black.withValues(alpha: 0.03),
+                                      blurRadius: 10.0,
+                                      spreadRadius: 0.0,
+                                      offset: const Offset(0.0, 4.0),
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Row 1: First name and Last name side-by-side Row
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: AuthTextField(
+                                            label: localizations.profile_first_name_label,
+                                            hint: '',
+                                            controller: _first_name_controller,
+                                            keyboard_type: TextInputType.name,
+                                            show_shadow: false,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 12.0),
+                                        Expanded(
+                                          child: AuthTextField(
+                                            label: localizations.profile_last_name_label,
+                                            hint: '',
+                                            controller: _last_name_controller,
+                                            keyboard_type: TextInputType.name,
+                                            show_shadow: false,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 16.0),
+                                    // Email input card (full width)
+                                    AuthTextField(
+                                      label: localizations.profile_email_label,
+                                      hint: '',
+                                      controller: _email_controller,
+                                      keyboard_type: TextInputType.emailAddress,
+                                      show_shadow: false,
+                                    ),
+                                    const SizedBox(height: 16.0),
+                                    // Phone input card (full width)
+                                    AuthTextField(
+                                      label: localizations.profile_phone_label,
+                                      hint: '',
+                                      controller: _phone_controller,
+                                      keyboard_type: TextInputType.phone,
+                                      is_phone: true,
+                                      show_shadow: false,
+                                    ),
+                                    const SizedBox(height: 16.0),
+                                    // Address input card (full width)
+                                    AuthTextField(
+                                      label: localizations.profile_address_label,
+                                      hint: '',
+                                      controller: _address_controller,
+                                      keyboard_type: TextInputType.streetAddress,
+                                      show_shadow: false,
+                                    ),
+                                    const SizedBox(height: 16.0),
+                                    // National ID input card (full width)
+                                    AuthTextField(
+                                      label: localizations.profile_national_id_label,
+                                      hint: '',
+                                      controller: _national_id_controller,
+                                      keyboard_type: TextInputType.number,
+                                      is_national_id: true,
+                                      show_shadow: false,
+                                    ),
+                                    const SizedBox(height: 16.0),
+                                    // Date of Birth input card (full width, tapping triggers custom calendar picker dialog)
+                                    GestureDetector(
+                                      onTap: () async {
+                                        final DateTime? picked_date = await showAppDatePicker(
+                                          context: context,
+                                          initialDate: DateTime.now(),
+                                          firstDate: DateTime(1900),
+                                          lastDate: DateTime.now(),
+                                        );
+                                        if (picked_date != null) {
+                                          final String formatted = '${picked_date.day}/${picked_date.month}/${picked_date.year}';
+                                          setState(() {
+                                            _dob_controller.text = formatted;
+                                          });
+                                        }
+                                      },
+                                      child: IgnorePointer(
+                                        child: AuthTextField(
+                                          label: localizations.profile_birthdate_label,
+                                          hint: '',
+                                          controller: _dob_controller,
+                                          enabled: false,
+                                          show_shadow: false,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16.0),
+                                    // Gender label
+                                    Text(
+                                      localizations.profile_gender_label,
+                                      style: TextStyle(
+                                        fontSize: AppSpacing.font_size_body_medium,
+                                        fontWeight: FontWeight.w700,
+                                        color: true == is_dark ? AppColors.text_dark_primary : AppColors.primary_color,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8.0),
+                                    // Segmented chips for gender choices
+                                    _build_segmented_chips<String>(
+                                      values: ['Male', 'Female', 'Prefer not to say'],
+                                      labels: [
+                                        localizations.profile_gender_male,
+                                        localizations.profile_gender_female,
+                                        localizations.profile_gender_prefer_not,
+                                      ],
+                                      selectedValue: state.temp_profile.gender,
+                                      onChanged: (value) {
+                                        context.read<ProfileCubit>().update_temp_profile(
+                                          state.temp_profile.copyWith(gender: value),
+                                        );
+                                      },
+                                      is_dark: is_dark,
+                                    ),
+                                    const SizedBox(height: 16.0),
+                                    // Weight and Height side-by-side Row
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: AuthTextField(
+                                            label: localizations.profile_weight_label,
+                                            hint: '',
+                                            controller: _weight_controller,
+                                            keyboard_type: TextInputType.number,
+                                            show_shadow: false,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 12.0),
+                                        Expanded(
+                                          child: AuthTextField(
+                                            label: localizations.profile_height_label,
+                                            hint: '',
+                                            controller: _height_controller,
+                                            keyboard_type: TextInputType.number,
+                                            show_shadow: false,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 16.0),
+                                    // Smoking section header
+                                    Text(
+                                      localizations.profile_smoking_section,
+                                      style: TextStyle(
+                                        fontSize: AppSpacing.font_size_body_medium,
+                                        fontWeight: FontWeight.w700,
+                                        color: true == is_dark ? AppColors.text_dark_primary : AppColors.primary_color,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8.0),
+                                    // Segmented chips for smoking options
+                                    _build_segmented_chips<String>(
+                                      values: ['Yes', 'No', 'Ex-Smoker'],
+                                      labels: [
+                                        localizations.profile_smoking_yes,
+                                        localizations.profile_smoking_no,
+                                        localizations.profile_smoking_ex,
+                                      ],
+                                      selectedValue: state.temp_profile.smoking,
+                                      onChanged: (value) {
+                                        context.read<ProfileCubit>().update_temp_profile(
+                                          state.temp_profile.copyWith(smoking: value),
+                                        );
+                                      },
+                                      is_dark: is_dark,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 80.0),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              bottomNavigationBar: StickyBottomBar(
+                child: AuthButton(
+                  label: localizations.profile_save_button,
+                  is_enabled: true == state.is_dirty &&
+                      state.status != ProfileStatus.updating,
+                  on_pressed: _submit_form,
+                  is_loading: state.status == ProfileStatus.updating,
+                ),
               ),
             );
-            // Return back to main Profile screen
-            Navigator.of(context).pop();
-          } else {
-            // Empty block
-          }
-        },
-        // Build screen layouts
-        builder: (context, state) {
-          // Scaffold display layout setup
-          return Scaffold(
-            // Form layout body containing fields scroll areas
-            body: Form(
-              // Bind global key
-              key: _form_key,
-              // Auto validate mode configuration
-              autovalidateMode: true == _form_submitted
-                  ? AutovalidateMode.onUserInteraction
-                  : AutovalidateMode.disabled,
-              // Scrollable area wrapping input cards fields
-              child: SingleChildScrollView(
-                // Margin offsets constraints
-                padding: const EdgeInsets.symmetric(
-                  // Horizontal padding
-                  horizontal: AppSpacing.space_xxl,
-                  // Vertical padding
-                  vertical: AppSpacing.space_l,
-                ),
-                // Column stack nesting fields layouts
-                child: Column(
-                  // Align fields left start boundary lines
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  // inputs list array
-                  children: [
-                    // Top vertical space margin
-                    const SizedBox(height: AppSpacing.space_xl),
-                    // Top row containing custom back button
-                    CustomProfileAppBar(
-                      title: localizations.profile_update_profile_button,
-                      onBackPressed: () async {
-                        final bool allow = await _on_will_pop();
-                        if (true == allow && context.mounted) {
-                          Navigator.of(context).pop();
-                        }
-                      },
-                    ),
-                    const SizedBox(height: AppSpacing.space_xl),
-                    // Profile edit mode avatar picker widget mockup
-                    Center(
-                      child: GestureDetector(
-                        onTap: _upload_photo,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            // circular outline placeholder avatar
-                            Container(
-                              width: AppSpacing.profile_edit_avatar_radius * 2,
-                              height: AppSpacing.profile_edit_avatar_radius * 2,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: true == is_dark
-                                      ? AppColors.border_dark
-                                      : AppColors.border_light,
-                                  width: AppSpacing.border_width_thin,
-                                ),
-                                image: state.temp_profile.avatar_url.isNotEmpty
-                                    ? DecorationImage(
-                                        image: true == state.temp_profile.avatar_url.startsWith('http')
-                                            ? NetworkImage(state.temp_profile.avatar_url) as ImageProvider
-                                            : FileImage(File(state.temp_profile.avatar_url)),
-                                        fit: BoxFit.cover,
-                                      )
-                                    : null,
-                              ),
-                              child: state.temp_profile.avatar_url.isEmpty
-                                  ? const Center(
-                                      child: Icon(
-                                        Icons.person_rounded,
-                                        color: AppColors.text_light_secondary,
-                                        size: AppSpacing.icon_size_xxl,
-                                      ),
-                                    )
-                                  : null,
-                            ),
-                            // Positioned edit pencil overlay button badge
-                            Positioned(
-                              bottom: AppSpacing.space_xs,
-                              right: AppSpacing.space_xs,
-                              child: Container(
-                                width: AppSpacing.icon_size_xl,
-                                height: AppSpacing.icon_size_xl,
-                                decoration: const BoxDecoration(
-                                  color: AppColors.primary_color,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Icon(
-                                  Icons.edit_rounded,
-                                  color: Colors.white,
-                                  size: AppSpacing.icon_size_s,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    // Vertical separator spacing
-                    const SizedBox(
-                      // Spacing value
-                      height: AppSpacing.space_l,
-                    ),
-                    // Contact Section Header display label
-                    Text(
-                      // Section header title string
-                      localizations.profile_contact_section,
-                      // Style layout options
-                      style: TextStyle(
-                        // Standard body size font
-                        fontSize: AppSpacing.font_size_body_medium,
-                        // bold weight
-                        fontWeight: FontWeight.w700,
-                        // Color styling
-                        color: true == is_dark
-                            ? AppColors.text_dark_primary
-                            : AppColors.primary_color,
-                      ),
-                    ),
-                    // Separator offset gaps
-                    const SizedBox(
-                      // Spacing offset
-                      height: AppSpacing.space_s,
-                    ),
-                    // Row containing First Name and Last Name text fields next to each other
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // First Name
-                        Expanded(
-                          child: AuthTextField(
-                            label: localizations.first_name_label,
-                            hint: localizations.first_name_hint,
-                            controller: _first_name_controller,
-                            validator: (value) {
-                              final String trimmed = (value ?? '').trim();
-                              if (trimmed.isEmpty) {
-                                return localizations.profile_error_name_empty;
-                              } else if (trimmed.length < 3 ||
-                                  trimmed.length > 50) {
-                                return localizations.profile_error_name_length;
-                              } else if (false ==
-                                  RegExp(r'^[a-zA-Z\s]+$').hasMatch(trimmed)) {
-                                return localizations
-                                    .profile_error_name_letters_only;
-                              } else {
-                                return null;
-                              }
-                            },
-                          ),
-                        ),
-                        // spacing gap
-                        const SizedBox(
-                          width: AppSpacing.space_m,
-                        ),
-                        // Last Name
-                        Expanded(
-                          child: AuthTextField(
-                            label: localizations.last_name_label,
-                            hint: localizations.last_name_hint,
-                            controller: _last_name_controller,
-                            validator: (value) {
-                              final String trimmed = (value ?? '').trim();
-                              if (trimmed.isEmpty) {
-                                return 'Last Name cannot be empty.';
-                              } else if (trimmed.length < 3 ||
-                                  trimmed.length > 50) {
-                                return 'Last Name must be between 3 and 50 characters.';
-                              } else if (false ==
-                                  RegExp(r'^[a-zA-Z\s]+$').hasMatch(trimmed)) {
-                                return 'Last Name must contain letters only.';
-                              } else {
-                                return null;
-                              }
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    // Separator offset gap box
-                    const SizedBox(
-                      height: AppSpacing.space_s,
-                    ),
-                    // Disabled Phone Number TextFormField card VR-03 / FLT-05 / FLT-06 specs
-                    AuthTextField(
-                      enabled: false,
-                      label: localizations.profile_phone_label,
-                      hint: localizations.allergies_placeholder,
-                      controller: _phone_controller,
-                      is_phone: true,
-                    ),
-                    // Separator offset gap box
-                    const SizedBox(
-                      height: AppSpacing.space_m,
-                    ),
-                    // National ID TextFormField card (14 numeric digits)
-                    AuthTextField(
-                      is_national_id: true,
-                      label: localizations.profile_national_id_label,
-                      hint: localizations.profile_national_id_hint,
-                      controller: _national_id_controller,
-                      keyboard_type: TextInputType.number,
-                      input_formatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(14),
-                      ],
-                      validator: (value) {
-                        final String trimmed = (value ?? '').trim();
-                        if (trimmed.isEmpty) {
-                          return localizations.profile_error_national_id_empty;
-                        } else if (false ==
-                            RegExp(r'^\d{14}$').hasMatch(trimmed)) {
-                          return localizations
-                              .profile_error_national_id_invalid;
-                        } else {
-                          return null;
-                        }
-                      },
-                    ),
-                    // Separator offset gap box
-                    const SizedBox(
-                      height: AppSpacing.space_s,
-                    ),
-                    // Email Text field input container card VR-04 / FLT-14 specs
-                    AuthTextField(
-                      label: localizations.profile_email_label,
-                      hint: localizations.allergies_placeholder,
-                      controller: _email_controller,
-                      keyboard_type: TextInputType.emailAddress,
-                      validator: (value) {
-                        final String trimmed =
-                            (value ?? '').trim().toLowerCase();
-                        if (trimmed.isEmpty) {
-                          return localizations.profile_error_email_empty;
-                        } else if (trimmed.length > 254) {
-                          return localizations.profile_error_email_length;
-                        } else if (false ==
-                            RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
-                                .hasMatch(trimmed)) {
-                          return localizations.profile_error_email_invalid;
-                        } else {
-                          return null;
-                        }
-                      },
-                    ),
-                    // Separator offset gap box
-                    const SizedBox(
-                      height: AppSpacing.space_s,
-                    ),
-                    // Address Text field input container card VR-06 / FLT-16 specs
-                    AuthTextField(
-                      label: 'Address',
-                      hint: localizations.allergies_placeholder,
-                      controller: _address_controller,
-                      validator: (value) {
-                        final String trimmed = (value ?? '').trim();
-                        if (trimmed.length > 250) {
-                          return localizations.profile_error_address_length;
-                        } else if (true ==
-                            RegExp(r'[\u{1F300}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]',
-                                    unicode: true)
-                                .hasMatch(trimmed)) {
-                          return localizations.profile_error_address_invalid;
-                        } else {
-                          return null;
-                        }
-                      },
-                    ),
-                    // Separator offset gap box
-                    const SizedBox(
-                      // Spacing height
-                      height: AppSpacing.space_s,
-                    ),
-                    // Gender selection section labels
-                    Text(
-                      // Localized gender label
-                      localizations.profile_gender_label,
-                      // Style typographic parameters options
-                      style: TextStyle(
-                        // Body standard size
-                        fontSize: AppSpacing.font_size_body_medium,
-                        // bold weight
-                        fontWeight: FontWeight.w600,
-                        // Secondary colors
-                        color: true == is_dark
-                            ? AppColors.text_dark_primary
-                            : AppColors.text_light_primary,
-                      ),
-                    ),
-                    const SizedBox(height: 8.0),
-                    _build_segmented_chips<String>(
-                      values: ['Male', 'Female', 'Prefer not to say'],
-                      labels: [
-                        localizations.profile_gender_male,
-                        localizations.profile_gender_female,
-                        localizations.profile_gender_prefer_not,
-                      ],
-                      selectedValue: state.temp_profile.gender,
-                      onChanged: (value) {
-                        context.read<ProfileCubit>().update_temp_profile(
-                              state.temp_profile.copyWith(gender: value),
-                            );
-                      },
-                      is_dark: is_dark,
-                    ),
-                    // Section divider space
-                    const SizedBox(
-                      // Spacing height
-                      height: AppSpacing.space_m,
-                    ),
-                    // More Information Section Header display label
-                    Text(
-                      // Section header title string
-                      localizations.profile_more_info_section,
-                      // Style layout options
-                      style: TextStyle(
-                        // Standard body size font
-                        fontSize: AppSpacing.font_size_body_medium,
-                        // bold weight
-                        fontWeight: FontWeight.w700,
-                        // Color styling
-                        color: true == is_dark
-                            ? AppColors.text_dark_primary
-                            : AppColors.primary_color,
-                      ),
-                    ),
-                    // Separator offset gap box
-                    const SizedBox(
-                      // Spacing height
-                      height: AppSpacing.space_s,
-                    ),
-                    // Row containing Weight and Height text fields next to each other
-                    Row(
-                      // Option layout spaces
-                      children: [
-                        // Weight card
-                        Expanded(
-                          // Weight text field input
-                          child: AuthTextField(
-                            label: localizations.profile_weight_label,
-                            hint: localizations.allergies_placeholder,
-                            controller: _weight_controller,
-                            keyboard_type: TextInputType.number,
-                          ),
-                        ),
-                        // gap
-                        const SizedBox(
-                          // Separator width value
-                          width: AppSpacing.space_s,
-                        ),
-                        // Height card
-                        Expanded(
-                          // Height text field input
-                          child: AuthTextField(
-                            label: localizations.profile_height_label,
-                            hint: localizations.allergies_placeholder,
-                            controller: _height_controller,
-                            keyboard_type: TextInputType.number,
-                          ),
-                        ),
-                      ],
-                    ),
-                    // Section divider space
-                    const SizedBox(
-                      // Spacing height
-                      height: AppSpacing.space_m,
-                    ),
-                    // Smoking Section Header display label
-                    Text(
-                      // Section header title string
-                      localizations.profile_smoking_section,
-                      // Style layout options
-                      style: TextStyle(
-                        // Standard body size font
-                        fontSize: AppSpacing.font_size_body_medium,
-                        // bold weight
-                        fontWeight: FontWeight.w700,
-                        // Color styling
-                        color: true == is_dark
-                            ? AppColors.text_dark_primary
-                            : AppColors.primary_color,
-                      ),
-                    ),
-                    const SizedBox(height: 8.0),
-                    _build_segmented_chips<String>(
-                      values: ['Yes', 'No', 'Ex-Smoker'],
-                      labels: [
-                        localizations.profile_smoking_yes,
-                        localizations.profile_smoking_no,
-                        localizations.profile_smoking_ex,
-                      ],
-                      selectedValue: state.temp_profile.smoking,
-                      onChanged: (value) {
-                        context.read<ProfileCubit>().update_temp_profile(
-                              state.temp_profile.copyWith(smoking: value),
-                            );
-                      },
-                      is_dark: is_dark,
-                    ),
-                    // Spacing gap before button
-                    const SizedBox(height: AppSpacing.space_l),
-                    // CTA Action button component executing profile save
-                    AuthButton(
-                      label: localizations.profile_save_button,
-                      is_enabled: true == state.is_dirty &&
-                          state.status != ProfileStatus.updating,
-                      on_pressed: _submit_form,
-                      is_loading: state.status == ProfileStatus.updating,
-                    ),
-                    // Spacing bottom padding margin box
-                    const SizedBox(
-                      // Spacing offset
-                      height: AppSpacing.space_xxl,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
+          },
+        ),
       ),
     );
   }

@@ -570,6 +570,10 @@ abstract class AppLocalizations {
 
   // Patient Profile Localizations
   String get profile_title;
+  String get edit_profile_title;
+  String get profile_first_name_label;
+  String get profile_last_name_label;
+  String get profile_address_label;
   String get profile_change_photo;
   String get profile_personal_information;
   String get profile_personal_information_subtitle;
@@ -784,6 +788,8 @@ abstract class AppLocalizations {
   String get insurance_select_provider_btn;
   String get insurance_upload_doc_btn;
   String get insurance_add_card_btn;
+  String get insurance_add_card_full_btn;
+  String get insurance_save_card_btn;
 }
 
 // Defining a short alias for clean and simple type references

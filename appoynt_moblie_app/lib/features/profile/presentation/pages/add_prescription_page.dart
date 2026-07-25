@@ -472,51 +472,45 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
                         ],
                       ),
 
-                      // ── Sticky Save CTA at bottom of scrollable form ──
-                      const SizedBox(height: AppSpacing.space_xl),
-
-                      // Full-width primary Save Prescription button
-                      SizedBox(
-                        // Fill full horizontal width
-                        width: double.infinity,
-                        // Standard button height token
-                        height: AppSpacing.height_auth_button,
-                        child: ElevatedButton(
-                          // Dispatch save action on press
-                          onPressed: () => _on_save(context, localizations),
-                          // Button styling configuration
-                          style: ElevatedButton.styleFrom(
-                            // Primary brand blue fill
-                            backgroundColor: AppColors.primary_color,
-                            // No elevation shadow
-                            elevation: 0.0,
-                            // 16px rounded corners
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16.0),
-                            ),
-                          ),
-                          child: Text(
-                            // Localized save button label
-                            cta_label,
-                            style: const TextStyle(
-                              // White text on blue fill
-                              color: Colors.white,
-                              // Action font size token
-                              fontSize: AppSpacing.font_size_action_button,
-                              // Bold weight
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      // Bottom spacing before edge of scroll view
-                      const SizedBox(height: AppSpacing.space_xl),
+                      const SizedBox(height: 80.0),
                     ],
                   ),
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: StickyBottomBar(
+        child: SizedBox(
+          width: double.infinity,
+          height: AppSpacing.height_auth_button,
+          child: ElevatedButton(
+            // Dispatch save action on press
+            onPressed: () => _on_save(context, localizations),
+            // Button styling configuration
+            style: ElevatedButton.styleFrom(
+              // Primary brand blue fill
+              backgroundColor: AppColors.primary_color,
+              // No elevation shadow
+              elevation: 0.0,
+              // 12px rounded corners
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+            ),
+            child: Text(
+              // Localized save button label
+              cta_label,
+              style: const TextStyle(
+                // White text on blue fill
+                color: Colors.white,
+                // Action font size token
+                fontSize: AppSpacing.font_size_action_button,
+                // Bold weight
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ),
       ),

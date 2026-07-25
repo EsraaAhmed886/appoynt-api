@@ -45,197 +45,144 @@ class _InsuranceDetailsPageState extends State<InsuranceDetailsPage> {
   Widget build(BuildContext context) {
     // Resolve localized labels context
     final AppLocalizations localizations = AppLocalizations.of(context);
-    // Resolve theme brightness modes status
-    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
 
     // Return root Scaffold layout container
     return Scaffold(
-      // App bar details
-      appBar: AppBar(
-        // Center title
-        centerTitle: true,
-        // Title label text
-        title: Text(
-          // Insurance title string
-          localizations.insurance_title,
-          // Styles
-          style: TextStyle(
-            // Size standard
-            fontSize: AppSpacing.font_size_title,
-            // bold weight
-            fontWeight: FontWeight.w700,
-            // Color parameters
-            color: true == is_dark ? AppColors.text_dark_primary : AppColors.text_light_primary,
-          ),
-        ),
-        // Suffix action button trigger for additions
-        actions: [
-          // Suffix plus icon
-          IconButton(
-            // Plus symbol icon selector
-            icon: const Icon(
-              // Plus icon token
-              Icons.add_rounded,
-              // Color primary
-              color: AppColors.primary_color,
-              // Standard size
-              size: AppSpacing.icon_size_m,
-            ),
-            // Navigate to add card page screen
+      // Fixed sticky bottom action bar containing full-width primary CTA
+      bottomNavigationBar: StickyBottomBar(
+        // Full width action container wrapper
+        child: SizedBox(
+          // Match full screen available width
+          width: double.infinity,
+          // Standard CTA height matching auth buttons (50.0px)
+          height: AppSpacing.height_auth_button,
+          // Primary Elevated Button trigger for adding a new card
+          child: ElevatedButton(
+            // Navigate to Add Insurance Card page route on tap
             onPressed: () {
-              // Open add card page routing wrapped in ProfileCubit
+              // Open add card screen wrapped in existing ProfileCubit instance
               Navigator.of(context).push(
-                // Route configurations
+                // Material route configuration
                 MaterialPageRoute(
-                  // Constructor mapping
+                  // Route builder callback
                   builder: (route_context) {
                     // Return AddInsuranceCardPage widget wrapped in ProfileCubit
                     return BlocProvider.value(
-                      // Provide existing ProfileCubit instance
+                      // Provide active ProfileCubit controller instance
                       value: context.read<ProfileCubit>(),
-                      // Target page
+                      // Target screen widget
                       child: const AddInsuranceCardPage(),
                     );
                   },
                 ),
               );
             },
+            // Button styling configuration
+            style: ElevatedButton.styleFrom(
+              // Vibrant brand blue primary color tint (#1D4ED8)
+              backgroundColor: AppColors.primary_color,
+              // Clear shadows for flat surface alignment
+              elevation: 0.0,
+              // Curved corner radius shape (12.0px radius token)
+              shape: RoundedRectangleBorder(
+                // Rounded corner radius 12px
+                borderRadius: BorderRadius.circular(AppSpacing.radius_l),
+              ),
+            ),
+            // Button label text child widget
+            child: Text(
+              // Localized action string "Add Insurance Card" / "إضافة بطاقة تأمين"
+              localizations.insurance_add_card_full_btn,
+              // Text typography styling parameters
+              style: const TextStyle(
+                // White text color tint
+                color: Colors.white,
+                // Action button font size token
+                fontSize: AppSpacing.font_size_action_button,
+                // Bold typography font weight
+                fontWeight: FontWeight.w700,
+              ),
+            ),
           ),
-        ],
+        ),
       ),
-      // BLoC builder rendering dynamic covered insurance policies
-      body: BlocBuilder<ProfileCubit, ProfileState>(
-        // Rebuild builder
-        builder: (context, state) {
-          // Verify if active list is empty using Yoda checks
-          if (true == state.profile.insurance_cards.isEmpty) {
-            // Render empty message display
-            return Center(
-              // Subdued label text
-              child: Text(
-                // Localized empty check text string
-                localizations.profile_zero_insurance,
-                // Style
-                style: const TextStyle(
-                  // Subdued colors
-                  color: AppColors.text_light_secondary,
-                  // Body standard size
-                  fontSize: AppSpacing.font_size_body_medium,
+      // Screen main body wrapped in SafeArea and 16px lateral padding
+      body: SafeArea(
+        // Outer padding applying strict 16px side canvas margins
+        child: Padding(
+          // Horizontal side margins 16.0px
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space_xl),
+          // Column stacking header and body list
+          child: Column(
+            // Align children to start horizontal axis
+            crossAxisAlignment: CrossAxisAlignment.start,
+            // Children array
+            children: [
+              // Top 16px vertical baseline spacing margin gap
+              const SizedBox(height: AppSpacing.space_xl),
+              // Shared Squircle Back Button AppBar component
+              CustomProfileAppBar(
+                // Centered screen title string
+                title: localizations.insurance_title,
+              ),
+              // Vertical separation gap
+              const SizedBox(height: AppSpacing.space_l),
+              // Expanded container wrapping dynamic card list or empty view
+              Expanded(
+                // BLoC builder listening to ProfileState updates
+                child: BlocBuilder<ProfileCubit, ProfileState>(
+                  // State builder callback
+                  builder: (context, state) {
+                    // Yoda check verifying if insurance cards list is empty
+                    if (true == state.profile.insurance_cards.isEmpty) {
+                      // Render empty state layout
+                      return Center(
+                        // Empty message text widget
+                        child: Text(
+                          // Localized zero insurance cards message
+                          localizations.profile_zero_insurance,
+                          // Subdued text style
+                          style: const TextStyle(
+                            // Secondary muted text color tint
+                            color: AppColors.text_light_secondary,
+                            // Medium body font size token
+                            fontSize: AppSpacing.font_size_body_medium,
+                          ),
+                        ),
+                      );
+                    } else {
+                      // Render ListView builder displaying health policies
+                      return ListView.builder(
+                        // Remove default list view padding as parent padding applies 16px horizontal margin
+                        padding: const EdgeInsets.symmetric(
+                          // Vertical list padding margin bounds
+                          vertical: AppSpacing.space_s,
+                        ),
+                        // Item count matching cards array length
+                        itemCount: state.profile.insurance_cards.length,
+                        // Item builder function
+                        itemBuilder: (context, index) {
+                          // Resolve insurance card instance reference
+                          final InsuranceCard card = state.profile.insurance_cards[index];
+                          // Return shared zero-overflow insurance card widget
+                          return InsuranceCardWidget(
+                            // Insurance card model instance
+                            card: card,
+                            // Card tap callback handler
+                            onTap: () {
+                              // Launch bottom sheet options modal
+                              _show_card_options_sheet(context, card, index);
+                            },
+                          );
+                        },
+                      );
+                    }
+                  },
                 ),
               ),
-            );
-          } else {
-            // Render covered policies list cards dynamically
-            return ListView.builder(
-              // Padding offsets padding margin bounds within borders
-              padding: const EdgeInsets.symmetric(
-                // Horizontal offset bounds
-                horizontal: AppSpacing.space_m,
-                // Vertical offset bounds
-                vertical: AppSpacing.space_s,
-              ),
-              // Count
-              itemCount: state.profile.insurance_cards.length,
-              // Builder mapping cards
-              itemBuilder: (context, index) {
-                // Resolve insurance card details reference
-                final InsuranceCard card = state.profile.insurance_cards[index];
-                // Return floating insurance asset card with 16px radius, border, and single chevron action
-                return Container(
-                  margin: const EdgeInsets.symmetric(
-                    vertical: AppSpacing.space_s,
-                  ),
-                  decoration: BoxDecoration(
-                    color: true == is_dark ? AppColors.surface_dark : Colors.white,
-                    borderRadius: BorderRadius.circular(16.0),
-                    border: Border.all(
-                      color: true == is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
-                      width: AppSpacing.border_width_thin,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: true == is_dark
-                            ? Colors.black.withValues(alpha: 0.25)
-                            : Colors.black.withValues(alpha: 0.04),
-                        blurRadius: 8.0,
-                        offset: const Offset(0.0, 2.0),
-                      ),
-                    ],
-                  ),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(16.0),
-                    onTap: () {
-                      _show_card_options_sheet(context, card, index);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(AppSpacing.space_m),
-                      child: Row(
-                        children: [
-                          // Circular heart icon badge
-                          Container(
-                            width: 48.0,
-                            height: 48.0,
-                            decoration: BoxDecoration(
-                              color: AppColors.primary_color.withValues(alpha: 0.1),
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(
-                              Icons.favorite_rounded,
-                              color: AppColors.primary_color,
-                              size: AppSpacing.icon_size_m,
-                            ),
-                          ),
-                          const SizedBox(width: AppSpacing.space_m),
-                          // Details text column
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  card.card_name,
-                                  style: TextStyle(
-                                    fontSize: AppSpacing.font_size_body_medium,
-                                    fontWeight: FontWeight.w700,
-                                    color: true == is_dark
-                                        ? AppColors.text_dark_primary
-                                        : AppColors.text_light_primary,
-                                  ),
-                                ),
-                                const SizedBox(height: AppSpacing.space_xs),
-                                Text(
-                                  card.provider_name,
-                                  style: const TextStyle(
-                                    fontSize: AppSpacing.font_size_body_small,
-                                    color: AppColors.text_light_secondary,
-                                  ),
-                                ),
-                                const SizedBox(height: AppSpacing.space_xs),
-                                Text(
-                                  '${localizations.insurance_expiry_label} ${card.expiry_date}',
-                                  style: const TextStyle(
-                                    fontSize: AppSpacing.font_size_body_small,
-                                    color: AppColors.text_light_secondary,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: AppSpacing.space_s),
-                          // Single primary Details chevron action icon
-                          Icon(
-                            Icons.chevron_right_rounded,
-                            color: true == is_dark ? Colors.white60 : AppColors.primary_color,
-                            size: 24.0,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
-            );
-          }
-        },
+            ],
+          ),
+        ),
       ),
     );
   }

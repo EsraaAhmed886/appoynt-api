@@ -47,6 +47,27 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
   // Active validation state variables
   bool _validated_once = false;
 
+  @override
+  void initState() {
+    super.initState();
+    _holder_controller.addListener(_on_fields_changed);
+    _number_controller.addListener(_on_fields_changed);
+    _expiry_controller.addListener(_on_fields_changed);
+    _cvv_controller.addListener(_on_fields_changed);
+  }
+
+  void _on_fields_changed() {
+    setState(() {});
+  }
+
+  // Getter evaluating if all input fields contain valid formats
+  bool get _is_form_valid {
+    return _validate_cardholder(_holder_controller.text) &&
+        _luhn_check(_number_controller.text) &&
+        _validate_expiry(_expiry_controller.text) &&
+        _validate_cvv(_cvv_controller.text);
+  }
+
   // Luhn algorithm validator check implementation
   bool _luhn_check(String number) {
     // Remove space gaps
@@ -164,6 +185,10 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
   @override
   // Clean allocations upon state disposal
   void dispose() {
+    _holder_controller.removeListener(_on_fields_changed);
+    _number_controller.removeListener(_on_fields_changed);
+    _expiry_controller.removeListener(_on_fields_changed);
+    _cvv_controller.removeListener(_on_fields_changed);
     // Dispose text fields controllers
     _holder_controller.dispose();
     // Card controller dispose
@@ -339,7 +364,7 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
                               ),
                             ),
                             // Horizontal gap spacer
-                            const SizedBox(width: 16.0),
+                            const SizedBox(width: 12.0),
                             // CVV Column
                             Expanded(
                               // Stack layout
@@ -391,108 +416,107 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
                             ),
                           ],
                         ),
-                        // Height spacer padding offset
-                        const SizedBox(height: 36.0),
-
-                        // Save Card Action Button solid CTA
-                        SizedBox(
-                          // Full width
-                          width: double.infinity,
-                          // Height dimensions standard
-                          height: 50.0,
-                          // Elevated button solid
-                          child: ElevatedButton(
-                            // Action tap trigger validation loop
-                            onPressed: () {
-                              // Mark form as verified once
-                              setState(() {
-                                // Toggle state check
-                                _validated_once = true;
-                              });
-                              // Verify form validation criteria states
-                              if (true == _form_key.currentState!.validate()) {
-                                final String raw_num =
-                                    _number_controller.text.trim();
-                                // Format with 4-digit grouping if it's just raw digits
-                                String formatted_num =
-                                    raw_num.replaceAll(' ', '');
-                                final String brand =
-                                    formatted_num.startsWith('4')
-                                        ? 'Visa'
-                                        : (formatted_num.startsWith('5')
-                                            ? 'Mastercard'
-                                            : 'Visa');
-
-                                // Ensure 4-digit grouping spacing
-                                final StringBuffer sb = StringBuffer();
-                                for (int i = 0; i < formatted_num.length; i++) {
-                                  if (i > 0 && i % 4 == 0) {
-                                    sb.write(' ');
-                                  }
-                                  sb.write(formatted_num[i]);
-                                }
-                                formatted_num = sb.toString();
-
-                                final Map<String, dynamic> card_data = {
-                                  'id': DateTime.now()
-                                      .millisecondsSinceEpoch
-                                      .toString(),
-                                  'brand': brand,
-                                  'number': formatted_num,
-                                  'expiry': _expiry_controller.text.trim(),
-                                  'holder': _holder_controller.text.trim(),
-                                  'is_default': 'false',
-                                };
-
-                                // Dispatch add_payment_card on cubit context
-                                context
-                                    .read<ProfileCubit>()
-                                    .add_payment_card(card_data);
-
-                                // Pop subpage return back
-                                Navigator.of(context).pop();
-                                // Show success SnackBar status feedback
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  // SnackBar specs
-                                  const SnackBar(
-                                    content: Text(
-                                        'New card saved securely to profile.'),
-                                  ),
-                                );
-                              }
-                            },
-                            // Style matching primary brand blue theme colors
-                            style: ElevatedButton.styleFrom(
-                              // Blue primary color fill
-                              backgroundColor: AppColors.primary_color,
-                              // Curves
-                              shape: RoundedRectangleBorder(
-                                // Rounded radius bounds
-                                borderRadius: BorderRadius.circular(25.0),
-                              ),
-                            ),
-                            // Centered CTA label Text
-                            child: const Text(
-                              // Save Card string
-                              'Securely Save Card',
-                              // Typography
-                              style: TextStyle(
-                                // Color white high contrast
-                                color: Colors.white,
-                                // Medium
-                                fontSize: 14.0,
-                                // Bold
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
+                        const SizedBox(height: 80.0),
                       ],
                     ),
                   ),
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: StickyBottomBar(
+        child: SizedBox(
+          // Full width
+          width: double.infinity,
+          // Height dimensions standard
+          height: 50.0,
+          // Elevated button solid
+          child: ElevatedButton(
+            // Action tap trigger validation loop
+            onPressed: _is_form_valid
+                ? () {
+                    // Mark form as verified once
+                    setState(() {
+                      // Toggle state check
+                      _validated_once = true;
+                    });
+                    // Verify form validation criteria states
+                    if (true == _form_key.currentState!.validate()) {
+                      final String raw_num = _number_controller.text.trim();
+                      // Format with 4-digit grouping if it's just raw digits
+                      String formatted_num = raw_num.replaceAll(' ', '');
+                      final String brand = formatted_num.startsWith('4')
+                          ? 'Visa'
+                          : (formatted_num.startsWith('5')
+                              ? 'Mastercard'
+                              : 'Visa');
+
+                      // Ensure 4-digit grouping spacing
+                      final StringBuffer sb = StringBuffer();
+                      for (int i = 0; i < formatted_num.length; i++) {
+                        if (i > 0 && i % 4 == 0) {
+                          sb.write(' ');
+                        }
+                        sb.write(formatted_num[i]);
+                      }
+                      formatted_num = sb.toString();
+
+                      final Map<String, dynamic> card_data = {
+                        'id': DateTime.now().millisecondsSinceEpoch.toString(),
+                        'brand': brand,
+                        'number': formatted_num,
+                        'expiry': _expiry_controller.text.trim(),
+                        'holder': _holder_controller.text.trim(),
+                        'is_default': 'false',
+                      };
+
+                      // Dispatch add_payment_card on cubit context
+                      context.read<ProfileCubit>().add_payment_card(card_data);
+
+                      // Pop subpage return back
+                      Navigator.of(context).pop();
+                      // Show success SnackBar status feedback
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        // SnackBar specs
+                        const SnackBar(
+                          content: Text('New card saved securely to profile.'),
+                        ),
+                      );
+                    }
+                  }
+                : null,
+            // Style matching primary brand blue theme colors dynamically based on validity state
+            style: ElevatedButton.styleFrom(
+              // Muted grey background when disabled, solid primary blue when enabled
+              backgroundColor: _is_form_valid
+                  ? const Color(0xFF1D4ED8)
+                  : const Color(0xFFE2E8F0),
+              disabledBackgroundColor: const Color(0xFFE2E8F0),
+              foregroundColor: Colors.white,
+              disabledForegroundColor: const Color(0xFF94A3B8),
+              elevation: _is_form_valid ? 2.0 : 0.0,
+              // Curves
+              shape: RoundedRectangleBorder(
+                // Rounded radius bounds
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+            ),
+            // Centered CTA label Text
+            child: Text(
+              // Save Card string
+              'Securely Save Card',
+              // Typography
+              style: TextStyle(
+                // Color white high contrast when enabled, subtle gray when disabled
+                color: _is_form_valid ? Colors.white : const Color(0xFF94A3B8),
+                // Medium
+                fontSize: 14.0,
+                // Bold
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ),
       ),
@@ -528,10 +552,10 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
           height: 50.0,
           // Shadow decorator container
           child: Container(
-            // Shadow decoration specs
+            // Shadow decorator container
             decoration: BoxDecoration(
               // Rounded contours
-              borderRadius: BorderRadius.circular(25.0),
+              borderRadius: BorderRadius.circular(12.0),
               // Shadow list
               boxShadow: [
                 BoxShadow(
@@ -597,20 +621,20 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
             // Padding offsets details
             contentPadding: const EdgeInsets.symmetric(
               // Horizontal bounds padding offsets
-              horizontal: AppSpacing.space_xl,
+              horizontal: 16.0,
               // Vertical bounds padding offsets
-              vertical: AppSpacing.space_m,
+              vertical: 14.0,
             ),
             // Default border outline contour settings
             border: OutlineInputBorder(
               // Rounded contours
-              borderRadius: BorderRadius.circular(25.0),
+              borderRadius: BorderRadius.circular(12.0),
               // Thin border line thickness
               borderSide: BorderSide(
                 // Color border matching theme
                 color: true == is_dark
                     ? AppColors.border_dark
-                    : AppColors.border_light.withValues(alpha: 0.5),
+                    : const Color(0xFFE2E8F0),
                 // Thickness thin
                 width: 1.0,
               ),
@@ -618,13 +642,13 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
             // Enabled state borders
             enabledBorder: OutlineInputBorder(
               // Rounded contours
-              borderRadius: BorderRadius.circular(25.0),
+              borderRadius: BorderRadius.circular(12.0),
               // Thin border line thickness
               borderSide: BorderSide(
                 // Color border matching theme
                 color: true == is_dark
                     ? AppColors.border_dark
-                    : AppColors.border_light.withValues(alpha: 0.5),
+                    : const Color(0xFFE2E8F0),
                 // Thickness thin
                 width: 1.0,
               ),
@@ -632,7 +656,7 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
             // Focused state borders
             focusedBorder: OutlineInputBorder(
               // Rounded contours
-              borderRadius: BorderRadius.circular(25.0),
+              borderRadius: BorderRadius.circular(12.0),
               // Primary colors brand outline borders
               borderSide: const BorderSide(
                 // Colors theme primary
@@ -644,7 +668,7 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
             // High-contrast Error state borders outline
             errorBorder: OutlineInputBorder(
               // Rounded contours
-              borderRadius: BorderRadius.circular(25.0),
+              borderRadius: BorderRadius.circular(12.0),
               // Red error outline borders
               borderSide: const BorderSide(
                 // Red error colors
@@ -656,7 +680,7 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
             // High-contrast Focused Error state borders outline
             focusedErrorBorder: OutlineInputBorder(
               // Rounded contours
-              borderRadius: BorderRadius.circular(25.0),
+              borderRadius: BorderRadius.circular(12.0),
               // Red error outline borders
               borderSide: const BorderSide(
                 // Red error colors

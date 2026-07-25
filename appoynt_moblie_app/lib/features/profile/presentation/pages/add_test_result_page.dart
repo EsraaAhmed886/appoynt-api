@@ -23,6 +23,7 @@ import 'package:appoynt_mobile_app/core/widgets/app_date_picker.dart';
 // Importing Cubit controller
 import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart';
 
+
 // Add Test Result Page layout stateful widget representation
 class AddTestResultPage extends StatefulWidget {
   // Initial active category type (lab_test / scan)
@@ -442,27 +443,25 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
 
     // Return root Scaffold layout container
     return Scaffold(
-      // App bar details
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          localizations.tests_add_title,
-          style: TextStyle(
-            fontSize: AppSpacing.font_size_title,
-            fontWeight: FontWeight.w700,
-            color: is_dark
-                ? AppColors.text_dark_primary
-                : AppColors.text_light_primary,
-          ),
-        ),
-      ),
       // Scrollable view wrapping upload form fields
-      body: Form(
-        key: _form_key,
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
+      body: SafeArea(
+        child: Form(
+          key: _form_key,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: 16.0,
+                  right: 16.0,
+                  top: 16.0,
+                  bottom: 8.0,
+                ),
+                child: CustomProfileAppBar(
+                  title: localizations.tests_add_title,
+                ),
+              ),
+              Expanded(
+                child: SingleChildScrollView(
                 padding: const EdgeInsets.all(AppSpacing.space_m),
                 child: Column(
                   children: [
@@ -869,6 +868,7 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
           ],
         ),
       ),
+    ),
       // Sticky bottom navigation bar for primary Confirm Button
       bottomNavigationBar: SafeArea(
         child: Padding(

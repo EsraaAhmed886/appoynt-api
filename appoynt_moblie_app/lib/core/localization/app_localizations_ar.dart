@@ -1256,11 +1256,20 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get profile_title => 'الملف الشخصي';
   @override
+  String get edit_profile_title => 'تعديل الملف الشخصي';
+  @override
+  String get profile_first_name_label => 'الاسم الأول';
+  @override
+  String get profile_last_name_label => 'اسم العائلة';
+  @override
+  String get profile_address_label => 'العنوان';
+  @override
   String get profile_change_photo => 'تغيير الصورة';
   @override
   String get profile_personal_information => 'المعلومات الشخصية';
   @override
-  String get profile_personal_information_subtitle => 'تعديل الاسم والهاتف والبريد الإلكتروني والجنس والطول والوزن';
+  String get profile_personal_information_subtitle =>
+      'تعديل الاسم والهاتف والبريد الإلكتروني والجنس والطول والوزن';
   @override
   String get profile_medical_history => 'السجل الطبي';
   @override
@@ -1282,7 +1291,8 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get profile_no_allergies => 'لم يتم إضافة أي حساسية';
   @override
-  String get profile_zero_prescriptions => 'لم يتم إضافة أي روشتة. اضغط للإضافة';
+  String get profile_zero_prescriptions =>
+      'لم يتم إضافة أي روشتة. اضغط للإضافة';
   @override
   String get profile_zero_conditions => 'لم يتم إضافة أي أمراض';
   @override
@@ -1310,7 +1320,8 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get profile_national_id_hint => 'أدخل الرقم القومي (١٤ رقم)';
   @override
-  String get profile_error_national_id_empty => 'الرقم القومي لا يمكن أن يكون فارغاً.';
+  String get profile_error_national_id_empty =>
+      'الرقم القومي لا يمكن أن يكون فارغاً.';
   @override
   String get profile_error_national_id_invalid =>
       'الرقم القومي يجب أن يتكون من ١٤ رقماً بدون حروف أو رموز.';
@@ -1337,27 +1348,34 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get profile_error_name_empty => 'الاسم الأول لا يمكن أن يكون فارغًا.';
   @override
-  String get profile_error_name_length => 'يجب أن يكون الاسم الأول بين 3 و 50 حرفًا.';
+  String get profile_error_name_length =>
+      'يجب أن يكون الاسم الأول بين 3 و 50 حرفًا.';
   @override
-  String get profile_error_name_letters_only => 'يجب أن يحتوي الاسم الأول على أحرف فقط.';
+  String get profile_error_name_letters_only =>
+      'يجب أن يحتوي الاسم الأول على أحرف فقط.';
   @override
-  String get profile_error_email_empty => 'البريد الإلكتروني لا يمكن أن يكون فارغًا.';
+  String get profile_error_email_empty =>
+      'البريد الإلكتروني لا يمكن أن يكون فارغًا.';
   @override
   String get profile_error_email_invalid => 'يرجى إدخال بريد إلكتروني صحيح.';
   @override
-  String get profile_error_email_length => 'يجب ألا يتعدى البريد الإلكتروني 254 حرفًا.';
+  String get profile_error_email_length =>
+      'يجب ألا يتعدى البريد الإلكتروني 254 حرفًا.';
   @override
-  String get profile_error_email_registered => 'هذا البريد الإلكتروني مسجل بالفعل.';
+  String get profile_error_email_registered =>
+      'هذا البريد الإلكتروني مسجل بالفعل.';
   @override
   String get profile_error_gender_required => 'الجنس مطلوب.';
   @override
   String get profile_error_address_length => 'يجب ألا يتعدى العنوان 250 حرفًا.';
   @override
-  String get profile_error_address_invalid => 'لا يمكن أن يحتوي العنوان على رموز تعبيرية أو أحرف غير مدعومة.';
+  String get profile_error_address_invalid =>
+      'لا يمكن أن يحتوي العنوان على رموز تعبيرية أو أحرف غير مدعومة.';
   @override
   String get profile_unsaved_changes_title => 'تغييرات غير محفوظة';
   @override
-  String get profile_unsaved_changes_message => 'لديك تغييرات غير محفوظة. هل أنت متأكد من رغبتك في المغادرة؟';
+  String get profile_unsaved_changes_message =>
+      'لديك تغييرات غير محفوظة. هل أنت متأكد من رغبتك في المغادرة؟';
   @override
   String get profile_unsaved_changes_stay => 'البقاء';
   @override
@@ -1407,7 +1425,8 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get profile_delete_account_confirm => 'تأكيد حذف الحساب';
   @override
-  String get profile_delete_account_warning => 'تحذير: هذا الإجراء دائم وسيؤدي إلى حذف بيانات حسابك بالكامل. يرجى تأكيد رغبتك في المتابعة.';
+  String get profile_delete_account_warning =>
+      'تحذير: هذا الإجراء دائم وسيؤدي إلى حذف بيانات حسابك بالكامل. يرجى تأكيد رغبتك في المتابعة.';
   @override
   String get profile_delete_account_dialog_title => 'حذف الحساب نهائياً؟';
   @override
@@ -1444,13 +1463,11 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get profile_language_row => 'اللغة';
   @override
-  String get profile_language_sub =>
-      'اختر لغة التطبيق المفضلة';
+  String get profile_language_sub => 'اختر لغة التطبيق المفضلة';
   @override
   String get profile_theme_row => 'مظهر التطبيق';
   @override
-  String get profile_theme_sub =>
-      'تخصيص نمط مظهر التطبيق Visual Appearance';
+  String get profile_theme_sub => 'تخصيص نمط مظهر التطبيق Visual Appearance';
   @override
   String get profile_theme_light => 'فاتح';
   @override
@@ -1513,7 +1530,8 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get password_confirm_label => 'تأكيد كلمة المرور';
   @override
-  String get password_current_empty => 'كلمة المرور الحالية لا يمكن أن تكون فارغة.';
+  String get password_current_empty =>
+      'كلمة المرور الحالية لا يمكن أن تكون فارغة.';
   @override
   String get password_current_incorrect => 'كلمة المرور الحالية غير صحيحة.';
   @override
@@ -1521,17 +1539,23 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get password_new_length => 'يجب أن تكون كلمة المرور بين 8 و 64 حرفًا.';
   @override
-  String get password_new_complexity => 'يجب أن تحتوي كلمة المرور على حرف كبير، وحرف صغير، ورقم، ورمز خاص.';
+  String get password_new_complexity =>
+      'يجب أن تحتوي كلمة المرور على حرف كبير، وحرف صغير، ورقم، ورمز خاص.';
   @override
-  String get password_new_unsupported => 'لا يمكن أن تحتوي كلمة المرور على مسافات، أو أحرف عربية، أو رموز تعبيرية.';
+  String get password_new_unsupported =>
+      'لا يمكن أن تحتوي كلمة المرور على مسافات، أو أحرف عربية، أو رموز تعبيرية.';
   @override
-  String get password_new_personal_info => 'لا يمكن أن تحتوي كلمة المرور على معلوماتك الشخصية.';
+  String get password_new_personal_info =>
+      'لا يمكن أن تحتوي كلمة المرور على معلوماتك الشخصية.';
   @override
-  String get password_new_same_as_current => 'يجب أن تكون كلمة المرور الجديدة مختلفة عن كلمة المرور الحالية.';
+  String get password_new_same_as_current =>
+      'يجب أن تكون كلمة المرور الجديدة مختلفة عن كلمة المرور الحالية.';
   @override
-  String get password_new_pattern => 'لا يمكن أن تحتوي كلمة المرور على أحرف أو أرقام متكررة أو متتالية.';
+  String get password_new_pattern =>
+      'لا يمكن أن تحتوي كلمة المرور على أحرف أو أرقام متكررة أو متتالية.';
   @override
-  String get password_confirm_empty => 'تأكيد كلمة المرور لا يمكن أن يكون فارغًا.';
+  String get password_confirm_empty =>
+      'تأكيد كلمة المرور لا يمكن أن يكون فارغًا.';
   @override
   String get password_confirm_match => 'كلمتا المرور غير متطابقتين.';
   @override
@@ -1637,7 +1661,8 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get tests_empty_title => 'لا توجد تقارير أو أشعة مضافة';
   @override
-  String get tests_empty_subtitle => 'قم برفع وتقارير الفحوصات والأشعة الخاصة بك ليسهل الوصول إليها ومشاركتها مع طبيبك.';
+  String get tests_empty_subtitle =>
+      'قم برفع وتقارير الفحوصات والأشعة الخاصة بك ليسهل الوصول إليها ومشاركتها مع طبيبك.';
   @override
   String get tests_empty_cta => '+ إضافة نتيجة أو تقرير جديد';
   @override
@@ -1653,7 +1678,8 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get chronic_title => 'الأمراض المزمنة';
   @override
-  String get chronic_description => 'يرجى تحديد الحالات المزمنة التي تنطبق عليك لمساعدتنا في تقديم رعاية أفضل.';
+  String get chronic_description =>
+      'يرجى تحديد الحالات المزمنة التي تنطبق عليك لمساعدتنا في تقديم رعاية أفضل.';
 
   // Insurance Details Localizations Arabic Overrides
   @override
@@ -1674,4 +1700,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get insurance_upload_doc_btn => 'تحميل من الجهاز';
   @override
   String get insurance_add_card_btn => 'إضافة البطاقة';
+  @override
+  String get insurance_add_card_full_btn => 'إضافة بطاقة تأمين';
+  @override
+  String get insurance_save_card_btn => 'حفظ البطاقة';
 }

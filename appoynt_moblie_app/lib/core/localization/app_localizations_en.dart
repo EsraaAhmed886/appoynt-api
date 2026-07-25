@@ -1256,6 +1256,14 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get profile_title => 'Profile';
   @override
+  String get edit_profile_title => 'Edit Profile';
+  @override
+  String get profile_first_name_label => 'First Name';
+  @override
+  String get profile_last_name_label => 'Last Name';
+  @override
+  String get profile_address_label => 'Address';
+  @override
   String get profile_change_photo => 'Change Photo';
   @override
   String get profile_personal_information => 'Personal Information';
@@ -1675,4 +1683,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get insurance_upload_doc_btn => 'Upload from device';
   @override
   String get insurance_add_card_btn => 'Add Card';
+  @override
+  String get insurance_add_card_full_btn => 'Add Insurance Card';
+  @override
+  String get insurance_save_card_btn => 'Save Card';
 }
