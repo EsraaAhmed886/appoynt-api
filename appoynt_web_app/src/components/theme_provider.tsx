@@ -6,14 +6,13 @@ type ThemeProviderProps = {
   children: React.ReactNode;
 };
 
-export default function AppThemeProvider({
-  children,
-}: ThemeProviderProps) {
+export default function AppThemeProvider({ children }: ThemeProviderProps) {
   return (
     <ThemeProvider
       attribute="class"
       defaultTheme="light"
       enableSystem={false}
+      disableTransitionOnChange
     >
       {children}
     </ThemeProvider>

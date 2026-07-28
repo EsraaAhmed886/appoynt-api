@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Menu } from "lucide-react";
 import Sidebar from "./sidebar";
+import LayoutHeader from "./header";
 
 type DashboardLayoutProps = {
   children: React.ReactNode;
@@ -13,15 +13,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-[var(--app-background)] text-[var(--app-text-primary)] transition-colors">
-      {/* Desktop Sidebar */}
+    <div className="relative flex min-h-screen w-full bg-app-bg text-app-text-primary">
       <Sidebar
         className="hidden lg:flex"
         isCollapsed={isCollapsed}
         onToggle={() => setIsCollapsed(!isCollapsed)}
       />
 
-      {/* Mobile Overlay */}
       {isMobileSidebarOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/50 lg:hidden"
@@ -29,66 +27,22 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         />
       )}
 
-      {/* Mobile Sidebar */}
-      <Sidebar
+      <div
         className={`
-    fixed
-    left-0
-    top-0
-    z-50
-    lg:hidden
-    transform
-    transition-transform
-    duration-300
-    ${isMobileSidebarOpen ? "translate-x-0" : "-translate-x-full"}
-  `}
-        isCollapsed={false}
-        onToggle={() => setIsMobileSidebarOpen(false)}
-      />
+          fixed inset-y-0 left-0 z-50 lg:hidden
+          transform transition-transform duration-300 ease-in-out
+          ${isMobileSidebarOpen ? "translate-x-0" : "-translate-x-full"}
+        `}
+      >
+        <Sidebar
+          isCollapsed={false}
+          onToggle={() => setIsMobileSidebarOpen(false)}
+        />
+      </div>
+      <div className="flex flex-1 min-w-0 w-full flex-col overflow-x-hidden">
+        <LayoutHeader onMenuClick={() => setIsMobileSidebarOpen(true)} />
 
-      {/* Main Content */}
-      <div className="flex flex-1 flex-col">
-        {/* Mobile Header */}
-        <header
-          className="
-    flex
-    items-center
-    justify-between
-    border-b
-    border-[var(--app-border)]
-    bg-[var(--app-surface)]
-    px-4
-    py-3
-    lg:hidden
-    transition-colors
-  "
-        >
-          <button
-            onClick={() => setIsMobileSidebarOpen(true)}
-            className="
-rounded-lg
-p-2
-transition-colors
-hover:bg-[var(--app-input-fill)]
-"
-          >
-            <Menu size={24} />
-          </button>
-
-          <h1 className="text-lg font-semibold text-[var(--app-text-primary)]">
-            Appoynt
-          </h1>
-        </header>
-
-        <main
-          className="
-    flex-1
-    bg-[var(--app-background)]
-    text-[var(--app-text-primary)]
-    p-6
-    transition-colors
-  "
-        >
+        <main className="flex-1 min-w-0 p-4 pt-6 md:p-6 md:pt-16 transition-colors">
           {children}
         </main>
       </div>

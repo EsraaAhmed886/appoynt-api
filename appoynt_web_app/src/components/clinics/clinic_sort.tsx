@@ -71,7 +71,7 @@ export default function ClinicSort({
           absolute
           left-0
           top-full
-          z-50
+          z-[100]
           mt-2
           w-full
           origin-top

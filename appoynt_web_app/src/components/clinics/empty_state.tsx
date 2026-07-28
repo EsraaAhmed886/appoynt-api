@@ -11,7 +11,7 @@ export default function EmptyState() {
         priority
       />
 
-      <h2 className="mx-auto max-w-xs text-center text-3xl font-bold leading-tight text-app-text-primary sm:max-w-md sm:text-4xl lg:max-w-none lg:text-5xl">
+      <h2 className="mx-auto max-w-xs text-center text-3xl font-semibold leading-tight text-app-text-primary sm:max-w-md sm:text-4xl lg:max-w-none lg:text-5xl">
         You don't have any clinics yet
       </h2>
 

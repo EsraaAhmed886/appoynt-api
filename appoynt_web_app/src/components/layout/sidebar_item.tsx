@@ -46,9 +46,7 @@ export default function SidebarItem({
       >
         <Icon size={20} className="shrink-0" />
 
-        {!isCollapsed && (
-          <span className="whitespace-nowrap">{title}</span>
-        )}
+        {!isCollapsed && <span className="whitespace-nowrap">{title}</span>}
       </Link>
 
       {isCollapsed && (

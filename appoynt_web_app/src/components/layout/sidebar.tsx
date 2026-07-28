@@ -13,6 +13,8 @@ import {
   Clock3,
   Settings,
   LogOut,
+  FileText,
+  Bell,
 } from "lucide-react";
 
 type SidebarProps = {
@@ -29,15 +31,20 @@ export default function Sidebar({
   return (
     <aside
       className={`
+        sticky
+        top-0
         h-screen
+        shrink-0
         flex
         flex-col
+        overflow-x-hidden
         bg-app-surface
         text-app-text-primary
         border-r
         border-app-border
         transition-all
         duration-300
+        z-40
         ${isCollapsed ? "w-20" : "w-64"}
         ${className}
       `}
@@ -46,6 +53,7 @@ export default function Sidebar({
       <div
         className={`
           flex
+          h-16
           items-center
           border-b
           border-app-border
@@ -84,8 +92,7 @@ export default function Sidebar({
         </button>
       </div>
 
-      {/* Menu */}
-      <nav className="flex-1 space-y-2 p-4">
+      <nav className="flex-1 overflow-y-auto overflow-x-hidden space-y-2 p-4">
         <SidebarItem
           icon={LayoutDashboard}
           title="Dashboard"
@@ -129,6 +136,20 @@ export default function Sidebar({
         />
 
         <SidebarItem
+          icon={FileText}
+          title="Medical Records"
+          href="/medical-records"
+          isCollapsed={isCollapsed}
+        />
+
+        <SidebarItem
+          icon={Bell}
+          title="Notifications"
+          href="/notifications"
+          isCollapsed={isCollapsed}
+        />
+
+        <SidebarItem
           icon={Settings}
           title="Settings"
           href="/settings"
@@ -137,9 +158,9 @@ export default function Sidebar({
       </nav>
 
       {/* Footer */}
-      <div className="space-y-2 border-t border-app-border p-4">
+      <div className="mt-auto space-y-2 border-t border-app-border p-4 overflow-hidden">
         <div
-          className={`flex ${
+          className={`flex overflow-hidden ${
             isCollapsed ? "justify-center" : "justify-start"
           }`}
         >

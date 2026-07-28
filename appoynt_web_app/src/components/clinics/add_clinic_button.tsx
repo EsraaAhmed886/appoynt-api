@@ -4,9 +4,7 @@ type AddClinicButtonProps = {
   onClick: () => void;
 };
 
-export default function AddClinicButton({
-  onClick,
-}: AddClinicButtonProps) {
+export default function AddClinicButton({ onClick }: AddClinicButtonProps) {
   return (
     <button
       onClick={onClick}

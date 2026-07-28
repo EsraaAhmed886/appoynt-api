@@ -1,58 +1,35 @@
-import { X } from "lucide-react";
+import { X, ArrowLeft, Check, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
-import CustomSelect from "./custom_select";
 import SuccessModal from "./success_modal";
 import UnsavedChangesModal from "./unsaved_changes_modal";
+import ClinicInformationStep from "./steps/clinic_information_step";
+import WorkingScheduleStep, {
+  WorkingScheduleItem,
+} from "./steps/working_schedule_step";
+import BreakTimesStep, { BreakTimeItem } from "./steps/break_times_step";
+import ReceptionistsStep, {
+  ReceptionistItem,
+} from "./steps/receptionists_step";
+import BookingSettingsStep from "./steps/booking_settings_step";
 
-const WORKING_DAYS = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
-const GOVERNORATES = ["Cairo", "Giza", "Alexandria"];
-const CITIES_BY_GOVERNORATE: Record<string, string[]> = {
-  Cairo: ["Nasr City", "Heliopolis", "Maadi", "New Cairo", "Shoubra"],
+import {
+  CITIES_BY_GOVERNORATE,
+  VALIDATION_MESSAGES,
+  PHONE_REGEX,
+  BUTTON_CLASS,
+} from "./clinic_form_constants";
 
-  Giza: ["Dokki", "Mohandessin", "6th October", "Sheikh Zayed", "Haram"],
+const STEPS = [
+  "Clinic Information",
+  "Working Schedule",
+  "Break Times",
+  "Receptionists",
+  "Booking Settings",
+];
 
-  Alexandria: ["Smouha", "Stanley", "Miami", "Sidi Gaber", "Gleem"],
-};
-
-const PHONE_REGEX = /^01[0125][0-9]{8}$/;
-
-const VALIDATION_MESSAGES = {
-  clinicNameRequired: "Clinic name is required",
-  clinicNameMin: "Clinic name must be at least 2 characters",
-  clinicNameMax: "Clinic name must not exceed 50 characters",
-  clinicNameSpaces: "Multiple consecutive spaces are not allowed",
-  clinicNameInvalid: "Clinic name must contain at least one letter",
-  phone: "Enter a valid phone number",
-  governorate: "Please select a governorate",
-  city: "Please select a city",
-  addressRequired: "Clinic address is required",
-  addressMin: "Clinic address must be at least 2 characters",
-  addressMax: "Clinic address must not exceed 100 characters",
-  addressSpaces: "Multiple consecutive spaces are not allowed",
-  addressTrailingSpaces: "Address must not end with spaces",
-  addressInvalid: "Enter a valid clinic address",
-  consultationFee: "Invalid consultation fee",
-  workingDays: "Invalid working days",
-};
-
-const LABEL_CLASS =
-  "mb-2 text-sm font-semibold text-app-text-primary md:text-base lg:text-lg";
-
-const INPUT_CLASS =
-  "w-full rounded-lg border bg-app-input_fill px-4 py-2.5 text-app-text-primary outline-none transition-all";
-const ERROR_CLASS = "mt-1 text-sm text-red-500 md:text-base lg:text-lg";
-const DAY_BUTTON_CLASS = "rounded-lg border px-4 py-2.5 transition-all";
-
-const BUTTON_CLASS =
-  "h-10 rounded-md font-medium text-sm md:text-base lg:text-lg";
-
-const getInputBorderClass = (hasError: boolean) => {
-  if (hasError) {
-    return "border-red-500 ring-2 ring-red-200";
-  } else {
-   return "border-app-border focus:border-app-primary focus:ring-2 focus:ring-app-primary/20";
-  }
-};
+const DEFAULT_SCHEDULES: WorkingScheduleItem[] = [];
+const DEFAULT_BREAKS: BreakTimeItem[] = [];
+const DEFAULT_RECEPTIONISTS: ReceptionistItem[] = [];
 
 type ErrorSetter = React.Dispatch<React.SetStateAction<string>>;
 
@@ -77,6 +54,7 @@ export default function AddClinicModal({
   onClose,
   onAddClinic,
 }: AddClinicModalProps) {
+  const [currentStep, setCurrentStep] = useState(1);
   const [clinicName, setClinicName] = useState("");
   const [clinicNameError, setClinicNameError] = useState("");
   const [phone, setPhone] = useState("");
@@ -92,13 +70,108 @@ export default function AddClinicModal({
   const [workingDays, setWorkingDays] = useState<string[]>([]);
   const [workingDaysError, setWorkingDaysError] = useState("");
   const [status, setStatus] = useState("Active");
-
-  const availableCities = governorate ? CITIES_BY_GOVERNORATE[governorate] : [];
-
+  const availableCities = governorate
+    ? CITIES_BY_GOVERNORATE[governorate] || []
+    : [];
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);
-
   const [isDirty, setIsDirty] = useState(false);
   const [isUnsavedModalOpen, setIsUnsavedModalOpen] = useState(false);
+
+  const [scheduleList, setScheduleList] =
+    useState<WorkingScheduleItem[]>(DEFAULT_SCHEDULES);
+  const [breakList, setBreakList] = useState<BreakTimeItem[]>(DEFAULT_BREAKS);
+  const [assignedReceptionists, setAssignedReceptionists] = useState<
+    ReceptionistItem[]
+  >(DEFAULT_RECEPTIONISTS);
+  const [appointmentDuration, setAppointmentDuration] = useState("30 Minutes");
+  const [maxAdvanceBooking, setMaxAdvanceBooking] = useState("30 Days");
+
+  useEffect(() => {
+    if (isOpen) {
+      resetForm();
+    }
+  }, [isOpen]);
+
+  const resetForm = () => {
+    setCurrentStep(1);
+    setClinicName("");
+    setClinicNameError("");
+    setPhone("");
+    setPhoneError("");
+    setGovernorate("");
+    setGovernorateError("");
+    setCity("");
+    setCityError("");
+    setAddress("");
+    setAddressError("");
+    setConsultationFee("");
+    setConsultationFeeError("");
+    setWorkingDays([]);
+    setWorkingDaysError("");
+    setStatus("Active");
+
+    setScheduleList(DEFAULT_SCHEDULES);
+    setBreakList(DEFAULT_BREAKS);
+    setAssignedReceptionists(DEFAULT_RECEPTIONISTS);
+    setAppointmentDuration("30 Minutes");
+    setMaxAdvanceBooking("30 Days");
+
+    setIsDirty(false);
+  };
+
+  const nextStep = () => {
+    if (currentStep < 5) {
+      setCurrentStep((prev) => prev + 1);
+    }
+  };
+
+  const previousStep = () => {
+    if (currentStep > 1) {
+      setCurrentStep((prev) => prev - 1);
+    }
+  };
+
+  const handleAddSchedule = (newItem: WorkingScheduleItem) => {
+    setScheduleList((prev) => [...prev, newItem]);
+    markAsDirty();
+  };
+
+  const handleEditSchedule = (
+    index: number,
+    updatedItem: WorkingScheduleItem,
+  ) => {
+    setScheduleList((prev) =>
+      prev.map((item, i) => (i === index ? updatedItem : item)),
+    );
+    markAsDirty();
+  };
+
+  const handleDeleteSchedule = (index: number) => {
+    setScheduleList((prev) => prev.filter((_, i) => i !== index));
+    markAsDirty();
+  };
+
+  const handleAddBreak = (newItem: BreakTimeItem) => {
+    setBreakList((prev) => [...prev, newItem]);
+    markAsDirty();
+  };
+
+  const handleEditBreak = (index: number, updatedItem: BreakTimeItem) => {
+    setBreakList((prev) =>
+      prev.map((item, i) => (i === index ? updatedItem : item)),
+    );
+    markAsDirty();
+  };
+
+  const handleDeleteBreak = (index: number) => {
+    setBreakList((prev) => prev.filter((_, i) => i !== index));
+    markAsDirty();
+  };
+
+  const handleUpdateAssigned = (newList: ReceptionistItem[]) => {
+    setAssignedReceptionists(newList);
+    markAsDirty();
+  };
 
   const validateClinicName = (clinicName: string, setError: ErrorSetter) => {
     const trimmedName = clinicName.trim();
@@ -197,20 +270,6 @@ export default function AddClinicModal({
     }
   };
 
-  const validateRequiredArray = (
-    value: string[],
-    setError: ErrorSetter,
-    message: string,
-  ) => {
-    if (value.length === 0) {
-      setError(message);
-      return false;
-    } else {
-      setError("");
-      return true;
-    }
-  };
-
   const handleDayClick = (day: string) => {
     if (workingDays.includes(day)) {
       setWorkingDays(workingDays.filter((item) => item !== day));
@@ -222,38 +281,9 @@ export default function AddClinicModal({
     markAsDirty();
   };
 
-  const resetForm = () => {
-    setClinicName("");
-    setClinicNameError("");
-
-    setPhone("");
-    setPhoneError("");
-
-    setGovernorate("");
-    setGovernorateError("");
-
-    setCity("");
-    setCityError("");
-
-    setAddress("");
-    setAddressError("");
-
-    setConsultationFee("");
-    setConsultationFeeError("");
-
-    setWorkingDays([]);
-    setWorkingDaysError("");
-
-    setStatus("Active");
-
-    setIsDirty(false);
-  };
-
   const markAsDirty = () => {
     if (!isDirty) {
       setIsDirty(true);
-    } else {
-      // Already marked as dirty
     }
   };
 
@@ -261,6 +291,7 @@ export default function AddClinicModal({
     if (isDirty) {
       setIsUnsavedModalOpen(true);
     } else {
+      resetForm();
       onClose();
     }
   };
@@ -270,8 +301,6 @@ export default function AddClinicModal({
       if (isDirty) {
         event.preventDefault();
         event.returnValue = "";
-      } else {
-        // No action needed
       }
     };
 
@@ -285,16 +314,8 @@ export default function AddClinicModal({
   const handleSave = () => {
     let isValid = true;
 
-    if (!validateClinicName(clinicName, setClinicNameError)) {
-      isValid = false;
-    } else {
-      // No action needed
-    }
-    if (!validatePhoneNumber(phone, setPhoneError)) {
-      isValid = false;
-    } else {
-      // No action needed
-    }
+    if (!validateClinicName(clinicName, setClinicNameError)) isValid = false;
+    if (!validatePhoneNumber(phone, setPhoneError)) isValid = false;
 
     if (
       !validateRequiredField(
@@ -304,41 +325,20 @@ export default function AddClinicModal({
       )
     ) {
       isValid = false;
-    } else {
-      // No action needed
     }
 
     if (!validateRequiredField(city, setCityError, VALIDATION_MESSAGES.city)) {
       isValid = false;
-    } else {
-      // No action needed
     }
 
-    if (!validateAddress(address, setAddressError)) {
-      isValid = false;
-    } else {
-      // No action needed
-    }
+    if (!validateAddress(address, setAddressError)) isValid = false;
 
     if (!validateConsultationFee(consultationFee, setConsultationFeeError)) {
       isValid = false;
-    } else {
-      // No action needed
-    }
-
-    if (
-      !validateRequiredArray(
-        workingDays,
-        setWorkingDaysError,
-        VALIDATION_MESSAGES.workingDays,
-      )
-    ) {
-      isValid = false;
-    } else {
-      // No action needed
     }
 
     if (!isValid) {
+      setCurrentStep(1);
       return;
     } else {
       const newClinic: Clinic = {
@@ -347,306 +347,268 @@ export default function AddClinicModal({
         location: `${city}, ${governorate}`,
         phone,
         consultationFee: `${consultationFee} EGP`,
-        workingDays: workingDays.join(", "),
+        workingDays: scheduleList.map((s) => s.day).join(", "),
         status,
       };
 
       onAddClinic(newClinic);
-
       resetForm();
-
       setIsSuccessOpen(true);
     }
   };
 
+  const getInputBorderClass = (hasError: boolean) => {
+    if (hasError) {
+      return "border-red-500 ring-2 ring-red-200";
+    } else {
+      return "border-gray-200 dark:border-gray-700 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20";
+    }
+  };
+
+  const clinicForm = {
+    clinicName,
+    clinicNameError,
+    phone,
+    phoneError,
+    governorate,
+    governorateError,
+    city,
+    cityError,
+    address,
+    addressError,
+    consultationFee,
+    consultationFeeError,
+    workingDays,
+    workingDaysError,
+    status,
+    availableCities,
+  };
+
+  const clinicActions = {
+    setClinicName,
+    setClinicNameError,
+    setPhone,
+    setPhoneError,
+    setGovernorate,
+    setGovernorateError,
+    setCity,
+    setCityError,
+    setAddress,
+    setAddressError,
+    setConsultationFee,
+    setConsultationFeeError,
+    setStatus,
+    validateClinicName,
+    validateAddress,
+    handleDayClick,
+    markAsDirty,
+    getInputBorderClass,
+  };
+
   if (!isOpen) {
     return null;
-  } else {
-    return (
-      <>
+  }
+
+  return (
+    <>
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+        onClick={handleClose}
+      >
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
-          onClick={handleClose}
+          className="max-h-[90vh] w-full max-w-[640px] overflow-y-auto rounded-2xl bg-[var(--app-surface)] text-[var(--app-text-primary)] p-6 shadow-2xl transition-colors border border-[var(--app-border)]"
+          onClick={(e) => e.stopPropagation()}
         >
-          <div
-            className="max-h-[90vh] w-full max-w-[600px] overflow-y-auto rounded-xl bg-app-surface p-4 shadow-xl sm:p-6"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between border-b pb-4">
-              <h2 className="text-xl font-semibold text-app-text-primary">
-                Add New Clinic
-              </h2>
+          {/* Header */}
+          <div className="flex items-center justify-between pb-6">
+            <h2 className="text-xl font-bold text-app-text-primary">
+              Add New Clinic
+            </h2>
 
-              <button
-                onClick={handleClose}
-                className="rounded-full p-1 text-app-text-secondary
-hover:bg-app-input_fill
-hover:text-app-text-primary"
-              >
-                <X size={20} />
-              </button>
-            </div>
-
-            <form
-              className="mt-6 space-y-4"
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSave();
-              }}
+            <button
+              onClick={handleClose}
+              className="rounded-full p-1.5 text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
             >
-              {/*clinic name*/}
-              <div className="flex flex-col">
-                <label className={LABEL_CLASS}>
-                  Clinic Name <span className="text-red-500">*</span>
-                </label>
+              <X size={18} />
+            </button>
+          </div>
 
-                <input
-                  type="text"
-                  value={clinicName}
-                  onChange={(e) => {
-                    const value = e.target.value;
+          {/* Stepper */}
+          <div className="mb-12 flex items-center justify-between px-2">
+            {STEPS.map((step, index) => {
+              const stepNumber = index + 1;
+              const isActive = currentStep === stepNumber;
+              const isCompleted = currentStep > stepNumber;
 
-                    setClinicName(value);
+              return (
+                <div
+                  key={step}
+                  className="flex flex-1 items-center last:flex-none"
+                >
+                  <div className="flex flex-col items-center relative">
+                    <div
+                      className={`
+                        flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold transition-all
+                        ${
+                          isCompleted
+                            ? "bg-emerald-600 text-white"
+                            : isActive
+                              ? "bg-blue-600 text-white"
+                              : "border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400"
+                        }
+                      `}
+                    >
+                      {isCompleted ? (
+                        <Check size={16} strokeWidth={2.5} />
+                      ) : (
+                        stepNumber
+                      )}
+                    </div>
 
-                    validateClinicName(value, setClinicNameError);
+                    <span
+                      className={`
+                        absolute top-10 whitespace-nowrap text-[11px] font-medium transition-colors
+                        ${
+                          isActive
+                            ? "font-bold text-blue-600 dark:text-blue-400"
+                            : isCompleted
+                              ? "text-gray-700 dark:text-gray-300"
+                              : "text-gray-400 dark:text-gray-500"
+                        }
+                      `}
+                    >
+                      {step}
+                    </span>
+                  </div>
 
-                    markAsDirty();
-                  }}
-                  placeholder="Enter clinic name"
-                  className={`${INPUT_CLASS} ${getInputBorderClass(!!clinicNameError)}`}
-                />
-                {clinicNameError && (
-                  <p className={ERROR_CLASS}>{clinicNameError}</p>
+                  {index < STEPS.length - 1 && (
+                    <div className="mx-3 h-[1px] flex-1 bg-gray-200 dark:bg-gray-800" />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          <form
+            className="space-y-4 pt-2"
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (currentStep === 5) {
+                handleSave();
+              } else {
+                nextStep();
+              }
+            }}
+          >
+            {/* Step 1 */}
+            {currentStep === 1 && (
+              <ClinicInformationStep
+                form={clinicForm}
+                actions={clinicActions}
+              />
+            )}
+
+            {/* Step 2 */}
+            {currentStep === 2 && (
+              <WorkingScheduleStep
+                scheduleList={scheduleList}
+                onAddSchedule={handleAddSchedule}
+                onEditSchedule={handleEditSchedule}
+                onDeleteSchedule={handleDeleteSchedule}
+              />
+            )}
+
+            {/* Step 3 */}
+            {currentStep === 3 && (
+              <BreakTimesStep
+                breakList={breakList}
+                availableWorkingDays={scheduleList.map((s) => s.day)}
+                onAddBreak={handleAddBreak}
+                onEditBreak={handleEditBreak}
+                onDeleteBreak={handleDeleteBreak}
+              />
+            )}
+
+            {/* Step 4 */}
+            {currentStep === 4 && (
+              <ReceptionistsStep
+                assignedReceptionists={assignedReceptionists}
+                onUpdateAssigned={handleUpdateAssigned}
+              />
+            )}
+
+            {/* Step 5 */}
+            {currentStep === 5 && (
+              <BookingSettingsStep
+                appointmentDuration={appointmentDuration}
+                setAppointmentDuration={(val) => {
+                  setAppointmentDuration(val);
+                  markAsDirty();
+                }}
+                maxAdvanceBooking={maxAdvanceBooking}
+                setMaxAdvanceBooking={(val) => {
+                  setMaxAdvanceBooking(val);
+                  markAsDirty();
+                }}
+                onMarkDirty={markAsDirty}
+              />
+            )}
+
+            {/* Footer Buttons */}
+            <div className="mt-8 flex items-center justify-between border-t border-app-border pt-5">
+              <div>
+                {currentStep > 1 && (
+                  <button
+                    type="button"
+                    onClick={previousStep}
+                    className="rounded-xl border border-app-border bg-app-surface px-5 py-2 text-sm font-medium text-app-text-primary hover:border-app-primary/50 hover:text-app-primary transition-all"
+                  >
+                    ← Back
+                  </button>
                 )}
               </div>
 
-              {/*phone number*/}
-              <div className="flex flex-col">
-                <label className={LABEL_CLASS}>
-                  Phone Number <span className="text-red-500">*</span>
-                </label>
-
-                <input
-                  type="number"
-                  value={phone}
-                  onChange={(e) => {
-                    setPhone(e.target.value);
-                    setPhoneError("");
-                    markAsDirty();
-                  }}
-                  placeholder="Enter phone number"
-                  className={`${INPUT_CLASS} ${getInputBorderClass(!!phoneError)}`}
-                />
-                {phoneError ? (
-                  <p className={ERROR_CLASS}>{phoneError}</p>
-                ) : null}
-              </div>
-
-              {/* Location */}
-              <div className="space-y-4">
-                {/* Governorate + City */}
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  {/* Governorate */}
-                  <CustomSelect
-                    label="Governorate"
-                    placeholder="Select Governorate"
-                    value={governorate}
-                    error={governorateError}
-                    options={GOVERNORATES}
-                    onChange={(value) => {
-                      setGovernorate(value);
-                      setGovernorateError("");
-
-                      setCity("");
-                      setCityError("");
-
-                      markAsDirty();
-                    }}
-                  />
-
-                  {/* City */}
-                  <CustomSelect
-                    label="City"
-                    placeholder="Select City"
-                    value={city}
-                    error={cityError}
-                    options={availableCities}
-                    disabled={!governorate}
-                    onChange={(value) => {
-                      setCity(value);
-                      setCityError("");
-                      markAsDirty();
-                    }}
-                  />
-                </div>
-
-                {/* Detailed Address */}
-                <div className="flex flex-col">
-                  <label className={LABEL_CLASS}>
-                    Detailed Address <span className="text-red-500">*</span>
-                  </label>
-
-                  <input
-                    type="text"
-                    value={address}
-                    onChange={(e) => {
-                      const value = e.target.value;
-
-                      setAddress(value);
-                      validateAddress(value, setAddressError);
-                      markAsDirty();
-                    }}
-                    placeholder="Enter clinic address"
-                    className={`${INPUT_CLASS} ${getInputBorderClass(!!addressError)}`}
-                  />
-
-                  {addressError ? (
-                    <p className={ERROR_CLASS}>{addressError}</p>
-                  ) : null}
-                </div>
-              </div>
-
-              {/*fee*/}
-              <div className="flex flex-col">
-                <label className={LABEL_CLASS}>
-                  Consultation Fee <span className="text-red-500">*</span>
-                </label>
-
-                <div className="flex w-full">
-                  <input
-                    type="number"
-                    min="1"
-                    max={100000}
-                    value={consultationFee}
-                    onChange={(e) => {
-                      setConsultationFee(e.target.value);
-                      setConsultationFeeError("");
-                      markAsDirty();
-                    }}
-                    placeholder="Enter fee"
-                    className={`${INPUT_CLASS} ${getInputBorderClass(!!consultationFeeError)}`}
-                  />
-
-                  <div className="flex items-center rounded-r-lg border border-app-border
-bg-app-input_fill
-text-app-text-primary px-4">
-                    EGP
-                  </div>
-                </div>
-                {consultationFeeError ? (
-                  <p className={ERROR_CLASS}>{consultationFeeError}</p>
-                ) : null}
-              </div>
-
-              {/*working day*/}
-              <div className="flex flex-col">
-                <label className={LABEL_CLASS}>
-                  Working Days <span className="text-red-500">*</span>
-                </label>
-
-                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7">
-                  {WORKING_DAYS.map((day) => (
-                    <button
-                      key={day}
-                      type="button"
-                      onClick={() => handleDayClick(day)}
-                      className={`
-                       ${DAY_BUTTON_CLASS}
-                       ${
-                         workingDays.includes(day)
-                           ? "bg-blue-primary text-white border-app-primary"
-                           : getInputBorderClass(!!workingDaysError)
-                       }
-                    `}
-                    >
-                      {day}
-                    </button>
-                  ))}
-                </div>
-                {workingDaysError ? (
-                  <p className={ERROR_CLASS}>{workingDaysError}</p>
-                ) : null}
-              </div>
-
-              {/*status*/}
-              <div className="flex flex-col">
-                <label className={LABEL_CLASS}>
-                  Status <span className="text-red-500">*</span>
-                </label>
-
-                <div className="flex flex-col gap-3 sm:flex-row sm:gap-8">
-                  <label className="flex items-center gap-2 text-app-text-primary">
-                    <input
-                      type="radio"
-                      name="status"
-                      value="Active"
-                      checked={status === "Active"}
-                      onChange={() => {
-                        setStatus("Active");
-                        markAsDirty();
-                      }}
-                    />
-                    Active
-                  </label>
-
-                  <label className="flex items-center gap-2 text-app-text-primary">
-                    <input
-                      type="radio"
-                      name="status"
-                      value="Inactive"
-                      checked={status === "Inactive"}
-                      onChange={() => {
-                        setStatus("Inactive");
-                        markAsDirty();
-                      }}
-                    />
-                    Inactive
-                  </label>
-                </div>
-              </div>
-
-              <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-                <button
-                  type="submit"
-                  className={`${BUTTON_CLASS} w-full bg-app-primary px-8 text-white hover:opacity-90 sm:w-auto`}
-                >
-                  Save Clinic
-                </button>
+              <div className="flex items-center gap-3">
                 <button
                   type="button"
                   onClick={handleClose}
-                  className={`${BUTTON_CLASS} w-full border border-app-border bg-app-surface px-6 text-app-text-primary hover:bg-app-input_fill sm:w-auto`}
+                  className="rounded-xl border border-app-border bg-app-surface px-5 py-2 text-sm font-medium text-app-text-primary hover:border-app-primary/50 hover:text-app-primary transition-all"
                 >
                   Cancel
                 </button>
+
+                <button
+                  type="submit"
+                  className="rounded-xl bg-app-primary px-6 py-2 text-sm font-medium text-white shadow-md hover:opacity-90 transition-all"
+                >
+                  {currentStep === 5 ? "✓ Save Changes" : "Next"}
+                </button>
               </div>
-            </form>
-          </div>
+            </div>
+          </form>
         </div>
+      </div>
 
-        <UnsavedChangesModal
-          isOpen={isUnsavedModalOpen}
-          onStay={() => {
-            setIsUnsavedModalOpen(false);
-          }}
-          onLeave={() => {
-            setIsUnsavedModalOpen(false);
-            resetForm();
-            onClose();
-          }}
-        />
+      <UnsavedChangesModal
+        isOpen={isUnsavedModalOpen}
+        onStay={() => {
+          setIsUnsavedModalOpen(false);
+        }}
+        onLeave={() => {
+          setIsUnsavedModalOpen(false);
+          resetForm();
+          onClose();
+        }}
+      />
 
-        <SuccessModal
-          isOpen={isSuccessOpen}
-          onClose={() => {
-            setIsSuccessOpen(false);
-
-            resetForm();
-
-            onClose();
-          }}
-        />
-      </>
-    );
-  }
+      <SuccessModal
+        isOpen={isSuccessOpen}
+        onClose={() => {
+          setIsSuccessOpen(false);
+          resetForm();
+          onClose();
+        }}
+      />
+    </>
+  );
 }

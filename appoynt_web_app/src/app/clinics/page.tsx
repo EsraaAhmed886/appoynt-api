@@ -2,7 +2,7 @@
  * File Name: page.tsx
  * Author: Shimaa Salah
  * Date of Creation: 04/07/2026
- * Version Information: V1.0.0
+ * Version Information: V1.1
  * Dependencies:
  *   - react
  *   - next
@@ -10,7 +10,7 @@
  *   - @/components/layout/dashboard_layout
  *   - @/components/clinics/*
  *   - @/services/clinic.service
- * Last Modified Date: [Shimaa Salah - 20/07/2026]
+ * Last Modified Date: [Shimaa Salah - 28/07/2026]
  * File Description:
  *   Clinics Management page for managing doctor clinics,
  *   including clinic listing, searching, sorting, adding,
@@ -21,7 +21,6 @@
 
 import { useEffect, useState } from "react";
 import DashboardLayout from "@/components/layout/dashboard_layout";
-import ClinicHeader from "@/components/clinics/clinic_header";
 import ClinicTable from "@/components/clinics/clinic_table";
 import ClinicToolbar from "@/components/clinics/clinic_toolbar";
 import AddClinicModal from "@/components/clinics/add_clinic_modal";
@@ -46,22 +45,22 @@ export default function ClinicsPage() {
 
   const [selectedClinicId, setSelectedClinicId] = useState<number | null>(null);
 
-  const [clinics, setClinics] = useState(() => getClinics());
+  const [clinics, setClinics] = useState<ReturnType<typeof getClinics>>([]);
   const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All");
   const [sortOrder, setSortOrder] = useState("default");
   const [currentPage, setCurrentPage] = useState(1);
   const [clinicsPerPage, setClinicsPerPage] = useState(12);
 
   useEffect(() => {
+    initializeClinics();
+    setClinics(getClinics());
+
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 100);
 
     return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    initializeClinics();
   }, []);
 
   useEffect(() => {
@@ -108,9 +107,16 @@ export default function ClinicsPage() {
     });
   };
 
-  const filteredClinics = clinics.filter((clinic) =>
-    clinic.name.toLowerCase().includes(search.toLowerCase()),
-  );
+  const filteredClinics = clinics.filter((clinic) => {
+    const searchValue = search.trim().toLowerCase();
+    const matchesSearch =
+      searchValue === "" || clinic.name.toLowerCase().startsWith(searchValue);
+
+    const matchesStatus =
+      statusFilter === "All" || clinic.status === statusFilter;
+
+    return matchesSearch && matchesStatus;
+  });
 
   let sortedClinics = [...filteredClinics];
 
@@ -140,14 +146,14 @@ export default function ClinicsPage() {
 
   return (
     <DashboardLayout>
-      <div className="overflow-x-hidden p-4 sm:p-5 lg:p-6">
-        <ClinicHeader />
-
-        <div className="mt-6 lg:mt-8">
+      <div className="overflow-x-hidden px-4 sm:px-5 lg:px-6">
+        <div className="mt-0">
           <ClinicToolbar
             onAddClinic={() => setIsAddClinicOpen(true)}
             search={search}
             onSearchChange={setSearch}
+            statusFilter={statusFilter}
+            onStatusFilterChange={setStatusFilter}
             sortOrder={sortOrder}
             onSortChange={setSortOrder}
           />

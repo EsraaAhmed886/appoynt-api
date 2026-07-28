@@ -14,6 +14,8 @@ import type { Config } from "tailwindcss";
 
 // Declaring tailwind_config configuration object block
 const tailwind_config: Config = {
+  // Enabling class-based dark mode Strategy
+  darkMode: "class",
   // Specifying directory path templates to scan for CSS utility class injections
   content: [
     // Scanning source pages layouts
@@ -41,6 +43,8 @@ const tailwind_config: Config = {
           border: "var(--app-border)",
           // Dynamic input box background color token mapping
           input_fill: "var(--app-input-fill)",
+          // Alias shortcut for input background color
+          input: "var(--app-input-fill)",
           // Nested grouping for layout typography text settings
           text: {
             // High contrast text labels configuration

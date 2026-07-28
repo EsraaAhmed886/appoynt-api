@@ -5,10 +5,7 @@ type SuccessModalProps = {
   onClose: () => void;
 };
 
-export default function SuccessModal({
-  isOpen,
-  onClose,
-}: SuccessModalProps) {
+export default function SuccessModal({ isOpen, onClose }: SuccessModalProps) {
   if (!isOpen) return null;
 
   return (
