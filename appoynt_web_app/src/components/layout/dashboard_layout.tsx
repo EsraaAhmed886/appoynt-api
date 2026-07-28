@@ -13,13 +13,15 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   return (
-    <div className="relative flex min-h-screen w-full bg-app-bg text-app-text-primary">
+    <div className="relative flex h-screen w-full overflow-hidden bg-app-bg text-app-text-primary">
+      {/* Desktop Sidebar */}
       <Sidebar
         className="hidden lg:flex"
         isCollapsed={isCollapsed}
         onToggle={() => setIsCollapsed(!isCollapsed)}
       />
 
+      {/* Mobile Sidebar Backdrop */}
       {isMobileSidebarOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/50 lg:hidden"
@@ -27,6 +29,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         />
       )}
 
+      {/* Mobile Sidebar */}
       <div
         className={`
           fixed inset-y-0 left-0 z-50 lg:hidden
@@ -39,10 +42,16 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           onToggle={() => setIsMobileSidebarOpen(false)}
         />
       </div>
-      <div className="flex flex-1 min-w-0 w-full flex-col overflow-x-hidden">
-        <LayoutHeader onMenuClick={() => setIsMobileSidebarOpen(true)} />
 
-        <main className="flex-1 min-w-0 p-4 pt-6 md:p-6 md:pt-16 transition-colors">
+      {/* Main Content Area */}
+      <div className="flex flex-1 min-w-0 w-full flex-col">
+        {/* Sticky Fixed Header */}
+        <div className="sticky top-0 z-30 w-full bg-app-bg border-b border-gray-200/60 dark:border-gray-800">
+          <LayoutHeader onMenuClick={() => setIsMobileSidebarOpen(true)} />
+        </div>
+
+        {/* Scrollable Main Area */}
+        <main className="flex-1 min-w-0 overflow-y-auto p-4 pt-6 md:p-6 transition-colors">
           {children}
         </main>
       </div>

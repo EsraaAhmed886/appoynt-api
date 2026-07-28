@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { LucideIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 type SidebarItemProps = {
   icon: LucideIcon;
@@ -20,9 +22,32 @@ export default function SidebarItem({
   const pathname = usePathname();
 
   const isActive = pathname === href;
+  const itemRef = useRef<HTMLDivElement>(null);
+
+  const [isHovered, setIsHovered] = useState(false);
+  const [tooltipPosition, setTooltipPosition] = useState({
+    top: 0,
+    left: 0,
+  });
+
+  useEffect(() => {
+    if (isHovered && itemRef.current) {
+      const rect = itemRef.current.getBoundingClientRect();
+
+      setTooltipPosition({
+        top: rect.top + rect.height / 2,
+        left: rect.right + 12,
+      });
+    }
+  }, [isHovered]);
 
   return (
-    <div className="group relative">
+    <div
+      ref={itemRef}
+      className="relative"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <Link
         href={href}
         className={`
@@ -49,35 +74,36 @@ export default function SidebarItem({
         {!isCollapsed && <span className="whitespace-nowrap">{title}</span>}
       </Link>
 
-      {isCollapsed && (
-        <div
-          className="
-            pointer-events-none
-            absolute
-            left-full
-            top-1/2
-            z-50
-            ml-3
-            -translate-y-1/2
-            whitespace-nowrap
-            rounded-lg
-            border
-            border-app-border
-            bg-app-surface
-            px-3
-            py-2
-            text-sm
-            text-app-text-primary
-            opacity-0
-            shadow-lg
-            transition-all
-            duration-200
-            group-hover:opacity-100
-          "
-        >
-          {title}
-        </div>
-      )}
+      {isCollapsed &&
+        isHovered &&
+        typeof window !== "undefined" &&
+        createPortal(
+          <div
+            className="
+        pointer-events-none
+        fixed
+        z-`9999`
+        -translate-y-1/2
+        whitespace-nowrap
+        rounded-lg
+        border
+        border-app-border
+        bg-app-surface
+        px-3
+        py-2
+        text-sm
+        text-app-text-primary
+        shadow-lg
+      "
+            style={{
+              top: tooltipPosition.top,
+              left: tooltipPosition.left,
+            }}
+          >
+            {title}
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }

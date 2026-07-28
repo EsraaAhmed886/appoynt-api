@@ -37,7 +37,7 @@ export default function Sidebar({
         shrink-0
         flex
         flex-col
-        overflow-x-hidden
+        overflow-visible
         bg-app-surface
         text-app-text-primary
         border-r
