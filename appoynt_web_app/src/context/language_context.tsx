@@ -24,6 +24,8 @@ type LanguageContextType = {
   translations: typeof translation_en;
   // Handler action function used to change system locale
   change_locale: (locale: "en" | "ar") => void;
+  // Helper translation function to lookup localized key values
+  t: (key: keyof typeof translation_en) => string;
 };
 
 // Instantiating the React context object block with undefined default value
@@ -99,6 +101,10 @@ export function LanguageProvider({
   // Determining active dictionary object reference using Yoda comparison style
   const active_dictionary = "ar" === current_locale ? translation_ar : translation_en;
 
+  const t = (key: keyof typeof translation_en): string => {
+    return active_dictionary[key] || translation_en[key] || key;
+  };
+
   // Render context provider wrapper wrapping React children hierarchy
   return (
     <language_react_context.Provider
@@ -110,6 +116,8 @@ export function LanguageProvider({
         translations: active_dictionary,
         // Passing language changer handler
         change_locale,
+        // Passing translation helper function
+        t,
       }}
     >
       {/* Dynamic children layout render anchor */}

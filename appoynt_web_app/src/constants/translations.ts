@@ -134,6 +134,27 @@ export const translation_en = {
   // Layout footer informational credentials text
   footer_text: "Developed in config/APPOYNT-68 branch. " +
     "All changes follow the team re-implementation plan guidelines.",
+  // Notification localization keys
+  notif_mark_all_read: "Mark all as read",
+  notif_delete_all: "Delete all",
+  notif_search_placeholder: "Search notifications...",
+  notif_no_found: "No notifications found",
+  notif_no_search_match: "No notifications match your search",
+  notif_clear_search: "Clear Search",
+  notif_tab_all: "All",
+  notif_tab_unread: "Unread",
+  notif_tab_appointments: "Appointments",
+  notif_tab_reviews: "Reviews",
+  notif_details_title: "Notification Details",
+  notif_view_details: "View Related Details",
+  notif_delete_modal_title: "Delete All Notifications?",
+  notif_delete_modal_desc: "This action will permanently delete all notifications in your inbox. This cannot be undone.",
+  notif_cancel: "Cancel",
+  notif_confirm_delete: "Delete All",
+  notif_deleted_toast: "Notification deleted",
+  notif_undo: "Undo",
+  notif_priority_high: "High",
+  notif_priority_normal: "Normal",
 };
 
 // Declaring translation database for Arabic language localization
@@ -261,4 +282,26 @@ export const translation_ar = {
   // Layout footer informational credentials text in Arabic
   footer_text: "تم التطوير في فرع config/APPOYNT-68. " +
     "جميع التغييرات تتبع إرشادات خطة إعادة التنفيذ المعتمدة.",
+  // Notification localization keys in Arabic
+  notif_mark_all_read: "تحديد الكل كمقروء",
+  notif_delete_all: "حذف الكل",
+  notif_search_placeholder: "البحث في الإشعارات...",
+  notif_no_found: "لا توجد إشعارات",
+  notif_no_search_match: "لا توجد إشعارات تطابق بحثك",
+  notif_clear_search: "مسح البحث",
+  notif_tab_all: "الكل",
+  notif_tab_unread: "غير مقروء",
+  notif_tab_appointments: "المواعيد",
+  notif_tab_reviews: "التقييمات",
+  notif_details_title: "تفاصيل الإشعار",
+  notif_view_details: "عرض التفاصيل المرتبطة",
+  notif_delete_modal_title: "حذف جميع الإشعارات؟",
+  notif_delete_modal_desc: "هذا الإجراء سيقوم بحذف جميع الإشعارات نهائياً من صندوقك. لا يمكن التراجع عن هذا الإجراء.",
+  notif_cancel: "إلغاء",
+  notif_confirm_delete: "حذف الكل",
+  notif_deleted_toast: "تم حذف الإشعار",
+  notif_undo: "تراجع",
+  notif_priority_high: "عالي",
+  notif_priority_normal: "عادي",
 };
+

@@ -24,12 +24,12 @@ import DashboardLayout from "@/components/layout/dashboard_layout";
 import ClinicTable from "@/components/clinics/clinic_table";
 import ClinicToolbar from "@/components/clinics/clinic_toolbar";
 import AddClinicModal from "@/components/clinics/add_clinic_modal";
-import DeleteClinicModal from "@/components/clinics/delete_clinic_modal";
-import DeleteSuccessModal from "@/components/clinics/delete_success_modal";
-import EmptyState from "@/components/clinics/empty_state";
-import ErrorState from "@/components/clinics/error_state";
-import LoadingState from "@/components/clinics/loading_state";
-import Pagination from "@/components/clinics/pagination";
+import DeleteClinicModal from "@/components/common/confirm_dialog";
+import DeleteSuccessModal from "@/components/common/delete_success_modal";
+import EmptyState from "@/components/common/empty_state";
+import ErrorState from "@/components/common/error_state";
+import LoadingState from "@/components/common/loading_state";
+import Pagination from "@/components/common/pagination";
 import {
   getClinics,
   saveClinics,
@@ -146,7 +146,7 @@ export default function ClinicsPage() {
 
   return (
     <DashboardLayout>
-      <div className="overflow-x-hidden px-4 sm:px-5 lg:px-6">
+      <div className=" px-4 sm:px-5 lg:px-6">
         <div className="mt-0">
           <ClinicToolbar
             onAddClinic={() => setIsAddClinicOpen(true)}

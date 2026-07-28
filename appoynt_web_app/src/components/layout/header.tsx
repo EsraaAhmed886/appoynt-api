@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Bell, Menu } from "lucide-react";
+import Link from "next/link";
+import LanguageToggle from "@/components/language_toggle";
 
 type HeaderProps = {
   isCollapsed?: boolean;
@@ -16,7 +18,6 @@ type HeaderProps = {
 export default function Header({
   userAvatar = "/images/profile_icon.jpeg",
   hasUnreadNotifications = true,
-  onNotificationClick,
   onProfileClick,
   onMenuClick,
 }: HeaderProps) {
@@ -55,11 +56,13 @@ export default function Header({
       </div>
 
       {/* ── Right Side: Actions & Profile ────────────────────────────── */}
-      <div className="flex items-center gap-3 shrink-0 md:gap-4">
+      <div className="flex items-center gap-2.5 shrink-0 md:gap-3">
+        {/* Language Switcher Toggle */}
+        <LanguageToggle />
+
         {/* Notification Button */}
-        <button
-          type="button"
-          onClick={onNotificationClick}
+        <Link
+          href="/notifications"
           aria-label="Notifications"
           className="relative flex h-9 w-9 items-center justify-center rounded-lg text-app-text-secondary transition-colors hover:bg-app-input_fill hover:text-app-text-primary focus:outline-none"
         >
@@ -68,10 +71,10 @@ export default function Header({
           {hasUnreadNotifications && (
             <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500 ring-2 ring-app-surface" />
           )}
-        </button>
+        </Link>
 
         {/* Separator */}
-        <div className="h-6 w-[1px] bg-app-border" />
+        <div className="h-6 w-1px bg-app-border" />
 
         {/* Profile Avatar */}
         <button

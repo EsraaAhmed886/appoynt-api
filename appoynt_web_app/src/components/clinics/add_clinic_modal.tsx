@@ -1,7 +1,7 @@
 import { X, ArrowLeft, Check, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
-import SuccessModal from "./success_modal";
-import UnsavedChangesModal from "./unsaved_changes_modal";
+import SuccessModal from "../common/success_modal";
+import UnsavedChangesModal from "../common/unsaved_changes_modal";
 import ClinicInformationStep from "./steps/clinic_information_step";
 import WorkingScheduleStep, {
   WorkingScheduleItem,

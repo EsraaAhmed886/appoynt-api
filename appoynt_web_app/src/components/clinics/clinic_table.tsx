@@ -1,4 +1,5 @@
 import { Pencil, Trash2 } from "lucide-react";
+import Link from "next/link";
 
 type Clinic = {
   id: number;
@@ -78,9 +79,11 @@ export default function ClinicTable({
 
               <td className="px-4 py-3 text-sm lg:px-6 lg:py-4">
                 <div className="flex justify-center gap-2 lg:gap-4">
+                  <Link href={`/clinics/${clinic.id}/edit`}>
                   <button className="transition hover:scale-110">
                     <Pencil className="h-5 w-5 text-app-primary" />
                   </button>
+                  </Link>
 
                   <button
                     onClick={() => onDeleteClinic(clinic.id)}

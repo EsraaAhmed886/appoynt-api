@@ -1,4 +1,4 @@
-import ClinicSearch from "./clinic_search";
+import ClinicSearch from "../common/search_input";
 import AddClinicButton from "./add_clinic_button";
 import ClinicSort from "./clinic_sort";
 import StatusFilter from "./status_filter";
