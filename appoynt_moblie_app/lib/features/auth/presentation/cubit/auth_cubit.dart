@@ -6,7 +6,7 @@
  * Dependencies: package:equatable/equatable.dart, package:flutter_bloc/flutter_bloc.dart,
  *   login_usecase.dart, register_usecase.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 19/07/2026]
  * File Description: Manages the authentication states and business logic for the application.
  */
 
@@ -24,6 +24,7 @@ part 'auth_state.dart'; // Linking the associated state file
 /// Cubit responsible for handling authentication-related operations.
 class AuthCubit extends Cubit<AuthState> {
   /// Reference to the login use case.
+  // ignore: unused_field
   final LoginUseCase _login_usecase;
   /// Reference to the registration use case.
   final RegisterUseCase _register_usecase;
@@ -38,22 +39,31 @@ class AuthCubit extends Cubit<AuthState> {
     /// Emitting the loading state to update the UI.
     emit(AuthLoading());
 
-    /// Executing the login action through the domain layer.
-    final result = await _login_usecase(
-      LoginParams(identifier: identifier, password: password),
-    );
-
-    /// Handling the result of the login operation.
-    result.fold(
-      /// Emitting an error state if the login failed.
-      (failure) {
-        emit(const AuthError('Login failed. Please check your credentials.'));
-      },
-      /// Emitting a success state if the login was successful.
-      (user) {
-        emit(AuthSuccess());
-      },
-    );
+    // TODO: START OF DUMMY LOGIN BYPASS - REMOVE ONCE FINAL HOME IS COMPLETED
+    // Verify credentials match static criteria using Yoda style comparison
+    if ("admin@gmail.com" == identifier && "123asdASD!@#" == password) {
+      // Simulate minor network delay for visual loading states
+      await Future.delayed(
+        // Duration parameter configuration
+        const Duration(
+          // Delay duration in milliseconds
+          milliseconds: 500,
+        ),
+      );
+      // Emit successful authentication state to trigger home screen routing
+      emit(AuthSuccess());
+      // Return early to skip use case processing
+      return;
+    } else {
+      // Emit error state with instructions for invalid credentials
+      emit(
+        // Emit error state with instructions
+        const AuthError('Invalid phone number or password.'),
+      );
+      // Return to terminate execution
+      return;
+    }
+    // TODO: END OF DUMMY LOGIN BYPASS
   }
 
   /// Orchestrates the registration process for a new user.

@@ -5,7 +5,7 @@
  * Version Information: V1.0.0
  * Dependencies: package:flutter/material.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 17/07/2026]
  * File Description: Defines the abstract contract for application-wide custom localizations.
  */
 
@@ -292,6 +292,281 @@ abstract class AppLocalizations {
 
   // Abstract getter for password maximum length validation warning
   String get password_too_long;
+
+  // TODO: START OF DUMMY HOME SCREEN LOCALIZATION GETTERS - REMOVE ONCE FINAL HOME IS COMPLETED
+  // Abstract getter for bottom navigation home label
+  String get dummy_home_tab_label;
+
+  // Abstract getter for bottom navigation appointments label
+  String get dummy_appointments_tab_label;
+
+  // Abstract getter for bottom navigation search label
+  String get dummy_search_tab_label;
+
+  // Abstract getter for bottom navigation favorites label
+  String get dummy_favorite_tab_label;
+
+  // Abstract getter for bottom navigation queue label
+  String get dummy_queue_tab_label;
+
+  // Abstract getter for bottom navigation records label
+  String get dummy_records_tab_label;
+
+  // Abstract getter for bottom navigation profile label
+  String get dummy_profile_tab_label;
+
+  // Abstract getter for greeting time welcome text
+  String get dummy_good_morning;
+
+  // Abstract getter for welcome banner subtitle text
+  String get dummy_welcome_to_appoynt_home;
+
+  // Abstract getter for search field placeholder hint text
+  String get dummy_search_hint;
+
+  // Abstract getter for book appointment action button label
+  String get dummy_book_appointment;
+
+  // Abstract getter for queue status action button label
+  String get dummy_my_queue;
+
+  // Abstract getter for video call action button label
+  String get dummy_video_consult;
+
+  // Abstract getter for medical records action button label
+  String get dummy_my_records;
+
+  // Abstract getter for appointment banner title label
+  String get dummy_next_appointment;
+
+  // Abstract getter for primary physician name
+  String get dummy_dr_ahmed_hassan;
+
+  // Abstract getter for physician specialty and timing details
+  String get dummy_general_medicine_today;
+
+  // Abstract getter for view details navigation button label
+  String get dummy_view_details;
+
+  // Abstract getter for specialty categorization header label
+  String get dummy_specialties;
+
+  // Abstract getter for view all items navigation link label
+  String get dummy_see_all;
+
+  // Abstract getter for cardiology specialty category name
+  String get dummy_cardiology;
+
+  // Abstract getter for neurology specialty category name
+  String get dummy_neurology;
+
+  // Abstract getter for pediatrics specialty category name
+  String get dummy_pediatrics;
+
+  // Abstract getter for ophthalmology specialty category name
+  String get dummy_eye_care;
+
+  // Abstract getter for orthopedic specialty category name
+  String get dummy_orthopedic;
+
+  // Abstract getter for featured physicians header label
+  String get dummy_top_doctors;
+
+  // Abstract getter for cardiologist practitioner name
+  String get dummy_dr_sarah_johnson;
+
+  // Abstract getter for cardiologist specialty title
+  String get dummy_cardiologist;
+
+  // Abstract getter for cardiology practice length details
+  String get dummy_years_experience_sarah;
+
+  // Abstract getter for neurologist practitioner name
+  String get dummy_dr_mohammed_ali;
+
+  // Abstract getter for neurologist specialty title
+  String get dummy_neurologist;
+
+  // Abstract getter for neurology practice length details
+  String get dummy_years_experience_mohammed;
+
+  // Abstract getter for pediatrician practitioner name
+  String get dummy_dr_fatima_ahmed;
+
+  // Abstract getter for pediatrician specialty title
+  String get dummy_pediatrician;
+
+  // Abstract getter for pediatrics practice length details
+  String get dummy_years_experience_fatima;
+
+  // Abstract getter for appointment book action trigger label
+  String get dummy_book;
+
+  // Abstract getter for feature under construction info label
+  String get dummy_coming_soon;
+  // TODO: END OF DUMMY HOME SCREEN LOCALIZATION GETTERS
+
+  // Abstract getter for search filter chip location label text
+  String get search_location_chip;
+
+  // Abstract getter for search filter chip specialty label text
+  String get search_specialty_chip;
+
+  // Abstract getter for uppercase recent searches section label title
+  String get search_recent_searches_title;
+
+  // Abstract getter for recent search history clear list trigger label text
+  String get search_clear_action;
+
+  // Abstract getter for recent search history clear confirmation modal warning
+  String get search_clear_all_confirm_title;
+
+  // Abstract getter for alert modal cancel action button label
+  String get search_cancel_button;
+
+  // Abstract getter for alert modal confirm clear action button label
+  String get search_clear_all_button;
+
+  // Abstract getter for search screen page title text
+  String get search_screen_title;
+
+  // Abstract getter for search screen page subtitle text
+  String get search_screen_subtitle;
+
+  // Abstract getter for search screen text field placeholder hint text
+  String get search_screen_hint;
+
+  // Abstract getter for search screen location filter default selection value
+  String get search_location_default;
+
+  // Abstract getter for search screen specialty filter default selection value
+  String get search_specialty_default;
+
+  // Abstract getter for suggestions card list view all results trigger label text
+  String get search_view_all_results;
+
+  // Abstract getter for filters-only state primary action button label
+  String get search_view_all_filtered_results;
+
+  // Abstract getter for bottom navigation profile tab label
+  String get search_tab_profile;
+
+  // Abstract getter for bottom navigation appointment tab label
+  String get search_tab_appointment;
+
+  // Abstract getter for bottom navigation search tab label
+  String get search_tab_search;
+
+  // Abstract getter for bottom navigation favorites tab label
+  String get search_tab_favorites;
+
+  // Abstract getter for bottom navigation home tab label
+  String get search_tab_home;
+
+  // Abstract getter for autocomplete empty matching results indicator text label
+  String get search_no_results;
+
+  // Abstract getter for offline network connectivity failure warning details
+  String get search_offline_error;
+
+  // Abstract getter for offline failure retry action trigger label
+  String get search_retry_button;
+
+  // Abstract getter for advanced filters bottom sheet title
+  String get search_filter_title;
+
+  // Abstract getter for advanced filters gender section title
+  String get search_filter_gender_title;
+
+  // Abstract getter for advanced filters gender Male option
+  String get search_filter_gender_male;
+
+  // Abstract getter for advanced filters gender Female option
+  String get search_filter_gender_female;
+
+  // Abstract getter for advanced filters price section title
+  String get search_filter_price_title;
+
+  // Abstract getter for advanced filters price option: Under 100 EGP
+  String get search_filter_price_under_100;
+
+  // Abstract getter for advanced filters price option: 100 - 200 EGP
+  String get search_filter_price_100_200;
+
+  // Abstract getter for advanced filters price option: 200 - 500 EGP
+  String get search_filter_price_200_500;
+
+  // Abstract getter for advanced filters price option: Above 500 EGP
+  String get search_filter_price_above_500;
+
+  // Abstract getter for advanced filters rating section title
+  String get search_filter_rating_title;
+
+  // Abstract getter for advanced filters rating option: 5 Stars
+  String get search_filter_rating_5;
+
+  // Abstract getter for advanced filters rating option: 4 Stars & Above
+  String get search_filter_rating_4;
+
+  // Abstract getter for advanced filters rating option: 3 Stars & Above
+  String get search_filter_rating_3;
+
+  // Abstract getter for advanced filters reset action button label
+  String get search_filter_reset;
+
+  // Abstract getter for advanced filters apply action button label
+  String get search_filter_apply;
+
+  // Abstract getter for sort bottom sheet title
+  String get search_sort_title;
+
+  // Abstract getter for recently added sort option label
+  String get search_sort_recently_added;
+
+  // Abstract getter for recently added sort option description
+  String get search_sort_recently_added_desc;
+
+  // Abstract getter for name A-Z sort option label
+  String get search_sort_name_a_to_z;
+
+  // Abstract getter for name A-Z sort option description
+  String get search_sort_name_a_to_z_desc;
+
+  // Abstract getter for name Z-A sort option label
+  String get search_sort_name_z_to_a;
+
+  // Abstract getter for name Z-A sort option description
+  String get search_sort_name_z_to_a_desc;
+
+  // Abstract getter for rating high-to-low sort option label
+  String get search_sort_rating_high_to_low;
+
+  // Abstract getter for rating high-to-low sort option description
+  String get search_sort_rating_high_to_low_desc;
+
+  // Abstract getter for fee low-to-high sort option label
+  String get search_sort_fee_low_to_high;
+
+  // Abstract getter for fee low-to-high sort option description
+  String get search_sort_fee_low_to_high_desc;
+
+  // Abstract getter for fee high-to-low sort option label
+  String get search_sort_fee_high_to_low;
+
+  // Abstract getter for fee high-to-low sort option description
+  String get search_sort_fee_high_to_low_desc;
+
+  // Abstract getter for available today status indicator
+  String get search_doctor_available_today;
+
+  // Abstract getter for unavailable today status indicator
+  String get search_doctor_unavailable_today;
+
+  // Abstract getter for booking CTA button label
+  String get search_doctor_book_now;
+
+  // Abstract getter for doctor reviews label text
+  String get search_doctor_reviews;
 }
 
 // Defining a short alias for clean and simple type references

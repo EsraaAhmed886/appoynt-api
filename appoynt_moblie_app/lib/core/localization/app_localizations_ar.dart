@@ -6,7 +6,7 @@
  * Dependencies: package:flutter/material.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 17/07/2026]
  * File Description: Arabic concrete implementation of localizations
  *   containing onboarding and authentication strings.
  */
@@ -643,5 +643,612 @@ class AppLocalizationsAr extends AppLocalizations {
   String get password_too_long {
     // Return Arabic password too long warning
     return 'يجب ألا تزيد كلمة المرور عن 30 حرفًا';
+  }
+
+  // TODO: START OF DUMMY HOME SCREEN LOCALIZATION OVERRIDES - REMOVE ONCE FINAL HOME IS COMPLETED
+  // Override getter returning bottom navigation home label in Arabic
+  @override
+  String get dummy_home_tab_label {
+    // Return Arabic bottom navigation home tab label
+    return 'الرئيسية';
+  }
+
+  // Override getter returning bottom navigation appointments label in Arabic
+  @override
+  String get dummy_appointments_tab_label {
+    // Return Arabic bottom navigation appointments tab label
+    return 'المواعيد';
+  }
+
+  // Override getter returning bottom navigation search label in Arabic
+  @override
+  String get dummy_search_tab_label {
+    // Return Arabic bottom navigation search tab label
+    return 'البحث';
+  }
+
+  // Override getter returning bottom navigation favorites label in Arabic
+  @override
+  String get dummy_favorite_tab_label {
+    // Return Arabic bottom navigation favorites label in Arabic
+    return 'المفضلة';
+  }
+
+  // Override getter returning bottom navigation queue label in Arabic
+  @override
+  String get dummy_queue_tab_label {
+    // Return Arabic bottom navigation queue tab label
+    return 'الطابور';
+  }
+
+  // Override getter returning bottom navigation records label in Arabic
+  @override
+  String get dummy_records_tab_label {
+    // Return Arabic bottom navigation records tab label
+    return 'السجلات';
+  }
+
+  // Override getter returning bottom navigation profile label in Arabic
+  @override
+  String get dummy_profile_tab_label {
+    // Return Arabic bottom navigation profile tab label
+    return 'الحساب';
+  }
+
+  // Override getter returning greeting time welcome text in Arabic
+  @override
+  String get dummy_good_morning {
+    // Return Arabic greeting time welcome text
+    return 'صباح الخير 👋';
+  }
+
+  // Override getter returning welcome banner subtitle text in Arabic
+  @override
+  String get dummy_welcome_to_appoynt_home {
+    // Return Arabic welcome banner subtitle text
+    return 'مرحباً بك في أبوانت';
+  }
+
+  // Override getter returning search field placeholder hint text in Arabic
+  @override
+  String get dummy_search_hint {
+    // Return Arabic search field placeholder hint text
+    return 'ابحث عن الأطباء، التخصصات...';
+  }
+
+  // Override getter returning book appointment action button label in Arabic
+  @override
+  String get dummy_book_appointment {
+    // Return Arabic book appointment action button label
+    return 'حجز\nموعد';
+  }
+
+  // Override getter returning queue status action button label in Arabic
+  @override
+  String get dummy_my_queue {
+    // Return Arabic queue status action button label
+    return 'طابوري';
+  }
+
+  // Override getter returning video call action button label in Arabic
+  @override
+  String get dummy_video_consult {
+    // Return Arabic video call action button label
+    return 'استشارة\nمرئية';
+  }
+
+  // Override getter returning medical records action button label in Arabic
+  @override
+  String get dummy_my_records {
+    // Return Arabic medical records action button label
+    return 'سجلاتي';
+  }
+
+  // Override getter returning appointment banner title label in Arabic
+  @override
+  String get dummy_next_appointment {
+    // Return Arabic appointment banner title label
+    return 'الموعد القادم';
+  }
+
+  // Override getter returning primary physician name in Arabic
+  @override
+  String get dummy_dr_ahmed_hassan {
+    // Return Arabic primary physician name
+    return 'د. أحمد حسن';
+  }
+
+  // Override getter returning physician specialty and timing details in Arabic
+  @override
+  String get dummy_general_medicine_today {
+    // Return Arabic physician specialty and timing details
+    return 'طب عام • اليوم، ٣:٠٠ م';
+  }
+
+  // Override getter returning view details navigation button label in Arabic
+  @override
+  String get dummy_view_details {
+    // Return Arabic view details navigation button label
+    return 'عرض التفاصيل';
+  }
+
+  // Override getter returning specialty categorization header label in Arabic
+  @override
+  String get dummy_specialties {
+    // Return Arabic specialty categorization header label
+    return 'التخصصات';
+  }
+
+  // Override getter returning view all items navigation link label in Arabic
+  @override
+  String get dummy_see_all {
+    // Return Arabic view all items navigation link label
+    return 'عرض الكل';
+  }
+
+  // Override getter returning cardiology specialty category name in Arabic
+  @override
+  String get dummy_cardiology {
+    // Return Arabic cardiology specialty category name
+    return 'القلب';
+  }
+
+  // Override getter returning neurology specialty category name in Arabic
+  @override
+  String get dummy_neurology {
+    // Return Arabic neurology specialty category name
+    return 'الأعصاب';
+  }
+
+  // Override getter returning pediatrics specialty category name in Arabic
+  @override
+  String get dummy_pediatrics {
+    // Return Arabic pediatrics specialty category name
+    return 'الأطفال';
+  }
+
+  // Override getter returning ophthalmology specialty category name in Arabic
+  @override
+  String get dummy_eye_care {
+    // Return Arabic ophthalmology specialty category name
+    return 'العيون';
+  }
+
+  // Override getter returning orthopedic specialty category name in Arabic
+  @override
+  String get dummy_orthopedic {
+    // Return Arabic orthopedic specialty category name
+    return 'العظام';
+  }
+
+  // Override getter returning featured physicians header label in Arabic
+  @override
+  String get dummy_top_doctors {
+    // Return Arabic featured physicians header label
+    return 'أبرز الأطباء';
+  }
+
+  // Override getter returning cardiologist practitioner name in Arabic
+  @override
+  String get dummy_dr_sarah_johnson {
+    // Return Arabic cardiologist practitioner name
+    return 'د. سارة جونسون';
+  }
+
+  // Override getter returning cardiologist specialty title in Arabic
+  @override
+  String get dummy_cardiologist {
+    // Return Arabic cardiologist specialty title
+    return 'طبيبة قلب';
+  }
+
+  // Override getter returning cardiology practice length details in Arabic
+  @override
+  String get dummy_years_experience_sarah {
+    // Return Arabic cardiology practice length details
+    return '١٢ سنة خبرة';
+  }
+
+  // Override getter returning neurologist practitioner name in Arabic
+  @override
+  String get dummy_dr_mohammed_ali {
+    // Return Arabic neurologist practitioner name
+    return 'د. محمد علي';
+  }
+
+  // Override getter returning neurologist specialty title in Arabic
+  @override
+  String get dummy_neurologist {
+    // Return Arabic neurologist specialty title
+    return 'طبيب أعصاب';
+  }
+
+  // Override getter returning neurology practice length details in Arabic
+  @override
+  String get dummy_years_experience_mohammed {
+    // Return Arabic neurology practice length details
+    return '٩ سنوات خبرة';
+  }
+
+  // Override getter returning pediatrician practitioner name in Arabic
+  @override
+  String get dummy_dr_fatima_ahmed {
+    // Return Arabic pediatrician practitioner name
+    return 'د. فاطمة أحمد';
+  }
+
+  // Override getter returning pediatrician specialty title in Arabic
+  @override
+  String get dummy_pediatrician {
+    // Return Arabic pediatrician specialty title
+    return 'طبيبة أطفال';
+  }
+
+  // Override getter returning pediatrics practice length details in Arabic
+  @override
+  String get dummy_years_experience_fatima {
+    // Return Arabic pediatrics practice length details
+    return '٧ سنوات خبرة';
+  }
+
+  // Override getter returning appointment book action trigger label in Arabic
+  @override
+  String get dummy_book {
+    // Return Arabic appointment book action trigger label
+    return 'حجز';
+  }
+
+  // Override getter returning feature under construction info label in Arabic
+  @override
+  String get dummy_coming_soon {
+    // Return Arabic feature under construction info label
+    return 'قريباً';
+  }
+  // TODO: END OF DUMMY HOME SCREEN LOCALIZATION OVERRIDES
+
+  // Override getter returning search filter chip location label text in Arabic
+  @override
+  String get search_location_chip {
+    // Return Arabic search location label
+    return 'الموقع';
+  }
+
+  // Override getter returning search filter chip specialty label text in Arabic
+  @override
+  String get search_specialty_chip {
+    // Return Arabic search specialty label
+    return 'التخصص';
+  }
+
+  // Override getter returning uppercase recent searches section label title in Arabic
+  @override
+  String get search_recent_searches_title {
+    // Return Arabic recent searches title
+    return 'عمليات البحث الأخيرة';
+  }
+
+  // Override getter returning recent search history clear list trigger label text in Arabic
+  @override
+  String get search_clear_action {
+    // Return Arabic clear history label
+    return 'مسح';
+  }
+
+  // Override getter returning recent search history clear confirmation modal warning in Arabic
+  @override
+  String get search_clear_all_confirm_title {
+    // Return Arabic clear confirmation dialog message
+    return 'هل تريد مسح سجل البحث بالكامل؟';
+  }
+
+  // Override getter returning alert modal cancel action button label in Arabic
+  @override
+  String get search_cancel_button {
+    // Return Arabic cancel button text
+    return 'إلغاء';
+  }
+
+  // Override getter returning alert modal confirm clear action button label in Arabic
+  @override
+  String get search_clear_all_button {
+    // Return Arabic clear all button text
+    return 'مسح الكل';
+  }
+
+  // Override getter returning suggestions card list view all results trigger label text in Arabic
+  @override
+  String get search_view_all_results {
+    // Return Arabic view all search results label
+    return 'عرض جميع نتائج البحث';
+  }
+
+  // Override getter returning filters-only state primary action button label in Arabic
+  @override
+  String get search_view_all_filtered_results {
+    // Return Arabic view all filtered results button text
+    return 'عرض جميع النتائج المصفاة';
+  }
+
+  // Override getter returning bottom navigation profile tab label in Arabic
+  @override
+  String get search_tab_profile {
+    // Return Arabic profile label
+    return 'الحساب';
+  }
+
+  // Override getter returning bottom navigation appointment tab label in Arabic
+  @override
+  String get search_tab_appointment {
+    // Return Arabic appointment label
+    return 'المواعيد';
+  }
+
+  // Override getter returning bottom navigation search tab label in Arabic
+  @override
+  String get search_tab_search {
+    // Return Arabic search label
+    return 'البحث';
+  }
+
+  // Override getter returning bottom navigation favorites tab label in Arabic
+  @override
+  String get search_tab_favorites {
+    // Return Arabic favorites label
+    return 'المفضلة';
+  }
+
+  // Override getter returning bottom navigation home tab label in Arabic
+  @override
+  String get search_tab_home {
+    // Return Arabic home label
+    return 'الرئيسية';
+  }
+
+  // Override getter returning autocomplete empty matching results indicator text label in Arabic
+  @override
+  String get search_no_results {
+    // Return Arabic no results message
+    return 'لم يتم العثور على نتائج.';
+  }
+
+  // Override getter returning offline network connectivity failure warning details in Arabic
+  @override
+  String get search_offline_error {
+    // Return Arabic offline error message
+    return 'فقد الاتصال بالشبكة. يرجى المحاولة مرة أخرى.';
+  }
+
+  // Override getter returning offline failure retry action trigger label in Arabic
+  @override
+  String get search_retry_button {
+    // Return Arabic retry button text
+    return 'إعادة المحاولة';
+  }
+
+  // Override getter returning search screen page title text in Arabic
+  @override
+  String get search_screen_title {
+    // Return Arabic search screen title
+    return 'البحث';
+  }
+
+  // Override getter returning search screen page subtitle text in Arabic
+  @override
+  String get search_screen_subtitle {
+    // Return Arabic search screen subtitle
+    return 'ابحث عن الأطباء والعيادات والتخصصات والمزيد';
+  }
+
+  // Override getter returning search screen text field placeholder hint text in Arabic
+  @override
+  String get search_screen_hint {
+    // Return Arabic search screen hint
+    return 'ابحث عن طبيب، تخصص، عيادة، مستشفى، مختبر أو صيدلية';
+  }
+
+  // Override getter returning search screen location filter default selection value in Arabic
+  @override
+  String get search_location_default {
+    // Return Arabic default location filter
+    return 'القاهرة، مصر';
+  }
+
+  // Override getter returning search screen specialty filter default selection value in Arabic
+  @override
+  String get search_specialty_default {
+    // Return Arabic default specialty filter
+    return 'جميع التخصصات';
+  }
+
+  // Override getter returning advanced filters bottom sheet title in Arabic
+  @override
+  String get search_filter_title {
+    return 'الفلاتر المتقدمة';
+  }
+
+  // Override getter returning advanced filters gender section title in Arabic
+  @override
+  String get search_filter_gender_title {
+    return 'جنس الطبيب';
+  }
+
+  // Override getter returning advanced filters gender Male option in Arabic
+  @override
+  String get search_filter_gender_male {
+    return 'ذكر';
+  }
+
+  // Override getter returning advanced filters gender Female option in Arabic
+  @override
+  String get search_filter_gender_female {
+    return 'أنثى';
+  }
+
+  // Override getter returning advanced filters price section title in Arabic
+  @override
+  String get search_filter_price_title {
+    return 'سعر الكشف';
+  }
+
+  // Override getter returning advanced filters price option: Under 100 EGP in Arabic
+  @override
+  String get search_filter_price_under_100 {
+    return 'أقل من 100 جنيه';
+  }
+
+  // Override getter returning advanced filters price option: 100 - 200 EGP in Arabic
+  @override
+  String get search_filter_price_100_200 {
+    return '100 - 200 جنيه';
+  }
+
+  // Override getter returning advanced filters price option: 200 - 500 EGP in Arabic
+  @override
+  String get search_filter_price_200_500 {
+    return '200 - 500 جنيه';
+  }
+
+  // Override getter returning advanced filters price option: Above 500 EGP in Arabic
+  @override
+  String get search_filter_price_above_500 {
+    return 'أكثر من 500 جنيه';
+  }
+
+  // Override getter returning advanced filters rating section title in Arabic
+  @override
+  String get search_filter_rating_title {
+    return 'تقييم الطبيب';
+  }
+
+  // Override getter returning advanced filters rating option: 5 Stars in Arabic
+  @override
+  String get search_filter_rating_5 {
+    return '5 نجوم';
+  }
+
+  // Override getter returning advanced filters rating option: 4 Stars & Above in Arabic
+  @override
+  String get search_filter_rating_4 {
+    return '4 نجوم وأكثر';
+  }
+
+  // Override getter returning advanced filters rating option: 3 Stars & Above in Arabic
+  @override
+  String get search_filter_rating_3 {
+    return '3 نجوم وأكثر';
+  }
+
+  // Override getter returning advanced filters reset action button label in Arabic
+  @override
+  String get search_filter_reset {
+    return 'إعادة ضبط';
+  }
+
+  // Override getter returning advanced filters apply action button label in Arabic
+  @override
+  String get search_filter_apply {
+    return 'تطبيق الفلاتر';
+  }
+
+  // Override getter returning sort bottom sheet title in Arabic
+  @override
+  String get search_sort_title {
+    return 'ترتيب حسب';
+  }
+
+  // Override getter returning recently added sort option label in Arabic
+  @override
+  String get search_sort_recently_added {
+    return 'أضيف حديثاً';
+  }
+
+  // Override getter returning recently added sort option description in Arabic
+  @override
+  String get search_sort_recently_added_desc {
+    return 'عرض الأطباء الذين تم إضافتهم مؤخراً';
+  }
+
+  // Override getter returning name A-Z sort option label in Arabic
+  @override
+  String get search_sort_name_a_to_z {
+    return 'الاسم: من أ إلى ي';
+  }
+
+  // Override getter returning name A-Z sort option description in Arabic
+  @override
+  String get search_sort_name_a_to_z_desc {
+    return 'ترتيب الأطباء أبجدياً تصاعدياً';
+  }
+
+  // Override getter returning name Z-A sort option label in Arabic
+  @override
+  String get search_sort_name_z_to_a {
+    return 'الاسم: من ي إلى أ';
+  }
+
+  // Override getter returning name Z-A sort option description in Arabic
+  @override
+  String get search_sort_name_z_to_a_desc {
+    return 'ترتيب الأطباء أبجدياً تنازلياً';
+  }
+
+  // Override getter returning rating high-to-low sort option label in Arabic
+  @override
+  String get search_sort_rating_high_to_low {
+    return 'التقييم: الأعلى أولاً';
+  }
+
+  // Override getter returning rating high-to-low sort option description in Arabic
+  @override
+  String get search_sort_rating_high_to_low_desc {
+    return 'ترتيب الأطباء حسب التقييم الأعلى أولاً';
+  }
+
+  // Override getter returning fee low-to-high sort option label in Arabic
+  @override
+  String get search_sort_fee_low_to_high {
+    return 'سعر الكشف: الأقل إلى الأعلى';
+  }
+
+  // Override getter returning fee low-to-high sort option description in Arabic
+  @override
+  String get search_sort_fee_low_to_high_desc {
+    return 'ترتيب الكشف من الأرخص إلى الأغلى';
+  }
+
+  // Override getter returning fee high-to-low sort option label in Arabic
+  @override
+  String get search_sort_fee_high_to_low {
+    return 'سعر الكشف: الأعلى إلى الأقل';
+  }
+
+  // Override getter returning fee high-to-low sort option description in Arabic
+  @override
+  String get search_sort_fee_high_to_low_desc {
+    return 'ترتيب الكشف من الأغلى إلى الأرخص';
+  }
+
+  // Override getter returning available today status indicator in Arabic
+  @override
+  String get search_doctor_available_today {
+    return 'متاح اليوم';
+  }
+
+  // Override getter returning unavailable today status indicator in Arabic
+  @override
+  String get search_doctor_unavailable_today {
+    return 'غير متاح اليوم';
+  }
+
+  // Override getter returning booking CTA button label in Arabic
+  @override
+  String get search_doctor_book_now {
+    return 'احجز الآن';
+  }
+
+  // Override getter returning doctor reviews label text in Arabic
+  @override
+  String get search_doctor_reviews {
+    return 'تقييم';
   }
 }

@@ -10,7 +10,7 @@
  *   package:appoynt_mobile_app/features/auth/presentation/widgets/smart_password_field.dart,
  *   package:flutter_bloc/flutter_bloc.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 19/07/2026]
  * File Description: Renders the user login gateway presentation page under BLoC configurations.
  */
 
@@ -537,6 +537,32 @@ class _LoginPageState extends State<LoginPage> {
                               // Pull login subtitle styling
                               style:
                                   AppTextStyles.get_login_subtitle(is_arabic),
+                            ),
+                            // Spacing/Container block for validation error feedback message (FR-15 / Logic Log)
+                            const SizedBox(height: AppSpacing.space_s),
+                            // Fixed-height container to prevent layout shifting
+                            SizedBox(
+                              // Fixed height derived from spacing tokens to satisfy stable UI constraint
+                              height: AppSpacing.error_container_height,
+                              // Draw error feedback text inside center coordinates
+                              child: Center(
+                                // Render error message if state is AuthError (Yoda style check)
+                                child: Text(
+                                  // Bind message or empty string based on state type
+                                  true == (state is AuthError) ? (state as AuthError).message : '',
+                                  // Center align paragraph
+                                  textAlign: TextAlign.center,
+                                  // Apply styling configurations
+                                  style: const TextStyle(
+                                    // Set brand warning color
+                                    color: AppColors.error,
+                                    // Scale size relative to labels
+                                    fontSize: AppSpacing.font_size_label,
+                                    // Emphasize text weight
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
                             ),
                           ],
                         ),
