@@ -5,7 +5,7 @@
  * Version        : v1.0.0
  * Dependencies   : ASP.NET Core MVC, IUserManagementService
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 28/07/2026
+ * Last Modified  : Mustafa Mahmoud - 31/07/2026
  * Description    : Exposes endpoints for managing internal staff users.
  */
 
@@ -130,7 +130,10 @@ public sealed class UsersController : ControllerBase
         [FromQuery] UserQueryParameters queryParams,
         CancellationToken cancellationToken)
     {
+        // Delegate to the service layer for paginated, filtered user retrieval.
         var result = await _userManagementService.GetUsersAsync(queryParams, cancellationToken);
+
+        // Return the paginated response.
         return Ok(result);
     }
 
@@ -150,13 +153,16 @@ public sealed class UsersController : ControllerBase
         [FromRoute] Guid id,
         CancellationToken cancellationToken)
     {
+        // Delegate to the service layer for authorized user retrieval.
         var result = await _userManagementService.GetUserByIdAsync(id, cancellationToken);
         
+        // Return 404 when the user is not found or not accessible.
         if (result == null)
         {
             return NotFound();
         }
 
+        // Return the user details.
         return Ok(result);
     }
 
@@ -178,17 +184,23 @@ public sealed class UsersController : ControllerBase
         [FromBody] UpdateUserRequest request,
         CancellationToken cancellationToken)
     {
+        // Delegate to the service layer for authorized profile update.
         var result = await _userManagementService.UpdateUserAsync(id, request, cancellationToken);
 
+        // Handle service-level failures.
         if (!result.Succeeded)
         {
+            // Return 403 Forbidden when the caller lacks authorization.
             if (result.Errors.Any(e => e.Code == AuthenticationErrorCodes.Forbidden))
             {
                 return Forbid();
             }
+
+            // Return 400 Bad Request for validation or business-rule failures.
             return BadRequest(result);
         }
 
+        // Return the successful update result.
         return Ok(result);
     }
 
@@ -208,17 +220,23 @@ public sealed class UsersController : ControllerBase
         [FromRoute] Guid id,
         CancellationToken cancellationToken)
     {
+        // Delegate to the service layer for authorized soft-delete.
         var result = await _userManagementService.DeleteUserAsync(id, cancellationToken);
 
+        // Handle service-level failures.
         if (!result.Succeeded)
         {
+            // Return 403 Forbidden when the caller lacks authorization.
             if (result.Errors.Any(e => e.Code == AuthenticationErrorCodes.Forbidden))
             {
                 return Forbid();
             }
+
+            // Return 400 Bad Request for validation or business-rule failures.
             return BadRequest(result);
         }
 
+        // Return 204 No Content on successful soft-delete.
         return NoContent();
     }
 }

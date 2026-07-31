@@ -6,7 +6,7 @@
  * Dependencies   : IUserManagementService, UserManager, RoleManager,
  *                  ApplicationDbContext, ICurrentUserService
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 28/07/2026
+ * Last Modified  : Mustafa Mahmoud - 31/07/2026
  * Description    : Implements staff user management.
  */
 
@@ -238,14 +238,18 @@ public sealed class UserManagementService : IUserManagementService
         return UserManagementResult.Failure(errorCode, propertyName);
     }
 
+    /// <inheritdoc />
     public async Task<PagedResponse<UserResponse>> GetUsersAsync(
         UserQueryParameters queryParams,
         CancellationToken cancellationToken = default)
     {
+        // Build the base query with Receptionist navigation for authorization filtering.
         var query = _dbContext.Users
+            .AsNoTracking()
             .Include(u => u.Receptionist)
             .AsQueryable();
 
+        // Retrieve the current user's identity and role for authorization decisions.
         var currentUserId = _currentUserService.UserId;
         var currentRole = _currentUserService.Role;
 
@@ -255,18 +259,21 @@ public sealed class UserManagementService : IUserManagementService
             query = query.Where(u => u.IsActive);
         }
 
-        // Apply Authorization Filtering
+        // Apply authorization filtering based on the caller's role.
         if (currentRole == RoleConstants.Doctor)
         {
+            // Resolve the Doctor entity ID linked to the current user.
             var doctorId = await _dbContext.Doctors
                 .Where(d => d.UserId == currentUserId)
                 .Select(d => d.Id)
                 .FirstOrDefaultAsync(cancellationToken);
 
+            // Doctors can only see themselves and their own receptionists.
             query = query.Where(u => u.Id == currentUserId || (u.Receptionist != null && u.Receptionist.DoctorId == doctorId));
         }
         else if (currentRole == RoleConstants.Patient || currentRole == RoleConstants.Receptionist)
         {
+            // Patients and Receptionists can only see their own profile.
             query = query.Where(u => u.Id == currentUserId);
         }
 
@@ -277,21 +284,25 @@ public sealed class UserManagementService : IUserManagementService
             query = query.Where(u => EF.Functions.Like(u.FirstName + " " + u.LastName, $"%{name}%"));
         }
 
-        // Note: Role filtering requires join to IdentityUserRole. Since we want to keep it simple, we fetch the roles later.
-        // Or we can filter based on navigation properties since our application is strictly typed.
+        // Apply role filtering by joining to IdentityUserRole via a subquery.
         if (!string.IsNullOrWhiteSpace(queryParams.Role))
         {
             var role = queryParams.Role;
+            // Resolve the role identifier from the role name.
             var roleId = await _dbContext.Roles.Where(r => r.Name == role).Select(r => r.Id).FirstOrDefaultAsync(cancellationToken);
             if (roleId != Guid.Empty)
             {
+                // Build a subquery of user IDs belonging to the requested role.
                 var userIdsInRole = _dbContext.UserRoles.Where(ur => ur.RoleId == roleId).Select(ur => ur.UserId);
+                // Filter the main query to only include users in the requested role.
                 query = query.Where(u => userIdsInRole.Contains(u.Id));
             }
         }
 
+        // Count total matching records before applying pagination.
         var totalCount = await query.CountAsync(cancellationToken);
 
+        // Apply deterministic ordering and pagination.
         var users = await query
             .OrderByDescending(u => u.CreatedAt)
             .ThenBy(u => u.Id)
@@ -299,13 +310,16 @@ public sealed class UserManagementService : IUserManagementService
             .Take(queryParams.PageSize)
             .ToListAsync(cancellationToken);
 
+        // Map each user entity to a response DTO, including their assigned roles.
         var responses = new List<UserResponse>();
         foreach (var user in users)
         {
+            // Retrieve the user's assigned roles from Identity.
             var roles = await _userManager.GetRolesAsync(user);
             responses.Add(MapToResponse(user, roles.ToList()));
         }
 
+        // Return the paginated response with metadata.
         return new PagedResponse<UserResponse>
         {
             Items = responses,
@@ -315,130 +329,199 @@ public sealed class UserManagementService : IUserManagementService
         };
     }
 
+    /// <inheritdoc />
     public async Task<UserResponse?> GetUserByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
+        // Build the base query with Receptionist navigation for authorization filtering.
         var query = _dbContext.Users
+            .AsNoTracking()
             .Include(u => u.Receptionist)
             .AsQueryable();
 
+        // Retrieve the current user's identity and role for authorization decisions.
         var currentUserId = _currentUserService.UserId;
         var currentRole = _currentUserService.Role;
 
+        // Non-admin users can only see active users.
         if (currentRole != RoleConstants.Admin)
         {
             query = query.Where(u => u.IsActive);
         }
 
+        // Apply authorization filtering based on the caller's role.
         if (currentRole == RoleConstants.Doctor)
         {
+            // Resolve the Doctor entity ID linked to the current user.
             var doctorId = await _dbContext.Doctors
                 .Where(d => d.UserId == currentUserId)
                 .Select(d => d.Id)
                 .FirstOrDefaultAsync(cancellationToken);
 
+            // Doctors can only see themselves and their own receptionists.
             query = query.Where(u => u.Id == currentUserId || (u.Receptionist != null && u.Receptionist.DoctorId == doctorId));
         }
         else if (currentRole == RoleConstants.Patient || currentRole == RoleConstants.Receptionist)
         {
+            // Patients and Receptionists can only see their own profile.
             query = query.Where(u => u.Id == currentUserId);
         }
 
+        // Attempt to find the user matching the requested ID within the authorized scope.
         var user = await query.FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
-        if (user == null) return null;
 
+        // Return null when the user is not found or not accessible.
+        if (user == null)
+        {
+            return null;
+        }
+
+        // Retrieve the user's assigned roles from Identity.
         var roles = await _userManager.GetRolesAsync(user);
+
+        // Map and return the user response DTO.
         return MapToResponse(user, roles.ToList());
     }
 
+    /// <inheritdoc />
     public async Task<UserManagementResult> UpdateUserAsync(Guid id, UpdateUserRequest request, CancellationToken cancellationToken = default)
     {
+        // Guard against null request.
         ArgumentNullException.ThrowIfNull(request);
 
+        // Validate the update request using FluentValidation.
         var validationResult = await _updateValidator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
+            // Map validation failures to structured error responses.
             var errors = validationResult.Errors.Select(e => new AuthenticationError(e.ErrorCode, e.PropertyName)).ToList();
             return UserManagementResult.Failure(errors);
         }
 
+        // Load the target user with Receptionist navigation for authorization checks.
         var user = await _dbContext.Users
             .Include(u => u.Receptionist)
             .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
 
+        // Return an error if the user does not exist or has been soft-deleted.
         if (user == null || !user.IsActive)
         {
-            return UserManagementResult.Failure(AuthenticationErrorCodes.RegistrationFailed, "User not found");
+            return UserManagementResult.Failure(AuthenticationErrorCodes.UserNotFound, nameof(id));
         }
 
+        // Retrieve the current user's identity and role for authorization decisions.
         var currentUserId = _currentUserService.UserId;
         var currentRole = _currentUserService.Role;
 
+        // Apply authorization checks based on the caller's role.
         if (currentRole == RoleConstants.Doctor)
         {
+            // Resolve the Doctor entity ID linked to the current user.
             var doctorId = await _dbContext.Doctors
                 .Where(d => d.UserId == currentUserId)
                 .Select(d => d.Id)
                 .FirstOrDefaultAsync(cancellationToken);
 
+            // Check if the doctor is updating their own profile or their receptionist's.
             bool isSelf = id == currentUserId;
             bool isOwnReceptionist = user.Receptionist != null && user.Receptionist.DoctorId == doctorId;
 
+            // Deny access if the doctor is not updating themselves or their own receptionist.
             if (!isSelf && !isOwnReceptionist)
             {
-                return UserManagementResult.Failure(AuthenticationErrorCodes.Forbidden, "Unauthorized");
+                return UserManagementResult.Failure(AuthenticationErrorCodes.Forbidden, nameof(id));
             }
         }
         else if (currentRole == RoleConstants.Patient || currentRole == RoleConstants.Receptionist)
         {
+            // Patients and Receptionists can only update their own profile.
             if (id != currentUserId)
             {
-                return UserManagementResult.Failure(AuthenticationErrorCodes.Forbidden, "Unauthorized");
+                return UserManagementResult.Failure(AuthenticationErrorCodes.Forbidden, nameof(id));
             }
         }
         else if (currentRole != RoleConstants.Admin)
         {
-            return UserManagementResult.Failure(AuthenticationErrorCodes.Forbidden, "Unauthorized");
+            // Deny access for any unrecognized role.
+            return UserManagementResult.Failure(AuthenticationErrorCodes.Forbidden, nameof(id));
         }
 
-        if (request.FirstName != null) user.FirstName = request.FirstName;
-        if (request.LastName != null) user.LastName = request.LastName;
-        if (request.Gender != null) user.Gender = request.Gender;
-        if (request.DateOfBirth != null) user.DateOfBirth = request.DateOfBirth;
-        if (request.Address != null) user.Address = request.Address;
+        // Apply only the fields that were explicitly provided in the request.
+        if (request.FirstName != null)
+        {
+            user.FirstName = request.FirstName;
+        }
 
+        if (request.LastName != null)
+        {
+            user.LastName = request.LastName;
+        }
+
+        if (request.Gender != null)
+        {
+            user.Gender = request.Gender;
+        }
+
+        if (request.DateOfBirth != null)
+        {
+            user.DateOfBirth = request.DateOfBirth;
+        }
+
+        if (request.Address != null)
+        {
+            user.Address = request.Address;
+        }
+
+        // Update audit trail fields.
         user.UpdatedAt = DateTime.UtcNow;
         user.UpdatedById = currentUserId;
 
+        // Persist the updated user profile to the database.
         await _dbContext.SaveChangesAsync(cancellationToken);
 
+        // Return the updated user's identifier.
         return UserManagementResult.Success(user.Id);
     }
 
+    /// <inheritdoc />
     public async Task<UserManagementResult> DeleteUserAsync(Guid id, CancellationToken cancellationToken = default)
     {
+        // Only administrators are allowed to delete users.
         var currentRole = _currentUserService.Role;
         if (currentRole != RoleConstants.Admin)
         {
-            return UserManagementResult.Failure(AuthenticationErrorCodes.Forbidden, "Unauthorized");
+            return UserManagementResult.Failure(AuthenticationErrorCodes.Forbidden, nameof(id));
         }
 
+        // Load the target user from the database.
         var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+
+        // Return an error if the user does not exist or has already been soft-deleted.
         if (user == null || !user.IsActive)
         {
-            return UserManagementResult.Failure(AuthenticationErrorCodes.RegistrationFailed, "User not found");
+            return UserManagementResult.Failure(AuthenticationErrorCodes.UserNotFound, nameof(id));
         }
 
+        // Mark the user as inactive (soft delete) and record the deletion audit trail.
         user.IsActive = false;
         user.DeletedAt = DateTime.UtcNow;
         user.DeletedById = _currentUserService.UserId;
 
+        // Persist the soft-delete changes to the database.
         await _dbContext.SaveChangesAsync(cancellationToken);
 
+        // Return the soft-deleted user's identifier.
         return UserManagementResult.Success(user.Id);
     }
 
+    /// <summary>
+    /// Maps an <see cref="ApplicationUser"/> entity to a <see cref="UserResponse"/> DTO.
+    /// </summary>
+    /// <param name="user">The application user entity.</param>
+    /// <param name="roles">The list of role names assigned to the user.</param>
+    /// <returns>A <see cref="UserResponse"/> representing the user's profile.</returns>
     private static UserResponse MapToResponse(ApplicationUser user, List<string> roles)
     {
+        // Map entity properties to the response DTO.
         return new UserResponse
         {
             Id = user.Id,

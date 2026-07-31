@@ -5,7 +5,7 @@
  * Version        : v1.0.0
  * Dependencies   : None
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 25/07/2026
+ * Last Modified  : Mustafa Mahmoud - 2026-07-31
  * Description    : Defines stable error codes for authentication features,
  *                  including registration, login, password recovery, OTP,
  *                  refresh tokens, and account verification.
@@ -145,6 +145,16 @@ public static class AuthenticationErrorCodes
     /// Indicates that the action is forbidden.
     /// </summary>
     public const string Forbidden = "auth.forbidden";
+
+    /// <summary>
+    /// Indicates that the address has an invalid length.
+    /// </summary>
+    public const string AddressLengthInvalid = "auth.registration.address.length_invalid";
+
+    /// <summary>
+    /// Indicates that the requested user was not found.
+    /// </summary>
+    public const string UserNotFound = "auth.user.not_found";
 
     #endregion
 

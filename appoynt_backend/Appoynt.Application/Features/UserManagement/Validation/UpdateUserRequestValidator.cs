@@ -5,7 +5,7 @@
  * Version        : v1.0.0
  * Dependencies   : FluentValidation
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 28/07/2026
+ * Last Modified  : Mustafa Mahmoud - 2026-07-31
  * Description    : Validates the UpdateUserRequest payload.
  */
 
@@ -15,8 +15,14 @@ using FluentValidation;
 
 namespace Appoynt.Application.Features.UserManagement.Validation;
 
+/// <summary>
+/// Validates user profile update request payloads.
+/// </summary>
 public sealed class UpdateUserRequestValidator : AbstractValidator<UpdateUserRequest>
 {
+    /// <summary>
+    /// Initializes validation rules for user update requests.
+    /// </summary>
     public UpdateUserRequestValidator()
     {
         RuleFor(request => request.FirstName)
@@ -30,7 +36,7 @@ public sealed class UpdateUserRequestValidator : AbstractValidator<UpdateUserReq
             .When(r => r.LastName != null);
 
         RuleFor(request => request.Address)
-            .MaximumLength(200).WithMessage("Address must not exceed 200 characters.")
+            .MaximumLength(200).WithMessage(AuthenticationErrorCodes.AddressLengthInvalid)
             .When(r => r.Address != null);
     }
 }
