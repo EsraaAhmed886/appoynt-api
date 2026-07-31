@@ -3,7 +3,7 @@
  * Author         : Mustafa Mahmoud
  * Created Date   : 24/07/2026
  * Version        : v1.0.0
- * Dependencies   : IRegistrationService, UserManager, RoleManager,
+ * Dependencies   : IRegistrationService, IOtpService, UserManager, RoleManager,
  *                  ApplicationDbContext, RegistrationInputNormalizer,
  *                  RegistrationValidator
  * Contributors   : [Mustafa Mahmoud]
@@ -17,8 +17,11 @@ using Appoynt.Application.Common.Models;
 using Appoynt.Application.Features.Authentication.Registration;
 using Appoynt.Application.Features.Authentication.Registration.Contracts;
 using Appoynt.Application.Features.Authentication.Registration.Validation;
+using Appoynt.Application.Features.Authentication.Otp;
+using Appoynt.Application.Features.Authentication.Otp.Contracts;
 using Appoynt.Domain.Common.Constants;
 using Appoynt.Domain.Entities;
+using Appoynt.Domain.Enums;
 using Appoynt.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +36,7 @@ public sealed class RegistrationService : IRegistrationService
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<IdentityRole<Guid>> _roleManager;
     private readonly ApplicationDbContext _dbContext;
+    private readonly IOtpService _otpService;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RegistrationService"/> class.
@@ -40,14 +44,17 @@ public sealed class RegistrationService : IRegistrationService
     /// <param name="userManager">The ASP.NET Core Identity user manager.</param>
     /// <param name="roleManager">The ASP.NET Core Identity role manager.</param>
     /// <param name="dbContext">The application database context.</param>
+    /// <param name="otpService">The mobile OTP service.</param>
     public RegistrationService(
         UserManager<ApplicationUser> userManager,
         RoleManager<IdentityRole<Guid>> roleManager,
-        ApplicationDbContext dbContext)
+        ApplicationDbContext dbContext,
+        IOtpService otpService)
     {
         _userManager = userManager;
         _roleManager = roleManager;
         _dbContext = dbContext;
+        _otpService = otpService;
     }
 
     /// <inheritdoc />
@@ -137,12 +144,28 @@ public sealed class RegistrationService : IRegistrationService
             });
 
             await _dbContext.SaveChangesAsync(cancellationToken);
+
+            OtpResult otpResult = await _otpService.IssueAsync(
+                user,
+                OtpPurpose.PhoneConfirmation,
+                cancellationToken);
+
+            if (!otpResult.Succeeded)
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                return Failure(otpResult.Errors);
+            }
+
             await transaction.CommitAsync(cancellationToken);
 
             return new RegistrationResult
             {
                 Succeeded = true,
-                Response = new RegisterResponse { UserId = user.Id }
+                Response = new RegisterResponse
+                {
+                    UserId = user.Id,
+                    ChallengeId = otpResult.Challenge!.ChallengeId
+                }
             };
         }
         catch (DbUpdateException)

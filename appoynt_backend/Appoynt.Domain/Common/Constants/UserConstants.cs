@@ -1,4 +1,4 @@
-﻿/**
+/**
  * File Name      : UserConstants.cs
  * Author         : Mustafa Mahmoud
  * Created Date   : 21/07/2026
@@ -77,6 +77,16 @@ public static class UserConstants
 
     // Maximum allowed OTP resend attempts per session.
     public const int MaxOtpResends = 3;
+
+    #endregion
+
+    #region Lockout Constants
+
+    // Maximum allowed failed login access attempts before account lockout.
+    public const int MaxFailedAccessAttempts = 5;
+
+    // Default lockout duration in minutes.
+    public const int DefaultLockoutTimeSpanMinutes = 30;
 
     #endregion
 }

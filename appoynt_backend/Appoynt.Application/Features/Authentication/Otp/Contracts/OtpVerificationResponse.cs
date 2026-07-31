@@ -6,19 +6,26 @@
  * Dependencies   : None
  * Contributors   : [Mustafa Mahmoud]
  * Last Modified  : Mustafa Mahmoud - 25/07/2026
- * Description    : Defines the successful result of verifying an OTP challenge.
+ * Description    : Defines the successful result of confirming a phone number
+ *                  through an OTP challenge.
  */
 
 namespace Appoynt.Application.Features.Authentication.Otp.Contracts;
 
 /// <summary>
-/// Represents the successful result of verifying a mobile OTP challenge.
+/// Represents the successful result of confirming a mobile phone number.
 /// </summary>
 public sealed class OtpVerificationResponse
 {
     /// <summary>
-    /// Gets or initializes the JWT access token issued after Login OTP
-    /// verification. It is null for phone-confirmation challenges.
+    /// Gets or initializes a value indicating whether the phone number is
+    /// confirmed.
     /// </summary>
-    public string? AccessToken { get; init; }
+    public bool? PhoneNumberConfirmed { get; init; }
+
+    /// <summary>
+    /// Gets or initializes the password reset token, populated only when the
+    /// OTP purpose is PasswordReset.
+    /// </summary>
+    public string? PasswordResetToken { get; init; }
 }

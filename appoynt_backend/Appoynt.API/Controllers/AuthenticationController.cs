@@ -20,8 +20,11 @@ using Appoynt.Application.Features.Authentication.Otp;
 using Appoynt.Application.Features.Authentication.Otp.Contracts;
 using Appoynt.Application.Features.Authentication.Registration;
 using Appoynt.Application.Features.Authentication.Registration.Contracts;
+using Appoynt.Application.Features.Authentication.PasswordRecovery;
+using Appoynt.Application.Features.Authentication.PasswordRecovery.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Appoynt.API.Controllers;
 
@@ -35,6 +38,7 @@ public sealed class AuthenticationController : ControllerBase
 {
     private readonly ILoginService _loginService;
     private readonly IOtpService _otpService;
+    private readonly IPasswordRecoveryService _passwordRecoveryService;
     private readonly IRegistrationService _registrationService;
 
     /// <summary>
@@ -45,10 +49,12 @@ public sealed class AuthenticationController : ControllerBase
     public AuthenticationController(
         ILoginService loginService,
         IOtpService otpService,
+        IPasswordRecoveryService passwordRecoveryService,
         IRegistrationService registrationService)
     {
         _loginService = loginService;
         _otpService = otpService;
+        _passwordRecoveryService = passwordRecoveryService;
         _registrationService = registrationService;
     }
 
@@ -62,6 +68,7 @@ public sealed class AuthenticationController : ControllerBase
     /// <response code="200">The account was authenticated successfully.</response>
     /// <response code="401">The supplied credentials are invalid.</response>
     [AllowAnonymous]
+    [EnableRateLimiting("Login")]
     [HttpPost("login")]
     [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(
@@ -84,6 +91,7 @@ public sealed class AuthenticationController : ControllerBase
     /// Verifies a Registration phone-confirmation or Login OTP challenge.
     /// </summary>
     [AllowAnonymous]
+    [EnableRateLimiting("OtpVerify")]
     [HttpPost("otp/verify")]
     [ProducesResponseType(typeof(OtpVerificationResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IReadOnlyList<AuthenticationError>), StatusCodes.Status400BadRequest)]
@@ -99,6 +107,25 @@ public sealed class AuthenticationController : ControllerBase
     }
 
     /// <summary>
+    /// Replaces an expired OTP challenge with a new challenge.
+    /// </summary>
+    [AllowAnonymous]
+    [EnableRateLimiting("OtpResend")]
+    [HttpPost("otp/resend")]
+    [ProducesResponseType(typeof(OtpChallengeResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IReadOnlyList<AuthenticationError>), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> ResendOtpAsync(
+        [FromBody] ResendOtpRequest request,
+        CancellationToken cancellationToken)
+    {
+        OtpResult result = await _otpService.ResendAsync(request, cancellationToken);
+
+        return result.Succeeded
+            ? Ok(result.Challenge)
+            : BadRequest(result.Errors);
+    }
+
+    /// <summary>
     /// Creates a patient account, assigns the Patient role, and creates the
     /// associated patient profile.
     /// </summary>
@@ -110,6 +137,7 @@ public sealed class AuthenticationController : ControllerBase
     /// <response code="409">The email address or phone number is already registered.</response>
     /// <response code="500">Registration could not be completed.</response>
     [AllowAnonymous]
+    [EnableRateLimiting("Register")]
     [HttpPost("register")]
     [ProducesResponseType(typeof(RegisterResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(
@@ -148,5 +176,43 @@ public sealed class AuthenticationController : ControllerBase
         }
 
         return BadRequest(result.Errors);
+    }
+
+    /// <summary>
+    /// Initiates a password recovery request by issuing an OTP challenge.
+    /// </summary>
+    [AllowAnonymous]
+    [EnableRateLimiting("ForgotPassword")]
+    [HttpPost("forgot-password")]
+    [ProducesResponseType(typeof(OtpChallengeResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IReadOnlyList<AuthenticationError>), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> ForgotPasswordAsync(
+        [FromBody] ForgotPasswordRequest request,
+        CancellationToken cancellationToken)
+    {
+        OtpResult result = await _passwordRecoveryService.ForgotPasswordAsync(request, cancellationToken);
+
+        return result.Succeeded
+            ? Ok(result.Challenge)
+            : BadRequest(result.Errors);
+    }
+
+    /// <summary>
+    /// Resets the user's password using a valid reset token.
+    /// </summary>
+    [AllowAnonymous]
+    [EnableRateLimiting("ResetPassword")]
+    [HttpPost("reset-password")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IReadOnlyList<AuthenticationError>), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> ResetPasswordAsync(
+        [FromBody] ResetPasswordRequest request,
+        CancellationToken cancellationToken)
+    {
+        var (succeeded, errors) = await _passwordRecoveryService.ResetPasswordAsync(request, cancellationToken);
+
+        return succeeded
+            ? Ok()
+            : BadRequest(errors);
     }
 }

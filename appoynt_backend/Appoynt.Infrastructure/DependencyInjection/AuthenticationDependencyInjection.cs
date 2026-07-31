@@ -1,4 +1,4 @@
-﻿/**
+/**
  * File Name      : AuthenticationDependencyInjection.cs
  * Author         : Mustafa Mahmoud
  * Created Date   : 22/07/2026
@@ -10,14 +10,21 @@
  * Last Modified  : Mustafa Mahmoud - 24/07/2026
  * Description    : Registers authentication services used by the
  *                  application.
+ * Description    : Registers authentication services used by the
+ *                  application.
  */
 
 using System.Text;
 using Appoynt.Application.Common.Interfaces;
 using Appoynt.Application.Features.Authentication.Login;
 using Appoynt.Application.Features.Authentication.Otp;
+using Appoynt.Application.Features.Authentication.PasswordRecovery;
 using Appoynt.Application.Features.Authentication.Registration;
+using Appoynt.Application.Features.UserManagement;
+using Appoynt.Application.Features.UserManagement.Contracts;
+using Appoynt.Application.Features.UserManagement.Validation;
 using Appoynt.Infrastructure.Authentication;
+using Appoynt.Infrastructure.Authentication.UserManagement;
 using Appoynt.Infrastructure.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
@@ -91,7 +98,11 @@ internal static class AuthenticationDependencyInjection
 
         services.AddScoped<ITokenService, JwtTokenService>();
         services.AddScoped<IRegistrationService, RegistrationService>();
+        services.AddScoped<IUserManagementService, UserManagementService>();
+        services.AddScoped<FluentValidation.IValidator<CreateStaffRequest>, CreateStaffRequestValidator>();
+        services.AddScoped<FluentValidation.IValidator<UpdateUserRequest>, UpdateUserRequestValidator>();
         services.AddScoped<ILoginService, LoginService>();
+        services.AddScoped<IPasswordRecoveryService, PasswordRecoveryService>();
         services.AddScoped<IOtpService, OtpService>();
         services.AddScoped<DevelopmentSmsSender>();
         services.AddScoped<UnavailableSmsSender>();

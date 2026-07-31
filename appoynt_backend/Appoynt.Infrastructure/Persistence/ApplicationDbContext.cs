@@ -1,4 +1,4 @@
-﻿/**
+/**
  * File Name      : ApplicationDbContext.cs
  * Author         : Mustafa Mahmoud
  * Created Date   : 21/07/2026
@@ -104,6 +104,11 @@ public class ApplicationDbContext
     /// </summary>
     public DbSet<OtpChallenge> OtpChallenges => Set<OtpChallenge>();
 
+    /// <summary>
+    /// Gets the audit logs for system modifications.
+    /// </summary>
+    public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+
     #endregion
 
     #region Model Configuration
@@ -143,7 +148,15 @@ public class ApplicationDbContext
         // before persisting changes.
         PrepareEntitiesForSave();
 
-        return base.SaveChanges();
+        // Prepare audit entries before saving.
+        var auditEntries = OnBeforeSaveChanges();
+
+        int result = base.SaveChanges();
+
+        // Save audit entries that had temporary properties after the initial save.
+        OnAfterSaveChanges(auditEntries);
+
+        return result;
     }
 
     /// <summary>
@@ -163,7 +176,15 @@ public class ApplicationDbContext
         // before persisting changes.
         PrepareEntitiesForSave();
 
-        return base.SaveChanges(acceptAllChangesOnSuccess);
+        // Prepare audit entries before saving.
+        var auditEntries = OnBeforeSaveChanges();
+
+        int result = base.SaveChanges(acceptAllChangesOnSuccess);
+
+        // Save audit entries that had temporary properties after the initial save.
+        OnAfterSaveChanges(auditEntries);
+
+        return result;
     }
 
     /// <summary>
@@ -183,62 +204,31 @@ public class ApplicationDbContext
         // before persisting changes.
         PrepareEntitiesForSave();
 
-        return await base.SaveChangesAsync(cancellationToken);
+        // Prepare audit entries before saving.
+        var auditEntries = OnBeforeSaveChanges();
+
+        int result = await base.SaveChangesAsync(cancellationToken);
+
+        // Save audit entries that had temporary properties after the initial save.
+        await OnAfterSaveChangesAsync(auditEntries, cancellationToken);
+
+        return result;
     }
 
-    /// <summary>
-    /// Asynchronously saves all changes made in this context after applying
-    /// audit information and soft-delete processing.
-    /// </summary>
-    /// <param name="acceptAllChangesOnSuccess">
-    /// Indicates whether <see cref="Microsoft.EntityFrameworkCore.ChangeTracking.ChangeTracker.AcceptAllChanges"/>
-    /// is called after the changes have been successfully saved.
-    /// </param>
-    /// <param name="cancellationToken">
-    /// A token used to cancel the save operation.
-    /// </param>
-    /// <returns>
-    /// A task representing the asynchronous save operation.
-    /// </returns>
-    public override async Task<int> SaveChangesAsync(
-        bool acceptAllChangesOnSuccess,
-        CancellationToken cancellationToken = default)
-    {
-        // Apply audit information and soft-delete rules
-        // before persisting changes.
-        PrepareEntitiesForSave();
-
-        return await base.SaveChangesAsync(
-            acceptAllChangesOnSuccess,
-            cancellationToken);
-    }
-
-    #endregion
-
-    #region Audit Preparation
-
-    /// <summary>
-    /// Prepares tracked entities before they are persisted by applying
-    /// audit information and soft-delete rules.
-    /// </summary>
     private void PrepareEntitiesForSave()
     {
-        // Exit early when there are no tracked changes.
         if (!ChangeTracker.HasChanges())
         {
             return;
         }
 
-        // Apply audit information to all tracked entities.
-        ApplyAuditInformation();
-
         // Convert delete operations into soft-delete updates.
         ApplySoftDelete();
+
+        // Apply audit information to all tracked entities.
+        ApplyAuditInformation();
     }
 
-    /// <summary>
-    /// Applies audit information to all supported entity types.
-    /// </summary>
     private void ApplyAuditInformation()
     {
         // Apply audit information to entities derived from BaseEntity.
@@ -248,9 +238,6 @@ public class ApplicationDbContext
         HandleApplicationUsers();
     }
 
-    /// <summary>
-    /// Retrieves the current audit context used during save operations.
-    /// </summary>
     /// <returns>
     /// A tuple containing the current authenticated user's identifier
     /// and the current UTC date and time.
@@ -445,7 +432,6 @@ public class ApplicationDbContext
 
             // Mark the user account as inactive.
             entry.Entity.IsActive = false;
-
             // Update the last modification audit information.
             entry.Entity.UpdatedAt = utcNow;
             entry.Entity.UpdatedById = currentUserId;
@@ -455,6 +441,156 @@ public class ApplicationDbContext
             entry.Entity.DeletedById = currentUserId;
         }
     }
-}
 
     #endregion
+
+    #region Audit Logs
+
+    private List<AuditEntry> OnBeforeSaveChanges()
+    {
+        var (currentUserId, utcNow) = GetAuditContext();
+        ChangeTracker.DetectChanges();
+        var auditEntries = new List<AuditEntry>();
+
+        foreach (var entry in ChangeTracker.Entries())
+        {
+            if (entry.Entity is AuditLog || entry.State == EntityState.Detached || entry.State == EntityState.Unchanged)
+            {
+                continue;
+            }
+
+            // Exclude noise/temporary entities
+            if (entry.Entity is OtpChallenge || entry.Entity is RefreshToken)
+            {
+                continue;
+            }
+
+            var auditEntry = new AuditEntry(entry)
+            {
+                TableName = entry.Metadata.GetTableName() ?? entry.Metadata.Name,
+                UserId = currentUserId,
+                DateTimeOffset = utcNow,
+                AuditType = entry.State switch
+                {
+                    EntityState.Added => Appoynt.Domain.Enums.AuditType.Create,
+                    EntityState.Modified => Appoynt.Domain.Enums.AuditType.Update,
+                    EntityState.Deleted => Appoynt.Domain.Enums.AuditType.Delete,
+                    _ => Appoynt.Domain.Enums.AuditType.None
+                }
+            };
+
+            auditEntries.Add(auditEntry);
+
+            foreach (var property in entry.Properties)
+            {
+                if (property.IsTemporary)
+                {
+                    auditEntry.TemporaryProperties.Add(property);
+                    continue;
+                }
+
+                string propertyName = property.Metadata.Name;
+
+                if (property.Metadata.IsPrimaryKey())
+                {
+                    auditEntry.KeyValues[propertyName] = property.CurrentValue;
+                    continue;
+                }
+
+                // Exclude sensitive properties
+                if (IsSensitiveProperty(propertyName))
+                {
+                    continue;
+                }
+
+                switch (entry.State)
+                {
+                    case EntityState.Added:
+                        auditEntry.NewValues[propertyName] = property.CurrentValue;
+                        break;
+                    case EntityState.Deleted:
+                        auditEntry.OldValues[propertyName] = property.OriginalValue;
+                        break;
+                    case EntityState.Modified:
+                        if (property.IsModified)
+                        {
+                            auditEntry.ChangedColumns.Add(propertyName);
+                            auditEntry.OldValues[propertyName] = property.OriginalValue;
+                            auditEntry.NewValues[propertyName] = property.CurrentValue;
+                        }
+                        break;
+                }
+            }
+        }
+
+        foreach (var auditEntry in auditEntries.Where(a => !a.HasTemporaryProperties))
+        {
+            AuditLogs.Add(auditEntry.ToAuditLog());
+        }
+
+        return auditEntries.Where(a => a.HasTemporaryProperties).ToList();
+    }
+
+    private void OnAfterSaveChanges(List<AuditEntry> auditEntries)
+    {
+        if (auditEntries == null || auditEntries.Count == 0)
+        {
+            return;
+        }
+
+        foreach (var auditEntry in auditEntries)
+        {
+            foreach (var prop in auditEntry.TemporaryProperties)
+            {
+                if (prop.Metadata.IsPrimaryKey())
+                {
+                    auditEntry.KeyValues[prop.Metadata.Name] = prop.CurrentValue;
+                }
+                else
+                {
+                    auditEntry.NewValues[prop.Metadata.Name] = prop.CurrentValue;
+                }
+            }
+
+            AuditLogs.Add(auditEntry.ToAuditLog());
+        }
+
+        base.SaveChanges();
+    }
+
+    private async Task OnAfterSaveChangesAsync(List<AuditEntry> auditEntries, CancellationToken cancellationToken)
+    {
+        if (auditEntries == null || auditEntries.Count == 0)
+        {
+            return;
+        }
+
+        foreach (var auditEntry in auditEntries)
+        {
+            foreach (var prop in auditEntry.TemporaryProperties)
+            {
+                if (prop.Metadata.IsPrimaryKey())
+                {
+                    auditEntry.KeyValues[prop.Metadata.Name] = prop.CurrentValue;
+                }
+                else
+                {
+                    auditEntry.NewValues[prop.Metadata.Name] = prop.CurrentValue;
+                }
+            }
+
+            AuditLogs.Add(auditEntry.ToAuditLog());
+        }
+
+        await base.SaveChangesAsync(cancellationToken);
+    }
+
+    private static bool IsSensitiveProperty(string propertyName)
+    {
+        var sensitiveNames = new[] { "PasswordHash", "SecurityStamp", "ConcurrencyStamp" };
+        return sensitiveNames.Contains(propertyName, StringComparer.OrdinalIgnoreCase);
+    }
+
+    #endregion
+
+}

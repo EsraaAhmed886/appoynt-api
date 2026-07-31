@@ -29,4 +29,9 @@ public interface IOtpService
     Task<OtpResult> VerifyAsync(
         VerifyOtpRequest request,
         CancellationToken cancellationToken = default);
+
+    /// <summary>Replaces an expired OTP challenge with a new OTP.</summary>
+    Task<OtpResult> ResendAsync(
+        ResendOtpRequest request,
+        CancellationToken cancellationToken = default);
 }

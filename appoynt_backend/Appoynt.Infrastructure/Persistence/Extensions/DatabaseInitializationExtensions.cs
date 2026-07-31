@@ -68,13 +68,22 @@ public static class DatabaseInitializationExtensions
 
         try
         {
-            logger.LogInformation("Applying pending database migrations.");
-
-            await dbContext.Database
-                .MigrateAsync(cancellationToken)
-                .ConfigureAwait(false);
-
-            logger.LogInformation("Database migrations applied successfully.");
+            if (dbContext.Database.IsSqlServer())
+            {
+                logger.LogInformation("Applying pending database migrations.");
+                await dbContext.Database
+                    .MigrateAsync(cancellationToken)
+                    .ConfigureAwait(false);
+                logger.LogInformation("Database migrations applied successfully.");
+            }
+            else
+            {
+                logger.LogInformation("Ensuring database schema is created for test provider '{Provider}'.", dbContext.Database.ProviderName);
+                await dbContext.Database
+                    .EnsureCreatedAsync(cancellationToken)
+                    .ConfigureAwait(false);
+                logger.LogInformation("Test database schema created successfully.");
+            }
 
             if (!seedOptions.Enabled)
             {

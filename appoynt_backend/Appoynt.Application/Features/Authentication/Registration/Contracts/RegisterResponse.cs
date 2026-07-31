@@ -7,7 +7,7 @@
  * Contributors   : [Mustafa Mahmoud]
  * Last Modified  : Mustafa Mahmoud - 24/07/2026
  * Description    : Defines the successful response contract for patient
- *                  registration.
+ *                  registration and its phone-confirmation challenge.
  */
 
 namespace Appoynt.Application.Features.Authentication.Registration.Contracts;
@@ -21,4 +21,9 @@ public sealed class RegisterResponse
     /// Gets or initializes the identifier of the newly created user account.
     /// </summary>
     public Guid UserId { get; init; }
+
+    /// <summary>
+    /// Gets or initializes the phone-confirmation OTP challenge identifier.
+    /// </summary>
+    public Guid ChallengeId { get; init; }
 }

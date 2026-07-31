@@ -1,4 +1,4 @@
-﻿/**
+/**
  * File Name      : DependencyInjection.cs
  * Author         : Mustafa Mahmoud
  * Created Date   : 21/07/2026
@@ -54,6 +54,9 @@ public static class InfrastructureDependencyInjection
 
         // Register infrastructure configuration options.
         services.AddInfrastructureOptions(configuration);
+
+        // Register rate limiting services.
+        services.AddInfrastructureRateLimiting(configuration);
 
         // Register infrastructure services.
         services.AddInfrastructureServices();

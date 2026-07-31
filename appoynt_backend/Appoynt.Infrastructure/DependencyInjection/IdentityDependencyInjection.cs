@@ -1,4 +1,4 @@
-﻿/**
+/**
  * File Name      : IdentityDependencyInjection.cs
  * Author         : Mustafa Mahmoud
  * Created Date   : 22/07/2026
@@ -43,6 +43,10 @@ internal static class IdentityDependencyInjection
                 options.Password.RequireLowercase = true;
                 options.Password.RequireUppercase = true;
                 options.Password.RequireNonAlphanumeric = true;
+
+                options.Lockout.AllowedForNewUsers = true;
+                options.Lockout.MaxFailedAccessAttempts = UserConstants.MaxFailedAccessAttempts;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(UserConstants.DefaultLockoutTimeSpanMinutes);
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();

@@ -42,6 +42,10 @@ public class Program
         // Register MVC controllers.
         builder.Services.AddControllers();
 
+        // Register global exception handling and RFC 7807 ProblemDetails.
+        builder.Services.AddProblemDetails();
+        builder.Services.AddExceptionHandler<Appoynt.API.Middlewares.GlobalExceptionHandler>();
+
         // Register Swagger/OpenAPI services.
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(options =>
@@ -93,6 +97,9 @@ public class Program
 
         #region HTTP Request Pipeline
 
+        // Use global exception handling middleware.
+        app.UseExceptionHandler();
+
         // Enable Swagger only in the Development environment.
         if (app.Environment.IsDevelopment())
         {
@@ -106,6 +113,12 @@ public class Program
 
         // Redirect HTTP requests to HTTPS.
         app.UseHttpsRedirection();
+
+        // Routing must be before Rate Limiting for endpoint-specific policies.
+        app.UseRouting();
+
+        // Enable rate limiting.
+        app.UseRateLimiter();
 
         // Authenticate requests using the configured authentication scheme.
         app.UseAuthentication();

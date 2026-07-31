@@ -1,4 +1,4 @@
-﻿/**
+/**
  * File Name      : ICurrentUserService.cs
  * Author         : Mustafa Mahmoud
  * Created Date   : 21/07/2026
@@ -21,6 +21,9 @@ public interface ICurrentUserService
 
     // Gets the unique identifier of the currently authenticated user.
     Guid? UserId { get; }
+
+    // Gets the role of the currently authenticated user.
+    string? Role { get; }
 
     #endregion
 }

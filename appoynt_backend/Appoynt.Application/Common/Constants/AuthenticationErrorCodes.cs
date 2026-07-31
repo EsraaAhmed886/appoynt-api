@@ -136,6 +136,16 @@ public static class AuthenticationErrorCodes
     /// </summary>
     public const string RegistrationFailed = "auth.registration.failed";
 
+    /// <summary>
+    /// Indicates that the current doctor was not found when creating a receptionist.
+    /// </summary>
+    public const string CurrentDoctorNotFound = "auth.registration.doctor.not_found";
+
+    /// <summary>
+    /// Indicates that the action is forbidden.
+    /// </summary>
+    public const string Forbidden = "auth.forbidden";
+
     #endregion
 
     #region Login

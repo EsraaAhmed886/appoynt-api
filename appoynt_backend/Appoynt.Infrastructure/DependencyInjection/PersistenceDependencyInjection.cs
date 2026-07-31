@@ -1,4 +1,4 @@
-﻿/**
+/**
  * File Name      : PersistenceDependencyInjection.cs
  * Author         : Mustafa Mahmoud
  * Created Date   : 22/07/2026
@@ -41,8 +41,17 @@ internal static class PersistenceDependencyInjection
         // Register the Entity Framework Core database context.
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-            options.UseSqlServer(
-                configuration.GetConnectionString("DefaultConnection"));
+            string? provider = configuration["DatabaseProvider"];
+            if (string.Equals(provider, "Sqlite", StringComparison.OrdinalIgnoreCase))
+            {
+                string connectionString = configuration.GetConnectionString("DefaultConnection") ?? "DataSource=:memory:";
+                options.UseSqlite(connectionString);
+            }
+            else
+            {
+                options.UseSqlServer(
+                    configuration.GetConnectionString("DefaultConnection"));
+            }
         });
 
         return services;

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * File Name      : CurrentUserService.cs
  * Author         : Mustafa Mahmoud
  * Created Date   : 21/07/2026
@@ -66,6 +66,19 @@ public sealed class CurrentUserService : ICurrentUserService
             return Guid.TryParse(userId, out var id)
                 ? id
                 : null;
+        }
+    }
+
+    /// <summary>
+    /// Gets the role of the currently authenticated user.
+    /// </summary>
+    public string? Role
+    {
+        get
+        {
+            return _httpContextAccessor.HttpContext?
+                .User?
+                .FindFirstValue(ClaimTypes.Role);
         }
     }
 

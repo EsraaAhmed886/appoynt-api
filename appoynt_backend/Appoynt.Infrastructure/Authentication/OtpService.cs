@@ -3,7 +3,7 @@
  * Author         : Mustafa Mahmoud
  * Created Date   : 25/07/2026
  * Version        : v1.0.0
- * Dependencies   : IOtpService, ISmsSender, ITokenService, ApplicationDbContext,
+ * Dependencies   : IOtpService, ISmsSender, ApplicationDbContext,
  *                  UserManager, PasswordHasher
  * Contributors   : [Mustafa Mahmoud]
  * Last Modified  : Mustafa Mahmoud - 25/07/2026
@@ -33,18 +33,18 @@ public sealed class OtpService : IOtpService
 {
     private readonly ApplicationDbContext _dbContext;
     private readonly ISmsSender _smsSender;
-    private readonly ITokenService _tokenService;
+    private readonly UserManager<ApplicationUser> _userManager;
     private readonly PasswordHasher<OtpChallenge> _passwordHasher = new();
 
     /// <summary>Initializes a new instance of the <see cref="OtpService"/> class.</summary>
     public OtpService(
         ApplicationDbContext dbContext,
         ISmsSender smsSender,
-        ITokenService tokenService)
+        UserManager<ApplicationUser> userManager)
     {
         _dbContext = dbContext;
         _smsSender = smsSender;
-        _tokenService = tokenService;
+        _userManager = userManager;
     }
 
     /// <inheritdoc />
@@ -151,25 +151,95 @@ public sealed class OtpService : IOtpService
         }
 
         challenge.ConsumedAt = utcNow;
+        
+        string? passwordResetToken = null;
+        bool? phoneNumberConfirmed = null;
 
         if (challenge.Purpose == OtpPurpose.PhoneConfirmation)
         {
             challenge.User.PhoneNumberConfirmed = true;
-            await _dbContext.SaveChangesAsync(cancellationToken);
-            return new OtpResult
-            {
-                Succeeded = true,
-                Verification = new OtpVerificationResponse()
-            };
+            phoneNumberConfirmed = true;
+        }
+        else if (challenge.Purpose == OtpPurpose.PasswordReset)
+        {
+            passwordResetToken = await _userManager.GeneratePasswordResetTokenAsync(challenge.User);
         }
 
-        string accessToken = await _tokenService.GenerateAccessTokenAsync(challenge.User);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         return new OtpResult
         {
             Succeeded = true,
-            Verification = new OtpVerificationResponse { AccessToken = accessToken }
+            Verification = new OtpVerificationResponse
+            {
+                PhoneNumberConfirmed = phoneNumberConfirmed,
+                PasswordResetToken = passwordResetToken
+            }
+        };
+    }
+
+    /// <inheritdoc />
+    public async Task<OtpResult> ResendAsync(
+        ResendOtpRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        OtpChallenge? previousChallenge = await _dbContext.OtpChallenges
+            .Include(challenge => challenge.User)
+            .SingleOrDefaultAsync(
+                challenge => challenge.Id == request.ChallengeId,
+                cancellationToken);
+
+        if (previousChallenge is null || previousChallenge.ConsumedAt is not null ||
+            previousChallenge.InvalidatedAt is not null)
+        {
+            return Failure(AuthenticationErrorCodes.OtpInvalid);
+        }
+
+        DateTime utcNow = DateTime.UtcNow;
+
+        if (previousChallenge.ExpiresAt > utcNow)
+        {
+            return Failure(AuthenticationErrorCodes.OtpResendNotAvailable);
+        }
+
+        if (previousChallenge.ResendCount >= UserConstants.MaxOtpResends)
+        {
+            return Failure(AuthenticationErrorCodes.OtpResendLimitReached);
+        }
+
+        string phoneNumber = previousChallenge.User.PhoneNumber
+            ?? throw new InvalidOperationException("OTP requires a phone number.");
+        string code = RandomNumberGenerator.GetInt32(0, 1_000_000).ToString("D6");
+
+        if (!await _smsSender.SendOtpAsync(phoneNumber, code, cancellationToken))
+        {
+            return Failure(AuthenticationErrorCodes.OtpDeliveryUnavailable);
+        }
+
+        previousChallenge.InvalidatedAt = utcNow;
+
+        var challenge = new OtpChallenge
+        {
+            Id = Guid.NewGuid(),
+            UserId = previousChallenge.UserId,
+            User = previousChallenge.User,
+            Purpose = previousChallenge.Purpose,
+            CodeHash = string.Empty,
+            ExpiresAt = utcNow.AddSeconds(UserConstants.OtpExpirySeconds),
+            SentAt = utcNow,
+            ResendCount = previousChallenge.ResendCount + 1
+        };
+
+        challenge.CodeHash = _passwordHasher.HashPassword(challenge, code);
+        _dbContext.OtpChallenges.Add(challenge);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return new OtpResult
+        {
+            Succeeded = true,
+            Challenge = new OtpChallengeResponse { ChallengeId = challenge.Id }
         };
     }
 

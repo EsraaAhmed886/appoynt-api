@@ -1,4 +1,4 @@
-﻿/**
+/**
  * File Name      : OptionsDependencyInjection.cs
  * Author         : Mustafa Mahmoud
  * Created Date   : 22/07/2026
@@ -42,6 +42,12 @@ internal static class OptionsDependencyInjection
         services
             .AddOptions<JwtOptions>()
             .Bind(configuration.GetSection(JwtOptions.SectionName))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
+        services
+            .AddOptions<RateLimitingOptions>()
+            .Bind(configuration.GetSection(RateLimitingOptions.SectionName))
             .ValidateDataAnnotations()
             .ValidateOnStart();
 

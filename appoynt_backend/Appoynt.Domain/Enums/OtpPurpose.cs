@@ -22,7 +22,7 @@ public enum OtpPurpose
     PhoneConfirmation = 0,
 
     /// <summary>
-    /// Verifies a login attempt after successful password verification.
+    /// Verifies identity to issue a password reset token.
     /// </summary>
-    Login = 1
+    PasswordReset = 1
 }

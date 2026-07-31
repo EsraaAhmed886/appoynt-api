@@ -3,7 +3,7 @@
  * Author         : Mustafa Mahmoud
  * Created Date   : 24/07/2026
  * Version        : v1.0.0
- * Dependencies   : ILoginService, IOtpService, UserManager,
+ * Dependencies   : ILoginService, ITokenService, UserManager,
  *                  LoginInputNormalizer, LoginValidator
  * Contributors   : [Mustafa Mahmoud]
  * Last Modified  : Mustafa Mahmoud - 24/07/2026
@@ -12,14 +12,12 @@
  */
 
 using Appoynt.Application.Common.Constants;
+using Appoynt.Application.Common.Interfaces;
 using Appoynt.Application.Common.Models;
 using Appoynt.Application.Features.Authentication.Login;
 using Appoynt.Application.Features.Authentication.Login.Contracts;
 using Appoynt.Application.Features.Authentication.Login.Validation;
-using Appoynt.Application.Features.Authentication.Otp;
-using Appoynt.Application.Features.Authentication.Otp.Contracts;
 using Appoynt.Domain.Entities;
-using Appoynt.Domain.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,19 +29,19 @@ namespace Appoynt.Infrastructure.Authentication;
 public sealed class LoginService : ILoginService
 {
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IOtpService _otpService;
+    private readonly ITokenService _tokenService;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LoginService"/> class.
     /// </summary>
     /// <param name="userManager">The ASP.NET Core Identity user manager.</param>
-    /// <param name="otpService">The mobile OTP service.</param>
+    /// <param name="tokenService">The JWT token-generation service.</param>
     public LoginService(
         UserManager<ApplicationUser> userManager,
-        IOtpService otpService)
+        ITokenService tokenService)
     {
         _userManager = userManager;
-        _otpService = otpService;
+        _tokenService = tokenService;
     }
 
     /// <inheritdoc />
@@ -73,28 +71,25 @@ public sealed class LoginService : ILoginService
             return Failure();
         }
 
-        if (!await _userManager.CheckPasswordAsync(user, normalizedRequest.Password))
+        if (await _userManager.IsLockedOutAsync(user))
         {
             return Failure();
         }
 
-        OtpResult otpResult = await _otpService.IssueAsync(
-            user,
-            OtpPurpose.Login,
-            cancellationToken);
-
-        if (!otpResult.Succeeded)
+        if (!await _userManager.CheckPasswordAsync(user, normalizedRequest.Password))
         {
-            return new LoginResult { Errors = otpResult.Errors };
+            await _userManager.AccessFailedAsync(user);
+            return Failure();
         }
+
+        await _userManager.ResetAccessFailedCountAsync(user);
+
+        string accessToken = await _tokenService.GenerateAccessTokenAsync(user);
 
         return new LoginResult
         {
             Succeeded = true,
-            Response = new LoginResponse
-            {
-                ChallengeId = otpResult.Challenge!.ChallengeId
-            }
+            Response = new LoginResponse { AccessToken = accessToken }
         };
     }
 
