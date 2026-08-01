@@ -1251,4 +1251,440 @@ class AppLocalizationsEn extends AppLocalizations {
   String get search_doctor_reviews {
     return 'reviews';
   }
+
+  // Patient Profile Localizations English Overrides
+  @override
+  String get profile_title => 'Profile';
+  @override
+  String get edit_profile_title => 'Edit Profile';
+  @override
+  String get profile_first_name_label => 'First Name';
+  @override
+  String get profile_last_name_label => 'Last Name';
+  @override
+  String get profile_address_label => 'Address';
+  @override
+  String get profile_change_photo => 'Change Photo';
+  @override
+  String get profile_personal_information => 'Personal Information';
+  @override
+  String get profile_personal_information_subtitle => 'Edit name, phone, email, gender, height, and weight';
+  @override
+  String get profile_medical_history => 'Medical History';
+  @override
+  String get profile_account_settings => 'Account Settings';
+  @override
+  String get profile_height => 'Height';
+  @override
+  String get profile_weight => 'Weight';
+  @override
+  String get profile_allergies => 'Allergies';
+  @override
+  String get profile_medications => 'Medications List';
+  @override
+  String get profile_tests_results => 'Tests and Results';
+  @override
+  String get profile_chronic_conditions => 'Chronic Conditions';
+  @override
+  String get profile_insurance_details => 'Insurance Details';
+  @override
+  String get profile_no_allergies => 'No allergies added';
+  @override
+  String get profile_zero_prescriptions => '0 Prescriptions added. Tap to Add';
+  @override
+  String get profile_zero_conditions => '0 Conditions added';
+  @override
+  String get profile_zero_insurance => '0 Insurance plans added';
+  @override
+  String get profile_update_profile_button => 'Update Profile';
+  @override
+  String get profile_save_button => 'Save';
+  @override
+  String get profile_cancel_button => 'Cancel';
+  @override
+  String get profile_contact_section => 'Contact';
+  @override
+  String get profile_more_info_section => 'More Information';
+  @override
+  String get profile_smoking_section => 'Smoking';
+  @override
+  String get profile_name_label => 'Name';
+  @override
+  String get profile_phone_label => 'Phone';
+  @override
+  String get profile_birthdate_label => 'Birth Date';
+  @override
+  String get profile_national_id_label => 'National ID';
+  @override
+  String get profile_national_id_hint => 'Enter 14-digit National ID';
+  @override
+  String get profile_error_national_id_empty => 'National ID cannot be empty.';
+  @override
+  String get profile_error_national_id_invalid =>
+      'National ID must be exactly 14 numeric digits.';
+  @override
+  String get profile_email_label => 'Email';
+  @override
+  String get profile_gender_label => 'Gender';
+  @override
+  String get profile_weight_label => 'Weight';
+  @override
+  String get profile_height_label => 'Height';
+  @override
+  String get profile_gender_male => 'Male';
+  @override
+  String get profile_gender_female => 'Female';
+  @override
+  String get profile_gender_prefer_not => 'Other';
+  @override
+  String get profile_smoking_yes => 'Yes';
+  @override
+  String get profile_smoking_no => 'No';
+  @override
+  String get profile_smoking_ex => 'Ex-Smoker';
+  @override
+  String get profile_error_name_empty => 'First Name cannot be empty.';
+  @override
+  String get profile_error_name_length => 'First Name must be between 3 and 50 characters.';
+  @override
+  String get profile_error_name_letters_only => 'First Name must contain letters only.';
+  @override
+  String get profile_error_email_empty => 'Email cannot be empty.';
+  @override
+  String get profile_error_email_invalid => 'Please enter a valid email.';
+  @override
+  String get profile_error_email_length => 'Email must not exceed 254 characters.';
+  @override
+  String get profile_error_email_registered => 'This email is already registered.';
+  @override
+  String get profile_error_gender_required => 'Gender is required.';
+  @override
+  String get profile_error_address_length => 'Address must not exceed 250 characters.';
+  @override
+  String get profile_error_address_invalid => 'Address cannot contain emojis or unsupported characters.';
+  @override
+  String get profile_unsaved_changes_title => 'Unsaved Changes';
+  @override
+  String get profile_unsaved_changes_message => 'You have unsaved changes. Are you sure you want to leave?';
+  @override
+  String get profile_unsaved_changes_stay => 'Stay';
+  @override
+  String get profile_unsaved_changes_leave => 'Leave';
+
+  // Section 2: Medical Context & Permissions
+  @override
+  String get profile_dependents_title => 'Family Members';
+  @override
+  String get profile_add_dependent_button => 'Add Family Member';
+  @override
+  String get profile_insurance_card_title => 'Digital Health Insurance';
+  @override
+  String get profile_insurance_provider => 'Provider';
+  @override
+  String get profile_insurance_number => 'Policy Number';
+  @override
+  String get profile_insurance_expiry => 'Expires';
+
+  // Section 3: Payment & Wallet Management
+  @override
+  String get profile_wallet_title => 'Wallet & Payment Management';
+  @override
+  String get profile_wallet_balance => 'Wallet Balance';
+  @override
+  String get profile_wallet_priority => 'Use as priority payment';
+  @override
+  String get profile_saved_cards => 'Saved Cards';
+  @override
+  String get profile_default_card => 'Default';
+  @override
+  String get profile_add_card => 'Add New Card';
+  @override
+  String get profile_invoices_title => 'Payment History / Invoices';
+  @override
+  String get profile_invoice_id => 'Invoice ID';
+  @override
+  String get profile_amount_paid => 'Amount Paid';
+
+  // Section 4: Security & Privacy Settings
+  @override
+  String get profile_security_privacy => 'Security & Privacy';
+  @override
+  String get profile_biometrics_toggle => 'Enable Face ID / Fingerprint Security';
+  @override
+  String get profile_delete_account => 'Delete Account';
+  @override
+  String get profile_delete_account_confirm => 'Confirm Account Deletion';
+  @override
+  String get profile_delete_account_warning => 'WARNING: This action is permanent and will completely delete your account data. Please confirm you want to proceed.';
+  @override
+  String get profile_delete_account_dialog_title => 'Permanently Delete Account?';
+  @override
+  String get profile_face_id => 'Face ID Security';
+
+  // Section 5: App Preferences
+  @override
+  String get profile_notifications_title => 'Notifications';
+  @override
+  String get profile_priority_payment => 'Priority Payment';
+  @override
+  String get profile_payment_wallet => 'Payment & Wallet';
+  @override
+  String get profile_support_dial_dialog_title => 'Contact Support';
+  @override
+  String get profile_support_dial => 'Support Hotline';
+  @override
+  String get profile_app_preferences => 'App Preferences';
+  @override
+  String get profile_notifications_reminders => 'Appointment Reminders';
+  @override
+  String get profile_notifications_invoices => 'Invoices & Statements';
+  @override
+  String get profile_notifications_promos => 'Promotional Offers';
+  @override
+  String get profile_notifications_reminders_sub =>
+      'Get alerts for bookings and checkups';
+  @override
+  String get profile_notifications_invoices_sub =>
+      'Receive statements and digital receipts';
+  @override
+  String get profile_notifications_promos_sub =>
+      'Receive special pricing and wellness tips';
+  @override
+  String get profile_language_row => 'Language';
+  @override
+  String get profile_language_sub =>
+      'Select your preferred application language';
+  @override
+  String get profile_theme_row => 'Display Theme';
+  @override
+  String get profile_theme_sub =>
+      'Customize your visual appearance mode';
+  @override
+  String get profile_theme_light => 'Light';
+  @override
+  String get profile_theme_dark => 'Dark';
+  @override
+  String get profile_theme_system => 'System';
+  @override
+  String get profile_support_legal_title => 'Support & Legal';
+  @override
+  String get profile_support_legal_sub =>
+      'Help desk, terms of service and privacy';
+  @override
+  String get profile_support_terms => 'Terms of Use';
+  @override
+  String get profile_support_terms_sub =>
+      'Read our terms of service and conditions';
+  @override
+  String get profile_support_privacy => 'Privacy Policy';
+  @override
+  String get profile_support_privacy_sub =>
+      'Learn how we protect your personal data';
+  @override
+  String get profile_support_hotline => 'Support Hotline';
+  @override
+  String get profile_support_hotline_sub =>
+      'Place direct call to support desk (19999)';
+  @override
+  String get profile_terms_modal_title => 'Terms of Use';
+  @override
+  String get profile_privacy_modal_title => 'Privacy Policy';
+  @override
+  String get profile_terms_content =>
+      'By using Appoynt, you agree to our terms of service, acceptable use policies, and healthcare appointment rules.';
+  @override
+  String get profile_privacy_content =>
+      'Your privacy is our priority. We encrypt all medical history, personal details, and records according to healthcare data protection standards.';
+  @override
+  String get profile_close_button => 'Close';
+
+  // Section 6: Log Out
+  @override
+  String get profile_logout_confirm_title => 'Log Out of Appoynt?';
+  @override
+  String get profile_logout_confirm_message =>
+      'Are you sure you want to log out? You will need to sign in again to manage your appointments and health records.';
+  @override
+  String get profile_logout_confirm_yes => 'Log Out';
+  @override
+  String get profile_logout_confirm_no => 'Cancel';
+  @override
+  String get profile_logout_sub => 'Sign out of your active account session';
+
+  // Change Password Localizations English Overrides
+  @override
+  String get password_change_title => 'Change Password';
+  @override
+  String get password_current_label => 'Current Password';
+  @override
+  String get password_new_label => 'New Password';
+  @override
+  String get password_confirm_label => 'Confirm Password';
+  @override
+  String get password_current_empty => 'Current Password cannot be empty.';
+  @override
+  String get password_current_incorrect => 'Current password is incorrect.';
+  @override
+  String get password_new_empty => 'New Password cannot be empty.';
+  @override
+  String get password_new_length => 'Password must be between 8 and 64 characters.';
+  @override
+  String get password_new_complexity => 'Password must include uppercase, lowercase, number, and special character.';
+  @override
+  String get password_new_unsupported => 'Password cannot contain spaces, Arabic characters, or emojis.';
+  @override
+  String get password_new_personal_info => 'Password cannot contain your personal information.';
+  @override
+  String get password_new_same_as_current => 'New password must be different from current password.';
+  @override
+  String get password_new_pattern => 'Password cannot contain repeated or sequential characters.';
+  @override
+  String get password_confirm_empty => 'Confirm Password cannot be empty.';
+  @override
+  String get password_confirm_match => 'Passwords do not match.';
+  @override
+  String get password_change_success_msg => 'Password changed successfully.';
+  @override
+  String get profile_change_success_msg => 'Profile updated successfully.';
+
+  // Allergies Localizations English Overrides
+  @override
+  String get allergies_title => 'Allergies';
+  @override
+  String get allergies_food_section => 'Food allergies';
+  @override
+  String get allergies_medication_section => 'Medication allergies';
+  @override
+  String get allergies_add_allergy => 'Add allergy';
+  @override
+  String get allergies_placeholder => 'Type';
+  @override
+  String get allergies_save_btn => 'Save';
+  @override
+  String get allergies_update_status_btn => 'Update Status';
+
+  // Prescriptions Localizations English Overrides
+  @override
+  String get prescriptions_title => 'Prescription List';
+  @override
+  String get prescriptions_add_btn => '+ Add New Medication';
+  @override
+  String get prescriptions_empty_title => 'No Active Prescriptions';
+  @override
+  String get prescriptions_empty_subtitle =>
+      'Keep track of your current medications and treatment plans in one place.';
+  @override
+  String get prescriptions_empty_cta => '+ Add Your First Medication';
+  @override
+  String get prescriptions_modal_title => 'Add New Medication';
+  @override
+  String get prescriptions_field_name_label => 'Medication Name & Strength';
+  @override
+  String get prescriptions_field_name_hint => 'e.g., Panadol Extra 500mg';
+  @override
+  String get prescriptions_field_freq_label => 'Frequency';
+  @override
+  String get prescriptions_field_duration_label => 'Treatment Duration (Days)';
+  @override
+  String get prescriptions_field_duration_hint => 'e.g., 7 Days or Ongoing';
+  @override
+  String get prescriptions_field_doctor_label => 'Prescribing Doctor (Optional)';
+  @override
+  String get prescriptions_field_doctor_hint => 'e.g., Dr. Andrew Fletcher';
+  @override
+  String get prescriptions_field_rx_label =>
+      'Upload Rx Document / Photo (Optional)';
+  @override
+  String get prescriptions_freq_once => 'Once Daily';
+  @override
+  String get prescriptions_freq_twice => 'Twice Daily';
+  @override
+  String get prescriptions_freq_every8 => 'Every 8 Hours';
+  @override
+  String get prescriptions_freq_as_needed => 'As Needed';
+  @override
+  String get prescriptions_status_active => 'Active';
+  @override
+  String get prescriptions_save_btn => 'Save Prescription';
+  @override
+  String get prescriptions_delete_confirm_title => 'Remove Medication?';
+  @override
+  String get prescriptions_delete_confirm_body =>
+      'This medication will be permanently removed from your list.';
+  @override
+  String get prescriptions_delete_confirm_yes => 'Remove';
+  @override
+  String get prescriptions_delete_confirm_no => 'Cancel';
+  @override
+  String get prescriptions_add_medication => 'Add medication';
+  @override
+  String get prescriptions_added_title => 'Added Prescription';
+
+  // Tests & Results Localizations English Overrides
+  @override
+  String get tests_title => 'Tests and Results';
+  @override
+  String get tests_tab_lab => 'Lab Tests';
+  @override
+  String get tests_tab_scanning => 'Scanning';
+  @override
+  String get tests_no_tests_found => 'No lab tests found';
+  @override
+  String get tests_no_scans_found => 'No scans found';
+  @override
+  String get tests_add_title => 'Add Lab test result';
+  @override
+  String get tests_doc_name_label => 'Document Name';
+  @override
+  String get tests_date_label => 'Date';
+  @override
+  String get tests_select_date_btn => 'Select date';
+  @override
+  String get tests_upload_doc_btn => 'Upload document from device';
+  @override
+  String get tests_confirm_upload_btn => 'Confirm Upload';
+  @override
+  String get tests_empty_title => 'No Scans or Reports Found';
+  @override
+  String get tests_empty_subtitle => 'Upload and archive your medical lab results and radiology scans to keep your health history organized for your doctors.';
+  @override
+  String get tests_empty_cta => '+ Upload First Scan / Report';
+  @override
+  String get tests_upload_new_cta => '+ Upload New Scan / Report';
+  @override
+  String get tests_file_attached_toast => 'Document file attached from device.';
+  @override
+  String get tests_error_no_file => 'Please upload a document file from your device.';
+  @override
+  String get tests_success_upload => 'Document uploaded successfully.';
+
+  // Chronic Conditions Localizations English Overrides
+  @override
+  String get chronic_title => 'Chronic';
+  @override
+  String get chronic_description => 'Please select any chronic conditions that apply to you to help us customize your care.';
+
+  // Insurance Details Localizations English Overrides
+  @override
+  String get insurance_title => 'Insurance List';
+  @override
+  String get insurance_expiry_label => 'Expiry date:';
+  @override
+  String get insurance_view_btn => 'View';
+  @override
+  String get insurance_add_title => 'Insurance List';
+  @override
+  String get insurance_card_name_label => 'Card Name';
+  @override
+  String get insurance_card_number_label => 'Card Number';
+  @override
+  String get insurance_select_provider_btn => 'Select Provider';
+  @override
+  String get insurance_upload_doc_btn => 'Upload from device';
+  @override
+  String get insurance_add_card_btn => 'Add Card';
+  @override
+  String get insurance_add_card_full_btn => 'Add Insurance Card';
+  @override
+  String get insurance_save_card_btn => 'Save Card';
 }

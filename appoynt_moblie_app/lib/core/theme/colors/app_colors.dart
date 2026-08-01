@@ -21,6 +21,12 @@ class AppColors {
   // Background color constant representation for the light theme mode
   static const Color background_light = Color(0xFFFFFFFF);
 
+  // Background color constant representation for the light theme mode scaffold
+  static const Color scaffold_light = Color(0xFFF8FAFC);
+
+  // Soft, modern dimming barrier overlay color representation (black with 0.3 opacity)
+  static const Color barrier_color = Color(0x4D000000);
+
   // Background color constant representation for the dark theme mode (lighter dark gray)
   static const Color background_dark = Color(0xFF121212);
 
@@ -47,6 +53,18 @@ class AppColors {
 
   // Divider and border color constant representation for the dark theme mode
   static const Color border_dark = Color(0xFF2C2C2C);
+
+  // Distinct darker slate-gray background tint for inner bounding boxes in Light Mode
+  static const Color inner_container_light = Color(0xFFCBD5E1);
+
+  // Background color constant representation for inner bounding boxes in Dark Mode
+  static const Color inner_container_dark = Color(0xFF262626);
+
+  // Defined 1px border outline for inner track containers in Light Mode
+  static const Color inner_container_border_light = Color(0xFF94A3B8);
+
+  // Defined 1px border outline for inner track containers in Dark Mode
+  static const Color inner_container_border_dark = Color(0xFF3B4252);
 
   // Background color constant for the onboarding screens layout
   static const Color onboarding_background = Color(0xFFF0F3FA);
@@ -130,5 +148,14 @@ class AppColors {
 
   // Border outline color for circular doctor avatar in dark mode
   static const Color avatar_border_dark = Color(0xFF475569);
+
+  // Soft border slate gray color representation
+  static const Color slate_200 = Color(0xFFE2E8F0);
+
+  // Icon color representation for the dark theme mode
+  static const Color icon_dark = Color(0xFF9E9E9E);
+
+  // Icon color representation for the light theme mode
+  static const Color icon_light = Color(0xFF767676);
 }
 // End of app_colors.dart

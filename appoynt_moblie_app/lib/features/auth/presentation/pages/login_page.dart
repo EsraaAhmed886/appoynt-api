@@ -171,7 +171,6 @@ class _LoginPageState extends State<LoginPage> {
     return RegExp(r'^\d+$').hasMatch(clean_digits) && clean_digits.length >= 3;
   }
 
-
   // Method resolving input field label translation string
   String _field_label(AppStrings s) {
     // Switch on input type classification state
@@ -252,8 +251,16 @@ class _LoginPageState extends State<LoginPage> {
       String clean_digits = input_value;
       // Map of Arabic-Indic to standard English digits
       final Map<String, String> translation_map = {
-        '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4',
-        '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9'
+        '٠': '0',
+        '١': '1',
+        '٢': '2',
+        '٣': '3',
+        '٤': '4',
+        '٥': '5',
+        '٦': '6',
+        '٧': '7',
+        '٨': '8',
+        '٩': '9'
       };
       // Translate each character in map
       translation_map.forEach((arabic, english) {
@@ -278,7 +285,10 @@ class _LoginPageState extends State<LoginPage> {
       // Retrieve third digit character index point
       final String third_char = clean_digits[2];
       // Verify operator digit matches standard Egyptian mobile code using Yoda style check
-      if ('0' != third_char && '1' != third_char && '2' != third_char && '5' != third_char) {
+      if ('0' != third_char &&
+          '1' != third_char &&
+          '2' != third_char &&
+          '5' != third_char) {
         // Return operator matching validation error message
         return strings_catalog.phone_invalid_operator;
       } else {
@@ -322,7 +332,7 @@ class _LoginPageState extends State<LoginPage> {
     final String id = _identifier_ctrl.text.trim();
     // Retrieve password input value
     final String pw = _password_ctrl.text;
-    
+
     // Check if password has fewer than 8 characters using Yoda comparison style
     if (8 > pw.length) {
       // Return false indicating password length requirements are unmet
@@ -330,7 +340,7 @@ class _LoginPageState extends State<LoginPage> {
     } else {
       // Empty action block to satisfy compiler
     }
-    
+
     // Check email specific structure rules if email type was detected using Yoda style check
     if (_InputType.email == _detected_type) {
       // Verify email pattern syntax characters mapping using Yoda style check
@@ -350,8 +360,16 @@ class _LoginPageState extends State<LoginPage> {
       String clean_digits = id;
       // Map of Arabic-Indic to standard English digits
       final Map<String, String> translation_map = {
-        '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4',
-        '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9'
+        '٠': '0',
+        '١': '1',
+        '٢': '2',
+        '٣': '3',
+        '٤': '4',
+        '٥': '5',
+        '٦': '6',
+        '٧': '7',
+        '٨': '8',
+        '٩': '9'
       };
       // Translate each character in map
       translation_map.forEach((arabic, english) {
@@ -376,7 +394,10 @@ class _LoginPageState extends State<LoginPage> {
       // Retrieve third digit character index point
       final String third_char = clean_digits[2];
       // Verify operator digit matches standard Egyptian mobile code using Yoda style check
-      if ('0' != third_char && '1' != third_char && '2' != third_char && '5' != third_char) {
+      if ('0' != third_char &&
+          '1' != third_char &&
+          '2' != third_char &&
+          '5' != third_char) {
         // Return false indicating operator requirements are unmet
         return false;
       } else {
@@ -388,7 +409,7 @@ class _LoginPageState extends State<LoginPage> {
       // Return false indicating invalid input type format
       return false;
     }
-    
+
     // Return true since all login form parameters are valid
     return true;
   }
@@ -415,8 +436,6 @@ class _LoginPageState extends State<LoginPage> {
     final AppLocalizations s = AppLocalizations.of(context);
     // Check if Arabic directionality is active
     final bool is_arabic = s.is_arabic;
-    // Check if system brightness is dark mode
-    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
 
     // Return BlocProvider setting up AuthCubit on top of tree
     return BlocProvider<AuthCubit>(
@@ -441,25 +460,23 @@ class _LoginPageState extends State<LoginPage> {
         builder: (context, state) {
           // Return Scaffold container layout settings
           return Scaffold(
-            // Apply background color dynamics adapting to brightness modes using Yoda style check
-            backgroundColor: true == is_dark
-                ? AppColors.background_dark
-                : AppColors.background_light,
             // Wrap contents in SafeArea layout structure to bypass top display notches
             body: SafeArea(
               // Wrap contents inside horizontal margins spacing scroll view
               child: SingleChildScrollView(
-                // Apply layout horizontal padding margins using spacing constants
-                padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.space_xxl),
+                // Apply layout padding margins using spacing constants (including top notch spacing)
+                padding: const EdgeInsets.only(
+                  left: AppSpacing.space_xxl,
+                  right: AppSpacing.space_xxl,
+                  top: AppSpacing.space_xl,
+                  bottom: AppSpacing.space_xl,
+                ),
                 // Place page column layout
                 child: Column(
                   // Align column elements starting from horizontal edge
                   crossAxisAlignment: CrossAxisAlignment.start,
                   // Contain visual children list
                   children: [
-
-
                     // Section positioning language toggle dropdown
                     Align(
                       // Toggle layout alignments dynamically depending on language code
@@ -478,14 +495,12 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
 
-
-
                     // Centered logo layout container
                     Center(
                       // Render brand logo design image asset
                       child: Image.asset(
                         // Load image path registry constant
-                        AppAssets.appoynt_01,
+                        AppAssets.appoynt_without_back,
                         // Set layout height using spacing constants
                         height: AppSpacing.size_logo_login,
                         // Error fallback rendering verification icon
@@ -549,7 +564,9 @@ class _LoginPageState extends State<LoginPage> {
                                 // Render error message if state is AuthError (Yoda style check)
                                 child: Text(
                                   // Bind message or empty string based on state type
-                                  true == (state is AuthError) ? (state as AuthError).message : '',
+                                  true == (state is AuthError)
+                                      ? (state as AuthError).message
+                                      : '',
                                   // Center align paragraph
                                   textAlign: TextAlign.center,
                                   // Apply styling configurations
@@ -719,11 +736,13 @@ class _LoginPageState extends State<LoginPage> {
                                       // Custom links typography styling
                                       style: TextStyle(
                                         // Apply Cairo or Inter fonts correctly
-                                        fontFamily: AppFonts.by_locale(is_arabic),
+                                        fontFamily:
+                                            AppFonts.by_locale(is_arabic),
                                         // Set brand color
                                         color: AppColors.primary_color,
                                         // Set size using spacing constants
-                                        fontSize: AppSpacing.font_size_forgot_link,
+                                        fontSize:
+                                            AppSpacing.font_size_forgot_link,
                                         // Emphasize weight helper
                                         fontWeight: FontWeight.bold,
                                       ),

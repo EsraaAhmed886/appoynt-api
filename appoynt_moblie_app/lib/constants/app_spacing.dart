@@ -383,5 +383,53 @@ class AppSpacing {
 
   // Fixed height for validation error container below subtitle to prevent layout shifts (40px)
   static const double error_container_height = 40.0;
+
+  // Height dimension constraint for profile header banner area (200px)
+  static const double profile_header_height = 200.0;
+
+  // Circular radius dimension for patient avatar layout in profile view (50px)
+  static const double profile_avatar_radius = 50.0;
+
+  // Circular radius dimension for patient avatar layout in profile edit mode (60px)
+  static const double profile_edit_avatar_radius = 60.0;
+
+  // Spacing padding offset dimension constraint for profile row cards (16px)
+  static const double profile_card_padding = 16.0;
+
+  // Small icon display size constraint (16px)
+  static const double icon_size_s = 16.0;
+
+  // Medium icon display size constraint (24px)
+  static const double icon_size_m = 24.0;
+
+  // Large icon display size constraint (32px)
+  static const double icon_size_l = 32.0;
+
+  // Extra large icon display size constraint (40px)
+  static const double icon_size_xl = 40.0;
+
+  // Double extra large icon display size constraint (48px)
+  static const double icon_size_xxl = 48.0;
+
+  // Width dimension for the custom calendar date picker dialog (320px)
+  static const double calendar_dialog_width = 320.0;
+
+  // Spacing border radius for custom calendar date picker card (20px)
+  static const double calendar_dialog_radius = 20.0;
+
+  // Cell width representation for custom calendar grid cells (36px)
+  static const double calendar_grid_cell_size = 36.0;
+
+  // Custom calendar date picker day text size (13px)
+  static const double calendar_day_font_size = 13.0;
+
+  // Custom calendar title month/year font size (16px)
+  static const double calendar_title_font_size = 16.0;
+
+  // Custom calendar action buttons height (40px)
+  static const double calendar_action_button_height = 40.0;
+
+  // Spacing padding offset dimension for custom calendar dialog layout (20px)
+  static const double calendar_dialog_padding = 20.0;
 }
 // End of app_spacing.dart

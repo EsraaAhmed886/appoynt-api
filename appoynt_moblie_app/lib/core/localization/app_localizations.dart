@@ -567,6 +567,229 @@ abstract class AppLocalizations {
 
   // Abstract getter for doctor reviews label text
   String get search_doctor_reviews;
+
+  // Patient Profile Localizations
+  String get profile_title;
+  String get edit_profile_title;
+  String get profile_first_name_label;
+  String get profile_last_name_label;
+  String get profile_address_label;
+  String get profile_change_photo;
+  String get profile_personal_information;
+  String get profile_personal_information_subtitle;
+  String get profile_medical_history;
+  String get profile_account_settings;
+  String get profile_height;
+  String get profile_weight;
+  String get profile_allergies;
+  String get profile_medications;
+  String get profile_tests_results;
+  String get profile_chronic_conditions;
+  String get profile_insurance_details;
+  String get profile_no_allergies;
+  String get profile_zero_prescriptions;
+  String get profile_zero_conditions;
+  String get profile_zero_insurance;
+  String get profile_update_profile_button;
+  String get profile_save_button;
+  String get profile_cancel_button;
+  String get profile_contact_section;
+  String get profile_more_info_section;
+  String get profile_smoking_section;
+  String get profile_name_label;
+  String get profile_phone_label;
+  String get profile_birthdate_label;
+  String get profile_national_id_label;
+  String get profile_national_id_hint;
+  String get profile_error_national_id_empty;
+  String get profile_error_national_id_invalid;
+  String get profile_email_label;
+  String get profile_gender_label;
+  String get profile_weight_label;
+  String get profile_height_label;
+  String get profile_gender_male;
+  String get profile_gender_female;
+  String get profile_gender_prefer_not;
+  String get profile_smoking_yes;
+  String get profile_smoking_no;
+  String get profile_smoking_ex;
+  String get profile_error_name_empty;
+  String get profile_error_name_length;
+  String get profile_error_name_letters_only;
+  String get profile_error_email_empty;
+  String get profile_error_email_invalid;
+  String get profile_error_email_length;
+  String get profile_error_email_registered;
+  String get profile_error_gender_required;
+  String get profile_error_address_length;
+  String get profile_error_address_invalid;
+  String get profile_unsaved_changes_title;
+  String get profile_unsaved_changes_message;
+  String get profile_unsaved_changes_stay;
+  String get profile_unsaved_changes_leave;
+
+  // Section 2: Medical Context & Permissions
+  String get profile_dependents_title;
+  String get profile_add_dependent_button;
+  String get profile_insurance_card_title;
+  String get profile_insurance_provider;
+  String get profile_insurance_number;
+  String get profile_insurance_expiry;
+
+  // Section 3: Payment & Wallet Management
+  String get profile_wallet_title;
+  String get profile_wallet_balance;
+  String get profile_wallet_priority;
+  String get profile_saved_cards;
+  String get profile_default_card;
+  String get profile_add_card;
+  String get profile_invoices_title;
+  String get profile_invoice_id;
+  String get profile_amount_paid;
+
+  // Section 4: Security & Privacy Settings
+  String get profile_security_privacy;
+  String get profile_biometrics_toggle;
+  String get profile_delete_account;
+  String get profile_delete_account_confirm;
+  String get profile_delete_account_warning;
+  String get profile_delete_account_dialog_title;
+  String get profile_face_id;
+
+  // Section 5: App Preferences
+  String get profile_notifications_title;
+  String get profile_priority_payment;
+  String get profile_payment_wallet;
+  String get profile_support_dial_dialog_title;
+  String get profile_support_dial;
+  String get profile_app_preferences;
+  String get profile_notifications_reminders;
+  String get profile_notifications_invoices;
+  String get profile_notifications_promos;
+  String get profile_notifications_reminders_sub;
+  String get profile_notifications_invoices_sub;
+  String get profile_notifications_promos_sub;
+  String get profile_language_row;
+  String get profile_language_sub;
+  String get profile_theme_row;
+  String get profile_theme_sub;
+  String get profile_theme_light;
+  String get profile_theme_dark;
+  String get profile_theme_system;
+  String get profile_support_legal_title;
+  String get profile_support_legal_sub;
+  String get profile_support_terms;
+  String get profile_support_terms_sub;
+  String get profile_support_privacy;
+  String get profile_support_privacy_sub;
+  String get profile_support_hotline;
+  String get profile_support_hotline_sub;
+  String get profile_terms_modal_title;
+  String get profile_privacy_modal_title;
+  String get profile_terms_content;
+  String get profile_privacy_content;
+  String get profile_close_button;
+
+  // Section 6: Log Out
+  String get profile_logout_confirm_title;
+  String get profile_logout_confirm_message;
+  String get profile_logout_confirm_yes;
+  String get profile_logout_confirm_no;
+  String get profile_logout_sub;
+
+  // Change Password Localizations
+  String get password_change_title;
+  String get password_current_label;
+  String get password_new_label;
+  String get password_confirm_label;
+  String get password_current_empty;
+  String get password_current_incorrect;
+  String get password_new_empty;
+  String get password_new_length;
+  String get password_new_complexity;
+  String get password_new_unsupported;
+  String get password_new_personal_info;
+  String get password_new_same_as_current;
+  String get password_new_pattern;
+  String get password_confirm_empty;
+  String get password_confirm_match;
+  String get password_change_success_msg;
+  String get profile_change_success_msg;
+
+  // Allergies Localizations
+  String get allergies_title;
+  String get allergies_food_section;
+  String get allergies_medication_section;
+  String get allergies_add_allergy;
+  String get allergies_placeholder;
+  String get allergies_save_btn;
+  String get allergies_update_status_btn;
+
+  // Prescriptions Localizations
+  String get prescriptions_title;
+  String get prescriptions_add_btn;
+  String get prescriptions_empty_title;
+  String get prescriptions_empty_subtitle;
+  String get prescriptions_empty_cta;
+  String get prescriptions_modal_title;
+  String get prescriptions_field_name_label;
+  String get prescriptions_field_name_hint;
+  String get prescriptions_field_freq_label;
+  String get prescriptions_field_duration_label;
+  String get prescriptions_field_duration_hint;
+  String get prescriptions_field_doctor_label;
+  String get prescriptions_field_doctor_hint;
+  String get prescriptions_field_rx_label;
+  String get prescriptions_freq_once;
+  String get prescriptions_freq_twice;
+  String get prescriptions_freq_every8;
+  String get prescriptions_freq_as_needed;
+  String get prescriptions_status_active;
+  String get prescriptions_save_btn;
+  String get prescriptions_delete_confirm_title;
+  String get prescriptions_delete_confirm_body;
+  String get prescriptions_delete_confirm_yes;
+  String get prescriptions_delete_confirm_no;
+  // Legacy keys retained for backward compatibility
+  String get prescriptions_add_medication;
+  String get prescriptions_added_title;
+
+  // Tests & Results Localizations
+  String get tests_title;
+  String get tests_tab_lab;
+  String get tests_tab_scanning;
+  String get tests_no_tests_found;
+  String get tests_no_scans_found;
+  String get tests_add_title;
+  String get tests_doc_name_label;
+  String get tests_date_label;
+  String get tests_select_date_btn;
+  String get tests_upload_doc_btn;
+  String get tests_confirm_upload_btn;
+  String get tests_empty_title;
+  String get tests_empty_subtitle;
+  String get tests_empty_cta;
+  String get tests_upload_new_cta;
+  String get tests_file_attached_toast;
+  String get tests_error_no_file;
+  String get tests_success_upload;
+
+  // Chronic Conditions Localizations
+  String get chronic_title;
+  String get chronic_description;
+
+  // Insurance Details Localizations
+  String get insurance_title;
+  String get insurance_expiry_label;
+  String get insurance_view_btn;
+  String get insurance_add_title;
+  String get insurance_card_name_label;
+  String get insurance_card_number_label;
+  String get insurance_select_provider_btn;
+  String get insurance_upload_doc_btn;
+  String get insurance_add_card_btn;
+  String get insurance_add_card_full_btn;
+  String get insurance_save_card_btn;
 }
 
 // Defining a short alias for clean and simple type references

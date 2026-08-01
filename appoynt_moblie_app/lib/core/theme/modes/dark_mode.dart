@@ -21,6 +21,9 @@ final ThemeData dark_mode_theme = ThemeData(
   brightness: Brightness.dark,
   // Defining background color token configuration
   scaffoldBackgroundColor: AppColors.background_dark,
+  // Ensure canvasColor and cardColor adapt dynamically to Dark Mode
+  canvasColor: AppColors.background_dark,
+  cardColor: AppColors.surface_dark,
   // Configuring visual elements theme extension colors
   colorScheme: const ColorScheme.dark(
     // Setting primary color scheme token mapping
@@ -36,6 +39,22 @@ final ThemeData dark_mode_theme = ThemeData(
     elevation: 0.0,
     // Setting foreground content color standard (text & icons)
     foregroundColor: AppColors.text_dark_primary,
+  ),
+  // Configuring global bottom sheet styles
+  bottomSheetTheme: const BottomSheetThemeData(
+    backgroundColor: Colors.transparent,
+    modalBackgroundColor: Colors.transparent,
+    modalBarrierColor: AppColors.barrier_color,
+    elevation: 0.0,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(24.0),
+      ),
+    ),
+  ),
+  // Configuring global dialog styles
+  dialogTheme: const DialogThemeData(
+    barrierColor: AppColors.barrier_color,
   ),
 );
 // End of dark_mode.dart

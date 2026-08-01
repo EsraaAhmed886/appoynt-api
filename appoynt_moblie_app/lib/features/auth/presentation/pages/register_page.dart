@@ -2,12 +2,15 @@
  * File Name: register_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
- * Version Information: V1.0.0
+ * Version Information: V1.1.0
  * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart,
  *   package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart,
- *   package:flutter/gestures.dart
+ *   package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart,
+ *   package:appoynt_mobile_app/core/di/service_locator.dart,
+ *   package:flutter/gestures.dart,
+ *   package:flutter_bloc/flutter_bloc.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 23/07/2026]
  * File Description: Renders the registration page containing the form fields, terms check box,
  *   and validations adapting fully to light/dark themes and localizations.
  */
@@ -16,8 +19,14 @@
 import 'package:appoynt_mobile_app/core/routing/route_export.dart';
 // Importing shared auth layout button and input fields widgets
 import 'package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart';
+// Importing auth business state controller cubit definitions
+import 'package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart';
+// Importing dependency injection service locator setup representation
+import 'package:appoynt_mobile_app/core/di/service_locator.dart';
 // Importing gesture recognizer classes for inline TextSpan links
 import 'package:flutter/gestures.dart';
+// Importing bloc consumer and provider utilities
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Stateful widget class representing the primary registration gate interface
 class RegisterPage extends StatefulWidget {
@@ -60,7 +69,6 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _confirm_ctrl = TextEditingController();
 
   // State flags monitoring interaction progress
-  bool _is_loading = false;
   bool _agree_to_terms = false;
   bool _terms_error = false;
   bool _form_submitted = false;
@@ -238,7 +246,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   // Method validating input fields and triggering registration submit events
-  void _submit() async {
+  void _submit(BuildContext submission_context) {
     // Set state indicators on submission attempts
     setState(() {
       // Mark form submitted to enable auto validation modes
@@ -258,27 +266,14 @@ class _RegisterPageState extends State<RegisterPage> {
       // Empty action block to satisfy compiler
     }
 
-    // Set loading indicator state
-    setState(() {
-      // Activate loading spinner
-      _is_loading = true;
-    });
-
-    // Simulate network latency delay
-    await Future.delayed(const Duration(seconds: 2));
-
-    // Verify widget lifecycle state after async processing using Yoda style check
-    if (true == mounted) {
-      // Set loading indicator state
-      setState(() {
-        // Deactivate loading spinner
-        _is_loading = false;
-      });
-      // Execute page navigation callback to OTP confirmation
-      widget.on_go_to_otp(_phone_ctrl.text);
-    } else {
-      // Empty action block to satisfy compiler
-    }
+    // Dispatch registration event to AuthCubit
+    submission_context.read<AuthCubit>().register(
+          first_name: _first_name_ctrl.text.trim(),
+          last_name: _last_name_ctrl.text.trim(),
+          email: _email_ctrl.text.trim(),
+          phone: _phone_ctrl.text.trim(),
+          password: _password_ctrl.text,
+        );
   }
 
   // Validator function verifying general name field entries using Yoda style check
@@ -439,516 +434,523 @@ class _RegisterPageState extends State<RegisterPage> {
     // Check if system brightness is dark mode
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
 
-    // Return Scaffold container layout settings
-    return Scaffold(
-      // Apply background color dynamics adapting to brightness modes using Yoda style check
-      backgroundColor: true == is_dark
-          ? AppColors.background_dark
-          : AppColors.background_light,
-      // Wrap contents in SafeArea layout structure to bypass top display notches
-      body: SafeArea(
-        // Wrap contents inside horizontal margins spacing scroll view
-        child: SingleChildScrollView(
-          // Apply layout horizontal padding margins using spacing constants
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space_xxl),
-          // child Form container wrapping fields validation
-          child: Form(
-            // Bind global identification key
-            key: _form_key,
-            // Toggle validation checks triggers dynamically based on
-            // submission attempts using Yoda style check
-            autovalidateMode: true == _form_submitted
-                ? AutovalidateMode.onUserInteraction
-                : AutovalidateMode.disabled,
-            // Column layout structuring credentials fields
-            child: Column(
-              // Align column elements starting from horizontal edge
-              crossAxisAlignment: CrossAxisAlignment.start,
-              // Contain visual children list
-              children: [
-                // Top vertical space margin using spacing constants
-                const SizedBox(height: AppSpacing.space_s),
-
-                // Top row navigation and language bar
-                Row(
-                  // Space items between left and right edges
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  // children list
-                  children: [
-                    // GestureDetector mapping back action button
-                    GestureDetector(
-                      // Bind tap event callback
-                      onTap: widget.on_go_to_login,
-                      // Customized visual container design
-                      child: Container(
-                        // Width constraints using spacing constants
-                        width: 40.0,
-                        // Height constraints using spacing constants
-                        height: 40.0,
-                        // Visual decorations
-                        decoration: BoxDecoration(
-                          // Container background adapts to dark mode using
-                          // Yoda style check
-                          color: true == is_dark
-                              ? AppColors.surface_dark
-                              : AppColors.background_light,
-                          // Border radius curves using spacing constants
-                          borderRadius:
-                              BorderRadius.circular(AppSpacing.radius_l),
-                          // Border colors adapt to dark mode using
-                          // Yoda style check
-                          border: Border.all(
-                            color: true == is_dark
-                                ? AppColors.border_dark
-                                : AppColors.border_light,
-                          ),
-                        ),
-                        // RotatedBox to mirror the back chevron icon in Arabic
-                        // RTL mode (BUG-012)
-                        child: RotatedBox(
-                          // Quarter turns set to 0 to keep the back chevron
-                          // pointing left in both languages
-                          quarterTurns: 0,
-                          // Chevron back icon widget
-                          child: Icon(
-                            // Back chevron icon representation
-                            Icons.arrow_back_ios_new_rounded,
-                            // Set layout size
-                            size: 18.0,
-                            // Select icon color dynamically using
-                            // Yoda style check
-                            color: true == is_dark
-                                ? AppColors.text_dark_primary
-                                : AppColors.text_light_primary,
-                          ),
-                        ),
-                      ),
-                    ),
-                    // Globally centralized language switcher button
-                    GlobalLanguageButton(
-                      // Pass language direction flag
-                      is_arabic: is_arabic,
-                      // Pass selection toggle callback
-                      on_tap: widget.on_toggle_language,
-                      // Keep standard icon color mapping rules
-                      light: false,
-                    ),
-                  ],
+    // Return BlocProvider setting up AuthCubit on top of the register tree
+    return BlocProvider<AuthCubit>(
+      // Create and initialize new auth cubit instance
+      create: (context) {
+        // Return initialized auth cubit resolved from service locator container
+        return get_it<AuthCubit>();
+      },
+      // Bind consumer widget to intercept state changes
+      child: BlocConsumer<AuthCubit, AuthState>(
+        // Listener callback intercepts transition changes
+        listener: (context, state) {
+          // Check if registration succeeds using Yoda style check
+          if (state is AuthSuccess) {
+            // Trigger navigation callback on success, passing the phone number
+            widget.on_go_to_otp(_phone_ctrl.text);
+          } else {
+            // Empty action block to satisfy compiler
+          }
+        },
+        // Builder rendering UI components based on state updates
+        builder: (context, state) {
+          // Return Scaffold container layout settings
+          return Scaffold(
+            // Wrap contents in SafeArea layout structure to bypass top display notches
+            body: SafeArea(
+              // Wrap contents inside horizontal margins spacing scroll view
+              child: SingleChildScrollView(
+                // Apply layout padding margins using spacing constants (including top notch spacing)
+                padding: const EdgeInsets.only(
+                  left: AppSpacing.space_xxl,
+                  right: AppSpacing.space_xxl,
+                  top: AppSpacing.space_xl,
+                  bottom: AppSpacing.space_xl,
                 ),
-
-
-
-                // Centered header titles column
-                Center(
-                  // Column layout structuring titles vertically
+                // child Form container wrapping fields validation
+                child: Form(
+                  // Bind global identification key
+                  key: _form_key,
+                  // Toggle validation checks triggers dynamically based on
+                  // submission attempts using Yoda style check
+                  autovalidateMode: true == _form_submitted
+                      ? AutovalidateMode.onUserInteraction
+                      : AutovalidateMode.disabled,
+                  // Column layout structuring credentials fields
                   child: Column(
-                    // children list
-                    children: [
-                      // Text widget displaying Welcoming title
-                      Text(
-                        // Localized registration title string
-                        s.register_title,
-                        // Align text center
-                        textAlign: TextAlign.center,
-                        // Pull register title styling
-                        style: AppTextStyles.get_register_title(is_arabic),
-                      ),
-                      // Tight spacing divider using spacing constants
-                      const SizedBox(height: AppSpacing.space_s),
-                      // Text widget displaying welcoming description
-                      Text(
-                        // Localized help subtitle string
-                        s.register_subtitle,
-                        // Align text center
-                        textAlign: TextAlign.center,
-                        // Pull register subtitle styling
-                        style: AppTextStyles.get_register_subtitle(is_arabic),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Space before input fields using spacing constants
-                const SizedBox(height: AppSpacing.space_m),
-
-                // Row layout placing first and last name fields next to each other
-                Row(
-                  // Align items starting at top vertical heights
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  // children list
-                  children: [
-                    // First name field wrapper
-                    Expanded(
-                      // Custom auth text field component
-                      child: AuthTextField(
-                        // Localized input field label
-                        label: s.first_name_label,
-                        // Localized placeholder hint
-                        hint: s.first_name_hint,
-                        // Bind text controller
-                        controller: _first_name_ctrl,
-                        // Inline validator check
-                        validator: (val) {
-                          // Execute validator method
-                          return _validate_name(val, s);
-                        },
-                      ),
-                    ),
-                    // Spacing gap between fields using spacing constants
-                    const SizedBox(width: AppSpacing.space_l),
-                    // Last name field wrapper
-                    Expanded(
-                      // Custom auth text field component
-                      child: AuthTextField(
-                        // Localized input field label
-                        label: s.last_name_label,
-                        // Localized placeholder hint
-                        hint: s.last_name_hint,
-                        // Bind text controller
-                        controller: _last_name_ctrl,
-                        // Inline validator check
-                        validator: (val) {
-                          // Execute validator method
-                          return _validate_name(val, s);
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-
-                // Spacing gap between fields using spacing constants
-                const SizedBox(height: AppSpacing.space_m),
-
-                // Email input field widget
-                AuthTextField(
-                  // Localized input field label
-                  label: s.email,
-                  // Localized placeholder hint
-                  hint: s.email_hint,
-                  // Bind text controller
-                  controller: _email_ctrl,
-                  // Select keyboard type for email characters format
-                  keyboard_type: TextInputType.emailAddress,
-                  // Inline validator check
-                  validator: (val) {
-                    // Execute validator method
-                    return _validate_email(val, s);
-                  },
-                ),
-
-                // Spacing gap between fields using spacing constants
-                const SizedBox(height: AppSpacing.space_m),
-
-                // Phone input field widget
-                AuthTextField(
-                  // Localized input field label
-                  label: s.phone,
-                  // Localized placeholder hint
-                  hint: s.phone_hint,
-                  // Bind text controller
-                  controller: _phone_ctrl,
-                  // Enable formatting rules for phone types
-                  is_phone: true,
-                  // Inline validator check
-                  validator: (val) {
-                    // Execute validator method
-                    return _validate_phone(val, s);
-                  },
-                ),
-
-                // Spacing gap between fields using spacing constants
-                const SizedBox(height: AppSpacing.space_m),
-
-                // Password strength checker input field widget
-                PasswordFieldWithRules(
-                  // Bind controller
-                  controller: _password_ctrl,
-                  // Localized input field label
-                  label: s.password,
-                  // Localized placeholder hint
-                  hint: s.password_hint,
-                  // Inline validator check
-                  validator: (val) {
-                    // Execute validator method
-                    return _validate_password(val, s);
-                  },
-                ),
-
-                // Spacing gap between fields using spacing constants
-                const SizedBox(height: AppSpacing.space_m),
-
-                // Confirmation password input field widget
-                AuthTextField(
-                  // Localized input field label
-                  label: s.confirm_password,
-                  // Localized placeholder hint
-                  hint: s.confirm_password_hint,
-                  // Bind text controller
-                  controller: _confirm_ctrl,
-                  // Obfuscate characters
-                  is_password: true,
-                  // Finish typing action layout keyboard trigger
-                  text_input_action: TextInputAction.done,
-                  // Inline validator check
-                  validator: (val) {
-                    // Execute validator method
-                    return _validate_confirm_password(val, s);
-                  },
-                ),
-
-                // Spacing gap before terms agreement using spacing constants
-                const SizedBox(height: AppSpacing.space_l),
-
-                // GestureDetector wrapping terms checkbox row
-                GestureDetector(
-                  // Toggle state checkbox tap handler
-                  onTap: () {
-                    // Update state flags
-                    setState(() {
-                      // Toggle agreement check
-                      _agree_to_terms = false == _agree_to_terms;
-                      // Clear validation error if checkbox gets selected using Yoda style check
-                      if (true == _agree_to_terms) {
-                        // Clear error status
-                        _terms_error = false;
-                      } else {
-                        // Empty action block to satisfy compiler
-                      }
-                    });
-                  },
-                  // Row layout holding indicator box and agreement terms text
-                  child: Row(
-                    // Align indicators at top edge
+                    // Align column elements starting from horizontal edge
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    // children list
+                    // Contain visual children list
                     children: [
-                      // Animated checkbox container mapping states
-                      AnimatedContainer(
-                        // Duration parameter
-                        duration: const Duration(milliseconds: 200),
-                        // Width diameter
-                        width: 22.0,
-                        // Height diameter
-                        height: 22.0,
-                        // Shift box slightly to align with text line heights
-                        margin: const EdgeInsets.only(top: 1.0),
-                        // Visual decorations
-                        decoration: BoxDecoration(
-                          // Dynamic background color matching active state using
-                          // Yoda style check
-                          color: true == _agree_to_terms
-                              ? AppColors.primary_color
-                              : (true == is_dark
-                                  ? AppColors.surface_dark
-                                  : AppColors.background_light),
-                          // Corner radius curves using spacing constants
-                          borderRadius:
-                              BorderRadius.circular(AppSpacing.radius_m),
-                          // Border boundaries dynamic color resolving using
-                          // Yoda style check
-                          border: Border.all(
-                            // Select border color based on error, active, or
-                            // default states using Yoda style check
-                            color: true == _terms_error
-                                ? AppColors.error
-                                : (true == _agree_to_terms
+                      // Top vertical space margin using spacing constants
+                      const SizedBox(height: AppSpacing.space_s),
+
+                      // Top row navigation and language bar
+                      Row(
+                        // Space items between left and right edges
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        // children list
+                        children: [
+                          // Reusable squircle back button component
+                          AppBackButton(onTap: widget.on_go_to_login),
+                          // Globally centralized language switcher button
+                          GlobalLanguageButton(
+                            // Pass language direction flag
+                            is_arabic: is_arabic,
+                            // Pass selection toggle callback
+                            on_tap: widget.on_toggle_language,
+                            // Keep standard icon color mapping rules
+                            light: false,
+                          ),
+                        ],
+                      ),
+
+                      // Centered header titles column
+                      Center(
+                        // Column layout structuring titles vertically
+                        child: Column(
+                          // children list
+                          children: [
+                            // Text widget displaying Welcoming title
+                            Text(
+                              // Localized registration title string
+                              s.register_title,
+                              // Align text center
+                              textAlign: TextAlign.center,
+                              // Pull register title styling
+                              style: AppTextStyles.get_register_title(is_arabic),
+                            ),
+                            // Tight spacing divider using spacing constants
+                            const SizedBox(height: AppSpacing.space_s),
+                            // Text widget displaying welcoming description
+                            Text(
+                              // Localized help subtitle string
+                              s.register_subtitle,
+                              // Align text center
+                              textAlign: TextAlign.center,
+                              // Pull register subtitle styling
+                              style: AppTextStyles.get_register_subtitle(is_arabic),
+                            ),
+                            // Spacing/Container block for validation error feedback message (FR-15 / Logic Log)
+                            const SizedBox(height: AppSpacing.space_s),
+                            // Fixed-height container to prevent layout shifting
+                            SizedBox(
+                              // Fixed height derived from spacing tokens to satisfy stable UI constraint
+                              height: AppSpacing.error_container_height,
+                              // Draw error feedback text inside center coordinates
+                              child: Center(
+                                // Render error message if state is AuthError (Yoda style check)
+                                child: Text(
+                                  // Bind message or empty string based on state type
+                                  true == (state is AuthError)
+                                      ? (state as AuthError).message
+                                      : '',
+                                  // Center align paragraph
+                                  textAlign: TextAlign.center,
+                                  // Apply styling configurations
+                                  style: const TextStyle(
+                                    // Set brand warning color
+                                    color: AppColors.error,
+                                    // Scale size relative to labels
+                                    fontSize: AppSpacing.font_size_label,
+                                    // Emphasize text weight
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // Space before input fields using spacing constants
+                      const SizedBox(height: AppSpacing.space_m),
+
+                      // Row layout placing first and last name fields next to each other
+                      Row(
+                        // Align items starting at top vertical heights
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        // children list
+                        children: [
+                          // First name field wrapper
+                          Expanded(
+                            // Custom auth text field component
+                            child: AuthTextField(
+                              // Localized input field label
+                              label: s.first_name_label,
+                              // Localized placeholder hint
+                              hint: s.first_name_hint,
+                              // Bind text controller
+                              controller: _first_name_ctrl,
+                              // Inline validator check
+                              validator: (val) {
+                                // Execute validator method
+                                return _validate_name(val, s);
+                              },
+                            ),
+                          ),
+                          // Spacing gap between fields using spacing constants
+                          const SizedBox(width: AppSpacing.space_l),
+                          // Last name field wrapper
+                          Expanded(
+                            // Custom auth text field component
+                            child: AuthTextField(
+                              // Localized input field label
+                              label: s.last_name_label,
+                              // Localized placeholder hint
+                              hint: s.last_name_hint,
+                              // Bind text controller
+                              controller: _last_name_ctrl,
+                              // Inline validator check
+                              validator: (val) {
+                                // Execute validator method
+                                return _validate_name(val, s);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      // Spacing gap between fields using spacing constants
+                      const SizedBox(height: AppSpacing.space_m),
+
+                      // Email input field widget
+                      AuthTextField(
+                        // Localized input field label
+                        label: s.email,
+                        // Localized placeholder hint
+                        hint: s.email_hint,
+                        // Bind text controller
+                        controller: _email_ctrl,
+                        // Select keyboard type for email characters format
+                        keyboard_type: TextInputType.emailAddress,
+                        // Inline validator check
+                        validator: (val) {
+                          // Execute validator method
+                          return _validate_email(val, s);
+                        },
+                      ),
+
+                      // Spacing gap between fields using spacing constants
+                      const SizedBox(height: AppSpacing.space_m),
+
+                      // Phone input field widget
+                      AuthTextField(
+                        // Localized input field label
+                        label: s.phone,
+                        // Localized placeholder hint
+                        hint: s.phone_hint,
+                        // Bind text controller
+                        controller: _phone_ctrl,
+                        // Enable formatting rules for phone types
+                        is_phone: true,
+                        // Inline validator check
+                        validator: (val) {
+                          // Execute validator method
+                          return _validate_phone(val, s);
+                        },
+                      ),
+
+                      // Spacing gap between fields using spacing constants
+                      const SizedBox(height: AppSpacing.space_m),
+
+                      // Password strength checker input field widget
+                      PasswordFieldWithRules(
+                        // Bind controller
+                        controller: _password_ctrl,
+                        // Localized input field label
+                        label: s.password,
+                        // Localized placeholder hint
+                        hint: s.password_hint,
+                        // Inline validator check
+                        validator: (val) {
+                          // Execute validator method
+                          return _validate_password(val, s);
+                        },
+                      ),
+
+                      // Spacing gap between fields using spacing constants
+                      const SizedBox(height: AppSpacing.space_m),
+
+                      // Confirmation password input field widget
+                      AuthTextField(
+                        // Localized input field label
+                        label: s.confirm_password,
+                        // Localized placeholder hint
+                        hint: s.confirm_password_hint,
+                        // Bind text controller
+                        controller: _confirm_ctrl,
+                        // Obfuscate characters
+                        is_password: true,
+                        // Finish typing action layout keyboard trigger
+                        text_input_action: TextInputAction.done,
+                        // Inline validator check
+                        validator: (val) {
+                          // Execute validator method
+                          return _validate_confirm_password(val, s);
+                        },
+                      ),
+
+                      // Spacing gap before terms agreement using spacing constants
+                      const SizedBox(height: AppSpacing.space_l),
+
+                      // GestureDetector wrapping terms checkbox row
+                      GestureDetector(
+                        // Toggle state checkbox tap handler
+                        onTap: () {
+                          // Update state flags
+                          setState(() {
+                            // Toggle agreement check
+                            _agree_to_terms = false == _agree_to_terms;
+                            // Clear validation error if checkbox gets selected using Yoda style check
+                            if (true == _agree_to_terms) {
+                              // Clear error status
+                              _terms_error = false;
+                            } else {
+                              // Empty action block to satisfy compiler
+                            }
+                          });
+                        },
+                        // Row layout holding indicator box and agreement terms text
+                        child: Row(
+                          // Align indicators at top edge
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          // children list
+                          children: [
+                            // Animated checkbox container mapping states
+                            AnimatedContainer(
+                              // Duration parameter
+                              duration: const Duration(milliseconds: 200),
+                              // Width diameter
+                              width: 22.0,
+                              // Height diameter
+                              height: 22.0,
+                              // Shift box slightly to align with text line heights
+                              margin: const EdgeInsets.only(top: 1.0),
+                              // Visual decorations
+                              decoration: BoxDecoration(
+                                // Dynamic background color matching active state using
+                                // Yoda style check
+                                color: true == _agree_to_terms
                                     ? AppColors.primary_color
                                     : (true == is_dark
-                                        ? AppColors.border_dark
-                                        : AppColors.border_light)),
-                            // Border line width
-                            width: 1.8,
-                          ),
+                                        ? AppColors.surface_dark
+                                        : AppColors.background_light),
+                                // Corner radius curves using spacing constants
+                                borderRadius:
+                                    BorderRadius.circular(AppSpacing.radius_m),
+                                // Border boundaries dynamic color resolving using
+                                // Yoda style check
+                                border: Border.all(
+                                  // Select border color based on error, active, or
+                                  // default states using Yoda style check
+                                  color: true == _terms_error
+                                      ? AppColors.error
+                                      : (true == _agree_to_terms
+                                          ? AppColors.primary_color
+                                          : (true == is_dark
+                                              ? AppColors.border_dark
+                                              : AppColors.border_light)),
+                                  // Border line width
+                                  width: 1.8,
+                                ),
+                              ),
+                              // Check icon centered inside box using Yoda style check
+                              child: true == _agree_to_terms
+                                  ? const Icon(
+                                      // Check indicator icon
+                                      Icons.check_rounded,
+                                      // Icon size
+                                      size: 14.0,
+                                      // Keep color white inside filled checkboxes
+                                      color: Colors.white,
+                                    )
+                                  : null,
+                            ),
+                            // Spacing gap between checkbox and labels using spacing constants
+                            const SizedBox(width: AppSpacing.space_l),
+                            // Expanded terms agreement text builder
+                            Expanded(
+                              // RichText building localized agreement clauses links
+                              child: RichText(
+                                // Text block representation
+                                text: TextSpan(
+                                  // General terms prefix text
+                                  text: s.agree_to_terms,
+                                  // Text styling resolving error states using Yoda style check
+                                  style: AppTextStyles.get_body_medium(
+                                    is_arabic,
+                                    custom_color: true == _terms_error
+                                        ? AppColors.error
+                                        : (true == is_dark
+                                            ? AppColors.text_dark_secondary
+                                            : AppColors.text_light_secondary),
+                                  ).copyWith(
+                                    // Spacing size
+                                    fontSize: 13.0,
+                                    // Spacing height lines spacing
+                                    height: 1.5,
+                                  ),
+                                  // Clickable text segments children links list
+                                  children: [
+                                    // Terms of service link segment
+                                    TextSpan(
+                                      // Localized text
+                                      text: s.terms_and_conditions,
+                                      // Highlighted link text styles
+                                      style: const TextStyle(
+                                        // Brand color highlight
+                                        color: AppColors.primary_color,
+                                        // Bold font weight
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    // Listings divider connector segment
+                                    TextSpan(
+                                      // Localized text
+                                      text: s.and_connector,
+                                      // Inherited color overrides using Yoda style check
+                                      style: TextStyle(
+                                        // Keep error red or default gray color
+                                        color: true == _terms_error ? AppColors.error : null,
+                                      ),
+                                    ),
+                                    // Privacy policy link segment
+                                    TextSpan(
+                                      // Localized text
+                                      text: s.privacy_policy,
+                                      // Highlighted link text styles
+                                      style: const TextStyle(
+                                        // Brand color highlight
+                                        color: AppColors.primary_color,
+                                        // Bold font weight
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        // Check icon centered inside box using Yoda style check
-                        child: true == _agree_to_terms
-                            ? const Icon(
-                                // Check indicator icon
-                                Icons.check_rounded,
-                                // Icon size
-                                size: 14.0,
-                                // Keep color white inside filled checkboxes
-                                color: Colors.white,
-                              )
-                            : null,
                       ),
-                      // Spacing gap between checkbox and labels using spacing constants
-                      const SizedBox(width: AppSpacing.space_l),
-                      // Expanded terms agreement text builder
-                      Expanded(
-                        // RichText building localized agreement clauses links
+                      // Display error warning prompt below checkbox row dynamically
+                      // using Yoda style check
+                      true == _terms_error
+                          ? Padding(
+                              // Apply top spacing margin and offset alignments
+                              padding: const EdgeInsets.only(top: 6.0, left: 4.0),
+                              // Row structuring warnings
+                              child: Row(
+                                // children list
+                                children: [
+                                  // Alert warning error icon
+                                  const Icon(
+                                    // Warning circle icon
+                                    Icons.error_outline_rounded,
+                                    // Set layout size
+                                    size: 14.0,
+                                    // Error color
+                                    color: AppColors.error,
+                                  ),
+                                  // Spacing gap between icon and label using spacing
+                                  // constants
+                                  const SizedBox(width: AppSpacing.space_s),
+                                  // Text rendering warning alert translations
+                                  Text(
+                                    // Localized terms check requirement warnings
+                                    s.terms_must_agree,
+                                    // Text styling
+                                    style: const TextStyle(
+                                      // Error color
+                                      color: AppColors.error,
+                                      // Small font size
+                                      fontSize: 12.0,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : const SizedBox.shrink(),
+
+                      // Spacing gap before button using spacing constants
+                      const SizedBox(height: AppSpacing.space_l),
+
+                      // CTA Action button component executing account creations
+                      AuthButton(
+                        // Localized button text label
+                        label: s.create_my_account,
+                        // Enable only when all form fields contain valid values (BUG-004)
+                        is_enabled: _is_form_valid,
+                        // Bind submit handler callback
+                        on_pressed: () {
+                          // Submit form values under context
+                          _submit(context);
+                        },
+                        // Bind loading state indicator flag
+                        is_loading: state is AuthLoading,
+                      ),
+
+                      // Spacing gap before footer links using spacing constants
+                      const SizedBox(height: AppSpacing.space_l),
+
+                      // Navigation footer redirecting users back to sign in gateway
+                      Center(
+                        // RichText building link inline elements
                         child: RichText(
                           // Text block representation
                           text: TextSpan(
-                            // General terms prefix text
-                            text: s.agree_to_terms,
-                            // Text styling resolving error states using Yoda style check
-                            style: AppTextStyles.get_body_medium(
-                              is_arabic,
-                              custom_color: true == _terms_error
-                                  ? AppColors.error
-                                  : (true == is_dark
-                                      ? AppColors.text_dark_secondary
-                                      : AppColors.text_light_secondary),
-                            ).copyWith(
+                            // Link prompt question text
+                            text: s.have_account,
+                            // Text styling
+                            style: TextStyle(
+                              // Apply Cairo or Inter fonts correctly
+                              fontFamily: AppFonts.by_locale(is_arabic),
                               // Spacing size
-                              fontSize: 13.0,
-                              // Spacing height lines spacing
-                              height: 1.5,
+                              fontSize: 14.0,
+                              // Select secondary text color based on theme using
+                              // Yoda style check
+                              color: true == is_dark
+                                  ? AppColors.text_dark_secondary
+                                  : AppColors.text_light_secondary,
                             ),
-                            // Clickable text segments children links list
+                            // children list
                             children: [
-                              // Terms of service link segment
+                              // Clickable action anchor span widget with recognizer
+                              // to prevent alignment shift
                               TextSpan(
-                                // Localized text
-                                text: s.terms_and_conditions,
-                                // Highlighted link text styles
-                                style: const TextStyle(
-                                  // Brand color highlight
-                                  color: AppColors.primary_color,
-                                  // Bold font weight
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              // Listings divider connector segment
-                              TextSpan(
-                                // Localized text
-                                text: s.and_connector,
-                                // Inherited color overrides using Yoda style check
+                                // Localized sign in word prefixed with space
+                                text: ' ${s.sign_in}',
+                                // Bind tap event callback
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = widget.on_go_to_login,
+                                // Link text styles
                                 style: TextStyle(
-                                  // Keep error red or default gray color
-                                  color: true == _terms_error ? AppColors.error : null,
-                                ),
-                              ),
-                              // Privacy policy link segment
-                              TextSpan(
-                                // Localized text
-                                text: s.privacy_policy,
-                                // Highlighted link text styles
-                                style: const TextStyle(
-                                  // Brand color highlight
+                                  // Apply Cairo or Inter fonts correctly
+                                  fontFamily: AppFonts.by_locale(is_arabic),
+                                  // Spacing size
+                                  fontSize: 14.0,
+                                  // High visual brand highlight
                                   color: AppColors.primary_color,
                                   // Bold font weight
-                                  fontWeight: FontWeight.w600,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ],
                           ),
                         ),
                       ),
+
+                      // Final bottom layout safety margins using spacing constants
+                      const SizedBox(height: AppSpacing.space_l),
                     ],
                   ),
                 ),
-                // Display error warning prompt below checkbox row dynamically
-                // using Yoda style check
-                true == _terms_error
-                    ? Padding(
-                        // Apply top spacing margin and offset alignments
-                        padding: const EdgeInsets.only(top: 6.0, left: 4.0),
-                        // Row structuring warnings
-                        child: Row(
-                          // children list
-                          children: [
-                            // Alert warning error icon
-                            const Icon(
-                              // Warning circle icon
-                              Icons.error_outline_rounded,
-                              // Set layout size
-                              size: 14.0,
-                              // Error color
-                              color: AppColors.error,
-                            ),
-                            // Spacing gap between icon and label using spacing
-                            // constants
-                            const SizedBox(width: AppSpacing.space_s),
-                            // Text rendering warning alert translations
-                            Text(
-                              // Localized terms check requirement warnings
-                              s.terms_must_agree,
-                              // Text styling
-                              style: const TextStyle(
-                                // Error color
-                                color: AppColors.error,
-                                // Small font size
-                                fontSize: 12.0,
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                    : const SizedBox.shrink(),
-
-                // Spacing gap before button using spacing constants
-                const SizedBox(height: AppSpacing.space_l),
-
-                // CTA Action button component executing account creations
-                AuthButton(
-                  // Localized button text label
-                  label: s.create_my_account,
-                  // Enable only when all form fields contain valid values (BUG-004)
-                  is_enabled: _is_form_valid,
-                  // Bind submit handler callback
-                  on_pressed: _submit,
-                  // Bind loading state indicator flag
-                  is_loading: _is_loading,
-                ),
-
-                // Spacing gap before footer links using spacing constants
-                const SizedBox(height: AppSpacing.space_l),
-
-                // Navigation footer redirecting users back to sign in gateway
-                Center(
-                  // RichText building link inline elements
-                  child: RichText(
-                    // Text block representation
-                    text: TextSpan(
-                      // Link prompt question text
-                      text: s.have_account,
-                      // Text styling
-                      style: TextStyle(
-                        // Apply Cairo or Inter fonts correctly
-                        fontFamily: AppFonts.by_locale(is_arabic),
-                        // Spacing size
-                        fontSize: 14.0,
-                        // Select secondary text color based on theme using
-                        // Yoda style check
-                        color: true == is_dark
-                            ? AppColors.text_dark_secondary
-                            : AppColors.text_light_secondary,
-                      ),
-                      // children list
-                      children: [
-                        // Clickable action anchor span widget with recognizer
-                        // to prevent alignment shift
-                        TextSpan(
-                          // Localized sign in word prefixed with space
-                          text: ' ${s.sign_in}',
-                          // Bind tap event callback
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = widget.on_go_to_login,
-                          // Link text styles
-                          style: TextStyle(
-                            // Apply Cairo or Inter fonts correctly
-                            fontFamily: AppFonts.by_locale(is_arabic),
-                            // Spacing size
-                            fontSize: 14.0,
-                            // High visual brand highlight
-                            color: AppColors.primary_color,
-                            // Bold font weight
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // Bottom layout padding space margins using spacing constants
-                const SizedBox(height: AppSpacing.space_l),
-              ],
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

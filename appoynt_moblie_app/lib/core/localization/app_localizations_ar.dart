@@ -1251,4 +1251,457 @@ class AppLocalizationsAr extends AppLocalizations {
   String get search_doctor_reviews {
     return 'تقييم';
   }
+
+  // Patient Profile Localizations Arabic Overrides
+  @override
+  String get profile_title => 'الملف الشخصي';
+  @override
+  String get edit_profile_title => 'تعديل الملف الشخصي';
+  @override
+  String get profile_first_name_label => 'الاسم الأول';
+  @override
+  String get profile_last_name_label => 'اسم العائلة';
+  @override
+  String get profile_address_label => 'العنوان';
+  @override
+  String get profile_change_photo => 'تغيير الصورة';
+  @override
+  String get profile_personal_information => 'المعلومات الشخصية';
+  @override
+  String get profile_personal_information_subtitle =>
+      'تعديل الاسم والهاتف والبريد الإلكتروني والجنس والطول والوزن';
+  @override
+  String get profile_medical_history => 'السجل الطبي';
+  @override
+  String get profile_account_settings => 'إعدادات الحساب';
+  @override
+  String get profile_height => 'الطول';
+  @override
+  String get profile_weight => 'الوزن';
+  @override
+  String get profile_allergies => 'الحساسية';
+  @override
+  String get profile_medications => 'قائمة الأدوية';
+  @override
+  String get profile_tests_results => 'التحاليل والأشعة';
+  @override
+  String get profile_chronic_conditions => 'الأمراض المزمنة';
+  @override
+  String get profile_insurance_details => 'تفاصيل التأمين';
+  @override
+  String get profile_no_allergies => 'لم يتم إضافة أي حساسية';
+  @override
+  String get profile_zero_prescriptions =>
+      'لم يتم إضافة أي روشتة. اضغط للإضافة';
+  @override
+  String get profile_zero_conditions => 'لم يتم إضافة أي أمراض';
+  @override
+  String get profile_zero_insurance => 'لم يتم إضافة أي بطاقات تأمين';
+  @override
+  String get profile_update_profile_button => 'تحديث الملف الشخصي';
+  @override
+  String get profile_save_button => 'حفظ';
+  @override
+  String get profile_cancel_button => 'إلغاء';
+  @override
+  String get profile_contact_section => 'معلومات الاتصال';
+  @override
+  String get profile_more_info_section => 'معلومات إضافية';
+  @override
+  String get profile_smoking_section => 'التدخين';
+  @override
+  String get profile_name_label => 'الاسم';
+  @override
+  String get profile_phone_label => 'رقم الهاتف';
+  @override
+  String get profile_birthdate_label => 'تاريخ الميلاد';
+  @override
+  String get profile_national_id_label => 'الرقم القومي';
+  @override
+  String get profile_national_id_hint => 'أدخل الرقم القومي (١٤ رقم)';
+  @override
+  String get profile_error_national_id_empty =>
+      'الرقم القومي لا يمكن أن يكون فارغاً.';
+  @override
+  String get profile_error_national_id_invalid =>
+      'الرقم القومي يجب أن يتكون من ١٤ رقماً بدون حروف أو رموز.';
+  @override
+  String get profile_email_label => 'البريد الإلكتروني';
+  @override
+  String get profile_gender_label => 'الجنس';
+  @override
+  String get profile_weight_label => 'الوزن';
+  @override
+  String get profile_height_label => 'الطول';
+  @override
+  String get profile_gender_male => 'ذكر';
+  @override
+  String get profile_gender_female => 'أنثى';
+  @override
+  String get profile_gender_prefer_not => 'آخر';
+  @override
+  String get profile_smoking_yes => 'نعم';
+  @override
+  String get profile_smoking_no => 'لا';
+  @override
+  String get profile_smoking_ex => 'مدخن سابق';
+  @override
+  String get profile_error_name_empty => 'الاسم الأول لا يمكن أن يكون فارغًا.';
+  @override
+  String get profile_error_name_length =>
+      'يجب أن يكون الاسم الأول بين 3 و 50 حرفًا.';
+  @override
+  String get profile_error_name_letters_only =>
+      'يجب أن يحتوي الاسم الأول على أحرف فقط.';
+  @override
+  String get profile_error_email_empty =>
+      'البريد الإلكتروني لا يمكن أن يكون فارغًا.';
+  @override
+  String get profile_error_email_invalid => 'يرجى إدخال بريد إلكتروني صحيح.';
+  @override
+  String get profile_error_email_length =>
+      'يجب ألا يتعدى البريد الإلكتروني 254 حرفًا.';
+  @override
+  String get profile_error_email_registered =>
+      'هذا البريد الإلكتروني مسجل بالفعل.';
+  @override
+  String get profile_error_gender_required => 'الجنس مطلوب.';
+  @override
+  String get profile_error_address_length => 'يجب ألا يتعدى العنوان 250 حرفًا.';
+  @override
+  String get profile_error_address_invalid =>
+      'لا يمكن أن يحتوي العنوان على رموز تعبيرية أو أحرف غير مدعومة.';
+  @override
+  String get profile_unsaved_changes_title => 'تغييرات غير محفوظة';
+  @override
+  String get profile_unsaved_changes_message =>
+      'لديك تغييرات غير محفوظة. هل أنت متأكد من رغبتك في المغادرة؟';
+  @override
+  String get profile_unsaved_changes_stay => 'البقاء';
+  @override
+  String get profile_unsaved_changes_leave => 'المغادرة';
+
+  // Section 2: Medical Context & Permissions
+  @override
+  String get profile_dependents_title => 'أفراد العائلة';
+  @override
+  String get profile_add_dependent_button => 'إضافة فرد عائلة';
+  @override
+  String get profile_insurance_card_title => 'التأمين الصحي الرقمي';
+  @override
+  String get profile_insurance_provider => 'مزود الخدمة';
+  @override
+  String get profile_insurance_number => 'رقم البوليصة';
+  @override
+  String get profile_insurance_expiry => 'تاريخ الانتهاء';
+
+  // Section 3: Payment & Wallet Management
+  @override
+  String get profile_wallet_title => 'إدارة المحفظة والدفع';
+  @override
+  String get profile_wallet_balance => 'رصيد المحفظة';
+  @override
+  String get profile_wallet_priority => 'استخدام كطريقة دفع ذات أولوية';
+  @override
+  String get profile_saved_cards => 'البطاقات المحفوظة';
+  @override
+  String get profile_default_card => 'الافتراضية';
+  @override
+  String get profile_add_card => 'إضافة بطاقة جديدة';
+  @override
+  String get profile_invoices_title => 'سجل الدفعات / الفواتير';
+  @override
+  String get profile_invoice_id => 'رقم الفاتورة';
+  @override
+  String get profile_amount_paid => 'المبلغ المدفوع';
+
+  // Section 4: Security & Privacy Settings
+  @override
+  String get profile_security_privacy => 'الأمان والخصوصية';
+  @override
+  String get profile_biometrics_toggle => 'تفعيل الحماية ببصمة الوجه / الإصبع';
+  @override
+  String get profile_delete_account => 'حذف الحساب';
+  @override
+  String get profile_delete_account_confirm => 'تأكيد حذف الحساب';
+  @override
+  String get profile_delete_account_warning =>
+      'تحذير: هذا الإجراء دائم وسيؤدي إلى حذف بيانات حسابك بالكامل. يرجى تأكيد رغبتك في المتابعة.';
+  @override
+  String get profile_delete_account_dialog_title => 'حذف الحساب نهائياً؟';
+  @override
+  String get profile_face_id => 'أمان بصمة الوجه';
+
+  // Section 5: App Preferences
+  @override
+  String get profile_notifications_title => 'الإشعارات';
+  @override
+  String get profile_priority_payment => 'الدفع ذو الأولوية';
+  @override
+  String get profile_payment_wallet => 'الدفع والمحفظة';
+  @override
+  String get profile_support_dial_dialog_title => 'اتصل بالدعم';
+  @override
+  String get profile_support_dial => 'خط الدعم الساخن';
+  @override
+  String get profile_app_preferences => 'تفضيلات التطبيق';
+  @override
+  String get profile_notifications_reminders => 'تذكيرات المواعيد';
+  @override
+  String get profile_notifications_invoices => 'الفواتير وكشوفات الحساب';
+  @override
+  String get profile_notifications_promos => 'العروض والخصومات';
+  @override
+  String get profile_notifications_reminders_sub =>
+      'الحصول على تنبيهات للحجوزات والفحوصات';
+  @override
+  String get profile_notifications_invoices_sub =>
+      'استلام كشوفات الحساب والإيصالات الرقمية';
+  @override
+  String get profile_notifications_promos_sub =>
+      'استلام العروض الخاصة والنصائح الصحية';
+  @override
+  String get profile_language_row => 'اللغة';
+  @override
+  String get profile_language_sub => 'اختر لغة التطبيق المفضلة';
+  @override
+  String get profile_theme_row => 'مظهر التطبيق';
+  @override
+  String get profile_theme_sub => 'تخصيص نمط مظهر التطبيق Visual Appearance';
+  @override
+  String get profile_theme_light => 'فاتح';
+  @override
+  String get profile_theme_dark => 'داكن';
+  @override
+  String get profile_theme_system => 'النظام';
+  @override
+  String get profile_support_legal_title => 'الدعم والشروط القانونية';
+  @override
+  String get profile_support_legal_sub =>
+      'مركز المساعدة وشروط الخدمة والخصوصية';
+  @override
+  String get profile_support_terms => 'شروط الاستخدام';
+  @override
+  String get profile_support_terms_sub =>
+      'قراءة شروط الخدمة والأحكام الخاصة بالتطبيق';
+  @override
+  String get profile_support_privacy => 'سياسة الخصوصية';
+  @override
+  String get profile_support_privacy_sub =>
+      'تعرف على كيفية حماية وتشفير بياناتك الشخصية';
+  @override
+  String get profile_support_hotline => 'خط الدعم الساخن';
+  @override
+  String get profile_support_hotline_sub =>
+      'الاتصال المباشر بمكتب الدعم (19999)';
+  @override
+  String get profile_terms_modal_title => 'شروط الاستخدام';
+  @override
+  String get profile_privacy_modal_title => 'سياسة الخصوصية';
+  @override
+  String get profile_terms_content =>
+      'باستخدام تطبيق Appoynt، فإنك توافق على شروط الخدمة، وسياسات الاستخدام المقبولة، وقواعد حجز المواعيد الطبية.';
+  @override
+  String get profile_privacy_content =>
+      'إن خصوصيتك هي أولويتنا القصوى. نحن نشفر جميع السجلات الطبية والبيانات الشخصية وفقاً لأعلى معايير حماية البيانات الصحية.';
+  @override
+  String get profile_close_button => 'إغلاق';
+
+  // Section 6: Log Out
+  @override
+  String get profile_logout_confirm_title => 'تسجيل الخروج من Appoynt؟';
+  @override
+  String get profile_logout_confirm_message =>
+      'هل أنت متأكد من أنك تريد تسجيل الخروج؟ ستتحاج إلى تسجيل الدخول مرة أخرى لإدارة مواعيدك وسجلاتك الصحية.';
+  @override
+  String get profile_logout_confirm_yes => 'تسجيل الخروج';
+  @override
+  String get profile_logout_confirm_no => 'إلغاء';
+  @override
+  String get profile_logout_sub => 'تسجيل الخروج من جلسة حسابك النشطة';
+
+  // Change Password Localizations Arabic Overrides
+  @override
+  String get password_change_title => 'تغيير كلمة المرور';
+  @override
+  String get password_current_label => 'كلمة المرور الحالية';
+  @override
+  String get password_new_label => 'كلمة المرور الجديدة';
+  @override
+  String get password_confirm_label => 'تأكيد كلمة المرور';
+  @override
+  String get password_current_empty =>
+      'كلمة المرور الحالية لا يمكن أن تكون فارغة.';
+  @override
+  String get password_current_incorrect => 'كلمة المرور الحالية غير صحيحة.';
+  @override
+  String get password_new_empty => 'كلمة المرور الجديدة لا يمكن أن تكون فارغة.';
+  @override
+  String get password_new_length => 'يجب أن تكون كلمة المرور بين 8 و 64 حرفًا.';
+  @override
+  String get password_new_complexity =>
+      'يجب أن تحتوي كلمة المرور على حرف كبير، وحرف صغير، ورقم، ورمز خاص.';
+  @override
+  String get password_new_unsupported =>
+      'لا يمكن أن تحتوي كلمة المرور على مسافات، أو أحرف عربية، أو رموز تعبيرية.';
+  @override
+  String get password_new_personal_info =>
+      'لا يمكن أن تحتوي كلمة المرور على معلوماتك الشخصية.';
+  @override
+  String get password_new_same_as_current =>
+      'يجب أن تكون كلمة المرور الجديدة مختلفة عن كلمة المرور الحالية.';
+  @override
+  String get password_new_pattern =>
+      'لا يمكن أن تحتوي كلمة المرور على أحرف أو أرقام متكررة أو متتالية.';
+  @override
+  String get password_confirm_empty =>
+      'تأكيد كلمة المرور لا يمكن أن يكون فارغًا.';
+  @override
+  String get password_confirm_match => 'كلمتا المرور غير متطابقتين.';
+  @override
+  String get password_change_success_msg => 'تم تغيير كلمة المرور بنجاح.';
+  @override
+  String get profile_change_success_msg => 'تم تحديث الملف الشخصي بنجاح.';
+
+  // Allergies Localizations Arabic Overrides
+  @override
+  String get allergies_title => 'الحساسية';
+  @override
+  String get allergies_food_section => 'حساسية الطعام';
+  @override
+  String get allergies_medication_section => 'حساسية الأدوية';
+  @override
+  String get allergies_add_allergy => 'إضافة حساسية';
+  @override
+  String get allergies_placeholder => 'النوع';
+  @override
+  String get allergies_save_btn => 'حفظ';
+  @override
+  String get allergies_update_status_btn => 'تحديث الحالة';
+
+  // Prescriptions Localizations Arabic Overrides
+  @override
+  String get prescriptions_title => 'قائمة الروشتات';
+  @override
+  String get prescriptions_add_btn => '+ إضافة دواء جديد';
+  @override
+  String get prescriptions_empty_title => 'لا توجد أدوية مضافة';
+  @override
+  String get prescriptions_empty_subtitle =>
+      'تابع أدويتك الحالية وخطط علاجك في مكان واحد.';
+  @override
+  String get prescriptions_empty_cta => '+ إضافة أول دواء لك';
+  @override
+  String get prescriptions_modal_title => 'إضافة دواء جديد';
+  @override
+  String get prescriptions_field_name_label => 'اسم الدواء والجرعة';
+  @override
+  String get prescriptions_field_name_hint => 'مثال: بنادول إكسترا 500mg';
+  @override
+  String get prescriptions_field_freq_label => 'التكرار';
+  @override
+  String get prescriptions_field_duration_label => 'مدة العلاج (أيام)';
+  @override
+  String get prescriptions_field_duration_hint => 'مثال: 7 أيام أو مستمر';
+  @override
+  String get prescriptions_field_doctor_label => 'الطبيب المعالج (اختياري)';
+  @override
+  String get prescriptions_field_doctor_hint => 'مثال: دكتور أحمد حسن';
+  @override
+  String get prescriptions_field_rx_label => 'رفع صورة الروشتة (اختياري)';
+  @override
+  String get prescriptions_freq_once => 'مرة يومياً';
+  @override
+  String get prescriptions_freq_twice => 'مرتان يومياً';
+  @override
+  String get prescriptions_freq_every8 => 'كل 8 ساعات';
+  @override
+  String get prescriptions_freq_as_needed => 'عند الحاجة';
+  @override
+  String get prescriptions_status_active => 'فعّال';
+  @override
+  String get prescriptions_save_btn => 'حفظ الروشتة';
+  @override
+  String get prescriptions_delete_confirm_title => 'حذف الدواء؟';
+  @override
+  String get prescriptions_delete_confirm_body =>
+      'سيتم حذف هذا الدواء من قائمتك بشكل دائم.';
+  @override
+  String get prescriptions_delete_confirm_yes => 'حذف';
+  @override
+  String get prescriptions_delete_confirm_no => 'إلغاء';
+  @override
+  String get prescriptions_add_medication => 'إضافة دواء';
+  @override
+  String get prescriptions_added_title => 'الروشتة المضافة';
+
+  // Tests & Results Localizations Arabic Overrides
+  @override
+  String get tests_title => 'التحاليل والأشعة';
+  @override
+  String get tests_tab_lab => 'التحاليل الطبية';
+  @override
+  String get tests_tab_scanning => 'الأشعة';
+  @override
+  String get tests_no_tests_found => 'لم يتم العثور على تحاليل طبية';
+  @override
+  String get tests_no_scans_found => 'لم يتم العثور على أشعة';
+  @override
+  String get tests_add_title => 'إضافة نتيجة تحليل طبي';
+  @override
+  String get tests_doc_name_label => 'اسم المستند';
+  @override
+  String get tests_date_label => 'التاريخ';
+  @override
+  String get tests_select_date_btn => 'اختر التاريخ';
+  @override
+  String get tests_upload_doc_btn => 'تحميل المستند من الجهاز';
+  @override
+  String get tests_confirm_upload_btn => 'تأكيد التحميل';
+  @override
+  String get tests_empty_title => 'لا توجد تقارير أو أشعة مضافة';
+  @override
+  String get tests_empty_subtitle =>
+      'قم برفع وتقارير الفحوصات والأشعة الخاصة بك ليسهل الوصول إليها ومشاركتها مع طبيبك.';
+  @override
+  String get tests_empty_cta => '+ إضافة نتيجة أو تقرير جديد';
+  @override
+  String get tests_upload_new_cta => '+ إضافة نتيجة أو تقرير جديد';
+  @override
+  String get tests_file_attached_toast => 'تم إرفاق الملف بنجاح.';
+  @override
+  String get tests_error_no_file => 'يرجى تحميل ملف تقرير من جهازك.';
+  @override
+  String get tests_success_upload => 'تم رفع المستند بنجاح.';
+
+  // Chronic Conditions Localizations Arabic Overrides
+  @override
+  String get chronic_title => 'الأمراض المزمنة';
+  @override
+  String get chronic_description =>
+      'يرجى تحديد الحالات المزمنة التي تنطبق عليك لمساعدتنا في تقديم رعاية أفضل.';
+
+  // Insurance Details Localizations Arabic Overrides
+  @override
+  String get insurance_title => 'قائمة التأمين';
+  @override
+  String get insurance_expiry_label => 'تاريخ الانتهاء:';
+  @override
+  String get insurance_view_btn => 'عرض';
+  @override
+  String get insurance_add_title => 'قائمة التأمين';
+  @override
+  String get insurance_card_name_label => 'اسم البطاقة';
+  @override
+  String get insurance_card_number_label => 'رقم البطاقة';
+  @override
+  String get insurance_select_provider_btn => 'اختر مقدم الخدمة';
+  @override
+  String get insurance_upload_doc_btn => 'تحميل من الجهاز';
+  @override
+  String get insurance_add_card_btn => 'إضافة البطاقة';
+  @override
+  String get insurance_add_card_full_btn => 'إضافة بطاقة تأمين';
+  @override
+  String get insurance_save_card_btn => 'حفظ البطاقة';
 }

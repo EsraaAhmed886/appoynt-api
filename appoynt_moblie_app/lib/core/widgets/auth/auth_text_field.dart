@@ -36,6 +36,12 @@ class AuthTextField extends StatefulWidget {
   // Flag indicating if text field maps phone inputs
   final bool is_phone;
 
+  // Flag indicating if text field maps National ID inputs
+  final bool is_national_id;
+
+  // Custom input formatters list
+  final List<TextInputFormatter>? input_formatters;
+
   // Validator function mapping input rules validation checks
   final String? Function(String?)? validator;
 
@@ -44,6 +50,12 @@ class AuthTextField extends StatefulWidget {
 
   // Keyboard return actions configuration
   final TextInputAction? text_input_action;
+
+  // Flag determining if text field interactions are enabled
+  final bool enabled;
+
+  // Flag indicating if standard shadow decorator should be displayed
+  final bool show_shadow;
 
   // Constructor mapping standard parameters
   const AuthTextField({
@@ -54,9 +66,13 @@ class AuthTextField extends StatefulWidget {
     this.prefix_icon,
     this.is_password = false,
     this.is_phone = false,
+    this.is_national_id = false,
+    this.input_formatters,
     this.validator,
     this.keyboard_type,
     this.text_input_action,
+    this.enabled = true,
+    this.show_shadow = true,
   });
 
   @override
@@ -95,29 +111,27 @@ class _AuthTextFieldState extends State<AuthTextField> {
     if (false == _focus_node.hasFocus) {
       // Refresh layout state to trigger validation
       setState(() {
-        // Mark field as touched
+        // Set touched flag
         _touched = true;
       });
     } else {
-      // Empty action block to satisfy compiler
+      // Empty block
     }
-    // Refresh layout state for outline border color updates
-    setState(() {});
   }
 
   @override
-  // Clean up listeners and dispose focus nodes to avoid memory leaks
+  // Dispose focus node resources when widget unmounts
   void dispose() {
-    // Remove focus listener tracker
+    // Remove focus listener
     _focus_node.removeListener(_on_focus_changed);
-    // Dispose focus node resources
+    // Dispose focus node instance
     _focus_node.dispose();
-    // Invoke parent dispose logic
+    // Call parent dispose
     super.dispose();
   }
 
   @override
-  // Build method drawing input components
+  // Build component tree layout
   Widget build(BuildContext context) {
     // Check if system locale is set to Arabic
     final bool is_arabic = AppLocalizations.of(context).is_arabic;
@@ -128,6 +142,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
     // Check if field is credential input to force LTR configuration using Yoda style comparison
     final bool force_ltr = true == widget.is_password ||
         true == widget.is_phone ||
+        true == widget.is_national_id ||
         TextInputType.emailAddress == widget.keyboard_type;
 
     // Return Column layout structuring labels and input fields
@@ -136,20 +151,22 @@ class _AuthTextFieldState extends State<AuthTextField> {
       crossAxisAlignment: CrossAxisAlignment.start,
       // Contain visual children list
       children: [
-        // Text widget rendering field label
-        Text(
-          // Active label text
-          widget.label,
-          // Pull centralized style registry with theme-adaptive colors
-          style: AppTextStyles.get_field_label(is_arabic).copyWith(
-            // Select label color based on theme using Yoda style check
-            color: true == is_dark
-                ? AppColors.text_dark_primary
-                : AppColors.text_light_primary,
+        // Text widget rendering field label if not empty
+        if (widget.label.isNotEmpty) ...[
+          Text(
+            // Active label text
+            widget.label,
+            // Pull centralized style registry with theme-adaptive colors
+            style: AppTextStyles.get_field_label(is_arabic).copyWith(
+              // Select label color based on theme using Yoda style check
+              color: true == is_dark
+                  ? AppColors.text_dark_primary
+                  : AppColors.text_light_primary,
+            ),
           ),
-        ),
-        // Space margin before text field using spacing constants
-        const SizedBox(height: AppSpacing.space_m),
+          // Space margin before text field using spacing constants
+          const SizedBox(height: AppSpacing.space_m),
+        ],
         // Listen to controller text changes to dynamically update text alignment
         ValueListenableBuilder<TextEditingValue>(
           // Bind value listenable to text controller
@@ -157,11 +174,13 @@ class _AuthTextFieldState extends State<AuthTextField> {
           // Builder method rebuilding on value changes
           builder: (context, value, child) {
             // Resolve text alignment dynamically depending on LTR checks
-            // using Yoda style check (BUG-006 / Confirm Password)
+            final bool is_empty = value.text.isEmpty;
             final TextAlign dynamic_align = true == force_ltr
-                ? (true == widget.is_password && true == is_arabic
+                ? (true == is_empty && true == is_arabic
                     ? TextAlign.right
-                    : TextAlign.left)
+                    : (true == widget.is_password && true == is_arabic
+                        ? TextAlign.right
+                        : TextAlign.left))
                 : (true == is_arabic ? TextAlign.right : TextAlign.left);
 
             // Return Stack layering shadow background behind the TextFormField
@@ -170,79 +189,87 @@ class _AuthTextFieldState extends State<AuthTextField> {
               clipBehavior: Clip.none,
               // Children widgets list
               children: [
-                // Positioned shadow decorator container matching input box height
-                Positioned(
-                  // Align to top edge
-                  top: 0.0,
-                  // Align to left edge
-                  left: 0.0,
-                  // Align to right edge
-                  right: 0.0,
-                  // Restrict shadow container height to input box area
-                  height: 50.0,
-                  // Shadow background widget
-                  child: Container(
-                    // Visual styling decoration
-                    decoration: BoxDecoration(
-                      // Set corner radius using spacing constants
-                      borderRadius:
-                          BorderRadius.circular(AppSpacing.radius_input),
-                      // Shadows list
-                      boxShadow: [
-                        BoxShadow(
-                          // Choose shadow color based on dark mode using Yoda style check
-                          color: true == is_dark
-                              ? Colors.black.withValues(alpha: 0.25)
-                              : Colors.black.withValues(alpha: 0.04),
-                          // Shadow blur radius
-                          blurRadius: 6.0,
-                          // Shadow thickness spread
-                          spreadRadius: 1.0,
-                          // Shadow displacement offset coordinates
-                          offset: const Offset(0.0, 2.0),
-                        ),
-                      ],
+                if (true == widget.show_shadow) ...[
+                  // Positioned shadow decorator container matching input box height
+                  Positioned(
+                    // Align to top edge
+                    top: 0.0,
+                    // Align to left edge
+                    left: 0.0,
+                    // Align to right edge
+                    right: 0.0,
+                    // Restrict shadow container height to input box area
+                    height: 50.0,
+                    // Shadow background widget
+                    child: Container(
+                      // Visual styling decoration
+                      decoration: BoxDecoration(
+                        // Set corner radius using spacing constants
+                        borderRadius:
+                            BorderRadius.circular(AppSpacing.radius_input),
+                        // Shadows list
+                        boxShadow: [
+                          BoxShadow(
+                            // Choose shadow color based on dark mode using Yoda style check
+                            color: true == is_dark
+                                ? Colors.black.withValues(alpha: 0.25)
+                                : Colors.black.withValues(alpha: 0.04),
+                            // Shadow blur radius
+                            blurRadius: 6.0,
+                            // Shadow thickness spread
+                            spreadRadius: 1.0,
+                            // Shadow displacement offset coordinates
+                            offset: const Offset(0.0, 2.0),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
+                ],
                 // Render standard TextFormField on top of the shadow decorator
                 TextFormField(
-                // Bind controller
-                controller: widget.controller,
-                // Bind focus node
-                focusNode: _focus_node,
-                // Obfuscate text based on password flags using Yoda style check
-                obscureText: true == widget.is_password && true == _obscure,
-                // Bind validator
-                validator: widget.validator,
-                // Enable validation modes onBlur once touched using Yoda style checks
-                autovalidateMode: true == _touched
-                    ? AutovalidateMode.onUserInteraction
-                    : AutovalidateMode.disabled,
-                // Resolve virtual keyboard configuration layout
-                keyboardType: true == widget.is_phone
-                    ? TextInputType.phone
-                    : widget.keyboard_type ??
-                        (true == widget.is_password
-                            ? TextInputType.visiblePassword
-                            : TextInputType.text),
-                // Resolve keyboard return action using Yoda style check
-                textInputAction: widget.text_input_action ?? TextInputAction.next,
-                // Format digits-only if phone field is active using Yoda style check
-                inputFormatters: true == widget.is_phone
-                    ? [
-                        // Use custom Egyptian phone input formatter
-                        PhoneInputFormatter(),
-                      ]
-                    : null,
-                // Force input directionality text rules
-                textDirection: true == force_ltr
-                    ? TextDirection.ltr
-                    : (true == is_arabic ? TextDirection.rtl : TextDirection.ltr),
-                // Set resolved dynamic text alignments
-                textAlign: dynamic_align,
-                // Input text styling
-                style: TextStyle(
+                  // Bind interactions enabled flag
+                  enabled: widget.enabled,
+                  // Bind controller
+                  controller: widget.controller,
+                  // Bind focus node
+                  focusNode: _focus_node,
+                  // Obfuscate text based on password flags using Yoda style check
+                  obscureText: true == widget.is_password && true == _obscure,
+                  // Bind validator
+                  validator: widget.validator,
+                  // Enable validation modes onBlur once touched using Yoda style checks
+                  autovalidateMode: true == _touched
+                      ? AutovalidateMode.onUserInteraction
+                      : AutovalidateMode.disabled,
+                  // Resolve virtual keyboard configuration layout
+                  keyboardType: true == widget.is_phone
+                      ? TextInputType.phone
+                      : widget.keyboard_type ??
+                          (true == widget.is_password
+                              ? TextInputType.visiblePassword
+                              : TextInputType.text),
+                  // Resolve keyboard return action using Yoda style check
+                  textInputAction:
+                      widget.text_input_action ?? TextInputAction.next,
+                  // Format digits-only or custom formatters
+                  inputFormatters: widget.input_formatters ??
+                      (true == widget.is_phone
+                          ? [
+                              // Use custom Egyptian phone input formatter
+                              PhoneInputFormatter(),
+                            ]
+                          : null),
+                  // Force input directionality text rules
+                  textDirection: true == force_ltr
+                      ? TextDirection.ltr
+                      : (true == is_arabic
+                          ? TextDirection.rtl
+                          : TextDirection.ltr),
+                  // Set resolved dynamic text alignments
+                  textAlign: dynamic_align,
+                  // Input text styling
+                  style: TextStyle(
                     // Font size from spacing constants
                     fontSize: AppSpacing.font_size_text,
                     // Select text color based on theme using Yoda style check
@@ -314,15 +341,15 @@ class _AuthTextFieldState extends State<AuthTextField> {
                     // Default outline border configurations
                     border: OutlineInputBorder(
                       // Set corner radius using spacing constants
-                    // Set corner radius using spacing constants
-                    borderRadius:
-                        BorderRadius.circular(AppSpacing.radius_input),
-                    // Set border side specifications
-                    borderSide: BorderSide(
-                      // Select border color based on theme using Yoda style check
-                      color: true == is_dark
-                          ? AppColors.border_dark
-                          : AppColors.border_light,
+                      // Set corner radius using spacing constants
+                      borderRadius:
+                          BorderRadius.circular(AppSpacing.radius_input),
+                      // Set border side specifications
+                      borderSide: BorderSide(
+                        // Select border color based on theme using Yoda style check
+                        color: true == is_dark
+                            ? AppColors.border_dark
+                            : AppColors.border_light,
                         // Set line thickness using spacing constants
                         width: AppSpacing.border_width_thin,
                       ),
@@ -330,15 +357,15 @@ class _AuthTextFieldState extends State<AuthTextField> {
                     // Enabled but unfocused border styling
                     enabledBorder: OutlineInputBorder(
                       // Set corner radius using spacing constants
-                    // Set corner radius using spacing constants
-                    borderRadius:
-                        BorderRadius.circular(AppSpacing.radius_input),
-                    // Set border side specifications
-                    borderSide: BorderSide(
-                      // Select border color based on theme using Yoda style check
-                      color: true == is_dark
-                          ? AppColors.border_dark
-                          : AppColors.border_light,
+                      // Set corner radius using spacing constants
+                      borderRadius:
+                          BorderRadius.circular(AppSpacing.radius_input),
+                      // Set border side specifications
+                      borderSide: BorderSide(
+                        // Select border color based on theme using Yoda style check
+                        color: true == is_dark
+                            ? AppColors.border_dark
+                            : AppColors.border_light,
                         // Set line thickness using spacing constants
                         width: AppSpacing.border_width_thin,
                       ),
@@ -424,11 +451,19 @@ class PhoneInputFormatter extends TextInputFormatter {
   ) {
     // Retrieve new value string representation
     String text = newValue.text;
-    
+
     // Convert Arabic numerals to English digits if any exist
     final Map<String, String> arabic_to_english = {
-      '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4',
-      '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9'
+      '٠': '0',
+      '١': '1',
+      '٢': '2',
+      '٣': '3',
+      '٤': '4',
+      '٥': '5',
+      '٦': '6',
+      '٧': '7',
+      '٨': '8',
+      '٩': '9'
     };
     // Translate each character in map
     arabic_to_english.forEach((arabic, english) {

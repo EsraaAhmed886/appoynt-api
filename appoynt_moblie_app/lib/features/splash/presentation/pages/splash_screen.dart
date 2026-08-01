@@ -254,9 +254,9 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
               // Set register redirect callback
               on_go_to_register: () {
                 // Check if context remains active in widget tree using Yoda comparison
-                if (true == context.mounted) {
+                if (true == login_route_context.mounted) {
                   // Push RegisterPage onto navigation stack
-                  Navigator.of(context).push(
+                  Navigator.of(login_route_context).push(
                     // Create fade transition route builder
                     PageRouteBuilder(
                       // Set target page to RegisterPage instance
@@ -369,9 +369,9 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
               // Set forgot password redirect callback
               on_forgot_password: () {
                 // Check if context remains active in widget tree using Yoda comparison
-                if (true == context.mounted) {
+                if (true == login_route_context.mounted) {
                   // Push ForgotPasswordPage onto navigation stack
-                  Navigator.of(context).push(
+                  Navigator.of(login_route_context).push(
                     // Create fade transition route builder
                     PageRouteBuilder(
                       // Set target page to ForgotPasswordPage instance
@@ -520,7 +520,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
               // Set language toggle selection callback
               on_toggle_language: () {
                 // Call global cubit toggle language logic
-                context.read<GlobalCubit>().toggle_language();
+                login_route_context.read<GlobalCubit>().toggle_language();
               },
             );
           },
