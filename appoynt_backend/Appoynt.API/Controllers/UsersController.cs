@@ -59,6 +59,9 @@ public sealed class UsersController : ControllerBase
         {
             return BadRequest(result);
         }
+        else
+        {
+        }
 
         return StatusCode(StatusCodes.Status201Created, result);
     }
@@ -85,6 +88,9 @@ public sealed class UsersController : ControllerBase
         {
             return BadRequest(result);
         }
+        else
+        {
+        }
 
         return StatusCode(StatusCodes.Status201Created, result);
     }
@@ -110,6 +116,9 @@ public sealed class UsersController : ControllerBase
         if (!result.Succeeded)
         {
             return BadRequest(result);
+        }
+        else
+        {
         }
 
         return StatusCode(StatusCodes.Status201Created, result);
@@ -161,6 +170,9 @@ public sealed class UsersController : ControllerBase
         {
             return NotFound();
         }
+        else
+        {
+        }
 
         // Return the user details.
         return Ok(result);
@@ -195,9 +207,15 @@ public sealed class UsersController : ControllerBase
             {
                 return Forbid();
             }
+            else
+            {
+            }
 
             // Return 400 Bad Request for validation or business-rule failures.
             return BadRequest(result);
+        }
+        else
+        {
         }
 
         // Return the successful update result.
@@ -231,9 +249,15 @@ public sealed class UsersController : ControllerBase
             {
                 return Forbid();
             }
+            else
+            {
+            }
 
             // Return 400 Bad Request for validation or business-rule failures.
             return BadRequest(result);
+        }
+        else
+        {
         }
 
         // Return 204 No Content on successful soft-delete.

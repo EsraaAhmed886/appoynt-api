@@ -92,6 +92,9 @@ public static class DatabaseInitializationExtensions
 
                 return;
             }
+            else
+            {
+            }
 
             logger.LogInformation("Starting database seeding.");
 

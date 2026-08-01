@@ -45,6 +45,9 @@ public static class ResetPasswordRequestValidator
                 nameof(request.Identifier)));
             return errors; // Fast fail
         }
+        else
+        {
+        }
 
         if (string.IsNullOrWhiteSpace(request.ResetToken))
         {
@@ -52,6 +55,9 @@ public static class ResetPasswordRequestValidator
                 AuthenticationErrorCodes.PasswordRecoveryRequestInvalid,
                 nameof(request.ResetToken)));
             return errors; // Fast fail
+        }
+        else
+        {
         }
 
         AddPasswordError(errors, request, user);
@@ -74,6 +80,9 @@ public static class ResetPasswordRequestValidator
                 "NewPassword"));
             return;
         }
+        else
+        {
+        }
 
         if (password.EnumerateRunes().Count() < PasswordMinimumLength)
         {
@@ -81,6 +90,9 @@ public static class ResetPasswordRequestValidator
                 AuthenticationErrorCodes.PasswordLengthInvalid,
                 "NewPassword"));
             return;
+        }
+        else
+        {
         }
 
         if (!HasRequiredPasswordComplexity(password))
@@ -90,6 +102,9 @@ public static class ResetPasswordRequestValidator
                 "NewPassword"));
             return;
         }
+        else
+        {
+        }
 
         if (ContainsWhitespaceOrArabicCharacters(password))
         {
@@ -98,12 +113,18 @@ public static class ResetPasswordRequestValidator
                 "NewPassword"));
             return;
         }
+        else
+        {
+        }
 
         if (ContainsPersonalInformation(password, user))
         {
             errors.Add(new AuthenticationError(
                 AuthenticationErrorCodes.PasswordContainsPersonalInformation,
                 "NewPassword"));
+        }
+        else
+        {
         }
     }
 
@@ -118,6 +139,9 @@ public static class ResetPasswordRequestValidator
                 "ConfirmPassword"));
             return;
         }
+        else
+        {
+        }
 
         if (!string.Equals(
                 request.NewPassword,
@@ -127,6 +151,9 @@ public static class ResetPasswordRequestValidator
             errors.Add(new AuthenticationError(
                 AuthenticationErrorCodes.PasswordsDoNotMatch,
                 "ConfirmPassword"));
+        }
+        else
+        {
         }
     }
 

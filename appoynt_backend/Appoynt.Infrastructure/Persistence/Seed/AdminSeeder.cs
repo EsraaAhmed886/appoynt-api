@@ -1,4 +1,4 @@
-﻿/**
+/**
  * File Name      : AdminSeeder.cs
  * Author         : Mustafa Mahmoud
  * Created Date   : 22/07/2026
@@ -138,11 +138,17 @@ public sealed class AdminSeeder
             throw new InvalidOperationException(
                 "Seed configuration is missing Admin:FirstName.");
         }
+        else
+        {
+        }
 
         if (string.IsNullOrWhiteSpace(admin.LastName))
         {
             throw new InvalidOperationException(
                 "Seed configuration is missing Admin:LastName.");
+        }
+        else
+        {
         }
 
         if (string.IsNullOrWhiteSpace(admin.Email))
@@ -150,17 +156,26 @@ public sealed class AdminSeeder
             throw new InvalidOperationException(
                 "Seed configuration is missing Admin:Email.");
         }
+        else
+        {
+        }
 
         if (string.IsNullOrWhiteSpace(admin.PhoneNumber))
         {
             throw new InvalidOperationException(
                 "Seed configuration is missing Admin:PhoneNumber.");
         }
+        else
+        {
+        }
 
         if (string.IsNullOrWhiteSpace(admin.Password))
         {
             throw new InvalidOperationException(
                 "Seed configuration is missing Admin:Password.");
+        }
+        else
+        {
         }
     }
 
@@ -258,6 +273,9 @@ public sealed class AdminSeeder
 
             return;
         }
+        else
+        {
+        }
 
         IdentityResult addRoleResult =
             await _userManager
@@ -303,6 +321,9 @@ public sealed class AdminSeeder
                 user.Email);
 
             return;
+        }
+        else
+        {
         }
 
         Admin adminProfile = new()

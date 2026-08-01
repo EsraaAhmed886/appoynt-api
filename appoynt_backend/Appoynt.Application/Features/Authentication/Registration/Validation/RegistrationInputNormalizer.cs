@@ -60,6 +60,9 @@ public static class RegistrationInputNormalizer
         {
             return string.Empty;
         }
+        else
+        {
+        }
 
         var normalizedEmail = new StringBuilder(email.Length);
 
@@ -69,6 +72,9 @@ public static class RegistrationInputNormalizer
                 Rune.GetUnicodeCategory(rune) == UnicodeCategory.Format)
             {
                 continue;
+            }
+            else
+            {
             }
 
             normalizedEmail.Append(rune.ToString());

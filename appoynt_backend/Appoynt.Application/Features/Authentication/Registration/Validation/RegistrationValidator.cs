@@ -82,6 +82,9 @@ public static class RegistrationValidator
             errors.Add(new AuthenticationError(requiredCode, field));
             return;
         }
+        else
+        {
+        }
 
         int runeCount = name.EnumerateRunes().Count();
 
@@ -90,10 +93,16 @@ public static class RegistrationValidator
             errors.Add(new AuthenticationError(lengthCode, field));
             return;
         }
+        else
+        {
+        }
 
         if (name.EnumerateRunes().Any(rune => !Rune.IsLetter(rune)))
         {
             errors.Add(new AuthenticationError(invalidCharactersCode, field));
+        }
+        else
+        {
         }
     }
 
@@ -114,6 +123,9 @@ public static class RegistrationValidator
                 "PhoneNumber"));
             return;
         }
+        else
+        {
+        }
 
         if (phoneNumber.Length != PhoneNumberLength)
         {
@@ -121,6 +133,9 @@ public static class RegistrationValidator
                 AuthenticationErrorCodes.PhoneLengthInvalid,
                 "PhoneNumber"));
             return;
+        }
+        else
+        {
         }
 
         if (!phoneNumber.StartsWith("01", StringComparison.Ordinal))
@@ -130,6 +145,9 @@ public static class RegistrationValidator
                 "PhoneNumber"));
             return;
         }
+        else
+        {
+        }
 
         if (phoneNumber[2] is not ('0' or '1' or '2' or '5'))
         {
@@ -138,6 +156,9 @@ public static class RegistrationValidator
                 "PhoneNumber"));
             return;
         }
+        else
+        {
+        }
 
         if (request.PhoneNumberContainsUnsupportedCharacters ||
             phoneNumber.Any(character => character is < '0' or > '9'))
@@ -145,6 +166,9 @@ public static class RegistrationValidator
             errors.Add(new AuthenticationError(
                 AuthenticationErrorCodes.PhoneFormatInvalid,
                 "PhoneNumber"));
+        }
+        else
+        {
         }
     }
 
@@ -163,12 +187,18 @@ public static class RegistrationValidator
                 "Email"));
             return;
         }
+        else
+        {
+        }
 
         if (!new EmailAddressAttribute().IsValid(email))
         {
             errors.Add(new AuthenticationError(
                 AuthenticationErrorCodes.EmailInvalid,
                 "Email"));
+        }
+        else
+        {
         }
     }
 
@@ -190,6 +220,9 @@ public static class RegistrationValidator
                 "Password"));
             return;
         }
+        else
+        {
+        }
 
         if (password.EnumerateRunes().Count() < PasswordMinimumLength)
         {
@@ -197,6 +230,9 @@ public static class RegistrationValidator
                 AuthenticationErrorCodes.PasswordLengthInvalid,
                 "Password"));
             return;
+        }
+        else
+        {
         }
 
         if (!HasRequiredPasswordComplexity(password))
@@ -206,6 +242,9 @@ public static class RegistrationValidator
                 "Password"));
             return;
         }
+        else
+        {
+        }
 
         if (ContainsWhitespaceOrArabicCharacters(password))
         {
@@ -214,12 +253,18 @@ public static class RegistrationValidator
                 "Password"));
             return;
         }
+        else
+        {
+        }
 
         if (ContainsPersonalInformation(password, request))
         {
             errors.Add(new AuthenticationError(
                 AuthenticationErrorCodes.PasswordContainsPersonalInformation,
                 "Password"));
+        }
+        else
+        {
         }
     }
 
@@ -238,6 +283,9 @@ public static class RegistrationValidator
                 "ConfirmPassword"));
             return;
         }
+        else
+        {
+        }
 
         if (!string.Equals(
                 request.Password,
@@ -247,6 +295,9 @@ public static class RegistrationValidator
             errors.Add(new AuthenticationError(
                 AuthenticationErrorCodes.PasswordsDoNotMatch,
                 "ConfirmPassword"));
+        }
+        else
+        {
         }
     }
 

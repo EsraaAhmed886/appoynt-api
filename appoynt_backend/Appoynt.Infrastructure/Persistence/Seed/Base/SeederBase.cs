@@ -1,4 +1,4 @@
-﻿/**
+/**
  * File Name      : SeederBase.cs
  * Author         : Mustafa Mahmoud
  * Created Date   : 22/07/2026
@@ -39,6 +39,9 @@ public abstract class SeederBase
         if (result.Succeeded)
         {
             return;
+        }
+        else
+        {
         }
 
         StringBuilder builder = new();

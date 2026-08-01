@@ -161,6 +161,9 @@ public sealed class AuthenticationController : ControllerBase
         {
             return StatusCode(StatusCodes.Status201Created, result.Response);
         }
+        else
+        {
+        }
 
         if (result.Errors.Any(error =>
                 error.Code is AuthenticationErrorCodes.EmailAlreadyRegistered
@@ -168,11 +171,17 @@ public sealed class AuthenticationController : ControllerBase
         {
             return Conflict(result.Errors);
         }
+        else
+        {
+        }
 
         if (result.Errors.Any(error =>
                 error.Code == AuthenticationErrorCodes.RegistrationFailed))
         {
             return StatusCode(StatusCodes.Status500InternalServerError, result.Errors);
+        }
+        else
+        {
         }
 
         return BadRequest(result.Errors);

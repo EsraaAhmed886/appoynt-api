@@ -89,6 +89,9 @@ public sealed class UserManagementService : IUserManagementService
         {
             return Failure(AuthenticationErrorCodes.RegistrationFailed);
         }
+        else
+        {
+        }
 
         var doctor = await _dbContext.Doctors
             .FirstOrDefaultAsync(d => d.UserId == doctorUserId, cancellationToken);
@@ -96,6 +99,9 @@ public sealed class UserManagementService : IUserManagementService
         if (doctor == null)
         {
             return Failure(AuthenticationErrorCodes.CurrentDoctorNotFound, "DoctorId");
+        }
+        else
+        {
         }
 
         return await CreateStaffUserAsync(
@@ -122,6 +128,9 @@ public sealed class UserManagementService : IUserManagementService
                 .ToList();
             return new UserManagementResult { Errors = errors };
         }
+        else
+        {
+        }
 
         string normalizedEmail = _userManager.NormalizeEmail(request.Email!);
 
@@ -131,6 +140,9 @@ public sealed class UserManagementService : IUserManagementService
         {
             return Failure(AuthenticationErrorCodes.EmailAlreadyRegistered, "Email");
         }
+        else
+        {
+        }
 
         if (await _userManager.Users.AnyAsync(
                 user => user.PhoneNumber == request.PhoneNumber,
@@ -138,10 +150,16 @@ public sealed class UserManagementService : IUserManagementService
         {
             return Failure(AuthenticationErrorCodes.PhoneAlreadyRegistered, "PhoneNumber");
         }
+        else
+        {
+        }
 
         if (!await _roleManager.RoleExistsAsync(role))
         {
             return Failure(AuthenticationErrorCodes.RegistrationFailed);
+        }
+        else
+        {
         }
 
         await using var transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
@@ -171,6 +189,9 @@ public sealed class UserManagementService : IUserManagementService
                     .ToList();
                 return new UserManagementResult { Errors = errors };
             }
+            else
+            {
+            }
 
             IdentityResult addRoleResult = await _userManager.AddToRoleAsync(user, role);
 
@@ -181,6 +202,9 @@ public sealed class UserManagementService : IUserManagementService
                     .Select(e => new AuthenticationError(e.Code, e.Description))
                     .ToList();
                 return new UserManagementResult { Errors = errors };
+            }
+            else
+            {
             }
 
             // Create the corresponding domain entity.
@@ -211,6 +235,8 @@ public sealed class UserManagementService : IUserManagementService
                         User = user,
                         Doctor = assignedDoctor
                     });
+                    break;
+                default:
                     break;
             }
 
@@ -258,6 +284,9 @@ public sealed class UserManagementService : IUserManagementService
         {
             query = query.Where(u => u.IsActive);
         }
+        else
+        {
+        }
 
         // Apply authorization filtering based on the caller's role.
         if (currentRole == RoleConstants.Doctor)
@@ -276,12 +305,18 @@ public sealed class UserManagementService : IUserManagementService
             // Patients and Receptionists can only see their own profile.
             query = query.Where(u => u.Id == currentUserId);
         }
+        else
+        {
+        }
 
         // Apply Search Filtering
         if (!string.IsNullOrWhiteSpace(queryParams.Name))
         {
             var name = queryParams.Name;
             query = query.Where(u => EF.Functions.Like(u.FirstName + " " + u.LastName, $"%{name}%"));
+        }
+        else
+        {
         }
 
         // Apply role filtering by joining to IdentityUserRole via a subquery.
@@ -297,6 +332,12 @@ public sealed class UserManagementService : IUserManagementService
                 // Filter the main query to only include users in the requested role.
                 query = query.Where(u => userIdsInRole.Contains(u.Id));
             }
+            else
+            {
+            }
+        }
+        else
+        {
         }
 
         // Count total matching records before applying pagination.
@@ -347,6 +388,9 @@ public sealed class UserManagementService : IUserManagementService
         {
             query = query.Where(u => u.IsActive);
         }
+        else
+        {
+        }
 
         // Apply authorization filtering based on the caller's role.
         if (currentRole == RoleConstants.Doctor)
@@ -365,6 +409,9 @@ public sealed class UserManagementService : IUserManagementService
             // Patients and Receptionists can only see their own profile.
             query = query.Where(u => u.Id == currentUserId);
         }
+        else
+        {
+        }
 
         // Attempt to find the user matching the requested ID within the authorized scope.
         var user = await query.FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
@@ -373,6 +420,9 @@ public sealed class UserManagementService : IUserManagementService
         if (user == null)
         {
             return null;
+        }
+        else
+        {
         }
 
         // Retrieve the user's assigned roles from Identity.
@@ -396,6 +446,9 @@ public sealed class UserManagementService : IUserManagementService
             var errors = validationResult.Errors.Select(e => new AuthenticationError(e.ErrorCode, e.PropertyName)).ToList();
             return UserManagementResult.Failure(errors);
         }
+        else
+        {
+        }
 
         // Load the target user with Receptionist navigation for authorization checks.
         var user = await _dbContext.Users
@@ -406,6 +459,9 @@ public sealed class UserManagementService : IUserManagementService
         if (user == null || !user.IsActive)
         {
             return UserManagementResult.Failure(AuthenticationErrorCodes.UserNotFound, nameof(id));
+        }
+        else
+        {
         }
 
         // Retrieve the current user's identity and role for authorization decisions.
@@ -430,6 +486,9 @@ public sealed class UserManagementService : IUserManagementService
             {
                 return UserManagementResult.Failure(AuthenticationErrorCodes.Forbidden, nameof(id));
             }
+            else
+            {
+            }
         }
         else if (currentRole == RoleConstants.Patient || currentRole == RoleConstants.Receptionist)
         {
@@ -438,11 +497,17 @@ public sealed class UserManagementService : IUserManagementService
             {
                 return UserManagementResult.Failure(AuthenticationErrorCodes.Forbidden, nameof(id));
             }
+            else
+            {
+            }
         }
         else if (currentRole != RoleConstants.Admin)
         {
             // Deny access for any unrecognized role.
             return UserManagementResult.Failure(AuthenticationErrorCodes.Forbidden, nameof(id));
+        }
+        else
+        {
         }
 
         // Apply only the fields that were explicitly provided in the request.
@@ -450,25 +515,40 @@ public sealed class UserManagementService : IUserManagementService
         {
             user.FirstName = request.FirstName;
         }
+        else
+        {
+        }
 
         if (request.LastName != null)
         {
             user.LastName = request.LastName;
+        }
+        else
+        {
         }
 
         if (request.Gender != null)
         {
             user.Gender = request.Gender;
         }
+        else
+        {
+        }
 
         if (request.DateOfBirth != null)
         {
             user.DateOfBirth = request.DateOfBirth;
         }
+        else
+        {
+        }
 
         if (request.Address != null)
         {
             user.Address = request.Address;
+        }
+        else
+        {
         }
 
         // Update audit trail fields.
@@ -491,6 +571,9 @@ public sealed class UserManagementService : IUserManagementService
         {
             return UserManagementResult.Failure(AuthenticationErrorCodes.Forbidden, nameof(id));
         }
+        else
+        {
+        }
 
         // Load the target user from the database.
         var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
@@ -499,6 +582,9 @@ public sealed class UserManagementService : IUserManagementService
         if (user == null || !user.IsActive)
         {
             return UserManagementResult.Failure(AuthenticationErrorCodes.UserNotFound, nameof(id));
+        }
+        else
+        {
         }
 
         // Mark the user as inactive (soft delete) and record the deletion audit trail.

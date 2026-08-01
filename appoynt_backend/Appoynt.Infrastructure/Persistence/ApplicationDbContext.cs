@@ -221,6 +221,9 @@ public class ApplicationDbContext
         {
             return;
         }
+        else
+        {
+        }
 
         // Convert delete operations into soft-delete updates.
         ApplySoftDelete();
@@ -268,6 +271,9 @@ public class ApplicationDbContext
             if (entry.State is EntityState.Unchanged or EntityState.Detached)
             {
                 continue;
+            }
+            else
+            {
             }
 
             switch (entry.State)
@@ -325,6 +331,9 @@ public class ApplicationDbContext
             if (entry.State is EntityState.Unchanged or EntityState.Detached)
             {
                 continue;
+            }
+            else
+            {
             }
 
             switch (entry.State)
@@ -395,6 +404,9 @@ public class ApplicationDbContext
             {
                 continue;
             }
+            else
+            {
+            }
 
             // Convert the delete operation into an update.
             entry.State = EntityState.Modified;
@@ -425,6 +437,9 @@ public class ApplicationDbContext
             if (entry.State != EntityState.Deleted)
             {
                 continue;
+            }
+            else
+            {
             }
 
             // Convert the delete operation into an update.
@@ -458,11 +473,17 @@ public class ApplicationDbContext
             {
                 continue;
             }
+            else
+            {
+            }
 
             // Exclude noise/temporary entities
             if (entry.Entity is OtpChallenge || entry.Entity is RefreshToken)
             {
                 continue;
+            }
+            else
+            {
             }
 
             var auditEntry = new AuditEntry(entry)
@@ -488,6 +509,9 @@ public class ApplicationDbContext
                     auditEntry.TemporaryProperties.Add(property);
                     continue;
                 }
+                else
+                {
+                }
 
                 string propertyName = property.Metadata.Name;
 
@@ -496,11 +520,17 @@ public class ApplicationDbContext
                     auditEntry.KeyValues[propertyName] = property.CurrentValue;
                     continue;
                 }
+                else
+                {
+                }
 
                 // Exclude sensitive properties
                 if (IsSensitiveProperty(propertyName))
                 {
                     continue;
+                }
+                else
+                {
                 }
 
                 switch (entry.State)
@@ -518,6 +548,11 @@ public class ApplicationDbContext
                             auditEntry.OldValues[propertyName] = property.OriginalValue;
                             auditEntry.NewValues[propertyName] = property.CurrentValue;
                         }
+                        else
+                        {
+                        }
+                        break;
+                    default:
                         break;
                 }
             }
@@ -536,6 +571,9 @@ public class ApplicationDbContext
         if (auditEntries == null || auditEntries.Count == 0)
         {
             return;
+        }
+        else
+        {
         }
 
         foreach (var auditEntry in auditEntries)
@@ -563,6 +601,9 @@ public class ApplicationDbContext
         if (auditEntries == null || auditEntries.Count == 0)
         {
             return;
+        }
+        else
+        {
         }
 
         foreach (var auditEntry in auditEntries)

@@ -110,6 +110,9 @@ public class Program
                 options.RoutePrefix = string.Empty; // Set Swagger UI as the root page
             });
         }
+        else
+        {
+        }
 
         // Redirect HTTP requests to HTTPS.
         app.UseHttpsRedirection();

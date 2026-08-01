@@ -64,6 +64,9 @@ public sealed class OtpService : IOtpService
         {
             return Failure(AuthenticationErrorCodes.OtpDeliveryUnavailable);
         }
+        else
+        {
+        }
 
         DateTime utcNow = DateTime.UtcNow;
         List<OtpChallenge> activeChallenges = await _dbContext.OtpChallenges
@@ -114,6 +117,9 @@ public sealed class OtpService : IOtpService
         {
             return Failure(AuthenticationErrorCodes.OtpInvalid);
         }
+        else
+        {
+        }
 
         OtpChallenge? challenge = await _dbContext.OtpChallenges
             .Include(item => item.User)
@@ -124,6 +130,9 @@ public sealed class OtpService : IOtpService
         {
             return Failure(AuthenticationErrorCodes.OtpInvalid);
         }
+        else
+        {
+        }
 
         DateTime utcNow = DateTime.UtcNow;
 
@@ -131,10 +140,16 @@ public sealed class OtpService : IOtpService
         {
             return Failure(AuthenticationErrorCodes.OtpExpired);
         }
+        else
+        {
+        }
 
         if (challenge.VerificationAttempts >= UserConstants.MaxOtpAttempts)
         {
             return Failure(AuthenticationErrorCodes.OtpAttemptsExceeded);
+        }
+        else
+        {
         }
 
         PasswordVerificationResult verificationResult =
@@ -148,6 +163,9 @@ public sealed class OtpService : IOtpService
             return Failure(challenge.VerificationAttempts >= UserConstants.MaxOtpAttempts
                 ? AuthenticationErrorCodes.OtpAttemptsExceeded
                 : AuthenticationErrorCodes.OtpInvalid);
+        }
+        else
+        {
         }
 
         challenge.ConsumedAt = utcNow;
@@ -163,6 +181,9 @@ public sealed class OtpService : IOtpService
         else if (challenge.Purpose == OtpPurpose.PasswordReset)
         {
             passwordResetToken = await _userManager.GeneratePasswordResetTokenAsync(challenge.User);
+        }
+        else
+        {
         }
 
         await _dbContext.SaveChangesAsync(cancellationToken);
@@ -196,6 +217,9 @@ public sealed class OtpService : IOtpService
         {
             return Failure(AuthenticationErrorCodes.OtpInvalid);
         }
+        else
+        {
+        }
 
         DateTime utcNow = DateTime.UtcNow;
 
@@ -203,10 +227,16 @@ public sealed class OtpService : IOtpService
         {
             return Failure(AuthenticationErrorCodes.OtpResendNotAvailable);
         }
+        else
+        {
+        }
 
         if (previousChallenge.ResendCount >= UserConstants.MaxOtpResends)
         {
             return Failure(AuthenticationErrorCodes.OtpResendLimitReached);
+        }
+        else
+        {
         }
 
         string phoneNumber = previousChallenge.User.PhoneNumber
@@ -216,6 +246,9 @@ public sealed class OtpService : IOtpService
         if (!await _smsSender.SendOtpAsync(phoneNumber, code, cancellationToken))
         {
             return Failure(AuthenticationErrorCodes.OtpDeliveryUnavailable);
+        }
+        else
+        {
         }
 
         previousChallenge.InvalidatedAt = utcNow;

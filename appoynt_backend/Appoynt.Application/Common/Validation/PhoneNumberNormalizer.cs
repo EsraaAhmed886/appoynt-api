@@ -34,6 +34,9 @@ public static class PhoneNumberNormalizer
         {
             return new PhoneNumberNormalizationResult(string.Empty, false);
         }
+        else
+        {
+        }
 
         var digits = new StringBuilder(phoneNumber.Length);
         bool containsUnsupportedCharacters = false;
@@ -44,6 +47,9 @@ public static class PhoneNumberNormalizer
             {
                 digits.Append(digit);
                 continue;
+            }
+            else
+            {
             }
 
             UnicodeCategory category = Rune.GetUnicodeCategory(rune);
@@ -58,6 +64,9 @@ public static class PhoneNumberNormalizer
             {
                 continue;
             }
+            else
+            {
+            }
 
             containsUnsupportedCharacters = true;
         }
@@ -71,6 +80,9 @@ public static class PhoneNumberNormalizer
         else if (normalizedPhoneNumber.StartsWith("20", StringComparison.Ordinal))
         {
             normalizedPhoneNumber = $"0{normalizedPhoneNumber[2..]}";
+        }
+        else
+        {
         }
 
         return new PhoneNumberNormalizationResult(
@@ -93,17 +105,26 @@ public static class PhoneNumberNormalizer
             digit = (char)value;
             return true;
         }
+        else
+        {
+        }
 
         if (value is >= 0x0660 and <= 0x0669)
         {
             digit = (char)('0' + value - 0x0660);
             return true;
         }
+        else
+        {
+        }
 
         if (value is >= 0x06F0 and <= 0x06F9)
         {
             digit = (char)('0' + value - 0x06F0);
             return true;
+        }
+        else
+        {
         }
 
         digit = default;

@@ -74,6 +74,9 @@ public sealed class RegistrationService : IRegistrationService
         {
             return Failure(validationErrors);
         }
+        else
+        {
+        }
 
         string normalizedEmail = _userManager.NormalizeEmail(normalizedRequest.Email);
 
@@ -82,6 +85,9 @@ public sealed class RegistrationService : IRegistrationService
                 cancellationToken))
         {
             return Failure(AuthenticationErrorCodes.EmailAlreadyRegistered, "Email");
+        }
+        else
+        {
         }
 
         if (await _userManager.Users.AnyAsync(
@@ -92,10 +98,16 @@ public sealed class RegistrationService : IRegistrationService
                 AuthenticationErrorCodes.PhoneAlreadyRegistered,
                 "PhoneNumber");
         }
+        else
+        {
+        }
 
         if (!await _roleManager.RoleExistsAsync(RoleConstants.Patient))
         {
             return Failure(AuthenticationErrorCodes.RegistrationFailed);
+        }
+        else
+        {
         }
 
         await using var transaction = await _dbContext.Database
@@ -125,6 +137,9 @@ public sealed class RegistrationService : IRegistrationService
                 await transaction.RollbackAsync(cancellationToken);
                 return Failure(AuthenticationErrorCodes.RegistrationFailed);
             }
+            else
+            {
+            }
 
             IdentityResult addRoleResult = await _userManager.AddToRoleAsync(
                 user,
@@ -134,6 +149,9 @@ public sealed class RegistrationService : IRegistrationService
             {
                 await transaction.RollbackAsync(cancellationToken);
                 return Failure(AuthenticationErrorCodes.RegistrationFailed);
+            }
+            else
+            {
             }
 
             _dbContext.Patients.Add(new Patient
@@ -154,6 +172,9 @@ public sealed class RegistrationService : IRegistrationService
             {
                 await transaction.RollbackAsync(cancellationToken);
                 return Failure(otpResult.Errors);
+            }
+            else
+            {
             }
 
             await transaction.CommitAsync(cancellationToken);

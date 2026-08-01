@@ -58,6 +58,9 @@ public sealed class LoginService : ILoginService
         {
             return Failure();
         }
+        else
+        {
+        }
 
         ApplicationUser? user = normalizedRequest.IsEmailIdentifier
             ? await FindByEmailAsync(normalizedRequest.Identifier, cancellationToken)
@@ -70,16 +73,25 @@ public sealed class LoginService : ILoginService
         {
             return Failure();
         }
+        else
+        {
+        }
 
         if (await _userManager.IsLockedOutAsync(user))
         {
             return Failure();
+        }
+        else
+        {
         }
 
         if (!await _userManager.CheckPasswordAsync(user, normalizedRequest.Password))
         {
             await _userManager.AccessFailedAsync(user);
             return Failure();
+        }
+        else
+        {
         }
 
         await _userManager.ResetAccessFailedCountAsync(user);

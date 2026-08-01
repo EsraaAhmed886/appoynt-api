@@ -37,6 +37,9 @@ public static class ForgotPasswordRequestValidator
                 AuthenticationErrorCodes.PasswordRecoveryRequestInvalid,
                 nameof(request.Identifier)));
         }
+        else
+        {
+        }
 
         return errors;
     }

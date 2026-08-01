@@ -41,6 +41,9 @@ internal static class RateLimitingDependencyInjection
         {
             throw new InvalidOperationException("RateLimiting configuration section is missing or invalid.");
         }
+        else
+        {
+        }
 
         services.AddRateLimiter(options =>
         {

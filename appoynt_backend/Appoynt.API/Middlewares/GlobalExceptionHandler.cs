@@ -69,6 +69,9 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
         {
             problemDetails.Extensions["traceId"] = traceId;
         }
+        else
+        {
+        }
 
         httpContext.Response.StatusCode = statusCode;
         httpContext.Response.ContentType = "application/problem+json";

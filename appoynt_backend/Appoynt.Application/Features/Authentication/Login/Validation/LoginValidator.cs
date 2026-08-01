@@ -38,6 +38,9 @@ public static class LoginValidator
         {
             return false;
         }
+        else
+        {
+        }
 
         return request.IsEmailIdentifier
             ? new EmailAddressAttribute().IsValid(request.Identifier)

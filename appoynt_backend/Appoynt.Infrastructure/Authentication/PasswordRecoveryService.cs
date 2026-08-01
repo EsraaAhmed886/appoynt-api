@@ -53,6 +53,9 @@ public sealed class PasswordRecoveryService : IPasswordRecoveryService
         {
             return new OtpResult { Errors = validationErrors };
         }
+        else
+        {
+        }
 
         string identifier = request.Identifier.Trim();
 
@@ -74,6 +77,9 @@ public sealed class PasswordRecoveryService : IPasswordRecoveryService
             {
                 Errors = [new AuthenticationError(AuthenticationErrorCodes.PasswordRecoveryRequestInvalid)]
             };
+        }
+        else
+        {
         }
 
         return await _otpService.IssueAsync(user, OtpPurpose.PasswordReset, cancellationToken);
@@ -101,11 +107,17 @@ public sealed class PasswordRecoveryService : IPasswordRecoveryService
             // Fail fast, generic error
             return (false, [new AuthenticationError(AuthenticationErrorCodes.PasswordRecoveryRequestInvalid)]);
         }
+        else
+        {
+        }
 
         IReadOnlyList<AuthenticationError> validationErrors = ResetPasswordRequestValidator.Validate(request, user);
         if (validationErrors.Count > 0)
         {
             return (false, validationErrors);
+        }
+        else
+        {
         }
 
         IdentityResult result = await _userManager.ResetPasswordAsync(user, request.ResetToken, request.NewPassword);
@@ -113,6 +125,9 @@ public sealed class PasswordRecoveryService : IPasswordRecoveryService
         if (result.Succeeded)
         {
             return (true, []);
+        }
+        else
+        {
         }
 
         var errors = result.Errors

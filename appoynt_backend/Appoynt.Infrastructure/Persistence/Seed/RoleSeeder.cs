@@ -1,4 +1,4 @@
-﻿/**
+/**
  * File Name      : RoleSeeder.cs
  * Author         : Mustafa Mahmoud
  * Created Date   : 22/07/2026
@@ -101,6 +101,9 @@ public sealed class RoleSeeder
                 roleName);
 
             return;
+        }
+        else
+        {
         }
 
         IdentityRole<Guid> role = new()

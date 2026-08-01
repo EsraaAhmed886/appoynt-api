@@ -65,6 +65,9 @@ public sealed class PasswordRecoveryIntegrationTests : IClassFixture<WebApplicat
             string err = await forgotRes.Content.ReadAsStringAsync();
             throw new Exception($"Forgot password failed with status {forgotRes.StatusCode} and body {err}");
         }
+        else
+        {
+        }
         forgotRes.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var challenge = await forgotRes.Content.ReadFromJsonAsync<OtpChallengeResponse>();
