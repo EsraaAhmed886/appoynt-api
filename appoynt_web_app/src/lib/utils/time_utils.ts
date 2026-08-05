@@ -1,11 +1,11 @@
 /*
  * File Name: time_utils.ts
- * Author: Kholoud Khaled
- * Date of Creation: 28/06/2026
+ * Author: shimaa salah
+ * Date of Creation: 05/08/2026
  * Version Information: V1.0.0
  * Dependencies: None
- * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 05/08/2026]
+ * Contributors: shimaa salah
+ * Last Modified Date: [shimaa salah- 05/08/2026]
  * File Description: Pure utility functions for parsing time strings, comparing time intervals, and checking schedule range bounds.
  */
 

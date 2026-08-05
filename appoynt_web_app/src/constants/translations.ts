@@ -5,7 +5,7 @@
  * Version Information: V1.0.0
  * Dependencies: None
  * Contributors: [Kholoud Khaled , shimaa salah]
- * Last Modified Date: [Kholoud Khaled - 05/08/2026]
+ * Last Modified Date: [shimaa salah - 05/08/2026]
  * File Description: Defines English and Arabic localized dictionary collections.
  */
 

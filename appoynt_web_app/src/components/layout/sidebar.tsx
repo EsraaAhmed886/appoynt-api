@@ -10,8 +10,8 @@
  *   - @/context/language_context
  *   - @/components/layout/sidebar_item
  *   - @/components/theme_toggle
- * Contributors: [shimaa salah, Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 05/08/2026]
+ * Contributors: shimaa salah
+ * Last Modified Date: [shimaa salah - 05/08/2026]
  * File Description: Primary sidebar navigation drawer component with embedded brand logo, collapsibility, and localized navigation targets.
  */
 

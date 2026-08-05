@@ -1,13 +1,13 @@
 /**
  * File Name: clinic_validator.ts
- * Author: Kholoud Khaled
- * Created Date: 28/06/2026
+ * Author: shimaa salah
+ * Created Date: 05/07/2026
  * Version: v1.0.0
  * Dependencies:
  *   - @/types/clinic
  *   - @/lib/utils/time_utils
- * Contributors: [Kholoud Khaled, shimaa salah]
- * Last Modified: Kholoud Khaled - 05/08/2026
+ * Contributors: shimaa salah
+ * Last Modified: shimaa salah - 05/08/2026
  * Description: Centralized validation engine providing pure validation rules with Arabic user feedback messages.
  */
 

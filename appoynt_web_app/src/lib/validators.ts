@@ -1,3 +1,14 @@
+/*
+ * File Name: validators.ts
+ * Author: shimaa salah
+ * Date of Creation: 28/07/2026
+ * Version Information: V1.0.0
+ * Dependencies: None
+ * Contributors: shimaa salah
+ * Last Modified Date: [shimaa salah - 05/08/2026]
+ * File Description: Security and utility validation functions for verifying safe internal URLs against open redirect vulnerabilities and sanitizing user search input queries.
+ */
+
 /**
  * Validates whether a URL is a safe internal relative path (e.g., '/appointments/123').
  * Prevents Open Redirect security vulnerabilities.
