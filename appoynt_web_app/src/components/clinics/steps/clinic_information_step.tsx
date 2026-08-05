@@ -1,10 +1,37 @@
+/*
+ * File Name: clinic_information_step.tsx
+ * Author: shimaa salah
+ * Date of Creation: 28/07/2026
+ * Version Information: V1.0.0
+ * Dependencies:
+ *   - react
+ *   - @/context/language_context
+ *   - @/components/clinics/custom_select
+ *   - @/components/clinics/clinic_form_constants
+ *   - @/lib/validators/clinic_validator
+ * Contributors: shimaa salah
+ * Last Modified Date: [shimaa salah - 05/08/2026]
+ * File Description: Step 1 form view with real-time inline validation for clinic name, phone, governorate, city, address, fee, and status.
+ */
+
+"use client";
+
 import CustomSelect from "../custom_select";
+import { useTranslation } from "@/context/language_context";
 import {
   LABEL_CLASS,
   INPUT_CLASS,
   ERROR_CLASS,
   GOVERNORATES,
 } from "../clinic_form_constants";
+import {
+  validate_clinic_name,
+  validate_phone,
+  validate_governorate,
+  validate_city,
+  validate_address,
+  validate_consultation_fee,
+} from "@/lib/validators/clinic_validator";
 
 type ClinicInformationStepProps = {
   form: {
@@ -12,61 +39,35 @@ type ClinicInformationStepProps = {
     clinicNameError: string;
     phone: string;
     phoneError: string;
-
     governorate: string;
     governorateError: string;
-
     city: string;
     cityError: string;
-
     address: string;
     addressError: string;
-
     consultationFee: string;
     consultationFeeError: string;
-
     workingDays: string[];
     workingDaysError: string;
-
     status: string;
-
     availableCities: string[];
   };
 
   actions: {
-    setClinicName: React.Dispatch<React.SetStateAction<string>>;
-    setClinicNameError: React.Dispatch<React.SetStateAction<string>>;
-
-    setPhone: React.Dispatch<React.SetStateAction<string>>;
-    setPhoneError: React.Dispatch<React.SetStateAction<string>>;
-
-    setGovernorate: React.Dispatch<React.SetStateAction<string>>;
-    setGovernorateError: React.Dispatch<React.SetStateAction<string>>;
-
-    setCity: React.Dispatch<React.SetStateAction<string>>;
-    setCityError: React.Dispatch<React.SetStateAction<string>>;
-
-    setAddress: React.Dispatch<React.SetStateAction<string>>;
-    setAddressError: React.Dispatch<React.SetStateAction<string>>;
-
-    setConsultationFee: React.Dispatch<React.SetStateAction<string>>;
-    setConsultationFeeError: React.Dispatch<React.SetStateAction<string>>;
-
-    setStatus: React.Dispatch<React.SetStateAction<string>>;
-
-    validateClinicName: (
-      clinicName: string,
-      setError: React.Dispatch<React.SetStateAction<string>>,
-    ) => boolean;
-    validateAddress: (
-      address: string,
-      setError: React.Dispatch<React.SetStateAction<string>>,
-    ) => boolean;
-
-    handleDayClick: (day: string) => void;
-
+    setClinicName: (val: string) => void;
+    setClinicNameError: (val: string) => void;
+    setPhone: (val: string) => void;
+    setPhoneError: (val: string) => void;
+    setGovernorate: (val: string) => void;
+    setGovernorateError: (val: string) => void;
+    setCity: (val: string) => void;
+    setCityError: (val: string) => void;
+    setAddress: (val: string) => void;
+    setAddressError: (val: string) => void;
+    setConsultationFee: (val: string) => void;
+    setConsultationFeeError: (val: string) => void;
+    setStatus: (val: string) => void;
     markAsDirty: () => void;
-
     getInputBorderClass: (hasError: boolean) => string;
   };
 };
@@ -75,6 +76,8 @@ export default function ClinicInformationStep({
   form,
   actions,
 }: ClinicInformationStepProps) {
+  const { translations } = useTranslation();
+
   const {
     clinicName,
     clinicNameError,
@@ -106,53 +109,73 @@ export default function ClinicInformationStep({
     setConsultationFee,
     setConsultationFeeError,
     setStatus,
-    validateClinicName,
-    validateAddress,
     markAsDirty,
     getInputBorderClass,
   } = actions;
+
+  const has_name_error = "" !== clinicNameError;
+  const has_phone_error = "" !== phoneError;
+  const has_gov_error = "" !== governorateError;
+  const has_city_error = "" !== cityError;
+  const has_address_error = "" !== addressError;
+  const has_fee_error = "" !== consultationFeeError;
 
   return (
     <div className="space-y-4">
       {/* Clinic Name */}
       <div className="flex flex-col">
         <label className={LABEL_CLASS}>
-          Clinic Name <span className="text-red-500">*</span>
+          {translations.lbl_clinic_name} <span className="text-red-500">*</span>
         </label>
 
         <input
           type="text"
           value={clinicName}
           onChange={(e) => {
-            const value = e.target.value;
-            setClinicName(value);
-            validateClinicName(value, setClinicNameError);
+            const val = e.target.value;
+            setClinicName(val);
+            const err = validate_clinic_name(val);
+            setClinicNameError(err || "");
             markAsDirty();
           }}
-          placeholder="Enter clinic name"
-          className={`${INPUT_CLASS} ${getInputBorderClass(!!clinicNameError)}`}
+          onBlur={() => {
+            const err = validate_clinic_name(clinicName);
+            setClinicNameError(err || "");
+          }}
+          placeholder={translations.ph_clinic_name}
+          className={`${INPUT_CLASS} ${getInputBorderClass(has_name_error)}`}
         />
-        {clinicNameError && <p className={ERROR_CLASS}>{clinicNameError}</p>}
+        {has_name_error ? (
+          <p className={ERROR_CLASS}>{clinicNameError}</p>
+        ) : null}
       </div>
 
       {/* Phone Number */}
       <div className="flex flex-col">
         <label className={LABEL_CLASS}>
-          Phone Number <span className="text-red-500">*</span>
+          {translations.lbl_phone} <span className="text-red-500">*</span>
         </label>
 
         <input
-          type="number"
+          type="text"
           value={phone}
           onChange={(e) => {
-            setPhone(e.target.value);
-            setPhoneError("");
+            const val = e.target.value;
+            setPhone(val);
+            const err = validate_phone(val);
+            setPhoneError(err || "");
             markAsDirty();
           }}
-          placeholder="Enter phone number"
-          className={`${INPUT_CLASS} ${getInputBorderClass(!!phoneError)}`}
+          onBlur={() => {
+            const err = validate_phone(phone);
+            setPhoneError(err || "");
+          }}
+          placeholder={translations.ph_phone}
+          className={`${INPUT_CLASS} ${getInputBorderClass(has_phone_error)}`}
         />
-        {phoneError ? <p className={ERROR_CLASS}>{phoneError}</p> : null}
+        {has_phone_error ? (
+          <p className={ERROR_CLASS}>{phoneError}</p>
+        ) : null}
       </div>
 
       {/* Location */}
@@ -161,33 +184,33 @@ export default function ClinicInformationStep({
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {/* Governorate */}
           <CustomSelect
-            label="Governorate"
-            placeholder="Select Governorate"
+            label={translations.lbl_governorate}
+            placeholder={translations.ph_select_governorate}
             value={governorate}
             error={governorateError}
             options={GOVERNORATES}
-            onChange={(value) => {
-              setGovernorate(value);
-              setGovernorateError("");
-
+            on_change={(val) => {
+              setGovernorate(val);
+              const err = validate_governorate(val);
+              setGovernorateError(err || "");
               setCity("");
               setCityError("");
-
               markAsDirty();
             }}
           />
 
           {/* City */}
           <CustomSelect
-            label="City"
-            placeholder="Select City"
+            label={translations.lbl_city}
+            placeholder={translations.ph_select_city}
             value={city}
             error={cityError}
             options={availableCities}
             disabled={!governorate}
-            onChange={(value) => {
-              setCity(value);
-              setCityError("");
+            on_change={(val) => {
+              setCity(val);
+              const err = validate_city(val);
+              setCityError(err || "");
               markAsDirty();
             }}
           />
@@ -196,31 +219,37 @@ export default function ClinicInformationStep({
         {/* Detailed Address */}
         <div className="flex flex-col">
           <label className={LABEL_CLASS}>
-            Detailed Address <span className="text-red-500">*</span>
+            {translations.lbl_address} <span className="text-red-500">*</span>
           </label>
 
           <input
             type="text"
             value={address}
             onChange={(e) => {
-              const value = e.target.value;
-
-              setAddress(value);
-              validateAddress(value, setAddressError);
+              const val = e.target.value;
+              setAddress(val);
+              const err = validate_address(val);
+              setAddressError(err || "");
               markAsDirty();
             }}
-            placeholder="Enter clinic address"
-            className={`${INPUT_CLASS} ${getInputBorderClass(!!addressError)}`}
+            onBlur={() => {
+              const err = validate_address(address);
+              setAddressError(err || "");
+            }}
+            placeholder={translations.ph_address}
+            className={`${INPUT_CLASS} ${getInputBorderClass(has_address_error)}`}
           />
 
-          {addressError ? <p className={ERROR_CLASS}>{addressError}</p> : null}
+          {has_address_error ? (
+            <p className={ERROR_CLASS}>{addressError}</p>
+          ) : null}
         </div>
       </div>
 
       {/* Consultation Fee */}
       <div className="flex flex-col">
         <label className={LABEL_CLASS}>
-          Consultation Fee <span className="text-red-500">*</span>
+          {translations.lbl_consultation_fee} <span className="text-red-500">*</span>
         </label>
 
         <div className="flex w-full">
@@ -230,23 +259,29 @@ export default function ClinicInformationStep({
             max={100000}
             value={consultationFee}
             onChange={(e) => {
-              setConsultationFee(e.target.value);
-              setConsultationFeeError("");
+              const val = e.target.value;
+              setConsultationFee(val);
+              const err = validate_consultation_fee(val);
+              setConsultationFeeError(err || "");
               markAsDirty();
             }}
-            placeholder="Enter fee"
-            className={`${INPUT_CLASS} ${getInputBorderClass(!!consultationFeeError)} rounded-r-none`}
+            onBlur={() => {
+              const err = validate_consultation_fee(consultationFee);
+              setConsultationFeeError(err || "");
+            }}
+            placeholder={translations.ph_fee}
+            className={`${INPUT_CLASS} ${getInputBorderClass(has_fee_error)} rounded-r-none rtl:rounded-r-xl rtl:rounded-l-none`}
           />
 
           <div
-            className="flex items-center rounded-r-lg border border-l-0 border-app-border
+            className="flex items-center rounded-r-xl border border-l-0 border-app-border
           bg-app-input_fill
-          text-app-text-secondary px-4"
+          text-app-text-secondary px-4 text-sm font-semibold rtl:rounded-r-none rtl:rounded-l-xl rtl:border-l rtl:border-r-0"
           >
             EGP
           </div>
         </div>
-        {consultationFeeError ? (
+        {has_fee_error ? (
           <p className={ERROR_CLASS}>{consultationFeeError}</p>
         ) : null}
       </div>
@@ -254,36 +289,38 @@ export default function ClinicInformationStep({
       {/* Status */}
       <div className="flex flex-col">
         <label className={LABEL_CLASS}>
-          Status <span className="text-red-500">*</span>
+          {translations.th_status} <span className="text-red-500">*</span>
         </label>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:gap-8">
-          <label className="flex items-center gap-2 text-app-text-primary">
+          <label className="flex items-center gap-2 text-app-text-primary cursor-pointer">
             <input
               type="radio"
               name="status"
               value="Active"
-              checked={status === "Active"}
+              checked={"Active" === status}
               onChange={() => {
                 setStatus("Active");
                 markAsDirty();
               }}
+              className="accent-app-primary h-4 w-4"
             />
-            Active
+            {translations.clinic_status_active}
           </label>
 
-          <label className="flex items-center gap-2 text-app-text-primary">
+          <label className="flex items-center gap-2 text-app-text-primary cursor-pointer">
             <input
               type="radio"
               name="status"
               value="Inactive"
-              checked={status === "Inactive"}
+              checked={"Inactive" === status}
               onChange={() => {
                 setStatus("Inactive");
                 markAsDirty();
               }}
+              className="accent-app-primary h-4 w-4"
             />
-            Inactive
+            {translations.clinic_status_inactive}
           </label>
         </div>
       </div>

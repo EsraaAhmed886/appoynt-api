@@ -1,100 +1,126 @@
-import { Pencil, Trash2 } from "lucide-react";
-import Link from "next/link";
+/*
+ * File Name: clinic_table.tsx
+ * Author: shimaa salah
+ * Date of Creation: 04/07/2026
+ * Version Information: V1.0.0
+ * Dependencies:
+ *   - react
+ *   - lucide-react
+ *   - @/context/language_context
+ *   - @/types/clinic
+ * Contributors: shimaa salah
+ * Last Modified Date: [shimaa salah - 05/08/2026]
+ * File Description: Reusable localized table component displaying clinic list rows with delete action.
+ */
 
-type Clinic = {
-  id: number;
-  name: string;
-  location: string;
-  phone: string;
-  consultationFee: string;
-  workingDays: string;
-  status: string;
-};
+"use client";
+
+import { Trash2 } from "lucide-react";
+import { useTranslation } from "@/context/language_context";
+import { Clinic } from "@/types/clinic";
 
 type ClinicTableProps = {
   clinics: Clinic[];
-  onDeleteClinic: (clinicId: number) => void;
+  on_delete_clinic: (clinic_id: number) => void;
 };
 
 export default function ClinicTable({
   clinics,
-  onDeleteClinic,
+  on_delete_clinic,
 }: ClinicTableProps) {
+  const { translations } = useTranslation();
+
   return (
     <div className="mt-6 overflow-x-auto rounded-xl border border-app-border bg-app-surface shadow-sm">
-      <table className="min-w-[900px] w-full">
+      <table className="min-w-[900px] w-full border-collapse">
         <thead className="border-b border-app-border bg-app-input_fill">
-          <tr className="text-left text-sm text-app-text-secondary">
-            <th className="px-4 py-3 text-sm lg:px-6 lg:py-4">Clinic Name</th>
-            <th className="px-4 py-3 text-sm lg:px-6 lg:py-4">Location</th>
-            <th className="px-4 py-3 text-sm lg:px-6 lg:py-4">Phone</th>
-            <th className="px-4 py-3 text-sm lg:px-6 lg:py-4">
-              Consultation Fee
+          <tr className="text-start text-sm text-app-text-secondary">
+            <th className="px-4 py-3.5 text-start font-semibold text-sm lg:px-6 lg:py-4">
+              {translations.th_clinic_name}
             </th>
-            <th className="px-4 py-3 text-sm lg:px-6 lg:py-4">Working Days</th>
-            <th className="px-4 py-3 text-sm lg:px-6 lg:py-4">Status</th>
-            <th className="px-4 py-3 text-sm lg:px-6 lg:py-4 text-center">
-              Actions
+            <th className="px-4 py-3.5 text-start font-semibold text-sm lg:px-6 lg:py-4">
+              {translations.th_location}
+            </th>
+            <th className="px-4 py-3.5 text-start font-semibold text-sm lg:px-6 lg:py-4">
+              {translations.th_phone}
+            </th>
+            <th className="px-4 py-3.5 text-start font-semibold text-sm lg:px-6 lg:py-4">
+              {translations.th_consultation_fee}
+            </th>
+            <th className="px-4 py-3.5 text-start font-semibold text-sm lg:px-6 lg:py-4">
+              {translations.th_working_days}
+            </th>
+            <th className="px-4 py-3.5 text-start font-semibold text-sm lg:px-6 lg:py-4">
+              {translations.th_status}
+            </th>
+            <th className="px-4 py-3.5 text-center font-semibold text-sm lg:px-6 lg:py-4">
+              {translations.th_actions}
             </th>
           </tr>
         </thead>
 
-        <tbody>
-          {clinics.map((clinic) => (
-            <tr
-              key={clinic.id}
-              className="border-t border-app-border text-app-text-primary transition hover:bg-app-input_fill"
-            >
-              <td className="px-4 py-3 text-sm font-medium lg:px-6 lg:py-4">
-                {clinic.name}
-              </td>
+        <tbody className="divide-y divide-app-border">
+          {clinics.map((clinic) => {
+            const fee_value =
+              clinic.consultation_fee || clinic.consultationFee || "—";
+            const days_value =
+              clinic.working_days || clinic.workingDays || "—";
+            const is_active = "Active" === clinic.status;
 
-              <td className="px-4 py-3 text-sm lg:px-6 lg:py-4">
-                {clinic.location}
-              </td>
+            return (
+              <tr
+                key={clinic.id}
+                className="border-t border-app-border text-app-text-primary transition-colors hover:bg-app-input_fill/60"
+              >
+                <td className="px-4 py-3.5 text-start text-sm font-semibold lg:px-6 lg:py-4">
+                  {clinic.name}
+                </td>
 
-              <td className="px-4 py-3 text-sm lg:px-6 lg:py-4">
-                {clinic.phone}
-              </td>
+                <td className="px-4 py-3.5 text-start text-sm lg:px-6 lg:py-4">
+                  {clinic.location}
+                </td>
 
-              <td className="px-4 py-3 text-sm lg:px-6 lg:py-4">
-                {clinic.consultationFee}
-              </td>
+                <td className="px-4 py-3.5 text-start text-sm lg:px-6 lg:py-4">
+                  {clinic.phone}
+                </td>
 
-              <td className="px-4 py-3 text-sm lg:px-6 lg:py-4">
-                {clinic.workingDays}
-              </td>
+                <td className="px-4 py-3.5 text-start text-sm font-medium lg:px-6 lg:py-4">
+                  {fee_value}
+                </td>
 
-              <td className="px-4 py-3 text-sm lg:px-6 lg:py-4">
-                <span
-                  className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                    clinic.status === "Active"
-                      ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                      : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
-                  }`}
-                >
-                  {clinic.status}
-                </span>
-              </td>
+                <td className="px-4 py-3.5 text-start text-sm lg:px-6 lg:py-4">
+                  {days_value}
+                </td>
 
-              <td className="px-4 py-3 text-sm lg:px-6 lg:py-4">
-                <div className="flex justify-center gap-2 lg:gap-4">
-                  <Link href={`/clinics/${clinic.id}/edit`}>
-                  <button className="transition hover:scale-110">
-                    <Pencil className="h-5 w-5 text-app-primary" />
-                  </button>
-                  </Link>
-
-                  <button
-                    onClick={() => onDeleteClinic(clinic.id)}
-                    className="transition hover:scale-110"
+                <td className="px-4 py-3.5 text-start text-sm lg:px-6 lg:py-4">
+                  <span
+                    className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${
+                      is_active
+                        ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                        : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+                    }`}
                   >
-                    <Trash2 className="h-5 w-5 text-red-500 hover:text-red-600" />
-                  </button>
-                </div>
-              </td>
-            </tr>
-          ))}
+                    {is_active
+                      ? translations.clinic_status_active
+                      : translations.clinic_status_inactive}
+                  </span>
+                </td>
+
+                <td className="px-4 py-3.5 text-sm lg:px-6 lg:py-4">
+                  <div className="flex items-center justify-center">
+                    <button
+                      type="button"
+                      onClick={() => on_delete_clinic(clinic.id)}
+                      aria-label="Delete Clinic"
+                      className="rounded-lg p-1.5 text-red-500 transition hover:bg-red-500/10 hover:text-red-600 hover:scale-105"
+                    >
+                      <Trash2 className="h-4.5 w-4.5" />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

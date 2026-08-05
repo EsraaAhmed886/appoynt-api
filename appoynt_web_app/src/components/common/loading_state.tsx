@@ -1,3 +1,16 @@
+/*
+ * File Name: loading_state.tsx
+ * Author: shimaa salah
+ * Date of Creation: 20/06/2026
+ * Version Information: V1.0.0
+ * Dependencies: react
+ * Contributors: shimaa salah
+ * Last Modified Date: [shimaa salah - 05/08/2026]
+ * File Description: Skeleton and spinner loading placeholder component.
+ */
+
+"use client";
+
 type LoadingStateProps = {
   variant?: "list" | "table" | "spinner";
   rows?: number;
@@ -7,8 +20,7 @@ export default function LoadingState({
   variant = "list",
   rows = 5,
 }: LoadingStateProps) {
-  // 🔹 حالة القوائم والكروت (مثالية للإشعارات، المواعيد، الكروت)
-  if (variant === "list") {
+  if ("list" === variant) {
     return (
       <div className="w-full space-y-3">
         {Array.from({ length: rows }).map((_, index) => (
@@ -28,34 +40,30 @@ export default function LoadingState({
         ))}
       </div>
     );
-  }
-
-  // 🔹 حالة Spinner بكس بسيط (في حال أردتِ لودر دائرى مركز)
-  if (variant === "spinner") {
+  } else if ("spinner" === variant) {
     return (
       <div className="flex items-center justify-center p-8 w-full">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-app-border border-t-app-primary" />
       </div>
     );
-  }
-
-  // 🔹 حالة الجدول (للصفحات اللي فيها جداول زي العيادات)
-  return (
-    <div className="mt-4 w-full overflow-x-auto rounded-xl border border-app-border bg-app-surface shadow-sm">
-      <div className="p-4 space-y-4">
-        {Array.from({ length: rows }).map((_, index) => (
-          <div
-            key={index}
-            className="flex items-center justify-between border-b border-app-border/40 pb-3 last:border-0 animate-pulse gap-4"
-          >
-            <div className="h-3.5 w-28 bg-app-border rounded" />
-            <div className="h-3.5 w-24 bg-app-border rounded" />
-            <div className="h-3.5 w-20 bg-app-border rounded" />
-            <div className="h-3.5 w-16 bg-app-border rounded" />
-            <div className="h-3.5 w-12 bg-app-border rounded" />
-          </div>
-        ))}
+  } else {
+    return (
+      <div className="mt-4 w-full overflow-x-auto rounded-xl border border-app-border bg-app-surface shadow-sm">
+        <div className="p-4 space-y-4">
+          {Array.from({ length: rows }).map((_, index) => (
+            <div
+              key={index}
+              className="flex items-center justify-between border-b border-app-border/40 pb-3 last:border-0 animate-pulse gap-4"
+            >
+              <div className="h-3.5 w-28 bg-app-border rounded" />
+              <div className="h-3.5 w-24 bg-app-border rounded" />
+              <div className="h-3.5 w-20 bg-app-border rounded" />
+              <div className="h-3.5 w-16 bg-app-border rounded" />
+              <div className="h-3.5 w-12 bg-app-border rounded" />
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 }

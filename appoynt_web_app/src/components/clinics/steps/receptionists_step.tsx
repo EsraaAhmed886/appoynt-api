@@ -18,7 +18,7 @@ export type ReceptionistItem = {
   initials: string;
 };
 
-// بعض الموظفين الافتراضيين للتجربة
+// ??? ???????? ??????????? ???????
 const MOCK_ALL_RECEPTIONISTS: ReceptionistItem[] = [
   {
     id: "1",
@@ -96,7 +96,7 @@ export default function ReceptionistsStep({
     onUpdateAssigned(assignedReceptionists.filter((r) => r.id !== id));
   };
 
-  // الموظفين غير المحددين بعد
+  // ???????? ??? ???????? ???
   const availableList = MOCK_ALL_RECEPTIONISTS.filter(
     (r) => !tempSelected.some((selected) => selected.id === r.id),
   ).filter(

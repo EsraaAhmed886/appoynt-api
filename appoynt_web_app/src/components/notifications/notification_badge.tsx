@@ -1,3 +1,17 @@
+/*
+ * File Name: notification_badge.tsx
+ * Author: shimaa salah
+ * Date of Creation: 28/07/2026
+ * Version Information: V1.0.0
+ * Dependencies:
+ *   - react
+ *   - lucide-react
+ *   - @/types/notification
+ *   - @/context/language_context
+ * Contributors: shimaa salah
+ * Last Modified Date: [shimaa salah - 05/08/2026]
+ * File Description: Components for rendering notification status icons dynamically styled by notification type, and priority indicators with localized badges.
+ */
 import React from "react";
 import {
   XCircle,

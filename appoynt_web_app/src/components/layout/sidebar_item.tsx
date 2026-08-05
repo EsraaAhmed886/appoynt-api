@@ -1,3 +1,18 @@
+/*
+ * File Name: sidebar_item.tsx
+ * Author: shimaa salah
+ * Date of Creation: 28/07/2026
+ * Version Information: V1.0.0
+ * Dependencies:
+ *   - react
+ *   - next/link
+ *   - next/navigation
+ *   - lucide-react
+ * Contributors: shimaa salah
+ * Last Modified Date: [shimaa salah - 05/08/2026]
+ * File Description: Individual navigation item link rendered within the sidebar drawer with active styling and portal tooltip.
+ */
+
 "use client";
 
 import Link from "next/link";
@@ -21,32 +36,33 @@ export default function SidebarItem({
 }: SidebarItemProps) {
   const pathname = usePathname();
 
-  const isActive = pathname === href;
-  const itemRef = useRef<HTMLDivElement>(null);
+  const is_active = href === pathname;
+  const item_ref = useRef<HTMLDivElement>(null);
 
-  const [isHovered, setIsHovered] = useState(false);
-  const [tooltipPosition, setTooltipPosition] = useState({
+  const [is_hovered, set_is_hovered] = useState(false);
+  const [tooltip_position, set_tooltip_position] = useState({
     top: 0,
     left: 0,
   });
 
   useEffect(() => {
-    if (isHovered && itemRef.current) {
-      const rect = itemRef.current.getBoundingClientRect();
-
-      setTooltipPosition({
+    if (is_hovered && item_ref.current) {
+      const rect = item_ref.current.getBoundingClientRect();
+      set_tooltip_position({
         top: rect.top + rect.height / 2,
         left: rect.right + 12,
       });
+    } else {
+      // Not hovered or no ref
     }
-  }, [isHovered]);
+  }, [is_hovered]);
 
   return (
     <div
-      ref={itemRef}
+      ref={item_ref}
       className="relative"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={() => set_is_hovered(true)}
+      onMouseLeave={() => set_is_hovered(false)}
     >
       <Link
         href={href}
@@ -63,8 +79,8 @@ export default function SidebarItem({
           duration-300
           ${isCollapsed ? "justify-center" : "justify-start gap-3"}
           ${
-            isActive
-              ? "bg-app-primary text-white"
+            is_active
+              ? "bg-app-primary text-white font-semibold shadow-sm"
               : "text-app-text-secondary hover:bg-app-input_fill hover:text-app-text-primary"
           }
         `}
@@ -74,36 +90,36 @@ export default function SidebarItem({
         {!isCollapsed && <span className="whitespace-nowrap">{title}</span>}
       </Link>
 
-      {isCollapsed &&
-        isHovered &&
-        typeof window !== "undefined" &&
-        createPortal(
-          <div
-            className="
-        pointer-events-none
-        fixed
-        z-`9999`
-        -translate-y-1/2
-        whitespace-nowrap
-        rounded-lg
-        border
-        border-app-border
-        bg-app-surface
-        px-3
-        py-2
-        text-sm
-        text-app-text-primary
-        shadow-lg
-      "
-            style={{
-              top: tooltipPosition.top,
-              left: tooltipPosition.left,
-            }}
-          >
-            {title}
-          </div>,
-          document.body,
-        )}
+      {isCollapsed && is_hovered && "undefined" !== typeof window
+        ? createPortal(
+            <div
+              className="
+                pointer-events-none
+                fixed
+                z-[9999]
+                -translate-y-1/2
+                whitespace-nowrap
+                rounded-xl
+                border
+                border-app-border
+                bg-app-surface
+                px-3.5
+                py-2
+                text-sm
+                font-medium
+                text-app-text-primary
+                shadow-xl
+              "
+              style={{
+                top: tooltip_position.top,
+                left: tooltip_position.left,
+              }}
+            >
+              {title}
+            </div>,
+            document.body
+          )
+        : null}
     </div>
   );
 }

@@ -1,3 +1,15 @@
+/*
+ * File Name: notification_delete_modal.tsx
+ * Author: shimaa salah
+ * Date of Creation: 28/07/2026
+ * Version Information: V1.0.0
+ * Dependencies:
+ *   - react
+ *   - @/context/language_context
+ * Contributors: shimaa salah
+ * Last Modified Date: [shimaa salah - 05/08/2026]
+ * File Description: Accessible confirmation modal for deleting notifications with keyboard event listener (Escape key) and localized action labels.
+ */
 import React, { useEffect } from "react";
 import { useTranslation } from "@/context/language_context";
 

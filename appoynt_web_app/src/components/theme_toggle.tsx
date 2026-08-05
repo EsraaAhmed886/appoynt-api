@@ -1,3 +1,17 @@
+/*
+ * File Name: theme_toggle.tsx
+ * Author: shimaa salah
+ * Date of Creation: 20/07/2026
+ * Version Information: V1.0.0
+ * Dependencies:
+ *   - react
+ *   - next-themes
+ *   - lucide-react
+ * Contributors: shimaa salah
+ * Last Modified Date: [shimaa salah - 05/08/2026]
+ * File Description: Theme toggle button component switching between light and dark visual themes.
+ */
+
 "use client";
 
 import { Moon, Sun } from "lucide-react";
@@ -5,11 +19,7 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
 export default function ThemeToggle() {
-  const { theme, setTheme, resolvedTheme } = useTheme();
-
-  console.log("theme:", theme);
-  console.log("resolvedTheme:", resolvedTheme);
-
+  const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -18,21 +28,26 @@ export default function ThemeToggle() {
 
   if (!mounted) {
     return null;
-  }
+  } else {
+    const is_dark = "dark" === theme;
 
-  return (
-    <button
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="
-        rounded-lg
-        p-2
-        transition
-        hover:bg-gray-200
-        dark:hover:bg-slate-700
-        
-      "
-    >
-      {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
-    </button>
-  );
+    return (
+      <button
+        type="button"
+        onClick={() => setTheme(is_dark ? "light" : "dark")}
+        aria-label="Toggle theme"
+        className="
+          rounded-xl
+          p-2
+          text-app-text-secondary
+          transition-colors
+          hover:bg-app-input_fill
+          hover:text-app-text-primary
+          focus:outline-none
+        "
+      >
+        {is_dark ? <Sun size={20} /> : <Moon size={20} />}
+      </button>
+    );
+  }
 }

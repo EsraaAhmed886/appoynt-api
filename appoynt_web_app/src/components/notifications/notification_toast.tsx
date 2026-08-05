@@ -1,3 +1,17 @@
+/*
+ * File Name: notification_toast.tsx
+ * Author: shimaa salah
+ * Date of Creation: 28/07/2026
+ * Version Information: V1.0.0
+ * Dependencies:
+ *   - react
+ *   - lucide-react
+ *   - @/types/notification
+ *   - @/context/language_context
+ * Contributors: shimaa salah
+ * Last Modified Date: [shimaa salah - 05/08/2026]
+ * File Description: Floating toast alert component for notification deletion feedback with undo action and manual dismissal.
+ */
 import React from "react";
 import { Undo2, X } from "lucide-react";
 import type { NotificationItem } from "@/types/notification";

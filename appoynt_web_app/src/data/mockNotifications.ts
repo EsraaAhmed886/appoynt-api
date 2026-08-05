@@ -1,3 +1,14 @@
+/*
+ * File Name: mock_notifications.ts
+ * Author: shimaa salah
+ * Date of Creation: 28/07/2026
+ * Version Information: V1.0.0
+ * Dependencies:
+ *   - @/types/notification
+ * Contributors: shimaa salah
+ * Last Modified Date: [shimaa salah - 05/08/2026]
+ * File Description: Mock data dataset representing sample notifications with various categories, priorities, and metadata for development and UI testing.
+ */
 import { NotificationItem } from '@/types/notification';
 
 export const mockNotifications: NotificationItem[] = [
@@ -58,4 +69,4 @@ export const mockNotifications: NotificationItem[] = [
     isRead: true,
     priority: 'normal',
   }
-];
+];

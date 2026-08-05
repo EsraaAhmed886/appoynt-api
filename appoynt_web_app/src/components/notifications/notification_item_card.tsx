@@ -1,3 +1,17 @@
+/*
+ * File Name: notification_item_card.tsx
+ * Author: shimaa salah
+ * Date of Creation: 28/07/2026
+ * Version Information: V1.0.0
+ * Dependencies:
+ *   - react
+ *   - lucide-react
+ *   - @/types/notification
+ *   - ./notification_badge
+ * Contributors: shimaa salah
+ * Last Modified Date: [shimaa salah - 05/08/2026]
+ * File Description: Interactive notification item card component with unread indicator, selection handling, priority badge, and delete trigger.
+ */
 import React from "react";
 import { Trash2 } from "lucide-react";
 import type { NotificationItem } from "@/types/notification";

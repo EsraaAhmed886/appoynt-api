@@ -1,46 +1,65 @@
-import { clinics as initialClinics } from "@/data/clinics";
+/*
+ * File Name: clinic.service.ts
+ * Author: shimaa salah
+ * Date of Creation: 20/07/2026
+ * Version Information: V1.0.0
+ * Dependencies:
+ *   - @/data/clinics
+ *   - @/types/clinic
+ * Contributors: shimaa salah
+ * Last Modified Date: [shimaa salah - 05/08/2026]
+ * File Description: LocalStorage state persistence and data access service for managing clinic entities.
+ */
 
-export type Clinic = (typeof initialClinics)[number];
+import { clinics as initial_clinics } from "@/data/clinics";
+import { Clinic } from "@/types/clinic";
 
-const STORAGE_KEY = "clinics";
+export type { Clinic };
 
-// 1. قراءة العيادات من LocalStorage أو العودة بالبيانات الافتراضية
-export function getClinics(): Clinic[] {
-  if (typeof window === "undefined") {
-    return initialClinics;
-  }
+const storage_key = "clinics";
 
-  try {
-    const storedClinics = localStorage.getItem(STORAGE_KEY);
-    if (storedClinics) {
-      return JSON.parse(storedClinics) as Clinic[];
+// 1. Read clinics list from LocalStorage or return default seed list
+export function get_clinics(): Clinic[] {
+  if ("undefined" === typeof window) {
+    return initial_clinics as Clinic[];
+  } else {
+    try {
+      const stored_clinics = localStorage.getItem(storage_key);
+      if (null !== stored_clinics) {
+        return JSON.parse(stored_clinics) as Clinic[];
+      } else {
+        return initial_clinics as Clinic[];
+      }
+    } catch (storage_error) {
+      console.error("Error reading clinics from localStorage:", storage_error);
+      return initial_clinics as Clinic[];
     }
-  } catch (error) {
-    console.error("Error reading clinics from localStorage:", error);
-  }
-
-  return initialClinics;
-}
-
-// 2. حفظ قائمة العيادات في LocalStorage
-export function saveClinics(clinics: Clinic[]) {
-  if (typeof window === "undefined") return;
-
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(clinics));
-  } catch (error) {
-    console.error("Error saving clinics to localStorage:", error);
   }
 }
 
-// 3. تهيئة البيانات لأول مرة فقط إن لم تكن مجهزة
-export function initializeClinics() {
-  if (typeof window === "undefined") return;
+// 2. Save complete list of clinics to LocalStorage
+export function save_clinics(clinics: Clinic[]): void {
+  if ("undefined" === typeof window) {
+    return;
+  } else {
+    try {
+      localStorage.setItem(storage_key, JSON.stringify(clinics));
+    } catch (storage_error) {
+      console.error("Error saving clinics to localStorage:", storage_error);
+    }
+  }
+}
 
-  const storedClinics = localStorage.getItem(STORAGE_KEY);
-
-  // إذا لم تكن هناك بيانات محفوظة مطلقاً، نحفظ القائمة الافتراضية
-  if (!storedClinics) {
-    saveClinics(initialClinics);
+// 3. Initialize seed data into LocalStorage if empty
+export function initialize_clinics(): void {
+  if ("undefined" === typeof window) {
+    return;
+  } else {
+    const stored_clinics = localStorage.getItem(storage_key);
+    if (null === stored_clinics) {
+      save_clinics(initial_clinics as Clinic[]);
+    } else {
+      // Data already initialized
+    }
   }
 }

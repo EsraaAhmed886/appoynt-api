@@ -1,33 +1,25 @@
+/*
+ * File Name: clinic_form_constants.ts
+ * Author: shimaa salah
+ * Date of Creation: 28/07/2026
+ * Version Information: V1.0.0
+ * Dependencies: None
+ * Contributors: shimaa salah
+ * Last Modified Date: [shimaa salah - 05/08/2026]
+ * File Description: Constant values, validation regexes, and UI class definitions for clinic form components.
+ */
+
 export const WORKING_DAYS = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
+
 export const GOVERNORATES = ["Cairo", "Giza", "Alexandria"];
+
 export const CITIES_BY_GOVERNORATE: Record<string, string[]> = {
   Cairo: ["Nasr City", "Heliopolis", "Maadi", "New Cairo", "Shoubra"],
-
   Giza: ["Dokki", "Mohandessin", "6th October", "Sheikh Zayed", "Haram"],
-
   Alexandria: ["Smouha", "Stanley", "Miami", "Sidi Gaber", "Gleem"],
 };
 
 export const PHONE_REGEX = /^01[0125][0-9]{8}$/;
-
-export const VALIDATION_MESSAGES = {
-  clinicNameRequired: "Clinic name is required",
-  clinicNameMin: "Clinic name must be at least 2 characters",
-  clinicNameMax: "Clinic name must not exceed 50 characters",
-  clinicNameSpaces: "Multiple consecutive spaces are not allowed",
-  clinicNameInvalid: "Clinic name must contain at least one letter",
-  phone: "Enter a valid phone number",
-  governorate: "Please select a governorate",
-  city: "Please select a city",
-  addressRequired: "Clinic address is required",
-  addressMin: "Clinic address must be at least 2 characters",
-  addressMax: "Clinic address must not exceed 100 characters",
-  addressSpaces: "Multiple consecutive spaces are not allowed",
-  addressTrailingSpaces: "Address must not end with spaces",
-  addressInvalid: "Enter a valid clinic address",
-  consultationFee: "Invalid consultation fee",
-  workingDays: "Invalid working days",
-};
 
 export const DURATION_OPTIONS = [
   "15 Minutes",

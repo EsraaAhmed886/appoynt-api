@@ -1,3 +1,18 @@
+/*
+ * File Name: notification_details_drawer.tsx
+ * Author: shimaa salah
+ * Date of Creation: 28/07/2026
+ * Version Information: V1.0.0
+ * Dependencies:
+ *   - react
+ *   - lucide-react
+ *   - @/types/notification
+ *   - @/lib/validators
+ *   - @/context/language_context
+ * Contributors: shimaa salah
+ * Last Modified Date: [shimaa salah - 05/08/2026]
+ * File Description: Side drawer component for displaying detailed notification metadata, patient details, status indicators, and validated internal target URLs.
+ */
 import React from "react";
 import {
   X,

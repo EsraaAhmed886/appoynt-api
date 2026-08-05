@@ -1,3 +1,15 @@
+/*
+ * File Name: notification_search_bar.tsx
+ * Author: shimaa salah
+ * Date of Creation: 28/07/2026
+ * Version Information: V1.0.0
+ * Dependencies:
+ *   - react
+ *   - lucide-react
+ * Contributors: shimaa salah
+ * Last Modified Date: [shimaa salah - 05/08/2026]
+ * File Description: Reusable search bar input component for filtering notifications with dynamic clear button and input length restriction.
+ */
 import React from "react";
 import { Search, X } from "lucide-react";
 

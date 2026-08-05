@@ -1,22 +1,42 @@
+/*
+ * File Name: add_clinic_button.tsx
+ * Author: shimaa salah
+ * Date of Creation: 04/07/2026
+ * Version Information: V1.0.0
+ * Dependencies:
+ *   - react
+ *   - lucide-react
+ *   - @/context/language_context
+ * Contributors: shimaa salah
+ * Last Modified Date: [shimaa salah - 05/08/2026]
+ * File Description: Primary CTA button trigger to open the multi-step Add Clinic modal interface.
+ */
+
+"use client";
+
 import { Plus } from "lucide-react";
+import { useTranslation } from "@/context/language_context";
 
 type AddClinicButtonProps = {
-  onClick: () => void;
+  on_click: () => void;
 };
 
-export default function AddClinicButton({ onClick }: AddClinicButtonProps) {
+export default function AddClinicButton({ on_click }: AddClinicButtonProps) {
+  const { translations } = useTranslation();
+
   return (
     <button
-      onClick={onClick}
+      type="button"
+      onClick={on_click}
       className="
         inline-flex
         items-center
         justify-center
         gap-2
-        rounded-lg
+        rounded-xl
         bg-app-primary
         px-5
-        py-3
+        py-2.5
         text-sm
         font-medium
         text-white
@@ -30,7 +50,7 @@ export default function AddClinicButton({ onClick }: AddClinicButtonProps) {
       "
     >
       <Plus size={18} />
-      <span>Add Clinic</span>
+      <span>{translations.clinic_add_button}</span>
     </button>
   );
 }
