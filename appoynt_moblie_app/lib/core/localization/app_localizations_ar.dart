@@ -1571,6 +1571,8 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get allergies_medication_section => 'حساسية الأدوية';
   @override
+  String get environmental_seasonal_allergies => 'حساسية البيئة والفصول';
+  @override
   String get allergies_add_allergy => 'إضافة حساسية';
   @override
   String get allergies_placeholder => 'النوع';
@@ -1704,4 +1706,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get insurance_add_card_full_btn => 'إضافة بطاقة تأمين';
   @override
   String get insurance_save_card_btn => 'حفظ البطاقة';
+
+  // Authentication error localized message Arabic overrides
+  @override
+  String get error_invalid_credentials => 'رقم الهاتف أو كلمة المرور غير صحيحة.';
+  @override
+  String get error_phone_empty => 'رقم الهاتف لا يمكن أن يكون فارغاً.';
+  @override
+  String get error_otp_invalid => 'يجب أن يتكون رمز التحقق من 6 أرقام.';
+  @override
+  String get error_password_too_short => 'يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.';
 }

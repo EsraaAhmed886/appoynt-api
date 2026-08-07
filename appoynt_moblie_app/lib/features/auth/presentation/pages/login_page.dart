@@ -539,7 +539,7 @@ class _LoginPageState extends State<LoginPage> {
                               // Align text center
                               textAlign: TextAlign.center,
                               // Pull login title styling
-                              style: AppTextStyles.get_login_title(is_arabic),
+                              style: AppTextStyles.get_login_title(context, is_arabic),
                             ),
                             // Tight spacing divider using spacing constants
                             const SizedBox(height: AppSpacing.space_s),
@@ -551,7 +551,7 @@ class _LoginPageState extends State<LoginPage> {
                               textAlign: TextAlign.center,
                               // Pull login subtitle styling
                               style:
-                                  AppTextStyles.get_login_subtitle(is_arabic),
+                                  AppTextStyles.get_login_subtitle(context, is_arabic),
                             ),
                             // Spacing/Container block for validation error feedback message (FR-15 / Logic Log)
                             const SizedBox(height: AppSpacing.space_s),
@@ -565,7 +565,7 @@ class _LoginPageState extends State<LoginPage> {
                                 child: Text(
                                   // Bind message or empty string based on state type
                                   true == (state is AuthError)
-                                      ? (state as AuthError).message
+                                      ? AppLocalizations.get_localized_error(context, (state as AuthError).message)
                                       : '',
                                   // Center align paragraph
                                   textAlign: TextAlign.center,
@@ -722,7 +722,7 @@ class _LoginPageState extends State<LoginPage> {
                                   text: s.no_account,
                                   // Pull body typography text styles
                                   style:
-                                      AppTextStyles.get_body_medium(is_arabic),
+                                      AppTextStyles.get_body_medium(context, is_arabic),
                                   // children array
                                   children: [
                                     // Inline TextSpan nesting sign up link with recognizer to

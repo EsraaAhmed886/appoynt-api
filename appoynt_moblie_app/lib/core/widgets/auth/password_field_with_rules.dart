@@ -191,7 +191,7 @@ class _PasswordFieldWithRulesState extends State<PasswordFieldWithRules> {
           widget.label,
           // Pull centralized style registry with theme-adaptive colors
           // Pull centralized style registry with theme-adaptive colors
-          style: AppTextStyles.get_field_label(is_arabic).copyWith(
+          style: AppTextStyles.get_field_label(context, is_arabic).copyWith(
             // Select label color based on theme using Yoda style check
             color: true == is_dark
                 ? AppColors.text_dark_primary
@@ -649,6 +649,7 @@ class _StrengthBarState extends State<_StrengthBar> {
                   widget.s.password_strength,
                   // Text styling
                   style: AppTextStyles.get_body_medium(
+                    context,
                     is_arabic,
                     custom_color: true == is_dark
                         ? AppColors.text_dark_secondary
@@ -670,6 +671,7 @@ class _StrengthBarState extends State<_StrengthBar> {
                     key: ValueKey<String>(_label),
                     // Text styling
                     style: AppTextStyles.get_body_medium(
+                      context,
                       is_arabic,
                       custom_color: bar_color,
                     ).copyWith(
@@ -849,7 +851,7 @@ class _RulesCardState extends State<_RulesCard> {
             widget.s.password_must,
             // Text styling
             // Text styling
-            style: AppTextStyles.get_field_label(is_arabic).copyWith(
+            style: AppTextStyles.get_field_label(context, is_arabic).copyWith(
               // Bold font weight helper
               fontWeight: FontWeightHelper.bold,
               // Select label color based on theme using Yoda style check
@@ -980,7 +982,7 @@ class _Rule extends StatelessWidget {
               // Requirement text
               label,
               // Text styling
-              style: AppTextStyles.get_body_medium(is_arabic, custom_color: item_color).copyWith(
+              style: AppTextStyles.get_body_medium(context, is_arabic, custom_color: item_color).copyWith(
                 // Small font size
                 fontSize: 12.0,
                 // Medium weight font layout helper

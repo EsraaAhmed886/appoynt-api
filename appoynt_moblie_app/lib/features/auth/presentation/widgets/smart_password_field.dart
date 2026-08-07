@@ -111,7 +111,7 @@ class _SmartPasswordFieldState extends State<SmartPasswordField> {
           // Active label text
           widget.label,
           // Pull centralized style registry
-          style: AppTextStyles.get_field_label(is_arabic),
+          style: AppTextStyles.get_field_label(context, is_arabic),
         ),
         // Height divider using spacing constants
         const SizedBox(height: AppSpacing.space_m),

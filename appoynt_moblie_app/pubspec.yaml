@@ -95,6 +95,8 @@ flutter:
   assets:
     # Add path to the local assets/images directory
     - assets/images/
+    # Add path to the local assets/icons directory
+    - assets/icons/
 
 # Configuration for generating app launcher icons
 flutter_launcher_icons:

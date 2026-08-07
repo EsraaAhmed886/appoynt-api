@@ -169,7 +169,8 @@ class _AllergiesPageState extends State<AllergiesPage> {
                 Expanded(
                   child: Text(
                     title,
-                    maxLines: 1,
+                    maxLines: 2, // Allow up to 2 lines to prevent truncation
+                    softWrap: true,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 14.0,
@@ -491,7 +492,7 @@ class _AllergiesPageState extends State<AllergiesPage> {
                 // Category Card 1: Food Allergies
                 _build_category_card(
                   context: context,
-                  title: 'Food Allergies (حساسية الأطعمة)',
+                  title: localizations.allergies_food_section,
                   icon: Icons.restaurant_rounded,
                   controller: _food_controller,
                   hint_text: 'e.g., Peanuts, Dairy, Shellfish',
@@ -504,7 +505,7 @@ class _AllergiesPageState extends State<AllergiesPage> {
                 // Category Card 2: Medication Allergies
                 _build_category_card(
                   context: context,
-                  title: 'Medication Allergies (حساسية الأدوية)',
+                  title: localizations.allergies_medication_section,
                   icon: Icons.medication_rounded,
                   controller: _medication_controller,
                   hint_text: 'e.g., Penicillin, Aspirin, Ibuprofen',
@@ -517,7 +518,7 @@ class _AllergiesPageState extends State<AllergiesPage> {
                 // Category Card 3: Environmental & Seasonal Allergies
                 _build_category_card(
                   context: context,
-                  title: 'Environmental & Seasonal (حساسية البيئة الغبار)',
+                  title: localizations.environmental_seasonal_allergies,
                   icon: Icons.grass_rounded,
                   controller: _environmental_controller,
                   hint_text: 'e.g., Dust Mites, Pollen, Cat Dander',

@@ -155,6 +155,18 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     submission_context.read<AuthCubit>().reset_password(new_password: _password_ctrl.text);
   }
 
+  // Helper getter checking if all password reset fields are valid and matching
+  bool get _is_reset_form_valid {
+    // Retrieve password input value
+    final String pw = _password_ctrl.text;
+    // Retrieve confirm password input value
+    final String cpw = _confirm_ctrl.text;
+    // Check if new password passes all validation checks using Yoda style check
+    final bool is_pw_valid = (null == _validate_password(pw, AppLocalizations.of(context)));
+    // Return true if password is valid and confirm password matches it using Yoda style comparison
+    return true == is_pw_valid && cpw == pw;
+  }
+
   @override
   Widget build(BuildContext context) {
     /// Retrieving localized strings and directionality info.
@@ -187,18 +199,17 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             /// Using bottomNavigationBar to keep the action button fixed above the keyboard.
             bottomNavigationBar: Padding(
               padding: EdgeInsets.only(
-                left: 24,
-                right: 24,
-                /// Adjusting bottom padding dynamically based on keyboard presence.
-                bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-                top: 12,
+                left: AppSpacing.space_xxl,
+                right: AppSpacing.space_xxl,
+                /// Adjusting bottom padding dynamically based on keyboard presence using spacing tokens
+                bottom: MediaQuery.of(context).viewInsets.bottom + AppSpacing.space_xxl,
+                top: AppSpacing.space_l,
               ),
               child: AuthButton(
                 // Localized action string
                 label: s.update_password,
-                // Enable only when both password fields are not empty using Yoda style
-                is_enabled: _password_ctrl.text.isNotEmpty &&
-                    _confirm_ctrl.text.isNotEmpty,
+                // Enable only when all validation rules pass and confirm password matches
+                is_enabled: _is_reset_form_valid,
                 // Submission callback
                 on_pressed: () {
                   // Submit form under context
@@ -216,7 +227,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   FocusScope.of(context).unfocus();
                 },
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24), // Content padding
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space_xxl), // Content padding
                   child: Form(
                     key: _form_key,
                     /// Toggling auto-validation mode after the first attempt.
@@ -244,7 +255,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                           ],
                         ),
 
-                        const SizedBox(height: 32), // Space before titles
+                        const SizedBox(height: AppSpacing.space_xxxl), // Space before titles
 
                         /// Header section containing title and instructions.
                         Center(
@@ -253,16 +264,17 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                               Text(
                                 s.create_new_password,
                                 textAlign: TextAlign.center,
-                                // Reusing stylized typography
+                                // Reusing stylized typography passing context
                                 style:
-                                    AppTextStyles.get_forgot_password_title(is_arabic),
+                                    AppTextStyles.get_forgot_password_title(context, is_arabic),
                               ),
-                              const SizedBox(height: 8), // Vertical spacing
+                              const SizedBox(height: AppSpacing.space_m), // Vertical spacing
                               Text(
                                 s.reset_password_subtitle,
                                 textAlign: TextAlign.center,
-                                // Reusing body style
+                                // Reusing body style passing context
                                 style: AppTextStyles.get_forgot_password_subtitle(
+                                    context,
                                     is_arabic),
                               ),
                               // Spacing/Container block for validation error feedback message (FR-15 / Logic Log)
@@ -277,7 +289,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                                   child: Text(
                                     // Bind message or empty string based on state type
                                     true == (state is AuthError)
-                                        ? (state as AuthError).message
+                                        ? AppLocalizations.get_localized_error(context, (state as AuthError).message)
                                         : '',
                                     // Center align paragraph
                                     textAlign: TextAlign.center,
@@ -297,7 +309,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                           ),
                         ),
 
-                        const SizedBox(height: 20), // Margin before fields
+                        const SizedBox(height: AppSpacing.space_xxl), // Margin before fields
 
                         /// Specialized password input field with real-time requirement tracking.
                         PasswordFieldWithRules(
@@ -311,7 +323,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                           },
                         ),
 
-                        const SizedBox(height: 16), // Space between fields
+                        const SizedBox(height: AppSpacing.space_xl), // Space between fields
 
                         /// Confirmation field to ensure password entry matches.
                         AuthTextField(
@@ -331,7 +343,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                           },
                         ),
 
-                        const SizedBox(height: 24), // Bottom padding for scroll
+                        const SizedBox(height: AppSpacing.space_xxl), // Bottom padding for scroll
                       ],
                     ),
                   ),

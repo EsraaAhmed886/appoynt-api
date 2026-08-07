@@ -253,190 +253,243 @@ class _OtpPageState extends State<OtpPage> {
           // Return Scaffold container layout settings
           return Scaffold(
             body: SafeArea(
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24), // Content padding
-                child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.center, // Centering all children
-                  children: [
-                    const SizedBox(height: AppSpacing.space_xl), // Top margin notch spacing
+              // LayoutBuilder measuring viewport height constraints dynamically
+              child: LayoutBuilder(
+                // Builder callback receiving layout constraints
+                builder: (context, constraints) {
+                  // SingleChildScrollView enabling vertical scrolling when content overflows
+                  return SingleChildScrollView(
+                    // ConstrainedBox forcing child to match at least viewport height
+                    child: ConstrainedBox(
+                      // Bind constraints
+                      constraints: BoxConstraints(
+                        // Minimum height matches constraints maxHeight
+                        minHeight: constraints.maxHeight,
+                      ),
+                      // IntrinsicHeight resolves children vertical stretching
+                      child: IntrinsicHeight(
+                        // Padding container layout using spacing tokens
+                        child: Padding(
+                          // Apply horizontal padding using spacing tokens instead of raw pixels
+                          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space_xxl),
+                          // Main Column centering all children
+                          child: Column(
+                            // Align children horizontally centered
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            // Contain visual children list
+                            children: [
+                              // Top margin notch spacing using spacing constants
+                              const SizedBox(height: AppSpacing.space_xl),
 
-                    /// Navigation and language control row.
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        /// Standard back button with localized icon direction.
-                        // Reusable squircle back button component
-                        AppBackButton(onTap: widget.on_back),
+                              /// Navigation and language control row.
+                              Row(
+                                // Distribute space evenly between row elements
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                // Children list
+                                children: [
+                                  /// Standard back button with localized icon direction.
+                                  // Reusable squircle back button component
+                                  AppBackButton(onTap: widget.on_back),
 
-                        /// Globally centralized language switching button.
-                        GlobalLanguageButton(
-                          is_arabic: is_arabic,
-                          on_tap: widget.on_toggle_language,
-                          light: false, // Standard dark mode icons
-                        ),
-                      ],
-                    ),
+                                  /// Globally centralized language switching button.
+                                  GlobalLanguageButton(
+                                    // Pass language direction flag
+                                    is_arabic: is_arabic,
+                                    // Pass selection toggle callback
+                                    on_tap: widget.on_toggle_language,
+                                    // Keep standard icon color mapping rules
+                                    light: false,
+                                  ),
+                                ],
+                              ),
 
-                    const SizedBox(height: 40), // Space before title
+                              // Space before title using spacing constants instead of magic numbers
+                              const SizedBox(height: AppSpacing.space_extreme),
 
-                    /// Header section containing title and descriptive subtitle.
-                    Text(
-                      s.enter_your_code,
-                      style: AppTextStyles.get_otp_title(
-                          is_arabic), // Localized typography
-                    ),
-                    const SizedBox(height: 8), // Vertical spacing
-                    Text(
-                      s.enter_otp_subtitle,
-                      textAlign: TextAlign.center,
-                      style: AppTextStyles.get_otp_subtitle(
-                          is_arabic), // Localized body style
-                    ),
-                    // Spacing/Container block for validation error feedback message (FR-15 / Logic Log)
-                    const SizedBox(height: AppSpacing.space_s),
-                    // Fixed-height container to prevent layout shifting
-                    SizedBox(
-                      // Fixed height derived from spacing tokens to satisfy stable UI constraint
-                      height: AppSpacing.error_container_height,
-                      // Draw error feedback text inside center coordinates
-                      child: Center(
-                        // Render error message if state is AuthError (Yoda style check)
-                        child: Text(
-                          // Bind message or empty string based on state type
-                          true == (state is AuthError)
-                              ? (state as AuthError).message
-                              : '',
-                          // Center align paragraph
-                          textAlign: TextAlign.center,
-                          // Apply styling configurations
-                          style: const TextStyle(
-                            // Set brand warning color
-                            color: AppColors.error,
-                            // Scale size relative to labels
-                            fontSize: AppSpacing.font_size_label,
-                            // Emphasize text weight
-                            fontWeight: FontWeight.bold,
+                              /// Header section containing title and descriptive subtitle.
+                              Text(
+                                // Localized title
+                                s.enter_your_code,
+                                // Pull OTP title styling passing context
+                                style: AppTextStyles.get_otp_title(context, is_arabic),
+                              ),
+                              // Vertical spacing gap using spacing constants
+                              const SizedBox(height: AppSpacing.space_m),
+                              Text(
+                                // Localized description subtitle
+                                s.enter_otp_subtitle,
+                                // Center align text
+                                textAlign: TextAlign.center,
+                                // Pull OTP subtitle styling passing context
+                                style: AppTextStyles.get_otp_subtitle(context, is_arabic),
+                              ),
+                              // Spacing/Container block for validation error feedback message (FR-15 / Logic Log)
+                              const SizedBox(height: AppSpacing.space_s),
+                              // Fixed-height container to prevent layout shifting
+                              SizedBox(
+                                // Fixed height derived from spacing tokens to satisfy stable UI constraint
+                                height: AppSpacing.error_container_height,
+                                // Draw error feedback text inside center coordinates
+                                child: Center(
+                                  // Render error message if state is AuthError (Yoda style check)
+                                  child: Text(
+                                    // Bind message or empty string based on state type
+                                    true == (state is AuthError)
+                                        ? AppLocalizations.get_localized_error(context, (state as AuthError).message)
+                                        : '',
+                                    // Center align paragraph
+                                    textAlign: TextAlign.center,
+                                    // Apply styling configurations
+                                    style: const TextStyle(
+                                      // Set brand warning color
+                                      color: AppColors.error,
+                                      // Scale size relative to labels
+                                      fontSize: AppSpacing.font_size_label,
+                                      // Emphasize text weight
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+                              // Space before input grid using spacing constants instead of magic numbers
+                              const SizedBox(height: AppSpacing.space_xxl),
+
+                              /// The 6-box OTP entry grid, explicitly forced to LTR for consistent numeric entry.
+                              Directionality(
+                                // Force Left-to-Right layout directionality
+                                textDirection: TextDirection.ltr,
+                                // Row layout wrapping OTP input boxes
+                                child: Row(
+                                  // Distribute space evenly between row elements
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  // Children list
+                                  children: List.generate(
+                                    6,
+                                    (i) => OtpBox(
+                                      // Mapping text controller
+                                      controller: _ctrls[i],
+                                      // Mapping focus node
+                                      focusNode: _nodes[i],
+                                      // Mapping change logic
+                                      onChanged: (v) => _on_digit_changed(i, v),
+                                      // Enable sequentially based on previous field filled status (BUG-010)
+                                      enabled: 0 == i || _ctrls[i - 1].text.isNotEmpty,
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+                              // Space before timer row using spacing constants instead of magic numbers
+                              const SizedBox(height: AppSpacing.space_xxxl),
+
+                              /// Resend action row with active countdown.
+                              Row(
+                                // Center row elements horizontally
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                // Children list
+                                children: [
+                                  /// Clickable label for resending the code (enabled only when timer is 0).
+                                  GestureDetector(
+                                    // Trigger timer restart on tap if time is up
+                                    onTap: 0 == _seconds_left ? _start_timer : null,
+                                    // Text label widget
+                                    child: Text(
+                                      // Localized label string
+                                      s.send_code_again,
+                                      // Styling configurations
+                                      style: TextStyle(
+                                        // Font size
+                                        fontSize: 14,
+                                        // Emphasized bold weight
+                                        fontWeight: FontWeight.w700,
+                                        /// Highlighting color based on availability.
+                                        color: 0 == _seconds_left
+                                            ? AppColors.primary_color
+                                            : text_secondary,
+                                      ),
+                                    ),
+                                  ),
+                                  // Conditionally show spacing and timer widget only if countdown
+                                  // remains active (BUG-005)
+                                  if (_seconds_left > 0) ...[
+                                    // Horizontal spacing gap using spacing constants instead of magic numbers
+                                    const SizedBox(width: AppSpacing.space_s),
+                                    // Timer text label widget showing countdown seconds left
+                                    Text(
+                                      // Format remaining seconds as MM:SS
+                                      _format_time(_seconds_left),
+                                      // Localized timer text style passing context
+                                      style: AppTextStyles.get_otp_timer(context, is_arabic),
+                                    ),
+                                  ],
+                                ],
+                              ),
+
+                              // Margin before info card using spacing constants instead of magic numbers
+                              const SizedBox(height: AppSpacing.space_xxl),
+
+                              /// Information card providing context about the sent code.
+                              Container(
+                                // Stretches width horizontally
+                                width: double.infinity,
+                                // Symmetric padding container layout
+                                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space_xl, vertical: AppSpacing.space_l),
+                                // Visual styling decoration
+                                decoration: BoxDecoration(
+                                  /// Subtle brand-themed background fill.
+                                  color: AppColors.primary_color.withValues(alpha: 0.08),
+                                  // Corner radius using spacing constants
+                                  borderRadius: BorderRadius.circular(AppSpacing.radius_l),
+                                ),
+                                // Text details inside info box
+                                child: Text(
+                                  // Localized details string
+                                  s.sent_code_info,
+                                  // Center align text
+                                  textAlign: TextAlign.center,
+                                  // Typography styling
+                                  style: TextStyle(
+                                    // Font size
+                                    fontSize: 13,
+                                    /// Using a slightly transparent variant of primary color.
+                                    color: AppColors.primary_color.withValues(alpha: 0.9),
+                                    // Line height multiplier
+                                    height: 1.5,
+                                  ),
+                                ),
+                              ),
+
+                              // Spacer pushing button to the bottom while maintaining scroll support
+                              const Spacer(),
+
+                              // Margin before action button using spacing constants instead of magic numbers
+                              const SizedBox(height: AppSpacing.space_xxxl),
+
+                              /// Primary verification action button.
+                              AuthButton(
+                                // Localized action string
+                                label: s.verify,
+                                // Enable only when all 6 boxes are completed using Yoda style check
+                                is_enabled: _is_filled,
+                                // Submission callback
+                                on_pressed: () {
+                                  // Trigger verification under context
+                                  _verify(context);
+                                },
+                                // Loading state indicator
+                                is_loading: state is AuthLoading,
+                              ),
+
+                              // Bottom safe margin using spacing constants instead of magic numbers
+                              const SizedBox(height: AppSpacing.space_xxxl),
+                            ],
                           ),
                         ),
                       ),
                     ),
-
-                    const SizedBox(height: 20), // Space before input grid
-
-                    /// The 6-box OTP entry grid, explicitly forced to LTR for consistent numeric entry.
-                    Directionality(
-                      textDirection: TextDirection.ltr,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: List.generate(
-                          6,
-                          (i) => OtpBox(
-                            // Mapping text controller
-                            controller: _ctrls[i],
-                            // Mapping focus node
-                            focusNode: _nodes[i],
-                            // Mapping change logic
-                            onChanged: (v) =>
-                                _on_digit_changed(i, v),
-                            // Enable sequentially based on previous field filled status (BUG-010)
-                            enabled: 0 == i || _ctrls[i - 1].text.isNotEmpty,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 28), // Space before timer row
-
-                    /// Resend action row with active countdown.
-                    Row(
-                      // Center row elements horizontally
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      // Children list
-                      children: [
-                        /// Clickable label for resending the code (enabled only when timer is 0).
-                        GestureDetector(
-                          // Trigger timer restart on tap if time is up
-                          onTap: 0 == _seconds_left ? _start_timer : null,
-                          // Text label widget
-                          child: Text(
-                            // Localized label string
-                            s.send_code_again,
-                            // Styling configurations
-                            style: TextStyle(
-                              // Font size
-                              fontSize: 14,
-                              // Emphasized bold weight
-                              fontWeight: FontWeight.w700,
-                              /// Highlighting color based on availability.
-                              color: 0 == _seconds_left
-                                  ? AppColors.primary_color
-                                  : text_secondary,
-                            ),
-                          ),
-                        ),
-                        // Conditionally show spacing and timer widget only if countdown
-                        // remains active (BUG-005)
-                        if (_seconds_left > 0) ...[
-                          // Horizontal spacing gap
-                          const SizedBox(width: 6),
-                          // Timer text label widget showing countdown seconds left
-                          Text(
-                            // Format remaining seconds as MM:SS
-                            _format_time(_seconds_left),
-                            // Localized timer text style
-                            style: AppTextStyles.get_otp_timer(is_arabic),
-                          ),
-                        ],
-                      ],
-                    ),
-
-                    const SizedBox(height: 20), // Margin before info card
-
-                    /// Information card providing context about the sent code.
-                    Container(
-                      width: double.infinity,
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                      decoration: BoxDecoration(
-                        /// Subtle brand-themed background fill.
-                        color: AppColors.primary_color.withValues(alpha: 0.08),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        s.sent_code_info,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 13,
-
-                          /// Using a slightly transparent variant of primary color.
-                          color: AppColors.primary_color.withValues(alpha: 0.9),
-                          height: 1.5,
-                        ),
-                      ),
-                    ),
-
-                    const Spacer(), // Pushing the button to the bottom
-
-                    /// Primary verification action button.
-                    AuthButton(
-                      // Localized action string
-                      label: s.verify,
-                      // Enable only when all 6 boxes are completed using Yoda style check
-                      is_enabled: _is_filled,
-                      // Submission callback
-                      on_pressed: () {
-                        // Trigger verification under context
-                        _verify(context);
-                      },
-                      // Loading state indicator
-                      is_loading: state is AuthLoading,
-                    ),
-
-                    const SizedBox(height: 32), // Bottom safe margin
-                  ],
-                ),
+                  );
+                },
               ),
             ),
           );

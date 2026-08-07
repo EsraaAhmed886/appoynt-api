@@ -720,6 +720,7 @@ abstract class AppLocalizations {
   String get allergies_title;
   String get allergies_food_section;
   String get allergies_medication_section;
+  String get environmental_seasonal_allergies;
   String get allergies_add_allergy;
   String get allergies_placeholder;
   String get allergies_save_btn;
@@ -790,6 +791,43 @@ abstract class AppLocalizations {
   String get insurance_add_card_btn;
   String get insurance_add_card_full_btn;
   String get insurance_save_card_btn;
+
+  // Authentication error localized message getters
+  String get error_invalid_credentials;
+  String get error_phone_empty;
+  String get error_otp_invalid;
+  String get error_password_too_short;
+
+  // Static helper to map error messages or codes to their localized versions
+  static String get_localized_error(BuildContext context, String message) {
+    // Look up localizations dictionary from widget tree context
+    final AppLocalizations s = AppLocalizations.of(context);
+    // Map invalid credentials error using Yoda conditions
+    if ('Invalid phone number or password.' == message || 'invalid_credentials' == message) {
+      // Return localized credentials mismatch error string
+      return s.error_invalid_credentials;
+    }
+    // Map phone empty error using Yoda conditions
+    else if ('Phone number cannot be empty.' == message || 'phone_empty' == message) {
+      // Return localized phone empty error string
+      return s.error_phone_empty;
+    }
+    // Map OTP invalid error using Yoda conditions
+    else if ('OTP code must be 6 digits.' == message || 'otp_invalid' == message) {
+      // Return localized OTP length warning error string
+      return s.error_otp_invalid;
+    }
+    // Map password too short error using Yoda conditions
+    else if ('Password must be at least 8 characters.' == message || 'password_too_short' == message) {
+      // Return localized password minimum length warning error string
+      return s.error_password_too_short;
+    }
+    // Fallback returning original message if no matches exist
+    else {
+      // Return unmodified message string
+      return message;
+    }
+  }
 }
 
 // Defining a short alias for clean and simple type references

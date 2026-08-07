@@ -1555,6 +1555,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get allergies_medication_section => 'Medication allergies';
   @override
+  String get environmental_seasonal_allergies => 'Environmental & Seasonal';
+  @override
   String get allergies_add_allergy => 'Add allergy';
   @override
   String get allergies_placeholder => 'Type';
@@ -1687,4 +1689,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get insurance_add_card_full_btn => 'Add Insurance Card';
   @override
   String get insurance_save_card_btn => 'Save Card';
+
+  // Authentication error localized message English overrides
+  @override
+  String get error_invalid_credentials => 'Invalid phone number or password.';
+  @override
+  String get error_phone_empty => 'Phone number cannot be empty.';
+  @override
+  String get error_otp_invalid => 'OTP code must be 6 digits.';
+  @override
+  String get error_password_too_short => 'Password must be at least 8 characters.';
 }

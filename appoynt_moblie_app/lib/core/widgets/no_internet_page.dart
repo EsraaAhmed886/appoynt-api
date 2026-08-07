@@ -127,7 +127,7 @@ class _NoInternetPageState extends State<NoInternetPage>
               Text(
                 s.no_internet_title,
                 textAlign: TextAlign.center,
-                style: AppTextStyles.get_no_internet_title(is_arabic).copyWith(
+                style: AppTextStyles.get_no_internet_title(context, is_arabic).copyWith(
                   color: text_primary, // Dynamic primary text color
                 ),
               ),
@@ -138,7 +138,7 @@ class _NoInternetPageState extends State<NoInternetPage>
               Text(
                 s.no_internet_sub,
                 textAlign: TextAlign.center,
-                style: AppTextStyles.get_no_internet_subtitle(is_arabic).copyWith(
+                style: AppTextStyles.get_no_internet_subtitle(context, is_arabic).copyWith(
                   color: text_secondary, // Dynamic secondary text color
                 ),
               ),

@@ -519,7 +519,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               // Align text center
                               textAlign: TextAlign.center,
                               // Pull register title styling
-                              style: AppTextStyles.get_register_title(is_arabic),
+                              style: AppTextStyles.get_register_title(context, is_arabic),
                             ),
                             // Tight spacing divider using spacing constants
                             const SizedBox(height: AppSpacing.space_s),
@@ -530,7 +530,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               // Align text center
                               textAlign: TextAlign.center,
                               // Pull register subtitle styling
-                              style: AppTextStyles.get_register_subtitle(is_arabic),
+                              style: AppTextStyles.get_register_subtitle(context, is_arabic),
                             ),
                             // Spacing/Container block for validation error feedback message (FR-15 / Logic Log)
                             const SizedBox(height: AppSpacing.space_s),
@@ -544,7 +544,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 child: Text(
                                   // Bind message or empty string based on state type
                                   true == (state is AuthError)
-                                      ? (state as AuthError).message
+                                      ? AppLocalizations.get_localized_error(context, (state as AuthError).message)
                                       : '',
                                   // Center align paragraph
                                   textAlign: TextAlign.center,
@@ -780,6 +780,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   text: s.agree_to_terms,
                                   // Text styling resolving error states using Yoda style check
                                   style: AppTextStyles.get_body_medium(
+                                    context,
                                     is_arabic,
                                     custom_color: true == _terms_error
                                         ? AppColors.error

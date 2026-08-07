@@ -26,16 +26,14 @@ import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
 // Import search history item entity definition
 import 'package:appoynt_mobile_app/features/search/domain/entities/search_history_item.dart';
-// Import doctor suggestion data entity schema
-import 'package:appoynt_mobile_app/features/search/domain/entities/doctor_suggestion.dart';
 // Import business logic cubit manager
 import 'package:appoynt_mobile_app/features/search/presentation/cubit/search_cubit.dart';
 // Import search state definitions class
 import 'package:appoynt_mobile_app/features/search/presentation/cubit/search_state.dart';
 // Import reusable bottom navigation bar component
 import 'package:appoynt_mobile_app/core/widgets/app_bottom_nav_bar.dart';
-// Import reusable performance-optimized network image widget
-import 'package:appoynt_mobile_app/core/widgets/app_network_image.dart';
+// Import shared reusable doctor card widget
+import 'package:appoynt_mobile_app/features/shared/widgets/doctor_card.dart';
 
 // Main search screen gateway page widget
 class SearchPage extends StatefulWidget {
@@ -848,7 +846,30 @@ class _SearchPageState extends State<SearchPage> {
                 itemCount: state.suggestions.length,
                 itemBuilder: (context, index) {
                   final doc = state.suggestions[index];
-                  return _build_doctor_card(context, cubit, doc, localizations, is_dark);
+                  return DoctorCard(
+                    doctor_name: doc.name,
+                    specialization: doc.specialty,
+                    location: doc.location,
+                    rating: doc.rating,
+                    review_count: doc.reviews_count,
+                    price: doc.fee.toDouble(),
+                    is_available: doc.is_available_today,
+                    is_favorite: doc.is_favorite,
+                    avatar_url: doc.avatar_url,
+                    on_book_tap: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            "Booking appointment with ${doc.name}...",
+                          ),
+                          duration: const Duration(seconds: 2),
+                        ),
+                      );
+                    },
+                    on_favorite_tap: () {
+                      cubit.toggle_favorite(doc.doctor_id);
+                    },
+                  );
                 },
               ),
             ),
@@ -1702,205 +1723,7 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  // Builds a high-fidelity Doctor Card container displaying search item parameters
-  Widget _build_doctor_card(
-    BuildContext context,
-    SearchCubit cubit,
-    DoctorSuggestion doc,
-    AppLocalizations localizations,
-    bool is_dark,
-  ) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: AppSpacing.space_xl),
-      padding: const EdgeInsets.all(AppSpacing.space_xl),
-      decoration: BoxDecoration(
-        color: is_dark ? AppColors.surface_dark : Colors.white,
-        borderRadius: BorderRadius.circular(AppSpacing.dummy_doctor_card_radius),
-        border: Border.all(
-          color: is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
-          width: AppSpacing.border_width_thin,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Doctor Avatar Image (Performance-optimized, 72x72px circular layout)
-              AppNetworkImage(
-                // Set image url endpoint
-                image_url: doc.avatar_url,
-                // Layout width derived from design spacing tokens
-                width: AppSpacing.doctor_card_avatar_size,
-                // Layout height derived from design spacing tokens
-                height: AppSpacing.doctor_card_avatar_size,
-                // Outer corner radius shape derived from spacing tokens
-                border_radius: AppSpacing.doctor_card_avatar_radius,
-                // Downscale width for decode memory management to optimize RAM
-                cache_width: AppSpacing.doctor_card_avatar_cache_size.toInt(),
-                // Downscale height for decode memory management to optimize RAM
-                cache_height: AppSpacing.doctor_card_avatar_cache_size.toInt(),
-                // Default fallback icon when loading fails or offline
-                fallback_icon: Icons.person_rounded,
-              ),
-              const SizedBox(width: AppSpacing.space_xl),
-              // Doctor Metadata Column
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            doc.name,
-                            style: TextStyle(
-                              fontSize: AppSpacing.font_size_forgot_link,
-                              fontWeight: FontWeight.bold,
-                              color: is_dark ? AppColors.text_dark_primary : const Color(0xFF1E3A8A),
-                            ),
-                          ),
-                        ),
-                        // Heart Favorite Toggle Icon
-                        InkWell(
-                          onTap: () {
-                            cubit.toggle_favorite(doc.doctor_id);
-                          },
-                          child: Icon(
-                            true == doc.is_favorite
-                                ? Icons.favorite_rounded
-                                : Icons.favorite_border_rounded,
-                            color: true == doc.is_favorite
-                                ? const Color(0xFFEF4444)
-                                : (is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary),
-                            size: AppSpacing.search_nav_icon_size,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: AppSpacing.space_s),
-                    // Specialty
-                    _build_doctor_detail_row(
-                      Icons.medical_services_outlined,
-                      doc.specialty,
-                      is_dark,
-                    ),
-                    const SizedBox(height: AppSpacing.space_xs),
-                    // Location
-                    _build_doctor_detail_row(
-                      Icons.location_on_outlined,
-                      doc.location,
-                      is_dark,
-                    ),
-                    const SizedBox(height: AppSpacing.space_xs),
-                    // Rating & Reviews Count
-                    _build_doctor_detail_row(
-                      Icons.star_rounded,
-                      "${doc.rating} (${doc.reviews_count} ${localizations.search_doctor_reviews})",
-                      is_dark,
-                      iconColor: const Color(0xFF3B82F6), // Blue star color matching the mockup!
-                    ),
-                    const SizedBox(height: AppSpacing.space_xs),
-                    // Consultation Fee
-                    _build_doctor_detail_row(
-                      Icons.payments_outlined,
-                      "${doc.fee} EGP",
-                      is_dark,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.space_xl),
-          // Bottom Row: Availability Status and Book Now CTA
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // Availability text
-              Text(
-                true == doc.is_available_today
-                    ? localizations.search_doctor_available_today
-                    : localizations.search_doctor_unavailable_today,
-                style: TextStyle(
-                  fontSize: AppSpacing.font_size_body_medium,
-                  fontWeight: FontWeight.w600,
-                  color: true == doc.is_available_today
-                      ? const Color(0xFF10B981) // Green status text
-                      : const Color(0xFF94A3B8), // Gray status text
-                ),
-              ),
-              // Book Now button
-              ElevatedButton(
-                onPressed: () {
-                  // Pop a simple toast/snackbar simulated event
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        "Booking appointment with ${doc.name}...",
-                      ),
-                      duration: const Duration(seconds: 2),
-                    ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: true == doc.is_available_today
-                      ? const Color(0xFF1E3A8A) // Dark blue button when available
-                      : const Color(0xFF3B82F6).withValues(alpha: 0.6), // Light blue button when unavailable
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24.0),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.space_xxl,
-                    vertical: AppSpacing.space_l,
-                  ),
-                  elevation: 0,
-                ),
-                child: Text(
-                  localizations.search_doctor_book_now,
-                  style: const TextStyle(
-                    fontSize: AppSpacing.font_size_body_medium,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
 
-  // Helper details row layout displaying icon and label
-  Widget _build_doctor_detail_row(
-    IconData icon,
-    String text,
-    bool is_dark, {
-    Color? iconColor,
-  }) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          size: AppSpacing.font_size_body_medium,
-          color: iconColor ?? const Color(0xFF3B82F6), // Blue icon highlight
-        ),
-        const SizedBox(width: AppSpacing.space_s),
-        Expanded(
-          child: Text(
-            text,
-            style: TextStyle(
-              fontSize: AppSpacing.font_size_body_small,
-              color: is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 }
 
 // Custom internal stateless widget constructing Location and Specialty filter chips

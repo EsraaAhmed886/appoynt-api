@@ -38,6 +38,9 @@ class AppSpacing {
   // Extreme layout spacing dimension equivalent to forty-eight units
   static const double space_extreme = 48.0;
 
+  // Extra extra extra large layout spacing dimension equivalent to forty-eight units
+  static const double space_xxxxl = 48.0;
+
   // Small border radius constant value equivalent to four units
   static const double radius_s = 4.0;
 
@@ -369,14 +372,14 @@ class AppSpacing {
   // Corner radius layout configuration for suggestions container card layer
   static const double search_card_radius = 16.0;
 
-  // Width and height dimension constraint for search result doctor card avatar (72px)
-  static const double doctor_card_avatar_size = 72.0;
+  // Width and height dimension constraint for search result doctor card avatar (75px)
+  static const double doctor_card_avatar_size = 75.0;
 
-  // Corner radius layout configuration for search result doctor card avatar (36px for perfect circle)
-  static const double doctor_card_avatar_radius = 36.0;
+  // Corner radius layout configuration for search result doctor card avatar (37.5px for perfect circle)
+  static const double doctor_card_avatar_radius = 37.5;
 
-  // Icon size for fallback/placeholder states inside doctor card avatar (36px)
-  static const double doctor_card_avatar_icon_size = 36.0;
+  // Icon size for fallback/placeholder states inside doctor card avatar (37.5px)
+  static const double doctor_card_avatar_icon_size = 37.5;
 
   // Image decode cache width/height constraint for doctor card avatar to optimize memory usage (150px)
   static const double doctor_card_avatar_cache_size = 150.0;

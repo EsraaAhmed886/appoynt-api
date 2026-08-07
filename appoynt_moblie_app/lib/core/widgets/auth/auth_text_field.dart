@@ -157,7 +157,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
             // Active label text
             widget.label,
             // Pull centralized style registry with theme-adaptive colors
-            style: AppTextStyles.get_field_label(is_arabic).copyWith(
+            style: AppTextStyles.get_field_label(context, is_arabic).copyWith(
               // Select label color based on theme using Yoda style check
               color: true == is_dark
                   ? AppColors.text_dark_primary
