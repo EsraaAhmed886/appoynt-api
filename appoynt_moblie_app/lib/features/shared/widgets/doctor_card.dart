@@ -233,28 +233,42 @@ class DoctorCard extends StatelessWidget {
               ),
               // Gap spacing between metadata column and favorite button
               const SizedBox(width: AppSpacing.space_xl),
-              // Right side: Heart Favorite Toggle Button with ecg_heart asset icon
+              // Right side: Custom ECG Heart Favorite Toggle Button using Stack overlay
               InkWell(
                 // On tap callback invocation
                 onTap: on_favorite_tap,
                 // Touch target padding using AppSpacing design tokens
                 child: Padding(
-                  // Apply tiny padding around heart button for responsive touch area
-                  padding: const EdgeInsets.all(AppSpacing.space_s),
-                  // Heart favorite standard icon representation
-                  child: Icon(
-                    // Choose icon based on favorite state using Yoda check
-                    true == is_favorite
-                        ? Icons.favorite_rounded
-                        : Icons.favorite_border_rounded,
-                    // Tint color based on favorite state using Yoda check
-                    color: true == is_favorite
-                        ? AppColors.dummy_custom_red
-                        : (true == is_dark
-                            ? AppColors.text_dark_secondary
-                            : AppColors.text_light_secondary),
-                    // Icon size from spacing constants
-                    size: AppSpacing.search_nav_icon_size,
+                  // Apply comfortable padding around heart button for responsive touch area
+                  padding: const EdgeInsets.all(AppSpacing.space_m),
+                  // Stack layering base heart icon and overlay ECG pulse line trace
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      // Base authentic heart Material Icon
+                      Icon(
+                        true == is_favorite
+                            ? Icons.favorite_rounded
+                            : Icons.favorite_border_rounded,
+                        color: true == is_favorite
+                            ? AppColors.dummy_custom_red
+                            : (true == is_dark
+                                ? AppColors.text_dark_secondary
+                                : AppColors.text_light_secondary),
+                        size: 28.0,
+                      ),
+                      // Overlay CustomPaint drawing the ECG pulse line trace
+                      CustomPaint(
+                        size: const Size(28.0, 28.0),
+                        painter: EcgLinePainter(
+                          color: true == is_favorite
+                              ? Colors.white
+                              : (true == is_dark
+                                  ? AppColors.text_dark_secondary
+                                  : AppColors.text_light_secondary),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -387,5 +401,52 @@ class DoctorCard extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+// Custom painter drawing only the ECG pulse line trace across the middle of the heart icon
+class EcgLinePainter extends CustomPainter {
+  // Line color matching active status
+  final Color color;
+
+  // Constructor mapping color parameter
+  const EcgLinePainter({
+    required this.color,
+  });
+
+  @override
+  // Draw the pulse line trace path on the canvas bounds
+  void paint(Canvas canvas, Size size) {
+    // ECG line paint styling properties configuration
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 1.8
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+
+    // Construct the zig-zag ECG path centered vertically
+    final path = Path();
+    final double w = size.width;
+    final double h = size.height;
+
+    // Flat line -> small dip -> medium peak -> deep dip -> small peak -> flat line
+    path.moveTo(w * 0.15, h * 0.5);
+    path.lineTo(w * 0.35, h * 0.5);
+    path.lineTo(w * 0.42, h * 0.38);
+    path.lineTo(w * 0.50, h * 0.62);
+    path.lineTo(w * 0.58, h * 0.32);
+    path.lineTo(w * 0.66, h * 0.50);
+    path.lineTo(w * 0.85, h * 0.5);
+
+    // Render path coordinates onto canvas using paint settings
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  // Prevent unnecessary repaints for static paint properties
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    // Return false representation
+    return false;
   }
 }
