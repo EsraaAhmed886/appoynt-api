@@ -33,6 +33,8 @@ class GlobalLanguageButton extends StatelessWidget {
 
   @override
   // Build method creating the language toggle widget elements
+  @override
+  // Build method creating the language toggle widget elements
   Widget build(BuildContext context) {
     // Fetch dynamically resolved localized font name
     final String font_family = AppFonts.by_locale(is_arabic);
@@ -40,12 +42,17 @@ class GlobalLanguageButton extends StatelessWidget {
     // Load custom translations catalog dictionary configurations
     final AppLocalizations localizations = AppLocalizations.of(context);
 
+    // Check if system brightness matches dark theme mode
+    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+
     // Resolve color indicator for button elements based on light option check using Yoda style
     final Color icon_color = true == light
         // Set icon to white for dark backgrounds
         ? Colors.white
-        // Set icon to primary text color
-        : AppColors.text_light_primary;
+        // Set icon dynamically to support dark mode theme switching
+        : (true == is_dark
+            ? AppColors.text_dark_primary
+            : AppColors.text_light_primary);
 
     // Resolve background fill color configurations using Yoda style check
     final Color bg_color = true == light
@@ -94,8 +101,8 @@ class GlobalLanguageButton extends StatelessWidget {
     return PopupMenuButton<String>(
       // Offset position to place dropdown list below capsule
       offset: const Offset(0.0, 36.0),
-      // Apply primary surface color setting to dropdown background card
-      color: Colors.white,
+      // Apply surface color setting to dropdown background card dynamically based on theme
+      color: true == is_dark ? AppColors.surface_dark : Colors.white,
       // Set dropdown shadow depth representation
       elevation: 8.0,
       // Apply rounded container borders to dropdown shape
@@ -104,8 +111,10 @@ class GlobalLanguageButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppSpacing.radius_l),
         // Draw thin container line borders
         side: BorderSide(
-          // Set border line color
-          color: AppColors.border_light.withValues(alpha: 0.5),
+          // Set border line color adapting dynamically to theme modes
+          color: true == is_dark
+              ? AppColors.border_dark.withValues(alpha: 0.5)
+              : AppColors.border_light.withValues(alpha: 0.5),
         ),
       ),
       // Event handler triggered upon item selection
@@ -164,11 +173,13 @@ class GlobalLanguageButton extends StatelessWidget {
                   // Display active name spelling
                   current_full,
                   // Custom text styling options
-                  style: const TextStyle(
+                  style: TextStyle(
                     // Set size
                     fontSize: 13.0,
-                    // Apply secondary color
-                    color: AppColors.text_light_secondary,
+                    // Apply secondary color dynamically
+                    color: true == is_dark
+                        ? AppColors.text_dark_secondary
+                        : AppColors.text_light_secondary,
                   ),
                 ),
                 // Spacer separating name from check indicator
@@ -186,7 +197,10 @@ class GlobalLanguageButton extends StatelessWidget {
             ),
           ),
           // Separator line splitting choices
-          const PopupMenuDivider(height: 1.0),
+          const PopupMenuDivider(
+            // Separator thickness mapping theme modes
+            height: 1.0,
+          ),
           // PopupMenuItem configuration for alternate language choice
           PopupMenuItem<String>(
             // Value representation key
@@ -196,13 +210,15 @@ class GlobalLanguageButton extends StatelessWidget {
               // Place children inside list
               children: [
                 // Globe iconography indicator
-                const Icon(
+                Icon(
                   // Set standard language globe icon
                   Icons.language_rounded,
                   // Set dimensions size
                   size: 16.0,
-                  // Set secondary color
-                  color: AppColors.text_light_secondary,
+                  // Set secondary color dynamically
+                  color: true == is_dark
+                      ? AppColors.text_dark_secondary
+                      : AppColors.text_light_secondary,
                 ),
                 // Horizontal spacing divider
                 const SizedBox(width: 8.0),
@@ -218,8 +234,10 @@ class GlobalLanguageButton extends StatelessWidget {
                     fontSize: 14.0,
                     // Apply bold weight
                     fontWeight: FontWeight.w700,
-                    // Apply primary color
-                    color: AppColors.text_light_primary,
+                    // Apply primary color dynamically
+                    color: true == is_dark
+                        ? AppColors.text_dark_primary
+                        : AppColors.text_light_primary,
                   ),
                 ),
                 // Horizontal spacing divider
@@ -229,11 +247,13 @@ class GlobalLanguageButton extends StatelessWidget {
                   // Display name spelling
                   other_full,
                   // Custom text styling options
-                  style: const TextStyle(
+                  style: TextStyle(
                     // Set size
                     fontSize: 13.0,
-                    // Apply secondary color
-                    color: AppColors.text_light_secondary,
+                    // Apply secondary color dynamically
+                    color: true == is_dark
+                        ? AppColors.text_dark_secondary
+                        : AppColors.text_light_secondary,
                   ),
                 ),
               ],
