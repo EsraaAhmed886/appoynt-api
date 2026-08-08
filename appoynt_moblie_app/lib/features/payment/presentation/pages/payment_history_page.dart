@@ -47,8 +47,6 @@ class _LocalDimensions {
   static const double banner_badge_padding_v = 6.0;
   static const double banner_badge_radius = 12.0;
   static const double banner_badge_font_size = 12.0;
-  static const double filter_chip_spacing_right = 8.0;
-  static const double filter_chip_opacity = 0.15;
   static const double bottom_sheet_radius = 20.0;
   static const double sheet_padding = 16.0;
   static const double sheet_title_font_size = 16.0;
@@ -234,44 +232,47 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
     final List<InvoiceModel> filtered_tx =
         _all_transactions.where(_matches_filters).toList();
 
-    // Calculate dynamically aggregate summary statistics
-    final double total_spent = filtered_tx
-        .where((tx) => 'Paid' == tx.status)
-        .fold(0.0,
-            (sum, item) => sum + (double.tryParse(item.amount ?? '') ?? 0.0));
+    // Calculate dynamically aggregate summary statistics of all filtered items
+    final double total_spent = filtered_tx.fold(
+        0.0,
+        (sum, item) => sum + (double.tryParse(item.amount ?? '') ?? 0.0));
 
     // Return root Scaffold layout container
     return Scaffold(
       // Body content safe area
       body: SafeArea(
-        child: Padding(
-          // Outer padding bounds
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space_xl),
-          // Column stack layout
-          child: Column(
-            // Align start horizontal
-            crossAxisAlignment: CrossAxisAlignment.start,
-            // children list
-            children: [
-              // Top padding separator
-              const SizedBox(height: AppSpacing.space_xl),
-              // Custom profile back-navigation appBar header
-              CustomProfileAppBar(
+        child: Column(
+          // Align start horizontal
+          crossAxisAlignment: CrossAxisAlignment.start,
+          // children list
+          children: [
+            // Top padding separator
+            const SizedBox(height: AppSpacing.space_xl),
+            // Custom profile back-navigation appBar header
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space_xl),
+              child: CustomProfileAppBar(
                 title: localizations.payment_invoices_history_title,
               ),
-              // Spacing gap separator
-              const SizedBox(height: AppSpacing.space_l),
-              // Top summary banner overview card (Indigo/Purple modern design)
-              _build_summary_banner(
+            ),
+            // Spacing gap separator
+            const SizedBox(height: AppSpacing.space_l),
+            // Top summary banner overview card (Indigo/Purple modern design)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space_xl),
+              child: _build_summary_banner(
                   context, total_spent, filtered_tx.length, is_dark, localizations),
-              // Spacing gap separator
-              const SizedBox(height: AppSpacing.space_l),
-              // Horizontal Scrollable Filter Bar
-              _build_filter_bar(context, is_dark, localizations),
-              // Spacing gap separator
-              const SizedBox(height: AppSpacing.space_m),
-              // Scrollable transaction list view area
-              Expanded(
+            ),
+            // Spacing gap separator
+            const SizedBox(height: AppSpacing.space_l),
+            // Horizontal Scrollable Filter Bar
+            _build_filter_bar(context, is_dark, localizations),
+            // Spacing gap separator
+            const SizedBox(height: AppSpacing.space_m),
+            // Scrollable transaction list view area
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space_xl),
                 child: true == filtered_tx.isEmpty
                     ? _build_empty_state(context, is_dark, localizations)
                     : ListView.builder(
@@ -441,8 +442,8 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                         },
                       ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -521,45 +522,50 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
 
   // Build the horizontal filter chip options row bar layout widget
   Widget _build_filter_bar(BuildContext context, bool is_dark, AppLocalizations localizations) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
+    final String dateLabel = 'All' == _selected_date_filter
+        ? '${localizations.payment_date_filter_prefix}: All'
+        : '${localizations.payment_date_filter_prefix}: $_selected_date_filter';
+
+    final bool isAmountFiltered = 0.0 != _min_amount || _LocalDimensions.slider_max_value != _max_amount;
+    final String amountLabel = isAmountFiltered
+        ? '${localizations.payment_amount_filter_prefix}: \$${_min_amount.toInt()}-\$${_max_amount.toInt()}'
+        : '${localizations.payment_amount_filter_prefix}: All';
+
+    final String serviceLabel = 'All' == _selected_service_type
+        ? '${localizations.payment_service_filter_prefix}: All'
+        : '${localizations.payment_service_filter_prefix}: $_selected_service_type';
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space_xl),
       child: Row(
         children: [
           // Date Filter Chip
-          Padding(
-            padding: const EdgeInsets.only(right: _LocalDimensions.filter_chip_spacing_right),
-            child: FilterChip(
-              label: Text('${localizations.payment_date_filter_prefix}: $_selected_date_filter ▾'),
-              selected: 'All' != _selected_date_filter,
-              onSelected: (_) =>
+          Expanded(
+            child: _PaymentHistoryFilterChip(
+              label: dateLabel,
+              isSelected: 'All' != _selected_date_filter,
+              onTap: () =>
                   _show_date_picker_bottom_sheet(context, is_dark, localizations),
-              selectedColor: AppColors.primary_color.withValues(alpha: _LocalDimensions.filter_chip_opacity),
-              checkmarkColor: AppColors.primary_color,
             ),
           ),
+          const SizedBox(width: 8.0),
           // Amount Filter Chip
-          Padding(
-            padding: const EdgeInsets.only(right: _LocalDimensions.filter_chip_spacing_right),
-            child: FilterChip(
-              label: Text(
-                  '${localizations.payment_amount_filter_prefix}: \$${_min_amount.toInt()} - \$${_max_amount.toInt()} ▾'),
-              selected: 0.0 != _min_amount || _LocalDimensions.slider_max_value != _max_amount,
-              onSelected: (_) =>
+          Expanded(
+            child: _PaymentHistoryFilterChip(
+              label: amountLabel,
+              isSelected: isAmountFiltered,
+              onTap: () =>
                   _show_amount_range_bottom_sheet(context, is_dark, localizations),
-              selectedColor: AppColors.primary_color.withValues(alpha: _LocalDimensions.filter_chip_opacity),
-              checkmarkColor: AppColors.primary_color,
             ),
           ),
+          const SizedBox(width: 8.0),
           // Service Type Filter Chip
-          Padding(
-            padding: const EdgeInsets.only(right: _LocalDimensions.filter_chip_spacing_right),
-            child: FilterChip(
-              label: Text('${localizations.payment_service_filter_prefix}: $_selected_service_type ▾'),
-              selected: 'All' != _selected_service_type,
-              onSelected: (_) =>
+          Expanded(
+            child: _PaymentHistoryFilterChip(
+              label: serviceLabel,
+              isSelected: 'All' != _selected_service_type,
+              onTap: () =>
                   _show_service_type_bottom_sheet(context, is_dark, localizations),
-              selectedColor: AppColors.primary_color.withValues(alpha: _LocalDimensions.filter_chip_opacity),
-              checkmarkColor: AppColors.primary_color,
             ),
           ),
         ],
@@ -882,5 +888,73 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
       default:
         return '';
     }
+  }
+}
+
+// Custom internal stateless widget constructing Location and Specialty filter chips matching Design System
+class _PaymentHistoryFilterChip extends StatelessWidget {
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _PaymentHistoryFilterChip({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        // Rounded chip corner radius (16px spec radius matching Search filter chips)
+        height: 40.0,
+        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+        decoration: BoxDecoration(
+          // Soft primary background tint (0.08) when active, otherwise soft neutral input fill
+          color: isSelected
+              ? AppColors.primary_color.withValues(alpha: 0.08)
+              : (is_dark ? AppColors.surface_dark : AppColors.slate_50),
+          borderRadius: BorderRadius.circular(16.0),
+          border: Border.all(
+            // Subtle primary border when active, otherwise smooth light border
+            color: isSelected
+                ? AppColors.primary_color
+                : (is_dark ? AppColors.border_dark : AppColors.slate_200),
+            width: 1.0,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Text(
+                label,
+                style: TextStyle(
+                  color: isSelected
+                      ? AppColors.primary_color
+                      : (is_dark ? AppColors.white : AppColors.text_light_primary),
+                  fontWeight: FontWeight.w500,
+                  fontSize: 12.0,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const SizedBox(width: 4.0),
+            Icon(
+              Icons.keyboard_arrow_down_rounded,
+              color: isSelected
+                  ? AppColors.primary_color
+                  : (is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary),
+              size: 18.0,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
