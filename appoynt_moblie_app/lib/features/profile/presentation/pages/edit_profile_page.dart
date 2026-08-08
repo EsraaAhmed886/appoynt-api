@@ -29,6 +29,40 @@ import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_s
 import 'package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart';
 import 'package:appoynt_mobile_app/core/widgets/app_date_picker.dart';
 
+// Local layout dimensions class to strictly eliminate hardcoded numbers
+class _LocalDimensions {
+  static const double min_weight = 2.0;
+  static const double max_weight = 300.0;
+  static const double min_height = 30.0;
+  static const double max_height = 250.0;
+  static const double border_radius_sheet = 24.0;
+  static const double title_font_size = 18.0;
+  static const double avatar_box_size = 100.0;
+  static const double avatar_border_width = 2.0;
+  static const double avatar_shadow_blur = 8.0;
+  static const double avatar_shadow_offset_y = 2.0;
+  static const double avatar_radius = 50.0;
+  static const double default_avatar_icon_size = 50.0;
+  static const double camera_badge_padding = 6.0;
+  static const double camera_badge_icon_size = 16.0;
+  static const double card_padding = 16.0;
+  static const double card_radius = 16.0;
+  static const double card_border_width = 1.0;
+  static const double card_shadow_blur = 10.0;
+  static const double card_shadow_offset_y = 4.0;
+  static const double field_spacing_small = 12.0;
+  static const double field_spacing_large = 16.0;
+  static const double field_spacing_tiny = 8.0;
+  static const double scroll_bottom_padding = 80.0;
+  static const double segmented_height = 48.0;
+  static const double segmented_radius = 12.0;
+  static const double segmented_border_width = 1.0;
+  static const double segmented_padding = 4.0;
+  static const double chip_padding_h = 8.0;
+  static const double chip_radius = 8.0;
+  static const double chip_font_size = 13.0;
+}
+
 // Patient Profile Editor form screen stateful widget representation
 class EditProfilePage extends StatefulWidget {
   // Constructor mapping key
@@ -220,7 +254,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       if (weight == null || weight <= 0.0) {
         return "Please enter a valid weight.";
       } else {
-        if (weight < 2.0 || weight > 300.0) {
+        if (weight < _LocalDimensions.min_weight || weight > _LocalDimensions.max_weight) {
           return "Weight must be between 2 and 300 kg.";
         } else {
           return null;
@@ -239,7 +273,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       if (height == null || height <= 0.0) {
         return "Please enter a valid height.";
       } else {
-        if (height < 30.0 || height > 250.0) {
+        if (height < _LocalDimensions.min_height || height > _LocalDimensions.max_height) {
           return "Height must be between 30 and 250 cm.";
         } else {
           return null;
@@ -485,7 +519,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           decoration: BoxDecoration(
             color: true == is_dark ? AppColors.surface_dark : Colors.white,
             borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(24.0)),
+                const BorderRadius.vertical(top: Radius.circular(_LocalDimensions.border_radius_sheet)),
           ),
           // Safe area wrapper
           child: SafeArea(
@@ -504,7 +538,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   // Text styling properties
                   style: TextStyle(
                     // Title standard size
-                    fontSize: 18.0,
+                    fontSize: _LocalDimensions.title_font_size,
                     // Bold styling
                     fontWeight: FontWeight.bold,
                     // Dynamic colors adapting to light/dark surfaces
@@ -796,27 +830,27 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     GestureDetector(
                                       onTap: _upload_photo,
                                       child: Container(
-                                        width: 100.0,
-                                        height: 100.0,
+                                        width: _LocalDimensions.avatar_box_size,
+                                        height: _LocalDimensions.avatar_box_size,
                                         decoration: BoxDecoration(
                                           shape: BoxShape.circle,
                                           border: Border.all(
                                             color: AppColors.primary_color,
-                                            width: 2.0,
+                                            width: _LocalDimensions.avatar_border_width,
                                           ),
                                           boxShadow: [
                                             BoxShadow(
                                               color: is_dark
                                                   ? Colors.black54
                                                   : Colors.black12,
-                                              blurRadius: 8.0,
-                                              offset: const Offset(0.0, 2.0),
+                                              blurRadius: _LocalDimensions.avatar_shadow_blur,
+                                              offset: const Offset(0.0, _LocalDimensions.avatar_shadow_offset_y),
                                             ),
                                           ],
                                         ),
                                         child: ClipRRect(
                                           borderRadius:
-                                              BorderRadius.circular(50.0),
+                                              BorderRadius.circular(_LocalDimensions.avatar_radius),
                                           child: state.temp_profile.avatar_url
                                                   .isNotEmpty
                                               ? (state.temp_profile.avatar_url
@@ -838,7 +872,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                                     Icons.person_rounded,
                                                     color:
                                                         AppColors.primary_color,
-                                                    size: 50.0,
+                                                    size: _LocalDimensions.default_avatar_icon_size,
                                                   ),
                                                 ),
                                         ),
@@ -850,7 +884,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                       child: GestureDetector(
                                         onTap: _upload_photo,
                                         child: Container(
-                                          padding: const EdgeInsets.all(6.0),
+                                          padding: const EdgeInsets.all(_LocalDimensions.camera_badge_padding),
                                           decoration: const BoxDecoration(
                                             color: AppColors.primary_color,
                                             shape: BoxShape.circle,
@@ -858,7 +892,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                           child: const Icon(
                                             Icons.camera_alt_rounded,
                                             color: Colors.white,
-                                            size: 16.0,
+                                            size: _LocalDimensions.camera_badge_icon_size,
                                           ),
                                         ),
                                       ),
@@ -869,17 +903,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               const SizedBox(height: AppSpacing.space_xl),
                               // Single grouped card container holding all form fields
                               Container(
-                                padding: const EdgeInsets.all(16.0),
+                                padding: const EdgeInsets.all(_LocalDimensions.card_padding),
                                 decoration: BoxDecoration(
                                   color: is_dark
                                       ? AppColors.surface_dark
                                       : Colors.white,
-                                  borderRadius: BorderRadius.circular(16.0),
+                                  borderRadius: BorderRadius.circular(_LocalDimensions.card_radius),
                                   border: Border.all(
                                     color: is_dark
                                         ? AppColors.border_dark
                                         : const Color(0xFFE2E8F0),
-                                    width: 1.0,
+                                    width: _LocalDimensions.card_border_width,
                                   ),
                                   boxShadow: [
                                     BoxShadow(
@@ -887,9 +921,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                           ? Colors.black.withValues(alpha: 0.2)
                                           : Colors.black
                                               .withValues(alpha: 0.03),
-                                      blurRadius: 10.0,
+                                      blurRadius: _LocalDimensions.card_shadow_blur,
                                       spreadRadius: 0.0,
-                                      offset: const Offset(0.0, 4.0),
+                                      offset: const Offset(0.0, _LocalDimensions.card_shadow_offset_y),
                                     ),
                                   ],
                                 ),
@@ -926,7 +960,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                             ),
                                           ),
                                         ),
-                                        const SizedBox(width: 12.0),
+                                        const SizedBox(width: _LocalDimensions.field_spacing_small),
                                         Expanded(
                                           // Focus wrapper handling automatic sanitization on field blur
                                           child: Focus(
@@ -953,7 +987,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                         ),
                                       ],
                                     ),
-                                    const SizedBox(height: 16.0),
+                                    const SizedBox(height: _LocalDimensions.field_spacing_large),
                                     // Email input card (full width) with Focus wrapper for sanitization
                                     Focus(
                                       onFocusChange: (bool has_focus) {
@@ -982,7 +1016,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                         validator: _validate_email,
                                       ),
                                     ),
-                                    const SizedBox(height: 16.0),
+                                    const SizedBox(height: _LocalDimensions.field_spacing_large),
                                     // Phone input card (full width) disabled and read-only
                                     AuthTextField(
                                       label: localizations.profile_phone_label,
@@ -993,7 +1027,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                       show_shadow: false,
                                       enabled: false,
                                     ),
-                                    const SizedBox(height: 16.0),
+                                    const SizedBox(height: _LocalDimensions.field_spacing_large),
                                     // Address input card (full width) with Focus wrapper for sanitization
                                     Focus(
                                       onFocusChange: (bool has_focus) {
@@ -1017,7 +1051,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                         validator: _validate_address,
                                       ),
                                     ),
-                                    const SizedBox(height: 16.0),
+                                    const SizedBox(height: _LocalDimensions.field_spacing_large),
                                     // National ID input card (full width)
                                     AuthTextField(
                                       label: localizations
@@ -1033,7 +1067,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                       ],
                                       validator: _validate_national_id,
                                     ),
-                                    const SizedBox(height: 16.0),
+                                    const SizedBox(height: _LocalDimensions.field_spacing_large),
                                     // Date of Birth input card (full width, tapping triggers custom calendar picker dialog)
                                     GestureDetector(
                                       onTap: () async {
@@ -1070,7 +1104,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(height: 16.0),
+                                    const SizedBox(height: _LocalDimensions.field_spacing_large),
                                     // Gender label
                                     Text(
                                       localizations.profile_gender_label,
@@ -1083,7 +1117,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                             : AppColors.primary_color,
                                       ),
                                     ),
-                                    const SizedBox(height: 8.0),
+                                    const SizedBox(height: _LocalDimensions.field_spacing_tiny),
                                     // Segmented chips for gender choices limited strictly to Male and Female
                                     _build_segmented_chips<String>(
                                       values: const ['Male', 'Female'],
@@ -1108,7 +1142,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                       },
                                       is_dark: is_dark,
                                     ),
-                                    const SizedBox(height: 16.0),
+                                    const SizedBox(height: _LocalDimensions.field_spacing_large),
                                     // Weight and Height side-by-side Row
                                     Row(
                                       crossAxisAlignment:
@@ -1133,7 +1167,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                             validator: _validate_weight,
                                           ),
                                         ),
-                                        const SizedBox(width: 12.0),
+                                        const SizedBox(width: _LocalDimensions.field_spacing_small),
                                         Expanded(
                                           child: AuthTextField(
                                             label: true ==
@@ -1155,7 +1189,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                         ),
                                       ],
                                     ),
-                                    const SizedBox(height: 16.0),
+                                    const SizedBox(height: _LocalDimensions.field_spacing_large),
                                     // Smoking section header
                                     Text(
                                       localizations.profile_smoking_section,
@@ -1168,7 +1202,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                             : AppColors.primary_color,
                                       ),
                                     ),
-                                    const SizedBox(height: 8.0),
+                                    const SizedBox(height: _LocalDimensions.field_spacing_tiny),
                                     // Segmented chips for smoking options
                                     _build_segmented_chips<String>(
                                       values: ['Yes', 'No', 'Ex-Smoker'],
@@ -1191,7 +1225,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   ],
                                 ),
                               ),
-                              const SizedBox(height: 80.0),
+                              const SizedBox(height: _LocalDimensions.scroll_bottom_padding),
                             ],
                           ),
                         ),
@@ -1225,17 +1259,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
     required bool is_dark,
   }) {
     return Container(
-      height: 48.0,
+      height: _LocalDimensions.segmented_height,
       width: double.infinity,
       decoration: BoxDecoration(
         color: is_dark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
-        borderRadius: BorderRadius.circular(12.0),
+        borderRadius: BorderRadius.circular(_LocalDimensions.segmented_radius),
         border: Border.all(
           color: is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
-          width: 1.0,
+          width: _LocalDimensions.segmented_border_width,
         ),
       ),
-      padding: const EdgeInsets.all(4.0),
+      padding: const EdgeInsets.all(_LocalDimensions.segmented_padding),
       child: Row(
         children: List.generate(values.length, (index) {
           final T value = values[index];
@@ -1248,12 +1282,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
               child: Container(
                 alignment: Alignment.center,
                 // Reduced horizontal padding to accommodate longer labels on narrow screens
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                padding: const EdgeInsets.symmetric(horizontal: _LocalDimensions.chip_padding_h),
                 decoration: BoxDecoration(
                   color: is_selected
                       ? AppColors.primary_color
                       : Colors.transparent,
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(_LocalDimensions.chip_radius),
                 ),
                 // FittedBox dynamically scales text down to prevent truncation
                 child: FittedBox(
@@ -1263,7 +1297,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      fontSize: 13.0,
+                      fontSize: _LocalDimensions.chip_font_size,
                       fontWeight: FontWeight.bold,
                       color: is_selected
                           ? Colors.white

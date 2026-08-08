@@ -25,6 +25,16 @@ import 'package:appoynt_mobile_app/features/profile/domain/entities/insurance_ca
 // Importing add card page screen
 import 'package:appoynt_mobile_app/features/profile/presentation/pages/add_insurance_card_page.dart';
 
+// Local layout dimensions class to strictly eliminate hardcoded numbers
+class _LocalDimensions {
+  static const double border_radius_sheet = 24.0;
+  static const double border_radius_tiny = 2.0;
+  static const double drag_handle_width = 40.0;
+  static const double drag_handle_height = 4.0;
+  static const double font_size_title = 18.0;
+  static const double font_size_body = 13.0;
+}
+
 // Insurance Details Page layout stateful widget representation
 class InsuranceDetailsPage extends StatefulWidget {
   // Constructor mapping key
@@ -199,7 +209,7 @@ class _InsuranceDetailsPageState extends State<InsuranceDetailsPage> {
         return Container(
           decoration: BoxDecoration(
             color: true == is_dark ? AppColors.surface_dark : Colors.white,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24.0)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(_LocalDimensions.border_radius_sheet)),
           ),
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.space_xl),
@@ -209,11 +219,11 @@ class _InsuranceDetailsPageState extends State<InsuranceDetailsPage> {
             children: [
               Center(
                 child: Container(
-                  width: 40.0,
-                  height: 4.0,
+                  width: _LocalDimensions.drag_handle_width,
+                  height: _LocalDimensions.drag_handle_height,
                   decoration: BoxDecoration(
                     color: true == is_dark ? Colors.white30 : Colors.black12,
-                    borderRadius: BorderRadius.circular(2.0),
+                    borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_tiny),
                   ),
                 ),
               ),
@@ -221,7 +231,7 @@ class _InsuranceDetailsPageState extends State<InsuranceDetailsPage> {
               Text(
                 card.card_name,
                 style: TextStyle(
-                  fontSize: 18.0,
+                  fontSize: _LocalDimensions.font_size_title,
                   fontWeight: FontWeight.bold,
                   color: true == is_dark ? Colors.white : AppColors.text_light_primary,
                 ),
@@ -229,7 +239,7 @@ class _InsuranceDetailsPageState extends State<InsuranceDetailsPage> {
               Text(
                 card.provider_name,
                 style: const TextStyle(
-                  fontSize: 13.0,
+                  fontSize: _LocalDimensions.font_size_body,
                   color: AppColors.text_light_secondary,
                 ),
               ),

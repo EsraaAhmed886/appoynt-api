@@ -16,6 +16,35 @@ import 'package:appoynt_mobile_app/core/routing/route_export.dart';
 // Importing add family member page layout
 import 'package:appoynt_mobile_app/features/profile/presentation/pages/add_family_member_page.dart';
 
+// Local layout dimensions class to strictly eliminate hardcoded numbers
+class _LocalDimensions {
+  static const double border_radius_default = 16.0;
+  static const double border_radius_badge = 12.0;
+  static const double border_width_thin = 1.0;
+  static const double border_width_accent = 2.0;
+  static const double avatar_size = 48.0;
+  static const double icon_size_large = 48.0;
+  static const double icon_size_medium = 24.0;
+  static const double icon_size_small = 18.0;
+  static const double icon_size_badge = 22.0;
+  static const double spacing_small = 6.0;
+  static const double spacing_medium = 8.0;
+  static const double spacing_large = 12.0;
+  static const double spacing_xl = 14.0;
+  static const double font_size_title = 16.0;
+  static const double font_size_body = 14.0;
+  static const double font_size_small = 12.0;
+  static const double font_size_tiny = 11.0;
+  static const double font_size_micro = 10.0;
+  static const double shadow_blur = 8.0;
+  static const double shadow_opacity_dark = 0.25;
+  static const double shadow_opacity_light = 0.04;
+  static const double card_padding = 16.0;
+  static const double action_padding = 4.0;
+  static const double badge_padding_h = 8.0;
+  static const double badge_padding_v = 3.0;
+}
+
 // Stateful widget displaying Family Members layout
 class FamilyMembersPage extends StatefulWidget {
   // Constructor mapping key
@@ -81,12 +110,21 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
       context: context,
       builder: (dialog_context) {
         return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
+          ),
           title: const Text(
             'Remove Member',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: _LocalDimensions.font_size_title,
+            ),
           ),
           content: Text(
             'Are you sure you want to remove "$member_name" from family dependents? Medical history records associated with this profile will be unlinked.',
+            style: const TextStyle(
+              fontSize: _LocalDimensions.font_size_body,
+            ),
           ),
           actions: [
             TextButton(
@@ -112,7 +150,10 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
               },
               child: const Text(
                 'Remove',
-                style: TextStyle(color: AppColors.error),
+                style: TextStyle(
+                  color: AppColors.error,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ],
@@ -159,7 +200,7 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
                   Text(
                     'Family Profiles (${_family_members.length})',
                     style: TextStyle(
-                      fontSize: 14.0,
+                      fontSize: _LocalDimensions.font_size_body,
                       fontWeight: FontWeight.bold,
                       color: true == is_dark
                           ? Colors.white
@@ -169,7 +210,7 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
                   const Text(
                     'Tap card to select profile',
                     style: TextStyle(
-                      fontSize: 11.0,
+                      fontSize: _LocalDimensions.font_size_tiny,
                       color: AppColors.text_light_secondary,
                     ),
                   ),
@@ -186,16 +227,16 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
                           children: [
                             Icon(
                               Icons.group_off_rounded,
-                              size: 48.0,
+                              size: _LocalDimensions.icon_size_large,
                               color: true == is_dark
                                   ? Colors.white38
                                   : Colors.grey[400],
                             ),
-                            const SizedBox(height: 12.0),
+                            const SizedBox(height: _LocalDimensions.spacing_large),
                             const Text(
                               'No family members added yet.',
                               style: TextStyle(
-                                fontSize: 14.0,
+                                fontSize: _LocalDimensions.font_size_body,
                                 color: AppColors.text_light_secondary,
                               ),
                             ),
@@ -205,7 +246,7 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
                     : ListView.separated(
                         itemCount: _family_members.length,
                         separatorBuilder: (context, index) =>
-                            const SizedBox(height: 12.0),
+                            const SizedBox(height: _LocalDimensions.spacing_large),
                         itemBuilder: (context, index) {
                           final member = _family_members[index];
                           final bool is_selected =
@@ -225,33 +266,33 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
                                 color: true == is_dark
                                     ? AppColors.surface_dark
                                     : Colors.white,
-                                borderRadius: BorderRadius.circular(16.0),
+                                borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
                                 border: Border.all(
                                   color: true == is_selected
                                       ? AppColors.primary_color
                                       : (true == is_dark
                                           ? AppColors.border_dark
-                                          : const Color(0xFFE2E8F0)),
-                                  width: true == is_selected ? 2.0 : 1.0,
+                                          : AppColors.slate_200),
+                                  width: true == is_selected ? _LocalDimensions.border_width_accent : _LocalDimensions.border_width_thin,
                                 ),
                                 boxShadow: [
                                   BoxShadow(
                                     color: true == is_dark
-                                        ? Colors.black.withValues(alpha: 0.25)
-                                        : Colors.black.withValues(alpha: 0.04),
-                                    blurRadius: 8.0,
+                                        ? Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
+                                        : Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
+                                    blurRadius: _LocalDimensions.shadow_blur,
                                     offset: const Offset(0.0, 2.0),
                                   ),
                                 ],
                               ),
                               child: Padding(
-                                padding: const EdgeInsets.all(16.0),
+                                padding: const EdgeInsets.all(_LocalDimensions.card_padding),
                                 child: Row(
                                   children: [
-                                    // Leading Element: Circular Avatar with role/gender color tint
+                                    // Leading Element: Circular Avatar with role/gender role color tint
                                     Container(
-                                      width: 48.0,
-                                      height: 48.0,
+                                      width: _LocalDimensions.avatar_size,
+                                      height: _LocalDimensions.avatar_size,
                                       decoration: BoxDecoration(
                                         color:
                                             theme_color.withValues(alpha: 0.12),
@@ -260,10 +301,10 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
                                       child: Icon(
                                         member['icon'] as IconData,
                                         color: theme_color,
-                                        size: 24.0,
+                                        size: _LocalDimensions.icon_size_medium,
                                       ),
                                     ),
-                                    const SizedBox(width: 14.0),
+                                    const SizedBox(width: _LocalDimensions.spacing_xl),
 
                                     // Middle Section: Name, Relationship Pill Badge & Demographics
                                     Expanded(
@@ -278,7 +319,7 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
                                                 child: Text(
                                                   member['name'] as String,
                                                   style: TextStyle(
-                                                    fontSize: 16.0,
+                                                    fontSize: _LocalDimensions.font_size_title,
                                                     fontWeight: FontWeight.w700,
                                                     color: true == is_dark
                                                         ? Colors.white
@@ -289,13 +330,13 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
                                                       TextOverflow.ellipsis,
                                                 ),
                                               ),
-                                              const SizedBox(width: 8.0),
+                                              const SizedBox(width: _LocalDimensions.spacing_medium),
                                               // Soft pill-shaped relationship badge
                                               Container(
                                                 padding:
                                                     const EdgeInsets.symmetric(
-                                                  horizontal: 8.0,
-                                                  vertical: 3.0,
+                                                  horizontal: _LocalDimensions.badge_padding_h,
+                                                  vertical: _LocalDimensions.badge_padding_v,
                                                 ),
                                                 decoration: BoxDecoration(
                                                   color: true == is_primary
@@ -306,13 +347,13 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
                                                           alpha: 0.1),
                                                   borderRadius:
                                                       BorderRadius.circular(
-                                                          12.0),
+                                                          _LocalDimensions.border_radius_badge),
                                                 ),
                                                 child: Text(
                                                   member['relationship']
                                                       as String,
                                                   style: TextStyle(
-                                                    fontSize: 10.0,
+                                                    fontSize: _LocalDimensions.font_size_micro,
                                                     fontWeight: FontWeight.bold,
                                                     color: true == is_primary
                                                         ? AppColors
@@ -323,12 +364,12 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
                                               ),
                                             ],
                                           ),
-                                          const SizedBox(height: 6.0),
+                                          const SizedBox(height: _LocalDimensions.spacing_small),
                                           // Subtitle Details: Age, Gender & Medical ID preview
                                           Text(
                                             '${member['age']} • ${member['gender']} • ${member['medical_id']}',
                                             style: const TextStyle(
-                                              fontSize: 12.0,
+                                              fontSize: _LocalDimensions.font_size_small,
                                               color: AppColors
                                                   .text_light_secondary,
                                               fontWeight: FontWeight.w500,
@@ -345,13 +386,13 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
                                         // Subtle edit pencil icon button
                                         IconButton(
                                           constraints: const BoxConstraints(),
-                                          padding: const EdgeInsets.all(4.0),
+                                          padding: const EdgeInsets.all(_LocalDimensions.action_padding),
                                           icon: Icon(
                                             Icons.edit_outlined,
-                                            size: 18.0,
+                                            size: _LocalDimensions.icon_size_small,
                                             color: true == is_dark
                                                 ? Colors.white38
-                                                : const Color(0xFF94A3B8),
+                                                : AppColors.slate_400,
                                           ),
                                           onPressed: () {
                                             Navigator.of(context).push(
@@ -368,10 +409,10 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
                                         if (false == is_primary) ...[
                                           IconButton(
                                             constraints: const BoxConstraints(),
-                                            padding: const EdgeInsets.all(4.0),
+                                            padding: const EdgeInsets.all(_LocalDimensions.action_padding),
                                             icon: Icon(
                                               Icons.delete_outline_rounded,
-                                              size: 18.0,
+                                              size: _LocalDimensions.icon_size_small,
                                               color: AppColors.error
                                                   .withValues(alpha: 0.7),
                                             ),
@@ -394,7 +435,7 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
                                               : (true == is_dark
                                                   ? Colors.white30
                                                   : Colors.grey[400]),
-                                          size: 22.0,
+                                          size: _LocalDimensions.icon_size_badge,
                                         ),
                                       ],
                                     ),
@@ -429,13 +470,13 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
                 backgroundColor: AppColors.primary_color,
                 elevation: 0.0,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16.0),
+                  borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
                 ),
               ),
               icon: const Icon(
                 Icons.add_rounded,
                 color: Colors.white,
-                size: 20.0,
+                size: _LocalDimensions.icon_size_medium,
               ),
               label: const Text(
                 'Add Family Member',

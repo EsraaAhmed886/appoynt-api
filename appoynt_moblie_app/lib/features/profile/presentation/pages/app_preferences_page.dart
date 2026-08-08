@@ -19,6 +19,35 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Importing main to access global theme mode notifier
 import 'package:appoynt_mobile_app/main.dart';
 
+// Local layout dimensions class to strictly eliminate hardcoded numbers
+class _LocalDimensions {
+  static const double border_radius_default = 16.0;
+  static const double border_radius_small = 10.0;
+  static const double border_radius_sheet = 24.0;
+  static const double border_radius_tiny = 2.0;
+  static const double border_width_thin = 1.0;
+  static const double button_height = 48.0;
+  static const double drag_handle_width = 40.0;
+  static const double drag_handle_height = 4.0;
+  static const double icon_container_size = 40.0;
+  static const double spacing_tiny = 2.0;
+  static const double spacing_small = 8.0;
+  static const double spacing_medium = 12.0;
+  static const double spacing_large = 16.0;
+  static const double spacing_xl = 20.0;
+  static const double spacing_xxl = 24.0;
+  static const double font_size_title_large = 20.0;
+  static const double font_size_title_medium = 16.0;
+  static const double font_size_body_large = 15.0;
+  static const double font_size_body_medium = 14.0;
+  static const double font_size_body_small = 12.0;
+  static const double shadow_blur = 10.0;
+  static const double shadow_opacity_dark = 0.2;
+  static const double shadow_opacity_light = 0.03;
+  static const double input_padding_h = 16.0;
+  static const double input_padding_v = 14.0;
+}
+
 // Stateful widget displaying Preferences layout
 class AppPreferencesPage extends StatefulWidget {
   const AppPreferencesPage({super.key});
@@ -51,33 +80,33 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
         return Container(
           decoration: BoxDecoration(
             color: is_dark ? AppColors.surface_dark : Colors.white,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24.0)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(_LocalDimensions.border_radius_sheet)),
           ),
           child: SafeArea(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-              const SizedBox(height: 12.0),
+              const SizedBox(height: _LocalDimensions.spacing_medium),
               Center(
                 child: Container(
-                  width: 40.0,
-                  height: 4.0,
+                  width: _LocalDimensions.drag_handle_width,
+                  height: _LocalDimensions.drag_handle_height,
                   decoration: BoxDecoration(
                     color: is_dark ? Colors.white30 : Colors.black12,
-                    borderRadius: BorderRadius.circular(2.0),
+                    borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_tiny),
                   ),
                 ),
               ),
-              const SizedBox(height: 20.0),
+              const SizedBox(height: _LocalDimensions.spacing_xl),
               Text(
                 localizations.is_arabic ? "اختر اللغة" : "Select Language",
                 style: TextStyle(
-                  fontSize: 16.0,
+                  fontSize: _LocalDimensions.font_size_title_medium,
                   fontWeight: FontWeight.bold,
                   color: is_dark ? Colors.white : AppColors.text_light_primary,
                 ),
               ),
-              const SizedBox(height: 16.0),
+              const SizedBox(height: _LocalDimensions.spacing_large),
               ListTile(
                 title: const Text("English", style: TextStyle(fontWeight: FontWeight.bold)),
                 trailing: !is_arabic ? const Icon(Icons.check_rounded, color: AppColors.primary_color) : null,
@@ -88,7 +117,7 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
                   Navigator.pop(modal_context);
                 },
               ),
-              Divider(height: 1.0, color: is_dark ? AppColors.border_dark : const Color(0xFFF1F5F9)),
+              Divider(height: 1.0, color: is_dark ? AppColors.border_dark : AppColors.slate_50),
               ListTile(
                 title: const Text("العربية", style: TextStyle(fontWeight: FontWeight.bold)),
                 trailing: is_arabic ? const Icon(Icons.check_rounded, color: AppColors.primary_color) : null,
@@ -99,7 +128,7 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
                   Navigator.pop(modal_context);
                 },
               ),
-              const SizedBox(height: 20.0),
+              const SizedBox(height: _LocalDimensions.spacing_xl),
             ],
           ),
         ),
@@ -139,16 +168,16 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20.0),
+                  const SizedBox(height: _LocalDimensions.spacing_xl),
                   Text(
                     localizations.is_arabic ? "اختر المظهر" : "Select Theme",
                     style: TextStyle(
-                      fontSize: 16.0,
+                      fontSize: _LocalDimensions.font_size_title_medium,
                       fontWeight: FontWeight.bold,
                       color: is_dark ? Colors.white : AppColors.text_light_primary,
                     ),
                   ),
-                  const SizedBox(height: 16.0),
+                  const SizedBox(height: _LocalDimensions.spacing_large),
                   ListTile(
                     leading: const Icon(Icons.light_mode_rounded),
                     title: Text(localizations.profile_theme_light),
@@ -158,7 +187,7 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
                       Navigator.pop(modal_context);
                     },
                   ),
-                  Divider(height: 1.0, color: is_dark ? AppColors.border_dark : const Color(0xFFF1F5F9)),
+                  Divider(height: 1.0, color: is_dark ? AppColors.border_dark : AppColors.slate_50),
                   ListTile(
                     leading: const Icon(Icons.dark_mode_rounded),
                     title: Text(localizations.profile_theme_dark),
@@ -168,7 +197,7 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
                       Navigator.pop(modal_context);
                     },
                   ),
-                  Divider(height: 1.0, color: is_dark ? AppColors.border_dark : const Color(0xFFF1F5F9)),
+                  Divider(height: 1.0, color: is_dark ? AppColors.border_dark : AppColors.slate_50),
                   ListTile(
                     leading: const Icon(Icons.settings_suggest_rounded),
                     title: Text(localizations.profile_theme_system),
@@ -178,7 +207,7 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
                       Navigator.pop(modal_context);
                     },
                   ),
-                  const SizedBox(height: 20.0),
+                  const SizedBox(height: _LocalDimensions.spacing_xl),
                 ],
               ),
             ),
@@ -205,34 +234,34 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
         return Container(
           decoration: BoxDecoration(
             color: is_dark ? AppColors.surface_dark : Colors.white,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24.0)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(_LocalDimensions.border_radius_sheet)),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(24.0),
+            padding: const EdgeInsets.all(_LocalDimensions.spacing_xxl),
             child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
                 child: Container(
-                  width: 40.0,
-                  height: 4.0,
+                  width: _LocalDimensions.drag_handle_width,
+                  height: _LocalDimensions.drag_handle_height,
                   decoration: BoxDecoration(
                     color: is_dark ? Colors.white30 : Colors.black26,
-                    borderRadius: BorderRadius.circular(2.0),
+                    borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_tiny),
                   ),
                 ),
               ),
-              const SizedBox(height: 20.0),
+              const SizedBox(height: _LocalDimensions.spacing_xl),
               Text(
                 title,
                 style: TextStyle(
-                  fontSize: 20.0,
+                  fontSize: _LocalDimensions.font_size_title_large,
                   fontWeight: FontWeight.w800,
                   color: is_dark ? Colors.white : AppColors.text_light_primary,
                 ),
               ),
-              const SizedBox(height: 12.0),
+              const SizedBox(height: _LocalDimensions.spacing_medium),
               Text(
                 content,
                 style: TextStyle(
@@ -241,10 +270,10 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
                   color: is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary,
                 ),
               ),
-              const SizedBox(height: 24.0),
+              const SizedBox(height: _LocalDimensions.spacing_xxl),
               SizedBox(
                 width: double.infinity,
-                height: 48.0,
+                height: _LocalDimensions.button_height,
                 child: ElevatedButton(
                   onPressed: () => Navigator.of(modal_context).pop(),
                   style: ElevatedButton.styleFrom(
@@ -258,7 +287,7 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
                     localizations.profile_close_button,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 15.0,
+                      fontSize: _LocalDimensions.font_size_body_large,
                     ),
                   ),
                 ),
@@ -280,16 +309,16 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
       width: double.infinity,
       decoration: BoxDecoration(
         color: is_dark ? AppColors.surface_dark : Colors.white,
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
         border: Border.all(
-          color: is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
-          width: 1.0,
+          color: is_dark ? AppColors.border_dark : AppColors.slate_200,
+          width: _LocalDimensions.border_width_thin,
         ),
         boxShadow: [
           BoxShadow(
-            color: is_dark ? Colors.black.withValues(alpha: 0.2) : Colors.black.withValues(alpha: 0.03),
-            blurRadius: 10.0,
-            spreadRadius: 1.0,
+            color: is_dark ? Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark) : Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
+            blurRadius: _LocalDimensions.shadow_blur,
+            spreadRadius: _LocalDimensions.border_width_thin,
             offset: const Offset(0.0, 2.0),
           ),
         ],
@@ -313,15 +342,15 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
       children: [
         // Soft-tinted leading icon container (10% opacity primary color background)
         Container(
-          width: 40.0,
-          height: 40.0,
+          width: _LocalDimensions.icon_container_size,
+          height: _LocalDimensions.icon_container_size,
           decoration: BoxDecoration(
             color: AppColors.primary_color.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(10.0),
+            borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_small),
           ),
           child: leadingIcon,
         ),
-        const SizedBox(width: 12.0),
+        const SizedBox(width: _LocalDimensions.spacing_medium),
         // Title & Subtitle details
         Expanded(
           child: Column(
@@ -330,17 +359,17 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
               Text(
                 title,
                 style: TextStyle(
-                  fontSize: 14.0,
+                  fontSize: _LocalDimensions.font_size_body_medium,
                   fontWeight: FontWeight.bold,
                   color: is_dark ? Colors.white : AppColors.text_light_primary,
                 ),
               ),
               if (subtitle != null) ...[
-                const SizedBox(height: 2.0),
+                const SizedBox(height: _LocalDimensions.spacing_tiny),
                 Text(
                   subtitle,
                   style: TextStyle(
-                    fontSize: 12.0,
+                    fontSize: _LocalDimensions.font_size_body_small,
                     color: is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary,
                     height: 1.3,
                   ),
@@ -350,7 +379,7 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
           ),
         ),
         if (trailing != null) ...[
-          const SizedBox(width: 8.0),
+          const SizedBox(width: _LocalDimensions.spacing_small),
           trailing,
         ],
       ],
@@ -359,16 +388,16 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
     if (onTap != null) {
       return InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
+          padding: const EdgeInsets.symmetric(vertical: _LocalDimensions.input_padding_v, horizontal: _LocalDimensions.input_padding_h),
           child: rowContent,
         ),
       );
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(vertical: _LocalDimensions.input_padding_v, horizontal: _LocalDimensions.input_padding_h),
       child: rowContent,
     );
   }

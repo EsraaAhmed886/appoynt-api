@@ -23,6 +23,11 @@ import 'package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart';
 // Importing insurance card entity
 import 'package:appoynt_mobile_app/features/profile/domain/entities/insurance_card.dart';
 
+// Local layout dimensions class to strictly eliminate hardcoded numbers
+class _LocalDimensions {
+  static const double border_radius_sheet = 24.0;
+}
+
 // Add Insurance Card Page layout stateful widget representation
 class AddInsuranceCardPage extends StatefulWidget {
   // Optional edit list index mapping parameter
@@ -141,7 +146,7 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
           decoration: BoxDecoration(
             color: is_dark ? AppColors.surface_dark : Colors.white,
             borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(24.0),
+              top: Radius.circular(_LocalDimensions.border_radius_sheet),
             ),
           ),
           // Wrap padding margins offsets
@@ -288,7 +293,7 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
               // Vibrant blue when enabled, muted gray when disabled (#E2E8F0)
               backgroundColor: true == _is_form_valid
                   ? AppColors.primary_color
-                  : const Color(0xFFE2E8F0),
+                  : AppColors.slate_200,
               elevation: 0.0,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppSpacing.radius_l),
@@ -299,7 +304,7 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
               localizations.insurance_save_card_btn,
               style: TextStyle(
                 // White text when enabled, muted gray text when disabled
-                color: true == _is_form_valid ? Colors.white : const Color(0xFF94A3B8),
+                color: true == _is_form_valid ? Colors.white : AppColors.slate_400,
                 fontSize: AppSpacing.font_size_action_button,
                 fontWeight: FontWeight.w700,
               ),
@@ -388,7 +393,7 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
                               border: Border.all(
                                 color: true == is_dark
                                     ? AppColors.border_dark
-                                    : const Color(0xFFE2E8F0),
+                                    : AppColors.slate_200,
                                 width: AppSpacing.border_width_thin,
                               ),
                             ),
@@ -419,7 +424,7 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
                                     Icons.keyboard_arrow_down_rounded,
                                     color: true == is_dark
                                         ? Colors.white60
-                                        : const Color(0xFF64748B),
+                                        : AppColors.slate_500,
                                     size: AppSpacing.icon_size_m,
                                   ),
                                 ],
@@ -461,14 +466,14 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
                             decoration: BoxDecoration(
                               color: true == is_dark
                                   ? AppColors.surface_dark
-                                  : const Color(0xFFF8FAFC),
+                                  : AppColors.slate_50,
                               borderRadius: BorderRadius.circular(
                                 AppSpacing.radius_input,
                               ),
                               border: Border.all(
                                 color: true == is_dark
                                     ? AppColors.border_dark
-                                    : const Color(0xFFE2E8F0),
+                                    : AppColors.slate_200,
                                 width: AppSpacing.border_width_thin,
                               ),
                             ),
@@ -479,7 +484,7 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
                                   Icons.file_upload_outlined,
                                   color: true == is_dark
                                       ? Colors.white70
-                                      : const Color(0xFF475569),
+                                      : AppColors.slate_600,
                                   size: AppSpacing.icon_size_m,
                                 ),
                                 const SizedBox(width: AppSpacing.space_s),
@@ -488,7 +493,7 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
                                   style: TextStyle(
                                     color: true == is_dark
                                         ? Colors.white70
-                                        : const Color(0xFF475569),
+                                        : AppColors.slate_600,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),

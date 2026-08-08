@@ -35,6 +35,20 @@ import 'package:appoynt_mobile_app/features/profile/presentation/pages/chronic_c
 import 'package:appoynt_mobile_app/features/profile/presentation/pages/insurance_details_page.dart';
 // Importing full screen add family member page layout
 
+// Local layout dimensions class to strictly eliminate hardcoded numbers
+class _LocalDimensions {
+  static const double border_radius_default = 16.0;
+  static const double border_radius_badge = 12.0;
+  static const double spacing_large = 16.0;
+  static const double font_size_body = 14.0;
+  static const double font_size_tiny = 11.0;
+  static const double icon_size_medium = 20.0;
+  static const double shadow_blur = 10.0;
+  static const double shadow_opacity_dark = 0.2;
+  static const double shadow_opacity_light = 0.05;
+  static const double dash_stroke_width = 1.5;
+}
+
 // Stateful widget displaying Medical Context layout
 class MedicalContextPage extends StatefulWidget {
   // Constructor mapping key
@@ -232,7 +246,7 @@ class _MedicalContextPageState extends State<MedicalContextPage> {
                       },
                     ),
                     // Spacing gap (strictly 16px)
-                    const SizedBox(height: 16.0),
+                    const SizedBox(height: _LocalDimensions.spacing_large),
 
                     // CARD A: Allergies Card
                     _MedicalCategoryCard(
@@ -264,7 +278,7 @@ class _MedicalContextPageState extends State<MedicalContextPage> {
                       },
                     ),
                     // Spacing gap (strictly 16px)
-                    const SizedBox(height: 16.0),
+                    const SizedBox(height: _LocalDimensions.spacing_large),
 
                     // CARD B: Chronic Conditions Card
                     _MedicalCategoryCard(
@@ -296,7 +310,7 @@ class _MedicalContextPageState extends State<MedicalContextPage> {
                       },
                     ),
                     // Spacing gap (strictly 16px)
-                    const SizedBox(height: 16.0),
+                    const SizedBox(height: _LocalDimensions.spacing_large),
 
                     // CARD C: Medications List Card
                     _MedicalCategoryCard(
@@ -328,7 +342,7 @@ class _MedicalContextPageState extends State<MedicalContextPage> {
                       },
                     ),
                     // Spacing gap (strictly 16px)
-                    const SizedBox(height: 16.0),
+                    const SizedBox(height: _LocalDimensions.spacing_large),
 
                     // CARD D: Tests and Results Card
                     _MedicalCategoryCard(
@@ -360,7 +374,7 @@ class _MedicalContextPageState extends State<MedicalContextPage> {
                       },
                     ),
                     // Spacing gap (strictly 16px)
-                    const SizedBox(height: 16.0),
+                    const SizedBox(height: _LocalDimensions.spacing_large),
 
                     // CARD E: Shared InsuranceCardWidget or NoInsuranceCardWidget depending on count
                     true == state.profile.insurance_cards.isEmpty
@@ -460,17 +474,18 @@ class _MedicalCategoryCard extends StatelessWidget {
         // Background color
         color: true == is_dark ? AppColors.surface_dark : Colors.white,
         // Corners radius curvature equivalent to 16 units
-        borderRadius: BorderRadius.circular(16.0),
+        // Corners radius curvature equivalent to 16 units
+        borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
         // Drop shadows
         boxShadow: [
           // Soft card shadow
           BoxShadow(
             // Shadow colors adapting to dark mode
             color: true == is_dark
-                ? Colors.black.withValues(alpha: 0.2)
-                : Colors.black.withValues(alpha: 0.05),
+                ? Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
+                : Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
             // Blur spread
-            blurRadius: 10.0,
+            blurRadius: _LocalDimensions.shadow_blur,
             // Offset coordinates position
             offset: const Offset(0, 4),
           ),
@@ -480,7 +495,7 @@ class _MedicalCategoryCard extends StatelessWidget {
           // Border color
           color: true == is_dark
               ? AppColors.border_dark
-              : const Color(0xFFE2E8F0),
+              : AppColors.slate_200,
           // Boundary line thickness
           width: AppSpacing.border_width_thin,
         ),
@@ -492,7 +507,7 @@ class _MedicalCategoryCard extends StatelessWidget {
         // Clickable area
         child: InkWell(
           // Curved corners radius
-          borderRadius: BorderRadius.circular(16.0),
+          borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
           // Bind click handler
           onTap: onTap,
           // Card padding offsets
@@ -511,7 +526,7 @@ class _MedicalCategoryCard extends StatelessWidget {
                 // Medical Icon graphic represent container
                 Container(
                   // Padding offset
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(AppSpacing.space_s),
                   // Circle shape decoration
                   decoration: BoxDecoration(
                     // Background fill color tint
@@ -526,7 +541,7 @@ class _MedicalCategoryCard extends StatelessWidget {
                     // Color
                     color: iconColor,
                     // Size
-                    size: 20.0,
+                    size: _LocalDimensions.icon_size_medium,
                   ),
                 ),
                 // Divider spacing gap width
@@ -540,7 +555,7 @@ class _MedicalCategoryCard extends StatelessWidget {
                     // Typographic specs
                     style: TextStyle(
                       // Size
-                      fontSize: 14.0,
+                      fontSize: _LocalDimensions.font_size_body,
                       // Bold weights
                       fontWeight: FontWeight.bold,
                       // Color
@@ -551,15 +566,15 @@ class _MedicalCategoryCard extends StatelessWidget {
                 // Muted count items badge container
                 Container(
                   // Padding offsets
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space_s, vertical: AppSpacing.space_xs),
                   // Card decoration
                   decoration: BoxDecoration(
                     // Light blue transparent background or grey background
                     color: true == is_dark
-                        ? Colors.white.withValues(alpha: 0.05)
-                        : AppColors.primary_color.withValues(alpha: 0.05),
+                        ? Colors.white.withValues(alpha: _LocalDimensions.shadow_opacity_light)
+                        : AppColors.primary_color.withValues(alpha: _LocalDimensions.shadow_opacity_light),
                     // Rounded border contours
-                    borderRadius: BorderRadius.circular(12.0),
+                    borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_badge),
                   ),
                   // Badge count label
                   child: Text(
@@ -568,7 +583,7 @@ class _MedicalCategoryCard extends StatelessWidget {
                     // Style specs
                     style: TextStyle(
                       // Tiny size
-                      fontSize: 11.0,
+                      fontSize: _LocalDimensions.font_size_tiny,
                       // Semi-bold
                       fontWeight: FontWeight.w600,
                       // Color blue or white adapted
@@ -608,7 +623,7 @@ class DashCirclePainter extends CustomPainter {
     // Create line style Paint configurations
     final Paint paint = Paint()
       ..color = color
-      ..strokeWidth = 1.5
+      ..strokeWidth = _LocalDimensions.dash_stroke_width
       ..style = PaintingStyle.stroke;
 
     // Define dashboard dimensions parameters

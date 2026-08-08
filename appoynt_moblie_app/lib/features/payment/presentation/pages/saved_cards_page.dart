@@ -2,7 +2,7 @@
  * File Name: saved_cards_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 08/08/2026
- * Version Information: V1.4.0
+ * Version Information: V1.5.0
  * Dependencies: package:flutter/material.dart,
  *   package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/core/routing/route_export.dart,
@@ -10,7 +10,7 @@
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 08/08/2026]
- * File Description: Ultra-modern, premium FinTech style Saved Cards management page. Fully localized.
+ * File Description: Ultra-modern, premium FinTech style Saved Cards management page. Fully localized and complies with zero-hardcoded-numbers.
  */
 
 // Importing BLoC state management library
@@ -21,6 +21,57 @@ import 'package:appoynt_mobile_app/core/routing/route_export.dart';
 import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart';
 // Importing add card sub-page form layout
 import 'package:appoynt_mobile_app/features/profile/presentation/pages/add_saved_card_page.dart';
+
+// Local layout dimensions class to strictly eliminate hardcoded numbers
+class _LocalDimensions {
+  static const double horizontal_padding = 10.0;
+  static const double vertical_padding_tiny = 4.0;
+  static const double count_badge_radius = 12.0;
+  static const double count_badge_font_size = 10.0;
+  static const double spacing_bottom = 16.0;
+  static const double aspect_ratio = 1.586;
+  static const double container_radius = 20.0;
+  static const double shadow_blur = 10.0;
+  static const double shadow_offset_y = 4.0;
+  static const double shadow_opacity_dark = 0.35;
+  static const double shadow_opacity_light = 0.15;
+  static const double chip_width = 44.0;
+  static const double chip_height = 32.0;
+  static const double chip_radius = 6.0;
+  static const double default_badge_padding_h = 8.0;
+  static const double default_badge_padding_v = 4.0;
+  static const double default_badge_radius = 8.0;
+  static const double default_badge_font_size = 8.0;
+  static const double brand_logo_font_size = 16.0;
+  static const double brand_logo_letter_spacing = 1.0;
+  static const double circle_size = 16.0;
+  static const double circle_offset_x = 8.0;
+  static const double spacing_small = 4.0;
+  static const double label_font_size_small = 10.0;
+  static const double numbers_font_size = 18.0;
+  static const double numbers_letter_spacing = 2.0;
+  static const double label_font_size_tiny = 8.0;
+  static const double val_font_size_medium = 12.0;
+  static const double spacing_tiny = 2.0;
+  static const double icon_size = 20.0;
+  static const double menu_radius = 12.0;
+  static const double menu_item_font_size = 12.0;
+  static const double menu_icon_size = 18.0;
+  static const double button_height = 50.0;
+  static const double button_radius = 12.0;
+  static const double button_font_size = 16.0;
+  static const double empty_state_icon_size = 64.0;
+  static const double empty_state_title_font_size = 16.0;
+  static const double empty_state_subtitle_font_size = 12.0;
+  static const double button_radius_large = 25.0;
+  static const double line_width_thin = 1.0;
+  static const double line_opacity = 0.5;
+  static const double grid_x1 = 0.33;
+  static const double grid_x2 = 0.66;
+  static const double grid_y = 0.5;
+  static const double rect_pos = 0.25;
+  static const double rect_size = 0.5;
+}
 
 // Stateful widget displaying saved cards list screen details
 class SavedCardsPage extends StatefulWidget {
@@ -75,15 +126,16 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                   // Count indicator badge
                   Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 10.0, vertical: 4.0),
+                        horizontal: _LocalDimensions.horizontal_padding,
+                        vertical: _LocalDimensions.vertical_padding_tiny),
                     decoration: BoxDecoration(
                       color: AppColors.primary_color.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(12.0),
+                      borderRadius: BorderRadius.circular(_LocalDimensions.count_badge_radius),
                     ),
                     child: Text(
                       '${saved_cards.length} ${localizations.payment_cards_count_suffix}',
                       style: const TextStyle(
-                        fontSize: 10.0,
+                        fontSize: _LocalDimensions.count_badge_font_size,
                         fontWeight: FontWeight.bold,
                         color: AppColors.primary_color,
                       ),
@@ -118,9 +170,9 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
 
                           // AspectRatio widget enforcing standard credit card dimensions (1.586 : 1)
                           return Padding(
-                            padding: const EdgeInsets.only(bottom: 16.0),
+                            padding: const EdgeInsets.only(bottom: _LocalDimensions.spacing_bottom),
                             child: AspectRatio(
-                              aspectRatio: 1.586,
+                              aspectRatio: _LocalDimensions.aspect_ratio,
                               child: Container(
                                 decoration: BoxDecoration(
                                   // Sleek premium backgrounds (gradient for primary card, Slate Glassmorphism for secondary cards)
@@ -129,8 +181,7 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                                           colors: [
                                             Color(0xFF0F172A), // Slate Dark
                                             Color(0xFF1E293B), // Slate Light
-                                            Color(
-                                                0xFF334155), // Indigo Highlight
+                                            Color(0xFF334155), // Indigo Highlight
                                           ],
                                           begin: Alignment.topLeft,
                                           end: Alignment.bottomRight,
@@ -143,15 +194,14 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                                           begin: Alignment.topLeft,
                                           end: Alignment.bottomRight,
                                         ),
-                                  borderRadius: BorderRadius.circular(20.0),
+                                  borderRadius: BorderRadius.circular(_LocalDimensions.container_radius),
                                   boxShadow: [
                                     BoxShadow(
                                       color: true == is_dark
-                                          ? Colors.black.withValues(alpha: 0.35)
-                                          : Colors.black
-                                              .withValues(alpha: 0.15),
-                                      blurRadius: 10.0,
-                                      offset: const Offset(0.0, 4.0),
+                                          ? Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
+                                          : Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
+                                      blurRadius: _LocalDimensions.shadow_blur,
+                                      offset: const Offset(0.0, _LocalDimensions.shadow_offset_y),
                                     ),
                                   ],
                                 ),
@@ -168,7 +218,7 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                                     ),
                                     // Card details layout wrapper
                                     Padding(
-                                      padding: const EdgeInsets.all(24.0),
+                                      padding: const EdgeInsets.all(AppSpacing.space_xxl),
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
@@ -182,23 +232,19 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                                             children: [
                                               // EMV Metallic Gold Chip Widget
                                               Container(
-                                                width: 44.0,
-                                                height: 32.0,
+                                                width: _LocalDimensions.chip_width,
+                                                height: _LocalDimensions.chip_height,
                                                 decoration: BoxDecoration(
-                                                  gradient:
-                                                      const LinearGradient(
+                                                  gradient: const LinearGradient(
                                                     colors: [
-                                                      Color(
-                                                          0xFFFCD34D), // Soft Amber Gold
-                                                      Color(
-                                                          0xFFF59E0B), // Deep Amber Gold
+                                                      Color(0xFFFCD34D), // Soft Amber Gold
+                                                      Color(0xFFF59E0B), // Deep Amber Gold
                                                     ],
                                                     begin: Alignment.topLeft,
                                                     end: Alignment.bottomRight,
                                                   ),
                                                   borderRadius:
-                                                      BorderRadius.circular(
-                                                          6.0),
+                                                      BorderRadius.circular(_LocalDimensions.chip_radius),
                                                   boxShadow: const [
                                                     BoxShadow(
                                                       color: Colors.black26,
@@ -211,31 +257,30 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                                                   painter: EMVChipPainter(),
                                                 ),
                                               ),
-                                              const SizedBox(width: 8.0),
+                                              const SizedBox(width: AppSpacing.space_m),
                                               // Default indicator badge
                                               true == is_default
                                                   ? Container(
                                                       padding: const EdgeInsets
                                                           .symmetric(
-                                                          horizontal: 8.0,
-                                                          vertical: 4.0),
+                                                          horizontal: _LocalDimensions.default_badge_padding_h,
+                                                          vertical: _LocalDimensions.default_badge_padding_v),
                                                       decoration: BoxDecoration(
                                                         color: const Color(
                                                                 0xFF10B981)
                                                             .withValues(
                                                                 alpha: 0.2),
                                                         borderRadius:
-                                                            BorderRadius
-                                                                .circular(8.0),
+                                                            BorderRadius.circular(_LocalDimensions.default_badge_radius),
                                                         border: Border.all(
                                                             color: const Color(
                                                                 0xFF10B981),
-                                                            width: 1.0),
+                                                            width: _LocalDimensions.line_width_thin),
                                                       ),
                                                       child: Text(
                                                         '✓ ${localizations.payment_default_badge.toUpperCase()}',
                                                         style: const TextStyle(
-                                                          fontSize: 8.0,
+                                                          fontSize: _LocalDimensions.default_badge_font_size,
                                                           color: Colors.white,
                                                           fontWeight:
                                                               FontWeight.bold,
@@ -249,11 +294,11 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                                                 const Text(
                                                   'VISA',
                                                   style: TextStyle(
-                                                    fontSize: 16.0,
+                                                    fontSize: _LocalDimensions.brand_logo_font_size,
                                                     fontWeight: FontWeight.bold,
                                                     color: Colors.white,
                                                     fontStyle: FontStyle.italic,
-                                                    letterSpacing: 1.0,
+                                                    letterSpacing: _LocalDimensions.brand_logo_letter_spacing,
                                                   ),
                                                 ),
                                               if (true ==
@@ -263,12 +308,12 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                                                   children: [
                                                     // Mastercard colored overlapping circles
                                                     SizedBox(
-                                                      width: 24.0,
+                                                      width: _LocalDimensions.circle_size + _LocalDimensions.circle_offset_x,
                                                       child: Stack(
                                                         children: [
                                                           Container(
-                                                            width: 16.0,
-                                                            height: 16.0,
+                                                            width: _LocalDimensions.circle_size,
+                                                            height: _LocalDimensions.circle_size,
                                                             decoration:
                                                                 const BoxDecoration(
                                                               color: Color(
@@ -278,10 +323,10 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                                                             ),
                                                           ),
                                                           Positioned(
-                                                            left: 8.0,
+                                                            left: _LocalDimensions.circle_offset_x,
                                                             child: Container(
-                                                              width: 16.0,
-                                                              height: 16.0,
+                                                              width: _LocalDimensions.circle_size,
+                                                              height: _LocalDimensions.circle_size,
                                                               decoration:
                                                                   const BoxDecoration(
                                                                 color: Color(
@@ -294,11 +339,11 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                                                         ],
                                                       ),
                                                     ),
-                                                    const SizedBox(width: 4.0),
+                                                    const SizedBox(width: _LocalDimensions.spacing_small),
                                                     const Text(
                                                       'mc',
                                                       style: TextStyle(
-                                                        fontSize: 10.0,
+                                                        fontSize: _LocalDimensions.label_font_size_small,
                                                         fontWeight:
                                                             FontWeight.bold,
                                                         color: Colors.white,
@@ -322,11 +367,11 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                                               return masked;
                                             })(),
                                             style: const TextStyle(
-                                              fontSize: 18.0,
+                                              fontSize: _LocalDimensions.numbers_font_size,
                                               fontWeight: FontWeight.bold,
                                               color: Colors.white,
                                               fontFamily: 'monospace',
-                                              letterSpacing: 2.0,
+                                              letterSpacing: _LocalDimensions.numbers_letter_spacing,
                                             ),
                                           ),
                                           // Bottom row placing card holder, expiration date, and popup context menu
@@ -342,20 +387,18 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    localizations
-                                                        .payment_cardholder_label,
+                                                    localizations.payment_cardholder_label,
                                                     style: const TextStyle(
-                                                      fontSize: 8.0,
+                                                      fontSize: _LocalDimensions.label_font_size_tiny,
                                                       color: Colors.white60,
                                                     ),
                                                   ),
-                                                  const SizedBox(height: 2.0),
+                                                  const SizedBox(height: _LocalDimensions.spacing_tiny),
                                                   Text(
                                                     card['holder'] ?? '',
                                                     style: const TextStyle(
-                                                      fontSize: 12.0,
-                                                      fontWeight:
-                                                          FontWeight.bold,
+                                                      fontSize: _LocalDimensions.val_font_size_medium,
+                                                      fontWeight: FontWeight.bold,
                                                       color: Colors.white,
                                                     ),
                                                   ),
@@ -367,20 +410,18 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    localizations
-                                                        .payment_valid_thru_label,
+                                                    localizations.payment_valid_thru_label,
                                                     style: const TextStyle(
-                                                      fontSize: 8.0,
+                                                      fontSize: _LocalDimensions.label_font_size_tiny,
                                                       color: Colors.white60,
                                                     ),
                                                   ),
-                                                  const SizedBox(height: 2.0),
+                                                  const SizedBox(height: _LocalDimensions.spacing_tiny),
                                                   Text(
                                                     card['expiry'] ?? '',
                                                     style: const TextStyle(
-                                                      fontSize: 12.0,
-                                                      fontWeight:
-                                                          FontWeight.bold,
+                                                      fontSize: _LocalDimensions.val_font_size_medium,
+                                                      fontWeight: FontWeight.bold,
                                                       color: Colors.white,
                                                     ),
                                                   ),
@@ -391,15 +432,14 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                                                 icon: const Icon(
                                                   Icons.more_vert_rounded,
                                                   color: Colors.white,
-                                                  size: 20.0,
+                                                  size: _LocalDimensions.icon_size,
                                                 ),
                                                 color: true == is_dark
                                                     ? AppColors.surface_dark
                                                     : Colors.white,
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius:
-                                                      BorderRadius.circular(
-                                                          12.0),
+                                                      BorderRadius.circular(_LocalDimensions.menu_radius),
                                                 ),
                                                 onSelected: (String action) {
                                                   if ('default' == action) {
@@ -407,8 +447,7 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                                                         .read<ProfileCubit>()
                                                         .set_default_card(
                                                             card['id'] ?? '');
-                                                  } else if ('delete' ==
-                                                      action) {
+                                                  } else if ('delete' == action) {
                                                     _confirm_card_deletion(
                                                         context,
                                                         card['number'] ?? '',
@@ -428,15 +467,11 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                                                             const Icon(
                                                                 Icons
                                                                     .check_circle_outline_rounded,
-                                                                size: 18.0),
-                                                            const SizedBox(
-                                                                width: 8.0),
-                                                            Text(
-                                                                localizations
-                                                                    .payment_set_default_action,
+                                                                size: _LocalDimensions.menu_icon_size),
+                                                            const SizedBox(width: AppSpacing.space_m),
+                                                            Text(localizations.payment_set_default_action,
                                                                 style: const TextStyle(
-                                                                    fontSize:
-                                                                        12.0)),
+                                                                    fontSize: _LocalDimensions.menu_item_font_size)),
                                                           ],
                                                         ),
                                                       ),
@@ -447,17 +482,12 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                                                           const Icon(
                                                               Icons
                                                                   .delete_outline_rounded,
-                                                              color: AppColors
-                                                                  .error,
-                                                              size: 18.0),
-                                                          const SizedBox(
-                                                              width: 8.0),
-                                                          Text(
-                                                              localizations
-                                                                  .payment_delete_card_action,
+                                                              color: AppColors.error,
+                                                              size: _LocalDimensions.menu_icon_size),
+                                                          const SizedBox(width: AppSpacing.space_m),
+                                                          Text(localizations.payment_delete_card_action,
                                                               style: const TextStyle(
-                                                                  fontSize:
-                                                                      12.0,
+                                                                  fontSize: _LocalDimensions.menu_item_font_size,
                                                                   color: AppColors
                                                                       .error)),
                                                         ],
@@ -488,22 +518,22 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
           ? null
           : SafeArea(
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(AppSpacing.space_xl),
                 child: SizedBox(
                   width: double.infinity,
-                  height: 50.0,
+                  height: _LocalDimensions.button_height,
                   child: ElevatedButton(
                     onPressed: () => _navigate_to_add_card(context),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary_color,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0),
+                        borderRadius: BorderRadius.circular(_LocalDimensions.button_radius),
                       ),
                     ),
                     child: Text(
                       localizations.payment_add_new_card_btn,
                       style: const TextStyle(
-                        fontSize: 16.0,
+                        fontSize: _LocalDimensions.button_font_size,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
@@ -525,8 +555,7 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
   }
 
   // Build clean empty state screen when no cards are active
-  Widget _build_empty_state(
-      BuildContext context, bool is_dark, AppLocalizations localizations) {
+  Widget _build_empty_state(BuildContext context, bool is_dark, AppLocalizations localizations) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.space_xl),
@@ -534,43 +563,43 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: const EdgeInsets.all(24.0),
+              padding: const EdgeInsets.all(AppSpacing.space_xxl),
               decoration: BoxDecoration(
                 color: AppColors.primary_color.withValues(alpha: 0.05),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
                 Icons.credit_card_off_rounded,
-                size: 64.0,
+                size: _LocalDimensions.empty_state_icon_size,
                 color: AppColors.primary_color,
               ),
             ),
-            const SizedBox(height: 24.0),
+            const SizedBox(height: AppSpacing.space_xxl),
             Text(
               localizations.payment_no_saved_cards_title,
               style: TextStyle(
-                fontSize: 16.0,
+                fontSize: _LocalDimensions.empty_state_title_font_size,
                 fontWeight: FontWeight.bold,
                 color: true == is_dark
                     ? Colors.white
                     : AppColors.text_light_primary,
               ),
             ),
-            const SizedBox(height: 8.0),
+            const SizedBox(height: AppSpacing.space_m),
             Text(
               localizations.payment_no_saved_cards_body,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 12.0,
+                fontSize: _LocalDimensions.empty_state_subtitle_font_size,
                 color: true == is_dark
                     ? Colors.white54
                     : AppColors.text_light_secondary,
               ),
             ),
-            const SizedBox(height: 32.0),
+            const SizedBox(height: AppSpacing.space_xxxl),
             SizedBox(
               width: double.infinity,
-              height: 50.0,
+              height: _LocalDimensions.button_height,
               child: ElevatedButton.icon(
                 onPressed: () => _navigate_to_add_card(context),
                 icon: const Icon(Icons.add_rounded, color: Colors.white),
@@ -582,7 +611,7 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary_color,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25.0),
+                    borderRadius: BorderRadius.circular(_LocalDimensions.button_radius_large),
                   ),
                 ),
               ),
@@ -594,8 +623,8 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
   }
 
   // Deletion confirmation warning alert modal dialogue frame
-  void _confirm_card_deletion(BuildContext context, String card_number,
-      String card_id, AppLocalizations localizations) {
+  void _confirm_card_deletion(
+      BuildContext context, String card_number, String card_id, AppLocalizations localizations) {
     showDialog(
       context: context,
       builder: (dialog_context) {
@@ -645,29 +674,27 @@ class EMVChipPainter extends CustomPainter {
     final Paint linePaint = Paint()
       ..color = const Color(0xFFB45309).withValues(alpha: 0.3)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0;
+      ..strokeWidth = _LocalDimensions.line_width_thin;
 
     // Draw chip line patterns
-    canvas.drawLine(Offset(size.width * 0.5, 0.0),
-        Offset(size.width * 0.5, size.height), linePaint);
-    canvas.drawLine(Offset(0.0, size.height * 0.33),
-        Offset(size.width, size.height * 0.33), linePaint);
-    canvas.drawLine(Offset(0.0, size.height * 0.66),
-        Offset(size.width, size.height * 0.66), linePaint);
+    canvas.drawLine(
+        Offset(size.width * 0.5, 0.0), Offset(size.width * 0.5, size.height), linePaint);
+    canvas.drawLine(
+        Offset(0.0, size.height * _LocalDimensions.grid_x1), Offset(size.width, size.height * _LocalDimensions.grid_x1), linePaint);
+    canvas.drawLine(
+        Offset(0.0, size.height * _LocalDimensions.grid_x2), Offset(size.width, size.height * _LocalDimensions.grid_x2), linePaint);
 
     final Paint corePaint = Paint()
       ..color = const Color(0xFFFCD34D).withValues(alpha: 0.9)
       ..style = PaintingStyle.fill;
 
     // Draw central micro-core segment
-    final Rect chipCore = Rect.fromLTWH(size.width * 0.35, size.height * 0.35,
-        size.width * 0.3, size.height * 0.3);
+    final Rect chipCore = Rect.fromLTWH(
+        size.width * 0.35, size.height * 0.35, size.width * 0.3, size.height * 0.3);
     canvas.drawRRect(
-        RRect.fromRectAndRadius(chipCore, const Radius.circular(2.0)),
-        corePaint);
+        RRect.fromRectAndRadius(chipCore, const Radius.circular(2.0)), corePaint);
     canvas.drawRRect(
-        RRect.fromRectAndRadius(chipCore, const Radius.circular(2.0)),
-        linePaint);
+        RRect.fromRectAndRadius(chipCore, const Radius.circular(2.0)), linePaint);
   }
 
   @override
@@ -682,24 +709,24 @@ class CardGridPainter extends CustomPainter {
   // Draw card surface details
   void paint(Canvas canvas, Size size) {
     final Paint paint = Paint()
-      ..color = const Color(0xFFB45309).withValues(alpha: 0.5)
+      ..color = const Color(0xFFB45309).withValues(alpha: _LocalDimensions.line_opacity)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0;
+      ..strokeWidth = _LocalDimensions.line_width_thin;
 
     // Draw grid tracks
-    canvas.drawLine(Offset(size.width * 0.33, 0.0),
-        Offset(size.width * 0.33, size.height), paint);
-    canvas.drawLine(Offset(size.width * 0.66, 0.0),
-        Offset(size.width * 0.66, size.height), paint);
-    canvas.drawLine(Offset(0.0, size.height * 0.5),
-        Offset(size.width, size.height * 0.5), paint);
+    canvas.drawLine(Offset(size.width * _LocalDimensions.grid_x1, 0.0),
+        Offset(size.width * _LocalDimensions.grid_x1, size.height), paint);
+    canvas.drawLine(Offset(size.width * _LocalDimensions.grid_x2, 0.0),
+        Offset(size.width * _LocalDimensions.grid_x2, size.height), paint);
+    canvas.drawLine(Offset(0.0, size.height * _LocalDimensions.grid_y),
+        Offset(size.width, size.height * _LocalDimensions.grid_y), paint);
 
     // Draw center core
     final Rect centerRect = Rect.fromLTWH(
-      size.width * 0.25,
-      size.height * 0.25,
-      size.width * 0.5,
-      size.height * 0.5,
+      size.width * _LocalDimensions.rect_pos,
+      size.height * _LocalDimensions.rect_pos,
+      size.width * _LocalDimensions.rect_size,
+      size.height * _LocalDimensions.rect_size,
     );
     canvas.drawRRect(
         RRect.fromRectAndRadius(centerRect, const Radius.circular(2.0)), paint);

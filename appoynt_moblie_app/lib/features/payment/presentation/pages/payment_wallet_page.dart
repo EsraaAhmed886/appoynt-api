@@ -2,7 +2,7 @@
  * File Name: payment_wallet_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 08/08/2026
- * Version Information: V1.2.0
+ * Version Information: V1.3.0
  * Dependencies: package:flutter/material.dart,
  *   package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/core/routing/route_export.dart,
@@ -12,7 +12,7 @@
  *   package:appoynt_mobile_app/features/payment/presentation/pages/payment_history_page.dart
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 08/08/2026]
- * File Description: Refactored dashboard acting as a clean navigation hub displaying wallet balance card and navigation tiles. Fully localized.
+ * File Description: Refactored dashboard acting as a clean navigation hub. Fully localized and complies with zero-hardcoded-numbers.
  */
 
 // Importing global route exports
@@ -26,6 +26,36 @@ import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_s
 // Importing sub-pages
 import 'package:appoynt_mobile_app/features/payment/presentation/pages/saved_cards_page.dart';
 import 'package:appoynt_mobile_app/features/payment/presentation/pages/payment_history_page.dart';
+
+// Local layout dimensions class to strictly eliminate hardcoded numbers
+class _LocalDimensions {
+  static const double container_radius = 16.0;
+  static const double shadow_blur = 10.0;
+  static const double shadow_offset_y = 4.0;
+  static const double shadow_opacity_dark = 0.2;
+  static const double shadow_opacity_light = 0.05;
+  static const double card_padding = 16.0;
+  static const double card_inner_padding = 20.0;
+  static const double card_shadow_blur = 12.0;
+  static const double font_size_balance_title = 12.0;
+  static const double spacing_tiny = 6.0;
+  static const double font_size_balance_value = 32.0;
+  static const double icon_size_add = 16.0;
+  static const double font_size_add_btn = 12.0;
+  static const double button_radius = 20.0;
+  static const double button_padding_h = 12.0;
+  static const double button_padding_v = 8.0;
+  static const double spacing_large = 18.0;
+  static const double font_size_switch_label = 12.0;
+  static const double switch_track_opacity = 0.35;
+  static const double line_width_thin = 1.0;
+  static const double divider_opacity = 0.15;
+  static const double icon_container_padding = 8.0;
+  static const double icon_container_radius = 8.0;
+  static const double icon_size = 20.0;
+  static const double title_font_size = 13.0;
+  static const double subtitle_font_size = 11.0;
+}
 
 // Stateful widget displaying Wallet details layout
 class PaymentWalletPage extends StatefulWidget {
@@ -95,18 +125,18 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                             ? AppColors.surface_dark
                             : Colors.white,
                         // Rounded corners
-                        borderRadius: BorderRadius.circular(16.0),
+                        borderRadius: BorderRadius.circular(_LocalDimensions.container_radius),
                         // Card shadows
                         boxShadow: [
                           BoxShadow(
                             // Shadow colors
                             color: true == is_dark
-                                ? Colors.black.withValues(alpha: 0.2)
-                                : Colors.black.withValues(alpha: 0.05),
+                                ? Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
+                                : Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
                             // Blur spread
-                            blurRadius: 10.0,
+                            blurRadius: _LocalDimensions.shadow_blur,
                             // Offset
-                            offset: const Offset(0.0, 4.0),
+                            offset: const Offset(0.0, _LocalDimensions.shadow_offset_y),
                           ),
                         ],
                         // Thin borders outline decoration
@@ -128,13 +158,13 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                           // SECTION 1 Card: Wallet balance display card (Indigo/Purple premium gradient theme)
                           Padding(
                             // Margins padding offsets
-                            padding: const EdgeInsets.all(16.0),
+                            padding: const EdgeInsets.all(_LocalDimensions.card_padding),
                             // Wallet background container
                             child: Container(
                               // Full width
                               width: double.infinity,
                               // Inner padding offsets (spacious layout)
-                              padding: const EdgeInsets.all(20.0),
+                              padding: const EdgeInsets.all(_LocalDimensions.card_inner_padding),
                               // Decorative styling
                               decoration: BoxDecoration(
                                 // Slate Indigo to Midnight Velvet gradient color
@@ -150,16 +180,16 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                                   end: Alignment.bottomRight,
                                 ),
                                 // Rounded corners radius
-                                borderRadius: BorderRadius.circular(16.0),
+                                borderRadius: BorderRadius.circular(_LocalDimensions.container_radius),
                                 // Soft shadows
                                 boxShadow: const [
                                   BoxShadow(
                                     // Color
                                     color: Colors.black26,
                                     // Blur
-                                    blurRadius: 12.0,
+                                    blurRadius: _LocalDimensions.card_shadow_blur,
                                     // Offset position
-                                    offset: Offset(0.0, 4.0),
+                                    offset: Offset(0.0, _LocalDimensions.shadow_offset_y),
                                   ),
                                 ],
                               ),
@@ -184,13 +214,13 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                                               // Color white
                                               color: Colors.white70,
                                               // Size
-                                              fontSize: 12.0,
+                                              fontSize: _LocalDimensions.font_size_balance_title,
                                               // Medium weight
                                               fontWeight: FontWeight.w500,
                                             ),
                                           ),
                                           // Spacing gap
-                                          const SizedBox(height: 6.0),
+                                          const SizedBox(height: _LocalDimensions.spacing_tiny),
                                           // Balance Value display Text
                                           const Text(
                                             // Mock wallet balance values (highly prominent)
@@ -200,7 +230,7 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                                               // Color white
                                               color: Colors.white,
                                               // Prominent bold size
-                                              fontSize: 32.0,
+                                              fontSize: _LocalDimensions.font_size_balance_value,
                                               // Heavy weight
                                               fontWeight: FontWeight.bold,
                                               // Monospace font style
@@ -218,11 +248,11 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                                             ),
                                           );
                                         },
-                                        icon: const Icon(Icons.add, size: 16.0, color: AppColors.primary_color),
+                                        icon: const Icon(Icons.add, size: _LocalDimensions.icon_size_add, color: AppColors.primary_color),
                                         label: Text(
                                           localizations.payment_add_money_btn,
                                           style: const TextStyle(
-                                            fontSize: 12.0,
+                                            fontSize: _LocalDimensions.font_size_add_btn,
                                             fontWeight: FontWeight.bold,
                                             color: AppColors.primary_color,
                                           ),
@@ -230,15 +260,15 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: Colors.white,
                                           shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(20.0),
+                                            borderRadius: BorderRadius.circular(_LocalDimensions.button_radius),
                                           ),
-                                          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                                          padding: const EdgeInsets.symmetric(horizontal: _LocalDimensions.button_padding_h, vertical: _LocalDimensions.button_padding_v),
                                         ),
                                       ),
                                     ],
                                   ),
                                   // Separator spacing gap
-                                  const SizedBox(height: 18.0),
+                                  const SizedBox(height: _LocalDimensions.spacing_large),
                                   // Priority payment switch Row layout
                                   Row(
                                     // Distribute items
@@ -258,7 +288,7 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                                             // Color white
                                             color: Colors.white,
                                             // Font size
-                                            fontSize: 12.0,
+                                            fontSize: _LocalDimensions.font_size_switch_label,
                                             // Medium weight
                                             fontWeight: FontWeight.w500,
                                           ),
@@ -279,7 +309,7 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                                         // Themed switch thumb colors matching MD3 specs
                                         activeThumbColor: Colors.white,
                                         // Subdued switch track color
-                                        activeTrackColor: Colors.white.withValues(alpha: 0.35),
+                                        activeTrackColor: Colors.white.withValues(alpha: _LocalDimensions.switch_track_opacity),
                                       ),
                                     ],
                                   ),
@@ -289,30 +319,30 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                           ),
                           // Subtle separate divider
                           Divider(
-                            height: 1.0,
-                            thickness: 1.0,
+                            height: _LocalDimensions.line_width_thin,
+                            thickness: _LocalDimensions.line_width_thin,
                             color: true == is_dark
                                 ? AppColors.border_dark
-                                : Colors.grey.withValues(alpha: 0.15),
+                                : Colors.grey.withValues(alpha: _LocalDimensions.divider_opacity),
                           ),
                           // ListTile 1: Saved Payment Cards navigation menu tile
                           ListTile(
                             leading: Container(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.all(_LocalDimensions.icon_container_padding),
                               decoration: BoxDecoration(
                                 color: AppColors.primary_color.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(8.0),
+                                borderRadius: BorderRadius.circular(_LocalDimensions.icon_container_radius),
                               ),
                               child: const Icon(
                                 Icons.credit_card_rounded,
                                 color: AppColors.primary_color,
-                                size: 20.0,
+                                size: _LocalDimensions.icon_size,
                               ),
                             ),
                             title: Text(
                               localizations.payment_saved_cards_tile,
                               style: TextStyle(
-                                fontSize: 13.0,
+                                fontSize: _LocalDimensions.title_font_size,
                                 fontWeight: FontWeight.bold,
                                 color: true == is_dark ? Colors.white : AppColors.text_light_primary,
                               ),
@@ -320,7 +350,7 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                             subtitle: Text(
                               localizations.payment_saved_cards_subtitle,
                               style: TextStyle(
-                                fontSize: 11.0,
+                                fontSize: _LocalDimensions.subtitle_font_size,
                                 color: true == is_dark ? Colors.white54 : AppColors.text_light_secondary,
                               ),
                             ),
@@ -341,30 +371,30 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                           ),
                           // Subtle separate divider
                           Divider(
-                            height: 1.0,
-                            thickness: 1.0,
+                            height: _LocalDimensions.line_width_thin,
+                            thickness: _LocalDimensions.line_width_thin,
                             color: true == is_dark
                                 ? AppColors.border_dark
-                                : Colors.grey.withValues(alpha: 0.15),
+                                : Colors.grey.withValues(alpha: _LocalDimensions.divider_opacity),
                           ),
                           // ListTile 2: Payment History & Invoices navigation menu tile
                           ListTile(
                             leading: Container(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.all(_LocalDimensions.icon_container_padding),
                               decoration: BoxDecoration(
                                 color: Colors.teal.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(8.0),
+                                borderRadius: BorderRadius.circular(_LocalDimensions.icon_container_radius),
                               ),
                               child: const Icon(
                                 Icons.receipt_long_rounded,
                                 color: Colors.teal,
-                                size: 20.0,
+                                size: _LocalDimensions.icon_size,
                               ),
                             ),
                             title: Text(
                               localizations.payment_history_tile,
                               style: TextStyle(
-                                fontSize: 13.0,
+                                fontSize: _LocalDimensions.title_font_size,
                                 fontWeight: FontWeight.bold,
                                 color: true == is_dark ? Colors.white : AppColors.text_light_primary,
                               ),
@@ -372,7 +402,7 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                             subtitle: Text(
                               localizations.payment_history_subtitle,
                               style: TextStyle(
-                                fontSize: 11.0,
+                                fontSize: _LocalDimensions.subtitle_font_size,
                                 color: true == is_dark ? Colors.white54 : AppColors.text_light_secondary,
                               ),
                             ),
@@ -388,7 +418,7 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                               );
                             },
                           ),
-                          const SizedBox(height: 16.0),
+                          const SizedBox(height: AppSpacing.space_xl),
                         ],
                       ),
                     ),

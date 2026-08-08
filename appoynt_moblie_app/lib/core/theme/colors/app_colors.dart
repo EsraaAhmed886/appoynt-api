@@ -75,6 +75,9 @@ class AppColors {
   // Color representation for invalid validation errors or alert messages
   static const Color error = Color(0xFFE74C3C);
 
+  // Color representation for successful validations or actions (active green)
+  static const Color success = Color(0xFF10B981);
+
   // Background fill color representation for user input text fields
   static const Color input_fill = Color(0xFFF7F8F9);
 
@@ -151,6 +154,13 @@ class AppColors {
 
   // Soft border slate gray color representation
   static const Color slate_200 = Color(0xFFE2E8F0);
+
+  // Additional slate color design tokens for form inputs and widgets
+  static const Color slate_50 = Color(0xFFF8FAFC);
+  static const Color slate_300 = Color(0xFFCBD5E1);
+  static const Color slate_400 = Color(0xFF94A3B8);
+  static const Color slate_500 = Color(0xFF64748B);
+  static const Color slate_600 = Color(0xFF475569);
 
   // Icon color representation for the dark theme mode
   static const Color icon_dark = Color(0xFF9E9E9E);

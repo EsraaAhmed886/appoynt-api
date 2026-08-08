@@ -15,6 +15,31 @@ import 'package:appoynt_mobile_app/core/routing/route_export.dart';
 // Importing custom date picker
 import 'package:appoynt_mobile_app/core/widgets/app_date_picker.dart';
 
+// Local layout dimensions class to strictly eliminate hardcoded numbers
+class _LocalDimensions {
+  static const double border_radius_default = 16.0;
+  static const double border_radius_medium = 12.0;
+  static const double border_radius_large = 20.0;
+  static const double border_width_thick = 1.5;
+  static const double border_width_thin = 1.0;
+  static const double border_width_half = 0.5;
+  static const double button_height = 50.0;
+  static const double choice_chip_height = 38.0;
+  static const double spacing_small = 6.0;
+  static const double font_size_body = 14.0;
+  static const double font_size_medium = 13.0;
+  static const double font_size_small = 12.0;
+  static const double font_size_tiny = 11.0;
+  static const double icon_size_small = 18.0;
+  static const double shadow_blur = 10.0;
+  static const double shadow_offset_y = 4.0;
+  static const double shadow_opacity_dark = 0.2;
+  static const double shadow_opacity_light = 0.03;
+  static const double choice_chip_padding_h = 2.0;
+  static const double input_padding = 10.0;
+  static const double bottom_spacing_safe = 80.0;
+}
+
 // Stateful widget representing the full screen Add Family Member page
 class AddFamilyMemberPage extends StatefulWidget {
   // Optional family member data for edit mode
@@ -104,7 +129,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
       bottomNavigationBar: StickyBottomBar(
         child: SizedBox(
           width: double.infinity,
-          height: 50.0,
+          height: _LocalDimensions.button_height,
           child: ElevatedButton(
             // Trigger validations and pop context route on tap
             onPressed: () {
@@ -131,7 +156,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
               // Curved radius shape
               shape: RoundedRectangleBorder(
                 // Rounded corner radius
-                borderRadius: BorderRadius.circular(12.0),
+                borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_medium),
               ),
             ),
             // Bold button label text widget
@@ -145,7 +170,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                 // Bold label indicators
                 fontWeight: FontWeight.bold,
                 // Size
-                fontSize: 14.0,
+                fontSize: _LocalDimensions.font_size_body,
               ),
             ),
           ),
@@ -197,19 +222,19 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                           ? AppColors.surface_dark
                           : Colors.white,
                       // Corner curvature matching radius tokens
-                      borderRadius: BorderRadius.circular(16.0),
+                      borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
                       // Drop shadows
                       boxShadow: [
                         // Soft card shadow
                         BoxShadow(
                           // Color
                           color: true == is_dark
-                              ? Colors.black.withValues(alpha: 0.2)
-                              : Colors.black.withValues(alpha: 0.03),
+                              ? Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
+                              : Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
                           // Blur
-                          blurRadius: 10.0,
+                          blurRadius: _LocalDimensions.shadow_blur,
                           // Offsets
-                          offset: const Offset(0.0, 4.0),
+                          offset: const Offset(0.0, _LocalDimensions.shadow_offset_y),
                         ),
                       ],
                       // Border boundary outline
@@ -217,7 +242,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                         // Colors
                         color: true == is_dark
                             ? AppColors.border_dark
-                            : AppColors.border_light.withValues(alpha: 0.5),
+                            : AppColors.border_light.withValues(alpha: _LocalDimensions.border_width_half),
                         // Thickness
                         width: AppSpacing.border_width_thin,
                       ),
@@ -235,7 +260,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                           // Typographic options
                           style: TextStyle(
                             // Size
-                            fontSize: 13.0,
+                            fontSize: _LocalDimensions.font_size_medium,
                             // Bold indicators
                             fontWeight: FontWeight.bold,
                             // Muted text colors
@@ -315,7 +340,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                           // Typographic options
                           style: TextStyle(
                             // Small font size
-                            fontSize: 11.0,
+                            fontSize: _LocalDimensions.font_size_tiny,
                             // Color adaptions
                             color: true == is_dark
                                 ? Colors.white70
@@ -323,7 +348,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                           ),
                         ),
                         // Spacer gap
-                        const SizedBox(height: 6.0),
+                        const SizedBox(height: _LocalDimensions.spacing_small),
                         // Segmented relationship selector buttons row
                         Row(
                           // children list mapping selection values
@@ -347,12 +372,12 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                                 // Container item styling
                                 child: Container(
                                   // Height constraints
-                                  height: 38.0,
+                                  height: _LocalDimensions.choice_chip_height,
                                   // Centered text
                                   alignment: Alignment.center,
                                   // Margins offset spacing
                                   margin: const EdgeInsets.symmetric(
-                                      horizontal: 2.0),
+                                      horizontal: _LocalDimensions.choice_chip_padding_h),
                                   // Decoration properties
                                   decoration: BoxDecoration(
                                     // Active solid blue color or inactive background fills
@@ -373,7 +398,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                                               ? AppColors.border_dark
                                               : AppColors.border_light),
                                       // Thin outline size
-                                      width: 1.0,
+                                      width: _LocalDimensions.border_width_thin,
                                     ),
                                   ),
                                   // Relationship label text widget
@@ -383,7 +408,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                                     // Styles options
                                     style: TextStyle(
                                       // Small font sizes
-                                      fontSize: 11.0,
+                                      fontSize: _LocalDimensions.font_size_tiny,
                                       // Bold indicator if active selected state
                                       fontWeight: true == is_selected
                                           ? FontWeight.bold
@@ -424,17 +449,17 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                           ? AppColors.surface_dark
                           : Colors.white,
                       // Radius corner shape
-                      borderRadius: BorderRadius.circular(16.0),
+                      borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
                       // Drop shadows
                       boxShadow: [
                         // Soft card shadow
                         BoxShadow(
                           // Color
                           color: true == is_dark
-                              ? Colors.black.withValues(alpha: 0.2)
-                              : Colors.black.withValues(alpha: 0.03),
+                              ? Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
+                              : Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
                           // Blur spreads
-                          blurRadius: 10.0,
+                          blurRadius: _LocalDimensions.shadow_blur,
                         ),
                       ],
                       // Outline borders
@@ -442,7 +467,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                         // Border colors
                         color: true == is_dark
                             ? AppColors.border_dark
-                            : AppColors.border_light.withValues(alpha: 0.5),
+                            : AppColors.border_light.withValues(alpha: _LocalDimensions.border_width_half),
                         // Thickness
                         width: AppSpacing.border_width_thin,
                       ),
@@ -468,7 +493,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                                 // Typographic specs
                                 style: TextStyle(
                                   // Size
-                                  fontSize: 11.0,
+                                  fontSize: _LocalDimensions.font_size_tiny,
                                   // Muted colors
                                   color: true == is_dark
                                       ? Colors.white70
@@ -476,7 +501,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                                 ),
                               ),
                               // Spacer gap height
-                              const SizedBox(height: 6.0),
+                              const SizedBox(height: _LocalDimensions.spacing_small),
                               // DOB input text field
                               TextFormField(
                                 // Bind controller
@@ -496,12 +521,12 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                                   hintText: 'Select Date',
                                   // Hint style
                                   hintStyle: const TextStyle(
-                                      color: Colors.grey, fontSize: 12.0),
+                                      color: Colors.grey, fontSize: _LocalDimensions.font_size_small),
                                   // Prefix calendar icon graphic representation
                                   prefixIcon: const Icon(
                                       Icons.calendar_month_outlined,
                                       color: AppColors.primary_color,
-                                      size: 18.0),
+                                      size: _LocalDimensions.icon_size_small),
                                   // Color fills parameters
                                   filled: true,
                                   // Fill background colors
@@ -510,7 +535,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                                       : AppColors.input_fill,
                                   // Inner input field content padding
                                   contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 10.0, vertical: 10.0),
+                                      horizontal: _LocalDimensions.input_padding, vertical: _LocalDimensions.input_padding),
                                   // Outline borders
                                   border: OutlineInputBorder(
                                     // Radius
@@ -577,7 +602,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                                 // Typographic style specs
                                 style: TextStyle(
                                   // Size
-                                  fontSize: 11.0,
+                                  fontSize: _LocalDimensions.font_size_tiny,
                                   // Muted colors adaptions
                                   color: true == is_dark
                                       ? Colors.white70
@@ -585,7 +610,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                                 ),
                               ),
                               // Spacer gap height
-                              const SizedBox(height: 6.0),
+                              const SizedBox(height: _LocalDimensions.spacing_small),
                               // Fluid premium clickable option pills row
                               Row(
                                 // children
@@ -608,12 +633,12 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                                       // Capsule container styling
                                       child: Container(
                                         // Height constraints
-                                        height: 38.0,
+                                        height: _LocalDimensions.choice_chip_height,
                                         // Centered text
                                         alignment: Alignment.center,
                                         // Margins bounds spacer
                                         margin: const EdgeInsets.symmetric(
-                                            horizontal: 2.0),
+                                            horizontal: _LocalDimensions.choice_chip_padding_h),
                                         // Decoration options
                                         decoration: BoxDecoration(
                                           // Active primary blue color fill or default inactive background
@@ -624,7 +649,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                                                   : AppColors.input_fill),
                                           // Capsule rounded shape (20px radius)
                                           borderRadius:
-                                              BorderRadius.circular(20.0),
+                                              BorderRadius.circular(_LocalDimensions.border_radius_large),
                                           // Outline borders
                                           border: Border.all(
                                             // Selected primary blue color border or default boundary lines
@@ -634,7 +659,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                                                     ? AppColors.border_dark
                                                     : AppColors.border_light),
                                             // Thin border line thickness
-                                            width: 1.0,
+                                            width: _LocalDimensions.border_width_thin,
                                           ),
                                         ),
                                         // Gender text label widget
@@ -644,7 +669,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                                           // Styles options
                                           style: TextStyle(
                                             // Size
-                                            fontSize: 11.0,
+                                            fontSize: _LocalDimensions.font_size_tiny,
                                             // Bold weight if active selection
                                             fontWeight: true == is_selected
                                                 ? FontWeight.bold
@@ -654,8 +679,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                                                 ? Colors.white
                                                 : (true == is_dark
                                                     ? Colors.white70
-                                                    : AppColors
-                                                        .text_light_primary),
+                                                    : AppColors.text_light_primary),
                                           ),
                                         ),
                                       ),
@@ -689,17 +713,17 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                           ? AppColors.surface_dark
                           : Colors.white,
                       // Rounded corner radius shape
-                      borderRadius: BorderRadius.circular(16.0),
+                      borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
                       // Drop shadows
                       boxShadow: [
                         // Soft card shadow
                         BoxShadow(
                           // Color
                           color: true == is_dark
-                              ? Colors.black.withValues(alpha: 0.2)
-                              : Colors.black.withValues(alpha: 0.03),
+                              ? Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
+                              : Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
                           // Spread blur
-                          blurRadius: 10.0,
+                          blurRadius: _LocalDimensions.shadow_blur,
                         ),
                       ],
                       // Outline borders
@@ -707,7 +731,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                         // Colors
                         color: true == is_dark
                             ? AppColors.border_dark
-                            : AppColors.border_light.withValues(alpha: 0.5),
+                            : AppColors.border_light.withValues(alpha: _LocalDimensions.border_width_half),
                         // Thickness
                         width: AppSpacing.border_width_thin,
                       ),
@@ -725,7 +749,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                           // Typographic options
                           style: TextStyle(
                             // Size
-                            fontSize: 13.0,
+                            fontSize: _LocalDimensions.font_size_medium,
                             // Bold indicators
                             fontWeight: FontWeight.bold,
                             // Subdued colors
@@ -766,7 +790,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                                 'Describe medical history details dynamically...',
                             // Hint style
                             hintStyle: const TextStyle(
-                                color: Colors.grey, fontSize: 13.0),
+                                color: Colors.grey, fontSize: _LocalDimensions.font_size_medium),
                             // Color fills parameters
                             filled: true,
                             // Fill background colors
@@ -788,14 +812,14 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                                   BorderRadius.circular(AppSpacing.radius_l),
                               // Active blue outline accent boundary line
                               borderSide: const BorderSide(
-                                  color: AppColors.primary_color, width: 1.5),
+                                  color: AppColors.primary_color, width: _LocalDimensions.border_width_thick),
                             ),
                           ),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 80.0),
+                  const SizedBox(height: _LocalDimensions.bottom_spacing_safe),
                 ],
               ),
             ),

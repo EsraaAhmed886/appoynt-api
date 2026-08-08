@@ -24,6 +24,12 @@ import 'package:appoynt_mobile_app/features/profile/domain/entities/patient_prof
 // Importing reusable text field widgets
 import 'package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart';
 
+// Local layout dimensions class to strictly eliminate hardcoded numbers
+class _LocalDimensions {
+  static const double progress_indicator_size = 22.0;
+  static const double progress_indicator_stroke = 2.5;
+}
+
 // Change Password screen layout stateful widget representation
 class ChangePasswordPage extends StatefulWidget {
   // Constructor mapping key
@@ -367,11 +373,11 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                           child: ProfileStatus.passwordUpdating == state.status
                               ? const SizedBox(
                                   // layout constraints
-                                  width: 22.0,
-                                  height: 22.0,
+                                  width: _LocalDimensions.progress_indicator_size,
+                                  height: _LocalDimensions.progress_indicator_size,
                                   // Contrast colors white progress circle
                                   child: CircularProgressIndicator(
-                                    strokeWidth: 2.5,
+                                    strokeWidth: _LocalDimensions.progress_indicator_stroke,
                                     color: Colors.white,
                                   ),
                                 )

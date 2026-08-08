@@ -26,6 +26,37 @@ import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_s
 // Importing change password page
 import 'package:appoynt_mobile_app/features/profile/presentation/pages/change_password_page.dart';
 
+// Local layout dimensions class to strictly eliminate hardcoded numbers
+class _LocalDimensions {
+  static const double blur_sigma = 5.0;
+  static const double border_radius_default = 16.0;
+  static const double font_size_small = 13.0;
+  static const double font_size_medium = 14.0;
+  static const double font_size_tiny = 11.0;
+  static const double font_size_micro = 12.0;
+  static const double border_radius_large = 20.0;
+  static const double border_radius_small = 10.0;
+  static const double border_width_thin = 1.0;
+  static const double shadow_blur = 10.0;
+  static const double shadow_spread = 1.0;
+  static const double shadow_offset_y = 2.0;
+  static const double shadow_opacity_dark = 0.2;
+  static const double shadow_opacity_light = 0.03;
+  static const double icon_container_size = 40.0;
+  static const double icon_size_default = 20.0;
+  static const double padding_vertical = 14.0;
+  static const double padding_horizontal = 16.0;
+  static const double spacing_small = 8.0;
+  static const double spacing_medium = 12.0;
+  static const double spacing_large = 24.0;
+  static const double line_height = 1.3;
+  static const double letter_spacing = 1.0;
+  static const double divider_indent = 68.0;
+  static const double divider_end_indent = 16.0;
+  static const double spacing_tiny = 2.0;
+  static const double spacing_micro = 4.0;
+}
+
 // Stateful widget displaying Security details layout
 class SecurityPrivacyPage extends StatefulWidget {
   // Constructor mapping key
@@ -56,11 +87,11 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
       context: context,
       builder: (dialog_context) {
         return BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+          filter: ImageFilter.blur(sigmaX: _LocalDimensions.blur_sigma, sigmaY: _LocalDimensions.blur_sigma),
           child: AlertDialog(
             backgroundColor: is_dark ? AppColors.surface_dark : Colors.white,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16.0),
+              borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
             ),
             title: Text(
               localizations.profile_delete_account_dialog_title,
@@ -72,7 +103,7 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
             content: Text(
               localizations.profile_delete_account_warning,
               style: TextStyle(
-                fontSize: 13.0,
+                fontSize: _LocalDimensions.font_size_small,
                 color: is_dark ? Colors.white70 : AppColors.text_light_secondary,
               ),
             ),
@@ -101,7 +132,7 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.error,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
+                    borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_large),
                   ),
                 ),
                 child: Text(
@@ -128,17 +159,17 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
       width: double.infinity,
       decoration: BoxDecoration(
         color: is_dark ? AppColors.surface_dark : Colors.white,
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
         border: Border.all(
           color: is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
-          width: 1.0,
+          width: _LocalDimensions.border_width_thin,
         ),
         boxShadow: [
           BoxShadow(
-            color: is_dark ? Colors.black.withValues(alpha: 0.2) : Colors.black.withValues(alpha: 0.03),
-            blurRadius: 10.0,
-            spreadRadius: 1.0,
-            offset: const Offset(0.0, 2.0),
+            color: is_dark ? Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark) : Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
+            blurRadius: _LocalDimensions.shadow_blur,
+            spreadRadius: _LocalDimensions.shadow_spread,
+            offset: const Offset(0.0, _LocalDimensions.shadow_offset_y),
           ),
         ],
       ),
@@ -161,15 +192,15 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
       children: [
         // Soft-tinted leading icon container (10% opacity primary color background)
         Container(
-          width: 40.0,
-          height: 40.0,
+          width: _LocalDimensions.icon_container_size,
+          height: _LocalDimensions.icon_container_size,
           decoration: BoxDecoration(
             color: AppColors.primary_color.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(10.0),
+            borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_small),
           ),
           child: leadingIcon,
         ),
-        const SizedBox(width: 12.0),
+        const SizedBox(width: _LocalDimensions.spacing_medium),
         // Title & Subtitle details
         Expanded(
           child: Column(
@@ -178,19 +209,19 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
               Text(
                 title,
                 style: TextStyle(
-                  fontSize: 14.0,
+                  fontSize: _LocalDimensions.font_size_medium,
                   fontWeight: FontWeight.bold,
                   color: is_dark ? Colors.white : AppColors.text_light_primary,
                 ),
               ),
               if (subtitle != null) ...[
-                const SizedBox(height: 2.0),
+                const SizedBox(height: _LocalDimensions.spacing_tiny),
                 Text(
                   subtitle,
                   style: TextStyle(
-                    fontSize: 12.0,
+                    fontSize: _LocalDimensions.font_size_micro,
                     color: is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary,
-                    height: 1.3,
+                    height: _LocalDimensions.line_height,
                   ),
                 ),
               ],
@@ -198,7 +229,7 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
           ),
         ),
         if (trailing != null) ...[
-          const SizedBox(width: 8.0),
+          const SizedBox(width: _LocalDimensions.spacing_small),
           trailing,
         ],
       ],
@@ -207,16 +238,16 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
     if (onTap != null) {
       return InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
+          padding: const EdgeInsets.symmetric(vertical: _LocalDimensions.padding_vertical, horizontal: _LocalDimensions.padding_horizontal),
           child: rowContent,
         ),
       );
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(vertical: _LocalDimensions.padding_vertical, horizontal: _LocalDimensions.padding_horizontal),
       child: rowContent,
     );
   }
@@ -293,19 +324,19 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                     CustomProfileAppBar(
                       title: localizations.profile_security_privacy,
                     ),
-                    const SizedBox(height: 24.0),
+                    const SizedBox(height: _LocalDimensions.spacing_large),
 
                     // SECTION 1: ACCOUNT SECURITY Header
                     Text(
                       sec_account_title,
                       style: const TextStyle(
-                        fontSize: 11.0,
+                        fontSize: _LocalDimensions.font_size_tiny,
                         fontWeight: FontWeight.w800,
                         color: Color(0xFF94A3B8),
-                        letterSpacing: 1.0,
+                        letterSpacing: _LocalDimensions.letter_spacing,
                       ),
                     ),
-                    const SizedBox(height: 12.0),
+                    const SizedBox(height: _LocalDimensions.spacing_medium),
                     // SECTION 1: ACCOUNT SECURITY CARD
                     _build_section_card(
                       is_dark: is_dark,
@@ -313,7 +344,7 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                         // Biometric Authentication
                         _build_setting_row(
                           is_dark: is_dark,
-                          leadingIcon: const Icon(Icons.fingerprint_rounded, color: AppColors.primary_color, size: 20.0),
+                          leadingIcon: const Icon(Icons.fingerprint_rounded, color: AppColors.primary_color, size: _LocalDimensions.icon_size_default),
                           title: biometric_title,
                           subtitle: biometric_subtitle,
                           trailing: Switch.adaptive(
@@ -327,11 +358,11 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                             activeThumbColor: Colors.white,
                           ),
                         ),
-                        Divider(height: 1.0, indent: 68.0, endIndent: 16.0, color: dividerColor),
+                        Divider(height: _LocalDimensions.border_width_thin, indent: _LocalDimensions.divider_indent, endIndent: _LocalDimensions.divider_end_indent, color: dividerColor),
                         // Two-Factor Authentication
                         _build_setting_row(
                           is_dark: is_dark,
-                          leadingIcon: const Icon(Icons.security_rounded, color: AppColors.primary_color, size: 20.0),
+                          leadingIcon: const Icon(Icons.security_rounded, color: AppColors.primary_color, size: _LocalDimensions.icon_size_default),
                           title: tfa_title,
                           subtitle: _two_factor_enabled ? tfa_enabled : tfa_disabled,
                           trailing: Icon(
@@ -344,11 +375,11 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                             });
                           },
                         ),
-                        Divider(height: 1.0, indent: 68.0, endIndent: 16.0, color: dividerColor),
+                        Divider(height: _LocalDimensions.border_width_thin, indent: _LocalDimensions.divider_indent, endIndent: _LocalDimensions.divider_end_indent, color: dividerColor),
                         // Change Password
                         _build_setting_row(
                           is_dark: is_dark,
-                          leadingIcon: const Icon(Icons.lock_reset_rounded, color: AppColors.primary_color, size: 20.0),
+                          leadingIcon: const Icon(Icons.lock_reset_rounded, color: AppColors.primary_color, size: _LocalDimensions.icon_size_default),
                           title: change_password_label,
                           subtitle: change_password_subtitle,
                           trailing: Icon(
@@ -366,11 +397,11 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                             );
                           },
                         ),
-                        Divider(height: 1.0, indent: 68.0, endIndent: 16.0, color: dividerColor),
+                        Divider(height: _LocalDimensions.border_width_thin, indent: _LocalDimensions.divider_indent, endIndent: _LocalDimensions.divider_end_indent, color: dividerColor),
                         // Auto-Lock Timeout
                         _build_setting_row(
                           is_dark: is_dark,
-                          leadingIcon: const Icon(Icons.timer_outlined, color: AppColors.primary_color, size: 20.0),
+                          leadingIcon: const Icon(Icons.timer_outlined, color: AppColors.primary_color, size: _LocalDimensions.icon_size_default),
                           title: autolock_title,
                           trailing: DropdownButton<String>(
                             value: _auto_lock_timeout,
@@ -380,7 +411,7 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                             style: const TextStyle(
                               color: AppColors.primary_color,
                               fontWeight: FontWeight.bold,
-                              fontSize: 13.0,
+                              fontSize: _LocalDimensions.font_size_small,
                             ),
                             items: [
                               DropdownMenuItem(
@@ -403,19 +434,19 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 24.0),
+                    const SizedBox(height: _LocalDimensions.spacing_large),
 
                     // SECTION 2: MEDICAL DATA PRIVACY Header
                     Text(
                       sec_privacy_title,
                       style: const TextStyle(
-                        fontSize: 11.0,
+                        fontSize: _LocalDimensions.font_size_tiny,
                         fontWeight: FontWeight.w800,
                         color: Color(0xFF94A3B8),
-                        letterSpacing: 1.0,
+                        letterSpacing: _LocalDimensions.letter_spacing,
                       ),
                     ),
-                    const SizedBox(height: 12.0),
+                    const SizedBox(height: _LocalDimensions.spacing_medium),
                     // SECTION 2: MEDICAL DATA PRIVACY CARD
                     _build_section_card(
                       is_dark: is_dark,
@@ -423,7 +454,7 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                         // Doctor Access Permissions
                         _build_setting_row(
                           is_dark: is_dark,
-                          leadingIcon: const Icon(Icons.remove_red_eye_outlined, color: AppColors.primary_color, size: 20.0),
+                          leadingIcon: const Icon(Icons.remove_red_eye_outlined, color: AppColors.primary_color, size: _LocalDimensions.icon_size_default),
                           title: doc_access_title,
                           trailing: DropdownButton<String>(
                             value: _doctor_access,
@@ -433,7 +464,7 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                             style: const TextStyle(
                               color: AppColors.primary_color,
                               fontWeight: FontWeight.bold,
-                              fontSize: 13.0,
+                              fontSize: _LocalDimensions.font_size_small,
                             ),
                             items: [
                               DropdownMenuItem(
@@ -454,11 +485,11 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                             },
                           ),
                         ),
-                        Divider(height: 1.0, indent: 68.0, endIndent: 16.0, color: dividerColor),
+                        Divider(height: _LocalDimensions.border_width_thin, indent: _LocalDimensions.divider_indent, endIndent: _LocalDimensions.divider_end_indent, color: dividerColor),
                         // Active Logged-in Devices
                         _build_setting_row(
                           is_dark: is_dark,
-                          leadingIcon: const Icon(Icons.devices_rounded, color: AppColors.primary_color, size: 20.0),
+                          leadingIcon: const Icon(Icons.devices_rounded, color: AppColors.primary_color, size: _LocalDimensions.icon_size_default),
                           title: active_devices_title,
                           subtitle: active_devices_subtitle,
                           trailing: Icon(
@@ -474,11 +505,11 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                             );
                           },
                         ),
-                        Divider(height: 1.0, indent: 68.0, endIndent: 16.0, color: dividerColor),
+                        Divider(height: _LocalDimensions.border_width_thin, indent: _LocalDimensions.divider_indent, endIndent: _LocalDimensions.divider_end_indent, color: dividerColor),
                         // Export Medical Data
                         _build_setting_row(
                           is_dark: is_dark,
-                          leadingIcon: const Icon(Icons.download_rounded, color: AppColors.primary_color, size: 20.0),
+                          leadingIcon: const Icon(Icons.download_rounded, color: AppColors.primary_color, size: _LocalDimensions.icon_size_default),
                           title: export_data_title,
                           subtitle: export_data_subtitle,
                           trailing: Icon(
@@ -496,42 +527,42 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 24.0),
+                    const SizedBox(height: _LocalDimensions.spacing_large),
 
                     // SECTION 3: DANGER ZONE Header
                     Text(
                       sec_danger_title,
                       style: const TextStyle(
-                        fontSize: 11.0,
+                        fontSize: _LocalDimensions.font_size_tiny,
                         fontWeight: FontWeight.w800,
                         color: Color(0xFF94A3B8),
-                        letterSpacing: 1.0,
+                        letterSpacing: _LocalDimensions.letter_spacing,
                       ),
                     ),
-                    const SizedBox(height: 12.0),
+                    const SizedBox(height: _LocalDimensions.spacing_medium),
                     // SECTION 3: DANGER ZONE Isolated Container
                     Container(
                       width: double.infinity,
                       decoration: BoxDecoration(
                         color: is_dark ? const Color(0xFF7F1D1D).withValues(alpha: 0.15) : const Color(0xFFFEF2F2),
-                        borderRadius: BorderRadius.circular(16.0),
+                        borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
                         border: Border.all(
                           color: is_dark ? const Color(0xFF991B1B) : const Color(0xFFFCA5A5),
-                          width: 1.0,
+                          width: _LocalDimensions.border_width_thin,
                         ),
                       ),
                       child: InkWell(
                         onTap: () {
                           _show_delete_account_dialog(context);
                         },
-                        borderRadius: BorderRadius.circular(16.0),
+                        borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
                         child: Padding(
-                          padding: const EdgeInsets.all(16.0),
+                          padding: const EdgeInsets.all(_LocalDimensions.padding_horizontal),
                           child: Row(
                             children: [
                               Container(
-                                width: 40.0,
-                                height: 40.0,
+                                width: _LocalDimensions.icon_container_size,
+                                height: _LocalDimensions.icon_container_size,
                                 decoration: BoxDecoration(
                                   color: AppColors.error.withValues(alpha: 0.1),
                                   shape: BoxShape.circle,
@@ -539,10 +570,10 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                                 child: const Icon(
                                   Icons.no_accounts_rounded,
                                   color: AppColors.error,
-                                  size: 20.0,
+                                  size: _LocalDimensions.icon_size_default,
                                 ),
                               ),
-                              const SizedBox(width: 12.0),
+                              const SizedBox(width: _LocalDimensions.spacing_medium),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -550,18 +581,18 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                                     Text(
                                       delete_account_title,
                                       style: const TextStyle(
-                                        fontSize: 14.0,
+                                        fontSize: _LocalDimensions.font_size_medium,
                                         fontWeight: FontWeight.bold,
                                         color: AppColors.error,
                                       ),
                                     ),
-                                    const SizedBox(height: 4.0),
+                                    const SizedBox(height: _LocalDimensions.spacing_micro),
                                     Text(
                                       delete_account_subtitle,
                                       style: TextStyle(
-                                        fontSize: 12.0,
+                                        fontSize: _LocalDimensions.font_size_micro,
                                         color: is_dark ? Colors.white70 : const Color(0xFF64748B),
-                                        height: 1.3,
+                                        height: _LocalDimensions.line_height,
                                       ),
                                     ),
                                   ],

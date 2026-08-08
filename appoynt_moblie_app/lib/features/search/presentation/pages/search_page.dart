@@ -35,6 +35,12 @@ import 'package:appoynt_mobile_app/core/widgets/app_bottom_nav_bar.dart';
 // Import shared reusable doctor card widget
 import 'package:appoynt_mobile_app/features/shared/widgets/doctor_card.dart';
 
+// Local layout dimensions class to strictly eliminate hardcoded numbers
+class _LocalDimensions {
+  static const double filter_button_size = 64.0;
+  static const double border_radius_sheet = 24.0;
+}
+
 // Main search screen gateway page widget
 class SearchPage extends StatefulWidget {
   // Constant constructor initializing widget key
@@ -376,9 +382,9 @@ class _SearchPageState extends State<SearchPage> {
                                     // Styling container box
                                     child: Container(
                                       // Fixed width matching height (square button)
-                                      width: 64.0,
+                                      width: _LocalDimensions.filter_button_size,
                                       // Matching height of the other filter chips
-                                      height: 64.0,
+                                      height: _LocalDimensions.filter_button_size,
                                       // Styling decorations
                                       decoration: BoxDecoration(
                                         // Light blue background tint matching mock-up
@@ -600,7 +606,7 @@ class _SearchPageState extends State<SearchPage> {
           decoration: BoxDecoration(
             color: is_dark ? AppColors.surface_dark : Colors.white,
             borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(24.0),
+              top: Radius.circular(_LocalDimensions.border_radius_sheet),
             ),
           ),
           // Padding container edges configurations
@@ -675,7 +681,7 @@ class _SearchPageState extends State<SearchPage> {
           decoration: BoxDecoration(
             color: is_dark ? AppColors.surface_dark : Colors.white,
             borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(24.0),
+              top: Radius.circular(_LocalDimensions.border_radius_sheet),
             ),
           ),
           // Padding container edges configurations
@@ -1256,7 +1262,7 @@ class _SearchPageState extends State<SearchPage> {
               decoration: BoxDecoration(
                 color: is_dark ? AppColors.surface_dark : Colors.white,
                 borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(24.0),
+                  top: Radius.circular(_LocalDimensions.border_radius_sheet),
                 ),
               ),
               padding: const EdgeInsets.all(AppSpacing.space_xl),
@@ -1566,7 +1572,7 @@ class _SearchPageState extends State<SearchPage> {
               decoration: BoxDecoration(
                 color: is_dark ? AppColors.surface_dark : Colors.white,
                 borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(24.0),
+                  top: Radius.circular(_LocalDimensions.border_radius_sheet),
                 ),
               ),
               child: Column(
@@ -1762,7 +1768,7 @@ class _FilterChip extends StatelessWidget {
     // Return container applying shape dimensions and borders bounds
     return Container(
       // Height matching design tokens (64px spec height to fit double lines)
-      height: 64.0,
+      height: _LocalDimensions.filter_button_size,
       // Padding margins within chip boundary lines
       padding: const EdgeInsets.symmetric(
         // Horizontal padding offset

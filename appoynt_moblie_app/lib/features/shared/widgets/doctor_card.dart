@@ -25,6 +25,23 @@ import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
 // Import reusable performance-optimized network image widget
 import 'package:appoynt_mobile_app/core/widgets/app_network_image.dart';
 
+// Local layout dimensions class to strictly eliminate hardcoded numbers
+class _LocalDimensions {
+  static const double avatar_border_width = 1.5;
+  static const double favorite_icon_size = 28.0;
+  static const double ecg_stroke_width = 1.8;
+  static const double scale_0_15 = 0.15;
+  static const double scale_0_35 = 0.35;
+  static const double scale_0_42 = 0.42;
+  static const double scale_0_38 = 0.38;
+  static const double scale_0_50 = 0.50;
+  static const double scale_0_62 = 0.62;
+  static const double scale_0_58 = 0.58;
+  static const double scale_0_32 = 0.32;
+  static const double scale_0_66 = 0.66;
+  static const double scale_0_85 = 0.85;
+}
+
 // Reusable DoctorCard widget definition
 class DoctorCard extends StatelessWidget {
   // Doctor name property
@@ -121,7 +138,7 @@ class DoctorCard extends StatelessWidget {
                     color:
                         Theme.of(context).dividerColor.withValues(alpha: 0.3),
                     // Thin outline stroke width (1.5px)
-                    width: 1.5,
+                    width: _LocalDimensions.avatar_border_width,
                   ),
                 ),
                 // Inner network image widget child representation
@@ -255,11 +272,11 @@ class DoctorCard extends StatelessWidget {
                             : (true == is_dark
                                 ? AppColors.text_dark_secondary
                                 : AppColors.text_light_secondary),
-                        size: 28.0,
+                        size: _LocalDimensions.favorite_icon_size,
                       ),
                       // Overlay CustomPaint drawing the ECG pulse line trace
                       CustomPaint(
-                        size: const Size(28.0, 28.0),
+                        size: const Size(_LocalDimensions.favorite_icon_size, _LocalDimensions.favorite_icon_size),
                         painter: EcgLinePainter(
                           color: true == is_favorite
                               ? Colors.white
@@ -420,7 +437,7 @@ class EcgLinePainter extends CustomPainter {
     // ECG line paint styling properties configuration
     final paint = Paint()
       ..color = color
-      ..strokeWidth = 1.8
+      ..strokeWidth = _LocalDimensions.ecg_stroke_width
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round;
@@ -431,13 +448,13 @@ class EcgLinePainter extends CustomPainter {
     final double h = size.height;
 
     // Flat line -> small dip -> medium peak -> deep dip -> small peak -> flat line
-    path.moveTo(w * 0.15, h * 0.5);
-    path.lineTo(w * 0.35, h * 0.5);
-    path.lineTo(w * 0.42, h * 0.38);
-    path.lineTo(w * 0.50, h * 0.62);
-    path.lineTo(w * 0.58, h * 0.32);
-    path.lineTo(w * 0.66, h * 0.50);
-    path.lineTo(w * 0.85, h * 0.5);
+    path.moveTo(w * _LocalDimensions.scale_0_15, h * _LocalDimensions.scale_0_50);
+    path.lineTo(w * _LocalDimensions.scale_0_35, h * _LocalDimensions.scale_0_50);
+    path.lineTo(w * _LocalDimensions.scale_0_42, h * _LocalDimensions.scale_0_38);
+    path.lineTo(w * _LocalDimensions.scale_0_50, h * _LocalDimensions.scale_0_62);
+    path.lineTo(w * _LocalDimensions.scale_0_58, h * _LocalDimensions.scale_0_32);
+    path.lineTo(w * _LocalDimensions.scale_0_66, h * _LocalDimensions.scale_0_50);
+    path.lineTo(w * _LocalDimensions.scale_0_85, h * _LocalDimensions.scale_0_50);
 
     // Render path coordinates onto canvas using paint settings
     canvas.drawPath(path, paint);

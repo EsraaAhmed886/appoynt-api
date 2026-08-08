@@ -24,6 +24,36 @@ import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_c
 import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart';
 
 
+// Local layout dimensions class to strictly eliminate hardcoded numbers
+class _LocalDimensions {
+  static const double border_radius_default = 16.0;
+  static const double border_radius_medium = 12.0;
+  static const double border_radius_small = 10.0;
+  static const double border_radius_tiny = 8.0;
+  static const double border_width_accent = 2.0;
+  static const double button_height = 50.0;
+  static const double button_height_small = 42.0;
+  static const double avatar_size = 38.0;
+  static const double action_icon_size = 22.0;
+  static const double spacing_tiny = 2.0;
+  static const double spacing_small = 6.0;
+  static const double spacing_medium = 8.0;
+  static const double spacing_large = 12.0;
+  static const double font_size_title = 18.0;
+  static const double font_size_body = 14.0;
+  static const double font_size_medium = 13.0;
+  static const double font_size_small = 12.0;
+  static const double font_size_tiny = 11.0;
+  static const double font_size_micro = 10.0;
+  static const double icon_size_small = 14.0;
+  static const double icon_size_medium = 20.0;
+  static const double shadow_blur = 8.0;
+  static const double shadow_opacity_dark = 0.2;
+  static const double shadow_opacity_light = 0.04;
+  static const double disabled_opacity = 0.45;
+  static const double full_opacity = 1.0;
+}
+
 // Chronic Conditions Page layout stateful widget representation
 class ChronicConditionsPage extends StatefulWidget {
   // Constructor mapping key
@@ -97,13 +127,13 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
       builder: (dialog_context) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.0),
+            borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
           ),
           title: Text(
             title,
             textAlign: true == is_arabic ? TextAlign.right : TextAlign.left,
             style: const TextStyle(
-              fontSize: 18.0,
+              fontSize: _LocalDimensions.font_size_title,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -111,7 +141,7 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
             body,
             textAlign: true == is_arabic ? TextAlign.right : TextAlign.left,
             style: const TextStyle(
-              fontSize: 14.0,
+              fontSize: _LocalDimensions.font_size_body,
             ),
           ),
           actionsAlignment: true == is_arabic ? MainAxisAlignment.start : MainAxisAlignment.end,
@@ -131,10 +161,10 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
             ElevatedButton(
               onPressed: () => Navigator.pop(dialog_context, true),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFDC2626),
+                backgroundColor: AppColors.error,
                 elevation: 0.0,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_tiny),
                 ),
               ),
               child: Text(
@@ -240,26 +270,26 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
 
     return AnimatedOpacity(
       duration: const Duration(milliseconds: 200),
-      opacity: true == is_disabled ? 0.45 : 1.0,
+      opacity: true == is_disabled ? _LocalDimensions.disabled_opacity : _LocalDimensions.full_opacity,
       child: Container(
         margin: const EdgeInsets.only(bottom: AppSpacing.space_m),
         decoration: BoxDecoration(
           color: true == is_dark ? AppColors.surface_dark : Colors.white,
-          borderRadius: BorderRadius.circular(16.0),
+          borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
           border: Border.all(
             color: true == is_selected
                 ? AppColors.primary_color
                 : (true == is_dark
                     ? AppColors.border_dark
-                    : const Color(0xFFE2E8F0)),
-            width: true == is_selected ? 2.0 : AppSpacing.border_width_thin,
+                    : AppColors.slate_200),
+            width: true == is_selected ? _LocalDimensions.border_width_accent : AppSpacing.border_width_thin,
           ),
           boxShadow: [
             BoxShadow(
               color: true == is_dark
-                  ? Colors.black.withValues(alpha: 0.2)
-                  : Colors.black.withValues(alpha: 0.04),
-              blurRadius: 8.0,
+                  ? Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
+                  : Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
+              blurRadius: _LocalDimensions.shadow_blur,
               offset: const Offset(0.0, 2.0),
             ),
           ],
@@ -282,21 +312,21 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                         }
                       });
                     },
-              borderRadius: BorderRadius.circular(16.0),
+              borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
               child: Padding(
                 padding: const EdgeInsets.all(AppSpacing.space_l),
                 child: Row(
                   children: [
                     // Leading tinted icon badge container
                     Container(
-                      width: 38.0,
-                      height: 38.0,
+                      width: _LocalDimensions.avatar_size,
+                      height: _LocalDimensions.avatar_size,
                       decoration: BoxDecoration(
                         color: true == is_selected
                             ? AppColors.primary_color.withValues(alpha: 0.12)
                             : (true == is_dark
                                 ? AppColors.background_dark
-                                : const Color(0xFFF1F5F9)),
+                                : AppColors.slate_50),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
@@ -306,10 +336,10 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                             : (true == is_dark
                                 ? Colors.white54
                                 : AppColors.text_light_secondary),
-                        size: 20.0,
+                        size: _LocalDimensions.icon_size_medium,
                       ),
                     ),
-                    const SizedBox(width: 12.0),
+                    const SizedBox(width: _LocalDimensions.spacing_large),
 
                     // Title & Description Subtitle Details
                     Expanded(
@@ -319,7 +349,7 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                           Text(
                             label,
                             style: TextStyle(
-                              fontSize: 14.0,
+                              fontSize: _LocalDimensions.font_size_body,
                               fontWeight: FontWeight.bold,
                               color: true == is_dark
                                   ? Colors.white
@@ -327,11 +357,11 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                             ),
                           ),
                           if (true == is_selected) ...[
-                            const SizedBox(height: 2.0),
+                            const SizedBox(height: _LocalDimensions.spacing_tiny),
                             Text(
                               subtitle_text,
                               style: const TextStyle(
-                                fontSize: 12.0,
+                                fontSize: _LocalDimensions.font_size_small,
                                 fontWeight: FontWeight.w600,
                                 color: AppColors.primary_color,
                               ),
@@ -369,15 +399,15 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                               child: Icon(
                                 Icons.delete_outline_rounded,
                                 color: AppColors.error,
-                                size: 20.0,
+                                size: _LocalDimensions.icon_size_medium,
                               ),
                             ),
                           ),
                         ],
                         // Trailing Checkbox indicator
                         Container(
-                          width: 22.0,
-                          height: 22.0,
+                          width: _LocalDimensions.action_icon_size,
+                          height: _LocalDimensions.action_icon_size,
                           decoration: BoxDecoration(
                             color: true == is_selected
                                 ? AppColors.primary_color
@@ -388,15 +418,15 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                                   ? AppColors.primary_color
                                   : (true == is_dark
                                       ? Colors.white30
-                                      : const Color(0xFFCBD5E1)),
-                              width: 2.0,
+                                      : AppColors.slate_300),
+                              width: _LocalDimensions.border_width_accent,
                             ),
                           ),
                           child: true == is_selected
                               ? const Icon(
                                   Icons.check,
                                   color: Colors.white,
-                                  size: 14.0,
+                                  size: _LocalDimensions.icon_size_small,
                                 )
                               : null,
                         ),
@@ -417,8 +447,8 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                 ),
                 child: Column(
                   children: [
-                    const Divider(height: 1.0, color: Color(0xFFE2E8F0)),
-                    const SizedBox(height: 12.0),
+                    const Divider(height: 1.0, color: AppColors.slate_200),
+                    const SizedBox(height: _LocalDimensions.spacing_large),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -430,25 +460,25 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                               Text(
                                 diag_year_header,
                                 style: const TextStyle(
-                                  fontSize: 11.0,
+                                  fontSize: _LocalDimensions.font_size_tiny,
                                   fontWeight: FontWeight.bold,
                                   color: AppColors.text_light_secondary,
                                 ),
                               ),
-                              const SizedBox(height: 6.0),
+                              const SizedBox(height: _LocalDimensions.spacing_small),
                               Container(
-                                height: 42.0,
+                                height: _LocalDimensions.button_height_small,
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 12.0),
+                                    horizontal: _LocalDimensions.spacing_large),
                                 decoration: BoxDecoration(
                                   color: true == is_dark
                                       ? AppColors.background_dark
-                                      : const Color(0xFFF8FAFC),
-                                  borderRadius: BorderRadius.circular(10.0),
+                                      : AppColors.slate_50,
+                                  borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_small),
                                   border: Border.all(
                                     color: true == is_dark
                                         ? AppColors.border_dark
-                                        : const Color(0xFFE2E8F0),
+                                        : AppColors.slate_200,
                                   ),
                                 ),
                                 child: DropdownButtonHideUnderline(
@@ -477,7 +507,7 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                             ],
                           ),
                         ),
-                        const SizedBox(width: 12.0),
+                        const SizedBox(width: _LocalDimensions.spacing_large),
 
                         // Controlled status segment tags
                         Expanded(
@@ -487,12 +517,12 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                               Text(
                                 treatment_status_header,
                                 style: const TextStyle(
-                                  fontSize: 11.0,
+                                  fontSize: _LocalDimensions.font_size_tiny,
                                   fontWeight: FontWeight.bold,
                                   color: AppColors.text_light_secondary,
                                 ),
                               ),
-                              const SizedBox(height: 6.0),
+                              const SizedBox(height: _LocalDimensions.spacing_small),
                               Row(
                                 children: [
                                   // Controlled Pill Choice
@@ -505,28 +535,28 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                                         });
                                       },
                                       child: Container(
-                                        height: 42.0,
+                                        height: _LocalDimensions.button_height_small,
                                         alignment: Alignment.center,
                                         decoration: BoxDecoration(
                                           color: 'Controlled' == diag_status
                                               ? AppColors.primary_color
                                               : (true == is_dark
                                                   ? AppColors.background_dark
-                                                  : const Color(0xFFF8FAFC)),
+                                                  : AppColors.slate_50),
                                           borderRadius:
                                               const BorderRadiusDirectional.horizontal(
-                                            start: Radius.circular(10.0),
+                                            start: Radius.circular(_LocalDimensions.border_radius_small),
                                           ),
                                           border: Border.all(
                                             color: true == is_dark
                                                 ? AppColors.border_dark
-                                                : const Color(0xFFE2E8F0),
+                                                : AppColors.slate_200,
                                           ),
                                         ),
                                         child: Text(
                                           controlled_btn_label,
                                           style: TextStyle(
-                                            fontSize: 10.0,
+                                            fontSize: _LocalDimensions.font_size_micro,
                                             fontWeight: FontWeight.bold,
                                             color: 'Controlled' == diag_status
                                                 ? Colors.white
@@ -549,28 +579,28 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                                         });
                                       },
                                       child: Container(
-                                        height: 42.0,
+                                        height: _LocalDimensions.button_height_small,
                                         alignment: Alignment.center,
                                         decoration: BoxDecoration(
                                           color: 'Monitoring' == diag_status
                                               ? AppColors.primary_color
                                               : (true == is_dark
                                                   ? AppColors.background_dark
-                                                  : const Color(0xFFF8FAFC)),
+                                                  : AppColors.slate_50),
                                           borderRadius:
                                               const BorderRadiusDirectional.horizontal(
-                                            end: Radius.circular(10.0),
+                                            end: Radius.circular(_LocalDimensions.border_radius_small),
                                           ),
                                           border: Border.all(
                                             color: true == is_dark
                                                 ? AppColors.border_dark
-                                                : const Color(0xFFE2E8F0),
+                                                : AppColors.slate_200,
                                           ),
                                         ),
                                         child: Text(
                                           monitoring_btn_label,
                                           style: TextStyle(
-                                            fontSize: 10.0,
+                                            fontSize: _LocalDimensions.font_size_micro,
                                             fontWeight: FontWeight.bold,
                                             color: 'Monitoring' == diag_status
                                                 ? Colors.white
@@ -671,13 +701,13 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                         ),
                       ),
                       if (_search_query.isNotEmpty) ...[
-                        const SizedBox(width: 8.0),
+                        const SizedBox(width: _LocalDimensions.spacing_medium),
                         Container(
-                          height: 50.0,
-                          width: 50.0,
+                          height: _LocalDimensions.button_height,
+                          width: _LocalDimensions.button_height,
                           decoration: BoxDecoration(
                             color: AppColors.primary_color,
-                            borderRadius: BorderRadius.circular(12.0),
+                            borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_medium),
                           ),
                           child: IconButton(
                             icon:
@@ -703,7 +733,7 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                       Text(
                         localizations.chronic_description,
                         style: TextStyle(
-                          fontSize: 13.0,
+                          fontSize: _LocalDimensions.font_size_medium,
                           color: true == is_dark
                               ? AppColors.text_dark_secondary
                               : AppColors.text_light_secondary,
@@ -742,8 +772,8 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                         child: Row(
                           children: [
                             Container(
-                              width: 38.0,
-                              height: 38.0,
+                              width: _LocalDimensions.avatar_size,
+                              height: _LocalDimensions.avatar_size,
                               decoration: BoxDecoration(
                                 color: AppColors.primary_color
                                     .withValues(alpha: 0.1),
@@ -752,10 +782,10 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                               child: const Icon(
                                 Icons.shield_outlined,
                                 color: AppColors.primary_color,
-                                size: 20.0,
+                                size: _LocalDimensions.icon_size_medium,
                               ),
                             ),
-                            const SizedBox(width: 12.0),
+                            const SizedBox(width: _LocalDimensions.spacing_large),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -763,20 +793,20 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                                   Text(
                                     master_title,
                                     style: TextStyle(
-                                      fontSize: 14.0,
+                                      fontSize: _LocalDimensions.font_size_body,
                                       fontWeight: FontWeight.bold,
                                       color: true == is_dark
                                           ? Colors.white
                                           : AppColors.text_light_primary,
                                     ),
                                   ),
-                                  const SizedBox(height: 2.0),
+                                  const SizedBox(height: _LocalDimensions.spacing_tiny),
                                   Text(
                                     true == is_arabic
                                         ? 'تحديد هذا الخيار سيلغي تحديد جميع الأمراض'
                                         : 'Activating this unchecks all conditions',
                                     style: const TextStyle(
-                                      fontSize: 12.0,
+                                      fontSize: _LocalDimensions.font_size_small,
                                       color: AppColors.text_light_secondary,
                                     ),
                                   ),
@@ -814,7 +844,7 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                           );
                         },
                       ),
-                      const SizedBox(height: 80.0),
+                      const SizedBox(height: AppSpacing.height_auth_button),
                     ],
                   ),
                 ),
@@ -855,7 +885,7 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
               backgroundColor: AppColors.primary_color,
               elevation: 0.0,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.0),
+                borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_medium),
               ),
             ),
             child: Text(

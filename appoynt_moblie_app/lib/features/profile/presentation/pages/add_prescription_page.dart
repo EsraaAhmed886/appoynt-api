@@ -22,6 +22,29 @@ import 'package:appoynt_mobile_app/core/widgets/auth/auth_text_field.dart';
 // Importing ProfileCubit for dispatching add prescription action
 import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart';
 
+// Local layout dimensions class to strictly eliminate hardcoded numbers
+class _LocalDimensions {
+  static const double border_radius_default = 16.0;
+  static const double border_radius_medium = 12.0;
+  static const double border_radius_xl = 30.0;
+  static const double border_width_thick = 1.5;
+  static const double spacing_small = 6.0;
+  static const double spacing_medium = 8.0;
+  static const double spacing_large = 10.0;
+  static const double padding_card = 16.0;
+  static const double font_size_body = 15.0;
+  static const double font_size_medium = 13.0;
+  static const double font_size_small = 12.0;
+  static const double icon_size_medium = 22.0;
+  static const double shadow_blur = 8.0;
+  static const double shadow_offset_y = 2.0;
+  static const double shadow_opacity_dark = 0.2;
+  static const double shadow_opacity_light = 0.04;
+  static const double choice_chip_padding_h = 14.0;
+  static const double choice_chip_padding_v = 9.0;
+  static const double bottom_spacing_safe = 80.0;
+}
+
 // Stateful widget representing the standalone Add Prescription page
 class AddPrescriptionPage extends StatefulWidget {
   // Optional prescription data for edit mode
@@ -271,7 +294,7 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
                             localizations.prescriptions_field_freq_label,
                             style: TextStyle(
                               // Small label font size
-                              fontSize: 12.0,
+                              fontSize: _LocalDimensions.font_size_small,
                               // Bold weight
                               fontWeight: FontWeight.bold,
                               // Adaptive text color
@@ -280,7 +303,7 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
                                   : AppColors.text_light_primary,
                             ),
                           ),
-                          const SizedBox(height: 8.0),
+                          const SizedBox(height: _LocalDimensions.spacing_medium),
 
                           // Horizontal scrollable animated frequency chip row
                           SingleChildScrollView(
@@ -294,7 +317,7 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
                                     _selected_frequency == freq;
                                 return Padding(
                                   // Right spacing between chips
-                                  padding: const EdgeInsets.only(right: 6.0),
+                                  padding: const EdgeInsets.only(right: _LocalDimensions.spacing_small),
                                   child: GestureDetector(
                                     // Update selection state on tap
                                     onTap: () {
@@ -309,8 +332,8 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
                                           const Duration(milliseconds: 200),
                                       // Internal horizontal and vertical padding
                                       padding: const EdgeInsets.symmetric(
-                                        horizontal: 14.0,
-                                        vertical: 9.0,
+                                        horizontal: _LocalDimensions.choice_chip_padding_h,
+                                        vertical: _LocalDimensions.choice_chip_padding_v,
                                       ),
                                       // Chip decoration adapting to selection state
                                       decoration: BoxDecoration(
@@ -319,10 +342,10 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
                                             ? AppColors.primary_color
                                             : (true == is_dark
                                                 ? AppColors.background_dark
-                                                : const Color(0xFFF1F5F9)),
+                                                : AppColors.slate_50),
                                         // Pill-shape 30px radius
                                         borderRadius:
-                                            BorderRadius.circular(30.0),
+                                            BorderRadius.circular(_LocalDimensions.border_radius_xl),
                                         // Chip border outline
                                         border: Border.all(
                                           // Selected: primary color border
@@ -330,9 +353,9 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
                                               ? AppColors.primary_color
                                               : (true == is_dark
                                                   ? AppColors.border_dark
-                                                  : const Color(0xFFE2E8F0)),
+                                                  : AppColors.slate_200),
                                           // Slightly thicker border
-                                          width: 1.5,
+                                          width: _LocalDimensions.border_width_thick,
                                         ),
                                       ),
                                       // Chip label text widget
@@ -341,7 +364,7 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
                                         freq,
                                         style: TextStyle(
                                           // Small chip text size
-                                          fontSize: 12.0,
+                                          fontSize: _LocalDimensions.font_size_small,
                                           // Bold when selected
                                           fontWeight: true == is_selected
                                               ? FontWeight.bold
@@ -410,23 +433,20 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
                               // Fill available horizontal width
                               width: double.infinity,
                               // Vertical padding inside touch area
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 16.0,
-                                horizontal: 16.0,
-                              ),
+                              padding: const EdgeInsets.all(_LocalDimensions.padding_card),
                               // Rounded outline decoration
                               decoration: BoxDecoration(
                                 // Slightly tinted canvas background
                                 color: true == is_dark
                                     ? AppColors.background_dark
-                                    : const Color(0xFFF8FAFC),
+                                    : AppColors.slate_50,
                                 // Rounded 12px corners
-                                borderRadius: BorderRadius.circular(12.0),
+                                borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_medium),
                                 // Thin border outline
                                 border: Border.all(
                                   color: true == is_dark
                                       ? AppColors.border_dark
-                                      : const Color(0xFFE2E8F0),
+                                      : AppColors.slate_200,
                                 ),
                               ),
                               child: Row(
@@ -439,12 +459,12 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
                                         : Icons.attach_file_rounded,
                                     // Green when attached else primary blue
                                     color: _attachment_name != null
-                                        ? const Color(0xFF10B981)
+                                        ? AppColors.success
                                         : AppColors.primary_color,
                                     // Icon display size
-                                    size: 22.0,
+                                    size: _LocalDimensions.icon_size_medium,
                                   ),
-                                  const SizedBox(width: 10.0),
+                                  const SizedBox(width: _LocalDimensions.spacing_large),
                                   // Attached file name or placeholder text
                                   Expanded(
                                     child: Text(
@@ -453,14 +473,14 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
                                           'Upload Rx Photo / Document (Optional)',
                                       style: TextStyle(
                                         // Body font size
-                                        fontSize: 13.0,
+                                        fontSize: _LocalDimensions.font_size_medium,
                                         // Bold if file attached
                                         fontWeight: _attachment_name != null
                                             ? FontWeight.bold
                                             : FontWeight.normal,
                                         // Green when attached else secondary
                                         color: _attachment_name != null
-                                            ? const Color(0xFF10B981)
+                                            ? AppColors.success
                                             : AppColors.text_light_secondary,
                                       ),
                                     ),
@@ -472,7 +492,7 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
                         ],
                       ),
 
-                      const SizedBox(height: 80.0),
+                      const SizedBox(height: _LocalDimensions.bottom_spacing_safe),
                     ],
                   ),
                 ),
@@ -496,7 +516,7 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
               elevation: 0.0,
               // 12px rounded corners
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.0),
+                borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_medium),
               ),
             ),
             child: Text(
@@ -533,12 +553,12 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
         // White surface in light mode, dark surface in dark mode
         color: true == is_dark ? AppColors.surface_dark : Colors.white,
         // 16px rounded corners
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
         // Thin border outline
         border: Border.all(
           // Adaptive border color
           color:
-              true == is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
+              true == is_dark ? AppColors.border_dark : AppColors.slate_200,
           // Border width token
           width: AppSpacing.border_width_thin,
         ),
@@ -547,12 +567,12 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
           BoxShadow(
             // Tinted shadow adapts to theme
             color: true == is_dark
-                ? Colors.black.withValues(alpha: 0.2)
-                : Colors.black.withValues(alpha: 0.04),
+                ? Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
+                : Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
             // Blur radius
-            blurRadius: 8.0,
+            blurRadius: _LocalDimensions.shadow_blur,
             // Vertical shadow offset
-            offset: const Offset(0.0, 2.0),
+            offset: const Offset(0.0, _LocalDimensions.shadow_offset_y),
           ),
         ],
       ),
@@ -566,7 +586,7 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
             title,
             style: TextStyle(
               // Medium font size
-              fontSize: 15.0,
+              fontSize: _LocalDimensions.font_size_body,
               // Bold weight
               fontWeight: FontWeight.bold,
               // Adaptive text color

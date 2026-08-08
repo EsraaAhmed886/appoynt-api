@@ -25,6 +25,16 @@ import 'package:appoynt_mobile_app/features/profile/domain/entities/test_result.
 // Importing add result page screen
 import 'package:appoynt_mobile_app/features/profile/presentation/pages/add_test_result_page.dart';
 
+// Local layout dimensions class to strictly eliminate hardcoded numbers
+class _LocalDimensions {
+  static const double card_shadow_blur = 6.0;
+  static const double card_shadow_spread = 1.0;
+  static const double card_shadow_offset_y = 2.0;
+  static const double card_shadow_opacity_dark = 0.25;
+  static const double card_shadow_opacity_light = 0.04;
+  static const double button_radius = 16.0;
+}
+
 // Tests Results Page layout stateful widget representation
 class TestsResultsPage extends StatefulWidget {
   // Constructor mapping key
@@ -136,13 +146,13 @@ class _TestsResultsPageState extends State<TestsResultsPage> {
                                     BoxShadow(
                                       // Subdued gray shadow color
                                       color: true == is_dark
-                                          ? Colors.black.withValues(alpha: 0.25)
-                                          : Colors.black.withValues(alpha: 0.04),
+                                          ? Colors.black.withValues(alpha: _LocalDimensions.card_shadow_opacity_dark)
+                                          : Colors.black.withValues(alpha: _LocalDimensions.card_shadow_opacity_light),
                                       // Blur offset
-                                      blurRadius: 6.0,
+                                      blurRadius: _LocalDimensions.card_shadow_blur,
                                       // Spread offset
-                                      spreadRadius: 1.0,
-                                      offset: const Offset(0.0, 2.0),
+                                      spreadRadius: _LocalDimensions.card_shadow_spread,
+                                      offset: const Offset(0.0, _LocalDimensions.card_shadow_offset_y),
                                     ),
                                   ]
                                 : null,
@@ -198,13 +208,13 @@ class _TestsResultsPageState extends State<TestsResultsPage> {
                                     BoxShadow(
                                       // Subdued gray shadow color
                                       color: true == is_dark
-                                          ? Colors.black.withValues(alpha: 0.25)
-                                          : Colors.black.withValues(alpha: 0.04),
+                                          ? Colors.black.withValues(alpha: _LocalDimensions.card_shadow_opacity_dark)
+                                          : Colors.black.withValues(alpha: _LocalDimensions.card_shadow_opacity_light),
                                       // Blur offset
-                                      blurRadius: 6.0,
+                                      blurRadius: _LocalDimensions.card_shadow_blur,
                                       // Spread offset
-                                      spreadRadius: 1.0,
-                                      offset: const Offset(0.0, 2.0),
+                                      spreadRadius: _LocalDimensions.card_shadow_spread,
+                                      offset: const Offset(0.0, _LocalDimensions.card_shadow_offset_y),
                                     ),
                                   ]
                                 : null,
@@ -390,7 +400,7 @@ class _TestsResultsPageState extends State<TestsResultsPage> {
                                 backgroundColor: AppColors.primary_color,
                                 elevation: 0.0,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16.0),
+                                  borderRadius: BorderRadius.circular(_LocalDimensions.button_radius),
                                 ),
                               ),
                               child: Text(

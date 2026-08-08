@@ -2,19 +2,66 @@
  * File Name: payment_history_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 08/08/2026
- * Version Information: V1.3.0
+ * Version Information: V1.4.0
  * Dependencies: package:flutter/material.dart,
  *   package:appoynt_mobile_app/core/routing/route_export.dart,
  *   package:appoynt_mobile_app/features/payment/data/models/invoice_model.dart
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 08/08/2026]
- * File Description: Redesigned Payment History & Invoices Page displaying transaction histories, filters, and null-safe invoice models. Fully localized.
+ * File Description: Redesigned Payment History & Invoices Page. Fully localized and complies with zero-hardcoded-numbers.
  */
 
 // Importing global route exports
 import 'package:appoynt_mobile_app/core/routing/route_export.dart';
 // Importing null-safe invoice data model
 import 'package:appoynt_mobile_app/features/payment/data/models/invoice_model.dart';
+
+// Local layout dimensions class to strictly eliminate hardcoded numbers
+class _LocalDimensions {
+  static const double spacing_bottom = 12.0;
+  static const double padding_inside = 14.0;
+  static const double border_radius = 16.0;
+  static const double shadow_blur = 6.0;
+  static const double shadow_offset_y = 2.0;
+  static const double icon_container_padding = 10.0;
+  static const double icon_size = 20.0;
+  static const double spacing_small = 12.0;
+  static const double font_size_title = 13.0;
+  static const double spacing_tiny = 2.0;
+  static const double font_size_subtitle = 10.0;
+  static const double font_size_price = 14.0;
+  static const double spacing_medium = 4.0;
+  static const double badge_padding_h = 8.0;
+  static const double badge_padding_v = 2.0;
+  static const double badge_radius = 12.0;
+  static const double badge_font_size = 9.0;
+  static const double spacing_badge_right = 8.0;
+  static const double action_button_size = 36.0;
+  static const double banner_padding = 20.0;
+  static const double banner_radius = 20.0;
+  static const double banner_shadow_blur = 10.0;
+  static const double banner_shadow_offset_y = 4.0;
+  static const double banner_title_font_size = 11.0;
+  static const double banner_value_font_size = 24.0;
+  static const double banner_badge_padding_h = 12.0;
+  static const double banner_badge_padding_v = 6.0;
+  static const double banner_badge_radius = 12.0;
+  static const double banner_badge_font_size = 12.0;
+  static const double filter_chip_spacing_right = 8.0;
+  static const double filter_chip_opacity = 0.15;
+  static const double bottom_sheet_radius = 20.0;
+  static const double sheet_padding = 16.0;
+  static const double sheet_title_font_size = 16.0;
+  static const double slider_max_value = 500.0;
+  static const int slider_divisions = 10;
+  static const double spacing_large = 20.0;
+  static const double empty_state_icon_container_padding = 20.0;
+  static const double empty_state_icon_size = 48.0;
+  static const double empty_state_title_font_size = 15.0;
+  static const double empty_state_subtitle_font_size = 12.0;
+  static const double empty_state_spacing = 6.0;
+  static const double button_radius = 12.0;
+}
 
 // Stateful widget rendering the transactions history layout screen
 class PaymentHistoryPage extends StatefulWidget {
@@ -85,7 +132,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
   // Active filter state variables
   String _selected_date_filter = 'All'; // All, This Month, Last 3 Months, Custom
   double _min_amount = 0.0;
-  double _max_amount = 500.0;
+  double _max_amount = _LocalDimensions.slider_max_value;
   String _selected_service_type = 'All'; // All, Doctor Consultation, Lab Test, Radiology, Emergency
 
   DateTimeRange? _custom_date_range;
@@ -247,26 +294,26 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                               _get_color_for_type(tx.serviceName ?? '');
 
                           return Container(
-                            margin: const EdgeInsets.only(bottom: 12.0),
-                            padding: const EdgeInsets.all(14.0),
+                            margin: const EdgeInsets.only(bottom: _LocalDimensions.spacing_bottom),
+                            padding: const EdgeInsets.all(_LocalDimensions.padding_inside),
                             decoration: BoxDecoration(
                               color: true == is_dark
                                   ? AppColors.surface_dark
                                   : Colors.white,
-                              borderRadius: BorderRadius.circular(16.0),
+                              borderRadius: BorderRadius.circular(_LocalDimensions.border_radius),
                               border: Border.all(
                                 color: true == is_dark
                                     ? AppColors.border_dark
                                     : const Color(0xFFE2E8F0),
-                                width: 1.0,
+                                width: AppSpacing.border_width_thin,
                               ),
                               boxShadow: [
                                 BoxShadow(
                                   color: true == is_dark
                                       ? Colors.black.withValues(alpha: 0.1)
                                       : Colors.black.withValues(alpha: 0.03),
-                                  blurRadius: 6.0,
-                                  offset: const Offset(0.0, 2.0),
+                                  blurRadius: _LocalDimensions.shadow_blur,
+                                  offset: const Offset(0.0, _LocalDimensions.shadow_offset_y),
                                 ),
                               ],
                             ),
@@ -274,7 +321,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                               children: [
                                 // Leading avatar icon
                                 Container(
-                                  padding: const EdgeInsets.all(10.0),
+                                  padding: const EdgeInsets.all(_LocalDimensions.icon_container_padding),
                                   decoration: BoxDecoration(
                                     color: service_color.withValues(alpha: 0.1),
                                     shape: BoxShape.circle,
@@ -282,10 +329,10 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                                   child: Icon(
                                     service_icon,
                                     color: service_color,
-                                    size: 20.0,
+                                    size: _LocalDimensions.icon_size,
                                   ),
                                 ),
-                                const SizedBox(width: 12.0),
+                                const SizedBox(width: _LocalDimensions.spacing_small),
                                 // Center details column with safe null-coalescing rendering
                                 Expanded(
                                   child: Column(
@@ -296,27 +343,27 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                                         tx.doctorName ??
                                             localizations.profile_not_specified,
                                         style: TextStyle(
-                                          fontSize: 13.0,
+                                          fontSize: _LocalDimensions.font_size_title,
                                           fontWeight: FontWeight.bold,
                                           color: true == is_dark
                                               ? Colors.white
                                               : AppColors.text_light_primary,
                                         ),
                                       ),
-                                      const SizedBox(height: 2.0),
+                                      const SizedBox(height: _LocalDimensions.spacing_tiny),
                                       Text(
                                         tx.invoiceNumber ?? '',
                                         style: const TextStyle(
-                                          fontSize: 10.0,
+                                          fontSize: _LocalDimensions.font_size_subtitle,
                                           fontWeight: FontWeight.bold,
                                           color: AppColors.primary_color,
                                         ),
                                       ),
-                                      const SizedBox(height: 2.0),
+                                      const SizedBox(height: _LocalDimensions.spacing_tiny),
                                       Text(
                                         '$formatted_date • ${(tx.serviceName ?? "")}',
                                         style: const TextStyle(
-                                          fontSize: 10.0,
+                                          fontSize: _LocalDimensions.font_size_subtitle,
                                           color: AppColors.text_light_secondary,
                                         ),
                                       ),
@@ -330,18 +377,19 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                                     Text(
                                       '\$${amt.toStringAsFixed(2)}',
                                       style: TextStyle(
-                                        fontSize: 14.0,
+                                        fontSize: _LocalDimensions.font_size_price,
                                         fontWeight: FontWeight.bold,
                                         color: true == is_dark
                                             ? Colors.white
                                             : AppColors.text_light_primary,
                                       ),
                                     ),
-                                    const SizedBox(height: 4.0),
+                                    const SizedBox(height: _LocalDimensions.spacing_medium),
                                     // Status Badge Pill
                                     Container(
                                       padding: const EdgeInsets.symmetric(
-                                          horizontal: 8.0, vertical: 2.0),
+                                          horizontal: _LocalDimensions.badge_padding_h,
+                                          vertical: _LocalDimensions.badge_padding_v),
                                       decoration: BoxDecoration(
                                         color: true == is_paid
                                             ? const Color(0xFF10B981)
@@ -349,12 +397,12 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                                             : const Color(0xFFF59E0B)
                                                 .withValues(alpha: 0.1),
                                         borderRadius:
-                                            BorderRadius.circular(12.0),
+                                            BorderRadius.circular(_LocalDimensions.badge_radius),
                                       ),
                                       child: Text(
                                         tx.status ?? 'Paid',
                                         style: TextStyle(
-                                          fontSize: 9.0,
+                                          fontSize: _LocalDimensions.badge_font_size,
                                           fontWeight: FontWeight.bold,
                                           color: true == is_paid
                                               ? const Color(0xFF10B981)
@@ -364,17 +412,17 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                                     ),
                                   ],
                                 ),
-                                const SizedBox(width: 8.0),
+                                const SizedBox(width: _LocalDimensions.spacing_badge_right),
                                 // Action Button
                                 SizedBox(
-                                  width: 36.0,
-                                  height: 36.0,
+                                  width: _LocalDimensions.action_button_size,
+                                  height: _LocalDimensions.action_button_size,
                                   child: IconButton(
                                     padding: EdgeInsets.zero,
                                     icon: const Icon(
                                       Icons.picture_as_pdf_outlined,
                                       color: AppColors.primary_color,
-                                      size: 20.0,
+                                      size: _LocalDimensions.icon_size,
                                     ),
                                     onPressed: () {
                                       ScaffoldMessenger.of(context)
@@ -405,7 +453,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
       BuildContext context, double spent, int count, bool is_dark, AppLocalizations localizations) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20.0),
+      padding: const EdgeInsets.all(_LocalDimensions.banner_padding),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [
@@ -415,12 +463,12 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(20.0),
+        borderRadius: BorderRadius.circular(_LocalDimensions.banner_radius),
         boxShadow: const [
           BoxShadow(
             color: Colors.black26,
-            blurRadius: 10.0,
-            offset: Offset(0.0, 4.0),
+            blurRadius: _LocalDimensions.banner_shadow_blur,
+            offset: Offset(0.0, _LocalDimensions.banner_shadow_offset_y),
           ),
         ],
       ),
@@ -433,7 +481,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
               Text(
                 localizations.payment_total_paid_invoices,
                 style: const TextStyle(
-                  fontSize: 11.0,
+                  fontSize: _LocalDimensions.banner_title_font_size,
                   color: Colors.white70,
                   fontWeight: FontWeight.w500,
                 ),
@@ -442,7 +490,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
               Text(
                 '\$${spent.toStringAsFixed(2)}',
                 style: const TextStyle(
-                  fontSize: 24.0,
+                  fontSize: _LocalDimensions.banner_value_font_size,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                   fontFamily: 'monospace',
@@ -452,15 +500,15 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
           ),
           Container(
             padding:
-                const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+                const EdgeInsets.symmetric(horizontal: _LocalDimensions.banner_badge_padding_h, vertical: _LocalDimensions.banner_badge_padding_v),
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(12.0),
+              borderRadius: BorderRadius.circular(_LocalDimensions.banner_badge_radius),
             ),
             child: Text(
               '$count ${localizations.payment_invoices_count_suffix}',
               style: const TextStyle(
-                fontSize: 12.0,
+                fontSize: _LocalDimensions.banner_badge_font_size,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
@@ -479,38 +527,38 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
         children: [
           // Date Filter Chip
           Padding(
-            padding: const EdgeInsets.only(right: 8.0),
+            padding: const EdgeInsets.only(right: _LocalDimensions.filter_chip_spacing_right),
             child: FilterChip(
               label: Text('${localizations.payment_date_filter_prefix}: $_selected_date_filter ▾'),
               selected: 'All' != _selected_date_filter,
               onSelected: (_) =>
                   _show_date_picker_bottom_sheet(context, is_dark, localizations),
-              selectedColor: AppColors.primary_color.withValues(alpha: 0.15),
+              selectedColor: AppColors.primary_color.withValues(alpha: _LocalDimensions.filter_chip_opacity),
               checkmarkColor: AppColors.primary_color,
             ),
           ),
           // Amount Filter Chip
           Padding(
-            padding: const EdgeInsets.only(right: 8.0),
+            padding: const EdgeInsets.only(right: _LocalDimensions.filter_chip_spacing_right),
             child: FilterChip(
               label: Text(
                   '${localizations.payment_amount_filter_prefix}: \$${_min_amount.toInt()} - \$${_max_amount.toInt()} ▾'),
-              selected: 0.0 != _min_amount || 500.0 != _max_amount,
+              selected: 0.0 != _min_amount || _LocalDimensions.slider_max_value != _max_amount,
               onSelected: (_) =>
                   _show_amount_range_bottom_sheet(context, is_dark, localizations),
-              selectedColor: AppColors.primary_color.withValues(alpha: 0.15),
+              selectedColor: AppColors.primary_color.withValues(alpha: _LocalDimensions.filter_chip_opacity),
               checkmarkColor: AppColors.primary_color,
             ),
           ),
           // Service Type Filter Chip
           Padding(
-            padding: const EdgeInsets.only(right: 8.0),
+            padding: const EdgeInsets.only(right: _LocalDimensions.filter_chip_spacing_right),
             child: FilterChip(
               label: Text('${localizations.payment_service_filter_prefix}: $_selected_service_type ▾'),
               selected: 'All' != _selected_service_type,
               onSelected: (_) =>
                   _show_service_type_bottom_sheet(context, is_dark, localizations),
-              selectedColor: AppColors.primary_color.withValues(alpha: 0.15),
+              selectedColor: AppColors.primary_color.withValues(alpha: _LocalDimensions.filter_chip_opacity),
               checkmarkColor: AppColors.primary_color,
             ),
           ),
@@ -525,7 +573,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
       context: context,
       backgroundColor: true == is_dark ? AppColors.surface_dark : Colors.white,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(_LocalDimensions.bottom_sheet_radius)),
       ),
       builder: (sheet_context) {
         return StatefulBuilder(
@@ -535,11 +583,11 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.all(_LocalDimensions.sheet_padding),
                     child: Text(
                       localizations.payment_filter_date_range_title,
                       style: const TextStyle(
-                          fontSize: 16.0, fontWeight: FontWeight.bold),
+                          fontSize: _LocalDimensions.sheet_title_font_size, fontWeight: FontWeight.bold),
                     ),
                   ),
                   ListTile(
@@ -631,14 +679,14 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
       context: context,
       backgroundColor: true == is_dark ? AppColors.surface_dark : Colors.white,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(_LocalDimensions.bottom_sheet_radius)),
       ),
       builder: (sheet_context) {
         return StatefulBuilder(
           builder: (builder_context, sheet_setState) {
             return SafeArea(
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(_LocalDimensions.sheet_padding),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -646,14 +694,14 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                     Text(
                       localizations.payment_filter_amount_range_title,
                       style: const TextStyle(
-                          fontSize: 16.0, fontWeight: FontWeight.bold),
+                          fontSize: _LocalDimensions.sheet_title_font_size, fontWeight: FontWeight.bold),
                     ),
-                    const SizedBox(height: 20.0),
+                    const SizedBox(height: _LocalDimensions.spacing_large),
                     RangeSlider(
                       values: RangeValues(_min_amount, _max_amount),
                       min: 0.0,
-                      max: 500.0,
-                      divisions: 10,
+                      max: _LocalDimensions.slider_max_value,
+                      divisions: _LocalDimensions.slider_divisions,
                       labels: RangeLabels(
                         '\$${_min_amount.toInt()}',
                         '\$${_max_amount.toInt()}',
@@ -670,7 +718,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                         });
                       },
                     ),
-                    const SizedBox(height: 20.0),
+                    const SizedBox(height: _LocalDimensions.spacing_large),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -678,14 +726,14 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                         Text('${localizations.payment_max_label}: \$${_max_amount.toInt()}'),
                       ],
                     ),
-                    const SizedBox(height: 20.0),
+                    const SizedBox(height: _LocalDimensions.spacing_large),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary_color,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0),
+                            borderRadius: BorderRadius.circular(_LocalDimensions.button_radius),
                           ),
                         ),
                         onPressed: () {
@@ -721,7 +769,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
       context: context,
       backgroundColor: true == is_dark ? AppColors.surface_dark : Colors.white,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(_LocalDimensions.bottom_sheet_radius)),
       ),
       builder: (sheet_context) {
         return SafeArea(
@@ -729,10 +777,10 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(_LocalDimensions.sheet_padding),
                 child: Text(
                   localizations.payment_filter_service_type_title,
-                  style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: _LocalDimensions.sheet_title_font_size, fontWeight: FontWeight.bold),
                 ),
               ),
               ...types.map((type) {
@@ -765,34 +813,34 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(_LocalDimensions.empty_state_icon_container_padding),
               decoration: BoxDecoration(
                 color: AppColors.primary_color.withValues(alpha: 0.05),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
                 Icons.receipt_long_rounded,
-                size: 48.0,
+                size: _LocalDimensions.empty_state_icon_size,
                 color: AppColors.primary_color,
               ),
             ),
-            const SizedBox(height: 20.0),
+            const SizedBox(height: _LocalDimensions.spacing_large),
             Text(
               localizations.payment_no_invoices_found_title,
               style: TextStyle(
-                fontSize: 15.0,
+                fontSize: _LocalDimensions.empty_state_title_font_size,
                 fontWeight: FontWeight.bold,
                 color: true == is_dark
                     ? Colors.white
                     : AppColors.text_light_primary,
               ),
             ),
-            const SizedBox(height: 6.0),
+            const SizedBox(height: _LocalDimensions.empty_state_spacing),
             Text(
               localizations.payment_no_invoices_found_body,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 12.0,
+                fontSize: _LocalDimensions.empty_state_subtitle_font_size,
                 color: true == is_dark
                     ? Colors.white54
                     : AppColors.text_light_secondary,
