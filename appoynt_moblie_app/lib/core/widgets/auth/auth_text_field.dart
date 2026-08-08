@@ -268,14 +268,16 @@ class _AuthTextFieldState extends State<AuthTextField> {
                           : TextDirection.ltr),
                   // Set resolved dynamic text alignments
                   textAlign: dynamic_align,
-                  // Input text styling
+                   // Input text styling
                   style: TextStyle(
                     // Font size from spacing constants
                     fontSize: AppSpacing.font_size_text,
-                    // Select text color based on theme using Yoda style check
-                    color: true == is_dark
-                        ? AppColors.text_dark_primary
-                        : AppColors.text_light_primary,
+                    // Select text color based on theme and enabled state using Yoda style check
+                    color: false == widget.enabled
+                        ? Theme.of(context).disabledColor
+                        : (true == is_dark
+                            ? AppColors.text_dark_primary
+                            : AppColors.text_light_primary),
                   ),
                   // Text field decoration settings
                   decoration: InputDecoration(
@@ -292,10 +294,14 @@ class _AuthTextFieldState extends State<AuthTextField> {
                     ),
                     // Enable background color fills
                     filled: true,
-                    // Adapt background colors based on dark mode using Yoda style check
-                    fillColor: true == is_dark
-                        ? AppColors.surface_dark
-                        : AppColors.input_fill,
+                    // Adapt background colors based on dark mode and enabled state using Yoda style check
+                    fillColor: false == widget.enabled
+                        ? (true == is_dark
+                            ? AppColors.surface_dark.withValues(alpha: 0.5)
+                            : AppColors.input_fill.withValues(alpha: 0.5))
+                        : (true == is_dark
+                            ? AppColors.surface_dark
+                            : AppColors.input_fill),
                     // Optional prefix icon rendering
                     prefixIcon: null != widget.prefix_icon
                         ? Icon(

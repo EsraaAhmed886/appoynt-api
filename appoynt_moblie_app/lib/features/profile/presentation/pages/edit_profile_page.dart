@@ -14,6 +14,8 @@
 
 // Importing standard I/O for File operations
 import 'dart:io';
+// Importing flutter services for InputFormatters
+import 'package:flutter/services.dart';
 // Importing BLoC state builders
 import 'package:flutter_bloc/flutter_bloc.dart';
 // Importing official Image Picker library package
@@ -26,6 +28,7 @@ import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_s
 // Importing reusable text field widgets
 import 'package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart';
 import 'package:appoynt_mobile_app/core/widgets/app_date_picker.dart';
+
 // Patient Profile Editor form screen stateful widget representation
 class EditProfilePage extends StatefulWidget {
   // Constructor mapping key
@@ -67,6 +70,273 @@ class _EditProfilePageState extends State<EditProfilePage> {
   // Track if form validation should display error messages onUserInteraction
   bool _form_submitted = false;
 
+  // Initial email to check for case-insensitive changes during email uniqueness check
+  late final String _initial_email;
+
+  // Helper method to strip country code and keep local phone format
+  String _strip_country_code(String phone) {
+    String local = phone.replaceAll(RegExp(r'[^\d+]'), '');
+    if (local.startsWith('+20')) {
+      return '0${local.substring(3)}';
+    } else if (local.startsWith('20') && local.length > 10) {
+      return '0${local.substring(2)}';
+    } else if (local.startsWith('+2')) {
+      return '0${local.substring(2)}';
+    } else {
+      // Empty action block to satisfy compiler
+    }
+    return local;
+  }
+
+  // Validator helper logic for First Name form input field
+  String? _validate_first_name(String? value) {
+    final String value_trimmed = (value ?? '').trim();
+    if (value_trimmed.isEmpty) {
+      return "First Name cannot be empty.";
+    } else {
+      // Length check constraints
+      if (value_trimmed.length < 3 || value_trimmed.length > 50) {
+        return "First Name must be between 3 and 50 characters.";
+      } else {
+        // Unicode letters only regex mapping
+        final RegExp letters_only = RegExp(r'^\p{L}+$', unicode: true);
+        if (false == letters_only.hasMatch(value_trimmed)) {
+          return "First Name must contain letters only.";
+        } else {
+          return null;
+        }
+      }
+    }
+  }
+
+  // Validator helper logic for Last Name form input field
+  String? _validate_last_name(String? value) {
+    final String value_trimmed = (value ?? '').trim();
+    if (value_trimmed.isEmpty) {
+      return "Last Name cannot be empty.";
+    } else {
+      // Length check constraints
+      if (value_trimmed.length < 3 || value_trimmed.length > 50) {
+        return "Last Name must be between 3 and 50 characters.";
+      } else {
+        // Unicode letters only regex mapping
+        final RegExp letters_only = RegExp(r'^\p{L}+$', unicode: true);
+        if (false == letters_only.hasMatch(value_trimmed)) {
+          return "Last Name must contain letters only.";
+        } else {
+          return null;
+        }
+      }
+    }
+  }
+
+  // Validator helper logic for Email form input field
+  String? _validate_email(String? value) {
+    final String val = (value ?? '').trim();
+    if (val.isEmpty) {
+      return "Email cannot be empty.";
+    } else {
+      // Length check constraints
+      if (val.length > 254) {
+        return "Email must not exceed 254 characters.";
+      } else {
+        // Space checking constraints
+        if (val.contains(' ')) {
+          return "Please enter a valid email.";
+        } else {
+          // Exactly one @ check
+          final int at_index = val.indexOf('@');
+          if (at_index == -1 || at_index != val.lastIndexOf('@')) {
+            return "Please enter a valid email.";
+          } else {
+            // Local part length check
+            final String local_part = val.substring(0, at_index);
+            if (local_part.length > 64) {
+              return "Please enter a valid email.";
+            } else {
+              // Standard email regex
+              final RegExp email_regex = RegExp(
+                r'^[a-zA-Z0-9]+([._-][a-zA-Z0-9]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,4}$',
+              );
+              if (false == email_regex.hasMatch(val)) {
+                return "Please enter a valid email.";
+              } else {
+                // Email uniqueness case-insensitive check
+                final String email_lower = val.toLowerCase();
+                if (email_lower != _initial_email) {
+                  final Set<String> registered_emails = {
+                    'taken@gmail.com',
+                    'user@gmail.com',
+                    'alreadyregistered@gmail.com',
+                    'test@gmail.com',
+                  };
+                  if (true == registered_emails.contains(email_lower)) {
+                    return "This email is already registered.";
+                  } else {
+                    return null;
+                  }
+                } else {
+                  return null;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Validator helper logic for Address form input field (VR-06)
+  String? _validate_address(String? value) {
+    final String value_trimmed = (value ?? '').trim();
+    if (value_trimmed.isEmpty) {
+      return null;
+    } else {
+      // Length check constraint
+      if (value_trimmed.length > 250) {
+        return "Address must not exceed 250 characters.";
+      } else {
+        // Emojis and control characters regex filters
+        final RegExp emoji_regex =
+            RegExp(r'[\u{1F300}-\u{1F9FF}\u{2600}-\u{27BF}]', unicode: true);
+        final RegExp control_regex = RegExp(r'[\u0000-\u001F\u007F-\u009F]');
+        if (true == emoji_regex.hasMatch(value_trimmed) ||
+            true == control_regex.hasMatch(value_trimmed)) {
+          return "Address cannot contain emojis or unsupported characters.";
+        } else {
+          return null;
+        }
+      }
+    }
+  }
+
+  // Helper method returning the maximum days in a given month and year
+  int _get_days_in_month(int month, int year) {
+    if (month == 2) {
+      final bool is_leap =
+          (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+      return true == is_leap ? 29 : 28;
+    } else {
+      final Set<int> thirty_days = {4, 6, 9, 11};
+      return true == thirty_days.contains(month) ? 30 : 31;
+    }
+  }
+
+  // Validator helper logic for Egyptian National ID form input field
+  String? _validate_national_id(String? value) {
+    final String val = (value ?? '').trim();
+    if (val.isEmpty) {
+      return "National ID cannot be empty.";
+    } else {
+      if (val.length != 14) {
+        return "National ID must be exactly 14 digits.";
+      } else {
+        // Check for all identical digits (e.g. 22222222222222)
+        if (val.runes.toSet().length == 1) {
+          return "Please enter a valid National ID.";
+        } else {
+          // Parse first digit (century indicator)
+          final String century_char = val[0];
+          if (century_char != '2' && century_char != '3') {
+            return "Please enter a valid National ID.";
+          } else {
+            // Parse birth year, month, and day offsets
+            final int year_offset = century_char == '2' ? 1900 : 2000;
+            final int? year = int.tryParse(val.substring(1, 3));
+            final int? month = int.tryParse(val.substring(3, 5));
+            final int? day = int.tryParse(val.substring(5, 7));
+
+            if (year == null || month == null || day == null) {
+              return "Please enter a valid National ID.";
+            } else {
+              final int full_year = year_offset + year;
+              if (month < 1 || month > 12) {
+                return "Please enter a valid National ID.";
+              } else {
+                // Verify days bound ranges
+                final int max_days = _get_days_in_month(month, full_year);
+                if (day < 1 || day > max_days) {
+                  return "Please enter a valid National ID.";
+                } else {
+                  // Verify governorate code mappings
+                  final String gov_code = val.substring(7, 9);
+                  final Set<String> valid_govs = {
+                    '01',
+                    '02',
+                    '03',
+                    '04',
+                    '11',
+                    '12',
+                    '13',
+                    '14',
+                    '15',
+                    '16',
+                    '17',
+                    '18',
+                    '19',
+                    '21',
+                    '22',
+                    '23',
+                    '24',
+                    '25',
+                    '26',
+                    '27',
+                    '28',
+                    '29',
+                    '31',
+                    '32',
+                    '33',
+                    '34',
+                    '35',
+                    '88'
+                  };
+                  if (false == valid_govs.contains(gov_code)) {
+                    return "Please enter a valid National ID.";
+                  } else {
+                    return null;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Listener to extract Date of Birth automatically upon 14-digit National ID entry
+  void _on_national_id_changed() {
+    final String val = _national_id_controller.text.trim();
+    if (val.length == 14) {
+      final int? century = val[0] == '2' ? 1900 : (val[0] == '3' ? 2000 : null);
+      if (century != null) {
+        final int? year_val = int.tryParse(val.substring(1, 3));
+        final int? month_val = int.tryParse(val.substring(3, 5));
+        final int? day_val = int.tryParse(val.substring(5, 7));
+
+        if (year_val != null && month_val != null && day_val != null) {
+          try {
+            final int year = century + year_val;
+            // Instantiating DateTime to trigger validation exceptions for invalid dates (e.g. Feb 30)
+            DateTime(year, month_val, day_val);
+            // Format as DD/MM/YYYY or MM/DD/YYYY based on app standards
+            _dob_controller.text =
+                "${day_val.toString().padLeft(2, '0')}/${month_val.toString().padLeft(2, '0')}/$year";
+            setState(() {}); // Trigger UI refresh if needed
+          } catch (_) {
+            // Invalid date components (e.g., Feb 30)
+          }
+        } else {
+          // Parsing failure
+        }
+      } else {
+        // Invalid century prefix
+      }
+    } else {
+      // Incomplete ID input
+    }
+  }
+
   // Initialize text controllers pre-filled with state values
   @override
   void initState() {
@@ -85,8 +355,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
         TextEditingController(text: state.profile.national_id);
     _weight_controller = TextEditingController(text: state.profile.weight);
     _height_controller = TextEditingController(text: state.profile.height);
-    _phone_controller = TextEditingController(text: state.profile.phone);
+    _phone_controller =
+        TextEditingController(text: _strip_country_code(state.profile.phone));
     _dob_controller = TextEditingController(text: '05/12/1997');
+    _initial_email = state.profile.email.trim().toLowerCase();
+    // Add real-time listener for extracting Date of Birth
+    _national_id_controller.addListener(_on_national_id_changed);
   }
 
   // Attach text change listeners after controllers binding
@@ -118,6 +392,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     _email_controller.removeListener(_on_fields_changed);
     _address_controller.removeListener(_on_fields_changed);
     _national_id_controller.removeListener(_on_fields_changed);
+    _national_id_controller.removeListener(_on_national_id_changed);
     _weight_controller.removeListener(_on_fields_changed);
     _height_controller.removeListener(_on_fields_changed);
     _dob_controller.removeListener(_on_fields_changed);
@@ -169,73 +444,74 @@ class _EditProfilePageState extends State<EditProfilePage> {
         return Container(
           decoration: BoxDecoration(
             color: true == is_dark ? AppColors.surface_dark : Colors.white,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24.0)),
+            borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(24.0)),
           ),
           // Safe area wrapper
           child: SafeArea(
-          // Vertical layout column
-          child: Column(
-            // Minimizing height layout constraints
-            mainAxisSize: MainAxisSize.min,
-            // children widgets
-            children: [
-              // Top padding separator
-              const SizedBox(height: AppSpacing.space_m),
-              // Modal title text label
-              Text(
-                // String title text
-                'Upload Profile Photo',
-                // Text styling properties
-                style: TextStyle(
-                  // Title standard size
-                  fontSize: 18.0,
-                  // Bold styling
-                  fontWeight: FontWeight.bold,
-                  // Dynamic colors adapting to light/dark surfaces
-                  color: true == is_dark
-                      ? AppColors.text_dark_primary
-                      : AppColors.text_light_primary,
+            // Vertical layout column
+            child: Column(
+              // Minimizing height layout constraints
+              mainAxisSize: MainAxisSize.min,
+              // children widgets
+              children: [
+                // Top padding separator
+                const SizedBox(height: AppSpacing.space_m),
+                // Modal title text label
+                Text(
+                  // String title text
+                  'Upload Profile Photo',
+                  // Text styling properties
+                  style: TextStyle(
+                    // Title standard size
+                    fontSize: 18.0,
+                    // Bold styling
+                    fontWeight: FontWeight.bold,
+                    // Dynamic colors adapting to light/dark surfaces
+                    color: true == is_dark
+                        ? AppColors.text_dark_primary
+                        : AppColors.text_light_primary,
+                  ),
                 ),
-              ),
-              // Separator spacing gap
-              const SizedBox(height: AppSpacing.space_m),
-              // Choose Camera camera selection list item
-              ListTile(
-                // Camera icon graphic
-                leading: const Icon(Icons.camera_alt_outlined,
-                    color: AppColors.primary_color),
-                // English take photo title description
-                title: const Text('Take Photo'),
-                // Action on tapped choice selection
-                onTap: () {
-                  // Dismiss modal overlay sheet
-                  Navigator.of(context).pop();
-                  // Trigger camera picker source sequence
-                  _pick_profile_image(ImageSource.camera);
-                },
-              ),
-              // Choose Gallery list item option
-              ListTile(
-                // Image gallery symbol icon
-                leading: const Icon(Icons.photo_library_outlined,
-                    color: AppColors.primary_color),
-                // English choose from gallery title description
-                title: const Text('Choose from Gallery'),
-                // Action on tapped choice selection
-                onTap: () {
-                  // Dismiss modal overlay sheet
-                  Navigator.of(context).pop();
-                  // Trigger gallery selection sequence
-                  _pick_profile_image(ImageSource.gallery);
-                },
-              ),
-              // Bottom offset padding layout spacing box
-              const SizedBox(height: AppSpacing.space_m),
-            ],
+                // Separator spacing gap
+                const SizedBox(height: AppSpacing.space_m),
+                // Choose Camera camera selection list item
+                ListTile(
+                  // Camera icon graphic
+                  leading: const Icon(Icons.camera_alt_outlined,
+                      color: AppColors.primary_color),
+                  // English take photo title description
+                  title: const Text('Take Photo'),
+                  // Action on tapped choice selection
+                  onTap: () {
+                    // Dismiss modal overlay sheet
+                    Navigator.of(context).pop();
+                    // Trigger camera picker source sequence
+                    _pick_profile_image(ImageSource.camera);
+                  },
+                ),
+                // Choose Gallery list item option
+                ListTile(
+                  // Image gallery symbol icon
+                  leading: const Icon(Icons.photo_library_outlined,
+                      color: AppColors.primary_color),
+                  // English choose from gallery title description
+                  title: const Text('Choose from Gallery'),
+                  // Action on tapped choice selection
+                  onTap: () {
+                    // Dismiss modal overlay sheet
+                    Navigator.of(context).pop();
+                    // Trigger gallery selection sequence
+                    _pick_profile_image(ImageSource.gallery);
+                  },
+                ),
+                // Bottom offset padding layout spacing box
+                const SizedBox(height: AppSpacing.space_m),
+              ],
+            ),
           ),
-        ),
-      );
-    },
+        );
+      },
     );
   }
 
@@ -450,7 +726,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
             // Scaffold provides the page layout structure
             return Scaffold(
               body: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space_xl),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: AppSpacing.space_xl),
                 child: Form(
                   key: _form_key,
                   autovalidateMode: _form_submitted
@@ -496,22 +773,29 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                           ],
                                         ),
                                         child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(50.0),
-                                          child: state.temp_profile.avatar_url.isNotEmpty
-                                              ? (state.temp_profile.avatar_url.startsWith('http')
+                                          borderRadius:
+                                              BorderRadius.circular(50.0),
+                                          child: state.temp_profile.avatar_url
+                                                  .isNotEmpty
+                                              ? (state.temp_profile.avatar_url
+                                                      .startsWith('http')
                                                   ? Image.network(
-                                                      state.temp_profile.avatar_url,
+                                                      state.temp_profile
+                                                          .avatar_url,
                                                       fit: BoxFit.cover,
                                                     )
                                                   : Image.file(
-                                                      File(state.temp_profile.avatar_url),
+                                                      File(state.temp_profile
+                                                          .avatar_url),
                                                       fit: BoxFit.cover,
                                                     ))
                                               : Container(
-                                                  color: AppColors.primary_color.withValues(alpha: 0.1),
+                                                  color: AppColors.primary_color
+                                                      .withValues(alpha: 0.1),
                                                   child: const Icon(
                                                     Icons.person_rounded,
-                                                    color: AppColors.primary_color,
+                                                    color:
+                                                        AppColors.primary_color,
                                                     size: 50.0,
                                                   ),
                                                 ),
@@ -545,17 +829,22 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               Container(
                                 padding: const EdgeInsets.all(16.0),
                                 decoration: BoxDecoration(
-                                  color: is_dark ? AppColors.surface_dark : Colors.white,
+                                  color: is_dark
+                                      ? AppColors.surface_dark
+                                      : Colors.white,
                                   borderRadius: BorderRadius.circular(16.0),
                                   border: Border.all(
-                                    color: is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
+                                    color: is_dark
+                                        ? AppColors.border_dark
+                                        : const Color(0xFFE2E8F0),
                                     width: 1.0,
                                   ),
                                   boxShadow: [
                                     BoxShadow(
                                       color: is_dark
                                           ? Colors.black.withValues(alpha: 0.2)
-                                          : Colors.black.withValues(alpha: 0.03),
+                                          : Colors.black
+                                              .withValues(alpha: 0.03),
                                       blurRadius: 10.0,
                                       spreadRadius: 0.0,
                                       offset: const Offset(0.0, 4.0),
@@ -569,37 +858,88 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     Row(
                                       children: [
                                         Expanded(
-                                          child: AuthTextField(
-                                            label: localizations.profile_first_name_label,
-                                            hint: '',
-                                            controller: _first_name_controller,
-                                            keyboard_type: TextInputType.name,
-                                            show_shadow: false,
+                                          // Focus wrapper handling automatic sanitization on field blur
+                                          child: Focus(
+                                            onFocusChange: (bool has_focus) {
+                                              if (false == has_focus) {
+                                                // Trim leading and trailing spaces
+                                                _first_name_controller.text =
+                                                    _first_name_controller.text
+                                                        .trim();
+                                              } else {
+                                                // Focus active
+                                              }
+                                            },
+                                            child: AuthTextField(
+                                              label: localizations
+                                                  .profile_first_name_label,
+                                              hint: '',
+                                              controller:
+                                                  _first_name_controller,
+                                              keyboard_type: TextInputType.name,
+                                              show_shadow: false,
+                                              validator: _validate_first_name,
+                                            ),
                                           ),
                                         ),
                                         const SizedBox(width: 12.0),
                                         Expanded(
-                                          child: AuthTextField(
-                                            label: localizations.profile_last_name_label,
-                                            hint: '',
-                                            controller: _last_name_controller,
-                                            keyboard_type: TextInputType.name,
-                                            show_shadow: false,
+                                          // Focus wrapper handling automatic sanitization on field blur
+                                          child: Focus(
+                                            onFocusChange: (bool has_focus) {
+                                              if (false == has_focus) {
+                                                // Trim leading and trailing spaces
+                                                _last_name_controller.text =
+                                                    _last_name_controller.text
+                                                        .trim();
+                                              } else {
+                                                // Focus active
+                                              }
+                                            },
+                                            child: AuthTextField(
+                                              label: localizations
+                                                  .profile_last_name_label,
+                                              hint: '',
+                                              controller: _last_name_controller,
+                                              keyboard_type: TextInputType.name,
+                                              show_shadow: false,
+                                              validator: _validate_last_name,
+                                            ),
                                           ),
                                         ),
                                       ],
                                     ),
                                     const SizedBox(height: 16.0),
-                                    // Email input card (full width)
-                                    AuthTextField(
-                                      label: localizations.profile_email_label,
-                                      hint: '',
-                                      controller: _email_controller,
-                                      keyboard_type: TextInputType.emailAddress,
-                                      show_shadow: false,
+                                    // Email input card (full width) with Focus wrapper for sanitization
+                                    Focus(
+                                      onFocusChange: (bool has_focus) {
+                                        if (false == has_focus) {
+                                          // Trim, convert to lowercase, and strip hidden control characters
+                                          _email_controller.text = _email_controller
+                                              .text
+                                              .trim()
+                                              .toLowerCase()
+                                              .replaceAll(
+                                                  RegExp(
+                                                      r'[\u0000-\u001F\u007F-\u009F]'),
+                                                  '');
+                                        } else {
+                                          // Focus active
+                                        }
+                                      },
+                                      child: AuthTextField(
+                                        label:
+                                            localizations.profile_email_label,
+                                        hint: '',
+                                        controller: _email_controller,
+                                        keyboard_type:
+                                            TextInputType.emailAddress,
+                                        show_shadow: false,
+                                        validator: _validate_email,
+                                      ),
                                     ),
                                     const SizedBox(height: 16.0),
-                                    // Phone input card (full width)
+                                    // Phone input card (full width) disabled and read-only
                                     AuthTextField(
                                       label: localizations.profile_phone_label,
                                       hint: '',
@@ -607,46 +947,77 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                       keyboard_type: TextInputType.phone,
                                       is_phone: true,
                                       show_shadow: false,
+                                      enabled: false,
                                     ),
                                     const SizedBox(height: 16.0),
-                                    // Address input card (full width)
-                                    AuthTextField(
-                                      label: localizations.profile_address_label,
-                                      hint: '',
-                                      controller: _address_controller,
-                                      keyboard_type: TextInputType.streetAddress,
-                                      show_shadow: false,
+                                    // Address input card (full width) with Focus wrapper for sanitization
+                                    Focus(
+                                      onFocusChange: (bool has_focus) {
+                                        if (false == has_focus) {
+                                          // Trim leading and trailing spaces
+                                          _address_controller.text =
+                                              _address_controller.text.trim();
+                                        } else {
+                                          // Focus active
+                                        }
+                                      },
+                                      child: AuthTextField(
+                                        label:
+                                            localizations.profile_address_label,
+                                        hint: '',
+                                        controller: _address_controller,
+                                        keyboard_type:
+                                            TextInputType.streetAddress,
+                                        show_shadow: false,
+                                        validator: _validate_address,
+                                      ),
                                     ),
                                     const SizedBox(height: 16.0),
                                     // National ID input card (full width)
                                     AuthTextField(
-                                      label: localizations.profile_national_id_label,
+                                      label: localizations
+                                          .profile_national_id_label,
                                       hint: '',
                                       controller: _national_id_controller,
                                       keyboard_type: TextInputType.number,
                                       is_national_id: true,
                                       show_shadow: false,
+                                      input_formatters: [
+                                        FilteringTextInputFormatter.digitsOnly,
+                                        LengthLimitingTextInputFormatter(14),
+                                      ],
+                                      validator: _validate_national_id,
                                     ),
                                     const SizedBox(height: 16.0),
                                     // Date of Birth input card (full width, tapping triggers custom calendar picker dialog)
                                     GestureDetector(
                                       onTap: () async {
-                                        final DateTime? picked_date = await showAppDatePicker(
-                                          context: context,
-                                          initialDate: DateTime.now(),
-                                          firstDate: DateTime(1900),
-                                          lastDate: DateTime.now(),
-                                        );
-                                        if (picked_date != null) {
-                                          final String formatted = '${picked_date.day}/${picked_date.month}/${picked_date.year}';
-                                          setState(() {
-                                            _dob_controller.text = formatted;
-                                          });
+                                        if (_national_id_controller
+                                            .text.isNotEmpty) {
+                                          return;
+                                        } else {
+                                          final DateTime? picked_date =
+                                              await showAppDatePicker(
+                                            context: context,
+                                            initialDate: DateTime.now(),
+                                            firstDate: DateTime(1900),
+                                            lastDate: DateTime.now(),
+                                          );
+                                          if (picked_date != null) {
+                                            final String formatted =
+                                                '${picked_date.day}/${picked_date.month}/${picked_date.year}';
+                                            setState(() {
+                                              _dob_controller.text = formatted;
+                                            });
+                                          } else {
+                                            // Picker cancelled
+                                          }
                                         }
                                       },
                                       child: IgnorePointer(
                                         child: AuthTextField(
-                                          label: localizations.profile_birthdate_label,
+                                          label: localizations
+                                              .profile_birthdate_label,
                                           hint: '',
                                           controller: _dob_controller,
                                           enabled: false,
@@ -659,25 +1030,36 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     Text(
                                       localizations.profile_gender_label,
                                       style: TextStyle(
-                                        fontSize: AppSpacing.font_size_body_medium,
+                                        fontSize:
+                                            AppSpacing.font_size_body_medium,
                                         fontWeight: FontWeight.w700,
-                                        color: true == is_dark ? AppColors.text_dark_primary : AppColors.primary_color,
+                                        color: true == is_dark
+                                            ? AppColors.text_dark_primary
+                                            : AppColors.primary_color,
                                       ),
                                     ),
                                     const SizedBox(height: 8.0),
-                                    // Segmented chips for gender choices
+                                    // Segmented chips for gender choices limited strictly to Male and Female
                                     _build_segmented_chips<String>(
-                                      values: ['Male', 'Female', 'Prefer not to say'],
+                                      values: const ['Male', 'Female'],
                                       labels: [
                                         localizations.profile_gender_male,
                                         localizations.profile_gender_female,
-                                        localizations.profile_gender_prefer_not,
                                       ],
-                                      selectedValue: state.temp_profile.gender,
+                                      selectedValue:
+                                          (state.temp_profile.gender ==
+                                                      'Male' ||
+                                                  state.temp_profile.gender ==
+                                                      'Female')
+                                              ? state.temp_profile.gender
+                                              : 'Male',
                                       onChanged: (value) {
-                                        context.read<ProfileCubit>().update_temp_profile(
-                                          state.temp_profile.copyWith(gender: value),
-                                        );
+                                        context
+                                            .read<ProfileCubit>()
+                                            .update_temp_profile(
+                                              state.temp_profile
+                                                  .copyWith(gender: value),
+                                            );
                                       },
                                       is_dark: is_dark,
                                     ),
@@ -687,7 +1069,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                       children: [
                                         Expanded(
                                           child: AuthTextField(
-                                            label: localizations.profile_weight_label,
+                                            label: localizations
+                                                .profile_weight_label,
                                             hint: '',
                                             controller: _weight_controller,
                                             keyboard_type: TextInputType.number,
@@ -697,7 +1080,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                         const SizedBox(width: 12.0),
                                         Expanded(
                                           child: AuthTextField(
-                                            label: localizations.profile_height_label,
+                                            label: localizations
+                                                .profile_height_label,
                                             hint: '',
                                             controller: _height_controller,
                                             keyboard_type: TextInputType.number,
@@ -711,9 +1095,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     Text(
                                       localizations.profile_smoking_section,
                                       style: TextStyle(
-                                        fontSize: AppSpacing.font_size_body_medium,
+                                        fontSize:
+                                            AppSpacing.font_size_body_medium,
                                         fontWeight: FontWeight.w700,
-                                        color: true == is_dark ? AppColors.text_dark_primary : AppColors.primary_color,
+                                        color: true == is_dark
+                                            ? AppColors.text_dark_primary
+                                            : AppColors.primary_color,
                                       ),
                                     ),
                                     const SizedBox(height: 8.0),
@@ -727,9 +1114,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                       ],
                                       selectedValue: state.temp_profile.smoking,
                                       onChanged: (value) {
-                                        context.read<ProfileCubit>().update_temp_profile(
-                                          state.temp_profile.copyWith(smoking: value),
-                                        );
+                                        context
+                                            .read<ProfileCubit>()
+                                            .update_temp_profile(
+                                              state.temp_profile
+                                                  .copyWith(smoking: value),
+                                            );
                                       },
                                       is_dark: is_dark,
                                     ),
