@@ -136,37 +136,7 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
     );
 
     if (selected != null && context.mounted) {
-      final List<String> months_en = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December'
-      ];
-      final List<String> months_ar = [
-        'يناير',
-        'فبراير',
-        'مارس',
-        'أبريل',
-        'مايو',
-        'يونيو',
-        'يوليو',
-        'أغسطس',
-        'سبتمبر',
-        'أكتوبر',
-        'نوفمبر',
-        'ديسمبر'
-      ];
-      final String month = localizations.is_arabic
-          ? months_ar[selected.month - 1]
-          : months_en[selected.month - 1];
+      final String month = localizations.month_names[selected.month - 1];
 
       // E.g. "23 July 2026" / "23 يوليو 2026"
       final String formatted = "${selected.day} $month ${selected.year}";
@@ -428,55 +398,30 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
 
     // Localized layout Strings
-    final String doc_name_label =
-        localizations.is_arabic ? "اسم المستند" : "Document Name";
-    final String doc_name_hint = localizations.is_arabic
-        ? "مثال: صورة دم كاملة (CBC)"
-        : "e.g., Complete Blood Count (CBC)";
+    final String doc_name_label = localizations.add_test_doc_name_label;
+    final String doc_name_hint = localizations.add_test_doc_name_hint;
 
-    final String facility_label = localizations.is_arabic
-        ? "المعمل / المركز الطبي"
-        : "Facility / Lab Name";
-    final String facility_hint = localizations.is_arabic
-        ? "مثال: معمل البرج، كايرو سكان"
-        : "e.g., Al Borg Laboratories, Cairo Scan";
+    final String facility_label = localizations.add_test_facility_label;
+    final String facility_hint = localizations.add_test_facility_hint;
 
-    final String date_label =
-        localizations.is_arabic ? "تاريخ الفحص / الأشعة" : "Test / Scan Date";
-    final String date_hint =
-        localizations.is_arabic ? "اختر التاريخ" : "Select Date";
+    final String date_label = localizations.add_test_date_label;
+    final String date_hint = localizations.add_test_date_hint;
 
-    final String status_label =
-        localizations.is_arabic ? "حالة النتيجة" : "Result Status";
+    final String status_label = localizations.add_test_status_label;
 
-    final String status_normal = localizations.is_arabic ? "طبيعي" : "Normal";
-    final String status_abnormal =
-        localizations.is_arabic ? "غير طبيعي" : "Abnormal";
-    final String status_pending =
-        localizations.is_arabic ? "قيد المراجعة" : "Pending";
+    final String status_normal = localizations.add_test_status_normal;
+    final String status_abnormal = localizations.add_test_status_abnormal;
+    final String status_pending = localizations.add_test_status_pending;
 
-    final String doctor_label = localizations.is_arabic
-        ? "الطبيب المعالج (اختياري)"
-        : "Prescribing Doctor (Optional)";
-    final String doctor_hint = localizations.is_arabic
-        ? "اسم الطبيب المعالج"
-        : "Prescribed by Dr. ...";
+    final String doctor_label = localizations.add_test_doctor_label;
+    final String doctor_hint = localizations.add_test_doctor_hint;
 
-    final String notes_label = localizations.is_arabic
-        ? "ملاحظات إضافية (اختياري)"
-        : "Quick Notes (Optional)";
-    final String notes_hint = localizations.is_arabic
-        ? "أضف أي ملاحظات أو تفاصيل إضافية هنا..."
-        : "Add any additional details or notes here...";
+    final String notes_label = localizations.add_test_notes_label;
+    final String notes_hint = localizations.add_test_notes_hint;
 
-    final String upload_label =
-        localizations.is_arabic ? "تحميل التقرير" : "Upload Document";
-    final String dropzone_text = localizations.is_arabic
-        ? "اضغط هنا لرفع صورة أو ملف PDF للتقرير"
-        : "Tap to upload image or PDF report";
-    final String dropzone_sub = localizations.is_arabic
-        ? "الحد الأقصى للملف 10 ميجابايت (JPG, PNG, PDF)"
-        : "Supports JPG, PNG, PDF up to 10MB";
+    final String upload_label = localizations.add_test_upload_label;
+    final String dropzone_text = localizations.add_test_dropzone_text;
+    final String dropzone_sub = localizations.add_test_dropzone_sub;
 
     // Return root Scaffold layout container
     return Scaffold(
@@ -594,7 +539,7 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                           is_dark: is_dark,
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
-                              return 'Document Name cannot be empty.';
+                              return localizations.add_test_validation_name_empty;
                             }
                             return null;
                           },
@@ -618,7 +563,7 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                           prefix_icon: Icons.calendar_today_rounded,
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
-                              return 'Please select a date.';
+                              return localizations.add_test_validation_date_empty;
                             }
                             return null;
                           },
@@ -844,7 +789,7 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                                           ),
                                           const SizedBox(height: _LocalDimensions.spacing_tiny),
                                           Text(
-                                            "$_uploaded_file_size • Uploaded",
+                                            "$_uploaded_file_size • ${localizations.add_test_uploaded_status}",
                                             style: const TextStyle(
                                               fontSize: _LocalDimensions.font_size_small,
                                               color: AppColors.slate_400,

@@ -111,18 +111,17 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     // Resolve localization dictionary helper
     final AppLocalizations localizations = AppLocalizations.of(context);
-    final bool is_ar = localizations.is_arabic;
     final bool is_edit = null != widget.member;
 
     // Resolve dynamic page title copy
     final String page_title = true == is_edit
-        ? (true == is_ar ? 'تعديل فرد العائلة' : 'Edit Family Member')
-        : (true == is_ar ? 'إضافة فرد عائلة' : 'Add Family Member');
+        ? localizations.add_member_edit_title
+        : localizations.add_member_add_title;
 
     // Resolve dynamic button label copy
     final String cta_label = true == is_edit
-        ? (true == is_ar ? 'تحديث البيانات' : 'Update Member Profile')
-        : (true == is_ar ? 'حفظ البيانات' : 'Save Member Profile');
+        ? localizations.add_member_update_btn
+        : localizations.add_member_save_btn;
 
     // Return root Scaffold container
     return Scaffold(
@@ -140,9 +139,9 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                 // Show successfully saved toast message
                 ScaffoldMessenger.of(context).showSnackBar(
                   // SnackBar configs
-                  const SnackBar(
+                  SnackBar(
                     // Label text content
-                    content: Text('Saved Member Profile successfully.'),
+                    content: Text(localizations.add_member_success_toast),
                     // Primary blue success color tint
                     backgroundColor: AppColors.primary_color,
                   ),
@@ -256,7 +255,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                         // Card header title
                         Text(
                           // Block label title
-                          'Identity Details',
+                          localizations.add_member_identity_details_header,
                           // Typographic options
                           style: TextStyle(
                             // Size
@@ -285,7 +284,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                           // Decoration parameters
                           decoration: InputDecoration(
                             // Floating label text
-                            labelText: 'Full Name',
+                            labelText: localizations.add_member_full_name_label,
                             // Label style
                             labelStyle: TextStyle(
                               // Muted colors
@@ -294,7 +293,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                                   : AppColors.text_light_secondary,
                             ),
                             // Placeholders hint
-                            hintText: 'e.g. Leo Mangood',
+                            hintText: localizations.add_member_full_name_hint,
                             // Style
                             hintStyle: const TextStyle(color: Colors.grey),
                             // Prefix person outline icon
@@ -320,12 +319,12 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                             // Check if blank
                             if (null == val || val.trim().isEmpty) {
                               // Validation error
-                              return 'Please enter a name';
+                              return localizations.add_member_name_empty_error;
                             }
                             // Check characters size
                             if (val.trim().length < 3) {
                               // Too short error message
-                              return 'Name must be at least 3 characters';
+                              return localizations.add_member_name_short_error;
                             }
                             // Return null if valid
                             return null;
@@ -336,7 +335,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                         // Relationship Label Text widget
                         Text(
                           // Label text
-                          'Relationship Type',
+                          localizations.add_member_relationship_header,
                           // Typographic options
                           style: TextStyle(
                             // Small font size
@@ -354,6 +353,14 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                           // children list mapping selection values
                           children: ['Son', 'Daughter', 'Spouse', 'Parent']
                               .map((rel) {
+                            // Localize relationship display text
+                            final String display_text = 'Son' == rel
+                                ? localizations.rel_son
+                                : ('Daughter' == rel
+                                    ? localizations.rel_daughter
+                                    : ('Spouse' == rel
+                                        ? localizations.rel_spouse
+                                        : localizations.rel_parent));
                             // Selected state check using Yoda condition comparison
                             final bool is_selected =
                                 rel == _selected_relationship;
@@ -404,7 +411,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                                   // Relationship label text widget
                                   child: Text(
                                     // Bind relationship text value
-                                    rel,
+                                    display_text,
                                     // Styles options
                                     style: TextStyle(
                                       // Small font sizes
@@ -489,7 +496,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                               // Text label
                               Text(
                                 // Date of birth label
-                                'Date of Birth',
+                                localizations.add_member_dob_header,
                                 // Typographic specs
                                 style: TextStyle(
                                   // Size
@@ -518,7 +525,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                                 // Input decorations
                                 decoration: InputDecoration(
                                   // Placeholder hints
-                                  hintText: 'Select Date',
+                                  hintText: localizations.add_member_dob_hint,
                                   // Hint style
                                   hintStyle: const TextStyle(
                                       color: Colors.grey, fontSize: _LocalDimensions.font_size_small),
@@ -576,7 +583,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                                   // Required check
                                   if (null == val || val.trim().isEmpty) {
                                     // Validation error
-                                    return 'Required';
+                                    return localizations.add_member_required_error;
                                   }
                                   // Return null if valid
                                   return null;
@@ -598,7 +605,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                               // Text label
                               Text(
                                 // Gender label
-                                'Gender Selection',
+                                localizations.add_member_gender_header,
                                 // Typographic style specs
                                 style: TextStyle(
                                   // Size
@@ -615,6 +622,10 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                               Row(
                                 // children
                                 children: ['Male', 'Female'].map((gen) {
+                                  // Localize gender display text
+                                  final String display_text = 'Male' == gen
+                                      ? localizations.gender_male
+                                      : localizations.gender_female;
                                   // Selected state check using Yoda comparison
                                   final bool is_selected =
                                       gen == _selected_gender;
@@ -665,7 +676,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                                         // Gender text label widget
                                         child: Text(
                                           // Bind gender text value
-                                          gen,
+                                          display_text,
                                           // Styles options
                                           style: TextStyle(
                                             // Size
@@ -745,7 +756,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                         // Card header title
                         Text(
                           // Block title label
-                          'Medical Background',
+                          localizations.add_member_medical_bg_header,
                           // Typographic options
                           style: TextStyle(
                             // Size
@@ -777,7 +788,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                           decoration: InputDecoration(
                             // Floating label text
                             labelText:
-                                'Allergies, Medications or Chronic Conditions',
+                                localizations.add_member_medical_bg_label,
                             // Label text style
                             labelStyle: TextStyle(
                               // Muted colors
@@ -787,7 +798,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                             ),
                             // Placeholder instructions hint
                             hintText:
-                                'Describe medical history details dynamically...',
+                                localizations.add_member_medical_bg_hint,
                             // Hint style
                             hintStyle: const TextStyle(
                                 color: Colors.grey, fontSize: _LocalDimensions.font_size_medium),

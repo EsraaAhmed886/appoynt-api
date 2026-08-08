@@ -68,104 +68,27 @@ class _MedicalContextPageState extends State<MedicalContextPage> {
 
   // Helper to resolve localized count labels for general medical records/allergies/conditions
   String _get_item_count_label(int count, AppLocalizations localizations) {
-    // Check if Arabic mode is active
-    final bool is_ar = localizations.is_arabic;
-    // Yoda comparison if zero count
-    if (0 == count) {
-      // Return localized empty string
-      return true == is_ar ? 'لا يوجد' : 'No items';
-    }
-    // Yoda comparison if single item
-    if (1 == count) {
-      // Return singular label
-      return true == is_ar ? 'عنصر واحد' : '1 item';
-    }
-    // Return plural label
-    return true == is_ar ? '$count عناصر' : '$count items';
+    return localizations.get_items_count_text(count);
   }
 
   // Helper to resolve localized count labels for medication prescriptions list
   String _get_prescription_count_label(int count, AppLocalizations localizations) {
-    // Check if Arabic mode is active
-    final bool is_ar = localizations.is_arabic;
-    // Yoda comparison if zero count
-    if (0 == count) {
-      // Return empty label
-      return true == is_ar ? 'لا يوجد' : 'No prescriptions';
-    }
-    // Yoda comparison if single item
-    if (1 == count) {
-      // Return singular label
-      return true == is_ar ? 'روشتة واحدة' : '1 prescription';
-    }
-    // Return plural label
-    return true == is_ar ? '$count روشتات' : '$count prescriptions';
+    return localizations.get_prescriptions_count_text(count);
   }
 
   // Helper to resolve localized count labels for medical files/results reports
   String _get_file_count_label(int count, AppLocalizations localizations) {
-    // Check if Arabic mode is active
-    final bool is_ar = localizations.is_arabic;
-    // Yoda comparison if zero count
-    if (0 == count) {
-      // Return empty label
-      return true == is_ar ? 'لا يوجد' : 'No files';
-    }
-    // Yoda comparison if single item
-    if (1 == count) {
-      // Return singular label
-      return true == is_ar ? 'ملف واحد' : '1 file';
-    }
-    // Return plural label
-    return true == is_ar ? '$count ملفات' : '$count files';
+    return localizations.get_files_count_text(count);
   }
-
-
 
   // Helper to resolve localized count labels for insurance cards list
   String _get_insurance_count_label(int count, AppLocalizations localizations) {
-    // Check if Arabic mode is active
-    final bool is_ar = localizations.is_arabic;
-    // Yoda comparison if zero count
-    if (0 == count) {
-      // Return empty label
-      return true == is_ar ? 'لا يوجد بطاقات' : 'No cards';
-    }
-    // Yoda comparison if single item
-    if (1 == count) {
-      // Return singular label
-      return true == is_ar ? 'بطاقة واحدة' : '1 card';
-    }
-    // Yoda comparison if dual items
-    if (2 == count) {
-      // Return dual label
-      return true == is_ar ? 'بطاقتان' : '2 cards';
-    }
-    // Return plural label
-    return true == is_ar ? '$count بطاقات' : '$count cards';
+    return localizations.get_cards_count_text(count);
   }
 
   // Helper to resolve localized count labels for family members
   String _get_members_count_label(int count, AppLocalizations localizations) {
-    // Check if Arabic mode is active
-    final bool is_ar = localizations.is_arabic;
-    // Yoda comparison if zero count
-    if (0 == count) {
-      // Return empty label
-      return true == is_ar ? 'لا يوجد أفراد' : 'No members';
-    }
-    // Yoda comparison if single item
-    if (1 == count) {
-      // Return singular label
-      return true == is_ar ? 'عضو واحد' : '1 member';
-    }
-    // Yoda comparison if dual items
-    if (2 == count) {
-      // Return dual label
-      return true == is_ar ? 'عضوان' : '2 members';
-    }
-    // Return plural label
-    return true == is_ar ? '$count أعضاء' : '$count members';
+    return localizations.get_members_count_text(count);
   }
 
   @override

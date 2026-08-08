@@ -848,6 +848,105 @@ abstract class AppLocalizations {
   String get payment_min_label;
   String get payment_max_label;
 
+  // Add test result sub-page localizations
+  String get add_test_doc_name_label;
+  String get add_test_doc_name_hint;
+  String get add_test_facility_label;
+  String get add_test_facility_hint;
+  String get add_test_date_label;
+  String get add_test_date_hint;
+  String get add_test_status_label;
+  String get add_test_status_normal;
+  String get add_test_status_abnormal;
+  String get add_test_status_pending;
+  String get add_test_doctor_label;
+  String get add_test_doctor_hint;
+  String get add_test_notes_label;
+  String get add_test_notes_hint;
+  String get add_test_upload_label;
+  String get add_test_dropzone_text;
+  String get add_test_dropzone_sub;
+  String get add_test_validation_name_empty;
+  String get add_test_validation_date_empty;
+  String get add_test_uploaded_status;
+  List<String> get month_names;
+
+  // Add family member localizations
+  String get add_member_edit_title;
+  String get add_member_add_title;
+  String get add_member_update_btn;
+  String get add_member_save_btn;
+  String get add_member_success_toast;
+  String get add_member_identity_details_header;
+  String get add_member_full_name_label;
+  String get add_member_full_name_hint;
+  String get add_member_name_empty_error;
+  String get add_member_name_short_error;
+  String get add_member_relationship_header;
+  String get add_member_dob_header;
+  String get add_member_dob_hint;
+  String get add_member_required_error;
+  String get add_member_gender_header;
+  String get add_member_medical_bg_header;
+  String get add_member_medical_bg_label;
+  String get add_member_medical_bg_hint;
+  String get rel_son;
+  String get rel_daughter;
+  String get rel_spouse;
+  String get rel_parent;
+  String get gender_male;
+  String get gender_female;
+
+  // Security & Privacy page localizations
+  String get sec_account_title;
+  String get sec_privacy_title;
+  String get sec_danger_title;
+  String get biometric_title;
+  String get biometric_subtitle;
+  String get tfa_title;
+  String get tfa_enabled;
+  String get tfa_disabled;
+  String get change_password_label;
+  String get change_password_subtitle;
+  String get autolock_title;
+  String get autolock_immediately;
+  String get autolock_5mins;
+  String get doc_access_title;
+  String get doc_access_full;
+  String get doc_access_request;
+  String get active_devices_title;
+  String get active_devices_subtitle;
+  String get manage_sessions;
+  String get export_data_title;
+  String get export_data_subtitle;
+  String get delete_account_title;
+  String get delete_account_subtitle;
+  String get preparing_data_export_toast;
+
+  // Medical context count helpers
+  String get_items_count_text(int count);
+  String get_prescriptions_count_text(int count);
+  String get_files_count_text(int count);
+  String get_cards_count_text(int count);
+  String get_members_count_text(int count);
+
+  // Chronic conditions localizations
+  String get chronic_remove_dialog_title;
+  String chronic_remove_dialog_body(String label);
+  String get chronic_cancel_btn;
+  String get chronic_remove_btn;
+  String get chronic_status_controlled;
+  String get chronic_status_monitoring;
+  String get chronic_diag_year_header;
+  String get chronic_treatment_status_header;
+  String get chronic_controlled_label;
+  String get chronic_monitoring_label;
+  String get chronic_no_conditions_label;
+  String get chronic_save_btn;
+  String get chronic_search_hint;
+  String get chronic_saved_success_toast;
+  String get_chronic_subtitle(String year, String status);
+
   // Authentication error localized message getters
   String get error_invalid_credentials;
   String get error_phone_empty;

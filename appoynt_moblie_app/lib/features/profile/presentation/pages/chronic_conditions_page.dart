@@ -114,12 +114,11 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
     required String label,
     required bool is_arabic,
   }) async {
-    final String title = true == is_arabic ? 'إزالة الحالة المرضية؟' : 'Remove Condition?';
-    final String body = true == is_arabic
-        ? 'هل أنت متأكد من إزالة $label من سجلك الطبي؟ لن يظهر هذا المرض في ملفك الطبي المشارك مع الأطباء.'
-        : 'Are you sure you want to remove $label from your medical record? This will no longer be visible to your healthcare providers.';
-    final String cancel_txt = true == is_arabic ? 'إلغاء' : 'Cancel';
-    final String remove_txt = true == is_arabic ? 'إزالة' : 'Remove';
+    final AppLocalizations localizations = AppLocalizations.of(context);
+    final String title = localizations.chronic_remove_dialog_title;
+    final String body = localizations.chronic_remove_dialog_body(label);
+    final String cancel_txt = localizations.chronic_cancel_btn;
+    final String remove_txt = localizations.chronic_remove_btn;
 
     final bool? confirm = await showDialog<bool>(
       context: context,
@@ -256,17 +255,15 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
 
     // Localized dynamic badges & labels
     final String status_label = 'Controlled' == diag_status
-        ? (true == is_arabic ? 'حالة مستقرة' : 'Controlled')
-        : (true == is_arabic ? 'تتطلب المتابعة' : 'Requires Monitoring');
+        ? localizations.chronic_status_controlled
+        : localizations.chronic_status_monitoring;
 
-    final String subtitle_text = true == is_arabic
-        ? 'تم التشخيص في $diag_year • $status_label'
-        : 'Diagnosed in $diag_year • $status_label';
+    final String subtitle_text = localizations.get_chronic_subtitle(diag_year, status_label);
 
-    final String diag_year_header = true == is_arabic ? 'سنة التشخيص' : 'Diagnosed Year';
-    final String treatment_status_header = true == is_arabic ? 'حالة العلاج' : 'Treatment Status';
-    final String controlled_btn_label = true == is_arabic ? 'مستقرة' : 'Controlled';
-    final String monitoring_btn_label = true == is_arabic ? 'متابعة' : 'Monitoring';
+    final String diag_year_header = localizations.chronic_diag_year_header;
+    final String treatment_status_header = localizations.chronic_treatment_status_header;
+    final String controlled_btn_label = localizations.chronic_controlled_label;
+    final String monitoring_btn_label = localizations.chronic_monitoring_label;
 
     return AnimatedOpacity(
       duration: const Duration(milliseconds: 200),
@@ -649,20 +646,16 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
     }).toList();
 
     // Localized search hint
-    final String search_hint = true == is_arabic
-        ? 'البحث أو إضافة حالة جديدة (مثل: الربو)...'
-        : 'Search or add condition (e.g., Asthma)...';
+    final String search_hint = localizations.chronic_search_hint;
 
     // Localized master toggle labels
-    final String master_title = true == is_arabic ? 'لا أعاني من أمراض مزمنة' : 'No Chronic Conditions';
+    final String master_title = localizations.chronic_no_conditions_label;
 
     // Localized bottom button label
-    final String save_button_label = true == is_arabic ? 'حفظ سجل الأمراض المزمنة' : 'Save Conditions Profile';
+    final String save_button_label = localizations.chronic_save_btn;
 
     // Localized snackbar content
-    final String snackbar_message = true == is_arabic
-        ? 'تم حفظ سجل الأمراض المزمنة بنجاح.'
-        : 'Chronic Conditions profile saved successfully.';
+    final String snackbar_message = localizations.chronic_saved_success_toast;
 
     return Scaffold(
       body: SafeArea(

@@ -1800,6 +1800,251 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get payment_max_label => 'Max';
 
+  // Add test result sub-page English Overrides
+  @override
+  String get add_test_doc_name_label => 'Document Name';
+  @override
+  String get add_test_doc_name_hint => 'e.g., Complete Blood Count (CBC)';
+  @override
+  String get add_test_facility_label => 'Facility / Lab Name';
+  @override
+  String get add_test_facility_hint => 'e.g., Al Borg Laboratories, Cairo Scan';
+  @override
+  String get add_test_date_label => 'Test / Scan Date';
+  @override
+  String get add_test_date_hint => 'Select Date';
+  @override
+  String get add_test_status_label => 'Result Status';
+  @override
+  String get add_test_status_normal => 'Normal';
+  @override
+  String get add_test_status_abnormal => 'Abnormal';
+  @override
+  String get add_test_status_pending => 'Pending';
+  @override
+  String get add_test_doctor_label => 'Prescribing Doctor (Optional)';
+  @override
+  String get add_test_doctor_hint => 'Prescribed by Dr. ...';
+  @override
+  String get add_test_notes_label => 'Quick Notes (Optional)';
+  @override
+  String get add_test_notes_hint => 'Add any additional details or notes here...';
+  @override
+  String get add_test_upload_label => 'Upload Document';
+  @override
+  String get add_test_dropzone_text => 'Tap to upload image or PDF report';
+  @override
+  String get add_test_dropzone_sub => 'Supports JPG, PNG, PDF up to 10MB';
+  @override
+  String get add_test_validation_name_empty => 'Document Name cannot be empty.';
+  @override
+  String get add_test_validation_date_empty => 'Please select a date.';
+  @override
+  String get add_test_uploaded_status => 'Uploaded';
+  @override
+  List<String> get month_names => const [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December'
+      ];
+
+  // Add family member English Overrides
+  @override
+  String get add_member_edit_title => 'Edit Family Member';
+  @override
+  String get add_member_add_title => 'Add Family Member';
+  @override
+  String get add_member_update_btn => 'Update Member Profile';
+  @override
+  String get add_member_save_btn => 'Save Member Profile';
+  @override
+  String get add_member_success_toast => 'Saved Member Profile successfully.';
+  @override
+  String get add_member_identity_details_header => 'Identity Details';
+  @override
+  String get add_member_full_name_label => 'Full Name';
+  @override
+  String get add_member_full_name_hint => 'e.g. Leo Mangood';
+  @override
+  String get add_member_name_empty_error => 'Please enter a name';
+  @override
+  String get add_member_name_short_error => 'Name must be at least 3 characters';
+  @override
+  String get add_member_relationship_header => 'Relationship Type';
+  @override
+  String get add_member_dob_header => 'Date of Birth';
+  @override
+  String get add_member_dob_hint => 'Select Date';
+  @override
+  String get add_member_required_error => 'Required';
+  @override
+  String get add_member_gender_header => 'Gender Selection';
+  @override
+  String get add_member_medical_bg_header => 'Medical Background';
+  @override
+  String get add_member_medical_bg_label => 'Allergies, Medications or Chronic Conditions';
+  @override
+  String get add_member_medical_bg_hint => 'Describe medical history details dynamically...';
+  @override
+  String get rel_son => 'Son';
+  @override
+  String get rel_daughter => 'Daughter';
+  @override
+  String get rel_spouse => 'Spouse';
+  @override
+  String get rel_parent => 'Parent';
+  @override
+  String get gender_male => 'Male';
+  @override
+  String get gender_female => 'Female';
+
+  // Security & Privacy page English Overrides
+  @override
+  String get sec_account_title => 'ACCOUNT SECURITY';
+  @override
+  String get sec_privacy_title => 'MEDICAL DATA PRIVACY';
+  @override
+  String get sec_danger_title => 'DANGER ZONE';
+  @override
+  String get biometric_title => 'Biometric Authentication';
+  @override
+  String get biometric_subtitle => 'Biometric Authentication (Face ID / Fingerprint)';
+  @override
+  String get tfa_title => 'Two-Factor Authentication';
+  @override
+  String get tfa_enabled => 'Enabled';
+  @override
+  String get tfa_disabled => 'Disabled';
+  @override
+  String get change_password_label => 'Change Password';
+  @override
+  String get change_password_subtitle => 'Update password credentials';
+  @override
+  String get autolock_title => 'Auto-Lock App Timeout';
+  @override
+  String get autolock_immediately => 'Immediately';
+  @override
+  String get autolock_5mins => 'After 5 Mins';
+  @override
+  String get doc_access_title => 'Doctor Access Permissions';
+  @override
+  String get doc_access_full => 'Full Access';
+  @override
+  String get doc_access_request => 'Requires Request';
+  @override
+  String get active_devices_title => 'Active Logged-in Devices';
+  @override
+  String get active_devices_subtitle => 'iPhone 15 • Cairo';
+  @override
+  String get manage_sessions => 'Manage Sessions';
+  @override
+  String get export_data_title => 'Export Medical Data';
+  @override
+  String get export_data_subtitle => 'Request PDF/JSON health log archive';
+  @override
+  String get delete_account_title => 'Delete Account';
+  @override
+  String get delete_account_subtitle => 'Permanently erase your personal medical logs and account';
+  @override
+  String get preparing_data_export_toast => 'Preparing medical data archive...';
+
+  // Medical context count English overrides
+  @override
+  String get_items_count_text(int count) {
+    if (0 == count) {
+      return 'No items';
+    } else if (1 == count) {
+      return '1 item';
+    } else {
+      return '$count items';
+    }
+  }
+
+  @override
+  String get_prescriptions_count_text(int count) {
+    if (0 == count) {
+      return 'No prescriptions';
+    } else if (1 == count) {
+      return '1 prescription';
+    } else {
+      return '$count prescriptions';
+    }
+  }
+
+  @override
+  String get_files_count_text(int count) {
+    if (0 == count) {
+      return 'No files';
+    } else if (1 == count) {
+      return '1 file';
+    } else {
+      return '$count files';
+    }
+  }
+
+  @override
+  String get_cards_count_text(int count) {
+    if (0 == count) {
+      return 'No cards';
+    } else if (1 == count) {
+      return '1 card';
+    } else {
+      return '$count cards';
+    }
+  }
+
+  @override
+  String get_members_count_text(int count) {
+    if (0 == count) {
+      return 'No members';
+    } else if (1 == count) {
+      return '1 member';
+    } else {
+      return '$count members';
+    }
+  }
+
+  // Chronic conditions page English overrides
+  @override
+  String get chronic_remove_dialog_title => 'Remove Condition?';
+  @override
+  String chronic_remove_dialog_body(String label) => 'Are you sure you want to remove $label from your medical record? This will no longer be visible to your healthcare providers.';
+  @override
+  String get chronic_cancel_btn => 'Cancel';
+  @override
+  String get chronic_remove_btn => 'Remove';
+  @override
+  String get chronic_status_controlled => 'Controlled';
+  @override
+  String get chronic_status_monitoring => 'Requires Monitoring';
+  @override
+  String get chronic_diag_year_header => 'Diagnosed Year';
+  @override
+  String get chronic_treatment_status_header => 'Treatment Status';
+  @override
+  String get chronic_controlled_label => 'Controlled';
+  @override
+  String get chronic_monitoring_label => 'Monitoring';
+  @override
+  String get chronic_no_conditions_label => 'No Chronic Conditions';
+  @override
+  String get chronic_save_btn => 'Save Conditions Profile';
+  @override
+  String get chronic_search_hint => 'Search or add condition (e.g., Asthma)...';
+  @override
+  String get chronic_saved_success_toast => 'Chronic Conditions profile saved successfully.';
+  @override
+  String get_chronic_subtitle(String year, String status) => 'Diagnosed in $year • $status';
+
   // Authentication error localized message English overrides
   @override
   String get error_invalid_credentials => 'Invalid phone number or password.';

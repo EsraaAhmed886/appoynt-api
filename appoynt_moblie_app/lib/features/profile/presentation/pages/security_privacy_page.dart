@@ -260,47 +260,37 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
 
     // Localized Headers & Titles
-    final String sec_account_title = localizations.is_arabic ? "أمان الحساب" : "ACCOUNT SECURITY";
-    final String sec_privacy_title = localizations.is_arabic ? "خصوصية البيانات الطبية" : "MEDICAL DATA PRIVACY";
-    final String sec_danger_title = localizations.is_arabic ? "إجراءات حساسة" : "DANGER ZONE";
+    final String sec_account_title = localizations.sec_account_title;
+    final String sec_privacy_title = localizations.sec_privacy_title;
+    final String sec_danger_title = localizations.sec_danger_title;
 
-    final String biometric_title = localizations.is_arabic ? "المصادقة البيومترية" : "Biometric Authentication";
-    final String biometric_subtitle = localizations.is_arabic 
-        ? "بصمة الوجه / الإصبع للدخول السريع" 
-        : "Biometric Authentication (Face ID / Fingerprint)";
+    final String biometric_title = localizations.biometric_title;
+    final String biometric_subtitle = localizations.biometric_subtitle;
 
-    final String tfa_title = localizations.is_arabic ? "التحقق بخطوتين" : "Two-Factor Authentication";
-    final String tfa_enabled = localizations.is_arabic ? "مفعّل" : "Enabled";
-    final String tfa_disabled = localizations.is_arabic ? "معطّل" : "Disabled";
+    final String tfa_title = localizations.tfa_title;
+    final String tfa_enabled = localizations.tfa_enabled;
+    final String tfa_disabled = localizations.tfa_disabled;
 
-    final String change_password_label = localizations.is_arabic ? "تغيير كلمة المرور" : "Change Password";
-    final String change_password_subtitle = localizations.is_arabic 
-        ? "تحديث بيانات وكلمة مرور حسابك" 
-        : "Update password credentials";
+    final String change_password_label = localizations.change_password_label;
+    final String change_password_subtitle = localizations.change_password_subtitle;
 
-    final String autolock_title = localizations.is_arabic ? "القفل التلقائي للتطبيق" : "Auto-Lock App Timeout";
-    final String autolock_immediately = localizations.is_arabic ? "فوري" : "Immediately";
-    final String autolock_5mins = localizations.is_arabic ? "بعد 5 دقائق" : "After 5 Mins";
+    final String autolock_title = localizations.autolock_title;
+    final String autolock_immediately = localizations.autolock_immediately;
+    final String autolock_5mins = localizations.autolock_5mins;
 
-    final String doc_access_title = localizations.is_arabic ? "صلاحيات دخول الطبيب" : "Doctor Access Permissions";
-    final String doc_access_full = localizations.is_arabic ? "وصول كامل" : "Full Access";
-    final String doc_access_request = localizations.is_arabic ? "يتطلب إذن" : "Requires Request";
+    final String doc_access_title = localizations.doc_access_title;
+    final String doc_access_full = localizations.doc_access_full;
+    final String doc_access_request = localizations.doc_access_request;
 
-    final String active_devices_title = localizations.is_arabic ? "الأجهزة النشطة حالياً" : "Active Logged-in Devices";
-    final String active_devices_subtitle = localizations.is_arabic 
-        ? "آيفون 15 • القاهرة، مصر" 
-        : "iPhone 15 • Cairo";
-    final String manage_sessions = localizations.is_arabic ? "إدارة الجلسات" : "Manage Sessions";
+    final String active_devices_title = localizations.active_devices_title;
+    final String active_devices_subtitle = localizations.active_devices_subtitle;
+    final String manage_sessions = localizations.manage_sessions;
 
-    final String export_data_title = localizations.is_arabic ? "تصدير البيانات الطبية" : "Export Medical Data";
-    final String export_data_subtitle = localizations.is_arabic 
-        ? "طلب نسخة بصيغة PDF أو JSON لسجلك الطبي" 
-        : "Request PDF/JSON health log archive";
+    final String export_data_title = localizations.export_data_title;
+    final String export_data_subtitle = localizations.export_data_subtitle;
 
-    final String delete_account_title = localizations.is_arabic ? "حذف الحساب نهائياً" : "Delete Account";
-    final String delete_account_subtitle = localizations.is_arabic 
-        ? "سيتم مسح جميع بياناتك وسجلاتك الطبية نهائياً ولا يمكن استرجاعها" 
-        : "Permanently erase your personal medical logs and account";
+    final String delete_account_title = localizations.delete_account_title;
+    final String delete_account_subtitle = localizations.delete_account_subtitle;
 
     final Color dividerColor = is_dark ? AppColors.border_dark : const Color(0xFFF1F5F9);
 
@@ -517,12 +507,12 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                             color: is_dark ? Colors.white30 : AppColors.text_light_secondary,
                           ),
                           onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(localizations.is_arabic ? 'جاري تحضير ملف البيانات الطبية للتصدير...' : 'Preparing medical data archive...'),
-                                backgroundColor: AppColors.primary_color,
-                              ),
-                            );
+                             ScaffoldMessenger.of(context).showSnackBar(
+                               SnackBar(
+                                 content: Text(localizations.preparing_data_export_toast),
+                                 backgroundColor: AppColors.primary_color,
+                               ),
+                             );
                           },
                         ),
                       ],

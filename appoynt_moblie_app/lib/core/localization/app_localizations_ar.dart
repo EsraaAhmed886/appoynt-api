@@ -1817,6 +1817,255 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get payment_max_label => 'الحد الأقصى';
 
+  // Add test result sub-page Arabic Overrides
+  @override
+  String get add_test_doc_name_label => 'اسم المستند';
+  @override
+  String get add_test_doc_name_hint => 'مثال: صورة دم كاملة (CBC)';
+  @override
+  String get add_test_facility_label => 'المعمل / المركز الطبي';
+  @override
+  String get add_test_facility_hint => 'مثال: معمل البرج، كايرو سكان';
+  @override
+  String get add_test_date_label => 'تاريخ الفحص / الأشعة';
+  @override
+  String get add_test_date_hint => 'اختر التاريخ';
+  @override
+  String get add_test_status_label => 'حالة النتيجة';
+  @override
+  String get add_test_status_normal => 'طبيعي';
+  @override
+  String get add_test_status_abnormal => 'غير طبيعي';
+  @override
+  String get add_test_status_pending => 'قيد المراجعة';
+  @override
+  String get add_test_doctor_label => 'الطبيب المعالج (اختياري)';
+  @override
+  String get add_test_doctor_hint => 'اسم الطبيب المعالج';
+  @override
+  String get add_test_notes_label => 'ملاحظات إضافية (اختياري)';
+  @override
+  String get add_test_notes_hint => 'أضف أي ملاحظات أو تفاصيل إضافية هنا...';
+  @override
+  String get add_test_upload_label => 'تحميل التقرير';
+  @override
+  String get add_test_dropzone_text => 'اضغط هنا لرفع صورة أو ملف PDF للتقرير';
+  @override
+  String get add_test_dropzone_sub => 'الحد الأقصى للملف 10 ميجابايت (JPG, PNG, PDF)';
+  @override
+  String get add_test_validation_name_empty => 'اسم المستند لا يمكن أن يكون فارغاً.';
+  @override
+  String get add_test_validation_date_empty => 'يرجى اختيار التاريخ.';
+  @override
+  String get add_test_uploaded_status => 'تم الرفع';
+  @override
+  List<String> get month_names => const [
+        'يناير',
+        'فبراير',
+        'مارس',
+        'أبريل',
+        'مايو',
+        'يونيو',
+        'يوليو',
+        'أغسطس',
+        'سبتمبر',
+        'أكتوبر',
+        'نوفمبر',
+        'ديسمبر'
+      ];
+
+  // Add family member Arabic Overrides
+  @override
+  String get add_member_edit_title => 'تعديل فرد العائلة';
+  @override
+  String get add_member_add_title => 'إضافة فرد عائلة';
+  @override
+  String get add_member_update_btn => 'تحديث البيانات';
+  @override
+  String get add_member_save_btn => 'حفظ البيانات';
+  @override
+  String get add_member_success_toast => 'تم حفظ بيانات فرد العائلة بنجاح.';
+  @override
+  String get add_member_identity_details_header => 'تفاصيل الهوية';
+  @override
+  String get add_member_full_name_label => 'الاسم الكامل';
+  @override
+  String get add_member_full_name_hint => 'مثال: ليونيل مسعد';
+  @override
+  String get add_member_name_empty_error => 'يرجى إدخال الاسم';
+  @override
+  String get add_member_name_short_error => 'يجب أن يتكون الاسم من 3 أحرف على الأقل';
+  @override
+  String get add_member_relationship_header => 'صلة القرابة';
+  @override
+  String get add_member_dob_header => 'تاريخ الميلاد';
+  @override
+  String get add_member_dob_hint => 'اختر التاريخ';
+  @override
+  String get add_member_required_error => 'مطلوب';
+  @override
+  String get add_member_gender_header => 'تحديد الجنس';
+  @override
+  String get add_member_medical_bg_header => 'الخلفية الطبية';
+  @override
+  String get add_member_medical_bg_label => 'الحساسية، الأدوية أو الأمراض المزمنة';
+  @override
+  String get add_member_medical_bg_hint => 'صف تفاصيل التاريخ الطبي هنا...';
+  @override
+  String get rel_son => 'ابن';
+  @override
+  String get rel_daughter => 'ابنة';
+  @override
+  String get rel_spouse => 'زوج/زوجة';
+  @override
+  String get rel_parent => 'أحد الوالدين';
+  @override
+  String get gender_male => 'ذكر';
+  @override
+  String get gender_female => 'أنثى';
+
+  // Security & Privacy page Arabic Overrides
+  @override
+  String get sec_account_title => 'أمان الحساب';
+  @override
+  String get sec_privacy_title => 'خصوصية البيانات الطبية';
+  @override
+  String get sec_danger_title => 'إجراءات حساسة';
+  @override
+  String get biometric_title => 'المصادقة البيومترية';
+  @override
+  String get biometric_subtitle => 'بصمة الوجه / الإصبع للدخول السريع';
+  @override
+  String get tfa_title => 'التحقق بخطوتين';
+  @override
+  String get tfa_enabled => 'مفعّل';
+  @override
+  String get tfa_disabled => 'معطّل';
+  @override
+  String get change_password_label => 'تغيير كلمة المرور';
+  @override
+  String get change_password_subtitle => 'تحديث بيانات وكلمة مرور حسابك';
+  @override
+  String get autolock_title => 'القفل التلقائي للتطبيق';
+  @override
+  String get autolock_immediately => 'فوري';
+  @override
+  String get autolock_5mins => 'بعد 5 دقائق';
+  @override
+  String get doc_access_title => 'صلاحيات دخول الطبيب';
+  @override
+  String get doc_access_full => 'وصول كامل';
+  @override
+  String get doc_access_request => 'يتطلب إذن';
+  @override
+  String get active_devices_title => 'الأجهزة النشطة حالياً';
+  @override
+  String get active_devices_subtitle => 'آيفون 15 • القاهرة، مصر';
+  @override
+  String get manage_sessions => 'إدارة الجلسات';
+  @override
+  String get export_data_title => 'تصدير البيانات الطبية';
+  @override
+  String get export_data_subtitle => 'طلب نسخة بصيغة PDF أو JSON لسجلك الطبي';
+  @override
+  String get delete_account_title => 'حذف الحساب نهائياً';
+  @override
+  String get delete_account_subtitle => 'سيتم مسح جميع بياناتك وسجلاتك الطبية نهائياً ولا يمكن استرجاعها';
+  @override
+  String get preparing_data_export_toast => 'جاري تحضير ملف البيانات الطبية للتصدير...';
+
+  // Medical context count Arabic overrides
+  @override
+  String get_items_count_text(int count) {
+    if (0 == count) {
+      return 'لا يوجد';
+    } else if (1 == count) {
+      return 'عنصر واحد';
+    } else {
+      return '$count عناصر';
+    }
+  }
+
+  @override
+  String get_prescriptions_count_text(int count) {
+    if (0 == count) {
+      return 'لا يوجد';
+    } else if (1 == count) {
+      return 'روشتة واحدة';
+    } else {
+      return '$count روشتات';
+    }
+  }
+
+  @override
+  String get_files_count_text(int count) {
+    if (0 == count) {
+      return 'لا يوجد';
+    } else if (1 == count) {
+      return 'ملف واحد';
+    } else {
+      return '$count ملفات';
+    }
+  }
+
+  @override
+  String get_cards_count_text(int count) {
+    if (0 == count) {
+      return 'لا يوجد بطاقات';
+    } else if (1 == count) {
+      return 'بطاقة واحدة';
+    } else if (2 == count) {
+      return 'بطاقتان';
+    } else {
+      return '$count بطاقات';
+    }
+  }
+
+  @override
+  String get_members_count_text(int count) {
+    if (0 == count) {
+      return 'لا يوجد أفراد';
+    } else if (1 == count) {
+      return 'عضو واحد';
+    } else if (2 == count) {
+      return 'عضوان';
+    } else {
+      return '$count أعضاء';
+    }
+  }
+
+  // Chronic conditions page Arabic overrides
+  @override
+  String get chronic_remove_dialog_title => 'إزالة الحالة المرضية؟';
+  @override
+  String chronic_remove_dialog_body(String label) => 'هل أنت متأكد من إزالة $label من سجلك الطبي؟ لن يظهر هذا المرض في ملفك الطبي المشارك مع الأطباء.';
+  @override
+  String get chronic_cancel_btn => 'إلغاء';
+  @override
+  String get chronic_remove_btn => 'إزالة';
+  @override
+  String get chronic_status_controlled => 'حالة مستقرة';
+  @override
+  String get chronic_status_monitoring => 'تتطلب المتابعة';
+  @override
+  String get chronic_diag_year_header => 'سنة التشخيص';
+  @override
+  String get chronic_treatment_status_header => 'حالة العلاج';
+  @override
+  String get chronic_controlled_label => 'مستقرة';
+  @override
+  String get chronic_monitoring_label => 'متابعة';
+  @override
+  String get chronic_no_conditions_label => 'لا أعاني من أمراض مزمنة';
+  @override
+  String get chronic_save_btn => 'حفظ سجل الأمراض المزمنة';
+  @override
+  String get chronic_search_hint => 'البحث أو إضافة حالة جديدة (مثل: الربو)...';
+  @override
+  String get chronic_saved_success_toast => 'تم حفظ سجل الأمراض المزمنة بنجاح.';
+  @override
+  String get_chronic_subtitle(String year, String status) => 'تم التشخيص في $year • $status';
+
   // Authentication error localized message Arabic overrides
   @override
   String get error_invalid_credentials => 'رقم الهاتف أو كلمة المرور غير صحيحة.';
