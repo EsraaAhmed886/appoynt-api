@@ -38,6 +38,8 @@ import 'package:appoynt_mobile_app/features/auth/presentation/pages/reset_passwo
 import 'package:appoynt_mobile_app/features/auth/presentation/pages/account_success_page.dart';
 // Importing Password Success screen page widget representation
 import 'package:appoynt_mobile_app/features/auth/presentation/pages/password_success_page.dart';
+// Importing package_info_plus to fetch application version info dynamically
+import 'package:package_info_plus/package_info_plus.dart';
 
 // Stateful widget representing the initial landing splash screen
 class SplashScreen extends StatefulWidget {
@@ -616,6 +618,16 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     super.dispose();
   }
 
+  // Fetch version and build number metadata dynamically
+  Future<String> _getAppVersion() async {
+    try {
+      final PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      return 'v${packageInfo.version} - Build ${packageInfo.buildNumber}';
+    } catch (_) {
+      return 'v1.2.0 - Build 8421';
+    }
+  }
+
   // Build method rendering the splash screen UI elements
   @override
   Widget build(BuildContext context) {
@@ -655,10 +667,11 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
         },
         // Root scaffold layout widget containing visual logo layers
         child: Scaffold(
-          // Center column layout containing logo container
-          body: Center(
-            // Scale transition animated builder widget wrapping the logo child
-            child: ScaleTransition(
+          body: Stack(
+            children: [
+              Center(
+                // Scale transition animated builder widget wrapping the logo child
+                child: ScaleTransition(
               // Bind scale property factor to active scale animation
               scale: _scale_animation,
               // Fade transition animated builder widget wrapping the scale transition
@@ -752,6 +765,32 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                 ),
               ),
             ),
+          ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 20.0),
+                    child: FutureBuilder<String>(
+                      future: _getAppVersion(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) return const SizedBox.shrink();
+                        return Text(
+                          'Appoynt ${snapshot.data}',
+                          style: const TextStyle(
+                            fontSize: 12.0,
+                            fontWeight: FontWeight.w400,
+                            color: AppColors.white70,
+                            letterSpacing: 0.5,
+                          ),
+                          textAlign: TextAlign.center,
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),

@@ -28,7 +28,8 @@ import 'package:appoynt_mobile_app/features/profile/presentation/pages/edit_prof
 import 'package:appoynt_mobile_app/features/profile/presentation/pages/medical_context_page.dart';
 import 'package:appoynt_mobile_app/features/payment/presentation/pages/payment_wallet_page.dart';
 import 'package:appoynt_mobile_app/features/profile/presentation/pages/security_privacy_page.dart';
-import 'package:appoynt_mobile_app/features/profile/presentation/pages/app_preferences_page.dart';
+import 'package:appoynt_mobile_app/features/profile/presentation/pages/app_settings_page.dart';
+import 'package:appoynt_mobile_app/features/profile/presentation/pages/help_about_page.dart';
 
 // Local layout dimensions class to strictly eliminate hardcoded numbers
 class _LocalDimensions {
@@ -514,17 +515,35 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         const Divider(
                             height: 1.0, thickness: _LocalDimensions.border_width_thin, indent: 64.0),
-                        // Option 5: App Preferences
+                        // Option 5: App Settings
                         _ProfileOptionCard(
-                          title: localizations.profile_app_preferences,
-                          subtitle: 'Notifications, language & app themes',
+                          title: localizations.profile_app_settings,
+                          subtitle: localizations.profile_app_settings_sub,
                           icon: Icons.settings_outlined,
                           on_press: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (route_context) => BlocProvider.value(
                                   value: context.read<ProfileCubit>(),
-                                  child: const AppPreferencesPage(),
+                                  child: const AppSettingsPage(),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        const Divider(
+                            height: 1.0, thickness: _LocalDimensions.border_width_thin, indent: 64.0),
+                        // Option 6: Help & About App
+                        _ProfileOptionCard(
+                          title: localizations.profile_help_about,
+                          subtitle: localizations.profile_help_about_sub,
+                          icon: Icons.info_outline_rounded,
+                          on_press: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (route_context) => BlocProvider.value(
+                                  value: context.read<ProfileCubit>(),
+                                  child: const HelpAndAboutPage(),
                                 ),
                               ),
                             );

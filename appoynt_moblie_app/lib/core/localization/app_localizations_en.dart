@@ -2085,6 +2085,24 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   List<String> get weekdays => const ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
+  // New settings and help about page English Overrides
+  @override
+  String get profile_app_settings => 'App Settings';
+  @override
+  String get profile_app_settings_sub => 'Notifications, language & display themes';
+  @override
+  String get profile_help_about => 'Help & About App';
+  @override
+  String get profile_help_about_sub => 'Support hotline, legal terms & app version';
+  @override
+  String get help_about_tagline => 'Your Trusted Digital Healthcare Partner';
+  @override
+  String get legal_open_source => 'Open Source Licenses';
+  @override
+  String get legal_open_source_sub => 'View licenses for third-party packages';
+  @override
+  String get legal_open_source_content => 'This app utilizes open source packages. You can find their licenses on their official package documentation pages.';
+
   // Authentication error localized message English overrides
   @override
   String get error_invalid_credentials => 'Invalid phone number or password.';

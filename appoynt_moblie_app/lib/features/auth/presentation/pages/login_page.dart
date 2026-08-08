@@ -30,6 +30,8 @@ import 'package:appoynt_mobile_app/features/auth/presentation/widgets/smart_pass
 import 'package:flutter_bloc/flutter_bloc.dart';
 // Importing gesture recognizer classes for inline TextSpan links
 import 'package:flutter/gestures.dart';
+// Importing package_info_plus to fetch application version info dynamically
+import 'package:package_info_plus/package_info_plus.dart';
 
 // Stateful widget class representing the primary login gateway interface
 class LoginPage extends StatefulWidget {
@@ -82,6 +84,9 @@ class _LoginPageState extends State<LoginPage> {
   // Cache pointer recording last configured locale settings to trace switches
   Locale? _last_locale;
 
+  // Track dynamic app version retrieved from package metadata
+  String _version_text = '';
+
   @override
   // Initialize state registers and attach text listener functions
   void initState() {
@@ -91,6 +96,26 @@ class _LoginPageState extends State<LoginPage> {
     _identifier_ctrl.addListener(_detect_input_type);
     // Register password listener to refresh submit button state in real-time
     _password_ctrl.addListener(_on_password_changed);
+    // Load app version metadata information dynamically
+    _load_app_version();
+  }
+
+  // Load version configuration metadata using package_info_plus utility
+  Future<void> _load_app_version() async {
+    try {
+      final PackageInfo package_info = await PackageInfo.fromPlatform();
+      if (mounted) {
+        setState(() {
+          _version_text = 'v${package_info.version} (${package_info.buildNumber})';
+        });
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _version_text = 'v1.2.0 (8421)';
+        });
+      }
+    }
   }
 
   // Method executing when password updates
@@ -436,6 +461,8 @@ class _LoginPageState extends State<LoginPage> {
     final AppLocalizations s = AppLocalizations.of(context);
     // Check if Arabic directionality is active
     final bool is_arabic = s.is_arabic;
+    // Check if Dark theme mode is active
+    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
 
     // Return BlocProvider setting up AuthCubit on top of tree
     return BlocProvider<AuthCubit>(
@@ -462,17 +489,19 @@ class _LoginPageState extends State<LoginPage> {
           return Scaffold(
             // Wrap contents in SafeArea layout structure to bypass top display notches
             body: SafeArea(
-              // Wrap contents inside horizontal margins spacing scroll view
-              child: SingleChildScrollView(
-                // Apply layout padding margins using spacing constants (including top notch spacing)
-                padding: const EdgeInsets.only(
-                  left: AppSpacing.space_xxl,
-                  right: AppSpacing.space_xxl,
-                  top: AppSpacing.space_xl,
-                  bottom: AppSpacing.space_xl,
-                ),
-                // Place page column layout
-                child: Column(
+              child: Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      // Apply layout padding margins using spacing constants (including top notch spacing)
+                      padding: const EdgeInsets.only(
+                        left: AppSpacing.space_xxl,
+                        right: AppSpacing.space_xxl,
+                        top: AppSpacing.space_xl,
+                        bottom: AppSpacing.space_xl,
+                      ),
+                      // Place page column layout
+                      child: Column(
                   // Align column elements starting from horizontal edge
                   crossAxisAlignment: CrossAxisAlignment.start,
                   // Contain visual children list
@@ -760,6 +789,24 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ],
                 ),
+              ),
+            ),
+                  if (_version_text.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12.0, top: 4.0),
+                      child: Center(
+                        child: Text(
+                          'Appoynt $_version_text',
+                          style: TextStyle(
+                            fontSize: 12.0,
+                            color: is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
           );

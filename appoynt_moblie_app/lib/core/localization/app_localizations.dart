@@ -968,6 +968,16 @@ abstract class AppLocalizations {
   String get date_picker_confirm;
   List<String> get weekdays;
 
+  // New settings and help about page keys
+  String get profile_app_settings;
+  String get profile_app_settings_sub;
+  String get profile_help_about;
+  String get profile_help_about_sub;
+  String get help_about_tagline;
+  String get legal_open_source;
+  String get legal_open_source_sub;
+  String get legal_open_source_content;
+
   // Authentication error localized message getters
   String get error_invalid_credentials;
   String get error_phone_empty;

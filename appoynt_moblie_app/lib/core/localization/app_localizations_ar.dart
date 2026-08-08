@@ -2106,6 +2106,24 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   List<String> get weekdays => const ['ن', 'ث', 'ر', 'خ', 'ج', 'س', 'ح'];
 
+  // New settings and help about page Arabic Overrides
+  @override
+  String get profile_app_settings => 'إعدادات التطبيق';
+  @override
+  String get profile_app_settings_sub => 'الإشعارات، اللغة ومظهر العرض';
+  @override
+  String get profile_help_about => 'المساعدة وعن التطبيق';
+  @override
+  String get profile_help_about_sub => 'خط المساعدة، الشروط القانونية وإصدار التطبيق';
+  @override
+  String get help_about_tagline => 'شريكك الرقمي الموثوق للرعاية الصحية';
+  @override
+  String get legal_open_source => 'تراخيص البرمجيات المفتوحة المصدر';
+  @override
+  String get legal_open_source_sub => 'عرض تراخيص الحزم البرمجية للجهات الخارجية';
+  @override
+  String get legal_open_source_content => 'يستخدم هذا التطبيق حزماً برمجية مفتوحة المصدر. يمكنك العثور على تراخيصها في صفحات التوثيق الرسمية الخاصة بتلك الحزم.';
+
   // Authentication error localized message Arabic overrides
   @override
   String get error_invalid_credentials => 'رقم الهاتف أو كلمة المرور غير صحيحة.';
