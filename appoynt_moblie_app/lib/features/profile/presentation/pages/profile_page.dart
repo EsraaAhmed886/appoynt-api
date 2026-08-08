@@ -26,7 +26,7 @@ import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_s
 // Importing sub-pages for navigation routing
 import 'package:appoynt_mobile_app/features/profile/presentation/pages/edit_profile_page.dart';
 import 'package:appoynt_mobile_app/features/profile/presentation/pages/medical_context_page.dart';
-import 'package:appoynt_mobile_app/features/profile/presentation/pages/payment_wallet_page.dart';
+import 'package:appoynt_mobile_app/features/payment/presentation/pages/payment_wallet_page.dart';
 import 'package:appoynt_mobile_app/features/profile/presentation/pages/security_privacy_page.dart';
 import 'package:appoynt_mobile_app/features/profile/presentation/pages/app_preferences_page.dart';
 
