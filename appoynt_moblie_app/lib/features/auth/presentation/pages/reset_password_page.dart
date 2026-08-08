@@ -164,7 +164,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     // Check if new password passes all validation checks using Yoda style check
     final bool is_pw_valid = (null == _validate_password(pw, AppLocalizations.of(context)));
     // Return true if password is valid and confirm password matches it using Yoda style comparison
-    return true == is_pw_valid && cpw == pw;
+    return is_pw_valid && cpw == pw;
   }
 
   @override

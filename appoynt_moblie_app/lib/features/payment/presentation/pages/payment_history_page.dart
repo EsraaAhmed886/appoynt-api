@@ -89,7 +89,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
       'amount': 85.00,
       'status': 'Paid',
       'icon': Icons.medical_services_rounded,
-      'iconColor': Colors.teal,
+      'iconColor': AppColors.teal,
     },
     {
       'id': '2',
@@ -100,7 +100,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
       'amount': 45.00,
       'status': 'Paid',
       'icon': Icons.science_rounded,
-      'iconColor': Colors.purple,
+      'iconColor': AppColors.purple,
     },
     {
       'id': '3',
@@ -111,7 +111,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
       'amount': 120.00,
       'status': 'Paid',
       'icon': Icons.settings_accessibility_rounded,
-      'iconColor': Colors.orange,
+      'iconColor': AppColors.orange,
     },
     {
       'id': '4',
@@ -122,7 +122,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
       'amount': 250.00,
       'status': 'Refunded',
       'icon': Icons.local_hospital_rounded,
-      'iconColor': Colors.red,
+      'iconColor': AppColors.red,
     },
   ];
 
@@ -213,13 +213,13 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
   // Helper matching icon colors dynamically to service type names
   Color _get_color_for_type(String type) {
     if ('Lab Test' == type) {
-      return Colors.purple;
+      return AppColors.purple;
     } else if ('Radiology' == type) {
-      return Colors.orange;
+      return AppColors.orange;
     } else if ('Emergency' == type) {
-      return Colors.red;
+      return AppColors.red;
     } else {
-      return Colors.teal;
+      return AppColors.teal;
     }
   }
 
@@ -297,21 +297,21 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                             margin: const EdgeInsets.only(bottom: _LocalDimensions.spacing_bottom),
                             padding: const EdgeInsets.all(_LocalDimensions.padding_inside),
                             decoration: BoxDecoration(
-                              color: true == is_dark
+                              color: is_dark
                                   ? AppColors.surface_dark
-                                  : Colors.white,
+                                  : AppColors.white,
                               borderRadius: BorderRadius.circular(_LocalDimensions.border_radius),
                               border: Border.all(
-                                color: true == is_dark
+                                color: is_dark
                                     ? AppColors.border_dark
                                     : const Color(0xFFE2E8F0),
                                 width: AppSpacing.border_width_thin,
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: true == is_dark
-                                      ? Colors.black.withValues(alpha: 0.1)
-                                      : Colors.black.withValues(alpha: 0.03),
+                                  color: is_dark
+                                      ? AppColors.black.withValues(alpha: 0.1)
+                                      : AppColors.black.withValues(alpha: 0.03),
                                   blurRadius: _LocalDimensions.shadow_blur,
                                   offset: const Offset(0.0, _LocalDimensions.shadow_offset_y),
                                 ),
@@ -345,8 +345,8 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                                         style: TextStyle(
                                           fontSize: _LocalDimensions.font_size_title,
                                           fontWeight: FontWeight.bold,
-                                          color: true == is_dark
-                                              ? Colors.white
+                                          color: is_dark
+                                              ? AppColors.white
                                               : AppColors.text_light_primary,
                                         ),
                                       ),
@@ -379,8 +379,8 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                                       style: TextStyle(
                                         fontSize: _LocalDimensions.font_size_price,
                                         fontWeight: FontWeight.bold,
-                                        color: true == is_dark
-                                            ? Colors.white
+                                        color: is_dark
+                                            ? AppColors.white
                                             : AppColors.text_light_primary,
                                       ),
                                     ),
@@ -391,7 +391,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                                           horizontal: _LocalDimensions.badge_padding_h,
                                           vertical: _LocalDimensions.badge_padding_v),
                                       decoration: BoxDecoration(
-                                        color: true == is_paid
+                                        color: is_paid
                                             ? const Color(0xFF10B981)
                                                 .withValues(alpha: 0.1)
                                             : const Color(0xFFF59E0B)
@@ -404,7 +404,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                                         style: TextStyle(
                                           fontSize: _LocalDimensions.badge_font_size,
                                           fontWeight: FontWeight.bold,
-                                          color: true == is_paid
+                                          color: is_paid
                                               ? const Color(0xFF10B981)
                                               : const Color(0xFFF59E0B),
                                         ),
@@ -466,7 +466,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
         borderRadius: BorderRadius.circular(_LocalDimensions.banner_radius),
         boxShadow: const [
           BoxShadow(
-            color: Colors.black26,
+            color: AppColors.black26,
             blurRadius: _LocalDimensions.banner_shadow_blur,
             offset: Offset(0.0, _LocalDimensions.banner_shadow_offset_y),
           ),
@@ -482,7 +482,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                 localizations.payment_total_paid_invoices,
                 style: const TextStyle(
                   fontSize: _LocalDimensions.banner_title_font_size,
-                  color: Colors.white70,
+                  color: AppColors.white70,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -492,7 +492,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                 style: const TextStyle(
                   fontSize: _LocalDimensions.banner_value_font_size,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: AppColors.white,
                   fontFamily: 'monospace',
                 ),
               ),
@@ -502,7 +502,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
             padding:
                 const EdgeInsets.symmetric(horizontal: _LocalDimensions.banner_badge_padding_h, vertical: _LocalDimensions.banner_badge_padding_v),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.15),
+              color: AppColors.white.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(_LocalDimensions.banner_badge_radius),
             ),
             child: Text(
@@ -510,7 +510,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
               style: const TextStyle(
                 fontSize: _LocalDimensions.banner_badge_font_size,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: AppColors.white,
               ),
             ),
           ),
@@ -571,7 +571,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
   void _show_date_picker_bottom_sheet(BuildContext context, bool is_dark, AppLocalizations localizations) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: true == is_dark ? AppColors.surface_dark : Colors.white,
+      backgroundColor: is_dark ? AppColors.surface_dark : AppColors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(_LocalDimensions.bottom_sheet_radius)),
       ),
@@ -677,7 +677,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
   void _show_amount_range_bottom_sheet(BuildContext context, bool is_dark, AppLocalizations localizations) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: true == is_dark ? AppColors.surface_dark : Colors.white,
+      backgroundColor: is_dark ? AppColors.surface_dark : AppColors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(_LocalDimensions.bottom_sheet_radius)),
       ),
@@ -741,7 +741,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                         },
                         child: Text(localizations.payment_apply_filter_btn,
                             style: const TextStyle(
-                                color: Colors.white,
+                                color: AppColors.white,
                                 fontWeight: FontWeight.bold)),
                       ),
                     ),
@@ -767,7 +767,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: true == is_dark ? AppColors.surface_dark : Colors.white,
+      backgroundColor: is_dark ? AppColors.surface_dark : AppColors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(_LocalDimensions.bottom_sheet_radius)),
       ),
@@ -830,8 +830,8 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
               style: TextStyle(
                 fontSize: _LocalDimensions.empty_state_title_font_size,
                 fontWeight: FontWeight.bold,
-                color: true == is_dark
-                    ? Colors.white
+                color: is_dark
+                    ? AppColors.white
                     : AppColors.text_light_primary,
               ),
             ),
@@ -841,8 +841,8 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: _LocalDimensions.empty_state_subtitle_font_size,
-                color: true == is_dark
-                    ? Colors.white54
+                color: is_dark
+                    ? AppColors.white54
                     : AppColors.text_light_secondary,
               ),
             ),

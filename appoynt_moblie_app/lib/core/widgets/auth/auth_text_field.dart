@@ -159,7 +159,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
             // Pull centralized style registry with theme-adaptive colors
             style: AppTextStyles.get_field_label(context, is_arabic).copyWith(
               // Select label color based on theme using Yoda style check
-              color: true == is_dark
+              color: is_dark
                   ? AppColors.text_dark_primary
                   : AppColors.text_light_primary,
             ),
@@ -176,12 +176,12 @@ class _AuthTextFieldState extends State<AuthTextField> {
             // Resolve text alignment dynamically depending on LTR checks
             final bool is_empty = value.text.isEmpty;
             final TextAlign dynamic_align = true == force_ltr
-                ? (true == is_empty && true == is_arabic
+                ? (is_empty && is_arabic
                     ? TextAlign.right
-                    : (true == widget.is_password && true == is_arabic
+                    : (true == widget.is_password && is_arabic
                         ? TextAlign.right
                         : TextAlign.left))
-                : (true == is_arabic ? TextAlign.right : TextAlign.left);
+                : (is_arabic ? TextAlign.right : TextAlign.left);
 
             // Return Stack layering shadow background behind the TextFormField
             return Stack(
@@ -211,9 +211,9 @@ class _AuthTextFieldState extends State<AuthTextField> {
                         boxShadow: [
                           BoxShadow(
                             // Choose shadow color based on dark mode using Yoda style check
-                            color: true == is_dark
-                                ? Colors.black.withValues(alpha: 0.25)
-                                : Colors.black.withValues(alpha: 0.04),
+                            color: is_dark
+                                ? AppColors.black.withValues(alpha: 0.25)
+                                : AppColors.black.withValues(alpha: 0.04),
                             // Shadow blur radius
                             blurRadius: 6.0,
                             // Shadow thickness spread
@@ -263,7 +263,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
                   // Force input directionality text rules
                   textDirection: true == force_ltr
                       ? TextDirection.ltr
-                      : (true == is_arabic
+                      : (is_arabic
                           ? TextDirection.rtl
                           : TextDirection.ltr),
                   // Set resolved dynamic text alignments
@@ -275,7 +275,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
                     // Select text color based on theme and enabled state using Yoda style check
                     color: false == widget.enabled
                         ? Theme.of(context).disabledColor
-                        : (true == is_dark
+                        : (is_dark
                             ? AppColors.text_dark_primary
                             : AppColors.text_light_primary),
                   ),
@@ -288,7 +288,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
                       // Hint size matches standard inputs
                       fontSize: AppSpacing.font_size_text,
                       // Select hint color based on theme using Yoda style check
-                      color: true == is_dark
+                      color: is_dark
                           ? AppColors.text_dark_secondary
                           : AppColors.text_light_secondary,
                     ),
@@ -296,10 +296,10 @@ class _AuthTextFieldState extends State<AuthTextField> {
                     filled: true,
                     // Adapt background colors based on dark mode and enabled state using Yoda style check
                     fillColor: false == widget.enabled
-                        ? (true == is_dark
+                        ? (is_dark
                             ? AppColors.surface_dark.withValues(alpha: 0.5)
                             : AppColors.input_fill.withValues(alpha: 0.5))
-                        : (true == is_dark
+                        : (is_dark
                             ? AppColors.surface_dark
                             : AppColors.input_fill),
                     // Optional prefix icon rendering
@@ -308,7 +308,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
                             // Icon data representation
                             widget.prefix_icon,
                             // Select icon color dynamically using Yoda style check
-                            color: true == is_dark
+                            color: is_dark
                                 ? AppColors.text_dark_secondary
                                 : AppColors.text_light_secondary,
                             // Set layout size
@@ -336,7 +336,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
                                   // Eye on icon
                                   : Icons.visibility_outlined,
                               // Select icon color dynamically using Yoda style check
-                              color: true == is_dark
+                              color: is_dark
                                   ? AppColors.text_dark_secondary
                                   : AppColors.text_light_secondary,
                               // Set layout size
@@ -353,7 +353,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
                       // Set border side specifications
                       borderSide: BorderSide(
                         // Select border color based on theme using Yoda style check
-                        color: true == is_dark
+                        color: is_dark
                             ? AppColors.border_dark
                             : AppColors.border_light,
                         // Set line thickness using spacing constants
@@ -369,7 +369,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
                       // Set border side specifications
                       borderSide: BorderSide(
                         // Select border color based on theme using Yoda style check
-                        color: true == is_dark
+                        color: is_dark
                             ? AppColors.border_dark
                             : AppColors.border_light,
                         // Set line thickness using spacing constants

@@ -88,8 +88,8 @@ class CustomProfileAppBar extends StatelessWidget {
                 // Heavy bold weight
                 fontWeight: FontWeight.bold,
                 // Adaptive text color
-                color: true == is_dark
-                    ? Colors.white
+                color: is_dark
+                    ? AppColors.white
                     : AppColors.text_light_primary,
               ),
             ),
@@ -134,13 +134,13 @@ class AppBackButton extends StatelessWidget {
         // Visual container styling decoration
         decoration: BoxDecoration(
           // Resolve background color adapting to theme mode (Yoda style check)
-          color: true == is_dark ? AppColors.surface_dark : Colors.white,
+          color: is_dark ? AppColors.surface_dark : AppColors.white,
           // Rounded Rectangle Squircle corners derived from spacing tokens (12px)
           borderRadius: BorderRadius.circular(AppSpacing.radius_l),
           // Subtle border outline bounds resolving
           border: Border.all(
             // Resolve border color adapting to theme mode (Yoda style check)
-            color: true == is_dark
+            color: is_dark
                 ? AppColors.border_dark
                 : const Color(0xFFE2E8F0),
             // Thin border line width derived from spacing tokens (1px)
@@ -150,9 +150,9 @@ class AppBackButton extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               // Resolve shadow color adapting to theme mode (Yoda style check)
-              color: true == is_dark
-                  ? Colors.black26
-                  : Colors.black.withValues(alpha: 0.05),
+              color: is_dark
+                  ? AppColors.black26
+                  : AppColors.black.withValues(alpha: 0.05),
               // Blur spread
               blurRadius: 8.0,
               // Shadow offset coordinates (2px offset)
@@ -165,7 +165,7 @@ class AppBackButton extends StatelessWidget {
           // Use modern clean angular back chevron
           Icons.arrow_back_ios_new_rounded,
           // Select icon color dynamically (Yoda style check)
-          color: true == is_dark ? Colors.white : AppColors.text_light_primary,
+          color: is_dark ? AppColors.white : AppColors.text_light_primary,
           // Chevron display size constraint (18px)
           size: 18.0,
           // Text direction override for automatic RTL/LTR flipping

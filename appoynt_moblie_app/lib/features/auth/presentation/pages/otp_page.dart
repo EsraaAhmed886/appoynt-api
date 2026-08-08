@@ -96,7 +96,7 @@ class _OtpPageState extends State<OtpPage> {
           // Identify if backspace key was pressed
           final bool is_backspace = event.logicalKey == LogicalKeyboardKey.backspace;
           // Trigger backward transition if field is empty and not the first box
-          if (true == is_backspace && _ctrls[i].text.isEmpty && i > 0) {
+          if (is_backspace && _ctrls[i].text.isEmpty && i > 0) {
             // Shift focus backwards to previous digit input field
             _nodes[i - 1].requestFocus();
             // Clear content of previous input field to simulate backspace deletion
@@ -225,7 +225,7 @@ class _OtpPageState extends State<OtpPage> {
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
 
     /// Dynamically resolved color schemes.
-    final Color text_secondary = true == is_dark
+    final Color text_secondary = is_dark
         ? AppColors.text_dark_secondary
         : AppColors.text_light_secondary;
 

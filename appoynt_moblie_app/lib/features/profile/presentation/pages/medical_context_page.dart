@@ -146,9 +146,9 @@ class _MedicalContextPageState extends State<MedicalContextPage> {
                       // People group icon
                       icon: Icons.people_outline_rounded,
                       // Deep Orange color
-                      iconColor: Colors.deepOrange,
+                      iconColor: AppColors.deepOrange,
                       // Background tint
-                      iconBgColor: Colors.deepOrange.withValues(alpha: 0.1),
+                      iconBgColor: AppColors.deepOrange.withValues(alpha: 0.1),
                       // Localized count badge
                       badgeText: _get_members_count_label(3, localizations),
                       // Navigate onTap
@@ -210,9 +210,9 @@ class _MedicalContextPageState extends State<MedicalContextPage> {
                       // Pulse heart icon representation
                       icon: Icons.add_circle_outline_rounded,
                       // Teal color accent
-                      iconColor: Colors.teal,
+                      iconColor: AppColors.teal,
                       // Icon background tint fill
-                      iconBgColor: Colors.teal.withValues(alpha: 0.1),
+                      iconBgColor: AppColors.teal.withValues(alpha: 0.1),
                       // Localized conditions count badge
                       badgeText: _get_item_count_label(state.profile.chronic_conditions.length, localizations),
                       // Navigate onTap
@@ -274,9 +274,9 @@ class _MedicalContextPageState extends State<MedicalContextPage> {
                       // Assignment folder outline icon
                       icon: Icons.assignment_outlined,
                       // Purple color accent
-                      iconColor: Colors.deepPurple,
+                      iconColor: AppColors.deepPurple,
                       // Background tint
-                      iconBgColor: Colors.deepPurple.withValues(alpha: 0.1),
+                      iconBgColor: AppColors.deepPurple.withValues(alpha: 0.1),
                       // Localized file count badge
                       badgeText: _get_file_count_label(files_count, localizations),
                       // Navigate onTap
@@ -395,7 +395,7 @@ class _MedicalCategoryCard extends StatelessWidget {
       // Card decorations styling
       decoration: BoxDecoration(
         // Background color
-        color: true == is_dark ? AppColors.surface_dark : Colors.white,
+        color: is_dark ? AppColors.surface_dark : AppColors.white,
         // Corners radius curvature equivalent to 16 units
         // Corners radius curvature equivalent to 16 units
         borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
@@ -404,9 +404,9 @@ class _MedicalCategoryCard extends StatelessWidget {
           // Soft card shadow
           BoxShadow(
             // Shadow colors adapting to dark mode
-            color: true == is_dark
-                ? Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
-                : Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
+            color: is_dark
+                ? AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
+                : AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
             // Blur spread
             blurRadius: _LocalDimensions.shadow_blur,
             // Offset coordinates position
@@ -416,7 +416,7 @@ class _MedicalCategoryCard extends StatelessWidget {
         // Outline borders
         border: Border.all(
           // Border color
-          color: true == is_dark
+          color: is_dark
               ? AppColors.border_dark
               : AppColors.slate_200,
           // Boundary line thickness
@@ -426,7 +426,7 @@ class _MedicalCategoryCard extends StatelessWidget {
       // Material inkwell wrapper to support native press ripple feedback overlays
       child: Material(
         // Transparent colors
-        color: Colors.transparent,
+        color: AppColors.transparent,
         // Clickable area
         child: InkWell(
           // Curved corners radius
@@ -482,7 +482,7 @@ class _MedicalCategoryCard extends StatelessWidget {
                       // Bold weights
                       fontWeight: FontWeight.bold,
                       // Color
-                      color: true == is_dark ? Colors.white : AppColors.text_light_primary,
+                      color: is_dark ? AppColors.white : AppColors.text_light_primary,
                     ),
                   ),
                 ),
@@ -493,8 +493,8 @@ class _MedicalCategoryCard extends StatelessWidget {
                   // Card decoration
                   decoration: BoxDecoration(
                     // Light blue transparent background or grey background
-                    color: true == is_dark
-                        ? Colors.white.withValues(alpha: _LocalDimensions.shadow_opacity_light)
+                    color: is_dark
+                        ? AppColors.white.withValues(alpha: _LocalDimensions.shadow_opacity_light)
                         : AppColors.primary_color.withValues(alpha: _LocalDimensions.shadow_opacity_light),
                     // Rounded border contours
                     borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_badge),
@@ -510,7 +510,7 @@ class _MedicalCategoryCard extends StatelessWidget {
                       // Semi-bold
                       fontWeight: FontWeight.w600,
                       // Color blue or white adapted
-                      color: true == is_dark ? Colors.white70 : AppColors.primary_color,
+                      color: is_dark ? AppColors.white70 : AppColors.primary_color,
                     ),
                   ),
                 ),
@@ -521,7 +521,7 @@ class _MedicalCategoryCard extends StatelessWidget {
                   // Chevron right symbol
                   Icons.chevron_right_rounded,
                   // Muted color adaptions
-                  color: true == is_dark ? Colors.white30 : AppColors.text_light_secondary,
+                  color: is_dark ? AppColors.white30 : AppColors.text_light_secondary,
                 ),
               ],
             ),

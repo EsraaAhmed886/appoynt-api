@@ -130,7 +130,7 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
           ),
           title: Text(
             title,
-            textAlign: true == is_arabic ? TextAlign.right : TextAlign.left,
+            textAlign: is_arabic ? TextAlign.right : TextAlign.left,
             style: const TextStyle(
               fontSize: _LocalDimensions.font_size_title,
               fontWeight: FontWeight.bold,
@@ -138,12 +138,12 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
           ),
           content: Text(
             body,
-            textAlign: true == is_arabic ? TextAlign.right : TextAlign.left,
+            textAlign: is_arabic ? TextAlign.right : TextAlign.left,
             style: const TextStyle(
               fontSize: _LocalDimensions.font_size_body,
             ),
           ),
-          actionsAlignment: true == is_arabic ? MainAxisAlignment.start : MainAxisAlignment.end,
+          actionsAlignment: is_arabic ? MainAxisAlignment.start : MainAxisAlignment.end,
           actions: [
             // Cancel Action
             TextButton(
@@ -169,7 +169,7 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
               child: Text(
                 remove_txt,
                 style: const TextStyle(
-                  color: Colors.white,
+                  color: AppColors.white,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -238,7 +238,7 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
   }) {
     final bool is_arabic = localizations.is_arabic;
     final String name_en = option['en'] ?? '';
-    final String label = true == is_arabic
+    final String label = is_arabic
         ? (option['ar'] ?? '')
         : name_en;
 
@@ -267,25 +267,25 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
 
     return AnimatedOpacity(
       duration: const Duration(milliseconds: 200),
-      opacity: true == is_disabled ? _LocalDimensions.disabled_opacity : _LocalDimensions.full_opacity,
+      opacity: is_disabled ? _LocalDimensions.disabled_opacity : _LocalDimensions.full_opacity,
       child: Container(
         margin: const EdgeInsets.only(bottom: AppSpacing.space_m),
         decoration: BoxDecoration(
-          color: true == is_dark ? AppColors.surface_dark : Colors.white,
+          color: is_dark ? AppColors.surface_dark : AppColors.white,
           borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
           border: Border.all(
-            color: true == is_selected
+            color: is_selected
                 ? AppColors.primary_color
-                : (true == is_dark
+                : (is_dark
                     ? AppColors.border_dark
                     : AppColors.slate_200),
-            width: true == is_selected ? _LocalDimensions.border_width_accent : AppSpacing.border_width_thin,
+            width: is_selected ? _LocalDimensions.border_width_accent : AppSpacing.border_width_thin,
           ),
           boxShadow: [
             BoxShadow(
-              color: true == is_dark
-                  ? Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
-                  : Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
+              color: is_dark
+                  ? AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
+                  : AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
               blurRadius: _LocalDimensions.shadow_blur,
               offset: const Offset(0.0, 2.0),
             ),
@@ -295,11 +295,11 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
           children: [
             // Top Main Card Row
             InkWell(
-              onTap: true == is_disabled
+              onTap: is_disabled
                   ? null
                   : () {
                       setState(() {
-                        if (true == is_selected) {
+                        if (is_selected) {
                           _condition_details.remove(name_en);
                         } else {
                           _condition_details[name_en] = {
@@ -319,19 +319,19 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                       width: _LocalDimensions.avatar_size,
                       height: _LocalDimensions.avatar_size,
                       decoration: BoxDecoration(
-                        color: true == is_selected
+                        color: is_selected
                             ? AppColors.primary_color.withValues(alpha: 0.12)
-                            : (true == is_dark
+                            : (is_dark
                                 ? AppColors.background_dark
                                 : AppColors.slate_50),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
                         icon,
-                        color: true == is_selected
+                        color: is_selected
                             ? AppColors.primary_color
-                            : (true == is_dark
-                                ? Colors.white54
+                            : (is_dark
+                                ? AppColors.white54
                                 : AppColors.text_light_secondary),
                         size: _LocalDimensions.icon_size_medium,
                       ),
@@ -348,12 +348,12 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                             style: TextStyle(
                               fontSize: _LocalDimensions.font_size_body,
                               fontWeight: FontWeight.bold,
-                              color: true == is_dark
-                                  ? Colors.white
+                              color: is_dark
+                                  ? AppColors.white
                                   : AppColors.text_light_primary,
                             ),
                           ),
-                          if (true == is_selected) ...[
+                          if (is_selected) ...[
                             const SizedBox(height: _LocalDimensions.spacing_tiny),
                             Text(
                               subtitle_text,
@@ -373,7 +373,7 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         // Subtle trash icon for selected items OR permanent deletion for custom conditions
-                        if (true == is_selected || 'custom' == option['icon_key']) ...[
+                        if (is_selected || 'custom' == option['icon_key']) ...[
                           GestureDetector(
                             behavior: HitTestBehavior.opaque,
                             onTap: () async {
@@ -406,23 +406,23 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                           width: _LocalDimensions.action_icon_size,
                           height: _LocalDimensions.action_icon_size,
                           decoration: BoxDecoration(
-                            color: true == is_selected
+                            color: is_selected
                                 ? AppColors.primary_color
-                                : Colors.transparent,
+                                : AppColors.transparent,
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: true == is_selected
+                              color: is_selected
                                   ? AppColors.primary_color
-                                  : (true == is_dark
-                                      ? Colors.white30
+                                  : (is_dark
+                                      ? AppColors.white30
                                       : AppColors.slate_300),
                               width: _LocalDimensions.border_width_accent,
                             ),
                           ),
-                          child: true == is_selected
+                          child: is_selected
                               ? const Icon(
                                   Icons.check,
-                                  color: Colors.white,
+                                  color: AppColors.white,
                                   size: _LocalDimensions.icon_size_small,
                                 )
                               : null,
@@ -435,7 +435,7 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
             ),
 
             // Expandable details collector drawer
-            if (true == is_selected && false == is_disabled) ...[
+            if (is_selected && !is_disabled) ...[
               Padding(
                 padding: const EdgeInsets.only(
                   left: AppSpacing.space_l,
@@ -468,12 +468,12 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: _LocalDimensions.spacing_large),
                                 decoration: BoxDecoration(
-                                  color: true == is_dark
+                                  color: is_dark
                                       ? AppColors.background_dark
                                       : AppColors.slate_50,
                                   borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_small),
                                   border: Border.all(
-                                    color: true == is_dark
+                                    color: is_dark
                                         ? AppColors.border_dark
                                         : AppColors.slate_200,
                                   ),
@@ -537,7 +537,7 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                                         decoration: BoxDecoration(
                                           color: 'Controlled' == diag_status
                                               ? AppColors.primary_color
-                                              : (true == is_dark
+                                              : (is_dark
                                                   ? AppColors.background_dark
                                                   : AppColors.slate_50),
                                           borderRadius:
@@ -545,7 +545,7 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                                             start: Radius.circular(_LocalDimensions.border_radius_small),
                                           ),
                                           border: Border.all(
-                                            color: true == is_dark
+                                            color: is_dark
                                                 ? AppColors.border_dark
                                                 : AppColors.slate_200,
                                           ),
@@ -556,9 +556,9 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                                             fontSize: _LocalDimensions.font_size_micro,
                                             fontWeight: FontWeight.bold,
                                             color: 'Controlled' == diag_status
-                                                ? Colors.white
-                                                : (true == is_dark
-                                                    ? Colors.white70
+                                                ? AppColors.white
+                                                : (is_dark
+                                                    ? AppColors.white70
                                                     : AppColors
                                                         .text_light_primary),
                                           ),
@@ -581,7 +581,7 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                                         decoration: BoxDecoration(
                                           color: 'Monitoring' == diag_status
                                               ? AppColors.primary_color
-                                              : (true == is_dark
+                                              : (is_dark
                                                   ? AppColors.background_dark
                                                   : AppColors.slate_50),
                                           borderRadius:
@@ -589,7 +589,7 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                                             end: Radius.circular(_LocalDimensions.border_radius_small),
                                           ),
                                           border: Border.all(
-                                            color: true == is_dark
+                                            color: is_dark
                                                 ? AppColors.border_dark
                                                 : AppColors.slate_200,
                                           ),
@@ -600,9 +600,9 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                                             fontSize: _LocalDimensions.font_size_micro,
                                             fontWeight: FontWeight.bold,
                                             color: 'Monitoring' == diag_status
-                                                ? Colors.white
-                                                : (true == is_dark
-                                                    ? Colors.white70
+                                                ? AppColors.white
+                                                : (is_dark
+                                                    ? AppColors.white70
                                                     : AppColors
                                                         .text_light_primary),
                                           ),
@@ -704,7 +704,7 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                           ),
                           child: IconButton(
                             icon:
-                                const Icon(Icons.add_rounded, color: Colors.white),
+                                const Icon(Icons.add_rounded, color: AppColors.white),
                             onPressed: _add_custom_condition,
                           ),
                         ),
@@ -727,7 +727,7 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                         localizations.chronic_description,
                         style: TextStyle(
                           fontSize: _LocalDimensions.font_size_medium,
-                          color: true == is_dark
+                          color: is_dark
                               ? AppColors.text_dark_secondary
                               : AppColors.text_light_secondary,
                         ),
@@ -740,23 +740,23 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                             const EdgeInsets.only(bottom: AppSpacing.space_l),
                         padding: const EdgeInsets.all(AppSpacing.space_l),
                         decoration: BoxDecoration(
-                          color: true == is_dark
+                          color: is_dark
                               ? AppColors.surface_dark
-                              : Colors.white,
+                              : AppColors.white,
                           borderRadius: BorderRadius.circular(16.0),
                           border: Border.all(
                             color: true == _no_chronic_conditions
                                 ? AppColors.primary_color
-                                : (true == is_dark
+                                : (is_dark
                                     ? AppColors.border_dark
                                     : const Color(0xFFE2E8F0)),
                             width: true == _no_chronic_conditions ? 2.0 : 1.0,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: true == is_dark
-                                  ? Colors.black.withValues(alpha: 0.2)
-                                  : Colors.black.withValues(alpha: 0.04),
+                              color: is_dark
+                                  ? AppColors.black.withValues(alpha: 0.2)
+                                  : AppColors.black.withValues(alpha: 0.04),
                               blurRadius: 8.0,
                               offset: const Offset(0.0, 2.0),
                             ),
@@ -788,14 +788,14 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                                     style: TextStyle(
                                       fontSize: _LocalDimensions.font_size_body,
                                       fontWeight: FontWeight.bold,
-                                      color: true == is_dark
-                                          ? Colors.white
+                                      color: is_dark
+                                          ? AppColors.white
                                           : AppColors.text_light_primary,
                                     ),
                                   ),
                                   const SizedBox(height: _LocalDimensions.spacing_tiny),
                                   Text(
-                                    true == is_arabic
+                                    is_arabic
                                         ? 'تحديد هذا الخيار سيلغي تحديد جميع الأمراض'
                                         : 'Activating this unchecks all conditions',
                                     style: const TextStyle(
@@ -884,7 +884,7 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
             child: Text(
               save_button_label,
               style: const TextStyle(
-                color: Colors.white,
+                color: AppColors.white,
                 fontSize: AppSpacing.font_size_action_button,
                 fontWeight: FontWeight.w700,
               ),

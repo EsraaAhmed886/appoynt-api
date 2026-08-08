@@ -89,7 +89,7 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
         return BackdropFilter(
           filter: ImageFilter.blur(sigmaX: _LocalDimensions.blur_sigma, sigmaY: _LocalDimensions.blur_sigma),
           child: AlertDialog(
-            backgroundColor: is_dark ? AppColors.surface_dark : Colors.white,
+            backgroundColor: is_dark ? AppColors.surface_dark : AppColors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
             ),
@@ -104,7 +104,7 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
               localizations.profile_delete_account_warning,
               style: TextStyle(
                 fontSize: _LocalDimensions.font_size_small,
-                color: is_dark ? Colors.white70 : AppColors.text_light_secondary,
+                color: is_dark ? AppColors.white70 : AppColors.text_light_secondary,
               ),
             ),
             actions: [
@@ -115,7 +115,7 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                 child: Text(
                   localizations.profile_cancel_button,
                   style: TextStyle(
-                    color: is_dark ? Colors.white54 : AppColors.text_light_secondary,
+                    color: is_dark ? AppColors.white54 : AppColors.text_light_secondary,
                   ),
                 ),
               ),
@@ -138,7 +138,7 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                 child: Text(
                   localizations.profile_delete_account,
                   style: const TextStyle(
-                    color: Colors.white,
+                    color: AppColors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -158,7 +158,7 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: is_dark ? AppColors.surface_dark : Colors.white,
+        color: is_dark ? AppColors.surface_dark : AppColors.white,
         borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
         border: Border.all(
           color: is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
@@ -166,7 +166,7 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
         ),
         boxShadow: [
           BoxShadow(
-            color: is_dark ? Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark) : Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
+            color: is_dark ? AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark) : AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
             blurRadius: _LocalDimensions.shadow_blur,
             spreadRadius: _LocalDimensions.shadow_spread,
             offset: const Offset(0.0, _LocalDimensions.shadow_offset_y),
@@ -211,7 +211,7 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                 style: TextStyle(
                   fontSize: _LocalDimensions.font_size_medium,
                   fontWeight: FontWeight.bold,
-                  color: is_dark ? Colors.white : AppColors.text_light_primary,
+                  color: is_dark ? AppColors.white : AppColors.text_light_primary,
                 ),
               ),
               if (subtitle != null) ...[
@@ -345,7 +345,7 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                               });
                             },
                             activeTrackColor: AppColors.primary_color,
-                            activeThumbColor: Colors.white,
+                            activeThumbColor: AppColors.white,
                           ),
                         ),
                         Divider(height: _LocalDimensions.border_width_thin, indent: _LocalDimensions.divider_indent, endIndent: _LocalDimensions.divider_end_indent, color: dividerColor),
@@ -357,7 +357,7 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                           subtitle: _two_factor_enabled ? tfa_enabled : tfa_disabled,
                           trailing: Icon(
                             Icons.chevron_right_rounded,
-                            color: is_dark ? Colors.white30 : AppColors.text_light_secondary,
+                            color: is_dark ? AppColors.white30 : AppColors.text_light_secondary,
                           ),
                           onTap: () {
                             setState(() {
@@ -374,7 +374,7 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                           subtitle: change_password_subtitle,
                           trailing: Icon(
                             Icons.chevron_right_rounded,
-                            color: is_dark ? Colors.white30 : AppColors.text_light_secondary,
+                            color: is_dark ? AppColors.white30 : AppColors.text_light_secondary,
                           ),
                           onTap: () {
                             Navigator.of(context).push(
@@ -395,7 +395,7 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                           title: autolock_title,
                           trailing: DropdownButton<String>(
                             value: _auto_lock_timeout,
-                            dropdownColor: is_dark ? AppColors.surface_dark : Colors.white,
+                            dropdownColor: is_dark ? AppColors.surface_dark : AppColors.white,
                             underline: const SizedBox(),
                             icon: const Icon(Icons.arrow_drop_down_rounded, color: AppColors.primary_color),
                             style: const TextStyle(
@@ -448,7 +448,7 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                           title: doc_access_title,
                           trailing: DropdownButton<String>(
                             value: _doctor_access,
-                            dropdownColor: is_dark ? AppColors.surface_dark : Colors.white,
+                            dropdownColor: is_dark ? AppColors.surface_dark : AppColors.white,
                             underline: const SizedBox(),
                             icon: const Icon(Icons.arrow_drop_down_rounded, color: AppColors.primary_color),
                             style: const TextStyle(
@@ -484,7 +484,7 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                           subtitle: active_devices_subtitle,
                           trailing: Icon(
                             Icons.chevron_right_rounded,
-                            color: is_dark ? Colors.white30 : AppColors.text_light_secondary,
+                            color: is_dark ? AppColors.white30 : AppColors.text_light_secondary,
                           ),
                           onTap: () {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -504,7 +504,7 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                           subtitle: export_data_subtitle,
                           trailing: Icon(
                             Icons.chevron_right_rounded,
-                            color: is_dark ? Colors.white30 : AppColors.text_light_secondary,
+                            color: is_dark ? AppColors.white30 : AppColors.text_light_secondary,
                           ),
                           onTap: () {
                              ScaffoldMessenger.of(context).showSnackBar(
@@ -581,7 +581,7 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                                       delete_account_subtitle,
                                       style: TextStyle(
                                         fontSize: _LocalDimensions.font_size_micro,
-                                        color: is_dark ? Colors.white70 : const Color(0xFF64748B),
+                                        color: is_dark ? AppColors.white70 : const Color(0xFF64748B),
                                         height: _LocalDimensions.line_height,
                                       ),
                                     ),

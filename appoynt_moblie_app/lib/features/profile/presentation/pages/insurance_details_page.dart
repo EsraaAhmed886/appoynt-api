@@ -106,7 +106,7 @@ class _InsuranceDetailsPageState extends State<InsuranceDetailsPage> {
               // Text typography styling parameters
               style: const TextStyle(
                 // White text color tint
-                color: Colors.white,
+                color: AppColors.white,
                 // Action button font size token
                 fontSize: AppSpacing.font_size_action_button,
                 // Bold typography font weight
@@ -203,12 +203,12 @@ class _InsuranceDetailsPageState extends State<InsuranceDetailsPage> {
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.transparent,
       barrierColor: AppColors.barrier_color,
       builder: (sheet_context) {
         return Container(
           decoration: BoxDecoration(
-            color: true == is_dark ? AppColors.surface_dark : Colors.white,
+            color: is_dark ? AppColors.surface_dark : AppColors.white,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(_LocalDimensions.border_radius_sheet)),
           ),
           child: Padding(
@@ -222,7 +222,7 @@ class _InsuranceDetailsPageState extends State<InsuranceDetailsPage> {
                   width: _LocalDimensions.drag_handle_width,
                   height: _LocalDimensions.drag_handle_height,
                   decoration: BoxDecoration(
-                    color: true == is_dark ? Colors.white30 : Colors.black12,
+                    color: is_dark ? AppColors.white30 : AppColors.black12,
                     borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_tiny),
                   ),
                 ),
@@ -233,7 +233,7 @@ class _InsuranceDetailsPageState extends State<InsuranceDetailsPage> {
                 style: TextStyle(
                   fontSize: _LocalDimensions.font_size_title,
                   fontWeight: FontWeight.bold,
-                  color: true == is_dark ? Colors.white : AppColors.text_light_primary,
+                  color: is_dark ? AppColors.white : AppColors.text_light_primary,
                 ),
               ),
               Text(

@@ -185,7 +185,7 @@ class _SearchPageState extends State<SearchPage> {
                                     style: TextStyle(
                                       fontSize: AppSpacing.font_size_forgot_link + AppSpacing.border_width_thick,
                                       fontWeight: FontWeight.bold,
-                                      color: true == is_dark
+                                      color: is_dark
                                           ? AppColors.text_dark_primary
                                           : AppColors.search_text_slate,
                                     ),
@@ -213,7 +213,7 @@ class _SearchPageState extends State<SearchPage> {
                                 // Material wrapper ensuring input text style renders properly during hero morphs
                                 child: Material(
                                   // Fully transparent background representation
-                                  color: Colors.transparent,
+                                  color: AppColors.transparent,
                                   // Bounded box hosting search input field
                                   child: Container(
                                     // Height constraint matching design tokens
@@ -221,7 +221,7 @@ class _SearchPageState extends State<SearchPage> {
                                     // Bounding styling configurations options representation
                                     decoration: BoxDecoration(
                                       // Dynamic background surface color matching Home Screen
-                                      color: true == is_dark ? AppColors.surface_dark : AppColors.background_light,
+                                      color: is_dark ? AppColors.surface_dark : AppColors.background_light,
                                       // Capsule corner radius shape
                                       borderRadius: BorderRadius.circular(
                                         // Radius token value
@@ -229,7 +229,7 @@ class _SearchPageState extends State<SearchPage> {
                                       ),
                                       // Border line boundary matching Home Screen
                                       border: Border.all(
-                                        color: true == is_dark ? AppColors.border_dark : AppColors.border_light,
+                                        color: is_dark ? AppColors.border_dark : AppColors.border_light,
                                         width: AppSpacing.border_width_thin,
                                       ),
                                     ),
@@ -251,7 +251,7 @@ class _SearchPageState extends State<SearchPage> {
                                         // Input font weight
                                         fontWeight: FontWeight.normal,
                                         // Color mapping theme
-                                        color: true == is_dark
+                                        color: is_dark
                                             ? AppColors.text_dark_primary
                                             : AppColors.text_light_primary,
                                       ),
@@ -388,7 +388,7 @@ class _SearchPageState extends State<SearchPage> {
                                       // Styling decorations
                                       decoration: BoxDecoration(
                                         // Light blue background tint matching mock-up
-                                        color: true == is_dark
+                                        color: is_dark
                                             ? AppColors.surface_dark
                                             : const Color(0xFFE8F1FF),
                                         // Rounded corner radius matching chips
@@ -472,7 +472,7 @@ class _SearchPageState extends State<SearchPage> {
                         // Card decoration styling options representation
                         decoration: BoxDecoration(
                           // Solid dialog background fill
-                          color: true == is_dark ? AppColors.surface_dark : AppColors.search_alert_modal_bg,
+                          color: is_dark ? AppColors.surface_dark : AppColors.search_alert_modal_bg,
                           // Rounded container corners
                           borderRadius: BorderRadius.circular(
                             // Radius value token
@@ -498,7 +498,7 @@ class _SearchPageState extends State<SearchPage> {
                                 // Semi-bold typographic weight
                                 fontWeight: FontWeight.w600,
                                 // Color mapping theme
-                                color: true == is_dark
+                                color: is_dark
                                     ? AppColors.text_dark_primary
                                     : AppColors.text_light_primary,
                               ),
@@ -561,7 +561,7 @@ class _SearchPageState extends State<SearchPage> {
                                     // Style options
                                     style: const TextStyle(
                                       // White text color contrast
-                                      color: Colors.white,
+                                      color: AppColors.white,
                                       // Bold weight
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -597,14 +597,14 @@ class _SearchPageState extends State<SearchPage> {
     showModalBottomSheet(
       // Expose build context
       context: context,
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.transparent,
       barrierColor: AppColors.barrier_color,
       // Widget builder compiling selector rows list
       builder: (context) {
         // Return column list listing options
         return Container(
           decoration: BoxDecoration(
-            color: is_dark ? AppColors.surface_dark : Colors.white,
+            color: is_dark ? AppColors.surface_dark : AppColors.white,
             borderRadius: const BorderRadius.vertical(
               top: Radius.circular(_LocalDimensions.border_radius_sheet),
             ),
@@ -672,14 +672,14 @@ class _SearchPageState extends State<SearchPage> {
     showModalBottomSheet(
       // Expose build context
       context: context,
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.transparent,
       barrierColor: AppColors.barrier_color,
       // Widget builder compiling selector rows list
       builder: (context) {
         // Return column list listing options
         return Container(
           decoration: BoxDecoration(
-            color: is_dark ? AppColors.surface_dark : Colors.white,
+            color: is_dark ? AppColors.surface_dark : AppColors.white,
             borderRadius: const BorderRadius.vertical(
               top: Radius.circular(_LocalDimensions.border_radius_sheet),
             ),
@@ -767,7 +767,7 @@ class _SearchPageState extends State<SearchPage> {
               // Card decorations style mappings
               decoration: BoxDecoration(
                 // Dynamic surface background tint color
-                color: true == is_dark ? AppColors.surface_dark : AppColors.search_chip_bg,
+                color: is_dark ? AppColors.surface_dark : AppColors.search_chip_bg,
                 // Rounded corner values
                 borderRadius: BorderRadius.circular(
                   // Radius token
@@ -785,7 +785,7 @@ class _SearchPageState extends State<SearchPage> {
                     // Radius dimension mapping matching doctor suggestions
                     radius: AppSpacing.search_avatar_size / AppSpacing.border_width_thick,
                     // Subdued color fill representing shimmer background
-                    backgroundColor: true == is_dark ? AppColors.background_dark : AppColors.background_light,
+                    backgroundColor: is_dark ? AppColors.background_dark : AppColors.background_light,
                   ),
                   // Separator spacer gap
                   const SizedBox(width: AppSpacing.space_xl),
@@ -798,7 +798,7 @@ class _SearchPageState extends State<SearchPage> {
                     // Bounding shape configurations parameters options representation
                     decoration: BoxDecoration(
                       // Subdued color fill
-                      color: true == is_dark ? AppColors.background_dark : AppColors.background_light,
+                      color: is_dark ? AppColors.background_dark : AppColors.background_light,
                       // Rounded corners borders representation
                       borderRadius: BorderRadius.circular(
                         // Radius value
@@ -837,13 +837,13 @@ class _SearchPageState extends State<SearchPage> {
                           style: TextStyle(
                             fontSize: AppSpacing.font_size_body_medium,
                             fontWeight: FontWeight.bold,
-                            color: true == is_dark ? AppColors.text_dark_primary : AppColors.text_light_primary,
+                            color: is_dark ? AppColors.text_dark_primary : AppColors.text_light_primary,
                           ),
                         ),
                         const SizedBox(width: AppSpacing.space_s),
                         Icon(
                           Icons.keyboard_arrow_down_rounded,
-                          color: true == is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary,
+                          color: is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary,
                         ),
                       ],
                     ),
@@ -948,7 +948,7 @@ class _SearchPageState extends State<SearchPage> {
                   // Text style options
                   style: const TextStyle(
                     // White text color contrast
-                    color: Colors.white,
+                    color: AppColors.white,
                     // Bold weight
                     fontWeight: FontWeight.bold,
                   ),
@@ -990,7 +990,7 @@ class _SearchPageState extends State<SearchPage> {
                   // Bold typographic weight
                   fontWeight: FontWeight.w600,
                   // Muted color theme matching headings
-                  color: true == is_dark
+                  color: is_dark
                       ? AppColors.text_dark_primary
                       : AppColors.text_light_secondary,
                 ),
@@ -1040,7 +1040,7 @@ class _SearchPageState extends State<SearchPage> {
                     // Medium typographic weight
                     fontWeight: FontWeight.w500,
                     // Color matching theme
-                    color: true == is_dark
+                    color: is_dark
                         ? AppColors.text_dark_primary
                         : AppColors.text_light_primary,
                   ),
@@ -1059,7 +1059,7 @@ class _SearchPageState extends State<SearchPage> {
                     // Refresh icon token representation
                     Icons.refresh_rounded,
                     // Match white text contrast colors
-                    color: Colors.white,
+                    color: AppColors.white,
                   ),
                   // Localized label string
                   label: Text(
@@ -1068,7 +1068,7 @@ class _SearchPageState extends State<SearchPage> {
                     // Style options
                     style: const TextStyle(
                       // White text color contrast
-                      color: Colors.white,
+                      color: AppColors.white,
                       // Bold weight
                       fontWeight: FontWeight.bold,
                     ),
@@ -1206,7 +1206,7 @@ class _SearchPageState extends State<SearchPage> {
                         // Standard body text size
                         fontSize: AppSpacing.font_size_text,
                         // Color matching theme
-                        color: true == is_dark
+                        color: is_dark
                             ? AppColors.text_dark_primary
                             : AppColors.text_light_primary,
                       ),
@@ -1252,7 +1252,7 @@ class _SearchPageState extends State<SearchPage> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.transparent,
       barrierColor: AppColors.barrier_color,
       builder: (context) {
         // Return StatefulBuilder to enable local state updates inside modal
@@ -1260,7 +1260,7 @@ class _SearchPageState extends State<SearchPage> {
           builder: (context, setModalState) {
             return Container(
               decoration: BoxDecoration(
-                color: is_dark ? AppColors.surface_dark : Colors.white,
+                color: is_dark ? AppColors.surface_dark : AppColors.white,
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(_LocalDimensions.border_radius_sheet),
                 ),
@@ -1477,7 +1477,7 @@ class _SearchPageState extends State<SearchPage> {
                           child: Text(
                             localizations.search_filter_apply,
                             style: const TextStyle(
-                              color: Colors.white,
+                              color: AppColors.white,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -1510,24 +1510,24 @@ class _SearchPageState extends State<SearchPage> {
           vertical: AppSpacing.space_m,
         ),
         decoration: BoxDecoration(
-          color: true == is_selected
+          color: is_selected
               ? AppColors.primary_color
-              : (true == is_dark ? AppColors.surface_dark : const Color(0xFFF2F4F7)),
+              : (is_dark ? AppColors.surface_dark : const Color(0xFFF2F4F7)),
           borderRadius: BorderRadius.circular(AppSpacing.radius_l),
           border: Border.all(
-            color: true == is_selected
+            color: is_selected
                 ? AppColors.primary_color
-                : (true == is_dark ? AppColors.border_dark : const Color(0xFFE4E7EC)),
+                : (is_dark ? AppColors.border_dark : const Color(0xFFE4E7EC)),
             width: AppSpacing.border_width_thin,
           ),
         ),
         child: Text(
           label,
           style: TextStyle(
-            color: true == is_selected
-                ? Colors.white
-                : (true == is_dark ? AppColors.text_dark_secondary : AppColors.search_text_slate),
-            fontWeight: true == is_selected ? FontWeight.bold : FontWeight.normal,
+            color: is_selected
+                ? AppColors.white
+                : (is_dark ? AppColors.text_dark_secondary : AppColors.search_text_slate),
+            fontWeight: is_selected ? FontWeight.bold : FontWeight.normal,
             fontSize: AppSpacing.font_size_label,
           ),
         ),
@@ -1563,14 +1563,14 @@ class _SearchPageState extends State<SearchPage> {
   ) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.transparent,
       barrierColor: AppColors.barrier_color,
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setModalState) {
             return Container(
               decoration: BoxDecoration(
-                color: is_dark ? AppColors.surface_dark : Colors.white,
+                color: is_dark ? AppColors.surface_dark : AppColors.white,
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(_LocalDimensions.border_radius_sheet),
                 ),
@@ -1723,10 +1723,10 @@ class _SearchPageState extends State<SearchPage> {
               ),
             ),
             Icon(
-              true == is_selected
+              is_selected
                   ? Icons.radio_button_checked_rounded
                   : Icons.radio_button_off_rounded,
-              color: true == is_selected
+              color: is_selected
                   ? AppColors.primary_color
                   : (is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary),
               size: AppSpacing.search_nav_icon_size,
@@ -1777,7 +1777,7 @@ class _FilterChip extends StatelessWidget {
       // Layout decorations style details
       decoration: BoxDecoration(
         // White background matching the screenshot
-        color: true == is_dark ? AppColors.surface_dark : Colors.white,
+        color: is_dark ? AppColors.surface_dark : AppColors.white,
         // Rounded chip corner radius (16px spec radius)
         borderRadius: BorderRadius.circular(
           // Radius value
@@ -1786,7 +1786,7 @@ class _FilterChip extends StatelessWidget {
         // Outline border lines options representation
         border: Border.all(
           // Light blue border outline matching the screenshot
-          color: true == is_dark ? AppColors.border_dark : AppColors.pale_blue,
+          color: is_dark ? AppColors.border_dark : AppColors.pale_blue,
           // Explicit thin line width
           width: AppSpacing.border_width_thin,
         ),
@@ -1846,7 +1846,7 @@ class _FilterChip extends StatelessWidget {
                   // Label text styling configurations options
                   style: TextStyle(
                     // Dark navy slate color representation
-                    color: true == is_dark ? AppColors.text_dark_primary : AppColors.search_text_slate,
+                    color: is_dark ? AppColors.text_dark_primary : AppColors.search_text_slate,
                     // Medium typographic size
                     fontSize: AppSpacing.font_size_label,
                     // Bold weight
@@ -1861,7 +1861,7 @@ class _FilterChip extends StatelessWidget {
             // Dropdown chevron arrow icon token
             Icons.keyboard_arrow_down_rounded,
             // Dark navy color representation
-            color: true == is_dark ? AppColors.text_dark_secondary : AppColors.search_text_slate,
+            color: is_dark ? AppColors.text_dark_secondary : AppColors.search_text_slate,
             // Standard size
             size: AppSpacing.dummy_size_icon_notification,
           ),

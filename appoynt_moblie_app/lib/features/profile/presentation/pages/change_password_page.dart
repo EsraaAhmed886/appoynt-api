@@ -378,7 +378,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                   // Contrast colors white progress circle
                                   child: CircularProgressIndicator(
                                     strokeWidth: _LocalDimensions.progress_indicator_stroke,
-                                    color: Colors.white,
+                                    color: AppColors.white,
                                   ),
                                 )
                               : Text(
@@ -387,7 +387,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                   // Styles
                                   style: const TextStyle(
                                     // Color white
-                                    color: Colors.white,
+                                    color: AppColors.white,
                                     // Size action button font
                                     fontSize:
                                         AppSpacing.font_size_action_button,

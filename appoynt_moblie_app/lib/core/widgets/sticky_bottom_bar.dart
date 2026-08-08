@@ -39,13 +39,13 @@ class StickyBottomBar extends StatelessWidget {
       decoration: BoxDecoration(
         // Solid white background adapting dynamically to dark modes
         color: backgroundColor ??
-            (true == is_dark ? AppColors.surface_dark : Colors.white),
+            (is_dark ? AppColors.surface_dark : AppColors.white),
         // Subtle top separating border line
         border: Border(
           // Top border side properties
           top: BorderSide(
             // Slate light border or dark adapter
-            color: true == is_dark
+            color: is_dark
                 ? AppColors.border_dark
                 : const Color(0xFFE2E8F0),
             // Border thickness thin
@@ -57,9 +57,9 @@ class StickyBottomBar extends StatelessWidget {
           // Soft elevation offset shadow
           BoxShadow(
             // Shadow transparency
-            color: true == is_dark
-                ? Colors.black.withValues(alpha: 0.2)
-                : Colors.black.withValues(alpha: 0.05),
+            color: is_dark
+                ? AppColors.black.withValues(alpha: 0.2)
+                : AppColors.black.withValues(alpha: 0.05),
             // Blur spread
             blurRadius: 10.0,
             // Offset coordinates (upwards)

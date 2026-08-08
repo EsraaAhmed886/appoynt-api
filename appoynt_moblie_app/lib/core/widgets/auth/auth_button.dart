@@ -54,7 +54,7 @@ class AuthButton extends StatelessWidget {
       // ElevatedButton core widget
       child: ElevatedButton(
         // Set press callback and disable interactions if loading or disabled using Yoda check
-        onPressed: (true == is_loading || false == is_enabled)
+        onPressed: (is_loading || !is_enabled)
             // Null callback disables actions
             ? null
             // Trigger standard submission gesture
@@ -74,7 +74,7 @@ class AuthButton extends StatelessWidget {
           elevation: 0.0,
         ),
         // Draw loading indicator or localized text labels based on loading check using Yoda style
-        child: true == is_loading
+        child: is_loading
             // Render spinner during execution
             ? const SizedBox(
                 // Set layout width
@@ -86,7 +86,7 @@ class AuthButton extends StatelessWidget {
                   // Set line stroke thickness
                   strokeWidth: 2.5,
                   // Apply high contrast white color
-                  color: Colors.white,
+                  color: AppColors.white,
                 ),
               )
             // Render localized text when idle
@@ -102,9 +102,9 @@ class AuthButton extends StatelessWidget {
                   // Set semi-bold font weight
                   fontWeight: FontWeight.w600,
                   // Force white text color with faded opacity when disabled using Yoda style check
-                  color: false == is_enabled
-                      ? Colors.white.withValues(alpha: 0.7)
-                      : Colors.white,
+                  color: !is_enabled
+                      ? AppColors.white.withValues(alpha: 0.7)
+                      : AppColors.white,
                 ),
               ),
       ),

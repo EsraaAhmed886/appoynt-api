@@ -105,11 +105,11 @@ class _PasswordSuccessPageState extends State<PasswordSuccessPage>
 
     // Resolve primary text color token using Yoda style check
     final Color text_primary =
-        true == is_dark ? AppColors.text_dark_primary : AppColors.text_light_primary;
+        is_dark ? AppColors.text_dark_primary : AppColors.text_light_primary;
 
     // Resolve secondary text color token using Yoda style check
     final Color text_secondary =
-        true == is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary;
+        is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary;
 
     // Return scaffold setting background color
     return Scaffold(
@@ -244,7 +244,7 @@ class _PasswordSuccessPageState extends State<PasswordSuccessPage>
                                   // Bold weight configuration
                                   fontWeight: FontWeight.w700,
                                   // High contrast white text color
-                                  color: Colors.white,
+                                  color: AppColors.white,
                                 ),
                               ),
                             ),

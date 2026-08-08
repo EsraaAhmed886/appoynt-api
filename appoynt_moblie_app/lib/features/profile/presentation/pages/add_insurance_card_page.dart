@@ -137,14 +137,14 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
     showModalBottomSheet(
       // Context
       context: context,
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.transparent,
       barrierColor: AppColors.barrier_color,
       // Builder
       builder: (sheet_context) {
         // Return scrollable list wrapping items
         return Container(
           decoration: BoxDecoration(
-            color: is_dark ? AppColors.surface_dark : Colors.white,
+            color: is_dark ? AppColors.surface_dark : AppColors.white,
             borderRadius: const BorderRadius.vertical(
               top: Radius.circular(_LocalDimensions.border_radius_sheet),
             ),
@@ -304,7 +304,7 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
               localizations.insurance_save_card_btn,
               style: TextStyle(
                 // White text when enabled, muted gray text when disabled
-                color: true == _is_form_valid ? Colors.white : AppColors.slate_400,
+                color: true == _is_form_valid ? AppColors.white : AppColors.slate_400,
                 fontSize: AppSpacing.font_size_action_button,
                 fontWeight: FontWeight.w700,
               ),
@@ -369,7 +369,7 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
                           style: TextStyle(
                             fontSize: AppSpacing.font_size_body_medium,
                             fontWeight: FontWeight.w700,
-                            color: true == is_dark
+                            color: is_dark
                                 ? AppColors.text_dark_primary
                                 : AppColors.text_light_primary,
                           ),
@@ -384,14 +384,14 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
                             width: double.infinity,
                             height: AppSpacing.dummy_height_search_bar,
                             decoration: BoxDecoration(
-                              color: true == is_dark
+                              color: is_dark
                                   ? AppColors.surface_dark
-                                  : Colors.white,
+                                  : AppColors.white,
                               borderRadius: BorderRadius.circular(
                                 AppSpacing.radius_input,
                               ),
                               border: Border.all(
-                                color: true == is_dark
+                                color: is_dark
                                     ? AppColors.border_dark
                                     : AppColors.slate_200,
                                 width: AppSpacing.border_width_thin,
@@ -411,8 +411,8 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
                                     style: TextStyle(
                                       color: _selected_provider.isEmpty
                                           ? AppColors.text_light_secondary
-                                          : (true == is_dark
-                                              ? Colors.white
+                                          : (is_dark
+                                              ? AppColors.white
                                               : AppColors.text_light_primary),
                                       fontSize: AppSpacing.font_size_text,
                                       fontWeight: _selected_provider.isEmpty
@@ -422,8 +422,8 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
                                   ),
                                   Icon(
                                     Icons.keyboard_arrow_down_rounded,
-                                    color: true == is_dark
-                                        ? Colors.white60
+                                    color: is_dark
+                                        ? AppColors.white60
                                         : AppColors.slate_500,
                                     size: AppSpacing.icon_size_m,
                                   ),
@@ -439,7 +439,7 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
                           style: TextStyle(
                             fontSize: AppSpacing.font_size_body_medium,
                             fontWeight: FontWeight.w700,
-                            color: true == is_dark
+                            color: is_dark
                                 ? AppColors.text_dark_primary
                                 : AppColors.text_light_primary,
                           ),
@@ -464,14 +464,14 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
                             width: double.infinity,
                             height: AppSpacing.dummy_height_search_bar,
                             decoration: BoxDecoration(
-                              color: true == is_dark
+                              color: is_dark
                                   ? AppColors.surface_dark
                                   : AppColors.slate_50,
                               borderRadius: BorderRadius.circular(
                                 AppSpacing.radius_input,
                               ),
                               border: Border.all(
-                                color: true == is_dark
+                                color: is_dark
                                     ? AppColors.border_dark
                                     : AppColors.slate_200,
                                 width: AppSpacing.border_width_thin,
@@ -482,8 +482,8 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
                               children: [
                                 Icon(
                                   Icons.file_upload_outlined,
-                                  color: true == is_dark
-                                      ? Colors.white70
+                                  color: is_dark
+                                      ? AppColors.white70
                                       : AppColors.slate_600,
                                   size: AppSpacing.icon_size_m,
                                 ),
@@ -491,8 +491,8 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
                                 Text(
                                   localizations.insurance_upload_doc_btn,
                                   style: TextStyle(
-                                    color: true == is_dark
-                                        ? Colors.white70
+                                    color: is_dark
+                                        ? AppColors.white70
                                         : AppColors.slate_600,
                                     fontWeight: FontWeight.w600,
                                   ),

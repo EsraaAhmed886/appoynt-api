@@ -287,7 +287,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     if (month == 2) {
       final bool is_leap =
           (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
-      return true == is_leap ? 29 : 28;
+      return is_leap ? 29 : 28;
     } else {
       final Set<int> thirty_days = {4, 6, 9, 11};
       return true == thirty_days.contains(month) ? 30 : 31;
@@ -510,14 +510,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
     showModalBottomSheet(
       // context parameter
       context: context,
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.transparent,
       barrierColor: AppColors.barrier_color,
       // bottom sheet layout builder
       builder: (BuildContext context) {
         // Return Container providing sheet background and rounded corners
         return Container(
           decoration: BoxDecoration(
-            color: true == is_dark ? AppColors.surface_dark : Colors.white,
+            color: is_dark ? AppColors.surface_dark : AppColors.white,
             borderRadius:
                 const BorderRadius.vertical(top: Radius.circular(_LocalDimensions.border_radius_sheet)),
           ),
@@ -542,7 +542,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     // Bold styling
                     fontWeight: FontWeight.bold,
                     // Dynamic colors adapting to light/dark surfaces
-                    color: true == is_dark
+                    color: is_dark
                         ? AppColors.text_dark_primary
                         : AppColors.text_light_primary,
                   ),
@@ -664,7 +664,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('${localizations.profile_photo_pick_failed_prefix}$error'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.red,
           ),
         );
       } else {
@@ -841,8 +841,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                           boxShadow: [
                                             BoxShadow(
                                               color: is_dark
-                                                  ? Colors.black54
-                                                  : Colors.black12,
+                                                  ? AppColors.black54
+                                                  : AppColors.black12,
                                               blurRadius: _LocalDimensions.avatar_shadow_blur,
                                               offset: const Offset(0.0, _LocalDimensions.avatar_shadow_offset_y),
                                             ),
@@ -891,7 +891,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                           ),
                                           child: const Icon(
                                             Icons.camera_alt_rounded,
-                                            color: Colors.white,
+                                            color: AppColors.white,
                                             size: _LocalDimensions.camera_badge_icon_size,
                                           ),
                                         ),
@@ -907,7 +907,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 decoration: BoxDecoration(
                                   color: is_dark
                                       ? AppColors.surface_dark
-                                      : Colors.white,
+                                      : AppColors.white,
                                   borderRadius: BorderRadius.circular(_LocalDimensions.card_radius),
                                   border: Border.all(
                                     color: is_dark
@@ -918,8 +918,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   boxShadow: [
                                     BoxShadow(
                                       color: is_dark
-                                          ? Colors.black.withValues(alpha: 0.2)
-                                          : Colors.black
+                                          ? AppColors.black.withValues(alpha: 0.2)
+                                          : AppColors.black
                                               .withValues(alpha: 0.03),
                                       blurRadius: _LocalDimensions.card_shadow_blur,
                                       spreadRadius: 0.0,
@@ -1112,7 +1112,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                         fontSize:
                                             AppSpacing.font_size_body_medium,
                                         fontWeight: FontWeight.w700,
-                                        color: true == is_dark
+                                        color: is_dark
                                             ? AppColors.text_dark_primary
                                             : AppColors.primary_color,
                                       ),
@@ -1197,7 +1197,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                         fontSize:
                                             AppSpacing.font_size_body_medium,
                                         fontWeight: FontWeight.w700,
-                                        color: true == is_dark
+                                        color: is_dark
                                             ? AppColors.text_dark_primary
                                             : AppColors.primary_color,
                                       ),
@@ -1286,7 +1286,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 decoration: BoxDecoration(
                   color: is_selected
                       ? AppColors.primary_color
-                      : Colors.transparent,
+                      : AppColors.transparent,
                   borderRadius: BorderRadius.circular(_LocalDimensions.chip_radius),
                 ),
                 // FittedBox dynamically scales text down to prevent truncation
@@ -1300,9 +1300,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       fontSize: _LocalDimensions.chip_font_size,
                       fontWeight: FontWeight.bold,
                       color: is_selected
-                          ? Colors.white
+                          ? AppColors.white
                           : (is_dark
-                              ? Colors.white70
+                              ? AppColors.white70
                               : AppColors.text_light_primary),
                     ),
                   ),

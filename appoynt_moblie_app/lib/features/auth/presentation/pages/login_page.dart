@@ -481,7 +481,7 @@ class _LoginPageState extends State<LoginPage> {
                     Align(
                       // Toggle layout alignments dynamically depending on language code
                       // direction using Yoda style check
-                      alignment: true == is_arabic
+                      alignment: is_arabic
                           ? Alignment.centerLeft
                           : Alignment.centerRight,
                       // Language toggler button capsule widget
@@ -657,7 +657,7 @@ class _LoginPageState extends State<LoginPage> {
                             // Forgot password anchor text link
                             Align(
                               // Align right for English and left for Arabic using Yoda style check
-                              alignment: true == is_arabic
+                              alignment: is_arabic
                                   ? Alignment.centerLeft
                                   : Alignment.centerRight,
                               // TextButton trigger

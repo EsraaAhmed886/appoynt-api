@@ -48,42 +48,42 @@ class GlobalLanguageButton extends StatelessWidget {
     // Resolve color indicator for button elements based on light option check using Yoda style
     final Color icon_color = true == light
         // Set icon to white for dark backgrounds
-        ? Colors.white
+        ? AppColors.white
         // Set icon dynamically to support dark mode theme switching
-        : (true == is_dark
+        : (is_dark
             ? AppColors.text_dark_primary
             : AppColors.text_light_primary);
 
     // Resolve background fill color configurations using Yoda style check
     final Color bg_color = true == light
         // Transparent white background capsule overlay
-        ? Colors.white.withValues(alpha: 0.15)
+        ? AppColors.white.withValues(alpha: 0.15)
         // Completely transparent fallback
-        : Colors.transparent;
+        : AppColors.transparent;
 
     // Resolve capsule border line color configurations using Yoda style check
     final Color border_color = true == light
         // Subtly visible white line
-        ? Colors.white.withValues(alpha: 0.35)
+        ? AppColors.white.withValues(alpha: 0.35)
         // Completely transparent fallback
-        : Colors.transparent;
+        : AppColors.transparent;
 
     // Resolve active language short label based on locale direction check using Yoda style
-    final String current_label = true == is_arabic
+    final String current_label = is_arabic
         // Arabic code label
         ? localizations.language_code_ar
         // English code label
         : localizations.language_code_en;
 
     // Resolve active language full name spelling based on locale direction check using Yoda style
-    final String current_full = true == is_arabic
+    final String current_full = is_arabic
         // Arabic full name spelling
         ? localizations.language_name_ar
         // English full name spelling
         : localizations.language_name_en;
 
     // Resolve alternate language short label based on locale direction check using Yoda style
-    final String other_label = true == is_arabic
+    final String other_label = is_arabic
         // English code label
         ? localizations.language_code_en
         // Arabic code label
@@ -91,7 +91,7 @@ class GlobalLanguageButton extends StatelessWidget {
 
     // Resolve alternate language full name spelling based on locale direction check
     // using Yoda style check
-    final String other_full = true == is_arabic
+    final String other_full = is_arabic
         // English full name spelling
         ? localizations.language_name_en
         // Arabic full name spelling
@@ -102,7 +102,7 @@ class GlobalLanguageButton extends StatelessWidget {
       // Offset position to place dropdown list below capsule
       offset: const Offset(0.0, 36.0),
       // Apply surface color setting to dropdown background card dynamically based on theme
-      color: true == is_dark ? AppColors.surface_dark : Colors.white,
+      color: is_dark ? AppColors.surface_dark : AppColors.white,
       // Set dropdown shadow depth representation
       elevation: 8.0,
       // Apply rounded container borders to dropdown shape
@@ -112,7 +112,7 @@ class GlobalLanguageButton extends StatelessWidget {
         // Draw thin container line borders
         side: BorderSide(
           // Set border line color adapting dynamically to theme modes
-          color: true == is_dark
+          color: is_dark
               ? AppColors.border_dark.withValues(alpha: 0.5)
               : AppColors.border_light.withValues(alpha: 0.5),
         ),
@@ -177,7 +177,7 @@ class GlobalLanguageButton extends StatelessWidget {
                     // Set size
                     fontSize: 13.0,
                     // Apply secondary color dynamically
-                    color: true == is_dark
+                    color: is_dark
                         ? AppColors.text_dark_secondary
                         : AppColors.text_light_secondary,
                   ),
@@ -216,7 +216,7 @@ class GlobalLanguageButton extends StatelessWidget {
                   // Set dimensions size
                   size: 16.0,
                   // Set secondary color dynamically
-                  color: true == is_dark
+                  color: is_dark
                       ? AppColors.text_dark_secondary
                       : AppColors.text_light_secondary,
                 ),
@@ -235,7 +235,7 @@ class GlobalLanguageButton extends StatelessWidget {
                     // Apply bold weight
                     fontWeight: FontWeight.w700,
                     // Apply primary color dynamically
-                    color: true == is_dark
+                    color: is_dark
                         ? AppColors.text_dark_primary
                         : AppColors.text_light_primary,
                   ),
@@ -251,7 +251,7 @@ class GlobalLanguageButton extends StatelessWidget {
                     // Set size
                     fontSize: 13.0,
                     // Apply secondary color dynamically
-                    color: true == is_dark
+                    color: is_dark
                         ? AppColors.text_dark_secondary
                         : AppColors.text_light_secondary,
                   ),

@@ -234,7 +234,7 @@ class _HomeTab extends StatelessWidget {
                         // Accent bold typographic weight indicator
                         fontWeight: FontWeight.w800,
                         // Dynamic text color adjusting to theme modes
-                        color: true == is_dark
+                        color: is_dark
                             ? AppColors.text_dark_primary
                             : AppColors.text_light_primary,
                       ),
@@ -251,7 +251,7 @@ class _HomeTab extends StatelessWidget {
                 // Layout border and backgrounds styling properties representation
                 decoration: BoxDecoration(
                   // Dynamic background color matching surface theme
-                  color: true == is_dark
+                  color: is_dark
                       ? AppColors.surface_dark
                       : AppColors.background_light,
                   // Circular rounded container shape configurations
@@ -262,7 +262,7 @@ class _HomeTab extends StatelessWidget {
                   // Border lines border representations
                   border: Border.all(
                     // Border boundary outline color mappings
-                    color: true == is_dark
+                    color: is_dark
                         ? AppColors.border_dark
                         : AppColors.border_light,
                     // Explicit border width definition
@@ -280,7 +280,7 @@ class _HomeTab extends StatelessWidget {
                       // Bell icon token
                       Icons.notifications_outlined,
                       // Bell color matching header texts
-                      color: true == is_dark
+                      color: is_dark
                           ? AppColors.text_dark_primary
                           : AppColors.text_light_primary,
                       // Icon display size bounds
@@ -369,7 +369,7 @@ class _HomeTab extends StatelessWidget {
               // Material wrapper ensuring input text style renders properly during hero morphs
               child: Material(
                 // Fully transparent background representation
-                color: Colors.transparent,
+                color: AppColors.transparent,
                 // Container mimicking search bar text field layout
                 child: Container(
                   // Container height constraint
@@ -377,7 +377,7 @@ class _HomeTab extends StatelessWidget {
                   // Card decorations style mappings
                   decoration: BoxDecoration(
                     // Dynamic background surface color
-                    color: true == is_dark
+                    color: is_dark
                         ? AppColors.surface_dark
                         : AppColors.background_light,
                     // Rounded container corners configurations
@@ -388,7 +388,7 @@ class _HomeTab extends StatelessWidget {
                     // Border line boundary decoration options
                     border: Border.all(
                       // Border outline colors matching dividers
-                      color: true == is_dark
+                      color: is_dark
                           ? AppColors.border_dark
                           : AppColors.border_light,
                       // Explicit border width definition
@@ -553,7 +553,7 @@ class _HomeTab extends StatelessWidget {
                         // Label typography settings
                         style: const TextStyle(
                           // Text color white with moderate opacity levels
-                          color: Colors.white70,
+                          color: AppColors.white70,
                           // Small font size mapping subhead layouts
                           fontSize: AppSpacing.font_size_label,
                         ),
@@ -570,7 +570,7 @@ class _HomeTab extends StatelessWidget {
                         // Label typography parameters options
                         style: const TextStyle(
                           // White text color for high contrast representation
-                          color: Colors.white,
+                          color: AppColors.white,
                           // Moderate header font size
                           fontSize: AppSpacing.font_size_body_medium,
                           // Extra bold weight settings
@@ -589,7 +589,7 @@ class _HomeTab extends StatelessWidget {
                         // Label typography settings
                         style: const TextStyle(
                           // White text color with moderate opacity levels
-                          color: Colors.white70,
+                          color: AppColors.white70,
                           // Small font size mapping subhead layouts
                           fontSize: AppSpacing.font_size_label,
                         ),
@@ -612,7 +612,7 @@ class _HomeTab extends StatelessWidget {
                         // Layout decorations details
                         decoration: BoxDecoration(
                           // Solid white background fill
-                          color: Colors.white,
+                          color: AppColors.white,
                           // Rounded border edges configurations
                           borderRadius: BorderRadius.circular(
                             // Circular boundary radius parameter value
@@ -642,7 +642,7 @@ class _HomeTab extends StatelessWidget {
                   // Calendar icon representation
                   Icons.calendar_today_rounded,
                   // Semi-transparent white color to overlay subtly
-                  color: Colors.white
+                  color: AppColors.white
                       .withValues(alpha: AppSpacing.dummy_opacity_bell_badge),
                   // Large graphical representation boundaries size
                   size: AppSpacing.dummy_banner_icon_size,
@@ -672,7 +672,7 @@ class _HomeTab extends StatelessWidget {
                   // Bold typography indicator
                   fontWeight: FontWeight.w700,
                   // Dynamic text color adjusting to brightness mode
-                  color: true == is_dark
+                  color: is_dark
                       ? AppColors.text_dark_primary
                       : AppColors.text_light_primary,
                 ),
@@ -778,7 +778,7 @@ class _HomeTab extends StatelessWidget {
                   // Bold typography indicator
                   fontWeight: FontWeight.w700,
                   // Dynamic text color adjusting to brightness mode
-                  color: true == is_dark
+                  color: is_dark
                       ? AppColors.text_dark_primary
                       : AppColors.text_light_primary,
                 ),
@@ -928,7 +928,7 @@ class _ComingSoonTab extends StatelessWidget {
               // Bold typography weight indicator
               fontWeight: FontWeight.w800,
               // Dynamic text color adjusting to brightness mode
-              color: true == is_dark
+              color: is_dark
                   ? AppColors.text_dark_primary
                   : AppColors.text_light_primary,
             ),
@@ -1083,7 +1083,7 @@ class _SpecialtyChip extends StatelessWidget {
       // Card decorations style mappings
       decoration: BoxDecoration(
         // Dynamic background surface color
-        color: true == is_dark
+        color: is_dark
             ? AppColors.surface_dark
             : AppColors.background_light,
         // Rounded container corners configurations
@@ -1095,7 +1095,7 @@ class _SpecialtyChip extends StatelessWidget {
         border: Border.all(
           // Border outline colors matching dividers
           color:
-              true == is_dark ? AppColors.border_dark : AppColors.border_light,
+              is_dark ? AppColors.border_dark : AppColors.border_light,
           // Explicit border width definition
           width: AppSpacing.border_width_thin,
         ),
@@ -1131,7 +1131,7 @@ class _SpecialtyChip extends StatelessWidget {
               // Semi-bold typography indicator
               fontWeight: FontWeight.w600,
               // Dynamic text color adjusting to theme modes
-              color: true == is_dark
+              color: is_dark
                   ? AppColors.text_dark_primary
                   : AppColors.text_light_primary,
             ),
@@ -1182,7 +1182,7 @@ class _DoctorCard extends StatelessWidget {
       // Card decorations style mappings
       decoration: BoxDecoration(
         // Dynamic background surface color
-        color: true == is_dark
+        color: is_dark
             ? AppColors.surface_dark
             : AppColors.background_light,
         // Rounded container corners configurations
@@ -1194,7 +1194,7 @@ class _DoctorCard extends StatelessWidget {
         border: Border.all(
           // Border outline colors matching dividers
           color:
-              true == is_dark ? AppColors.border_dark : AppColors.border_light,
+              is_dark ? AppColors.border_dark : AppColors.border_light,
           // Explicit border width definition
           width: AppSpacing.border_width_thin,
         ),
@@ -1251,7 +1251,7 @@ class _DoctorCard extends StatelessWidget {
                     // Bold typographic weight indicator
                     fontWeight: FontWeight.w700,
                     // Dynamic text color adjusting to theme modes
-                    color: true == is_dark
+                    color: is_dark
                         ? AppColors.text_dark_primary
                         : AppColors.text_light_primary,
                   ),
@@ -1307,7 +1307,7 @@ class _DoctorCard extends StatelessWidget {
                         // Semi-bold typography indicator
                         fontWeight: FontWeight.w600,
                         // Dynamic text color adjusting to theme modes
-                        color: true == is_dark
+                        color: is_dark
                             ? AppColors.text_dark_primary
                             : AppColors.text_light_primary,
                       ),
@@ -1374,7 +1374,7 @@ class _DoctorCard extends StatelessWidget {
               // Label text styling parameters options
               style: const TextStyle(
                 // White text color for contrast representation
-                color: Colors.white,
+                color: AppColors.white,
                 // Small font size
                 fontSize: AppSpacing.font_size_label,
                 // Bold text weight representation

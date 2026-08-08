@@ -73,13 +73,13 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
   void _show_language_bottom_sheet(BuildContext context, AppLocalizations localizations, bool is_dark) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.transparent,
       barrierColor: AppColors.barrier_color,
       builder: (modal_context) {
         final bool is_arabic = localizations.is_arabic;
         return Container(
           decoration: BoxDecoration(
-            color: is_dark ? AppColors.surface_dark : Colors.white,
+            color: is_dark ? AppColors.surface_dark : AppColors.white,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(_LocalDimensions.border_radius_sheet)),
           ),
           child: SafeArea(
@@ -92,7 +92,7 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
                   width: _LocalDimensions.drag_handle_width,
                   height: _LocalDimensions.drag_handle_height,
                   decoration: BoxDecoration(
-                    color: is_dark ? Colors.white30 : Colors.black12,
+                    color: is_dark ? AppColors.white30 : AppColors.black12,
                     borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_tiny),
                   ),
                 ),
@@ -103,7 +103,7 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
                 style: TextStyle(
                   fontSize: _LocalDimensions.font_size_title_medium,
                   fontWeight: FontWeight.bold,
-                  color: is_dark ? Colors.white : AppColors.text_light_primary,
+                  color: is_dark ? AppColors.white : AppColors.text_light_primary,
                 ),
               ),
               const SizedBox(height: _LocalDimensions.spacing_large),
@@ -141,7 +141,7 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
   void _show_theme_bottom_sheet(BuildContext context, AppLocalizations localizations, bool is_dark) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.transparent,
       barrierColor: AppColors.barrier_color,
       builder: (modal_context) {
         return ListenableBuilder(
@@ -150,7 +150,7 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
             final ThemeMode currentMode = theme_mode_notifier.current_theme_mode;
             return Container(
               decoration: BoxDecoration(
-                color: is_dark ? AppColors.surface_dark : Colors.white,
+                color: is_dark ? AppColors.surface_dark : AppColors.white,
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(24.0)),
               ),
               child: SafeArea(
@@ -163,7 +163,7 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
                       width: 40.0,
                       height: 4.0,
                       decoration: BoxDecoration(
-                        color: is_dark ? Colors.white30 : Colors.black12,
+                        color: is_dark ? AppColors.white30 : AppColors.black12,
                         borderRadius: BorderRadius.circular(2.0),
                       ),
                     ),
@@ -174,7 +174,7 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
                     style: TextStyle(
                       fontSize: _LocalDimensions.font_size_title_medium,
                       fontWeight: FontWeight.bold,
-                      color: is_dark ? Colors.white : AppColors.text_light_primary,
+                      color: is_dark ? AppColors.white : AppColors.text_light_primary,
                     ),
                   ),
                   const SizedBox(height: _LocalDimensions.spacing_large),
@@ -228,12 +228,12 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
   }) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.transparent,
       barrierColor: AppColors.barrier_color,
       builder: (modal_context) {
         return Container(
           decoration: BoxDecoration(
-            color: is_dark ? AppColors.surface_dark : Colors.white,
+            color: is_dark ? AppColors.surface_dark : AppColors.white,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(_LocalDimensions.border_radius_sheet)),
           ),
           child: Padding(
@@ -247,7 +247,7 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
                   width: _LocalDimensions.drag_handle_width,
                   height: _LocalDimensions.drag_handle_height,
                   decoration: BoxDecoration(
-                    color: is_dark ? Colors.white30 : Colors.black26,
+                    color: is_dark ? AppColors.white30 : AppColors.black26,
                     borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_tiny),
                   ),
                 ),
@@ -258,7 +258,7 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
                 style: TextStyle(
                   fontSize: _LocalDimensions.font_size_title_large,
                   fontWeight: FontWeight.w800,
-                  color: is_dark ? Colors.white : AppColors.text_light_primary,
+                  color: is_dark ? AppColors.white : AppColors.text_light_primary,
                 ),
               ),
               const SizedBox(height: _LocalDimensions.spacing_medium),
@@ -278,7 +278,7 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
                   onPressed: () => Navigator.of(modal_context).pop(),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary_color,
-                    foregroundColor: Colors.white,
+                    foregroundColor: AppColors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppSpacing.radius_l),
                     ),
@@ -308,7 +308,7 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: is_dark ? AppColors.surface_dark : Colors.white,
+        color: is_dark ? AppColors.surface_dark : AppColors.white,
         borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
         border: Border.all(
           color: is_dark ? AppColors.border_dark : AppColors.slate_200,
@@ -316,7 +316,7 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
         ),
         boxShadow: [
           BoxShadow(
-            color: is_dark ? Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark) : Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
+            color: is_dark ? AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark) : AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
             blurRadius: _LocalDimensions.shadow_blur,
             spreadRadius: _LocalDimensions.border_width_thin,
             offset: const Offset(0.0, 2.0),
@@ -361,7 +361,7 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
                 style: TextStyle(
                   fontSize: _LocalDimensions.font_size_body_medium,
                   fontWeight: FontWeight.bold,
-                  color: is_dark ? Colors.white : AppColors.text_light_primary,
+                  color: is_dark ? AppColors.white : AppColors.text_light_primary,
                 ),
               ),
               if (subtitle != null) ...[
@@ -489,7 +489,7 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
                           });
                         },
                         activeTrackColor: AppColors.primary_color,
-                        activeThumbColor: Colors.white,
+                        activeThumbColor: AppColors.white,
                       ),
                     ),
                     Divider(height: 1.0, indent: 68.0, endIndent: 16.0, color: dividerColor),
@@ -507,7 +507,7 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
                           });
                         },
                         activeTrackColor: AppColors.primary_color,
-                        activeThumbColor: Colors.white,
+                        activeThumbColor: AppColors.white,
                       ),
                     ),
                     Divider(height: 1.0, indent: 68.0, endIndent: 16.0, color: dividerColor),
@@ -525,7 +525,7 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
                           });
                         },
                         activeTrackColor: AppColors.primary_color,
-                        activeThumbColor: Colors.white,
+                        activeThumbColor: AppColors.white,
                       ),
                     ),
                     Divider(height: 1.0, indent: 68.0, endIndent: 16.0, color: dividerColor),
@@ -543,7 +543,7 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
                           });
                         },
                         activeTrackColor: AppColors.primary_color,
-                        activeThumbColor: Colors.white,
+                        activeThumbColor: AppColors.white,
                       ),
                     ),
                   ],
@@ -572,7 +572,7 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
                       subtitle: active_language,
                       trailing: Icon(
                         Icons.chevron_right_rounded,
-                        color: is_dark ? Colors.white30 : AppColors.text_light_secondary,
+                        color: is_dark ? AppColors.white30 : AppColors.text_light_secondary,
                       ),
                       onTap: () {
                         _show_language_bottom_sheet(context, localizations, is_dark);
@@ -587,7 +587,7 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
                       subtitle: active_theme,
                       trailing: Icon(
                         Icons.chevron_right_rounded,
-                        color: is_dark ? Colors.white30 : AppColors.text_light_secondary,
+                        color: is_dark ? AppColors.white30 : AppColors.text_light_secondary,
                       ),
                       onTap: () {
                         _show_theme_bottom_sheet(context, localizations, is_dark);
@@ -608,7 +608,7 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
                           });
                         },
                         activeTrackColor: AppColors.primary_color,
-                        activeThumbColor: Colors.white,
+                        activeThumbColor: AppColors.white,
                       ),
                     ),
                   ],
@@ -637,7 +637,7 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
                       subtitle: "19999",
                       trailing: Icon(
                         Icons.chevron_right_rounded,
-                        color: is_dark ? Colors.white30 : AppColors.text_light_secondary,
+                        color: is_dark ? AppColors.white30 : AppColors.text_light_secondary,
                       ),
                       onTap: () {
                         showDialog(
@@ -681,7 +681,7 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
                       subtitle: help_center_sub,
                       trailing: Icon(
                         Icons.chevron_right_rounded,
-                        color: is_dark ? Colors.white30 : AppColors.text_light_secondary,
+                        color: is_dark ? AppColors.white30 : AppColors.text_light_secondary,
                       ),
                       onTap: () {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -701,7 +701,7 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
                       subtitle: localizations.profile_support_terms_sub,
                       trailing: Icon(
                         Icons.chevron_right_rounded,
-                        color: is_dark ? Colors.white30 : AppColors.text_light_secondary,
+                        color: is_dark ? AppColors.white30 : AppColors.text_light_secondary,
                       ),
                       onTap: () {
                         _show_legal_modal(
@@ -722,7 +722,7 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
                       subtitle: localizations.profile_support_privacy_sub,
                       trailing: Icon(
                         Icons.chevron_right_rounded,
-                        color: is_dark ? Colors.white30 : AppColors.text_light_secondary,
+                        color: is_dark ? AppColors.white30 : AppColors.text_light_secondary,
                       ),
                       onTap: () {
                         _show_legal_modal(

@@ -185,7 +185,7 @@ class _RegisterPageState extends State<RegisterPage> {
     final bool is_email_valid = RegExp(
             r'^[a-zA-Z0-9]+([._-][a-zA-Z0-9]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,4}$')
         .hasMatch(email);
-    if (false == is_email_valid) {
+    if (!is_email_valid) {
       return false;
     } else {
       // Empty action block to satisfy compiler
@@ -259,7 +259,7 @@ class _RegisterPageState extends State<RegisterPage> {
     final bool is_valid = _form_key.currentState!.validate();
 
     // Terminate submission workflow if validation fails or terms are not accepted using Yoda style check
-    if (false == is_valid || true == _terms_error) {
+    if (!is_valid || true == _terms_error) {
       // Terminate execution
       return;
     } else {
@@ -318,7 +318,7 @@ class _RegisterPageState extends State<RegisterPage> {
     final bool is_email_pattern_valid = RegExp(
             r'^[a-zA-Z0-9]+([._-][a-zA-Z0-9]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,4}$')
         .hasMatch(email_value.trim());
-    if (false == is_email_pattern_valid) {
+    if (!is_email_pattern_valid) {
       // Return format warning string
       return strings_catalog.invalid_email;
     } else {
@@ -734,7 +734,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 // Yoda style check
                                 color: true == _agree_to_terms
                                     ? AppColors.primary_color
-                                    : (true == is_dark
+                                    : (is_dark
                                         ? AppColors.surface_dark
                                         : AppColors.background_light),
                                 // Corner radius curves using spacing constants
@@ -749,7 +749,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                       ? AppColors.error
                                       : (true == _agree_to_terms
                                           ? AppColors.primary_color
-                                          : (true == is_dark
+                                          : (is_dark
                                               ? AppColors.border_dark
                                               : AppColors.border_light)),
                                   // Border line width
@@ -764,7 +764,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                       // Icon size
                                       size: 14.0,
                                       // Keep color white inside filled checkboxes
-                                      color: Colors.white,
+                                      color: AppColors.white,
                                     )
                                   : null,
                             ),
@@ -784,7 +784,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     is_arabic,
                                     custom_color: true == _terms_error
                                         ? AppColors.error
-                                        : (true == is_dark
+                                        : (is_dark
                                             ? AppColors.text_dark_secondary
                                             : AppColors.text_light_secondary),
                                   ).copyWith(
@@ -912,7 +912,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               fontSize: 14.0,
                               // Select secondary text color based on theme using
                               // Yoda style check
-                              color: true == is_dark
+                              color: is_dark
                                   ? AppColors.text_dark_secondary
                                   : AppColors.text_light_secondary,
                             ),

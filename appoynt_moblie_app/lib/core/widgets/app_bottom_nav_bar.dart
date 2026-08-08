@@ -111,7 +111,7 @@ class AppBottomNavBar extends StatelessWidget {
       // Apply layout styling decorations to bottom nav wrapper box
       decoration: BoxDecoration(
         // Set container background color based on active dark theme status
-        color: true == is_dark ? AppColors.surface_dark : AppColors.background_light,
+        color: is_dark ? AppColors.surface_dark : AppColors.background_light,
         // Apply shadow parameters array
         boxShadow: const [
           // Shadow element representing bottom nav border elevation
@@ -175,9 +175,9 @@ class AppBottomNavBar extends StatelessWidget {
                     // Apply rounded decoration borders to active nav button
                     decoration: BoxDecoration(
                       // Highlight selected item container with primary accent tint
-                      color: true == is_selected
+                      color: is_selected
                           ? AppColors.primary_color.withValues(alpha: AppSpacing.dummy_opacity_active)
-                          : Colors.transparent,
+                          : AppColors.transparent,
                       // Rounded corner radius settings mapping index indicator shapes
                       borderRadius: BorderRadius.circular(
                         // Radius value from dummy configuration token
@@ -193,9 +193,9 @@ class AppBottomNavBar extends StatelessWidget {
                         // Render icon widget dynamically based on active selection status
                         Icon(
                           // Select icon mapping active status
-                          true == is_selected ? e.value.active_icon : e.value.icon,
+                          is_selected ? e.value.active_icon : e.value.icon,
                           // Highlight active icon with primary brand color, else unselected gray
-                          color: true == is_selected
+                          color: is_selected
                               ? AppColors.primary_color
                               : AppColors.dummy_unselected_item_color,
                           // Set icon display size
@@ -221,11 +221,11 @@ class AppBottomNavBar extends StatelessWidget {
                             // Set typographic font size matching standard labels
                             fontSize: AppSpacing.dummy_font_size_nav_label,
                             // Highlight active label with primary brand color, else unselected gray
-                            color: true == is_selected
+                            color: is_selected
                                 ? AppColors.primary_color
                                 : AppColors.dummy_unselected_item_color,
                             // Setup font weight active indicator
-                            fontWeight: true == is_selected ? FontWeight.bold : FontWeight.w500,
+                            fontWeight: is_selected ? FontWeight.bold : FontWeight.w500,
                             // Setup height spacing scale
                             height: AppSpacing.dummy_line_height_nav,
                           ),

@@ -189,7 +189,7 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                 // Add circle icon
                 Icons.add_circle_outline_rounded,
                 // White icon
-                color: Colors.white,
+                color: AppColors.white,
                 // Icon display size
                 size: _LocalDimensions.icon_size_default,
               ),
@@ -199,7 +199,7 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                 localizations.prescriptions_add_btn,
                 style: const TextStyle(
                   // White text
-                  color: Colors.white,
+                  color: AppColors.white,
                   // Action button font size token
                   fontSize: AppSpacing.font_size_action_button,
                   // Bold weight for CTA
@@ -339,7 +339,7 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                 // Heavy bold weight
                 fontWeight: FontWeight.w800,
                 // Adaptive primary text color
-                color: true == is_dark
+                color: is_dark
                     ? AppColors.text_dark_primary
                     : AppColors.text_light_primary,
               ),
@@ -379,7 +379,7 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                   // Add rounded icon
                   Icons.add_rounded,
                   // White icon
-                  color: Colors.white,
+                  color: AppColors.white,
                 ),
                 // Button label text
                 label: Text(
@@ -387,7 +387,7 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                   localizations.prescriptions_empty_cta,
                   style: const TextStyle(
                     // White text
-                    color: Colors.white,
+                    color: AppColors.white,
                     // Action font size
                     fontSize: AppSpacing.font_size_action_button,
                     // Bold weight
@@ -451,13 +451,13 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
       // Card decoration with shadow
       decoration: BoxDecoration(
         // White surface background
-        color: true == is_dark ? AppColors.surface_dark : Colors.white,
+        color: is_dark ? AppColors.surface_dark : AppColors.white,
         // 16px rounded corners
         borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
         // Thin border outline
         border: Border.all(
           // Adaptive border color
-          color: true == is_dark
+          color: is_dark
               ? AppColors.border_dark
               : const Color(0xFFE2E8F0),
           // Border width
@@ -467,9 +467,9 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
         boxShadow: [
           BoxShadow(
             // Soft shadow tint
-            color: true == is_dark
-                ? Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
-                : Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
+            color: is_dark
+                ? AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
+                : AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
             // Blur radius
             blurRadius: _LocalDimensions.shadow_blur,
             // Vertical shadow offset
@@ -523,7 +523,7 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                       // Bold weight
                       fontWeight: FontWeight.bold,
                       // Adaptive primary text color
-                      color: true == is_dark
+                      color: is_dark
                           ? AppColors.text_dark_primary
                           : AppColors.text_light_primary,
                     ),
@@ -569,7 +569,7 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
             Container(
               // Full width divider
               height: _LocalDimensions.border_width_thin,
-              color: true == is_dark
+              color: is_dark
                   ? AppColors.border_dark
                   : const Color(0xFFF1F5F9),
             ),

@@ -208,13 +208,13 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
       width: double.infinity,
       padding: const EdgeInsets.all(_LocalDimensions.padding_card),
       decoration: BoxDecoration(
-        color: is_dark ? AppColors.surface_dark : Colors.white,
+        color: is_dark ? AppColors.surface_dark : AppColors.white,
         borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
         boxShadow: [
           BoxShadow(
             color: is_dark
-                ? Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
-                : Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
+                ? AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
+                : AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
             blurRadius: _LocalDimensions.shadow_blur_default,
             spreadRadius: _LocalDimensions.border_width_thin,
             offset: const Offset(0.0, 2.0),
@@ -270,8 +270,8 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                   boxShadow: [
                     BoxShadow(
                       color: is_dark
-                          ? Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
-                          : Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light_alt),
+                          ? AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
+                          : AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light_alt),
                       blurRadius: _LocalDimensions.shadow_blur_small,
                       spreadRadius: _LocalDimensions.border_width_thin,
                       offset: const Offset(0.0, 2.0),
@@ -365,7 +365,7 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
           decoration: BoxDecoration(
             color: is_selected
                 ? bg_color
-                : (is_dark ? AppColors.surface_dark : Colors.white),
+                : (is_dark ? AppColors.surface_dark : AppColors.white),
             borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_medium),
             border: Border.all(
               color: is_selected
@@ -379,7 +379,7 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
             style: TextStyle(
               color: is_selected
                   ? text_color
-                  : (is_dark ? Colors.white70 : AppColors.text_light_secondary),
+                  : (is_dark ? AppColors.white70 : AppColors.text_light_secondary),
               fontWeight: is_selected ? FontWeight.bold : FontWeight.normal,
               fontSize: _LocalDimensions.font_size_medium,
             ),
@@ -452,7 +452,7 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                       height: AppSpacing.dummy_height_search_bar,
                       decoration: BoxDecoration(
                         color:
-                            is_dark ? AppColors.surface_dark : Colors.grey[200],
+                            is_dark ? AppColors.surface_dark : AppColors.slate_200,
                         borderRadius:
                             BorderRadius.circular(AppSpacing.radius_xl),
                       ),
@@ -471,8 +471,8 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                                   color: 'lab_test' == _active_type
                                       ? (is_dark
                                           ? AppColors.primary_color
-                                          : Colors.white)
-                                      : Colors.transparent,
+                                          : AppColors.white)
+                                      : AppColors.transparent,
                                   borderRadius: BorderRadius.circular(
                                       AppSpacing.radius_xl),
                                 ),
@@ -482,7 +482,7 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                                     fontWeight: FontWeight.w700,
                                     color: 'lab_test' == _active_type
                                         ? (is_dark
-                                            ? Colors.white
+                                            ? AppColors.white
                                             : AppColors.primary_color)
                                         : AppColors.text_light_secondary,
                                   ),
@@ -503,8 +503,8 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                                   color: 'scan' == _active_type
                                       ? (is_dark
                                           ? AppColors.primary_color
-                                          : Colors.white)
-                                      : Colors.transparent,
+                                          : AppColors.white)
+                                      : AppColors.transparent,
                                   borderRadius: BorderRadius.circular(
                                       AppSpacing.radius_xl),
                                 ),
@@ -514,7 +514,7 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                                     fontWeight: FontWeight.w700,
                                     color: 'scan' == _active_type
                                         ? (is_dark
-                                            ? Colors.white
+                                            ? AppColors.white
                                             : AppColors.primary_color)
                                         : AppColors.text_light_secondary,
                                   ),
@@ -717,7 +717,7 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                                             fontSize: _LocalDimensions.font_size_body,
                                             fontWeight: FontWeight.w600,
                                             color: is_dark
-                                                ? Colors.white70
+                                                ? AppColors.white70
                                                 : AppColors.slate_600,
                                           ),
                                         ),
@@ -740,7 +740,7 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                                 decoration: BoxDecoration(
                                   color: is_dark
                                       ? AppColors.surface_dark
-                                      : Colors.white,
+                                      : AppColors.white,
                                   borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
                                   border: Border.all(
                                     color: is_dark
@@ -780,7 +780,7 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                                               fontSize: _LocalDimensions.font_size_body,
                                               fontWeight: FontWeight.bold,
                                               color: is_dark
-                                                  ? Colors.white
+                                                  ? AppColors.white
                                                   : AppColors
                                                       .text_light_primary,
                                             ),
@@ -809,7 +809,7 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                                       ),
                                       child: const Icon(
                                         Icons.check,
-                                        color: Colors.white,
+                                        color: AppColors.white,
                                         size: _LocalDimensions.icon_size_tiny,
                                       ),
                                     ),
@@ -873,7 +873,7 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
               child: Text(
                 localizations.tests_confirm_upload_btn,
                 style: const TextStyle(
-                  color: Colors.white,
+                  color: AppColors.white,
                   fontSize: AppSpacing.font_size_action_button,
                   fontWeight: FontWeight.w700,
                 ),

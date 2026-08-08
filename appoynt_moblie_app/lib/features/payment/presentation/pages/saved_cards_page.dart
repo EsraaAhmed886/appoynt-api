@@ -176,7 +176,7 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                               child: Container(
                                 decoration: BoxDecoration(
                                   // Sleek premium backgrounds (gradient for primary card, Slate Glassmorphism for secondary cards)
-                                  gradient: true == is_default
+                                  gradient: is_default
                                       ? const LinearGradient(
                                           colors: [
                                             Color(0xFF0F172A), // Slate Dark
@@ -197,9 +197,9 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                                   borderRadius: BorderRadius.circular(_LocalDimensions.container_radius),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: true == is_dark
-                                          ? Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
-                                          : Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
+                                      color: is_dark
+                                          ? AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
+                                          : AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
                                       blurRadius: _LocalDimensions.shadow_blur,
                                       offset: const Offset(0.0, _LocalDimensions.shadow_offset_y),
                                     ),
@@ -247,7 +247,7 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                                                       BorderRadius.circular(_LocalDimensions.chip_radius),
                                                   boxShadow: const [
                                                     BoxShadow(
-                                                      color: Colors.black26,
+                                                      color: AppColors.black26,
                                                       blurRadius: 2.0,
                                                       offset: Offset(0.0, 1.0),
                                                     ),
@@ -259,7 +259,7 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                                               ),
                                               const SizedBox(width: AppSpacing.space_m),
                                               // Default indicator badge
-                                              true == is_default
+                                              is_default
                                                   ? Container(
                                                       padding: const EdgeInsets
                                                           .symmetric(
@@ -281,7 +281,7 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                                                         '✓ ${localizations.payment_default_badge.toUpperCase()}',
                                                         style: const TextStyle(
                                                           fontSize: _LocalDimensions.default_badge_font_size,
-                                                          color: Colors.white,
+                                                          color: AppColors.white,
                                                           fontWeight:
                                                               FontWeight.bold,
                                                         ),
@@ -296,7 +296,7 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                                                   style: TextStyle(
                                                     fontSize: _LocalDimensions.brand_logo_font_size,
                                                     fontWeight: FontWeight.bold,
-                                                    color: Colors.white,
+                                                    color: AppColors.white,
                                                     fontStyle: FontStyle.italic,
                                                     letterSpacing: _LocalDimensions.brand_logo_letter_spacing,
                                                   ),
@@ -346,7 +346,7 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                                                         fontSize: _LocalDimensions.label_font_size_small,
                                                         fontWeight:
                                                             FontWeight.bold,
-                                                        color: Colors.white,
+                                                        color: AppColors.white,
                                                       ),
                                                     ),
                                                   ],
@@ -369,7 +369,7 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                                             style: const TextStyle(
                                               fontSize: _LocalDimensions.numbers_font_size,
                                               fontWeight: FontWeight.bold,
-                                              color: Colors.white,
+                                              color: AppColors.white,
                                               fontFamily: 'monospace',
                                               letterSpacing: _LocalDimensions.numbers_letter_spacing,
                                             ),
@@ -390,7 +390,7 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                                                     localizations.payment_cardholder_label,
                                                     style: const TextStyle(
                                                       fontSize: _LocalDimensions.label_font_size_tiny,
-                                                      color: Colors.white60,
+                                                      color: AppColors.white60,
                                                     ),
                                                   ),
                                                   const SizedBox(height: _LocalDimensions.spacing_tiny),
@@ -399,7 +399,7 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                                                     style: const TextStyle(
                                                       fontSize: _LocalDimensions.val_font_size_medium,
                                                       fontWeight: FontWeight.bold,
-                                                      color: Colors.white,
+                                                      color: AppColors.white,
                                                     ),
                                                   ),
                                                 ],
@@ -413,7 +413,7 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                                                     localizations.payment_valid_thru_label,
                                                     style: const TextStyle(
                                                       fontSize: _LocalDimensions.label_font_size_tiny,
-                                                      color: Colors.white60,
+                                                      color: AppColors.white60,
                                                     ),
                                                   ),
                                                   const SizedBox(height: _LocalDimensions.spacing_tiny),
@@ -422,7 +422,7 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                                                     style: const TextStyle(
                                                       fontSize: _LocalDimensions.val_font_size_medium,
                                                       fontWeight: FontWeight.bold,
-                                                      color: Colors.white,
+                                                      color: AppColors.white,
                                                     ),
                                                   ),
                                                 ],
@@ -431,12 +431,12 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                                               PopupMenuButton<String>(
                                                 icon: const Icon(
                                                   Icons.more_vert_rounded,
-                                                  color: Colors.white,
+                                                  color: AppColors.white,
                                                   size: _LocalDimensions.icon_size,
                                                 ),
-                                                color: true == is_dark
+                                                color: is_dark
                                                     ? AppColors.surface_dark
-                                                    : Colors.white,
+                                                    : AppColors.white,
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(_LocalDimensions.menu_radius),
@@ -459,7 +459,7 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                                                 },
                                                 itemBuilder: (menu_context) {
                                                   return [
-                                                    if (false == is_default)
+                                                    if (!is_default)
                                                       PopupMenuItem<String>(
                                                         value: 'default',
                                                         child: Row(
@@ -535,7 +535,7 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                       style: const TextStyle(
                         fontSize: _LocalDimensions.button_font_size,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: AppColors.white,
                       ),
                     ),
                   ),
@@ -580,8 +580,8 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
               style: TextStyle(
                 fontSize: _LocalDimensions.empty_state_title_font_size,
                 fontWeight: FontWeight.bold,
-                color: true == is_dark
-                    ? Colors.white
+                color: is_dark
+                    ? AppColors.white
                     : AppColors.text_light_primary,
               ),
             ),
@@ -591,8 +591,8 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: _LocalDimensions.empty_state_subtitle_font_size,
-                color: true == is_dark
-                    ? Colors.white54
+                color: is_dark
+                    ? AppColors.white54
                     : AppColors.text_light_secondary,
               ),
             ),
@@ -602,11 +602,11 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
               height: _LocalDimensions.button_height,
               child: ElevatedButton.icon(
                 onPressed: () => _navigate_to_add_card(context),
-                icon: const Icon(Icons.add_rounded, color: Colors.white),
+                icon: const Icon(Icons.add_rounded, color: AppColors.white),
                 label: Text(
                   localizations.payment_add_new_card_btn,
                   style: const TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
+                      color: AppColors.white, fontWeight: FontWeight.bold),
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary_color,

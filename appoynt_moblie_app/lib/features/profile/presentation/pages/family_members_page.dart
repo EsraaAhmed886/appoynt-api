@@ -87,7 +87,7 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
       'gender': 'Male',
       'medical_id': 'ID: #8822',
       'icon': Icons.child_care_rounded,
-      'color': Colors.indigo,
+      'color': AppColors.indigo,
     },
     {
       'id': '3',
@@ -99,7 +99,7 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
       'gender': 'Female',
       'medical_id': 'ID: #8823',
       'icon': Icons.face_3_rounded,
-      'color': Colors.teal,
+      'color': AppColors.teal,
     },
   ];
 
@@ -202,8 +202,8 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
                     style: TextStyle(
                       fontSize: _LocalDimensions.font_size_body,
                       fontWeight: FontWeight.bold,
-                      color: true == is_dark
-                          ? Colors.white
+                      color: is_dark
+                          ? AppColors.white
                           : AppColors.text_light_primary,
                     ),
                   ),
@@ -228,9 +228,9 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
                             Icon(
                               Icons.group_off_rounded,
                               size: _LocalDimensions.icon_size_large,
-                              color: true == is_dark
-                                  ? Colors.white38
-                                  : Colors.grey[400],
+                              color: is_dark
+                                  ? AppColors.white38
+                                  : AppColors.slate_400,
                             ),
                             const SizedBox(height: _LocalDimensions.spacing_large),
                             const Text(
@@ -263,23 +263,23 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
                             child: AnimatedContainer(
                               duration: const Duration(milliseconds: 200),
                               decoration: BoxDecoration(
-                                color: true == is_dark
+                                color: is_dark
                                     ? AppColors.surface_dark
-                                    : Colors.white,
+                                    : AppColors.white,
                                 borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
                                 border: Border.all(
-                                  color: true == is_selected
+                                  color: is_selected
                                       ? AppColors.primary_color
-                                      : (true == is_dark
+                                      : (is_dark
                                           ? AppColors.border_dark
                                           : AppColors.slate_200),
-                                  width: true == is_selected ? _LocalDimensions.border_width_accent : _LocalDimensions.border_width_thin,
+                                  width: is_selected ? _LocalDimensions.border_width_accent : _LocalDimensions.border_width_thin,
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: true == is_dark
-                                        ? Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
-                                        : Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
+                                    color: is_dark
+                                        ? AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
+                                        : AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
                                     blurRadius: _LocalDimensions.shadow_blur,
                                     offset: const Offset(0.0, 2.0),
                                   ),
@@ -321,8 +321,8 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
                                                   style: TextStyle(
                                                     fontSize: _LocalDimensions.font_size_title,
                                                     fontWeight: FontWeight.w700,
-                                                    color: true == is_dark
-                                                        ? Colors.white
+                                                    color: is_dark
+                                                        ? AppColors.white
                                                         : AppColors
                                                             .text_light_primary,
                                                   ),
@@ -339,7 +339,7 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
                                                   vertical: _LocalDimensions.badge_padding_v,
                                                 ),
                                                 decoration: BoxDecoration(
-                                                  color: true == is_primary
+                                                  color: is_primary
                                                       ? AppColors.primary_color
                                                           .withValues(
                                                               alpha: 0.12)
@@ -355,7 +355,7 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
                                                   style: TextStyle(
                                                     fontSize: _LocalDimensions.font_size_micro,
                                                     fontWeight: FontWeight.bold,
-                                                    color: true == is_primary
+                                                    color: is_primary
                                                         ? AppColors
                                                             .primary_color
                                                         : theme_color,
@@ -390,8 +390,8 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
                                           icon: Icon(
                                             Icons.edit_outlined,
                                             size: _LocalDimensions.icon_size_small,
-                                            color: true == is_dark
-                                                ? Colors.white38
+                                            color: is_dark
+                                                ? AppColors.white38
                                                 : AppColors.slate_400,
                                           ),
                                           onPressed: () {
@@ -406,7 +406,7 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
                                           },
                                         ),
                                         // Subtle delete trash icon button for dependents
-                                        if (false == is_primary) ...[
+                                        if (!is_primary) ...[
                                           IconButton(
                                             constraints: const BoxConstraints(),
                                             padding: const EdgeInsets.all(_LocalDimensions.action_padding),
@@ -427,14 +427,14 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
                                         ],
                                         // Selection Radio / Chevron indicator
                                         Icon(
-                                          true == is_selected
+                                          is_selected
                                               ? Icons.check_circle_rounded
                                               : Icons.chevron_right_rounded,
-                                          color: true == is_selected
+                                          color: is_selected
                                               ? AppColors.primary_color
-                                              : (true == is_dark
-                                                  ? Colors.white30
-                                                  : Colors.grey[400]),
+                                              : (is_dark
+                                                  ? AppColors.white30
+                                                  : AppColors.slate_400),
                                           size: _LocalDimensions.icon_size_badge,
                                         ),
                                       ],
@@ -475,7 +475,7 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
               ),
               icon: const Icon(
                 Icons.add_rounded,
-                color: Colors.white,
+                color: AppColors.white,
                 size: _LocalDimensions.icon_size_medium,
               ),
               label: const Text(
@@ -483,7 +483,7 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
                 style: TextStyle(
                   fontSize: AppSpacing.font_size_action_button,
                   fontWeight: FontWeight.w700,
-                  color: Colors.white,
+                  color: AppColors.white,
                 ),
               ),
             ),

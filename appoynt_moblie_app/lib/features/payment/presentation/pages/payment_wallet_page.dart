@@ -121,18 +121,18 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                       // Card outline decoration layout
                       decoration: BoxDecoration(
                         // Dynamic surface color
-                        color: true == is_dark
+                        color: is_dark
                             ? AppColors.surface_dark
-                            : Colors.white,
+                            : AppColors.white,
                         // Rounded corners
                         borderRadius: BorderRadius.circular(_LocalDimensions.container_radius),
                         // Card shadows
                         boxShadow: [
                           BoxShadow(
                             // Shadow colors
-                            color: true == is_dark
-                                ? Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
-                                : Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
+                            color: is_dark
+                                ? AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
+                                : AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
                             // Blur spread
                             blurRadius: _LocalDimensions.shadow_blur,
                             // Offset
@@ -142,7 +142,7 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                         // Thin borders outline decoration
                         border: Border.all(
                           // Border colors matching theme mode
-                          color: true == is_dark
+                          color: is_dark
                               ? AppColors.border_dark
                               : const Color(0xFFE2E8F0),
                           // Thin thickness
@@ -185,7 +185,7 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                                 boxShadow: const [
                                   BoxShadow(
                                     // Color
-                                    color: Colors.black26,
+                                    color: AppColors.black26,
                                     // Blur
                                     blurRadius: _LocalDimensions.card_shadow_blur,
                                     // Offset position
@@ -212,7 +212,7 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                                             // Styles
                                             style: const TextStyle(
                                               // Color white
-                                              color: Colors.white70,
+                                              color: AppColors.white70,
                                               // Size
                                               fontSize: _LocalDimensions.font_size_balance_title,
                                               // Medium weight
@@ -228,7 +228,7 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                                             // Typography
                                             style: TextStyle(
                                               // Color white
-                                              color: Colors.white,
+                                              color: AppColors.white,
                                               // Prominent bold size
                                               fontSize: _LocalDimensions.font_size_balance_value,
                                               // Heavy weight
@@ -258,7 +258,7 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                                           ),
                                         ),
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.white,
+                                          backgroundColor: AppColors.white,
                                           shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(_LocalDimensions.button_radius),
                                           ),
@@ -286,7 +286,7 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                                           // Typography
                                           style: const TextStyle(
                                             // Color white
-                                            color: Colors.white,
+                                            color: AppColors.white,
                                             // Font size
                                             fontSize: _LocalDimensions.font_size_switch_label,
                                             // Medium weight
@@ -307,9 +307,9 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                                           });
                                         },
                                         // Themed switch thumb colors matching MD3 specs
-                                        activeThumbColor: Colors.white,
+                                        activeThumbColor: AppColors.white,
                                         // Subdued switch track color
-                                        activeTrackColor: Colors.white.withValues(alpha: _LocalDimensions.switch_track_opacity),
+                                        activeTrackColor: AppColors.white.withValues(alpha: _LocalDimensions.switch_track_opacity),
                                       ),
                                     ],
                                   ),
@@ -321,9 +321,9 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                           Divider(
                             height: _LocalDimensions.line_width_thin,
                             thickness: _LocalDimensions.line_width_thin,
-                            color: true == is_dark
+                            color: is_dark
                                 ? AppColors.border_dark
-                                : Colors.grey.withValues(alpha: _LocalDimensions.divider_opacity),
+                                : AppColors.grey.withValues(alpha: _LocalDimensions.divider_opacity),
                           ),
                           // ListTile 1: Saved Payment Cards navigation menu tile
                           ListTile(
@@ -344,19 +344,19 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                               style: TextStyle(
                                 fontSize: _LocalDimensions.title_font_size,
                                 fontWeight: FontWeight.bold,
-                                color: true == is_dark ? Colors.white : AppColors.text_light_primary,
+                                color: is_dark ? AppColors.white : AppColors.text_light_primary,
                               ),
                             ),
                             subtitle: Text(
                               localizations.payment_saved_cards_subtitle,
                               style: TextStyle(
                                 fontSize: _LocalDimensions.subtitle_font_size,
-                                color: true == is_dark ? Colors.white54 : AppColors.text_light_secondary,
+                                color: is_dark ? AppColors.white54 : AppColors.text_light_secondary,
                               ),
                             ),
                             trailing: Icon(
                               Icons.chevron_right_rounded,
-                              color: true == is_dark ? Colors.white54 : AppColors.text_light_secondary,
+                              color: is_dark ? AppColors.white54 : AppColors.text_light_secondary,
                             ),
                             onTap: () {
                               Navigator.of(context).push(
@@ -373,21 +373,21 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                           Divider(
                             height: _LocalDimensions.line_width_thin,
                             thickness: _LocalDimensions.line_width_thin,
-                            color: true == is_dark
+                            color: is_dark
                                 ? AppColors.border_dark
-                                : Colors.grey.withValues(alpha: _LocalDimensions.divider_opacity),
+                                : AppColors.grey.withValues(alpha: _LocalDimensions.divider_opacity),
                           ),
                           // ListTile 2: Payment History & Invoices navigation menu tile
                           ListTile(
                             leading: Container(
                               padding: const EdgeInsets.all(_LocalDimensions.icon_container_padding),
                               decoration: BoxDecoration(
-                                color: Colors.teal.withValues(alpha: 0.1),
+                                color: AppColors.teal.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(_LocalDimensions.icon_container_radius),
                               ),
                               child: const Icon(
                                 Icons.receipt_long_rounded,
-                                color: Colors.teal,
+                                color: AppColors.teal,
                                 size: _LocalDimensions.icon_size,
                               ),
                             ),
@@ -396,19 +396,19 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                               style: TextStyle(
                                 fontSize: _LocalDimensions.title_font_size,
                                 fontWeight: FontWeight.bold,
-                                color: true == is_dark ? Colors.white : AppColors.text_light_primary,
+                                color: is_dark ? AppColors.white : AppColors.text_light_primary,
                               ),
                             ),
                             subtitle: Text(
                               localizations.payment_history_subtitle,
                               style: TextStyle(
                                 fontSize: _LocalDimensions.subtitle_font_size,
-                                color: true == is_dark ? Colors.white54 : AppColors.text_light_secondary,
+                                color: is_dark ? AppColors.white54 : AppColors.text_light_secondary,
                               ),
                             ),
                             trailing: Icon(
                               Icons.chevron_right_rounded,
-                              color: true == is_dark ? Colors.white54 : AppColors.text_light_secondary,
+                              color: is_dark ? AppColors.white54 : AppColors.text_light_secondary,
                             ),
                             onTap: () {
                               Navigator.of(context).push(

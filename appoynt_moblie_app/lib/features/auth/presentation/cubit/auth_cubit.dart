@@ -56,7 +56,7 @@ class AuthCubit extends Cubit<AuthState> {
         (_registered_email == identifier || _registered_phone == identifier));
 
     // Handle valid credentials matching either admin or registered user
-    if (true == is_static_valid || true == is_registered_valid) {
+    if (is_static_valid || is_registered_valid) {
       // Simulate minor network delay for visual loading states
       await Future.delayed(
         // Duration parameter configuration

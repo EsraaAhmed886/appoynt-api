@@ -721,11 +721,11 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                                  ),
                                  // Bright white highlight color list representing light sheen (with increased opacity)
                                  colors: const [
-                                   Colors.transparent,
-                                   Colors.white30,
-                                   Colors.white,
-                                   Colors.white30,
-                                   Colors.transparent,
+                                   AppColors.transparent,
+                                   AppColors.white30,
+                                   AppColors.white,
+                                   AppColors.white30,
+                                   AppColors.transparent,
                                  ],
                                  // Fixed stops within standard range to prevent out of bounds assertion errors
                                  stops: const [

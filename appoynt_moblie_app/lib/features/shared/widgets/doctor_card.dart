@@ -100,7 +100,7 @@ class DoctorCard extends StatelessWidget {
       // Visual styling decoration configurations
       decoration: BoxDecoration(
         // Set background color matching active theme
-        color: true == is_dark
+        color: is_dark
             ? AppColors.surface_dark
             : AppColors.background_light,
         // Set corner rounded curves using spacing constants
@@ -109,7 +109,7 @@ class DoctorCard extends StatelessWidget {
         // Draw outline border stroke
         border: Border.all(
           // Resolve border color based on theme
-          color: true == is_dark ? AppColors.border_dark : AppColors.slate_200,
+          color: is_dark ? AppColors.border_dark : AppColors.slate_200,
           // Set thin border width
           width: AppSpacing.border_width_thin,
         ),
@@ -180,7 +180,7 @@ class DoctorCard extends StatelessWidget {
                         // Emphasized bold weight
                         fontWeight: FontWeight.bold,
                         // Text color based on theme
-                        color: true == is_dark
+                        color: is_dark
                             ? AppColors.text_dark_primary
                             : AppColors.search_text_slate,
                       ),
@@ -264,12 +264,12 @@ class DoctorCard extends StatelessWidget {
                     children: [
                       // Base authentic heart Material Icon
                       Icon(
-                        true == is_favorite
+                        is_favorite
                             ? Icons.favorite_rounded
                             : Icons.favorite_border_rounded,
-                        color: true == is_favorite
+                        color: is_favorite
                             ? AppColors.dummy_custom_red
-                            : (true == is_dark
+                            : (is_dark
                                 ? AppColors.text_dark_secondary
                                 : AppColors.text_light_secondary),
                         size: _LocalDimensions.favorite_icon_size,
@@ -278,9 +278,9 @@ class DoctorCard extends StatelessWidget {
                       CustomPaint(
                         size: const Size(_LocalDimensions.favorite_icon_size, _LocalDimensions.favorite_icon_size),
                         painter: EcgLinePainter(
-                          color: true == is_favorite
-                              ? Colors.white
-                              : (true == is_dark
+                          color: is_favorite
+                              ? AppColors.white
+                              : (is_dark
                                   ? AppColors.text_dark_secondary
                                   : AppColors.text_light_secondary),
                         ),
@@ -309,7 +309,7 @@ class DoctorCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     // Select label based on today availability state using Yoda check
-                    true == is_available
+                    is_available
                         ? localizations.search_doctor_available_today
                         : localizations.search_doctor_unavailable_today,
                     // Single line limit
@@ -323,7 +323,7 @@ class DoctorCard extends StatelessWidget {
                       // Semi bold layout helper weight
                       fontWeight: FontWeight.w600,
                       // Color highlight based on availability status
-                      color: true == is_available
+                      color: is_available
                           ? AppColors.dummy_custom_green
                           : AppColors.text_light_secondary,
                     ),
@@ -338,7 +338,7 @@ class DoctorCard extends StatelessWidget {
                   // Styling configurations
                   style: ElevatedButton.styleFrom(
                     // Background color changes based on availability status using Yoda check
-                    backgroundColor: true == is_available
+                    backgroundColor: is_available
                         ? AppColors.primary_color
                         : AppColors.primary_color.withValues(alpha: 0.6),
                     // Flat shadow representation
@@ -410,7 +410,7 @@ class DoctorCard extends StatelessWidget {
               // Font size from spacing constants
               fontSize: AppSpacing.font_size_body_small,
               // Color selection based on theme
-              color: true == is_dark
+              color: is_dark
                   ? AppColors.text_dark_secondary
                   : AppColors.text_light_secondary,
             ),

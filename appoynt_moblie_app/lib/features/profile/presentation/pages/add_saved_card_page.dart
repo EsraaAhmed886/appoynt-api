@@ -516,7 +516,7 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
                   ? AppColors.primary_color
                   : AppColors.slate_200,
               disabledBackgroundColor: AppColors.slate_200,
-              foregroundColor: Colors.white,
+              foregroundColor: AppColors.white,
               disabledForegroundColor: AppColors.slate_400,
               elevation: _is_form_valid ? 2.0 : 0.0,
               // Curves
@@ -532,7 +532,7 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
               // Typography
               style: TextStyle(
                 // Color white high contrast when enabled, subtle gray when disabled
-                color: _is_form_valid ? Colors.white : AppColors.slate_400,
+                color: _is_form_valid ? AppColors.white : AppColors.slate_400,
                 // Medium
                 fontSize: _LocalDimensions.font_size_body,
                 // Bold
@@ -582,9 +582,9 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
               boxShadow: [
                 BoxShadow(
                   // Dynamic shadow opacity matching light/dark configurations
-                  color: true == is_dark
-                      ? Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
-                      : Colors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
+                  color: is_dark
+                      ? AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
+                      : AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
                   // Spread
                   blurRadius: _LocalDimensions.shadow_blur,
                   // Position offset coordinates
@@ -612,7 +612,7 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
             fontSize: _LocalDimensions.font_size_medium,
             // Colors
             color:
-                true == is_dark ? Colors.white : AppColors.text_light_primary,
+                is_dark ? AppColors.white : AppColors.text_light_primary,
           ),
           // Input decorations settings
           decoration: InputDecoration(
@@ -639,7 +639,7 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
             // Background fill enabled
             filled: true,
             // Background surface color mapping
-            fillColor: true == is_dark ? AppColors.surface_dark : Colors.white,
+            fillColor: is_dark ? AppColors.surface_dark : AppColors.white,
             // Padding offsets details
             contentPadding: const EdgeInsets.symmetric(
               // Horizontal bounds padding offsets
@@ -654,7 +654,7 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
               // Thin border line thickness
               borderSide: BorderSide(
                 // Color border matching theme
-                color: true == is_dark
+                color: is_dark
                     ? AppColors.border_dark
                     : AppColors.slate_200,
                 // Thickness thin
@@ -668,7 +668,7 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
               // Thin border line thickness
               borderSide: BorderSide(
                 // Color border matching theme
-                color: true == is_dark
+                color: is_dark
                     ? AppColors.border_dark
                     : AppColors.slate_200,
                 // Thickness thin

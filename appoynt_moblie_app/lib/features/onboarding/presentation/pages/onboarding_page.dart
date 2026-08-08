@@ -115,7 +115,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           // Return scaffold container hosting the sliding screen layout
           return Scaffold(
             // Apply customized background color token adapting to theme mode
-            backgroundColor: true == is_dark
+            backgroundColor: is_dark
                 // Dark background color
                 ? AppColors.background_dark
                 // Light background color
@@ -320,13 +320,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     // Set top constraint edge offset
                     top: AppSpacing.space_l,
                     // Check if direction is Arabic using Yoda style comparison
-                    left: true == is_arabic
+                    left: is_arabic
                         // Position button on left side for Arabic
                         ? AppSpacing.offset_skip_button
                         // Disable left constraint for English
                         : null,
                     // Check if direction is Arabic using Yoda style comparison
-                    right: true == is_arabic
+                    right: is_arabic
                         // Disable right constraint for Arabic
                         ? null
                         // Position button on right side for English
@@ -334,7 +334,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     // Animated opacity container to hide skip button on final page
                     child: AnimatedOpacity(
                       // Check if last slide is active to set transparent opacity
-                      opacity: true == is_last
+                      opacity: is_last
                           // Hide button on final slide
                           ? AppSpacing.opacity_none
                           // Show button on other slides
@@ -440,7 +440,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         // Text label representing current button action stage
                         child: Text(
                           // Determine dynamic label string based on active index
-                          true == is_last
+                          is_last
                               // Return Get Started label string on last page
                               ? localizations.get_started
                               // Return Next label string on other pages
@@ -452,7 +452,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                             // Set bold weight helper constant
                             fontWeight: FontWeightHelper.bold,
                             // Set text color to white for contrast
-                            color: Colors.white,
+                            color: AppColors.white,
                           ),
                         ),
                       ),

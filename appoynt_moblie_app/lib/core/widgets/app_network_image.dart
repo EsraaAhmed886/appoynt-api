@@ -125,7 +125,7 @@ class AppNetworkImage extends StatelessWidget {
                 // Card decorations style mappings
                 decoration: BoxDecoration(
                   // Pulsing color matching background skeletons
-                  color: true == is_dark ? AppColors.surface_dark : AppColors.search_chip_bg,
+                  color: is_dark ? AppColors.surface_dark : AppColors.search_chip_bg,
                   // Rounded corners borders representation
                   borderRadius: BorderRadius.circular(border_radius),
                 ),
@@ -241,7 +241,7 @@ class _PulsePlaceholderState extends State<_PulsePlaceholder>
         // Card styling configurations options representation
         decoration: BoxDecoration(
           // Pulsing color matching background skeletons
-          color: true == is_dark ? AppColors.surface_dark : AppColors.search_chip_bg,
+          color: is_dark ? AppColors.surface_dark : AppColors.search_chip_bg,
           // Rounded corners borders representation
           borderRadius: BorderRadius.circular(widget.border_radius),
         ),

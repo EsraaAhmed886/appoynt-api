@@ -38,7 +38,7 @@ class AppTextStyles {
     // Check if system brightness is dark mode
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     // Resolve dynamic text color token based on active mode using Yoda style comparison
-    final Color text_color = true == is_dark
+    final Color text_color = is_dark
         ? AppColors.text_dark_primary
         : AppColors.text_light_primary;
 
@@ -69,7 +69,7 @@ class AppTextStyles {
     // Check if system brightness is dark mode
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     // Resolve dynamic text color token based on active mode using Yoda style comparison
-    final Color text_color = true == is_dark
+    final Color text_color = is_dark
         ? AppColors.text_dark_secondary
         : AppColors.text_light_secondary;
 
@@ -104,7 +104,7 @@ class AppTextStyles {
     // Check if system brightness matches dark theme mode
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     // Resolve dynamic text color token based on active mode using Yoda style comparison
-    final Color text_color = true == is_dark
+    final Color text_color = is_dark
         ? AppColors.text_dark_primary
         : AppColors.text_light_primary;
     // Return GoogleFonts config based on language check
@@ -134,7 +134,7 @@ class AppTextStyles {
     // Check if system brightness matches dark theme mode
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     // Resolve dynamic text color token based on active mode using Yoda style comparison
-    final Color text_color = true == is_dark
+    final Color text_color = is_dark
         ? AppColors.text_dark_secondary
         : AppColors.text_light_secondary;
     // Return GoogleFonts config based on language check
@@ -164,7 +164,7 @@ class AppTextStyles {
     // Check if system brightness matches dark theme mode
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     // Resolve dynamic text color token based on active mode using Yoda style comparison
-    final Color text_color = true == is_dark
+    final Color text_color = is_dark
         ? AppColors.text_dark_primary
         : AppColors.text_light_primary;
     // Return GoogleFonts config based on language check
@@ -194,7 +194,7 @@ class AppTextStyles {
     // Check if system brightness matches dark theme mode
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     // Resolve fallback secondary text color token using Yoda style comparison
-    final Color text_color = custom_color ?? (true == is_dark
+    final Color text_color = custom_color ?? (is_dark
         ? AppColors.text_dark_secondary
         : AppColors.text_light_secondary);
     // Return GoogleFonts config based on language check
@@ -224,7 +224,7 @@ class AppTextStyles {
     // Check if system brightness matches dark theme mode
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     // Resolve dynamic text color token based on active mode using Yoda style comparison
-    final Color text_color = true == is_dark
+    final Color text_color = is_dark
         ? AppColors.text_dark_primary
         : AppColors.text_light_primary;
     // Return GoogleFonts config based on language check
@@ -254,7 +254,7 @@ class AppTextStyles {
     // Check if system brightness matches dark theme mode
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     // Resolve dynamic text color token based on active mode using Yoda style comparison
-    final Color text_color = true == is_dark
+    final Color text_color = is_dark
         ? AppColors.text_dark_secondary
         : AppColors.text_light_secondary;
     // Return GoogleFonts config based on language check
@@ -284,7 +284,7 @@ class AppTextStyles {
     // Check if system brightness matches dark theme mode
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     // Resolve dynamic text color token based on active mode using Yoda style comparison
-    final Color text_color = true == is_dark
+    final Color text_color = is_dark
         ? AppColors.text_dark_primary
         : AppColors.text_light_primary;
     // Return GoogleFonts config based on language check
@@ -314,7 +314,7 @@ class AppTextStyles {
     // Check if system brightness matches dark theme mode
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     // Resolve dynamic text color token based on active mode using Yoda style comparison
-    final Color text_color = true == is_dark
+    final Color text_color = is_dark
         ? AppColors.text_dark_secondary
         : AppColors.text_light_secondary;
     // Return GoogleFonts config based on language check
@@ -370,7 +370,7 @@ class AppTextStyles {
     // Check if system brightness matches dark theme mode
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     // Resolve dynamic text color token based on active mode using Yoda style comparison
-    final Color text_color = true == is_dark
+    final Color text_color = is_dark
         ? AppColors.text_dark_primary
         : AppColors.text_light_primary;
     // Return GoogleFonts config based on language check
@@ -400,7 +400,7 @@ class AppTextStyles {
     // Check if system brightness matches dark theme mode
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     // Resolve dynamic text color token based on active mode using Yoda style comparison
-    final Color text_color = true == is_dark
+    final Color text_color = is_dark
         ? AppColors.text_dark_secondary
         : AppColors.text_light_secondary;
     // Return GoogleFonts config based on language check
@@ -430,7 +430,7 @@ class AppTextStyles {
     // Check if system brightness matches dark theme mode
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     // Resolve dynamic text color token based on active mode using Yoda style comparison
-    final Color text_color = true == is_dark
+    final Color text_color = is_dark
         ? AppColors.text_dark_primary
         : AppColors.text_light_primary;
     // Return GoogleFonts config based on language check
@@ -460,7 +460,7 @@ class AppTextStyles {
     // Check if system brightness matches dark theme mode
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     // Resolve dynamic text color token based on active mode using Yoda style comparison
-    final Color text_color = true == is_dark
+    final Color text_color = is_dark
         ? AppColors.text_dark_secondary
         : AppColors.text_light_secondary;
     // Return GoogleFonts config based on language check

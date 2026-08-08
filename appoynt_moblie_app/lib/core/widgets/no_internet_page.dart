@@ -93,13 +93,13 @@ class _NoInternetPageState extends State<NoInternetPage>
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     
     /// Dynamically resolved colors.
-    final Color background_color = true == is_dark
+    final Color background_color = is_dark
         ? AppColors.background_dark
         : AppColors.onboarding_background;
-    final Color text_primary = true == is_dark
+    final Color text_primary = is_dark
         ? AppColors.text_dark_primary
         : AppColors.text_light_primary;
-    final Color text_secondary = true == is_dark
+    final Color text_secondary = is_dark
         ? AppColors.text_dark_secondary
         : AppColors.text_light_secondary;
 
@@ -168,7 +168,7 @@ class _NoInternetPageState extends State<NoInternetPage>
                           height: 22,
                           child: CircularProgressIndicator(
                             strokeWidth: 2.5,
-                            color: Colors.white, // Standard white spinner
+                            color: AppColors.white, // Standard white spinner
                           ),
                         )
                       : Text(
@@ -176,7 +176,7 @@ class _NoInternetPageState extends State<NoInternetPage>
                           style: const TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.w700,
-                            color: Colors.white, // High contrast text
+                            color: AppColors.white, // High contrast text
                           ),
                         ),
                 ),
