@@ -94,14 +94,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
     if (value_trimmed.isEmpty) {
       return "First Name cannot be empty.";
     } else {
-      // Length check constraints
-      if (value_trimmed.length < 3 || value_trimmed.length > 50) {
-        return "First Name must be between 3 and 50 characters.";
+      // Format check (highest priority after empty check)
+      final RegExp letters_only = RegExp(r'^\p{L}+$', unicode: true);
+      if (false == letters_only.hasMatch(value_trimmed)) {
+        return "First Name must contain letters only.";
       } else {
-        // Unicode letters only regex mapping
-        final RegExp letters_only = RegExp(r'^\p{L}+$', unicode: true);
-        if (false == letters_only.hasMatch(value_trimmed)) {
-          return "First Name must contain letters only.";
+        // Length check constraints
+        if (value_trimmed.length < 3 || value_trimmed.length > 50) {
+          return "First Name must be between 3 and 50 characters.";
         } else {
           return null;
         }
@@ -115,14 +115,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
     if (value_trimmed.isEmpty) {
       return "Last Name cannot be empty.";
     } else {
-      // Length check constraints
-      if (value_trimmed.length < 3 || value_trimmed.length > 50) {
-        return "Last Name must be between 3 and 50 characters.";
+      // Format check (highest priority after empty check)
+      final RegExp letters_only = RegExp(r'^\p{L}+$', unicode: true);
+      if (false == letters_only.hasMatch(value_trimmed)) {
+        return "Last Name must contain letters only.";
       } else {
-        // Unicode letters only regex mapping
-        final RegExp letters_only = RegExp(r'^\p{L}+$', unicode: true);
-        if (false == letters_only.hasMatch(value_trimmed)) {
-          return "Last Name must contain letters only.";
+        // Length check constraints
+        if (value_trimmed.length < 3 || value_trimmed.length > 50) {
+          return "Last Name must be between 3 and 50 characters.";
         } else {
           return null;
         }
@@ -203,6 +203,44 @@ class _EditProfilePageState extends State<EditProfilePage> {
         if (true == emoji_regex.hasMatch(value_trimmed) ||
             true == control_regex.hasMatch(value_trimmed)) {
           return "Address cannot contain emojis or unsupported characters.";
+        } else {
+          return null;
+        }
+      }
+    }
+  }
+
+  // Validator helper logic for Weight form input field
+  String? _validate_weight(String? value) {
+    final String val = (value ?? '').trim();
+    if (val.isEmpty) {
+      return "Weight is required.";
+    } else {
+      final double? weight = double.tryParse(val);
+      if (weight == null || weight <= 0.0) {
+        return "Please enter a valid weight.";
+      } else {
+        if (weight < 2.0 || weight > 300.0) {
+          return "Weight must be between 2 and 300 kg.";
+        } else {
+          return null;
+        }
+      }
+    }
+  }
+
+  // Validator helper logic for Height form input field
+  String? _validate_height(String? value) {
+    final String val = (value ?? '').trim();
+    if (val.isEmpty) {
+      return "Height is required.";
+    } else {
+      final double? height = double.tryParse(val);
+      if (height == null || height <= 0.0) {
+        return "Please enter a valid height.";
+      } else {
+        if (height < 30.0 || height > 250.0) {
+          return "Height must be between 30 and 250 cm.";
         } else {
           return null;
         }
@@ -856,6 +894,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   children: [
                                     // Row 1: First name and Last name side-by-side Row
                                     Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Expanded(
                                           // Focus wrapper handling automatic sanitization on field blur
@@ -962,8 +1002,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                         }
                                       },
                                       child: AuthTextField(
-                                        label:
-                                            localizations.profile_address_label,
+                                        label: true == localizations.is_arabic
+                                            ? '${localizations.profile_address_label} (اختياري)'
+                                            : '${localizations.profile_address_label} (Optional)',
                                         hint: '',
                                         controller: _address_controller,
                                         keyboard_type:
@@ -1066,26 +1107,46 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     const SizedBox(height: 16.0),
                                     // Weight and Height side-by-side Row
                                     Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Expanded(
                                           child: AuthTextField(
-                                            label: localizations
-                                                .profile_weight_label,
+                                            label: true ==
+                                                    localizations.is_arabic
+                                                ? '${localizations.profile_weight_label} (كجم)'
+                                                : '${localizations.profile_weight_label} (kg)',
                                             hint: '',
                                             controller: _weight_controller,
-                                            keyboard_type: TextInputType.number,
+                                            keyboard_type: const TextInputType
+                                                .numberWithOptions(
+                                                decimal: true),
                                             show_shadow: false,
+                                            input_formatters: [
+                                              FilteringTextInputFormatter.allow(
+                                                  RegExp(r'^\d*\.?\d{0,1}')),
+                                            ],
+                                            validator: _validate_weight,
                                           ),
                                         ),
                                         const SizedBox(width: 12.0),
                                         Expanded(
                                           child: AuthTextField(
-                                            label: localizations
-                                                .profile_height_label,
+                                            label: true ==
+                                                    localizations.is_arabic
+                                                ? '${localizations.profile_height_label} (سم)'
+                                                : '${localizations.profile_height_label} (cm)',
                                             hint: '',
                                             controller: _height_controller,
-                                            keyboard_type: TextInputType.number,
+                                            keyboard_type: const TextInputType
+                                                .numberWithOptions(
+                                                decimal: true),
                                             show_shadow: false,
+                                            input_formatters: [
+                                              FilteringTextInputFormatter.allow(
+                                                  RegExp(r'^\d*\.?\d{0,1}')),
+                                            ],
+                                            validator: _validate_height,
                                           ),
                                         ),
                                       ],
