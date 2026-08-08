@@ -135,8 +135,10 @@ class _SearchPageState extends State<SearchPage> {
             // Empty block to satisfy compiler
           }
 
-          // Return base scaffold widget applying off-white background
+           // Return base scaffold widget applying off-white background
           return Scaffold(
+            // Prevent bottom navigation bar from shifting up with the keyboard
+            resizeToAvoidBottomInset: false,
             // Stack overlaying alert confirmation dialogs above body (BR-11/FR-15 wrapper)
             body: Stack(
               // Draw child layouts
@@ -412,7 +414,13 @@ class _SearchPageState extends State<SearchPage> {
                         // Expanded view displaying active dynamic body state
                         Expanded(
                           // Switch widget representing different search statuses (dynamic body states)
-                          child: _build_dynamic_body(context, state, cubit, localizations, is_dark),
+                          child: Padding(
+                            // Add bottom padding matching active keyboard height to avoid results blockage
+                            padding: EdgeInsets.only(
+                              bottom: MediaQuery.of(context).viewInsets.bottom,
+                            ),
+                            child: _build_dynamic_body(context, state, cubit, localizations, is_dark),
+                          ),
                         ),
                         // Fixed Bottom Navigation Bar layout component (84px height) using reusable AppBottomNavBar component
                         AppBottomNavBar(
