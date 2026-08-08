@@ -468,6 +468,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   // Simulates photo upload by showing a bottom sheet chooser and updating avatar state
   void _upload_photo() {
+    // Resolve localized strings
+    final localizations = AppLocalizations.of(context);
     // Resolve theme brightness modes status
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     // Show modal bottom sheet display
@@ -498,7 +500,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 // Modal title text label
                 Text(
                   // String title text
-                  'Upload Profile Photo',
+                  localizations.profile_upload_photo_title,
                   // Text styling properties
                   style: TextStyle(
                     // Title standard size
@@ -519,7 +521,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   leading: const Icon(Icons.camera_alt_outlined,
                       color: AppColors.primary_color),
                   // English take photo title description
-                  title: const Text('Take Photo'),
+                  title: Text(localizations.profile_take_photo_option),
                   // Action on tapped choice selection
                   onTap: () {
                     // Dismiss modal overlay sheet
@@ -534,7 +536,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   leading: const Icon(Icons.photo_library_outlined,
                       color: AppColors.primary_color),
                   // English choose from gallery title description
-                  title: const Text('Choose from Gallery'),
+                  title: Text(localizations.profile_choose_gallery_option),
                   // Action on tapped choice selection
                   onTap: () {
                     // Dismiss modal overlay sheet
@@ -555,6 +557,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   // Triggers image picking from camera or gallery and updates avatar path
   Future<void> _pick_profile_image(ImageSource source) async {
+    // Resolve localized strings
+    final localizations = AppLocalizations.of(context);
     // Instantiate new ImagePicker controller helper representation
     final ImagePicker image_picker = ImagePicker();
 
@@ -608,8 +612,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
           );
           // Show snackbar notifying success state
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Profile picture selected successfully!'),
+            SnackBar(
+              content: Text(localizations.profile_photo_selected_success),
               backgroundColor: AppColors.primary_color,
             ),
           );
@@ -625,7 +629,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("Failed to pick image: $error"),
+            content: Text('${localizations.profile_photo_pick_failed_prefix}$error'),
             backgroundColor: Colors.red,
           ),
         );

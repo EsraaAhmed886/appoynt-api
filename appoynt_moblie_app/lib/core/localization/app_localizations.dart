@@ -610,6 +610,7 @@ abstract class AppLocalizations {
   String get profile_gender_male;
   String get profile_gender_female;
   String get profile_gender_prefer_not;
+  String get profile_not_specified;
   String get profile_smoking_yes;
   String get profile_smoking_no;
   String get profile_smoking_ex;
@@ -623,6 +624,11 @@ abstract class AppLocalizations {
   String get profile_error_gender_required;
   String get profile_error_address_length;
   String get profile_error_address_invalid;
+  String get profile_upload_photo_title;
+  String get profile_take_photo_option;
+  String get profile_choose_gallery_option;
+  String get profile_photo_selected_success;
+  String get profile_photo_pick_failed_prefix;
   String get profile_unsaved_changes_title;
   String get profile_unsaved_changes_message;
   String get profile_unsaved_changes_stay;
@@ -791,6 +797,56 @@ abstract class AppLocalizations {
   String get insurance_add_card_btn;
   String get insurance_add_card_full_btn;
   String get insurance_save_card_btn;
+
+  // Payment & Wallet Localizations
+  String get payment_wallet_title;
+  String get payment_balance_label;
+  String get payment_priority_label;
+  String get payment_saved_cards_tile;
+  String get payment_saved_cards_subtitle;
+  String get payment_history_tile;
+  String get payment_history_subtitle;
+  String get payment_add_money_btn;
+  String get payment_active_status;
+  String get payment_inactive_status;
+  String get payment_default_badge;
+  String get payment_cardholder_label;
+  String get payment_valid_thru_label;
+  String get payment_add_money_coming_soon;
+  String get payment_manage_cards_title;
+  String get payment_cards_count_suffix;
+  String get payment_set_default_action;
+  String get payment_delete_card_action;
+  String get payment_card_removed_success;
+  String get payment_confirm_delete_title;
+  String get payment_confirm_delete_body;
+  String get payment_delete_card_dialog_body_prefix;
+  String get payment_delete_card_dialog_body_suffix;
+  String get payment_delete_btn;
+  String get payment_remove_btn;
+  String get payment_cancel_btn;
+  String get payment_no_saved_cards_title;
+  String get payment_no_saved_cards_body;
+  String get payment_add_new_card_btn;
+  String get payment_invoices_history_title;
+  String get payment_total_paid_invoices;
+  String get payment_invoices_count_suffix;
+  String get payment_date_filter_prefix;
+  String get payment_amount_filter_prefix;
+  String get payment_service_filter_prefix;
+  String get payment_apply_filter_btn;
+  String get payment_filter_date_range_title;
+  String get payment_all_time_option;
+  String get payment_this_month_option;
+  String get payment_last_3_months_option;
+  String get payment_custom_range_option;
+  String get payment_filter_amount_range_title;
+  String get payment_filter_service_type_title;
+  String get payment_no_invoices_found_title;
+  String get payment_no_invoices_found_body;
+  String get payment_downloading_invoice_snack;
+  String get payment_min_label;
+  String get payment_max_label;
 
   // Authentication error localized message getters
   String get error_invalid_credentials;

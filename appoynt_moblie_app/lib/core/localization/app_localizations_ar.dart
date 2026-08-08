@@ -1340,6 +1340,8 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get profile_gender_prefer_not => 'آخر';
   @override
+  String get profile_not_specified => 'غير محدد';
+  @override
   String get profile_smoking_yes => 'نعم';
   @override
   String get profile_smoking_no => 'لا';
@@ -1371,6 +1373,16 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get profile_error_address_invalid =>
       'لا يمكن أن يحتوي العنوان على رموز تعبيرية أو أحرف غير مدعومة.';
+  @override
+  String get profile_upload_photo_title => 'تحميل صورة الملف الشخصي';
+  @override
+  String get profile_take_photo_option => 'التقاط صورة';
+  @override
+  String get profile_choose_gallery_option => 'اختر من المعرض';
+  @override
+  String get profile_photo_selected_success => 'تم تحديد صورة الملف الشخصي بنجاح!';
+  @override
+  String get profile_photo_pick_failed_prefix => 'فشل في اختيار الصورة: ';
   @override
   String get profile_unsaved_changes_title => 'تغييرات غير محفوظة';
   @override
@@ -1706,6 +1718,104 @@ class AppLocalizationsAr extends AppLocalizations {
   String get insurance_add_card_full_btn => 'إضافة بطاقة تأمين';
   @override
   String get insurance_save_card_btn => 'حفظ البطاقة';
+
+  // Payment & Wallet Localizations Arabic Overrides
+  @override
+  String get payment_wallet_title => 'المحفظة والدفع';
+  @override
+  String get payment_balance_label => 'رصيد المحفظة';
+  @override
+  String get payment_priority_label => 'مفتاح الدفع ذو الأولوية';
+  @override
+  String get payment_saved_cards_tile => 'بطاقات الدفع المحفوظة';
+  @override
+  String get payment_saved_cards_subtitle => 'إدارة بطاقات الدفع والخصم المحفوظة الخاصة بك';
+  @override
+  String get payment_history_tile => 'سجل الدفع والفواتير';
+  @override
+  String get payment_history_subtitle => 'عرض المعاملات السابقة وتنزيل الفواتير';
+  @override
+  String get payment_add_money_btn => 'إضافة أموال';
+  @override
+  String get payment_active_status => 'نشط';
+  @override
+  String get payment_inactive_status => 'غير نشط';
+  @override
+  String get payment_default_badge => 'افتراضي';
+  @override
+  String get payment_cardholder_label => 'حامل البطاقة';
+  @override
+  String get payment_valid_thru_label => 'صالح حتى';
+  @override
+  String get payment_add_money_coming_soon => 'ميزة إضافة الأموال ستتوفر قريباً!';
+  @override
+  String get payment_manage_cards_title => 'البطاقات المحفوظة';
+  @override
+  String get payment_cards_count_suffix => 'بطاقات';
+  @override
+  String get payment_set_default_action => 'تعيين كافتراضي';
+  @override
+  String get payment_delete_card_action => 'حذف البطاقة';
+  @override
+  String get payment_card_removed_success => 'تمت إزالة البطاقة بنجاح.';
+  @override
+  String get payment_confirm_delete_title => 'تأكيد الحذف';
+  @override
+  String get payment_confirm_delete_body => 'هل أنت متأكد أنك تريد حذف بطاقة الدفع هذه؟';
+  @override
+  String get payment_delete_card_dialog_body_prefix => 'هل أنت متأكد من رغبتك في إزالة البطاقة "';
+  @override
+  String get payment_delete_card_dialog_body_suffix => '"؟ لا يمكن التراجع عن هذا الإجراء.';
+  @override
+  String get payment_delete_btn => 'حذف';
+  @override
+  String get payment_remove_btn => 'إزالة';
+  @override
+  String get payment_cancel_btn => 'إلغاء';
+  @override
+  String get payment_no_saved_cards_title => 'لا توجد بطاقات محفوظة';
+  @override
+  String get payment_no_saved_cards_body => 'لم تقم بحفظ أي بطاقات دفع بعد.';
+  @override
+  String get payment_add_new_card_btn => 'إضافة بطاقة جديدة';
+  @override
+  String get payment_invoices_history_title => 'الفواتير والسجل';
+  @override
+  String get payment_total_paid_invoices => 'إجمالي الفواتير المدفوعة';
+  @override
+  String get payment_invoices_count_suffix => 'فواتير';
+  @override
+  String get payment_date_filter_prefix => 'التاريخ';
+  @override
+  String get payment_amount_filter_prefix => 'المبلغ';
+  @override
+  String get payment_service_filter_prefix => 'الخدمة';
+  @override
+  String get payment_apply_filter_btn => 'تطبيق الفلتر';
+  @override
+  String get payment_filter_date_range_title => 'تصفية حسب النطاق الزمني';
+  @override
+  String get payment_all_time_option => 'كل الأوقات';
+  @override
+  String get payment_this_month_option => 'هذا الشهر';
+  @override
+  String get payment_last_3_months_option => 'آخر 3 أشهر';
+  @override
+  String get payment_custom_range_option => 'نطاق مخصص';
+  @override
+  String get payment_filter_amount_range_title => 'تصفية حسب نطاق المبلغ';
+  @override
+  String get payment_filter_service_type_title => 'تصفية حسب نوع الخدمة';
+  @override
+  String get payment_no_invoices_found_title => 'لم يتم العثور على فواتير';
+  @override
+  String get payment_no_invoices_found_body => 'لم يتم العثور على فواتير تطابق الفلاتر المحددة. يرجى تعديل خيارات التصفية.';
+  @override
+  String get payment_downloading_invoice_snack => 'جاري تحميل الفاتورة بصيغة PDF...';
+  @override
+  String get payment_min_label => 'الحد الأدنى';
+  @override
+  String get payment_max_label => 'الحد الأقصى';
 
   // Authentication error localized message Arabic overrides
   @override

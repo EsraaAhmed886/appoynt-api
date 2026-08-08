@@ -2,7 +2,7 @@
  * File Name: payment_wallet_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 08/08/2026
- * Version Information: V1.1.0
+ * Version Information: V1.2.0
  * Dependencies: package:flutter/material.dart,
  *   package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/core/routing/route_export.dart,
@@ -12,7 +12,7 @@
  *   package:appoynt_mobile_app/features/payment/presentation/pages/payment_history_page.dart
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 08/08/2026]
- * File Description: Refactored dashboard acting as a clean navigation hub displaying wallet balance card and navigation tiles.
+ * File Description: Refactored dashboard acting as a clean navigation hub displaying wallet balance card and navigation tiles. Fully localized.
  */
 
 // Importing global route exports
@@ -81,7 +81,7 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                   children: [
                     // Top header row placing circular back button and screen title
                     CustomProfileAppBar(
-                      title: localizations.profile_payment_wallet,
+                      title: localizations.payment_wallet_title,
                     ),
                     // Spacing offset
                     const SizedBox(height: AppSpacing.space_xl),
@@ -178,7 +178,7 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                                         children: [
                                           Text(
                                             // Localized wallet key
-                                            localizations.profile_wallet_balance,
+                                            localizations.payment_balance_label,
                                             // Styles
                                             style: const TextStyle(
                                               // Color white
@@ -213,15 +213,15 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                                       ElevatedButton.icon(
                                         onPressed: () {
                                           ScaffoldMessenger.of(context).showSnackBar(
-                                            const SnackBar(
-                                              content: Text('Add Money feature coming soon!'),
+                                            SnackBar(
+                                              content: Text(localizations.payment_add_money_coming_soon),
                                             ),
                                           );
                                         },
                                         icon: const Icon(Icons.add, size: 16.0, color: AppColors.primary_color),
-                                        label: const Text(
-                                          'Add Money',
-                                          style: TextStyle(
+                                        label: Text(
+                                          localizations.payment_add_money_btn,
+                                          style: const TextStyle(
                                             fontSize: 12.0,
                                             fontWeight: FontWeight.bold,
                                             color: AppColors.primary_color,
@@ -252,7 +252,7 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                                         // Option label Text
                                         child: Text(
                                           // Localized priority switch label
-                                          localizations.profile_priority_payment,
+                                          localizations.payment_priority_label,
                                           // Typography
                                           style: const TextStyle(
                                             // Color white
@@ -310,7 +310,7 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                               ),
                             ),
                             title: Text(
-                              localizations.profile_saved_cards,
+                              localizations.payment_saved_cards_tile,
                               style: TextStyle(
                                 fontSize: 13.0,
                                 fontWeight: FontWeight.bold,
@@ -318,7 +318,7 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                               ),
                             ),
                             subtitle: Text(
-                              'Manage your saved debit/credit cards',
+                              localizations.payment_saved_cards_subtitle,
                               style: TextStyle(
                                 fontSize: 11.0,
                                 color: true == is_dark ? Colors.white54 : AppColors.text_light_secondary,
@@ -330,12 +330,12 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                             ),
                             onTap: () {
                               Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (route_context) => BlocProvider.value(
-                                    value: context.read<ProfileCubit>(),
-                                    child: const SavedCardsPage(),
+                                  MaterialPageRoute(
+                                    builder: (route_context) => BlocProvider.value(
+                                      value: context.read<ProfileCubit>(),
+                                      child: const SavedCardsPage(),
+                                    ),
                                   ),
-                                ),
                               );
                             },
                           ),
@@ -362,7 +362,7 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                               ),
                             ),
                             title: Text(
-                              localizations.profile_invoices_title,
+                              localizations.payment_history_tile,
                               style: TextStyle(
                                 fontSize: 13.0,
                                 fontWeight: FontWeight.bold,
@@ -370,7 +370,7 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                               ),
                             ),
                             subtitle: Text(
-                              'View past transactions and download invoices',
+                              localizations.payment_history_subtitle,
                               style: TextStyle(
                                 fontSize: 11.0,
                                 color: true == is_dark ? Colors.white54 : AppColors.text_light_secondary,

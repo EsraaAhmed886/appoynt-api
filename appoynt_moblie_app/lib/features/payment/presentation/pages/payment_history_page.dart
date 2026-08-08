@@ -2,13 +2,13 @@
  * File Name: payment_history_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 08/08/2026
- * Version Information: V1.2.0
+ * Version Information: V1.3.0
  * Dependencies: package:flutter/material.dart,
  *   package:appoynt_mobile_app/core/routing/route_export.dart,
  *   package:appoynt_mobile_app/features/payment/data/models/invoice_model.dart
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 08/08/2026]
- * File Description: Redesigned Payment History & Invoices Page displaying transaction histories, filters, and null-safe invoice models.
+ * File Description: Redesigned Payment History & Invoices Page displaying transaction histories, filters, and null-safe invoice models. Fully localized.
  */
 
 // Importing global route exports
@@ -83,12 +83,10 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
   late final List<InvoiceModel> _all_transactions;
 
   // Active filter state variables
-  String _selected_date_filter =
-      'All'; // All, This Month, Last 3 Months, Custom
+  String _selected_date_filter = 'All'; // All, This Month, Last 3 Months, Custom
   double _min_amount = 0.0;
   double _max_amount = 500.0;
-  String _selected_service_type =
-      'All'; // All, Doctor Consultation, Lab Test, Radiology, Emergency
+  String _selected_service_type = 'All'; // All, Doctor Consultation, Lab Test, Radiology, Emergency
 
   DateTimeRange? _custom_date_range;
 
@@ -181,6 +179,8 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
   @override
   // Build widget layout tree
   Widget build(BuildContext context) {
+    // Resolve localizations context properties
+    final AppLocalizations localizations = AppLocalizations.of(context);
     // Resolve theme brightness mode
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     // Filtered transaction list
@@ -209,24 +209,24 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
               // Top padding separator
               const SizedBox(height: AppSpacing.space_xl),
               // Custom profile back-navigation appBar header
-              const CustomProfileAppBar(
-                title: 'Invoices & History',
+              CustomProfileAppBar(
+                title: localizations.payment_invoices_history_title,
               ),
               // Spacing gap separator
               const SizedBox(height: AppSpacing.space_l),
               // Top summary banner overview card (Indigo/Purple modern design)
               _build_summary_banner(
-                  context, total_spent, filtered_tx.length, is_dark),
+                  context, total_spent, filtered_tx.length, is_dark, localizations),
               // Spacing gap separator
               const SizedBox(height: AppSpacing.space_l),
               // Horizontal Scrollable Filter Bar
-              _build_filter_bar(context, is_dark),
+              _build_filter_bar(context, is_dark, localizations),
               // Spacing gap separator
               const SizedBox(height: AppSpacing.space_m),
               // Scrollable transaction list view area
               Expanded(
                 child: true == filtered_tx.isEmpty
-                    ? _build_empty_state(context, is_dark)
+                    ? _build_empty_state(context, is_dark, localizations)
                     : ListView.builder(
                         // Item count
                         itemCount: filtered_tx.length,
@@ -294,11 +294,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                                     children: [
                                       Text(
                                         tx.doctorName ??
-                                            (true ==
-                                                    AppLocalizations.of(context)
-                                                        .is_arabic
-                                                ? 'غير محدد'
-                                                : 'Not Specified'),
+                                            localizations.profile_not_specified,
                                         style: TextStyle(
                                           fontSize: 13.0,
                                           fontWeight: FontWeight.bold,
@@ -385,7 +381,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                                           .showSnackBar(
                                         SnackBar(
                                           content: Text(
-                                              'Downloading Invoice PDF for ${(tx.invoiceNumber ?? "")}...'),
+                                              '${localizations.payment_downloading_invoice_snack} (${tx.invoiceNumber ?? ""})'),
                                         ),
                                       );
                                     },
@@ -406,7 +402,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
 
   // Build the top Summary Banner widget card
   Widget _build_summary_banner(
-      BuildContext context, double spent, int count, bool is_dark) {
+      BuildContext context, double spent, int count, bool is_dark, AppLocalizations localizations) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20.0),
@@ -434,9 +430,9 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Total Paid Invoices',
-                style: TextStyle(
+              Text(
+                localizations.payment_total_paid_invoices,
+                style: const TextStyle(
                   fontSize: 11.0,
                   color: Colors.white70,
                   fontWeight: FontWeight.w500,
@@ -462,7 +458,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
               borderRadius: BorderRadius.circular(12.0),
             ),
             child: Text(
-              '$count Invoices',
+              '$count ${localizations.payment_invoices_count_suffix}',
               style: const TextStyle(
                 fontSize: 12.0,
                 fontWeight: FontWeight.bold,
@@ -476,7 +472,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
   }
 
   // Build the horizontal filter chip options row bar layout widget
-  Widget _build_filter_bar(BuildContext context, bool is_dark) {
+  Widget _build_filter_bar(BuildContext context, bool is_dark, AppLocalizations localizations) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
@@ -485,10 +481,10 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: FilterChip(
-              label: Text('Date: $_selected_date_filter ▾'),
+              label: Text('${localizations.payment_date_filter_prefix}: $_selected_date_filter ▾'),
               selected: 'All' != _selected_date_filter,
               onSelected: (_) =>
-                  _show_date_picker_bottom_sheet(context, is_dark),
+                  _show_date_picker_bottom_sheet(context, is_dark, localizations),
               selectedColor: AppColors.primary_color.withValues(alpha: 0.15),
               checkmarkColor: AppColors.primary_color,
             ),
@@ -498,10 +494,10 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
             padding: const EdgeInsets.only(right: 8.0),
             child: FilterChip(
               label: Text(
-                  'Amount: \$${_min_amount.toInt()} - \$${_max_amount.toInt()} ▾'),
+                  '${localizations.payment_amount_filter_prefix}: \$${_min_amount.toInt()} - \$${_max_amount.toInt()} ▾'),
               selected: 0.0 != _min_amount || 500.0 != _max_amount,
               onSelected: (_) =>
-                  _show_amount_range_bottom_sheet(context, is_dark),
+                  _show_amount_range_bottom_sheet(context, is_dark, localizations),
               selectedColor: AppColors.primary_color.withValues(alpha: 0.15),
               checkmarkColor: AppColors.primary_color,
             ),
@@ -510,10 +506,10 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: FilterChip(
-              label: Text('Service: $_selected_service_type ▾'),
+              label: Text('${localizations.payment_service_filter_prefix}: $_selected_service_type ▾'),
               selected: 'All' != _selected_service_type,
               onSelected: (_) =>
-                  _show_service_type_bottom_sheet(context, is_dark),
+                  _show_service_type_bottom_sheet(context, is_dark, localizations),
               selectedColor: AppColors.primary_color.withValues(alpha: 0.15),
               checkmarkColor: AppColors.primary_color,
             ),
@@ -524,7 +520,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
   }
 
   // Show Bottom Sheet to select Date Filters
-  void _show_date_picker_bottom_sheet(BuildContext context, bool is_dark) {
+  void _show_date_picker_bottom_sheet(BuildContext context, bool is_dark, AppLocalizations localizations) {
     showModalBottomSheet(
       context: context,
       backgroundColor: true == is_dark ? AppColors.surface_dark : Colors.white,
@@ -538,16 +534,16 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.all(16.0),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
                     child: Text(
-                      'Filter by Date Range',
-                      style: TextStyle(
+                      localizations.payment_filter_date_range_title,
+                      style: const TextStyle(
                           fontSize: 16.0, fontWeight: FontWeight.bold),
                     ),
                   ),
                   ListTile(
-                    title: const Text('All Time'),
+                    title: Text(localizations.payment_all_time_option),
                     trailing: 'All' == _selected_date_filter
                         ? const Icon(Icons.check,
                             color: AppColors.primary_color)
@@ -561,7 +557,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                     },
                   ),
                   ListTile(
-                    title: const Text('This Month'),
+                    title: Text(localizations.payment_this_month_option),
                     trailing: 'This Month' == _selected_date_filter
                         ? const Icon(Icons.check,
                             color: AppColors.primary_color)
@@ -575,7 +571,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                     },
                   ),
                   ListTile(
-                    title: const Text('Last 3 Months'),
+                    title: Text(localizations.payment_last_3_months_option),
                     trailing: 'Last 3 Months' == _selected_date_filter
                         ? const Icon(Icons.check,
                             color: AppColors.primary_color)
@@ -589,7 +585,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                     },
                   ),
                   ListTile(
-                    title: const Text('Custom Range'),
+                    title: Text(localizations.payment_custom_range_option),
                     trailing: 'Custom' == _selected_date_filter
                         ? const Icon(Icons.check,
                             color: AppColors.primary_color)
@@ -630,7 +626,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
   }
 
   // Show Bottom Sheet to select Amount Range
-  void _show_amount_range_bottom_sheet(BuildContext context, bool is_dark) {
+  void _show_amount_range_bottom_sheet(BuildContext context, bool is_dark, AppLocalizations localizations) {
     showModalBottomSheet(
       context: context,
       backgroundColor: true == is_dark ? AppColors.surface_dark : Colors.white,
@@ -647,9 +643,9 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Filter by Amount Range',
-                      style: TextStyle(
+                    Text(
+                      localizations.payment_filter_amount_range_title,
+                      style: const TextStyle(
                           fontSize: 16.0, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 20.0),
@@ -678,8 +674,8 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Min: \$${_min_amount.toInt()}'),
-                        Text('Max: \$${_max_amount.toInt()}'),
+                        Text('${localizations.payment_min_label}: \$${_min_amount.toInt()}'),
+                        Text('${localizations.payment_max_label}: \$${_max_amount.toInt()}'),
                       ],
                     ),
                     const SizedBox(height: 20.0),
@@ -695,8 +691,8 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                         onPressed: () {
                           Navigator.of(sheet_context).pop();
                         },
-                        child: const Text('Apply Filter',
-                            style: TextStyle(
+                        child: Text(localizations.payment_apply_filter_btn,
+                            style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold)),
                       ),
@@ -712,7 +708,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
   }
 
   // Show Bottom Sheet to select Service Type
-  void _show_service_type_bottom_sheet(BuildContext context, bool is_dark) {
+  void _show_service_type_bottom_sheet(BuildContext context, bool is_dark, AppLocalizations localizations) {
     final List<String> types = [
       'All',
       'Doctor Consultation',
@@ -732,11 +728,11 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Padding(
-                padding: EdgeInsets.all(16.0),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
                 child: Text(
-                  'Filter by Service Type',
-                  style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                  localizations.payment_filter_service_type_title,
+                  style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
                 ),
               ),
               ...types.map((type) {
@@ -761,7 +757,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
   }
 
   // Build clean empty state screen when no invoices match filters
-  Widget _build_empty_state(BuildContext context, bool is_dark) {
+  Widget _build_empty_state(BuildContext context, bool is_dark, AppLocalizations localizations) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.space_xl),
@@ -782,7 +778,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
             ),
             const SizedBox(height: 20.0),
             Text(
-              'No Invoices Found',
+              localizations.payment_no_invoices_found_title,
               style: TextStyle(
                 fontSize: 15.0,
                 fontWeight: FontWeight.bold,
@@ -793,7 +789,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
             ),
             const SizedBox(height: 6.0),
             Text(
-              'No invoices found for selected filters. Try adjusting filter selections.',
+              localizations.payment_no_invoices_found_body,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 12.0,

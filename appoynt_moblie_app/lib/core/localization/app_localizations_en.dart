@@ -1337,6 +1337,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get profile_gender_prefer_not => 'Other';
   @override
+  String get profile_not_specified => 'Not Specified';
+  @override
   String get profile_smoking_yes => 'Yes';
   @override
   String get profile_smoking_no => 'No';
@@ -1362,6 +1364,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profile_error_address_length => 'Address must not exceed 250 characters.';
   @override
   String get profile_error_address_invalid => 'Address cannot contain emojis or unsupported characters.';
+  @override
+  String get profile_upload_photo_title => 'Upload Profile Photo';
+  @override
+  String get profile_take_photo_option => 'Take Photo';
+  @override
+  String get profile_choose_gallery_option => 'Choose from Gallery';
+  @override
+  String get profile_photo_selected_success => 'Profile picture selected successfully!';
+  @override
+  String get profile_photo_pick_failed_prefix => 'Failed to pick image: ';
   @override
   String get profile_unsaved_changes_title => 'Unsaved Changes';
   @override
@@ -1689,6 +1701,104 @@ class AppLocalizationsEn extends AppLocalizations {
   String get insurance_add_card_full_btn => 'Add Insurance Card';
   @override
   String get insurance_save_card_btn => 'Save Card';
+
+  // Payment & Wallet Localizations English Overrides
+  @override
+  String get payment_wallet_title => 'Wallet & Payment';
+  @override
+  String get payment_balance_label => 'Wallet Balance';
+  @override
+  String get payment_priority_label => 'Priority Payment Switch';
+  @override
+  String get payment_saved_cards_tile => 'Saved Payment Cards';
+  @override
+  String get payment_saved_cards_subtitle => 'Manage your saved debit/credit cards';
+  @override
+  String get payment_history_tile => 'Payment History & Invoices';
+  @override
+  String get payment_history_subtitle => 'View past transactions and download invoices';
+  @override
+  String get payment_add_money_btn => 'Add Money';
+  @override
+  String get payment_active_status => 'Active';
+  @override
+  String get payment_inactive_status => 'Inactive';
+  @override
+  String get payment_default_badge => 'Default';
+  @override
+  String get payment_cardholder_label => 'CARDHOLDER';
+  @override
+  String get payment_valid_thru_label => 'VALID THRU';
+  @override
+  String get payment_add_money_coming_soon => 'Add Money feature coming soon!';
+  @override
+  String get payment_manage_cards_title => 'Saved Cards';
+  @override
+  String get payment_cards_count_suffix => 'Cards';
+  @override
+  String get payment_set_default_action => 'Set as Default';
+  @override
+  String get payment_delete_card_action => 'Delete Card';
+  @override
+  String get payment_card_removed_success => 'Card removed successfully.';
+  @override
+  String get payment_confirm_delete_title => 'Confirm Deletion';
+  @override
+  String get payment_confirm_delete_body => 'Are you sure you want to delete this payment card?';
+  @override
+  String get payment_delete_card_dialog_body_prefix => 'Are you sure you want to remove card "';
+  @override
+  String get payment_delete_card_dialog_body_suffix => '"? This action cannot be undone.';
+  @override
+  String get payment_delete_btn => 'Delete';
+  @override
+  String get payment_remove_btn => 'Remove';
+  @override
+  String get payment_cancel_btn => 'Cancel';
+  @override
+  String get payment_no_saved_cards_title => 'No Saved Cards';
+  @override
+  String get payment_no_saved_cards_body => 'You haven\'t saved any payment cards yet.';
+  @override
+  String get payment_add_new_card_btn => 'Add New Card';
+  @override
+  String get payment_invoices_history_title => 'Invoices & History';
+  @override
+  String get payment_total_paid_invoices => 'Total Paid Invoices';
+  @override
+  String get payment_invoices_count_suffix => 'Invoices';
+  @override
+  String get payment_date_filter_prefix => 'Date';
+  @override
+  String get payment_amount_filter_prefix => 'Amount';
+  @override
+  String get payment_service_filter_prefix => 'Service';
+  @override
+  String get payment_apply_filter_btn => 'Apply Filter';
+  @override
+  String get payment_filter_date_range_title => 'Filter by Date Range';
+  @override
+  String get payment_all_time_option => 'All Time';
+  @override
+  String get payment_this_month_option => 'This Month';
+  @override
+  String get payment_last_3_months_option => 'Last 3 Months';
+  @override
+  String get payment_custom_range_option => 'Custom Range';
+  @override
+  String get payment_filter_amount_range_title => 'Filter by Amount Range';
+  @override
+  String get payment_filter_service_type_title => 'Filter by Service Type';
+  @override
+  String get payment_no_invoices_found_title => 'No Invoices Found';
+  @override
+  String get payment_no_invoices_found_body => 'No invoices found for selected filters. Try adjusting filter selections.';
+  @override
+  String get payment_downloading_invoice_snack => 'Downloading Invoice PDF...';
+  @override
+  String get payment_min_label => 'Min';
+  @override
+  String get payment_max_label => 'Max';
 
   // Authentication error localized message English overrides
   @override
