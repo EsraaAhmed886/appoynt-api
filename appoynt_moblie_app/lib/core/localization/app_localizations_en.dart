@@ -2045,6 +2045,46 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get_chronic_subtitle(String year, String status) => 'Diagnosed in $year • $status';
 
+  // App preferences and other page English Overrides
+  @override
+  String get profile_select_language => 'Select Language';
+  @override
+  String get profile_select_theme => 'Select Theme';
+  @override
+  String get profile_sec_notifications => 'NOTIFICATIONS & ALERTS';
+  @override
+  String get profile_sec_display => 'DISPLAY & ACCESSIBILITY';
+  @override
+  String get profile_sec_support => 'SUPPORT & LEGAL';
+  @override
+  String get profile_medication_reminders => 'Medication & Pill Reminders';
+  @override
+  String get profile_medication_reminders_sub => 'Get notified for your prescribed pills';
+  @override
+  String get profile_calendar_sync => 'Calendar Synchronization';
+  @override
+  String get profile_calendar_sync_sub => 'Sync medical bookings to phone calendar';
+  @override
+  String get profile_active_language => 'English';
+  @override
+  String get profile_help_center => 'Help Center & FAQs';
+  @override
+  String get profile_help_center_sub => 'Browse guides and common answers';
+  @override
+  String get profile_opening_help_center => 'Opening Help Center...';
+  @override
+  String get prescriptions_edit_title => 'Edit Medication';
+  @override
+  String get prescriptions_update_btn => 'Update Prescription';
+  @override
+  String get login_phone_hint => '+1 234 567 8900';
+  @override
+  String get date_picker_cancel => 'Cancel';
+  @override
+  String get date_picker_confirm => 'Confirm';
+  @override
+  List<String> get weekdays => const ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+
   // Authentication error localized message English overrides
   @override
   String get error_invalid_credentials => 'Invalid phone number or password.';

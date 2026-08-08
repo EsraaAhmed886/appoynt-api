@@ -121,12 +121,8 @@ class _AppDatePickerDialogState extends State<AppDatePickerDialog> {
     // Resolve year label text
     final String year_text = '${_currentMonth.year}';
 
-    // Weekdays headers
-    final List<String> weekdays_en = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-    final List<String> weekdays_ar = ['ن', 'ث', 'ر', 'خ', 'ج', 'س', 'ح'];
-    // Resolve weekday labels based on active language (Yoda style check)
-    final List<String> weekdays =
-        true == localizations.is_arabic ? weekdays_ar : weekdays_en;
+    // Resolve weekday labels based on active language
+    final List<String> weekdays = localizations.weekdays;
 
     // Days grid building offsets
     final int offset = first_day_weekday - 1;
@@ -469,8 +465,7 @@ class _AppDatePickerDialogState extends State<AppDatePickerDialog> {
                       },
                       // Cancel label widget
                       child: Text(
-                        // Localized cancel label string (Yoda style check)
-                        true == localizations.is_arabic ? 'إلغاء' : 'Cancel',
+                        localizations.date_picker_cancel,
                         // Label styles
                         style: TextStyle(
                           // Muted label text color resolving using design tokens (Yoda style check)
@@ -515,8 +510,7 @@ class _AppDatePickerDialogState extends State<AppDatePickerDialog> {
                       },
                       // Confirm label widget
                       child: Text(
-                        // Localized confirm label string (Yoda style check)
-                        true == localizations.is_arabic ? 'تأكيد' : 'Confirm',
+                        localizations.date_picker_confirm,
                         // Label styles
                         style: const TextStyle(
                           // Standard white labels on active CTA

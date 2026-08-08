@@ -2066,6 +2066,46 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get_chronic_subtitle(String year, String status) => 'تم التشخيص في $year • $status';
 
+  // App preferences and other page Arabic Overrides
+  @override
+  String get profile_select_language => 'اختر اللغة';
+  @override
+  String get profile_select_theme => 'اختر المظهر';
+  @override
+  String get profile_sec_notifications => 'الإشعارات والتنبيهات';
+  @override
+  String get profile_sec_display => 'العرض وإمكانية الوصول';
+  @override
+  String get profile_sec_support => 'الدعم والسياسات';
+  @override
+  String get profile_medication_reminders => 'تنبيهات الأدوية والحبوب';
+  @override
+  String get profile_medication_reminders_sub => 'تذكير بمواعيد أخذ جرعات الأدوية';
+  @override
+  String get profile_calendar_sync => 'مزامنة التقويم';
+  @override
+  String get profile_calendar_sync_sub => 'حفظ المواعيد تلقائياً في تقويم الهاتف';
+  @override
+  String get profile_active_language => 'العربية';
+  @override
+  String get profile_help_center => 'مركز المساعدة والأسئلة الشائعة';
+  @override
+  String get profile_help_center_sub => 'عرض الإرشادات والأسئلة الأكثر شيوعاً';
+  @override
+  String get profile_opening_help_center => 'جاري فتح مركز المساعدة...';
+  @override
+  String get prescriptions_edit_title => 'تعديل بيانات الدواء';
+  @override
+  String get prescriptions_update_btn => 'تحديث الدواء';
+  @override
+  String get login_phone_hint => '01xxxxxxxxx';
+  @override
+  String get date_picker_cancel => 'إلغاء';
+  @override
+  String get date_picker_confirm => 'تأكيد';
+  @override
+  List<String> get weekdays => const ['ن', 'ث', 'ر', 'خ', 'ج', 'س', 'ح'];
+
   // Authentication error localized message Arabic overrides
   @override
   String get error_invalid_credentials => 'رقم الهاتف أو كلمة المرور غير صحيحة.';

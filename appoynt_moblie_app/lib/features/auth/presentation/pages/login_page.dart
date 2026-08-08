@@ -201,7 +201,7 @@ class _LoginPageState extends State<LoginPage> {
       // Match phone category
       case _InputType.phone:
         // Return phone format hint dynamically depending on language choice using Yoda style check
-        return true == s.is_arabic ? '01xxxxxxxxx' : '+1 234 567 8900';
+        return s.login_phone_hint;
       // Fallback matching empty or unknown states
       default:
         // Return combined enter prompt hint

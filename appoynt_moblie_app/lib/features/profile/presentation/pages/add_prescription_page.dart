@@ -202,17 +202,16 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
     final AppLocalizations localizations = AppLocalizations.of(context);
     // Resolve theme brightness flag
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
-    final bool is_ar = localizations.is_arabic;
     final bool is_edit = null != widget.prescription;
 
     // Resolve dynamic page title copy
     final String page_title = true == is_edit
-        ? (true == is_ar ? 'تعديل بيانات الدواء' : 'Edit Medication')
+        ? localizations.prescriptions_edit_title
         : localizations.prescriptions_modal_title;
 
     // Resolve dynamic button label copy
     final String cta_label = true == is_edit
-        ? (true == is_ar ? 'تحديث الدواء' : 'Update Prescription')
+        ? localizations.prescriptions_update_btn
         : localizations.prescriptions_save_btn;
 
     // Build localized frequency chip labels from localization dictionary

@@ -99,7 +99,7 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
               ),
               const SizedBox(height: _LocalDimensions.spacing_xl),
               Text(
-                localizations.is_arabic ? "اختر اللغة" : "Select Language",
+                localizations.profile_select_language,
                 style: TextStyle(
                   fontSize: _LocalDimensions.font_size_title_medium,
                   fontWeight: FontWeight.bold,
@@ -170,7 +170,7 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
                   ),
                   const SizedBox(height: _LocalDimensions.spacing_xl),
                   Text(
-                    localizations.is_arabic ? "اختر المظهر" : "Select Theme",
+                    localizations.profile_select_theme,
                     style: TextStyle(
                       fontSize: _LocalDimensions.font_size_title_medium,
                       fontWeight: FontWeight.bold,
@@ -410,15 +410,15 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
 
     // Localized Headers & Titles
-    final String sec_notifications = localizations.is_arabic ? "الإشعارات والتنبيهات" : "NOTIFICATIONS & ALERTS";
-    final String sec_display = localizations.is_arabic ? "العرض وإمكانية الوصول" : "DISPLAY & ACCESSIBILITY";
-    final String sec_support = localizations.is_arabic ? "الدعم والسياسات" : "SUPPORT & LEGAL";
+    final String sec_notifications = localizations.profile_sec_notifications;
+    final String sec_display = localizations.profile_sec_display;
+    final String sec_support = localizations.profile_sec_support;
 
     final String appointment_reminders_title = localizations.profile_notifications_reminders;
     final String appointment_reminders_sub = localizations.profile_notifications_reminders_sub;
 
-    final String medication_reminders_title = localizations.is_arabic ? "تنبيهات الأدوية والحبوب" : "Medication & Pill Reminders";
-    final String medication_reminders_sub = localizations.is_arabic ? "تذكير بمواعيد أخذ جرعات الأدوية" : "Get notified for your prescribed pills";
+    final String medication_reminders_title = localizations.profile_medication_reminders;
+    final String medication_reminders_sub = localizations.profile_medication_reminders_sub;
 
     final String invoices_title = localizations.profile_notifications_invoices;
     final String invoices_sub = localizations.profile_notifications_invoices_sub;
@@ -426,18 +426,18 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
     final String promos_title = localizations.profile_notifications_promos;
     final String promos_sub = localizations.profile_notifications_promos_sub;
 
-    final String calendar_sync_title = localizations.is_arabic ? "مزامنة التقويم" : "Calendar Synchronization";
-    final String calendar_sync_sub = localizations.is_arabic ? "حفظ المواعيد تلقائياً في تقويم الهاتف" : "Sync medical bookings to phone calendar";
+    final String calendar_sync_title = localizations.profile_calendar_sync;
+    final String calendar_sync_sub = localizations.profile_calendar_sync_sub;
 
-    final String active_language = localizations.is_arabic ? "العربية" : "English";
+    final String active_language = localizations.profile_active_language;
     final String active_theme = theme_mode_notifier.current_theme_mode == ThemeMode.light
         ? localizations.profile_theme_light
         : (theme_mode_notifier.current_theme_mode == ThemeMode.dark
             ? localizations.profile_theme_dark
             : localizations.profile_theme_system);
 
-    final String help_center_title = localizations.is_arabic ? "مركز المساعدة والأسئلة الشائعة" : "Help Center & FAQs";
-    final String help_center_sub = localizations.is_arabic ? "عرض الإرشادات والأسئلة الأكثر شيوعاً" : "Browse guides and common answers";
+    final String help_center_title = localizations.profile_help_center;
+    final String help_center_sub = localizations.profile_help_center_sub;
 
     final Color dividerColor = is_dark ? AppColors.border_dark : const Color(0xFFF1F5F9);
 
@@ -686,7 +686,7 @@ class _AppPreferencesPageState extends State<AppPreferencesPage> {
                       onTap: () {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text(localizations.is_arabic ? 'جاري فتح مركز المساعدة...' : 'Opening Help Center...'),
+                            content: Text(localizations.profile_opening_help_center),
                             backgroundColor: AppColors.primary_color,
                           ),
                         );

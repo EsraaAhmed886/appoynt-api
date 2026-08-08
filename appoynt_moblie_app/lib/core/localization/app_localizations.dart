@@ -947,6 +947,27 @@ abstract class AppLocalizations {
   String get chronic_saved_success_toast;
   String get_chronic_subtitle(String year, String status);
 
+  // App preferences and other page localizations
+  String get profile_select_language;
+  String get profile_select_theme;
+  String get profile_sec_notifications;
+  String get profile_sec_display;
+  String get profile_sec_support;
+  String get profile_medication_reminders;
+  String get profile_medication_reminders_sub;
+  String get profile_calendar_sync;
+  String get profile_calendar_sync_sub;
+  String get profile_active_language;
+  String get profile_help_center;
+  String get profile_help_center_sub;
+  String get profile_opening_help_center;
+  String get prescriptions_edit_title;
+  String get prescriptions_update_btn;
+  String get login_phone_hint;
+  String get date_picker_cancel;
+  String get date_picker_confirm;
+  List<String> get weekdays;
+
   // Authentication error localized message getters
   String get error_invalid_credentials;
   String get error_phone_empty;
