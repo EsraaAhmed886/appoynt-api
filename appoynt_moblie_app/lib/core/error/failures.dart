@@ -25,8 +25,15 @@ abstract class Failure extends Equatable {
 
 /// A specific failure representing an error occurring during a server/remote request.
 class ServerFailure extends Failure {
-  /// Default constructor
-  const ServerFailure();
+  final String? message;
+  
+  /// Default constructor with optional custom error message.
+  const ServerFailure([this.message]);
+
+  @override
+  List<Object?> get props {
+    return [message];
+  }
 }
 
 /// A specific failure representing an error occurring during local database or cache access.

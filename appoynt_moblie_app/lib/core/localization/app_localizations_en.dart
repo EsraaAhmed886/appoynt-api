@@ -2103,7 +2103,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get legal_open_source_content => 'This app utilizes open source packages. You can find their licenses on their official package documentation pages.';
 
-  // Authentication error localized message English overrides
   @override
   String get error_invalid_credentials => 'Invalid phone number or password.';
   @override
@@ -2112,4 +2111,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get error_otp_invalid => 'OTP code must be 6 digits.';
   @override
   String get error_password_too_short => 'Password must be at least 8 characters.';
+  @override
+  String get error_user_not_found => 'Account not found.';
+  @override
+  String get error_email_already_exists => 'Email is already registered.';
+  @override
+  String get error_auth_general => 'An error occurred during authentication, please verify your details.';
 }

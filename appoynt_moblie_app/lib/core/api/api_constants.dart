@@ -16,7 +16,7 @@ class ApiConstants {
   ApiConstants._();
 
   /// The root URL of the backend API.
-  static const String base_url = 'https://api.appoynt.com/v1/';
+  static const String base_url = 'http://appoynt.runasp.net/api/';
 
   // ── Authentication Endpoints ──────────────────────────
 
@@ -30,7 +30,10 @@ class ApiConstants {
   static const String forgot_password = 'auth/forgot-password';
 
   /// Endpoint for verifying the OTP code.
-  static const String verify_otp = 'auth/verify-otp';
+  static const String verify_otp = 'auth/otp/verify';
+
+  /// Endpoint for resending the OTP code.
+  static const String resend_otp = 'auth/otp/resend';
 
   /// Endpoint for setting a new password.
   static const String reset_password = 'auth/reset-password';

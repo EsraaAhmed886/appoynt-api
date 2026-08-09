@@ -1,15 +1,16 @@
 /*
- * File Name: edit_profile_page.dart
+ * File Name: update_profile_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/07/2026
- * Version Information: V1.0.0
+ * Version Information: V1.1.0
  * Dependencies: package:flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
- *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart
+ *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart,
+ *   package:appoynt_mobile_app/features/profile/data/models/update_profile_request_model.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 19/07/2026]
- * File Description: Defines the Edit Profile layout form fields, validators, and unsaved changes dialogs.
+ * Last Modified Date: [Kholoud Khaled - 09/08/2026]
+ * File Description: Defines the Update Profile layout form fields, validators, and backend save handlers.
  */
 
 // Importing standard I/O for File operations
@@ -28,56 +29,88 @@ import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_s
 // Importing reusable text field widgets
 import 'package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart';
 import 'package:appoynt_mobile_app/core/widgets/app_date_picker.dart';
+// Importing DTO request model representation
+import 'package:appoynt_mobile_app/features/profile/data/models/update_profile_request_model.dart';
 
 // Local layout dimensions class to strictly eliminate hardcoded numbers
 class _LocalDimensions {
+  // Minimum weight value
   static const double min_weight = 2.0;
+  // Maximum weight value
   static const double max_weight = 300.0;
+  // Minimum height value
   static const double min_height = 30.0;
+  // Maximum height value
   static const double max_height = 250.0;
+  // Border radius for bottom sheet
   static const double border_radius_sheet = 24.0;
+  // Title font size representation
   static const double title_font_size = 18.0;
+  // Avatar box layout size bounds
   static const double avatar_box_size = 100.0;
+  // Avatar border width
   static const double avatar_border_width = 2.0;
+  // Avatar shadow blur size
   static const double avatar_shadow_blur = 8.0;
+  // Avatar shadow offset y representation
   static const double avatar_shadow_offset_y = 2.0;
+  // Avatar circular radius
   static const double avatar_radius = 50.0;
+  // Default camera placeholder icon size
   static const double default_avatar_icon_size = 50.0;
+  // Camera badge container padding
   static const double camera_badge_padding = 6.0;
+  // Camera badge icon size
   static const double camera_badge_icon_size = 16.0;
+  // Form card padding size
   static const double card_padding = 16.0;
+  // Form card border radius
   static const double card_radius = 16.0;
+  // Form card outline border width
   static const double card_border_width = 1.0;
+  // Form card shadow blur size
   static const double card_shadow_blur = 10.0;
+  // Form card shadow offset y
   static const double card_shadow_offset_y = 4.0;
+  // Small field vertical spacing gap
   static const double field_spacing_small = 12.0;
+  // Large field vertical spacing gap
   static const double field_spacing_large = 16.0;
+  // Tiny field vertical spacing gap
   static const double field_spacing_tiny = 8.0;
+  // Scroll view bottom clearance padding
   static const double scroll_bottom_padding = 80.0;
+  // Segmented chips container height
   static const double segmented_height = 48.0;
+  // Segmented chips border radius
   static const double segmented_radius = 12.0;
+  // Segmented chips outline border width
   static const double segmented_border_width = 1.0;
+  // Segmented chips internal padding
   static const double segmented_padding = 4.0;
+  // Segmented chip item horizontal padding
   static const double chip_padding_h = 8.0;
+  // Segmented chip item border radius
   static const double chip_radius = 8.0;
+  // Segmented chip item font size
   static const double chip_font_size = 13.0;
 }
 
 // Patient Profile Editor form screen stateful widget representation
-class EditProfilePage extends StatefulWidget {
+class UpdateProfilePage extends StatefulWidget {
   // Constructor mapping key
-  const EditProfilePage({super.key});
+  const UpdateProfilePage({super.key});
 
   // State builder definition
   @override
-  State<EditProfilePage> createState() {
+  State<UpdateProfilePage> createState() {
     // Return edit profile state tracker
-    return _EditProfilePageState();
+    return _UpdateProfilePageState();
   }
 }
 
-// State tracker class implementation for EditProfilePage
-class _EditProfilePageState extends State<EditProfilePage> {
+// State tracker class implementation for UpdateProfilePage
+class _UpdateProfilePageState extends State<UpdateProfilePage> {
   // Global form key constraint configuration
   final GlobalKey<FormState> _form_key = GlobalKey<FormState>();
   // Text controllers mapping inputs
@@ -103,40 +136,55 @@ class _EditProfilePageState extends State<EditProfilePage> {
   bool _listeners_attached = false;
   // Track if form validation should display error messages onUserInteraction
   bool _form_submitted = false;
+  // Track if form values were already populated from fetched API state
+  bool _is_populated = false;
 
   // Initial email to check for case-insensitive changes during email uniqueness check
-  late final String _initial_email;
+  late String _initial_email;
 
   // Helper method to strip country code and keep local phone format
   String _strip_country_code(String phone) {
+    // Strip all non-numeric characters except plus
     String local = phone.replaceAll(RegExp(r'[^\d+]'), '');
+    // Check Egyptian prefix +20
     if (local.startsWith('+20')) {
+      // Egyptian prefix local format
       return '0${local.substring(3)}';
     } else if (local.startsWith('20') && local.length > 10) {
+      // Egyptian prefix alternative local format
       return '0${local.substring(2)}';
     } else if (local.startsWith('+2')) {
+      // General +2 prefix local format
       return '0${local.substring(2)}';
     } else {
       // Empty action block to satisfy compiler
     }
+    // Return Egypt local phone representation
     return local;
   }
 
   // Validator helper logic for First Name form input field
   String? _validate_first_name(String? value) {
+    // Trim input values
     final String value_trimmed = (value ?? '').trim();
+    // Validate empty field
     if (value_trimmed.isEmpty) {
+      // First name is empty
       return "First Name cannot be empty.";
     } else {
       // Format check (highest priority after empty check)
       final RegExp letters_only = RegExp(r'^\p{L}+$', unicode: true);
+      // Validate letters constraint
       if (false == letters_only.hasMatch(value_trimmed)) {
+        // String contains numbers or symbols
         return "First Name must contain letters only.";
       } else {
         // Length check constraints
         if (value_trimmed.length < 3 || value_trimmed.length > 50) {
+          // Range validation failed
           return "First Name must be between 3 and 50 characters.";
         } else {
+          // Name valid
           return null;
         }
       }
@@ -145,19 +193,26 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   // Validator helper logic for Last Name form input field
   String? _validate_last_name(String? value) {
+    // Trim input values
     final String value_trimmed = (value ?? '').trim();
+    // Validate empty field
     if (value_trimmed.isEmpty) {
+      // Last name is empty
       return "Last Name cannot be empty.";
     } else {
       // Format check (highest priority after empty check)
       final RegExp letters_only = RegExp(r'^\p{L}+$', unicode: true);
+      // Validate letters constraint
       if (false == letters_only.hasMatch(value_trimmed)) {
+        // String contains numbers or symbols
         return "Last Name must contain letters only.";
       } else {
         // Length check constraints
         if (value_trimmed.length < 3 || value_trimmed.length > 50) {
+          // Range validation failed
           return "Last Name must be between 3 and 50 characters.";
         } else {
+          // Name valid
           return null;
         }
       }
@@ -166,50 +221,67 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   // Validator helper logic for Email form input field
   String? _validate_email(String? value) {
+    // Trim input value
     final String val = (value ?? '').trim();
+    // Validate empty field
     if (val.isEmpty) {
+      // Email is empty
       return "Email cannot be empty.";
     } else {
       // Length check constraints
       if (val.length > 254) {
+        // Range validation failed
         return "Email must not exceed 254 characters.";
       } else {
         // Space checking constraints
         if (val.contains(' ')) {
+          // Contains spacing characters
           return "Please enter a valid email.";
         } else {
           // Exactly one @ check
           final int at_index = val.indexOf('@');
+          // Validate unique @ symbol
           if (at_index == -1 || at_index != val.lastIndexOf('@')) {
+            // Missing or multiple @ symbols
             return "Please enter a valid email.";
           } else {
             // Local part length check
             final String local_part = val.substring(0, at_index);
+            // Validate local part range limit
             if (local_part.length > 64) {
+              // Range limit failed
               return "Please enter a valid email.";
             } else {
               // Standard email regex
               final RegExp email_regex = RegExp(
                 r'^[a-zA-Z0-9]+([._-][a-zA-Z0-9]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,4}$',
               );
+              // Validate format regex
               if (false == email_regex.hasMatch(val)) {
+                // Formatting incorrect
                 return "Please enter a valid email.";
               } else {
                 // Email uniqueness case-insensitive check
                 final String email_lower = val.toLowerCase();
+                // Compare with initial email
                 if (email_lower != _initial_email) {
+                  // Mapped list of mock registered emails
                   final Set<String> registered_emails = {
                     'taken@gmail.com',
                     'user@gmail.com',
                     'alreadyregistered@gmail.com',
                     'test@gmail.com',
                   };
+                  // Check duplicate emails
                   if (true == registered_emails.contains(email_lower)) {
+                    // Duplicate email
                     return "This email is already registered.";
                   } else {
+                    // Unique email
                     return null;
                   }
                 } else {
+                  // No change to initial email
                   return null;
                 }
               }
@@ -222,22 +294,29 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   // Validator helper logic for Address form input field (VR-06)
   String? _validate_address(String? value) {
+    // Trim input value
     final String value_trimmed = (value ?? '').trim();
+    // Validate empty address
     if (value_trimmed.isEmpty) {
+      // Address is optional
       return null;
     } else {
       // Length check constraint
       if (value_trimmed.length > 250) {
+        // Range validation failed
         return "Address must not exceed 250 characters.";
       } else {
         // Emojis and control characters regex filters
         final RegExp emoji_regex =
             RegExp(r'[\u{1F300}-\u{1F9FF}\u{2600}-\u{27BF}]', unicode: true);
         final RegExp control_regex = RegExp(r'[\u0000-\u001F\u007F-\u009F]');
+        // Verify regex constraints
         if (true == emoji_regex.hasMatch(value_trimmed) ||
             true == control_regex.hasMatch(value_trimmed)) {
+          // Unsupported symbols detected
           return "Address cannot contain emojis or unsupported characters.";
         } else {
+          // Address is valid
           return null;
         }
       }
@@ -246,17 +325,26 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   // Validator helper logic for Weight form input field
   String? _validate_weight(String? value) {
+    // Trim input value
     final String val = (value ?? '').trim();
+    // Validate empty field
     if (val.isEmpty) {
+      // Weight is empty
       return "Weight is required.";
     } else {
+      // Parse numeric double
       final double? weight = double.tryParse(val);
+      // Validate numeric value
       if (weight == null || weight <= 0.0) {
+        // Parse error or negative value
         return "Please enter a valid weight.";
       } else {
+        // Validate weight range limits
         if (weight < _LocalDimensions.min_weight || weight > _LocalDimensions.max_weight) {
+          // Bounds verification failed
           return "Weight must be between 2 and 300 kg.";
         } else {
+          // Weight valid
           return null;
         }
       }
@@ -265,17 +353,26 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   // Validator helper logic for Height form input field
   String? _validate_height(String? value) {
+    // Trim input value
     final String val = (value ?? '').trim();
+    // Validate empty field
     if (val.isEmpty) {
+      // Height is empty
       return "Height is required.";
     } else {
+      // Parse numeric double
       final double? height = double.tryParse(val);
+      // Validate numeric value
       if (height == null || height <= 0.0) {
+        // Parse error or negative value
         return "Please enter a valid height.";
       } else {
+        // Validate height range limits
         if (height < _LocalDimensions.min_height || height > _LocalDimensions.max_height) {
+          // Bounds verification failed
           return "Height must be between 30 and 250 cm.";
         } else {
+          // Height valid
           return null;
         }
       }
@@ -284,32 +381,45 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   // Helper method returning the maximum days in a given month and year
   int _get_days_in_month(int month, int year) {
+    // Check leap year for February
     if (month == 2) {
+      // Resolve leap year flag
       final bool is_leap =
           (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+      // Return leap year days
       return is_leap ? 29 : 28;
     } else {
+      // Set mapping 30 days months
       final Set<int> thirty_days = {4, 6, 9, 11};
+      // Return month days
       return true == thirty_days.contains(month) ? 30 : 31;
     }
   }
 
   // Validator helper logic for Egyptian National ID form input field
   String? _validate_national_id(String? value) {
+    // Trim input value
     final String val = (value ?? '').trim();
+    // Validate empty ID
     if (val.isEmpty) {
+      // National ID is empty
       return "National ID cannot be empty.";
     } else {
+      // Validate length constraint
       if (val.length != 14) {
+        // Length incorrect
         return "National ID must be exactly 14 digits.";
       } else {
-        // Check for all identical digits (e.g. 22222222222222)
+        // Check for all identical digits
         if (val.runes.toSet().length == 1) {
+          // Identical digits validation failed
           return "Please enter a valid National ID.";
         } else {
           // Parse first digit (century indicator)
           final String century_char = val[0];
+          // Validate century bounds
           if (century_char != '2' && century_char != '3') {
+            // Century incorrect
             return "Please enter a valid National ID.";
           } else {
             // Parse birth year, month, and day offsets
@@ -318,53 +428,39 @@ class _EditProfilePageState extends State<EditProfilePage> {
             final int? month = int.tryParse(val.substring(3, 5));
             final int? day = int.tryParse(val.substring(5, 7));
 
+            // Validate parsed values
             if (year == null || month == null || day == null) {
+              // Parse failed
               return "Please enter a valid National ID.";
             } else {
+              // Calculate birth year
               final int full_year = year_offset + year;
+              // Validate month bounds
               if (month < 1 || month > 12) {
+                // Month incorrect
                 return "Please enter a valid National ID.";
               } else {
                 // Verify days bound ranges
                 final int max_days = _get_days_in_month(month, full_year);
+                // Validate day bounds
                 if (day < 1 || day > max_days) {
+                  // Day incorrect
                   return "Please enter a valid National ID.";
                 } else {
                   // Verify governorate code mappings
                   final String gov_code = val.substring(7, 9);
+                  // Egyptian governorate code constants
                   final Set<String> valid_govs = {
-                    '01',
-                    '02',
-                    '03',
-                    '04',
-                    '11',
-                    '12',
-                    '13',
-                    '14',
-                    '15',
-                    '16',
-                    '17',
-                    '18',
-                    '19',
-                    '21',
-                    '22',
-                    '23',
-                    '24',
-                    '25',
-                    '26',
-                    '27',
-                    '28',
-                    '29',
-                    '31',
-                    '32',
-                    '33',
-                    '34',
-                    '35',
-                    '88'
+                    '01', '02', '03', '04', '11', '12', '13', '14', '15',
+                    '16', '17', '18', '19', '21', '22', '23', '24', '25',
+                    '26', '27', '28', '29', '31', '32', '33', '34', '35', '88'
                   };
+                  // Validate governorate code existence
                   if (false == valid_govs.contains(gov_code)) {
+                    // Governorate code incorrect
                     return "Please enter a valid National ID.";
                   } else {
+                    // ID is valid
                     return null;
                   }
                 }
@@ -378,25 +474,34 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   // Listener to extract Date of Birth automatically upon 14-digit National ID entry
   void _on_national_id_changed() {
+    // Retrieve input value
     final String val = _national_id_controller.text.trim();
+    // Validate completed input length
     if (val.length == 14) {
+      // Resolve century
       final int? century = val[0] == '2' ? 1900 : (val[0] == '3' ? 2000 : null);
+      // Validate century
       if (century != null) {
+        // Resolve date fields
         final int? year_val = int.tryParse(val.substring(1, 3));
         final int? month_val = int.tryParse(val.substring(3, 5));
         final int? day_val = int.tryParse(val.substring(5, 7));
 
+        // Validate resolved fields
         if (year_val != null && month_val != null && day_val != null) {
+          // Attempt date formatting
           try {
+            // Calculate year
             final int year = century + year_val;
-            // Instantiating DateTime to trigger validation exceptions for invalid dates (e.g. Feb 30)
+            // Instantiating DateTime to trigger validation exceptions
             DateTime(year, month_val, day_val);
-            // Format as DD/MM/YYYY or MM/DD/YYYY based on app standards
+            // Format as DD/MM/YYYY
             _dob_controller.text =
                 "${day_val.toString().padLeft(2, '0')}/${month_val.toString().padLeft(2, '0')}/$year";
-            setState(() {}); // Trigger UI refresh if needed
+            // Refresh state layout
+            setState(() {});
           } catch (_) {
-            // Invalid date components (e.g., Feb 30)
+            // Invalid date components (ignored)
           }
         } else {
           // Parsing failure
@@ -433,13 +538,18 @@ class _EditProfilePageState extends State<EditProfilePage> {
     _initial_email = state.profile.email.trim().toLowerCase();
     // Add real-time listener for extracting Date of Birth
     _national_id_controller.addListener(_on_national_id_changed);
+    // Trigger remote fetch API sequence in post frame callback
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Call fetchUserProfile on Cubit
+      context.read<ProfileCubit>().fetchUserProfile();
+    });
   }
 
   // Attach text change listeners after controllers binding
   void _attach_listeners() {
     // Ensure listeners are bound once
     if (false == _listeners_attached) {
-      // Attach listeners
+      // Attach listeners to all inputs
       _first_name_controller.addListener(_on_fields_changed);
       _last_name_controller.addListener(_on_fields_changed);
       _email_controller.addListener(_on_fields_changed);
@@ -448,7 +558,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       _weight_controller.addListener(_on_fields_changed);
       _height_controller.addListener(_on_fields_changed);
       _dob_controller.addListener(_on_fields_changed);
-      // Mark bound
+      // Set active status
       _listeners_attached = true;
     } else {
       // Empty block
@@ -533,15 +643,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 const SizedBox(height: AppSpacing.space_m),
                 // Modal title text label
                 Text(
-                  // String title text
                   localizations.profile_upload_photo_title,
-                  // Text styling properties
                   style: TextStyle(
-                    // Title standard size
                     fontSize: _LocalDimensions.title_font_size,
-                    // Bold styling
                     fontWeight: FontWeight.bold,
-                    // Dynamic colors adapting to light/dark surfaces
                     color: is_dark
                         ? AppColors.text_dark_primary
                         : AppColors.text_light_primary,
@@ -551,12 +656,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 const SizedBox(height: AppSpacing.space_m),
                 // Choose Camera camera selection list item
                 ListTile(
-                  // Camera icon graphic
                   leading: const Icon(Icons.camera_alt_outlined,
                       color: AppColors.primary_color),
-                  // English take photo title description
                   title: Text(localizations.profile_take_photo_option),
-                  // Action on tapped choice selection
                   onTap: () {
                     // Dismiss modal overlay sheet
                     Navigator.of(context).pop();
@@ -566,12 +668,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ),
                 // Choose Gallery list item option
                 ListTile(
-                  // Image gallery symbol icon
                   leading: const Icon(Icons.photo_library_outlined,
                       color: AppColors.primary_color),
-                  // English choose from gallery title description
                   title: Text(localizations.profile_choose_gallery_option),
-                  // Action on tapped choice selection
                   onTap: () {
                     // Dismiss modal overlay sheet
                     Navigator.of(context).pop();
@@ -599,13 +698,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
     try {
       // Pick image file asynchronously using selected source
       final XFile? picked_file = await image_picker.pickImage(
-        // Source input parameter camera or gallery
         source: source,
-        // Image quality constraints to avoid memory exhaustion (FLT-03)
         imageQuality: 85,
-        // Maximum width constraints
         maxWidth: 800,
-        // Maximum height constraints
         maxHeight: 800,
       );
 
@@ -639,7 +734,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
           final cubit = context.read<ProfileCubit>();
           // Dispatch avatar path update to Cubit state to trigger dirty tracking checks
           cubit.update_temp_profile(
-            // Clone temp profile with selected local image file path override
             cubit.state.temp_profile.copyWith(
               avatar_url: picked_file.path,
             ),
@@ -658,7 +752,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         // User cancelled selection
       }
     } catch (error) {
-      // Catch blocks must never be left empty; log error
+      // Log error
       debugPrint("Error picking profile image: $error");
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -703,38 +797,25 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final AppLocalizations localizations = AppLocalizations.of(context);
     // Show alert builder
     final result = await showDialog<bool>(
-      // Context parameters
       context: context,
-      // Block ambient dismiss on outside taps
       barrierDismissible: false,
-      // Dialog builder
       builder: (dialog_context) {
-        // Return AlertDialog block
         return AlertDialog(
-          // Localized alert title
           title: Text(localizations.profile_unsaved_changes_title),
-          // Localized body question
           content: Text(localizations.profile_unsaved_changes_message),
-          // Actions buttons list
           actions: [
             // Stay button
             TextButton(
-              // Dismiss dialog returning false status
               onPressed: () {
-                // Return status
                 Navigator.of(dialog_context).pop(false);
               },
-              // Label text
               child: Text(localizations.profile_unsaved_changes_stay),
             ),
             // Leave button
             TextButton(
-              // Dismiss dialog returning true status
               onPressed: () {
-                // Return status
                 Navigator.of(dialog_context).pop(true);
               },
-              // Label text
               child: Text(localizations.profile_unsaved_changes_leave),
             ),
           ],
@@ -752,10 +833,29 @@ class _EditProfilePageState extends State<EditProfilePage> {
     });
     // Validate form fields using validator triggers
     if (true == _form_key.currentState?.validate()) {
-      // Trigger Cubit update profile call
-      context.read<ProfileCubit>().update_profile();
+      // Convert gender string label into standard API integer (0 for Male, 1 for Female)
+      final String gender_str = context.read<ProfileCubit>().state.temp_profile.gender;
+      final int? gender_val = 'Male' == gender_str ? 0 : ('Female' == gender_str ? 1 : null);
+      // Format birthdate from DD/MM/YYYY to YYYY-MM-DD for backend API payload compatibility
+      String? dob_api;
+      if (_dob_controller.text.isNotEmpty) {
+        final List<String> date_parts = _dob_controller.text.split('/');
+        if (date_parts.length == 3) {
+          dob_api = "${date_parts[2]}-${date_parts[1]}-${date_parts[0]}";
+        }
+      }
+      // Create UpdateProfileRequestModel mapping the form parameters
+      final request_model = UpdateProfileRequestModel(
+        first_name: _first_name_controller.text.trim(),
+        last_name: _last_name_controller.text.trim(),
+        address: _address_controller.text.trim(),
+        gender: gender_val,
+        date_of_birth: dob_api,
+      );
+      // Trigger Cubit update profile API call
+      context.read<ProfileCubit>().updateUserProfile(request_model);
     } else {
-      // Form entries are invalid, focus first invalid field (handled dynamically)
+      // Form entries are invalid
     }
   }
 
@@ -786,8 +886,38 @@ class _EditProfilePageState extends State<EditProfilePage> {
         // Main content wrapped in BlocConsumer to react to profile state changes
         child: BlocConsumer<ProfileCubit, ProfileState>(
           listener: (context, state) {
+            // Auto fill controllers on successful profile fetch
+            if (state is ProfileLoaded && !_is_populated) {
+              // Set populate status to true
+              _is_populated = true;
+              // Set firstName text
+              _first_name_controller.text = state.user.first_name;
+              // Set lastName text
+              _last_name_controller.text = state.user.last_name;
+              // Set email text
+              _email_controller.text = state.user.email;
+              // Set phone text
+              _phone_controller.text = _strip_country_code(state.user.phone_number);
+              // Set address text
+              _address_controller.text = state.user.address ?? '';
+              // Set medical history fields
+              _national_id_controller.text = state.profile.national_id;
+              _weight_controller.text = state.profile.weight;
+              _height_controller.text = state.profile.height;
+              // Format date of birth to match text input
+              if (state.user.date_of_birth != null) {
+                try {
+                  final List<String> date_parts = state.user.date_of_birth!.split('-');
+                  if (date_parts.length == 3) {
+                    _dob_controller.text = "${date_parts[2]}/${date_parts[1]}/${date_parts[0]}";
+                  }
+                } catch (_) {}
+              }
+              // Set initial email
+              _initial_email = state.user.email.trim().toLowerCase();
+            }
             // Show a success snackbar when profile update succeeds
-            if (ProfileStatus.updateSuccess == state.status) {
+            if (state is ProfileUpdateSuccess) {
               context.read<ProfileCubit>().reset_status();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
@@ -797,8 +927,27 @@ class _EditProfilePageState extends State<EditProfilePage> {
               );
               Navigator.of(context).pop();
             }
+            // Show an error snackbar when update fails
+            if (state is ProfileUpdateError) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.message),
+                  backgroundColor: AppColors.red,
+                ),
+              );
+            }
           },
           builder: (context, state) {
+            // Show loading spinner if profile fetching is in progress
+            if (state is ProfileLoading) {
+              return const Scaffold(
+                body: Center(
+                  child: CircularProgressIndicator(
+                    color: AppColors.primary_color,
+                  ),
+                ),
+              );
+            }
             // Scaffold provides the page layout structure
             return Scaffold(
               body: Padding(
@@ -1128,7 +1277,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                       selectedValue:
                                           (state.temp_profile.gender ==
                                                       'Male' ||
-                                                  state.temp_profile.gender ==
+                                                   state.temp_profile.gender ==
                                                       'Female')
                                               ? state.temp_profile.gender
                                               : 'Male',
@@ -1205,7 +1354,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     const SizedBox(height: _LocalDimensions.field_spacing_tiny),
                                     // Segmented chips for smoking options
                                     _build_segmented_chips<String>(
-                                      values: ['Yes', 'No', 'Ex-Smoker'],
+                                      values: const ['Yes', 'No', 'Ex-Smoker'],
                                       labels: [
                                         localizations.profile_smoking_yes,
                                         localizations.profile_smoking_no,

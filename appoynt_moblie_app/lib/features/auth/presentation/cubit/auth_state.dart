@@ -46,3 +46,36 @@ class AuthError extends AuthState {
     return [message];
   }
 }
+
+/// State emitted when registration is successful and OTP validation is needed.
+class RegisterSuccess extends AuthState {
+  final String challengeId;
+  const RegisterSuccess({required this.challengeId});
+
+  @override
+  List<Object?> get props => [challengeId];
+}
+
+/// State emitted when forgot password request initiates challenge.
+class ForgotPasswordSuccess extends AuthState {
+  final String challengeId;
+  const ForgotPasswordSuccess({required this.challengeId});
+
+  @override
+  List<Object?> get props => [challengeId];
+}
+
+/// State emitted when OTP verification succeeds.
+class VerifyOtpSuccess extends AuthState {
+  final String? resetToken;
+  const VerifyOtpSuccess({this.resetToken});
+
+  @override
+  List<Object?> get props => [resetToken];
+}
+
+/// State emitted when password reset succeeds.
+class ResetPasswordSuccess extends AuthState {}
+
+/// State emitted when a user is unauthenticated or has logged out.
+class AuthUnauthenticated extends AuthState {}

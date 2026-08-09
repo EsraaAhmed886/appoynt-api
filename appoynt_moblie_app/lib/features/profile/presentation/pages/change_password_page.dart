@@ -191,9 +191,9 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
       // Trigger Cubit change_password call
       context.read<ProfileCubit>().change_password(
             // current password text
-            _current_pw_controller.text,
+            _current_pw_controller.text.trim(),
             // new password text
-            _new_pw_controller.text,
+            _new_pw_controller.text.trim(),
           );
     } else {
       // Form validation failed

@@ -174,20 +174,20 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     final bool is_arabic = s.is_arabic;
 
     // Return BlocProvider setting up AuthCubit on top of the tree
-    return BlocProvider<AuthCubit>(
-      // Create and initialize new auth cubit instance
-      create: (context) {
-        // Return initialized auth cubit resolved from service locator container
-        return get_it<AuthCubit>();
-      },
+    return BlocProvider<AuthCubit>.value(
+      value: get_it<AuthCubit>(),
       // Bind consumer widget to intercept state changes
       child: BlocConsumer<AuthCubit, AuthState>(
         // Listener callback intercepts transition changes
         listener: (context, state) {
           // Check if reset password succeeds using Yoda style check
-          if (state is AuthSuccess) {
+          if (state is ResetPasswordSuccess) {
             // Trigger password updated success callback
             widget.on_password_updated();
+          } else if (state is AuthError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.message)),
+            );
           } else {
             // Empty action block to satisfy compiler
           }

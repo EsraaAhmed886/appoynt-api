@@ -16,6 +16,8 @@
 
 // Importing central presentation and UI barrel exports
 import 'package:appoynt_mobile_app/core/routing/route_export.dart';
+// Importing token storage to check active login session
+import 'package:appoynt_mobile_app/core/storage/token_storage.dart';
 // Importing flutter bloc package for state management listeners
 import 'package:flutter_bloc/flutter_bloc.dart';
 // Importing splash screen state management cubit
@@ -201,6 +203,41 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
       // Pass ambient build context
       context,
     );
+  }
+
+  // Helper method to navigate directly to the home page screen (RFE)
+  void _navigate_to_home() {
+    // Check if context remains active in widget tree using Yoda comparison
+    if (true == mounted) {
+      // Navigate to the home screen replacing the splash page
+      Navigator.of(context).pushReplacement(
+        // Define page route with cross-fade transition behavior
+        PageRouteBuilder(
+          // Set target page to HomePage instance
+          pageBuilder: (context, anim, secAnim) {
+            // Return home page layout widget
+            return const HomePage();
+          },
+          // Define transition transition builder representation
+          transitionsBuilder: (context, anim, secAnim, child) {
+            // Return fade transition representation
+            return FadeTransition(
+              // Bind opacity property factor to active transition animation
+              opacity: anim,
+              // Pass child widget layout
+              child: child,
+            );
+          },
+          // Define transition duration settings
+          transitionDuration: const Duration(
+            // Set transition milliseconds count
+            milliseconds: AppSpacing.duration_fade_ms,
+          ),
+        ),
+      );
+    } else {
+      // Empty block to satisfy compiler
+    }
   }
 
   // Helper method to navigate directly to the login gate screen (BUG/RFE)
@@ -653,8 +690,15 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
             final bool? is_first_time = prefs.getBool('isFirstTime');
             // Check if user is launching the application for the first time using Yoda style check
             if (false == is_first_time) {
-              // Direct navigation to the login page if not first time
-              _navigate_to_login();
+              // Read saved token to check auth status
+              final String? token = await TokenStorage.get_access_token();
+              if (null != token && token.isNotEmpty) {
+                // Token exists -> Auto Navigate to Home
+                _navigate_to_home();
+              } else {
+                // Direct navigation to the login page if not first time
+                _navigate_to_login();
+              }
             } else {
               // Trigger transition routing to the onboarding screen if first time
               _navigate_to_onboarding();

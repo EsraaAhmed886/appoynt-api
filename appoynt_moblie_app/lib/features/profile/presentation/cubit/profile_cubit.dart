@@ -23,6 +23,14 @@ import 'package:appoynt_mobile_app/features/profile/domain/entities/patient_prof
 import 'package:appoynt_mobile_app/features/profile/domain/entities/insurance_card.dart';
 // Importing the test result model definition
 import 'package:appoynt_mobile_app/features/profile/domain/entities/test_result.dart';
+import 'package:appoynt_mobile_app/core/di/service_locator.dart';
+import 'package:appoynt_mobile_app/features/profile/data/datasources/profile_remote_data_source.dart';
+import 'package:appoynt_mobile_app/features/profile/data/models/change_password_request_model.dart';
+import 'package:appoynt_mobile_app/features/profile/data/models/update_profile_request_model.dart';
+import 'package:appoynt_mobile_app/features/profile/domain/usecases/get_user_profile_usecase.dart';
+import 'package:appoynt_mobile_app/features/profile/domain/usecases/update_user_profile_usecase.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 // Profile business logic Cubit controller class
 class ProfileCubit extends Cubit<ProfileState> {
@@ -77,6 +85,140 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   // Constructor initializing with initial blank state configuration
   ProfileCubit() : super(ProfileState.initial());
+
+  // Fetches the user profile data from the remote API and updates state
+  Future<void> fetchUserProfile() async {
+    // Emit ProfileLoading state to trigger loading UI
+    emit(ProfileLoading(
+      // Keep existing profile
+      profile: state.profile,
+      // Keep existing temp profile
+      temp_profile: state.temp_profile,
+      // Keep existing dirty state
+      is_dirty: state.is_dirty,
+    ));
+    // Try catch block to handle network exceptions
+    try {
+      // Call GetUserProfileUseCase to fetch user details
+      final user_profile = await get_it<GetUserProfileUseCase>().call();
+      // Map API model values to domain PatientProfile entity to populate local UI fields
+      final loaded_profile = PatientProfile(
+        // Map first name
+        first_name: user_profile.first_name,
+        // Map last name
+        last_name: user_profile.last_name,
+        // Map phone number
+        phone: user_profile.phone_number,
+        // Map email
+        email: user_profile.email,
+        // Convert gender integer to localized text string
+        gender: 0 == user_profile.gender ? 'Male' : (1 == user_profile.gender ? 'Female' : ''),
+        // Map address
+        address: user_profile.address ?? '',
+        // Keep existing local national ID
+        national_id: state.profile.national_id,
+        // Keep existing local weight
+        weight: state.profile.weight,
+        // Keep existing local height
+        height: state.profile.height,
+        // Keep existing local smoking status
+        smoking: state.profile.smoking,
+        // Keep existing local food allergies
+        food_allergies: state.profile.food_allergies,
+        // Keep existing local medication allergies
+        medication_allergies: state.profile.medication_allergies,
+        // Keep existing local prescriptions
+        prescriptions: state.profile.prescriptions,
+        // Keep existing local lab tests
+        lab_tests: state.profile.lab_tests,
+        // Keep existing local scans
+        scans: state.profile.scans,
+        // Keep existing local chronic conditions
+        chronic_conditions: state.profile.chronic_conditions,
+        // Keep existing local insurance cards
+        insurance_cards: state.profile.insurance_cards,
+        // Keep existing local avatar url
+        avatar_url: state.profile.avatar_url,
+        // Keep existing local payment cards
+        payment_cards: state.profile.payment_cards,
+      );
+      // Emit ProfileLoaded state with fetched user model and mapped patient profile
+      emit(ProfileLoaded(
+        // Bind fetched user profile model
+        user: user_profile,
+        // Bind mapped profile
+        profile: loaded_profile,
+        // Bind temp profile
+        temp_profile: loaded_profile,
+        // Reset dirty status
+        is_dirty: false,
+      ));
+      // Catch all block for network and parsing exceptions
+    } catch (e) {
+      // Emit ProfileUpdateError state with the error message
+      emit(ProfileUpdateError(
+        // Set error message
+        message: e.toString(),
+        // Keep existing profile
+        profile: state.profile,
+        // Keep existing temp profile
+        temp_profile: state.temp_profile,
+        // Keep existing dirty status
+        is_dirty: state.is_dirty,
+      ));
+    }
+  }
+
+  // Updates the user profile data via the remote API
+  Future<void> updateUserProfile(UpdateProfileRequestModel requestModel) async {
+    // Emit ProfileUpdating state to trigger spinner on save button
+    emit(ProfileUpdating(
+      // Keep existing profile
+      profile: state.profile,
+      // Keep existing temp profile
+      temp_profile: state.temp_profile,
+      // Keep existing dirty status
+      is_dirty: state.is_dirty,
+    ));
+    // Try catch block to handle network exceptions
+    try {
+      // Call UpdateUserProfileUseCase to perform PUT update profile
+      await get_it<UpdateUserProfileUseCase>().call(requestModel);
+      // Create new PatientProfile mapping the updated details
+      final saved_profile = state.profile.copyWith(
+        // Map updated first name
+        first_name: requestModel.first_name,
+        // Map updated last name
+        last_name: requestModel.last_name,
+        // Map updated address
+        address: requestModel.address ?? '',
+        // Map updated gender
+        gender: 0 == requestModel.gender ? 'Male' : (1 == requestModel.gender ? 'Female' : ''),
+      );
+      // Emit ProfileUpdateSuccess state indicating successful update
+      emit(ProfileUpdateSuccess(
+        // Bind new profile
+        profile: saved_profile,
+        // Bind new temp profile
+        temp_profile: saved_profile,
+        // Reset dirty status
+        is_dirty: false,
+      ));
+      // Catch all block for network exceptions
+    } catch (e) {
+      // Emit ProfileUpdateError state with the error message
+      emit(ProfileUpdateError(
+        // Set error message
+        message: e.toString(),
+        // Keep existing profile
+        profile: state.profile,
+        // Keep existing temp profile
+        temp_profile: state.temp_profile,
+        // Keep existing dirty status
+        is_dirty: state.is_dirty,
+      ));
+    }
+  }
 
   // Triggers loading sequence for retrieving patient profile details
   Future<void> load_profile() async {
@@ -359,33 +501,45 @@ class ProfileCubit extends Cubit<ProfileState> {
   Future<void> change_password(String current_pw, String new_pw) async {
     // Emits password updating status
     emit(state.copyWith(status: ProfileStatus.passwordUpdating));
-    // Simulate delay
-    await Future.delayed(
-      // Delay specs
-      const Duration(
-        // Duration count
-        milliseconds: 600,
-      ),
-    );
-    // Verify current password matches static credentials using Yoda comparison
-    if ("123asdASD!@#" != current_pw) {
-      // Emit password update error status
-      emit(
-        // State copy with error msg details
-        state.copyWith(
-          // Set error
-          status: ProfileStatus.passwordError,
-          // Bind description
-          error_message: 'Current password is incorrect.',
-        ),
+
+    // Trim current password and new password to satisfy spec 3
+    final String currentPwTrimmed = current_pw.trim();
+    final String newPwTrimmed = new_pw.trim();
+
+    try {
+      final requestModel = ChangePasswordRequestModel(
+        currentPassword: currentPwTrimmed,
+        newPassword: newPwTrimmed,
+        confirmPassword: newPwTrimmed,
       );
-    } else {
+
+      // Log the exact JSON payload before dispatching (spec 1)
+      debugPrint('Change Password Payload: ${requestModel.toJson()}');
+
+      // Call the remote data source
+      await get_it<ProfileRemoteDataSource>().changePassword(requestModel);
+
       // Emit password change success status
       emit(
-        // State copy
         state.copyWith(
-          // Set success
           status: ProfileStatus.passwordSuccess,
+        ),
+      );
+    } on DioException catch (e) {
+      final String errorMsg = e.response?.data is Map
+          ? (e.response?.data['message'] as String? ?? 'Password update failed.')
+          : 'Password update failed.';
+      emit(
+        state.copyWith(
+          status: ProfileStatus.passwordError,
+          error_message: errorMsg,
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          status: ProfileStatus.passwordError,
+          error_message: 'An unexpected error occurred.',
         ),
       );
     }

@@ -983,30 +983,49 @@ abstract class AppLocalizations {
   String get error_phone_empty;
   String get error_otp_invalid;
   String get error_password_too_short;
+  String get error_user_not_found;
+  String get error_email_already_exists;
+  String get error_auth_general;
 
   // Static helper to map error messages or codes to their localized versions
   static String get_localized_error(BuildContext context, String message) {
     // Look up localizations dictionary from widget tree context
     final AppLocalizations s = AppLocalizations.of(context);
+    final String cleanMessage = message.trim();
     // Map invalid credentials error using Yoda conditions
-    if ('Invalid phone number or password.' == message || 'invalid_credentials' == message) {
+    if ('Invalid phone number or password.' == cleanMessage ||
+        'invalid_credentials' == cleanMessage ||
+        'auth.login.invalid_credentials' == cleanMessage) {
       // Return localized credentials mismatch error string
       return s.error_invalid_credentials;
     }
     // Map phone empty error using Yoda conditions
-    else if ('Phone number cannot be empty.' == message || 'phone_empty' == message) {
+    else if ('Phone number cannot be empty.' == cleanMessage || 'phone_empty' == cleanMessage) {
       // Return localized phone empty error string
       return s.error_phone_empty;
     }
     // Map OTP invalid error using Yoda conditions
-    else if ('OTP code must be 6 digits.' == message || 'otp_invalid' == message) {
+    else if ('OTP code must be 6 digits.' == cleanMessage || 'otp_invalid' == cleanMessage) {
       // Return localized OTP length warning error string
       return s.error_otp_invalid;
     }
     // Map password too short error using Yoda conditions
-    else if ('Password must be at least 8 characters.' == message || 'password_too_short' == message) {
+    else if ('Password must be at least 8 characters.' == cleanMessage ||
+        'password_too_short' == cleanMessage) {
       // Return localized password minimum length warning error string
       return s.error_password_too_short;
+    }
+    // Map user not found error using Yoda conditions
+    else if ('auth.user_not_found' == cleanMessage) {
+      return s.error_user_not_found;
+    }
+    // Map email already exists error using Yoda conditions
+    else if ('auth.email_already_exists' == cleanMessage) {
+      return s.error_email_already_exists;
+    }
+    // Map general auth errors
+    else if (cleanMessage.contains('.')) {
+      return s.error_auth_general;
     }
     // Fallback returning original message if no matches exist
     else {

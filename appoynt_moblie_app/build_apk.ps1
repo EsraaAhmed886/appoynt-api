@@ -81,8 +81,9 @@ if (Test-Path "test") {
 }
 
 # Step 5: Compile release APK package with architecture splits and dynamic build number
-# Calculate dynamic build number from current timestamp (YYMMDDHHMM)
-$BUILD_NUMBER = Get-Date -Format "yyMMddHHmm"
+# Calculate dynamic build number as minutes since January 1, 2026 (guaranteed under 2,100,000,000)
+$epoch = Get-Date "2026-01-01"
+$BUILD_NUMBER = [int]((Get-Date) - $epoch).TotalMinutes
 Write-Host "[5/5] Building release APK file with split-per-abi and Build Number: $BUILD_NUMBER..." -ForegroundColor Green
 flutter build apk --release --split-per-abi --build-number=$BUILD_NUMBER
 # Yoda check checking last command execution status code

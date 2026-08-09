@@ -20,11 +20,15 @@ import 'dart:ui';
 import 'package:flutter_bloc/flutter_bloc.dart';
 // Importing routing and localization exports
 import 'package:appoynt_mobile_app/core/routing/route_export.dart';
+// Importing AuthCubit to manage dynamic logout lifecycle states
+import 'package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart';
+// Importing service locator container reference
+import 'package:appoynt_mobile_app/core/di/service_locator.dart';
 // Importing profile Cubit and State declarations
 import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart';
 // Importing sub-pages for navigation routing
-import 'package:appoynt_mobile_app/features/profile/presentation/pages/edit_profile_page.dart';
+import 'package:appoynt_mobile_app/features/profile/presentation/pages/update_profile_page.dart';
 import 'package:appoynt_mobile_app/features/profile/presentation/pages/medical_context_page.dart';
 import 'package:appoynt_mobile_app/features/payment/presentation/pages/payment_wallet_page.dart';
 import 'package:appoynt_mobile_app/features/profile/presentation/pages/security_privacy_page.dart';
@@ -89,487 +93,556 @@ class _ProfilePageState extends State<ProfilePage> {
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
 
     // Return root Scaffold layout container
-    return BlocBuilder<ProfileCubit, ProfileState>(
-      // Filter builder state rebuild constraints
-      builder: (context, state) {
-        // Check if loading state is active using Yoda comparisons
-        if (ProfileStatus.loading == state.status) {
-          // Render centered loading activity indicator
-          return const Scaffold(
-            // Center indicator body
-            body: Center(
-              // Themed circular progress indicator
-              child: CircularProgressIndicator(
-                // Color primary branding
-                color: AppColors.primary_color,
-              ),
-            ),
-          );
-        } else if (ProfileStatus.error == state.status) {
-          // Render error layout option with retry actions
-          return Scaffold(
-            // Center column alignment
-            body: Center(
-              // Column stacking error details
-              child: Column(
-                // Center alignment
-                mainAxisAlignment: MainAxisAlignment.center,
-                // List error details widgets
-                children: [
-                  // Error message label
-                  Text(
-                    // Fallback localizations message
-                    localizations.search_offline_error,
-                    // Style label text parameters options
-                    style: TextStyle(
-                      // Text colors
-                      color: is_dark
-                          ? AppColors.text_dark_primary
-                          : AppColors.text_light_primary,
-                    ),
+    return BlocProvider<AuthCubit>.value(
+      value: get_it<AuthCubit>(),
+      child: BlocListener<AuthCubit, AuthState>(
+        listener: (context, state) {
+          if (state is AuthUnauthenticated) {
+            Navigator.pushNamedAndRemoveUntil(
+                context, Routes.login, (route) => false);
+          }
+        },
+        child: BlocBuilder<ProfileCubit, ProfileState>(
+          // Filter builder state rebuild constraints
+          builder: (context, state) {
+            // Check if loading state is active using Yoda comparisons
+            if (ProfileStatus.loading == state.status) {
+              // Render centered loading activity indicator
+              return const Scaffold(
+                // Center indicator body
+                body: Center(
+                  // Themed circular progress indicator
+                  child: CircularProgressIndicator(
+                    // Color primary branding
+                    color: AppColors.primary_color,
                   ),
-                  // Separator spacing
-                  const SizedBox(
-                    // Height value
-                    height: AppSpacing.space_m,
-                  ),
-                  // Retry action button layout
-                  ElevatedButton(
-                    // Trigger loading sequence again
-                    onPressed: () {
-                      // Call load_profile properties
-                      context.read<ProfileCubit>().load_profile();
-                    },
-                    // Label text
-                    child: Text(localizations.search_retry_button),
-                  ),
-                ],
-              ),
-            ),
-          );
-        } else {
-          // Render success patient details layout configurations
-          return Scaffold(
-            // SingleChildScrollView protecting text displays layout boundaries
-            body: SingleChildScrollView(
-              // Set column listing sections
-              child: Column(
-                // Children list
-                children: [
-                  // Wrap in SafeArea to prevent overlap with status bar
-                  SafeArea(
-                    // Inner padding
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        left: AppSpacing.space_xl,
-                        right: AppSpacing.space_xl,
-                        top: AppSpacing.space_xl,
-                        bottom: AppSpacing.space_m,
+                ),
+              );
+            } else if (ProfileStatus.error == state.status) {
+              // Render error layout option with retry actions
+              return Scaffold(
+                // Center column alignment
+                body: Center(
+                  // Column stacking error details
+                  child: Column(
+                    // Center alignment
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    // List error details widgets
+                    children: [
+                      // Error message label
+                      Text(
+                        // Fallback localizations message
+                        localizations.search_offline_error,
+                        // Style label text parameters options
+                        style: TextStyle(
+                          // Text colors
+                          color: is_dark
+                              ? AppColors.text_dark_primary
+                              : AppColors.text_light_primary,
+                        ),
                       ),
-                      // Column aligning top row, avatar, name, and email details
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          // Top bar Row placing centered Title only (no back
-                          // button on root tab — there is no prior route to
-                          // pop to; the tab is managed by BottomNavigationBar)
-                          CustomProfileAppBar(
-                            title: localizations.profile_title,
-                            // Suppress back button on root bottom-nav tab
-                            show_back_button: false,
+                      // Separator spacing
+                      const SizedBox(
+                        // Height value
+                        height: AppSpacing.space_m,
+                      ),
+                      // Retry action button layout
+                      ElevatedButton(
+                        // Trigger loading sequence again
+                        onPressed: () {
+                          // Call load_profile properties
+                          context.read<ProfileCubit>().load_profile();
+                        },
+                        // Label text
+                        child: Text(localizations.search_retry_button),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            } else {
+              // Render success patient details layout configurations
+              return Scaffold(
+                // SingleChildScrollView protecting text displays layout boundaries
+                body: SingleChildScrollView(
+                  // Set column listing sections
+                  child: Column(
+                    // Children list
+                    children: [
+                      // Wrap in SafeArea to prevent overlap with status bar
+                      SafeArea(
+                        // Inner padding
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: AppSpacing.space_xl,
+                            right: AppSpacing.space_xl,
+                            top: AppSpacing.space_xl,
+                            bottom: AppSpacing.space_m,
                           ),
-                          // Spacing margin gap before photo avatar
-                          const SizedBox(height: AppSpacing.space_xl),
-                          // SECTION 1: Personal Info - Premium circular avatar photo frame matching layout specs
-                          GestureDetector(
-                            // Tap handler calling interactive preview dialog modal
-                            onTap: () {
-                              // Invoke avatar preview dialog modal
-                              _show_avatar_preview_dialog(
-                                context,
-                                state.profile.avatar_url,
-                              );
-                            },
-                            // Clean isolated circular avatar image container layout
-                            child: Container(
-                              // Fixed width
-                              width: _LocalDimensions.avatar_size,
-                              // Fixed height
-                              height: _LocalDimensions.avatar_size,
-                              // Container decoration parameters
-                              decoration: BoxDecoration(
-                                // Circular shape
-                                shape: BoxShape.circle,
-                                // Ambient soft shadows
-                                boxShadow: [
-                                  BoxShadow(
-                                    // Shadow colors adapting to dark mode
-                                    color: is_dark
-                                        ? AppColors.black45
-                                        : AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light_alt),
-                                    // Blur spread radius
-                                    blurRadius: _LocalDimensions.shadow_blur_large,
-                                    // Offset position coordinates
-                                    offset: const Offset(0.0, 4.0),
+                          // Column aligning top row, avatar, name, and email details
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              // Top bar Row placing centered Title only (no back
+                              // button on root tab — there is no prior route to
+                              // pop to; the tab is managed by BottomNavigationBar)
+                              CustomProfileAppBar(
+                                title: localizations.profile_title,
+                                // Suppress back button on root bottom-nav tab
+                                show_back_button: false,
+                              ),
+                              // Spacing margin gap before photo avatar
+                              const SizedBox(height: AppSpacing.space_xl),
+                              // SECTION 1: Personal Info - Premium circular avatar photo frame matching layout specs
+                              GestureDetector(
+                                // Tap handler calling interactive preview dialog modal
+                                onTap: () {
+                                  // Invoke avatar preview dialog modal
+                                  _show_avatar_preview_dialog(
+                                    context,
+                                    state.profile.avatar_url,
+                                  );
+                                },
+                                // Clean isolated circular avatar image container layout
+                                child: Container(
+                                  // Fixed width
+                                  width: _LocalDimensions.avatar_size,
+                                  // Fixed height
+                                  height: _LocalDimensions.avatar_size,
+                                  // Container decoration parameters
+                                  decoration: BoxDecoration(
+                                    // Circular shape
+                                    shape: BoxShape.circle,
+                                    // Ambient soft shadows
+                                    boxShadow: [
+                                      BoxShadow(
+                                        // Shadow colors adapting to dark mode
+                                        color: is_dark
+                                            ? AppColors.black45
+                                            : AppColors.black.withValues(
+                                                alpha: _LocalDimensions
+                                                    .shadow_opacity_light_alt),
+                                        // Blur spread radius
+                                        blurRadius:
+                                            _LocalDimensions.shadow_blur_large,
+                                        // Offset position coordinates
+                                        offset: const Offset(0.0, 4.0),
+                                      ),
+                                    ],
+                                  ),
+                                  // Clip image inside circular bounds
+                                  child: ClipRRect(
+                                    // Corner radius matching half dimensions
+                                    borderRadius: BorderRadius.circular(
+                                        _LocalDimensions.border_radius_avatar),
+                                    // Render network image or fallback icon
+                                    child: state.profile.avatar_url.isNotEmpty
+                                        ? (true ==
+                                                state.profile.avatar_url
+                                                    .startsWith('http')
+                                            ? Image.network(
+                                                state.profile.avatar_url,
+                                                fit: BoxFit.cover,
+                                              )
+                                            : Image.file(
+                                                File(state.profile.avatar_url),
+                                                fit: BoxFit.cover,
+                                              ))
+                                        : Container(
+                                            // Surface fallback fill
+                                            color: AppColors.primary_color
+                                                .withValues(alpha: 0.1),
+                                            // Fallback icon widget
+                                            child: const Icon(
+                                              Icons.person_rounded,
+                                              color: AppColors.primary_color,
+                                              size: _LocalDimensions
+                                                  .icon_size_large,
+                                            ),
+                                          ),
+                                  ),
+                                ),
+                              ),
+                              // Spacing margin gap before name
+                              const SizedBox(height: AppSpacing.space_m),
+                              // Welcoming display patient name label text (16px Bold)
+                              Text(
+                                '${state.profile.first_name} ${state.profile.last_name}',
+                                style: TextStyle(
+                                  fontSize: _LocalDimensions.font_size_subtitle,
+                                  fontWeight: FontWeight.bold,
+                                  color: is_dark
+                                      ? AppColors.white
+                                      : AppColors.text_light_primary,
+                                ),
+                              ),
+                              // Spacing offset
+                              const SizedBox(height: AppSpacing.space_s),
+                              // Verified badges row (Email & Phone)
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  // Email verified badge
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal:
+                                            _LocalDimensions.spacing_large,
+                                        vertical:
+                                            _LocalDimensions.spacing_small),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.success
+                                          .withValues(alpha: 0.08),
+                                      borderRadius: BorderRadius.circular(
+                                          _LocalDimensions
+                                              .border_radius_medium),
+                                      border: Border.all(
+                                        color: AppColors.success
+                                            .withValues(alpha: 0.2),
+                                        width:
+                                            _LocalDimensions.border_width_thin,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Icon(
+                                          Icons.check_circle_rounded,
+                                          color: AppColors.success,
+                                          size: _LocalDimensions.icon_size_tiny,
+                                        ),
+                                        const SizedBox(
+                                            width:
+                                                _LocalDimensions.spacing_small),
+                                        Text(
+                                          state.profile.email,
+                                          style: const TextStyle(
+                                            fontSize:
+                                                _LocalDimensions.font_size_tiny,
+                                            color:
+                                                AppColors.text_light_secondary,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  // Separator spacing
+                                  const SizedBox(width: AppSpacing.space_s),
+                                  // Phone verified badge
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal:
+                                            _LocalDimensions.spacing_large,
+                                        vertical:
+                                            _LocalDimensions.spacing_small),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.success
+                                          .withValues(alpha: 0.08),
+                                      borderRadius: BorderRadius.circular(
+                                          _LocalDimensions
+                                              .border_radius_medium),
+                                      border: Border.all(
+                                        color: AppColors.success
+                                            .withValues(alpha: 0.2),
+                                        width:
+                                            _LocalDimensions.border_width_thin,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Icon(
+                                          Icons.check_circle_rounded,
+                                          color: AppColors.success,
+                                          size: _LocalDimensions.icon_size_tiny,
+                                        ),
+                                        const SizedBox(
+                                            width:
+                                                _LocalDimensions.spacing_small),
+                                        Text(
+                                          state.profile.phone,
+                                          style: const TextStyle(
+                                            fontSize:
+                                                _LocalDimensions.font_size_tiny,
+                                            color:
+                                                AppColors.text_light_secondary,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
-                              // Clip image inside circular bounds
-                              child: ClipRRect(
-                                // Corner radius matching half dimensions
-                                borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_avatar),
-                                // Render network image or fallback icon
-                                child: state.profile.avatar_url.isNotEmpty
-                                    ? (true == state.profile.avatar_url.startsWith('http')
-                                        ? Image.network(
-                                            state.profile.avatar_url,
-                                            fit: BoxFit.cover,
-                                          )
-                                        : Image.file(
-                                            File(state.profile.avatar_url),
-                                            fit: BoxFit.cover,
-                                          ))
-                                    : Container(
-                                        // Surface fallback fill
-                                        color: AppColors.primary_color
-                                            .withValues(alpha: 0.1),
-                                        // Fallback icon widget
-                                        child: const Icon(
-                                          Icons.person_rounded,
+                              // Spacing offset spacer before stats
+                              const SizedBox(height: AppSpacing.space_m),
+                              // Row layout presenting Height and Weight summary markers in capsule chips
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  // Height capsule pill container
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: AppSpacing.space_l,
+                                      vertical: AppSpacing.space_s,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.primary_color
+                                          .withValues(alpha: 0.06),
+                                      borderRadius: BorderRadius.circular(
+                                          _LocalDimensions.border_radius_large),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.straighten_rounded,
                                           color: AppColors.primary_color,
-                                          size: _LocalDimensions.icon_size_large,
+                                          size: AppSpacing.icon_size_s,
                                         ),
-                                      ),
-                              ),
-                            ),
-                          ),
-                          // Spacing margin gap before name
-                          const SizedBox(height: AppSpacing.space_m),
-                          // Welcoming display patient name label text (16px Bold)
-                          Text(
-                            '${state.profile.first_name} ${state.profile.last_name}',
-                            style: TextStyle(
-                              fontSize: _LocalDimensions.font_size_subtitle,
-                              fontWeight: FontWeight.bold,
-                              color: is_dark
-                                  ? AppColors.white
-                                  : AppColors.text_light_primary,
-                            ),
-                          ),
-                          // Spacing offset
-                          const SizedBox(height: AppSpacing.space_s),
-                          // Verified badges row (Email & Phone)
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              // Email verified badge
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: _LocalDimensions.spacing_large, vertical: _LocalDimensions.spacing_small),
-                                decoration: BoxDecoration(
-                                  color: AppColors.success.withValues(alpha: 0.08),
-                                  borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_medium),
-                                  border: Border.all(
-                                    color: AppColors.success.withValues(alpha: 0.2),
-                                    width: _LocalDimensions.border_width_thin,
+                                        const SizedBox(
+                                            width: AppSpacing.space_xs),
+                                        Text(
+                                          '${state.profile.height.isEmpty ? '--' : state.profile.height} CM',
+                                          style: TextStyle(
+                                            color: is_dark
+                                                ? AppColors.white
+                                                : AppColors.primary_color,
+                                            fontSize:
+                                                AppSpacing.font_size_body_small,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Icon(
-                                      Icons.check_circle_rounded,
-                                      color: AppColors.success,
-                                      size: _LocalDimensions.icon_size_tiny,
+                                  // Horizontal gap between pills
+                                  const SizedBox(width: AppSpacing.space_m),
+                                  // Weight capsule pill container
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: AppSpacing.space_l,
+                                      vertical: AppSpacing.space_s,
                                     ),
-                                    const SizedBox(width: _LocalDimensions.spacing_small),
-                                    Text(
-                                      state.profile.email,
-                                      style: const TextStyle(
-                                        fontSize: _LocalDimensions.font_size_tiny,
-                                        color: AppColors.text_light_secondary,
-                                        fontWeight: FontWeight.w500,
-                                      ),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.primary_color
+                                          .withValues(alpha: 0.06),
+                                      borderRadius: BorderRadius.circular(
+                                          _LocalDimensions.border_radius_large),
                                     ),
-                                  ],
-                                ),
-                              ),
-                              // Separator spacing
-                              const SizedBox(width: AppSpacing.space_s),
-                              // Phone verified badge
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: _LocalDimensions.spacing_large, vertical: _LocalDimensions.spacing_small),
-                                decoration: BoxDecoration(
-                                  color: AppColors.success.withValues(alpha: 0.08),
-                                  borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_medium),
-                                  border: Border.all(
-                                    color: AppColors.success.withValues(alpha: 0.2),
-                                    width: _LocalDimensions.border_width_thin,
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.monitor_weight_outlined,
+                                          color: AppColors.primary_color,
+                                          size: AppSpacing.icon_size_s,
+                                        ),
+                                        const SizedBox(
+                                            width: AppSpacing.space_xs),
+                                        Text(
+                                          '${state.profile.weight.isEmpty ? '--' : state.profile.weight} KG',
+                                          style: TextStyle(
+                                            color: is_dark
+                                                ? AppColors.white
+                                                : AppColors.primary_color,
+                                            fontSize:
+                                                AppSpacing.font_size_body_small,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Icon(
-                                      Icons.check_circle_rounded,
-                                      color: AppColors.success,
-                                      size: _LocalDimensions.icon_size_tiny,
-                                    ),
-                                    const SizedBox(width: _LocalDimensions.spacing_small),
-                                    Text(
-                                      state.profile.phone,
-                                      style: const TextStyle(
-                                        fontSize: _LocalDimensions.font_size_tiny,
-                                        color: AppColors.text_light_secondary,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                ],
                               ),
                             ],
                           ),
-                          // Spacing offset spacer before stats
-                          const SizedBox(height: AppSpacing.space_m),
-                          // Row layout presenting Height and Weight summary markers in capsule chips
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              // Height capsule pill container
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: AppSpacing.space_l,
-                                  vertical: AppSpacing.space_s,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: AppColors.primary_color
-                                      .withValues(alpha: 0.06),
-                                  borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_large),
-                                ),
-                                child: Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.straighten_rounded,
-                                      color: AppColors.primary_color,
-                                      size: AppSpacing.icon_size_s,
-                                    ),
-                                    const SizedBox(width: AppSpacing.space_xs),
-                                    Text(
-                                      '${state.profile.height.isEmpty ? '--' : state.profile.height} CM',
-                                      style: TextStyle(
-                                        color: is_dark
-                                            ? AppColors.white
-                                            : AppColors.primary_color,
-                                        fontSize:
-                                            AppSpacing.font_size_body_small,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              // Horizontal gap between pills
-                              const SizedBox(width: AppSpacing.space_m),
-                              // Weight capsule pill container
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: AppSpacing.space_l,
-                                  vertical: AppSpacing.space_s,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: AppColors.primary_color
-                                      .withValues(alpha: 0.06),
-                                  borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_large),
-                                ),
-                                child: Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.monitor_weight_outlined,
-                                      color: AppColors.primary_color,
-                                      size: AppSpacing.icon_size_s,
-                                    ),
-                                    const SizedBox(width: AppSpacing.space_xs),
-                                    Text(
-                                      '${state.profile.weight.isEmpty ? '--' : state.profile.weight} KG',
-                                      style: TextStyle(
-                                        color: is_dark
-                                            ? AppColors.white
-                                            : AppColors.primary_color,
-                                        fontSize:
-                                            AppSpacing.font_size_body_small,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                  // Spacing offset below header card
-                  const SizedBox(height: AppSpacing.space_m),
+                      // Spacing offset below header card
+                      const SizedBox(height: AppSpacing.space_m),
 
-                  // Settings dashboard options unified container card listing 5 sub-page navigators
-                  Container(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.space_m,
-                      vertical: AppSpacing.space_xs,
-                    ),
-                    decoration: BoxDecoration(
-                      color: is_dark
-                          ? AppColors.surface_dark
-                          : AppColors.white,
-                      borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
-                      boxShadow: [
-                        BoxShadow(
+                      // Settings dashboard options unified container card listing 5 sub-page navigators
+                      Container(
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.space_m,
+                          vertical: AppSpacing.space_xs,
+                        ),
+                        decoration: BoxDecoration(
                           color: is_dark
-                              ? AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
-                              : AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
-                          blurRadius: _LocalDimensions.shadow_blur,
-                          offset: const Offset(0.0, 4.0),
+                              ? AppColors.surface_dark
+                              : AppColors.white,
+                          borderRadius: BorderRadius.circular(
+                              _LocalDimensions.border_radius_default),
+                          boxShadow: [
+                            BoxShadow(
+                              color: is_dark
+                                  ? AppColors.black.withValues(
+                                      alpha:
+                                          _LocalDimensions.shadow_opacity_dark)
+                                  : AppColors.black.withValues(
+                                      alpha: _LocalDimensions
+                                          .shadow_opacity_light),
+                              blurRadius: _LocalDimensions.shadow_blur,
+                              offset: const Offset(0.0, 4.0),
+                            ),
+                          ],
+                          border: Border.all(
+                            color: is_dark
+                                ? AppColors.border_dark
+                                : AppColors.slate_200,
+                            width: AppSpacing.border_width_thin,
+                          ),
                         ),
-                      ],
-                      border: Border.all(
-                        color: is_dark
-                            ? AppColors.border_dark
-                            : AppColors.slate_200,
-                        width: AppSpacing.border_width_thin,
+                        child: Column(
+                          children: [
+                            // Option 1: Personal Information
+                            _ProfileOptionCard(
+                              title: localizations.profile_personal_information,
+                              subtitle: localizations
+                                  .profile_personal_information_subtitle,
+                              icon: Icons.person_outline_rounded,
+                              on_press: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (route_context) =>
+                                        BlocProvider.value(
+                                      value: context.read<ProfileCubit>(),
+                                      child: const UpdateProfilePage(),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            const Divider(
+                                height: 1.0,
+                                thickness: _LocalDimensions.border_width_thin,
+                                indent: 64.0),
+                            // Option 2: Medical History
+                            _ProfileOptionCard(
+                              title: localizations.profile_medical_history,
+                              subtitle:
+                                  'Allergies, prescriptions, tests & plans',
+                              icon: Icons.medical_services_outlined,
+                              on_press: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (route_context) =>
+                                        BlocProvider.value(
+                                      value: context.read<ProfileCubit>(),
+                                      child: const MedicalContextPage(),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            const Divider(
+                                height: 1.0,
+                                thickness: _LocalDimensions.border_width_thin,
+                                indent: 64.0),
+                            // Option 3: Payment & Wallet
+                            _ProfileOptionCard(
+                              title: localizations.profile_payment_wallet,
+                              subtitle:
+                                  'Wallet balance, saved cards & invoices',
+                              icon: Icons.wallet_outlined,
+                              on_press: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (route_context) =>
+                                        BlocProvider.value(
+                                      value: context.read<ProfileCubit>(),
+                                      child: const PaymentWalletPage(),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            const Divider(
+                                height: 1.0,
+                                thickness: _LocalDimensions.border_width_thin,
+                                indent: 64.0),
+                            // Option 4: Security & Privacy
+                            _ProfileOptionCard(
+                              title: localizations.profile_security_privacy,
+                              subtitle: 'Biometrics, passkey & delete account',
+                              icon: Icons.security_outlined,
+                              on_press: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (route_context) =>
+                                        BlocProvider.value(
+                                      value: context.read<ProfileCubit>(),
+                                      child: const SecurityPrivacyPage(),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            const Divider(
+                                height: 1.0,
+                                thickness: _LocalDimensions.border_width_thin,
+                                indent: 64.0),
+                            // Option 5: App Settings
+                            _ProfileOptionCard(
+                              title: localizations.profile_app_settings,
+                              subtitle: localizations.profile_app_settings_sub,
+                              icon: Icons.settings_outlined,
+                              on_press: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (route_context) =>
+                                        BlocProvider.value(
+                                      value: context.read<ProfileCubit>(),
+                                      child: const AppSettingsPage(),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            const Divider(
+                                height: 1.0,
+                                thickness: _LocalDimensions.border_width_thin,
+                                indent: 64.0),
+                            // Option 6: Help & About App
+                            _ProfileOptionCard(
+                              title: localizations.profile_help_about,
+                              subtitle: localizations.profile_help_about_sub,
+                              icon: Icons.info_outline_rounded,
+                              on_press: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (route_context) =>
+                                        BlocProvider.value(
+                                      value: context.read<ProfileCubit>(),
+                                      child: const HelpAndAboutPage(),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    child: Column(
-                      children: [
-                        // Option 1: Personal Information
-                        _ProfileOptionCard(
-                          title: localizations.profile_personal_information,
-                          subtitle: localizations
-                              .profile_personal_information_subtitle,
-                          icon: Icons.person_outline_rounded,
-                          on_press: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (route_context) => BlocProvider.value(
-                                  value: context.read<ProfileCubit>(),
-                                  child: const EditProfilePage(),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                        const Divider(
-                            height: 1.0, thickness: _LocalDimensions.border_width_thin, indent: 64.0),
-                        // Option 2: Medical History
-                        _ProfileOptionCard(
-                          title: localizations.profile_medical_history,
-                          subtitle: 'Allergies, prescriptions, tests & plans',
-                          icon: Icons.medical_services_outlined,
-                          on_press: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (route_context) => BlocProvider.value(
-                                  value: context.read<ProfileCubit>(),
-                                  child: const MedicalContextPage(),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                        const Divider(
-                            height: 1.0, thickness: _LocalDimensions.border_width_thin, indent: 64.0),
-                        // Option 3: Payment & Wallet
-                        _ProfileOptionCard(
-                          title: localizations.profile_payment_wallet,
-                          subtitle: 'Wallet balance, saved cards & invoices',
-                          icon: Icons.wallet_outlined,
-                          on_press: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (route_context) => BlocProvider.value(
-                                  value: context.read<ProfileCubit>(),
-                                  child: const PaymentWalletPage(),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                        const Divider(
-                            height: 1.0, thickness: _LocalDimensions.border_width_thin, indent: 64.0),
-                        // Option 4: Security & Privacy
-                        _ProfileOptionCard(
-                          title: localizations.profile_security_privacy,
-                          subtitle: 'Biometrics, passkey & delete account',
-                          icon: Icons.security_outlined,
-                          on_press: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (route_context) => BlocProvider.value(
-                                  value: context.read<ProfileCubit>(),
-                                  child: const SecurityPrivacyPage(),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                        const Divider(
-                            height: 1.0, thickness: _LocalDimensions.border_width_thin, indent: 64.0),
-                        // Option 5: App Settings
-                        _ProfileOptionCard(
-                          title: localizations.profile_app_settings,
-                          subtitle: localizations.profile_app_settings_sub,
-                          icon: Icons.settings_outlined,
-                          on_press: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (route_context) => BlocProvider.value(
-                                  value: context.read<ProfileCubit>(),
-                                  child: const AppSettingsPage(),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                        const Divider(
-                            height: 1.0, thickness: _LocalDimensions.border_width_thin, indent: 64.0),
-                        // Option 6: Help & About App
-                        _ProfileOptionCard(
-                          title: localizations.profile_help_about,
-                          subtitle: localizations.profile_help_about_sub,
-                          icon: Icons.info_outline_rounded,
-                          on_press: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (route_context) => BlocProvider.value(
-                                  value: context.read<ProfileCubit>(),
-                                  child: const HelpAndAboutPage(),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
+
+                      // Spacing block gap providing explicit vertical breathing room (16px spacing)
+                      const SizedBox(height: AppSpacing.space_xl),
+
+                      // SECTION 6: Log Out Action (Standalone Card)
+                      _build_logout_card(context, localizations, is_dark),
+
+                      // Spacing bottom padding margin box
+                      const SizedBox(
+                        // Spacing offset
+                        height: AppSpacing.space_xxl,
+                      ),
+                    ],
                   ),
-
-                  // Spacing block gap providing explicit vertical breathing room (16px spacing)
-                  const SizedBox(height: AppSpacing.space_xl),
-
-                  // SECTION 6: Log Out Action (Standalone Card)
-                  _build_logout_card(context, localizations, is_dark),
-
-                  // Spacing bottom padding margin box
-                  const SizedBox(
-                    // Spacing offset
-                    height: AppSpacing.space_xxl,
-                  ),
-                ],
-              ),
-            ),
-          );
-        }
-      },
+                ),
+              );
+            }
+          },
+        ),
+      ),
     );
   }
 
@@ -596,8 +669,10 @@ class _ProfilePageState extends State<ProfilePage> {
           BoxShadow(
             // Shadow colors
             color: is_dark
-                ? AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
-                : AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
+                ? AppColors.black
+                    .withValues(alpha: _LocalDimensions.shadow_opacity_dark)
+                : AppColors.black
+                    .withValues(alpha: _LocalDimensions.shadow_opacity_light),
             // Blur radius
             blurRadius: _LocalDimensions.shadow_blur,
             // Spread offset
@@ -607,8 +682,7 @@ class _ProfilePageState extends State<ProfilePage> {
         // Thin border line
         border: Border.all(
           // Border color adaptions
-          color:
-              is_dark ? AppColors.border_dark : AppColors.slate_200,
+          color: is_dark ? AppColors.border_dark : AppColors.slate_200,
           // Thin width
           width: AppSpacing.border_width_thin,
         ),
@@ -742,8 +816,7 @@ class _ProfilePageState extends State<ProfilePage> {
               borderRadius: BorderRadius.circular(AppSpacing.radius_xl),
             ),
             // Background surface color mapping light/dark modes
-            backgroundColor:
-                is_dark ? AppColors.surface_dark : AppColors.white,
+            backgroundColor: is_dark ? AppColors.surface_dark : AppColors.white,
             // Title Text widget
             title: Text(
               // Localized dialog title
@@ -755,9 +828,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 // Extra bold weight
                 fontWeight: FontWeight.w800,
                 // Colors
-                color: is_dark
-                    ? AppColors.white
-                    : AppColors.text_light_primary,
+                color: is_dark ? AppColors.white : AppColors.text_light_primary,
               ),
             ),
             // Content Body Description Text widget
@@ -830,14 +901,19 @@ class _ProfilePageState extends State<ProfilePage> {
                     // Elevated button
                     child: ElevatedButton(
                       // Execute account termination and route replacement on tap
-                      onPressed: () {
+                      onPressed: () async {
                         // Dismiss modal dialog first
                         Navigator.of(dialog_context).pop();
-                        // Clear navigation stack and redirect to sign-in screen
-                        Navigator.of(context).pushNamedAndRemoveUntil(
-                          '/login',
-                          (route) => false,
-                        );
+                        // Trigger AuthCubit logout sequence
+                        await context.read<AuthCubit>().logout();
+                        // Immediate direct navigation fallback
+                        if (context.mounted) {
+                          Navigator.pushNamedAndRemoveUntil(
+                            context,
+                            Routes.login,
+                            (route) => false,
+                          );
+                        }
                       },
                       // Styling
                       style: ElevatedButton.styleFrom(
@@ -1014,7 +1090,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           // Carry existing ProfileCubit block context forward
                           value: context.read<ProfileCubit>(),
                           // Edit profile page widget
-                          child: const EditProfilePage(),
+                          child: const UpdateProfilePage(),
                         ),
                       ),
                     );
@@ -1138,7 +1214,8 @@ class _ProfileOptionCard extends StatelessWidget {
                 // Pastel primary brand shade background
                 color: AppColors.primary_color.withValues(alpha: 0.08),
                 // Soft rounded square corner layout
-                borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_small),
+                borderRadius:
+                    BorderRadius.circular(_LocalDimensions.border_radius_small),
               ),
               // Icon graphic centered inside container
               child: Icon(

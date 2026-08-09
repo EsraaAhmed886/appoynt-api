@@ -465,20 +465,20 @@ class _LoginPageState extends State<LoginPage> {
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
 
     // Return BlocProvider setting up AuthCubit on top of tree
-    return BlocProvider<AuthCubit>(
-      // Create and initialize new auth cubit instance
-      create: (context) {
-        // Return initialized auth cubit resolved from service locator container
-        return get_it<AuthCubit>();
-      },
+    return BlocProvider<AuthCubit>.value(
+      value: get_it<AuthCubit>(),
       // Bind consumer widget to intercept state changes
       child: BlocConsumer<AuthCubit, AuthState>(
         // Listener callback intercepts transition changes
         listener: (context, state) {
-          // Check if authentication succeeds using Yoda style check
           if (state is AuthSuccess) {
             // Trigger navigation callback on success
             widget.on_login_success();
+          } else if (state is AuthError) {
+            // Show error SnackBar
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.message)),
+            );
           } else {
             // Empty action block to satisfy compiler
           }

@@ -1380,7 +1380,8 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get profile_choose_gallery_option => 'اختر من المعرض';
   @override
-  String get profile_photo_selected_success => 'تم تحديد صورة الملف الشخصي بنجاح!';
+  String get profile_photo_selected_success =>
+      'تم تحديد صورة الملف الشخصي بنجاح!';
   @override
   String get profile_photo_pick_failed_prefix => 'فشل في اختيار الصورة: ';
   @override
@@ -1729,11 +1730,13 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get payment_saved_cards_tile => 'بطاقات الدفع المحفوظة';
   @override
-  String get payment_saved_cards_subtitle => 'إدارة بطاقات الدفع والخصم المحفوظة الخاصة بك';
+  String get payment_saved_cards_subtitle =>
+      'إدارة بطاقات الدفع والخصم المحفوظة الخاصة بك';
   @override
   String get payment_history_tile => 'سجل الدفع والفواتير';
   @override
-  String get payment_history_subtitle => 'عرض المعاملات السابقة وتنزيل الفواتير';
+  String get payment_history_subtitle =>
+      'عرض المعاملات السابقة وتنزيل الفواتير';
   @override
   String get payment_add_money_btn => 'إضافة أموال';
   @override
@@ -1747,7 +1750,8 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get payment_valid_thru_label => 'صالح حتى';
   @override
-  String get payment_add_money_coming_soon => 'ميزة إضافة الأموال ستتوفر قريباً!';
+  String get payment_add_money_coming_soon =>
+      'ميزة إضافة الأموال ستتوفر قريباً!';
   @override
   String get payment_manage_cards_title => 'البطاقات المحفوظة';
   @override
@@ -1761,11 +1765,14 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get payment_confirm_delete_title => 'تأكيد الحذف';
   @override
-  String get payment_confirm_delete_body => 'هل أنت متأكد أنك تريد حذف بطاقة الدفع هذه؟';
+  String get payment_confirm_delete_body =>
+      'هل أنت متأكد أنك تريد حذف بطاقة الدفع هذه؟';
   @override
-  String get payment_delete_card_dialog_body_prefix => 'هل أنت متأكد من رغبتك في إزالة البطاقة "';
+  String get payment_delete_card_dialog_body_prefix =>
+      'هل أنت متأكد من رغبتك في إزالة البطاقة "';
   @override
-  String get payment_delete_card_dialog_body_suffix => '"؟ لا يمكن التراجع عن هذا الإجراء.';
+  String get payment_delete_card_dialog_body_suffix =>
+      '"؟ لا يمكن التراجع عن هذا الإجراء.';
   @override
   String get payment_delete_btn => 'حذف';
   @override
@@ -1809,9 +1816,11 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get payment_no_invoices_found_title => 'لم يتم العثور على فواتير';
   @override
-  String get payment_no_invoices_found_body => 'لم يتم العثور على فواتير تطابق الفلاتر المحددة. يرجى تعديل خيارات التصفية.';
+  String get payment_no_invoices_found_body =>
+      'لم يتم العثور على فواتير تطابق الفلاتر المحددة. يرجى تعديل خيارات التصفية.';
   @override
-  String get payment_downloading_invoice_snack => 'جاري تحميل الفاتورة بصيغة PDF...';
+  String get payment_downloading_invoice_snack =>
+      'جاري تحميل الفاتورة بصيغة PDF...';
   @override
   String get payment_min_label => 'الحد الأدنى';
   @override
@@ -1851,9 +1860,11 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get add_test_dropzone_text => 'اضغط هنا لرفع صورة أو ملف PDF للتقرير';
   @override
-  String get add_test_dropzone_sub => 'الحد الأقصى للملف 10 ميجابايت (JPG, PNG, PDF)';
+  String get add_test_dropzone_sub =>
+      'الحد الأقصى للملف 10 ميجابايت (JPG, PNG, PDF)';
   @override
-  String get add_test_validation_name_empty => 'اسم المستند لا يمكن أن يكون فارغاً.';
+  String get add_test_validation_name_empty =>
+      'اسم المستند لا يمكن أن يكون فارغاً.';
   @override
   String get add_test_validation_date_empty => 'يرجى اختيار التاريخ.';
   @override
@@ -1894,7 +1905,8 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get add_member_name_empty_error => 'يرجى إدخال الاسم';
   @override
-  String get add_member_name_short_error => 'يجب أن يتكون الاسم من 3 أحرف على الأقل';
+  String get add_member_name_short_error =>
+      'يجب أن يتكون الاسم من 3 أحرف على الأقل';
   @override
   String get add_member_relationship_header => 'صلة القرابة';
   @override
@@ -1908,7 +1920,8 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get add_member_medical_bg_header => 'الخلفية الطبية';
   @override
-  String get add_member_medical_bg_label => 'الحساسية، الأدوية أو الأمراض المزمنة';
+  String get add_member_medical_bg_label =>
+      'الحساسية، الأدوية أو الأمراض المزمنة';
   @override
   String get add_member_medical_bg_hint => 'صف تفاصيل التاريخ الطبي هنا...';
   @override
@@ -1970,9 +1983,11 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get delete_account_title => 'حذف الحساب نهائياً';
   @override
-  String get delete_account_subtitle => 'سيتم مسح جميع بياناتك وسجلاتك الطبية نهائياً ولا يمكن استرجاعها';
+  String get delete_account_subtitle =>
+      'سيتم مسح جميع بياناتك وسجلاتك الطبية نهائياً ولا يمكن استرجاعها';
   @override
-  String get preparing_data_export_toast => 'جاري تحضير ملف البيانات الطبية للتصدير...';
+  String get preparing_data_export_toast =>
+      'جاري تحضير ملف البيانات الطبية للتصدير...';
 
   // Medical context count Arabic overrides
   @override
@@ -2038,7 +2053,8 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get chronic_remove_dialog_title => 'إزالة الحالة المرضية؟';
   @override
-  String chronic_remove_dialog_body(String label) => 'هل أنت متأكد من إزالة $label من سجلك الطبي؟ لن يظهر هذا المرض في ملفك الطبي المشارك مع الأطباء.';
+  String chronic_remove_dialog_body(String label) =>
+      'هل أنت متأكد من إزالة $label من سجلك الطبي؟ لن يظهر هذا المرض في ملفك الطبي المشارك مع الأطباء.';
   @override
   String get chronic_cancel_btn => 'إلغاء';
   @override
@@ -2064,7 +2080,8 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get chronic_saved_success_toast => 'تم حفظ سجل الأمراض المزمنة بنجاح.';
   @override
-  String get_chronic_subtitle(String year, String status) => 'تم التشخيص في $year • $status';
+  String get_chronic_subtitle(String year, String status) =>
+      'تم التشخيص في $year • $status';
 
   // App preferences and other page Arabic Overrides
   @override
@@ -2080,11 +2097,13 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get profile_medication_reminders => 'تنبيهات الأدوية والحبوب';
   @override
-  String get profile_medication_reminders_sub => 'تذكير بمواعيد أخذ جرعات الأدوية';
+  String get profile_medication_reminders_sub =>
+      'تذكير بمواعيد أخذ جرعات الأدوية';
   @override
   String get profile_calendar_sync => 'مزامنة التقويم';
   @override
-  String get profile_calendar_sync_sub => 'حفظ المواعيد تلقائياً في تقويم الهاتف';
+  String get profile_calendar_sync_sub =>
+      'حفظ المواعيد تلقائياً في تقويم الهاتف';
   @override
   String get profile_active_language => 'العربية';
   @override
@@ -2114,23 +2133,34 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get profile_help_about => 'المساعدة وعن التطبيق';
   @override
-  String get profile_help_about_sub => 'خط المساعدة، الشروط القانونية وإصدار التطبيق';
+  String get profile_help_about_sub =>
+      'خط المساعدة، الشروط القانونية وإصدار التطبيق';
   @override
   String get help_about_tagline => 'شريكك الرقمي الموثوق للرعاية الصحية';
   @override
   String get legal_open_source => 'تراخيص البرمجيات المفتوحة المصدر';
   @override
-  String get legal_open_source_sub => 'عرض تراخيص الحزم البرمجية للجهات الخارجية';
+  String get legal_open_source_sub =>
+      'عرض تراخيص الحزم البرمجية للجهات الخارجية';
   @override
-  String get legal_open_source_content => 'يستخدم هذا التطبيق حزماً برمجية مفتوحة المصدر. يمكنك العثور على تراخيصها في صفحات التوثيق الرسمية الخاصة بتلك الحزم.';
+  String get legal_open_source_content =>
+      'يستخدم هذا التطبيق حزماً برمجية مفتوحة المصدر. يمكنك العثور على تراخيصها في صفحات التوثيق الرسمية الخاصة بتلك الحزم.';
 
-  // Authentication error localized message Arabic overrides
   @override
-  String get error_invalid_credentials => 'رقم الهاتف أو كلمة المرور غير صحيحة.';
+  String get error_invalid_credentials =>
+      'اسم المستخدم أو كلمة المرور غير صحيحة';
   @override
   String get error_phone_empty => 'رقم الهاتف لا يمكن أن يكون فارغاً.';
   @override
   String get error_otp_invalid => 'يجب أن يتكون رمز التحقق من 6 أرقام.';
   @override
-  String get error_password_too_short => 'يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.';
+  String get error_password_too_short =>
+      'يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.';
+  @override
+  String get error_user_not_found => 'الحساب غير موجود';
+  @override
+  String get error_email_already_exists => 'البريد الإلكتروني مستخدم بالفعل';
+  @override
+  String get error_auth_general =>
+      'حدث خطأ في تسجيل الدخول، يرجى التأكد من البيانات';
 }

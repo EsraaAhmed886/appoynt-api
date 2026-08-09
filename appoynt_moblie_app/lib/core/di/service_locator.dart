@@ -24,12 +24,30 @@ import 'package:appoynt_mobile_app/features/auth/domain/repositories/auth_reposi
 import 'package:appoynt_mobile_app/features/auth/domain/usecases/login_usecase.dart';
 // Business logic for registration
 import 'package:appoynt_mobile_app/features/auth/domain/usecases/register_usecase.dart';
+// Business logic for verify OTP
+import 'package:appoynt_mobile_app/features/auth/domain/usecases/verify_otp_usecase.dart';
+// Business logic for resend OTP
+import 'package:appoynt_mobile_app/features/auth/domain/usecases/resend_otp_usecase.dart';
+// Business logic for forgot password
+import 'package:appoynt_mobile_app/features/auth/domain/usecases/forgot_password_usecase.dart';
+// Business logic for reset password
+import 'package:appoynt_mobile_app/features/auth/domain/usecases/reset_password_usecase.dart';
 // State management
 import 'package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart';
 // Core network client
 import 'package:dio/dio.dart';
 // Service locator package
 import 'package:get_it/get_it.dart';
+// Profile Remote Data Source
+import 'package:appoynt_mobile_app/features/profile/data/datasources/profile_remote_data_source.dart';
+// Profile Repository Interface
+import 'package:appoynt_mobile_app/features/profile/domain/repositories/profile_repository.dart';
+// Profile Repository Implementation
+import 'package:appoynt_mobile_app/features/profile/data/repositories/profile_repository_impl.dart';
+// Profile Retrieve Use Case
+import 'package:appoynt_mobile_app/features/profile/domain/usecases/get_user_profile_usecase.dart';
+// Profile Update Use Case
+import 'package:appoynt_mobile_app/features/profile/domain/usecases/update_user_profile_usecase.dart';
 
 /// Global instance of the service locator.
 final GetIt get_it = GetIt.instance;
@@ -42,6 +60,26 @@ Future<void> setup_service_locator() async {
   final Dio dio = DioFactory.get_dio();
   get_it.registerLazySingleton<Dio>(() {
     return dio;
+  });
+
+  /// Registering the Profile Remote Data Source implementation.
+  get_it.registerLazySingleton<ProfileRemoteDataSource>(() {
+    return ProfileRemoteDataSourceImpl(get_it<Dio>());
+  });
+
+  /// Registering the Profile Repository implementation.
+  get_it.registerLazySingleton<ProfileRepository>(() {
+    return ProfileRepositoryImpl(get_it<ProfileRemoteDataSource>());
+  });
+
+  /// Registering the Get User Profile Use Case.
+  get_it.registerLazySingleton<GetUserProfileUseCase>(() {
+    return GetUserProfileUseCase(get_it<ProfileRepository>());
+  });
+
+  /// Registering the Update User Profile Use Case.
+  get_it.registerLazySingleton<UpdateUserProfileUseCase>(() {
+    return UpdateUserProfileUseCase(get_it<ProfileRepository>());
   });
 
   // ── Authentication Feature ─────────────────────────────
@@ -66,11 +104,35 @@ Future<void> setup_service_locator() async {
     return RegisterUseCase(get_it<AuthRepository>());
   });
 
-  /// Registering the Auth Cubit (Factory to ensure fresh state if needed).
-  get_it.registerFactory<AuthCubit>(() {
+  /// Registering the Verify OTP Use Case.
+  get_it.registerLazySingleton<VerifyOtpUseCase>(() {
+    return VerifyOtpUseCase(get_it<AuthRepository>());
+  });
+
+  /// Registering the Resend OTP Use Case.
+  get_it.registerLazySingleton<ResendOtpUseCase>(() {
+    return ResendOtpUseCase(get_it<AuthRepository>());
+  });
+
+  /// Registering the Forgot Password Use Case.
+  get_it.registerLazySingleton<ForgotPasswordUseCase>(() {
+    return ForgotPasswordUseCase(get_it<AuthRepository>());
+  });
+
+  /// Registering the Reset Password Use Case.
+  get_it.registerLazySingleton<ResetPasswordUseCase>(() {
+    return ResetPasswordUseCase(get_it<AuthRepository>());
+  });
+
+  /// Registering the Auth Cubit as a lazy singleton to preserve challenge state across routing boundaries.
+  get_it.registerLazySingleton<AuthCubit>(() {
     return AuthCubit(
       get_it<LoginUseCase>(),
       get_it<RegisterUseCase>(),
+      get_it<VerifyOtpUseCase>(),
+      get_it<ResendOtpUseCase>(),
+      get_it<ForgotPasswordUseCase>(),
+      get_it<ResetPasswordUseCase>(),
     );
   });
 }

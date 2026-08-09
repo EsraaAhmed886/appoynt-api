@@ -88,6 +88,8 @@ class MyApp extends StatelessWidget {
                 supportedLocales: app_supported_locales,
                 // Defining the landing splash screen as the initial home page
                 home: const SplashScreen(),
+                // Configure routes generator to map route settings
+                onGenerateRoute: AppRouter.generateRoute,
                 // Wrapping the navigator to globally show NoInternetPage when offline
                 builder: (context, child) {
                   // Return dynamic connectivity widget wrapping children

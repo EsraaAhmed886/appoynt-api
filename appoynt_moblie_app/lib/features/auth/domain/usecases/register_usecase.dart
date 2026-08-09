@@ -12,19 +12,14 @@
 
 // Failure definitions
 import 'package:appoynt_mobile_app/core/error/failures.dart';
-// Base use case class
 import 'package:appoynt_mobile_app/core/usecases/usecase.dart';
-// User entity
-import 'package:appoynt_mobile_app/features/auth/domain/entities/user_entity.dart';
-// Auth repository contract
+import 'package:appoynt_mobile_app/features/auth/data/models/register_response.dart';
 import 'package:appoynt_mobile_app/features/auth/domain/repositories/auth_repository.dart';
-// Functional programming support
 import 'package:dartz/dartz.dart';
-// Value-based comparison
 import 'package:equatable/equatable.dart';
 
 /// UseCase for performing user registration.
-class RegisterUseCase extends UseCase<UserEntity, RegisterParams> {
+class RegisterUseCase extends UseCase<RegisterResponse, RegisterParams> {
   /// Reference to the authentication repository.
   final AuthRepository repository;
 
@@ -33,7 +28,7 @@ class RegisterUseCase extends UseCase<UserEntity, RegisterParams> {
 
   @override
   /// Executes the registration process.
-  Future<Either<Failure, UserEntity>> call(RegisterParams params) async {
+  Future<Either<Failure, RegisterResponse>> call(RegisterParams params) async {
     return await repository.register(
       first_name: params.first_name,
       last_name: params.last_name,

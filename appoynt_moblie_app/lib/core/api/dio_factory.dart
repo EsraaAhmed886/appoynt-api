@@ -10,6 +10,7 @@
  */
 
 import 'package:appoynt_mobile_app/core/api/api_constants.dart'; // Centralized API constants
+import 'package:appoynt_mobile_app/core/api/auth_interceptor.dart'; // Token authorization interceptor
 import 'package:dio/dio.dart'; // Core networking package
 import 'package:flutter/foundation.dart'; // For debugPrint
 
@@ -43,8 +44,8 @@ class DioFactory {
         };
 
       /// Adding interceptors for debugging and logging.
-      /// We explicitly use debugPrint to ensure logs show up in the IDE console.
-      _dio!.interceptors.add(
+      _dio!.interceptors.addAll([
+        AuthInterceptor(),
         LogInterceptor(
           requestBody: true, // Log the JSON body being sent
           responseBody: true, // Log the JSON response received
@@ -53,7 +54,7 @@ class DioFactory {
             debugPrint(object.toString()); // Force use of debugPrint
           },
         ),
-      );
+      ]);
     } else {
       // Do nothing since Dio instance is already initialized
     }
