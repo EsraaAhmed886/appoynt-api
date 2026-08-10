@@ -2163,4 +2163,66 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get error_auth_general =>
       'حدث خطأ في تسجيل الدخول، يرجى التأكد من البيانات';
+
+  // Network and security error AR string overrides
+  @override
+  String get error_no_internet =>
+      'لا يوجد اتصال بالإنترنت. يرجى التحقق من شبكتك والمحاولة مجدداً.';
+  @override
+  String get error_timeout =>
+      'انتهت مهلة الطلب. يرجى المحاولة مجدداً.';
+  @override
+  String get error_ssl_handshake =>
+      'فشل الاتصال الآمن. يرجى التحقق من إعدادات الشبكة.';
+  @override
+  String get error_request_cancelled =>
+      'تم إلغاء الطلب.';
+
+  // Auth and access control error AR string overrides
+  @override
+  String get error_session_expired =>
+      'انتهت صلاحية جلستك. يرجى تسجيل الدخول مجدداً.';
+  @override
+  String get error_forbidden =>
+      'ليس لديك صلاحية للقيام بهذا الإجراء.';
+
+  // Client and business logic error AR string overrides
+  @override
+  String get error_bad_request =>
+      'طلب غير صالح. يرجى التحقق من المدخلات والمحاولة مجدداً.';
+  @override
+  String get error_not_found =>
+      'لم يتم العثور على المعلومات المطلوبة.';
+  @override
+  String get error_conflict =>
+      'حدث تعارض. قد يكون هذا السجل موجوداً بالفعل.';
+  @override
+  String get error_payload_too_large =>
+      'الملف أو البيانات التي تحاول رفعها كبيرة جداً.';
+  @override
+  String get error_unprocessable =>
+      'تعذّر على الخادم معالجة طلبك. يرجى مراجعة المدخلات.';
+  @override
+  String get error_rate_limit =>
+      'طلبات كثيرة جداً. يرجى الانتظار لحظة والمحاولة مجدداً.';
+
+  // System and app lifecycle error AR string overrides
+  @override
+  String get error_app_update_required =>
+      'مطلوب إصدار جديد من التطبيق. يرجى التحديث من المتجر.';
+  @override
+  String get error_server =>
+      'حدث خطأ من جانبنا. يرجى المحاولة مجدداً لاحقاً.';
+  @override
+  String get error_maintenance =>
+      'الخدمة قيد الصيانة حالياً. يرجى المحاولة بعد قليل.';
+  @override
+  String get error_data_parsing =>
+      'حدث خطأ أثناء قراءة بيانات الخادم. يرجى المحاولة مجدداً.';
+  @override
+  String get error_unknown =>
+      'حدث خطأ غير متوقع. يرجى المحاولة مجدداً.';
+  @override
+  String get error_cache =>
+      'حدث خطأ في التخزين المحلي. يرجى إعادة تشغيل التطبيق.';
 }

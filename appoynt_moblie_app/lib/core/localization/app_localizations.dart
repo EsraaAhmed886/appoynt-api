@@ -987,13 +987,90 @@ abstract class AppLocalizations {
   String get error_email_already_exists;
   String get error_auth_general;
 
-  // Static helper to map error messages or codes to their localized versions
+  // Network and security error localized message getters
+  String get error_no_internet;
+  String get error_timeout;
+  String get error_ssl_handshake;
+  String get error_request_cancelled;
+
+  // Auth and access control error localized message getters
+  String get error_session_expired;
+  String get error_forbidden;
+
+  // Client and business logic error localized message getters
+  String get error_bad_request;
+  String get error_not_found;
+  String get error_conflict;
+  String get error_payload_too_large;
+  String get error_unprocessable;
+  String get error_rate_limit;
+
+  // System and app lifecycle error localized message getters
+  String get error_app_update_required;
+  String get error_server;
+  String get error_maintenance;
+  String get error_data_parsing;
+  String get error_unknown;
+  String get error_cache;
+
+  // Static helper to map Failure message_key or legacy message strings to
+  // their localized UI display values. Prioritizes failure keys over raw strings.
   static String get_localized_error(BuildContext context, String message) {
     // Look up localizations dictionary from widget tree context
     final AppLocalizations s = AppLocalizations.of(context);
     final String cleanMessage = message.trim();
+
+    // ── Network & Security ────────────────────────────────────────────────
+    if ('error_no_internet' == cleanMessage) {
+      return s.error_no_internet;
+    } else if ('error_timeout' == cleanMessage) {
+      return s.error_timeout;
+    } else if ('error_ssl_handshake' == cleanMessage) {
+      return s.error_ssl_handshake;
+    } else if ('error_request_cancelled' == cleanMessage) {
+      return s.error_request_cancelled;
+    }
+
+    // ── Auth & Access Control ─────────────────────────────────────────────
+    else if ('error_session_expired' == cleanMessage) {
+      return s.error_session_expired;
+    } else if ('error_forbidden' == cleanMessage) {
+      return s.error_forbidden;
+    }
+
+    // ── Client & Business Logic ───────────────────────────────────────────
+    else if ('error_bad_request' == cleanMessage) {
+      return s.error_bad_request;
+    } else if ('error_not_found' == cleanMessage) {
+      return s.error_not_found;
+    } else if ('error_conflict' == cleanMessage) {
+      return s.error_conflict;
+    } else if ('error_payload_too_large' == cleanMessage) {
+      return s.error_payload_too_large;
+    } else if ('error_unprocessable' == cleanMessage) {
+      return s.error_unprocessable;
+    } else if ('error_rate_limit' == cleanMessage) {
+      return s.error_rate_limit;
+    }
+
+    // ── System & App Lifecycle ────────────────────────────────────────────
+    else if ('error_app_update_required' == cleanMessage) {
+      return s.error_app_update_required;
+    } else if ('error_server' == cleanMessage) {
+      return s.error_server;
+    } else if ('error_maintenance' == cleanMessage) {
+      return s.error_maintenance;
+    } else if ('error_data_parsing' == cleanMessage) {
+      return s.error_data_parsing;
+    } else if ('error_unknown' == cleanMessage) {
+      return s.error_unknown;
+    } else if ('error_cache' == cleanMessage) {
+      return s.error_cache;
+    }
+
+    // ── Legacy Auth String Mappings ───────────────────────────────────────
     // Map invalid credentials error using Yoda conditions
-    if ('Invalid phone number or password.' == cleanMessage ||
+    else if ('Invalid phone number or password.' == cleanMessage ||
         'invalid_credentials' == cleanMessage ||
         'auth.login.invalid_credentials' == cleanMessage) {
       // Return localized credentials mismatch error string
