@@ -68,7 +68,7 @@ class AuthCubit extends Cubit<AuthState> {
     result.fold(
       (failure) {
         final String errorMsg =
-            failure is ServerFailure ? (failure.message ?? 'Login failed.') : 'Login failed.';
+            failure is ServerFailure ? (failure.message_key ?? 'Login failed.') : 'Login failed.';
         debugPrint('--- [AuthCubit.login] Failure emitted: $errorMsg ---');
         emit(AuthError(errorMsg));
       },
@@ -88,7 +88,25 @@ class AuthCubit extends Cubit<AuthState> {
     await TokenStorage.clear_access_token();
     // 2. Safely emit state if cubit is still active
     if (!isClosed) {
+      // Emit unauthenticated state to propagate logout across the widget tree
       emit(AuthUnauthenticated());
+    } else {
+      // Cubit is closed — skip state emission silently
+    }
+  }
+
+  // Forces the AuthUnauthenticated state without clearing tokens.
+  // Called by SessionManager after the 401 interceptor has already cleared
+  // tokens, ensuring the widget tree reflects the expired session state.
+  void force_unauthenticated() {
+    // Log the forced state transition for debugging diagnostics
+    debugPrint('--- [AuthCubit.force_unauthenticated] Triggered by 401 ---');
+    // Guard against emitting on a closed cubit to prevent state errors
+    if (!isClosed) {
+      // Emit unauthenticated state so BlocListeners respond to session expiry
+      emit(AuthUnauthenticated());
+    } else {
+      // Cubit is already closed — skip state emission silently
     }
   }
 
@@ -113,7 +131,7 @@ class AuthCubit extends Cubit<AuthState> {
     result.fold(
       (failure) {
         final String errorMsg =
-            failure is ServerFailure ? (failure.message ?? 'Registration failed.') : 'Registration failed.';
+            failure is ServerFailure ? (failure.message_key ?? 'Registration failed.') : 'Registration failed.';
         emit(AuthError(errorMsg));
       },
       (response) {
@@ -133,7 +151,7 @@ class AuthCubit extends Cubit<AuthState> {
     result.fold(
       (failure) {
         final String errorMsg =
-            failure is ServerFailure ? (failure.message ?? 'Failed to send recovery code.') : 'Failed to send recovery code.';
+            failure is ServerFailure ? (failure.message_key ?? 'Failed to send recovery code.') : 'Failed to send recovery code.';
         emit(AuthError(errorMsg));
       },
       (response) {
@@ -161,7 +179,7 @@ class AuthCubit extends Cubit<AuthState> {
     result.fold(
       (failure) {
         final String errorMsg =
-            failure is ServerFailure ? (failure.message ?? 'OTP verification failed.') : 'OTP verification failed.';
+            failure is ServerFailure ? (failure.message_key ?? 'OTP verification failed.') : 'OTP verification failed.';
         emit(AuthError(errorMsg));
       },
       (response) {
@@ -187,7 +205,7 @@ class AuthCubit extends Cubit<AuthState> {
     result.fold(
       (failure) {
         final String errorMsg =
-            failure is ServerFailure ? (failure.message ?? 'Failed to resend code.') : 'Failed to resend code.';
+            failure is ServerFailure ? (failure.message_key ?? 'Failed to resend code.') : 'Failed to resend code.';
         emit(AuthError(errorMsg));
       },
       (response) {
@@ -228,7 +246,7 @@ class AuthCubit extends Cubit<AuthState> {
         result.fold(
           (failure) {
             final String errorMsg = failure is ServerFailure
-                ? (failure.message ?? 'Password reset failed.')
+                ? (failure.message_key ?? 'Password reset failed.')
                 : 'Password reset failed.';
             emit(AuthError(errorMsg));
           },
