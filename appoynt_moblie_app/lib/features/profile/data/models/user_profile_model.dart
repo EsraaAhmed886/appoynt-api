@@ -27,6 +27,8 @@ class UserProfileModel {
   final String? date_of_birth;
   // Physical address details
   final String? address;
+  // Optional patient-scoped ID returned from backend GET profile response
+  final String? patient_id;
 
   // Constructor initializing all member variables
   const UserProfileModel({
@@ -38,6 +40,7 @@ class UserProfileModel {
     this.gender,
     this.date_of_birth,
     this.address,
+    this.patient_id,
   });
 
   // Factory constructor to instantiate model from a JSON map
@@ -60,6 +63,8 @@ class UserProfileModel {
       date_of_birth: json['dateOfBirth'] as String?,
       // Map address details
       address: json['address'] as String?,
+      // Map optional patient_id from backend API claim
+      patient_id: json['patient_id'] as String?,
     );
   }
 
@@ -83,6 +88,8 @@ class UserProfileModel {
       'dateOfBirth': date_of_birth,
       // Map address parameter
       'address': address,
+      // Map optional patient_id parameter
+      'patient_id': patient_id,
     };
   }
 }

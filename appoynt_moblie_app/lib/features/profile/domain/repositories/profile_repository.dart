@@ -16,8 +16,12 @@ import 'package:appoynt_mobile_app/features/profile/data/models/update_profile_r
 
 /// Repository interface defining domain business tasks for user profile.
 abstract class ProfileRepository {
-  /// Retrieves the current user's profile details.
+  /// Retrieves the current user's profile details from the remote API
+  /// and writes the result to local cache automatically.
   Future<UserProfileModel> getUserProfile();
+
+  /// Returns the locally cached UserProfileModel instantly, or null on miss.
+  Future<UserProfileModel?> getCachedProfile();
 
   /// Updates the user's profile details with the specified parameters.
   Future<void> updateUserProfile(UpdateProfileRequestModel requestModel);

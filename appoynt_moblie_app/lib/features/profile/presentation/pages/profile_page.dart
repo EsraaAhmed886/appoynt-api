@@ -14,6 +14,8 @@
 
 // Importing standard I/O for File operations
 import 'dart:io';
+// Importing clipboard service for copy-to-clipboard interactions
+import 'package:flutter/services.dart';
 // Importing dart ui for image filter backdrop blur
 import 'dart:ui';
 // Importing BLoC library
@@ -38,7 +40,6 @@ import 'package:appoynt_mobile_app/features/profile/presentation/pages/help_abou
 // Local layout dimensions class to strictly eliminate hardcoded numbers
 class _LocalDimensions {
   static const double border_radius_default = 16.0;
-  static const double border_radius_medium = 12.0;
   static const double border_radius_small = 10.0;
   static const double border_radius_large = 20.0;
   static const double border_radius_avatar = 50.0;
@@ -52,7 +53,6 @@ class _LocalDimensions {
   static const double icon_size_small = 20.0;
   static const double icon_size_tiny = 12.0;
   static const double font_size_subtitle = 16.0;
-  static const double font_size_tiny = 11.0;
   static const double shadow_blur = 10.0;
   static const double shadow_blur_large = 12.0;
   static const double shadow_opacity_dark = 0.2;
@@ -80,8 +80,10 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     // Invoke base initState implementation
     super.initState();
-    // Resolve cubit block to trigger load profile properties
-    context.read<ProfileCubit>().load_profile();
+    // Use Stale-While-Revalidate: emits cached profile instantly (zero latency),
+    // then silently fetches fresh data from the API in the background and
+    // re-emits only if the remote data differs from the cached snapshot.
+    context.read<ProfileCubit>().load_from_cache_then_refresh();
   }
 
   // Draw the widget hierarchy
@@ -105,20 +107,8 @@ class _ProfilePageState extends State<ProfilePage> {
         child: BlocBuilder<ProfileCubit, ProfileState>(
           // Filter builder state rebuild constraints
           builder: (context, state) {
-            // Check if loading state is active using Yoda comparisons
-            if (ProfileStatus.loading == state.status) {
-              // Render centered loading activity indicator
-              return const Scaffold(
-                // Center indicator body
-                body: Center(
-                  // Themed circular progress indicator
-                  child: CircularProgressIndicator(
-                    // Color primary branding
-                    color: AppColors.primary_color,
-                  ),
-                ),
-              );
-            } else if (ProfileStatus.error == state.status) {
+            // Check if error state is active
+            if (ProfileStatus.error == state.status || ProfileStatus.updateError == state.status) {
               // Render error layout option with retry actions
               return Scaffold(
                 // Center column alignment
@@ -150,8 +140,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       ElevatedButton(
                         // Trigger loading sequence again
                         onPressed: () {
-                          // Call load_profile properties
-                          context.read<ProfileCubit>().load_profile();
+                          // Call fetchUserProfile properties
+                          context.read<ProfileCubit>().fetchUserProfile();
                         },
                         // Label text
                         child: Text(localizations.search_retry_button),
@@ -266,113 +256,148 @@ class _ProfilePageState extends State<ProfilePage> {
                               // Spacing margin gap before name
                               const SizedBox(height: AppSpacing.space_m),
                               // Welcoming display patient name label text (16px Bold)
-                              Text(
-                                '${state.profile.first_name} ${state.profile.last_name}',
-                                style: TextStyle(
-                                  fontSize: _LocalDimensions.font_size_subtitle,
-                                  fontWeight: FontWeight.bold,
-                                  color: is_dark
-                                      ? AppColors.white
-                                      : AppColors.text_light_primary,
+                              if (state.status == ProfileStatus.loading)
+                                Container(
+                                  width: 150,
+                                  height: 20,
+                                  decoration: BoxDecoration(
+                                    color: is_dark ? Colors.grey[800] : Colors.grey[300],
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: const Center(
+                                    child: SizedBox(
+                                      width: 12,
+                                      height: 12,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 1.5,
+                                        color: AppColors.primary_color,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              else if (state is ProfileLoaded)
+                                Text(
+                                  '${state.user.first_name} ${state.user.last_name}',
+                                  style: TextStyle(
+                                    fontSize: _LocalDimensions.font_size_subtitle,
+                                    fontWeight: FontWeight.bold,
+                                    color: is_dark
+                                        ? AppColors.white
+                                        : AppColors.text_light_primary,
+                                  ),
+                                )
+                              else
+                                Text(
+                                  '${state.profile.first_name} ${state.profile.last_name}',
+                                  style: TextStyle(
+                                    fontSize: _LocalDimensions.font_size_subtitle,
+                                    fontWeight: FontWeight.bold,
+                                    color: is_dark
+                                        ? AppColors.white
+                                        : AppColors.text_light_primary,
+                                  ),
                                 ),
-                              ),
-                              // Spacing offset
+                              // Spacing offset between name and PID badge
                               const SizedBox(height: AppSpacing.space_s),
-                              // Verified badges row (Email & Phone)
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  // Email verified badge
-                                  Container(
+                              // Resolve patient ID from remote model or fallback placeholder
+                              Builder(
+                                builder: (badge_context) {
+                                  // Resolve patient ID string from loaded state or fallback
+                                  final String patient_id = (state is ProfileLoaded)
+                                      ? (state.user.patient_id ?? state.user.id)
+                                      : state.profile.national_id.isNotEmpty
+                                          ? state.profile.national_id
+                                          : '100234';
+                                  // Return compact PID badge container with copy action
+                                  return Container(
+                                    // Symmetric padding around badge content
                                     padding: const EdgeInsets.symmetric(
-                                        horizontal:
-                                            _LocalDimensions.spacing_large,
-                                        vertical:
-                                            _LocalDimensions.spacing_small),
+                                      // Horizontal padding token
+                                      horizontal: _LocalDimensions.spacing_large,
+                                      // Vertical padding token
+                                      vertical: _LocalDimensions.spacing_small,
+                                    ),
+                                    // Box decoration applying brand blue tint with rounded pill shape
                                     decoration: BoxDecoration(
-                                      color: AppColors.success
+                                      // Light brand blue background tint
+                                      color: AppColors.primary_color
                                           .withValues(alpha: 0.08),
+                                      // Pill-shaped border radius
                                       borderRadius: BorderRadius.circular(
-                                          _LocalDimensions
-                                              .border_radius_medium),
+                                        _LocalDimensions.border_radius_large,
+                                      ),
+                                      // Thin brand blue border outline
                                       border: Border.all(
-                                        color: AppColors.success
-                                            .withValues(alpha: 0.2),
-                                        width:
-                                            _LocalDimensions.border_width_thin,
+                                        color: AppColors.primary_color
+                                            .withValues(alpha: 0.25),
+                                        width: _LocalDimensions.border_width_thin,
                                       ),
                                     ),
+                                    // Row laying out PID label and copy icon
                                     child: Row(
+                                      // Shrink row to its children's widths
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        const Icon(
-                                          Icons.check_circle_rounded,
-                                          color: AppColors.success,
-                                          size: _LocalDimensions.icon_size_tiny,
-                                        ),
-                                        const SizedBox(
-                                            width:
-                                                _LocalDimensions.spacing_small),
+                                        // PID label text widget
                                         Text(
-                                          state.profile.email,
+                                          // Formatted patient ID display string
+                                          'PID: #$patient_id',
+                                          // Text style using design token sizes
                                           style: const TextStyle(
+                                            // Bold weight to emphasize ID
+                                            fontWeight: FontWeight.bold,
+                                            // Brand primary blue color
+                                            color: AppColors.primary_color,
+                                            // Body small font size token
                                             fontSize:
-                                                _LocalDimensions.font_size_tiny,
-                                            color:
-                                                AppColors.text_light_secondary,
-                                            fontWeight: FontWeight.w500,
+                                                AppSpacing.font_size_body_small,
+                                          ),
+                                        ),
+                                        // Horizontal gap between label and icon
+                                        const SizedBox(
+                                          width: _LocalDimensions.spacing_large,
+                                        ),
+                                        // Copy-to-clipboard action icon
+                                        InkWell(
+                                          // Unique semantic identifier for testing
+                                          key: const Key('pid_copy_button'),
+                                          // Clip to circle for clean ripple bounds
+                                          borderRadius: BorderRadius.circular(
+                                            _LocalDimensions.border_radius_small,
+                                          ),
+                                          // Trigger clipboard write and snackbar feedback
+                                          onTap: () {
+                                            // Write patient ID string to clipboard
+                                            Clipboard.setData(
+                                              ClipboardData(text: patient_id),
+                                            );
+                                            // Show confirmation snackbar overlay
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              // Snackbar configuration
+                                              const SnackBar(
+                                                // Success message content
+                                                content: Text(
+                                                  'Patient ID copied to clipboard!',
+                                                ),
+                                                // Auto-dismiss duration
+                                                duration: Duration(seconds: 2),
+                                              ),
+                                            );
+                                          },
+                                          // Copy icon visual indicator
+                                          child: const Icon(
+                                            Icons.copy_rounded,
+                                            // Icon size token
+                                            size: _LocalDimensions.icon_size_tiny,
+                                            // Brand blue color
+                                            color: AppColors.primary_color,
                                           ),
                                         ),
                                       ],
                                     ),
-                                  ),
-                                  // Separator spacing
-                                  const SizedBox(width: AppSpacing.space_s),
-                                  // Phone verified badge
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal:
-                                            _LocalDimensions.spacing_large,
-                                        vertical:
-                                            _LocalDimensions.spacing_small),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.success
-                                          .withValues(alpha: 0.08),
-                                      borderRadius: BorderRadius.circular(
-                                          _LocalDimensions
-                                              .border_radius_medium),
-                                      border: Border.all(
-                                        color: AppColors.success
-                                            .withValues(alpha: 0.2),
-                                        width:
-                                            _LocalDimensions.border_width_thin,
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        const Icon(
-                                          Icons.check_circle_rounded,
-                                          color: AppColors.success,
-                                          size: _LocalDimensions.icon_size_tiny,
-                                        ),
-                                        const SizedBox(
-                                            width:
-                                                _LocalDimensions.spacing_small),
-                                        Text(
-                                          state.profile.phone,
-                                          style: const TextStyle(
-                                            fontSize:
-                                                _LocalDimensions.font_size_tiny,
-                                            color:
-                                                AppColors.text_light_secondary,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                                  );
+                                },
                               ),
                               // Spacing offset spacer before stats
                               const SizedBox(height: AppSpacing.space_m),
@@ -501,8 +526,8 @@ class _ProfilePageState extends State<ProfilePage> {
                               subtitle: localizations
                                   .profile_personal_information_subtitle,
                               icon: Icons.person_outline_rounded,
-                              on_press: () {
-                                Navigator.of(context).push(
+                              on_press: () async {
+                                await Navigator.of(context).push(
                                   MaterialPageRoute(
                                     builder: (route_context) =>
                                         BlocProvider.value(
@@ -511,6 +536,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                     ),
                                   ),
                                 );
+                                if (context.mounted) {
+                                  context.read<ProfileCubit>().fetchUserProfile();
+                                }
                               },
                             ),
                             const Divider(

@@ -44,6 +44,8 @@ import 'package:appoynt_mobile_app/features/profile/data/datasources/profile_rem
 import 'package:appoynt_mobile_app/features/profile/domain/repositories/profile_repository.dart';
 // Profile Repository Implementation
 import 'package:appoynt_mobile_app/features/profile/data/repositories/profile_repository_impl.dart';
+// Profile Local Data Source for SharedPreferences caching layer
+import 'package:appoynt_mobile_app/features/profile/data/datasources/profile_local_data_source.dart';
 // Profile Retrieve Use Case
 import 'package:appoynt_mobile_app/features/profile/domain/usecases/get_user_profile_usecase.dart';
 // Profile Update Use Case
@@ -62,6 +64,12 @@ Future<void> setup_service_locator() async {
     return dio;
   });
 
+  /// Registering the Profile Local Data Source implementation.
+  get_it.registerLazySingleton<ProfileLocalDataSource>(() {
+    // Return concrete SharedPreferences-backed cache implementation
+    return ProfileLocalDataSourceImpl();
+  });
+
   /// Registering the Profile Remote Data Source implementation.
   get_it.registerLazySingleton<ProfileRemoteDataSource>(() {
     return ProfileRemoteDataSourceImpl(get_it<Dio>());
@@ -69,7 +77,12 @@ Future<void> setup_service_locator() async {
 
   /// Registering the Profile Repository implementation.
   get_it.registerLazySingleton<ProfileRepository>(() {
-    return ProfileRepositoryImpl(get_it<ProfileRemoteDataSource>());
+    return ProfileRepositoryImpl(
+      // Inject the remote API data source dependency
+      remote_data_source: get_it<ProfileRemoteDataSource>(),
+      // Inject the local SharedPreferences cache data source dependency
+      local_data_source: get_it<ProfileLocalDataSource>(),
+    );
   });
 
   /// Registering the Get User Profile Use Case.

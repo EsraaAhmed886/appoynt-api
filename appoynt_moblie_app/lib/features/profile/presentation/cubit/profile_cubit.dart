@@ -27,8 +27,10 @@ import 'package:appoynt_mobile_app/core/di/service_locator.dart';
 import 'package:appoynt_mobile_app/features/profile/data/datasources/profile_remote_data_source.dart';
 import 'package:appoynt_mobile_app/features/profile/data/models/change_password_request_model.dart';
 import 'package:appoynt_mobile_app/features/profile/data/models/update_profile_request_model.dart';
+import 'package:appoynt_mobile_app/features/profile/domain/repositories/profile_repository.dart';
 import 'package:appoynt_mobile_app/features/profile/domain/usecases/get_user_profile_usecase.dart';
 import 'package:appoynt_mobile_app/features/profile/domain/usecases/update_user_profile_usecase.dart';
+import 'package:appoynt_mobile_app/features/profile/data/models/user_profile_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
@@ -169,6 +171,166 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
+  // Stale-While-Revalidate entry point called by ProfilePage on initState.
+  // Phase 1: emits cached profile instantly (zero-latency UI render).
+  // Phase 2: fetches fresh profile from the API silently in the background
+  //   and re-emits only when the remote data differs from the cached snapshot.
+  Future<void> load_from_cache_then_refresh() async {
+    // Read the cached profile from SharedPreferences synchronously via repo
+    final UserProfileModel? cached_profile =
+        await get_it<ProfileRepository>().getCachedProfile();
+
+    // PHASE 1 — Cache hit: emit immediately so the UI renders with zero delay
+    if (null != cached_profile) {
+      // Map cached UserProfileModel into PatientProfile domain entity structure
+      final PatientProfile cached_entity = _map_model_to_entity(cached_profile);
+      // Emit ProfileLoaded with cached data — UI becomes interactive instantly
+      if (!isClosed) {
+        emit(ProfileLoaded(
+          // Bind the cached user profile model for PID/email display
+          user: cached_profile,
+          // Bind mapped patient profile entity for all form fields
+          profile: cached_entity,
+          // Bind temp profile to cached snapshot for edit form baseline
+          temp_profile: cached_entity,
+          // Reset dirty flag on cache-sourced load
+          is_dirty: false,
+        ));
+      } else {
+        // Cubit was closed before cache emit — abort safely
+        return;
+      }
+    } else {
+      // Cache miss — emit loading state so the UI shows a shimmer indicator
+      if (!isClosed) {
+        emit(ProfileLoading(
+          // Carry existing profile state during initial load
+          profile: state.profile,
+          // Carry existing temp profile state during initial load
+          temp_profile: state.temp_profile,
+          // Carry existing dirty flag value during initial load
+          is_dirty: state.is_dirty,
+        ));
+      } else {
+        // Cubit was closed before loading emit — abort safely
+        return;
+      }
+    }
+
+    // PHASE 2 — Background refresh: fetch from remote, update cache and UI
+    try {
+      // Fetch fresh profile from the remote API (also writes to cache internally)
+      final UserProfileModel fresh_profile =
+          await get_it<GetUserProfileUseCase>().call();
+      // Map fresh remote model into the PatientProfile domain entity structure
+      final PatientProfile fresh_entity = _map_model_to_entity(fresh_profile);
+
+      // Only emit a state update when the fresh data differs from the cache
+      final bool data_changed = null == cached_profile ||
+          fresh_profile.first_name != cached_profile.first_name ||
+          fresh_profile.last_name != cached_profile.last_name ||
+          fresh_profile.email != cached_profile.email ||
+          fresh_profile.phone_number != cached_profile.phone_number ||
+          fresh_profile.gender != cached_profile.gender ||
+          fresh_profile.date_of_birth != cached_profile.date_of_birth ||
+          fresh_profile.address != cached_profile.address ||
+          fresh_profile.patient_id != cached_profile.patient_id;
+
+      // Guard against emitting on a closed cubit after the async network call
+      if (!isClosed && data_changed) {
+        // Emit refreshed state so UI silently updates with the latest data
+        emit(ProfileLoaded(
+          // Bind fresh remote user profile model
+          user: fresh_profile,
+          // Bind mapped fresh patient profile entity
+          profile: fresh_entity,
+          // Bind fresh entity as the edit form baseline
+          temp_profile: fresh_entity,
+          // Reset dirty flag after successful background refresh
+          is_dirty: false,
+        ));
+        // Log silent refresh for audit diagnostics
+        debugPrint(
+          '[ProfileCubit] Background refresh completed — UI updated silently.',
+        );
+      } else if (!isClosed) {
+        // Data is identical to cache — no UI re-emit needed
+        debugPrint(
+          '[ProfileCubit] Background refresh completed — data unchanged.',
+        );
+      } else {
+        // Cubit was closed during background network call — discard result
+      }
+    } catch (refresh_error) {
+      // Background refresh failed — do NOT overwrite existing cache-sourced state
+      debugPrint(
+        '[ProfileCubit] Background refresh failed (non-fatal): $refresh_error',
+      );
+      // Emit error only when no cached data was available (cold start failure)
+      if (null == cached_profile && !isClosed) {
+        emit(ProfileUpdateError(
+          // Set error message from the caught exception
+          message: refresh_error.toString(),
+          // Carry existing profile state
+          profile: state.profile,
+          // Carry existing temp profile state
+          temp_profile: state.temp_profile,
+          // Carry existing dirty flag value
+          is_dirty: state.is_dirty,
+        ));
+      } else {
+        // Cached data was already emitted — silently absorb the refresh failure
+      }
+    }
+  }
+
+  // Private helper: maps a UserProfileModel API response to PatientProfile entity
+  PatientProfile _map_model_to_entity(UserProfileModel model) {
+    // Return a fully populated PatientProfile using the model field values
+    return PatientProfile(
+      // Map first name from the API model
+      first_name: model.first_name,
+      // Map last name from the API model
+      last_name: model.last_name,
+      // Map phone number from the API model
+      phone: model.phone_number,
+      // Map email from the API model
+      email: model.email,
+      // Map gender integer (0=Male, 1=Female) to display string
+      gender: 0 == model.gender
+          ? 'Male'
+          : (1 == model.gender ? 'Female' : ''),
+      // Map address from the API model with empty-string fallback
+      address: model.address ?? '',
+      // Carry existing local national ID (not in API response)
+      national_id: state.profile.national_id,
+      // Carry existing local weight (not in API response)
+      weight: state.profile.weight,
+      // Carry existing local height (not in API response)
+      height: state.profile.height,
+      // Carry existing local smoking status (not in API response)
+      smoking: state.profile.smoking,
+      // Carry existing local food allergies (not in API response)
+      food_allergies: state.profile.food_allergies,
+      // Carry existing local medication allergies (not in API response)
+      medication_allergies: state.profile.medication_allergies,
+      // Carry existing local prescriptions (not in API response)
+      prescriptions: state.profile.prescriptions,
+      // Carry existing local lab tests (not in API response)
+      lab_tests: state.profile.lab_tests,
+      // Carry existing local scans (not in API response)
+      scans: state.profile.scans,
+      // Carry existing local chronic conditions (not in API response)
+      chronic_conditions: state.profile.chronic_conditions,
+      // Carry existing local insurance cards (not in API response)
+      insurance_cards: state.profile.insurance_cards,
+      // Carry existing local avatar URL (not in API response)
+      avatar_url: state.profile.avatar_url,
+      // Carry existing local payment cards (not in API response)
+      payment_cards: state.profile.payment_cards,
+    );
+  }
+
   // Updates the user profile data via the remote API
   Future<void> updateUserProfile(UpdateProfileRequestModel requestModel) async {
     // Emit ProfileUpdating state to trigger spinner on save button
@@ -222,114 +384,8 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   // Triggers loading sequence for retrieving patient profile details
   Future<void> load_profile() async {
-    // Emit loading state values
-    emit(state.copyWith(status: ProfileStatus.loading));
-    // Simulate API fetch delay
-    await Future.delayed(
-      // Delay parameters
-      const Duration(
-        // Delay count in milliseconds
-        milliseconds: 800,
-      ),
-    );
-    // Populate mockup initial patient details
-    const PatientProfile loaded_profile = PatientProfile(
-      // First name
-      first_name: 'kareem',
-      // Last name
-      last_name: 'mangood',
-      // Read-only phone mockup
-      phone: '01234567890',
-      // Saved email representation
-      email: 'admin@gmail.com',
-      // Gender setting selection
-      gender: 'Male',
-      // Address string
-      address: 'Cairo, Egypt',
-      // National ID (14 digits)
-      national_id: '29712050102345',
-      // Weight indicator
-      weight: '80',
-      // Height indicator
-      height: '180',
-      // Smoking flag
-      smoking: 'No',
-      // Food allergies array
-      food_allergies: ['Peanuts'],
-      // Medication allergies array
-      medication_allergies: ['Penicillin'],
-      // Prescriptions array (rich map schema with clinical metadata)
-      prescriptions: [
-        {
-          'id': '1',
-          'name': 'Panadol Extra 500mg',
-          'dosage': '1 Tablet',
-          'frequency': 'Twice Daily',
-          'duration': '7 Days',
-          'status': 'Active',
-          'doctor': 'Dr. Ahmed Hassan',
-          'date': '20 Jul 2026',
-          'attachment': null,
-        }
-      ],
-      // Lab test list
-      lab_tests: [],
-      // Scan test list
-      scans: [],
-      // Chronic diseases array
-      chronic_conditions: ['Hypertension'],
-      // Insurance plan array
-      insurance_cards: [
-        // MetLife mockup card details
-        InsuranceCard(
-          // Card label
-          card_name: 'MetLife Medical Insurance',
-          // Policy code
-          card_number: '12345678',
-          // Provider brand
-          provider_name: 'MetLife Egypt',
-          // File attachment path
-          document_path: '/docs/metlife.pdf',
-          // Active expiry timing info
-          expiry_date: '26 December 2025',
-        ),
-      ],
-      // Empty mock avatar URL path
-      avatar_url: '',
-      // Default initial payment cards list
-      payment_cards: [
-        {
-          'id': '1',
-          'brand': 'Visa',
-          'number': '4000 1234 5678 4321',
-          'expiry': '12/2029',
-          'holder': 'Kareem Mangood',
-          'is_default': 'true',
-        },
-        {
-          'id': '2',
-          'brand': 'Mastercard',
-          'number': '5105 4321 8765 8877',
-          'expiry': '08/2028',
-          'holder': 'Kareem Mangood',
-          'is_default': 'false',
-        },
-      ],
-    );
-    // Emit successfully loaded state updates
-    emit(
-      // State details copy with loaded structures
-      state.copyWith(
-        // Set success
-        status: ProfileStatus.success,
-        // Bind profile
-        profile: loaded_profile,
-        // Bind temp profile copy
-        temp_profile: loaded_profile,
-        // Reset dirty status
-        is_dirty: false,
-      ),
-    );
+    // Forward directly to remote fetch API sequence
+    await fetchUserProfile();
   }
 
   // Update temp draft properties inside profile state tracker
