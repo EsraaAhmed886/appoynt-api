@@ -88,15 +88,14 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   }
 
   @override
-  // Sends update profile request PUT method
+  // Sends update profile request PUT method explicitly to the Patient Profile endpoint
+  // PUT /api/patients/profile per Swagger specification for patient medical records
   Future<void> updateUserProfile(UpdateProfileRequestModel requestModel) async {
-    // Retrieve target user identifier from stored token
-    final String user_id = await _get_user_id();
-    // Execute PUT network request modifying data
+    // Execute PUT network request on patients/profile endpoint carrying patient medical payload
     await dio.put(
-      // Dynamic profile route mapping target ID
-      'users/$user_id',
-      // Pass serialized update request body parameters
+      // Patient profile update endpoint
+      'patients/profile',
+      // Serialized update request payload (birthDate, weightKg, heightCm, bloodGroup, etc.)
       data: requestModel.toJson(),
     );
   }
@@ -129,45 +128,35 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       // Attach constructed form data payload
       data: form_data,
     );
-    // Extract patient_id from the PatientResult response to build image URL
+    // Extract patient_id or patientId from response
     final Map<String, dynamic> result_body =
         response.data as Map<String, dynamic>;
-    // Read the patientId from the PatientResult response schema
     final String? patient_id_from_response =
-        result_body['patientId'] as String?;
+        result_body['patientId'] as String?
+            ?? result_body['id'] as String?;
     // Guard against null patient_id in the upload response
     if (null == patient_id_from_response ||
         patient_id_from_response.isEmpty) {
       // Fall back to token-derived ID when server omits patientId
       final String fallback_id = await _get_user_id();
-      // Construct and return the profile photo network URL
       return await buildProfilePhotoUrl(fallback_id);
     } else {
-      // Construct and return the profile photo network URL from response ID
       return await buildProfilePhotoUrl(patient_id_from_response);
     }
   }
 
   @override
   // Constructs the full network URL for the patient profile photo endpoint.
-  // The GET /api/patients/{patientId}/profile-photo endpoint returns raw image
-  // bytes served as a direct network resource.
+  // When patient_id (GUID) is non-empty, constructs GET /api/patients/{patientId}/profile-photo.
+  // When patient_id is empty, targets GET /api/patients/profile-photo for current user.
   Future<String> buildProfilePhotoUrl(String patient_id) async {
-    // Retrieve the access token for authenticated image requests
-    final String? token = await TokenStorage.get_access_token();
-    // Build the full URL using the ApiConstants base URL and patient ID
-    // NOTE: The token cannot be embedded in the URL; it is passed separately
-    // to Image.network via the httpHeaders parameter in the widget layer.
-    final String photo_url =
-        '${ApiConstants.base_url}patients/$patient_id/profile-photo';
-    // Verify token availability for authenticated image loading
-    if (null == token || token.isEmpty) {
-      // Return URL without authentication header when token is absent
-      return photo_url;
-    } else {
-      // Return the constructed URL — caller must attach the Bearer header
-      return photo_url;
-    }
+    // Build target route path using patient GUID or current patient profile-photo route
+    final String path = patient_id.isNotEmpty
+        ? 'patients/$patient_id/profile-photo'
+        : 'patients/profile-photo';
+    // Build the full URL using ApiConstants base URL
+    final String photo_url = '${ApiConstants.base_url}$path';
+    return photo_url;
   }
 
   // Decodes active JWT access token to retrieve subject user identity identifier

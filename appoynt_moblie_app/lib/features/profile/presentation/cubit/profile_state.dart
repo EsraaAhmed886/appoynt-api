@@ -151,8 +151,12 @@ class ProfileUpdating extends ProfileState {
 
 // State representing successful profile update operation
 class ProfileUpdateSuccess extends ProfileState {
+  // Optional updated UserProfileModel reference
+  final UserProfileModel? user;
+
   // Constructor forwarding parameters to base state
   const ProfileUpdateSuccess({
+    this.user,
     required super.profile,
     required super.temp_profile,
     required super.is_dirty,

@@ -428,12 +428,28 @@ class _ProfileAvatarWidgetState extends State<ProfileAvatarWidget> {
 
   // Builds the network image with authenticated Bearer token httpHeaders
   Widget _build_network_image() {
+    // Guard: wait for Bearer token resolution before requesting image bytes
+    if (null == _resolved_token) {
+      return Container(
+        width: _AvatarDimensions.avatar_size,
+        height: _AvatarDimensions.avatar_size,
+        color: AppColors.primary_color.withValues(alpha: 0.08),
+        child: const Center(
+          child: SizedBox(
+            width: _AvatarDimensions.spinner_size,
+            height: _AvatarDimensions.spinner_size,
+            child: CircularProgressIndicator(
+              strokeWidth: _AvatarDimensions.spinner_stroke,
+              color: AppColors.primary_color,
+            ),
+          ),
+        ),
+      );
+    }
     // Construct the Authorization header map for authenticated image loading
-    final Map<String, String> auth_headers = _resolved_token != null
-        // Use resolved Bearer token when available
-        ? {'Authorization': 'Bearer $_resolved_token'}
-        // Empty headers when token is not yet resolved (triggers rebuild via setState)
-        : {};
+    final Map<String, String> auth_headers = {
+      'Authorization': 'Bearer $_resolved_token',
+    };
     // Return an Image.network widget with auth headers and error fallback
     return Image.network(
       // Avatar URL from the profile state

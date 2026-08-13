@@ -484,6 +484,45 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ],
                                     ),
                                   ),
+                                  // Horizontal gap between pills
+                                  const SizedBox(width: AppSpacing.space_s),
+                                  // Blood Group capsule pill container
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: AppSpacing.space_l,
+                                      vertical: AppSpacing.space_s,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.primary_color
+                                          .withValues(alpha: 0.06),
+                                      borderRadius: BorderRadius.circular(
+                                          _LocalDimensions.border_radius_large),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.bloodtype_outlined,
+                                          color: AppColors.primary_color,
+                                          size: AppSpacing.icon_size_s,
+                                        ),
+                                        const SizedBox(
+                                            width: AppSpacing.space_xs),
+                                        Text(
+                                          state.profile.blood_group.isEmpty
+                                              ? '--'
+                                              : state.profile.blood_group,
+                                          style: TextStyle(
+                                            color: is_dark
+                                                ? AppColors.white
+                                                : AppColors.primary_color,
+                                            fontSize:
+                                                AppSpacing.font_size_body_small,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ],
                               ),
                             ],

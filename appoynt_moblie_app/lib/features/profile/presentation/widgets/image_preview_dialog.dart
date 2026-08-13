@@ -193,10 +193,18 @@ class _ImagePreviewDialogState extends State<ImagePreviewDialog> {
 
   // Renders authenticated network image
   Widget _build_network_image() {
+    // Guard: wait for Bearer token resolution before requesting image bytes
+    if (null == _resolved_token) {
+      return const Center(
+        child: CircularProgressIndicator(
+          color: AppColors.primary_color,
+        ),
+      );
+    }
     // Construct header map with Bearer token
-    final Map<String, String> headers = _resolved_token != null
-        ? {'Authorization': 'Bearer $_resolved_token'}
-        : {};
+    final Map<String, String> headers = {
+      'Authorization': 'Bearer $_resolved_token',
+    };
     // Return Network Image with fit contain scaling
     return Image.network(
       // Target network URL

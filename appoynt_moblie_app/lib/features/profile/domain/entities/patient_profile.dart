@@ -35,6 +35,8 @@ class PatientProfile {
   final String weight;
   // Body height marker value string
   final String height;
+  // Patient blood group category string
+  final String blood_group;
   // Smoking status indicator (Yes/No)
   final String smoking;
   // Food allergies categories listed
@@ -77,6 +79,8 @@ class PatientProfile {
     required this.weight,
     // Require height info
     required this.height,
+    // Require blood group info
+    required this.blood_group,
     // Require smoking flag
     required this.smoking,
     // Require food allergies list
@@ -121,6 +125,8 @@ class PatientProfile {
       weight: '',
       // Height default indicator
       height: '',
+      // Blood group default indicator
+      blood_group: '',
       // Default smoking choice
       smoking: 'No',
       // Empty list of food allergies
@@ -181,6 +187,8 @@ class PatientProfile {
     String? weight,
     // Optional height update
     String? height,
+    // Optional blood group update
+    String? blood_group,
     // Optional smoking status update
     String? smoking,
     // Optional food allergies update
@@ -222,6 +230,8 @@ class PatientProfile {
       weight: weight ?? this.weight,
       // Apply height override or keep current value
       height: height ?? this.height,
+      // Apply blood group override or keep current value
+      blood_group: blood_group ?? this.blood_group,
       // Apply smoking override or keep current value
       smoking: smoking ?? this.smoking,
       // Apply food allergies override or keep current list

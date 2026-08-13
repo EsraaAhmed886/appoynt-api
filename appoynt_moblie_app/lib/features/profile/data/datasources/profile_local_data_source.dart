@@ -55,8 +55,8 @@ abstract class ProfileLocalDataSource {
 // Concrete SharedPreferences-backed implementation of ProfileLocalDataSource
 class ProfileLocalDataSourceImpl implements ProfileLocalDataSource {
   // SharedPreferences key used to store and retrieve the profile JSON blob
-  // Version bumped from v1 to v2 to invalidate caches missing has_profile_photo
-  static const String _cache_key = 'cached_user_profile_v2';
+  // Version bumped from v2 to v3 to invalidate caches missing blood_group & national_id
+  static const String _cache_key = 'cached_user_profile_v3';
 
   // Separate SharedPreferences key for the resolved profile photo URL string
   static const String _photo_url_key = 'cached_profile_photo_url_v1';

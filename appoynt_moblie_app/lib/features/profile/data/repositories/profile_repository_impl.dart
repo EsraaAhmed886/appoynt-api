@@ -59,14 +59,15 @@ class ProfileRepositoryImpl implements ProfileRepository {
       // Only refresh the photo URL cache when the server confirms photo exists
       final String? existing_url =
           await local_data_source.getProfilePhotoUrl();
-      // Build patient_id used to derive the photo URL from known fields
-      final String patient_id =
-          fresh_profile.patient_id ?? fresh_profile.id;
-      // Guard: skip URL derivation when patient_id is unavailable
-      if (patient_id.isNotEmpty) {
-        // Construct the image URL from the patient ID
+      // Use Patient GUID (fresh_profile.id) first to target /api/patients/{patientGuid}/profile-photo
+      final String patient_guid = fresh_profile.id.isNotEmpty
+          ? fresh_profile.id
+          : (fresh_profile.patient_id ?? '');
+      // Guard: derive photo URL using patient_guid or authenticated current user route
+      if (patient_guid.isNotEmpty) {
+        // Construct the image URL from the patient GUID
         final String photo_url =
-            await remote_data_source.buildProfilePhotoUrl(patient_id);
+            await remote_data_source.buildProfilePhotoUrl(patient_guid);
         // Only overwrite the cache when the URL has changed
         if (existing_url != photo_url) {
           // Persist the newly derived photo URL to local cache
@@ -75,7 +76,11 @@ class ProfileRepositoryImpl implements ProfileRepository {
           // URL is unchanged — no cache write needed
         }
       } else {
-        // patient_id unavailable — skip photo URL cache update
+        // patient_guid unavailable — use fallback authenticated route without ID
+        final String photo_url =
+            await remote_data_source.buildProfilePhotoUrl('');
+        // Persist the photo URL to local cache
+        await local_data_source.saveProfilePhotoUrl(photo_url);
       }
     } else {
       // Server reports no profile photo — clear stale URL from cache

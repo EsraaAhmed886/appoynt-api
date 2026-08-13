@@ -124,12 +124,14 @@ class ProfileCubit extends Cubit<ProfileState> {
         gender: 0 == user_profile.gender ? 'Male' : (1 == user_profile.gender ? 'Female' : ''),
         // Map address
         address: user_profile.address ?? '',
-        // Keep existing local national ID
-        national_id: state.profile.national_id,
-        // Keep existing local weight
-        weight: state.profile.weight,
-        // Keep existing local height
-        height: state.profile.height,
+        // Map national ID from model or keep local
+        national_id: user_profile.national_id ?? state.profile.national_id,
+        // Map weight from model or keep local
+        weight: user_profile.weight ?? state.profile.weight,
+        // Map height from model or keep local
+        height: user_profile.height ?? state.profile.height,
+        // Map blood group from model or keep local
+        blood_group: user_profile.blood_group ?? state.profile.blood_group,
         // Keep existing local smoking status
         smoking: state.profile.smoking,
         // Keep existing local food allergies
@@ -331,12 +333,14 @@ class ProfileCubit extends Cubit<ProfileState> {
           : (1 == model.gender ? 'Female' : ''),
       // Map address from the API model with empty-string fallback
       address: model.address ?? '',
-      // Carry existing local national ID (not in API response)
-      national_id: state.profile.national_id,
-      // Carry existing local weight (not in API response)
-      weight: state.profile.weight,
-      // Carry existing local height (not in API response)
-      height: state.profile.height,
+      // Map national ID from the API model or carry existing
+      national_id: model.national_id ?? state.profile.national_id,
+      // Map weight from the API model or carry existing
+      weight: model.weight ?? state.profile.weight,
+      // Map height from the API model or carry existing
+      height: model.height ?? state.profile.height,
+      // Map blood group from the API model or carry existing
+      blood_group: model.blood_group ?? state.profile.blood_group,
       // Carry existing local smoking status (not in API response)
       smoking: state.profile.smoking,
       // Carry existing local food allergies (not in API response)
@@ -373,39 +377,61 @@ class ProfileCubit extends Cubit<ProfileState> {
     ));
     // Try catch block to handle network exceptions
     try {
-      // Call UpdateUserProfileUseCase to perform PUT update profile
+      // Call UpdateUserProfileUseCase to perform PUT /api/patients/profile
       await get_it<UpdateUserProfileUseCase>().call(requestModel);
-      // Create new PatientProfile mapping the updated details
-      final saved_profile = state.profile.copyWith(
-        // Map updated first name
-        first_name: requestModel.first_name,
-        // Map updated last name
-        last_name: requestModel.last_name,
-        // Map updated address
-        address: requestModel.address ?? '',
-        // Map updated gender
-        gender: 0 == requestModel.gender ? 'Male' : (1 == requestModel.gender ? 'Female' : ''),
+      // Re-fetch fresh UserProfileModel from GET /api/patients/profile (also updates cache)
+      final UserProfileModel fresh_user =
+          await get_it<GetUserProfileUseCase>().call();
+      // Read updated photo URL from local cache
+      final String? fresh_photo_url =
+          await get_it<ProfileRepository>().getCachedProfilePhotoUrl();
+      // Map fresh model into domain entity
+      final PatientProfile saved_profile = _map_model_to_entity(
+        fresh_user,
+        resolved_photo_url: fresh_photo_url,
       );
-      // Emit ProfileUpdateSuccess state indicating successful update
+      // Emit ProfileUpdateSuccess state with fresh user model and mapped patient profile
       emit(ProfileUpdateSuccess(
-        // Bind new profile
+        user: fresh_user,
         profile: saved_profile,
-        // Bind new temp profile
         temp_profile: saved_profile,
-        // Reset dirty status
         is_dirty: false,
       ));
-      // Catch all block for network exceptions
-    } catch (e) {
-      // Emit ProfileUpdateError state with the error message
+      // Catch DioException to extract server error message payload cleanly
+    } on DioException catch (dio_error) {
+      String clean_message = 'Failed to update profile. Please try again.';
+      if (dio_error.response?.data is Map) {
+        final Map<String, dynamic> data =
+            dio_error.response!.data as Map<String, dynamic>;
+        if (data.containsKey('title') && data['title'] != null) {
+          clean_message = data['title'].toString();
+        } else if (data.containsKey('message') && data['message'] != null) {
+          clean_message = data['message'].toString();
+        } else if (data.containsKey('errors') && data['errors'] is Map) {
+          final Map errors = data['errors'] as Map;
+          if (errors.isNotEmpty) {
+            final first_val = errors.values.first;
+            if (first_val is List && first_val.isNotEmpty) {
+              clean_message = first_val.first.toString();
+            } else {
+              clean_message = first_val.toString();
+            }
+          }
+        }
+      }
+      // Emit ProfileUpdateError state with extracted clean error message
       emit(ProfileUpdateError(
-        // Set error message
-        message: e.toString(),
-        // Keep existing profile
+        message: clean_message,
         profile: state.profile,
-        // Keep existing temp profile
         temp_profile: state.temp_profile,
-        // Keep existing dirty status
+        is_dirty: state.is_dirty,
+      ));
+    } catch (e) {
+      // Emit ProfileUpdateError state with generic failure description
+      emit(ProfileUpdateError(
+        message: 'An unexpected error occurred. Please try again.',
+        profile: state.profile,
+        temp_profile: state.temp_profile,
         is_dirty: state.is_dirty,
       ));
     }

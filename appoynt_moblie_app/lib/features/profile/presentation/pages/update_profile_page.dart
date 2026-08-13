@@ -109,6 +109,8 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
   late TextEditingController _phone_controller;
   // Date of birth text controller
   late TextEditingController _dob_controller;
+  // Track selected blood group string
+  String _selected_blood_group = '';
 
   // Track if fields listeners are active
   bool _listeners_attached = false;
@@ -450,23 +452,24 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
     }
   }
 
-  // Listener to extract Date of Birth automatically upon 14-digit National ID entry
+  // Real-time listener parsing 14-digit National ID to automatically extract Date of Birth
   void _on_national_id_changed() {
-    // Retrieve input value
-    final String val = _national_id_controller.text.trim();
-    // Validate completed input length
-    if (val.length == 14) {
-      // Resolve century
-      final int? century = val[0] == '2' ? 1900 : (val[0] == '3' ? 2000 : null);
-      // Validate century
-      if (century != null) {
-        // Resolve date fields
-        final int? year_val = int.tryParse(val.substring(1, 3));
-        final int? month_val = int.tryParse(val.substring(3, 5));
-        final int? day_val = int.tryParse(val.substring(5, 7));
-
-        // Validate resolved fields
-        if (year_val != null && month_val != null && day_val != null) {
+    // Read national ID text string
+    final String id = _national_id_controller.text.trim();
+    // Validate that length is exactly 14 digits and contains only numbers
+    if (14 == id.length && RegExp(r'^\d+$').hasMatch(id)) {
+      // Extract century indicator (2 = 1900s, 3 = 2000s)
+      final int century_code = int.parse(id.substring(0, 1));
+      // Resolve century start year
+      final int century = 2 == century_code ? 1900 : (3 == century_code ? 2000 : 0);
+      // Validate supported century prefix
+      if (century > 0) {
+        // Extract year, month, and day substrings
+        final int year_val = int.parse(id.substring(1, 3));
+        final int month_val = int.parse(id.substring(3, 5));
+        final int day_val = int.parse(id.substring(5, 7));
+        // Validate month range (1 to 12) and day range (1 to 31)
+        if (month_val >= 1 && month_val <= 12 && day_val >= 1 && day_val <= 31) {
           // Attempt date formatting
           try {
             // Calculate year
@@ -499,6 +502,8 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
     super.initState();
     // Resolve cubit state
     final state = context.read<ProfileCubit>().state;
+    // Initialize blood group string from state profile
+    _selected_blood_group = state.profile.blood_group;
     // Instantiate controllers
     _first_name_controller =
         TextEditingController(text: state.profile.first_name);
@@ -672,6 +677,10 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         address: _address_controller.text.trim(),
         gender: gender_val,
         date_of_birth: dob_api,
+        national_id: _national_id_controller.text.trim(),
+        weight: _weight_controller.text.trim(),
+        height: _height_controller.text.trim(),
+        blood_group: _selected_blood_group,
       );
       // Trigger Cubit update profile API call
       context.read<ProfileCubit>().updateUserProfile(request_model);
@@ -725,6 +734,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
               _national_id_controller.text = state.profile.national_id;
               _weight_controller.text = state.profile.weight;
               _height_controller.text = state.profile.height;
+              _selected_blood_group = state.profile.blood_group;
               // Format date of birth to match text input
               if (state.user.date_of_birth != null) {
                 try {
@@ -1099,6 +1109,105 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                           ),
                                         ),
                                       ],
+                                    ),
+                                    const SizedBox(height: _LocalDimensions.field_spacing_large),
+                                    // Blood Group label header
+                                    Text(
+                                      true == localizations.is_arabic
+                                          ? 'فصيلة الدم'
+                                          : 'Blood Group',
+                                      style: TextStyle(
+                                        fontSize:
+                                            AppSpacing.font_size_body_medium,
+                                        fontWeight: FontWeight.w700,
+                                        color: is_dark
+                                            ? AppColors.text_dark_primary
+                                            : AppColors.primary_color,
+                                      ),
+                                    ),
+                                    const SizedBox(height: _LocalDimensions.field_spacing_tiny),
+                                    // Custom styled Blood Group Dropdown container
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: AppSpacing.space_m,
+                                        vertical: AppSpacing.space_xs,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: is_dark
+                                            ? AppColors.surface_dark
+                                            : AppColors.white,
+                                        borderRadius: BorderRadius.circular(
+                                          _LocalDimensions.card_radius,
+                                        ),
+                                        border: Border.all(
+                                          color: AppColors.primary_color
+                                              .withValues(alpha: 0.3),
+                                          width: _LocalDimensions.card_border_width,
+                                        ),
+                                      ),
+                                      child: DropdownButtonHideUnderline(
+                                        child: DropdownButton<String>(
+                                          isExpanded: true,
+                                          value: _selected_blood_group.isNotEmpty
+                                              ? _selected_blood_group
+                                              : null,
+                                          hint: Text(
+                                            true == localizations.is_arabic
+                                                ? 'اختر فصيلة الدم'
+                                                : 'Select Blood Group',
+                                            style: TextStyle(
+                                              color: is_dark
+                                                  ? AppColors.text_dark_secondary
+                                                  : AppColors.text_light_secondary,
+                                            ),
+                                          ),
+                                          dropdownColor: is_dark
+                                              ? AppColors.surface_dark
+                                              : AppColors.white,
+                                          icon: const Icon(
+                                            Icons.keyboard_arrow_down_rounded,
+                                            color: AppColors.primary_color,
+                                          ),
+                                          items: const [
+                                            'A+',
+                                            'A-',
+                                            'B+',
+                                            'B-',
+                                            'AB+',
+                                            'AB-',
+                                            'O+',
+                                            'O-',
+                                          ].map((String blood_type) {
+                                            return DropdownMenuItem<String>(
+                                              value: blood_type,
+                                              child: Text(
+                                                blood_type,
+                                                style: TextStyle(
+                                                  color: is_dark
+                                                      ? AppColors.text_dark_primary
+                                                      : AppColors.text_light_primary,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            );
+                                          }).toList(),
+                                          onChanged: (String? new_value) {
+                                            if (null != new_value) {
+                                              setState(() {
+                                                _selected_blood_group = new_value;
+                                              });
+                                              context
+                                                  .read<ProfileCubit>()
+                                                  .update_temp_profile(
+                                                    state.temp_profile
+                                                        .copyWith(blood_group: new_value),
+                                                  );
+                                            } else {
+                                              // Null selection handling
+                                            }
+                                          },
+                                        ),
+                                      ),
                                     ),
                                     const SizedBox(height: _LocalDimensions.field_spacing_large),
                                     // Smoking section header
