@@ -13,14 +13,10 @@
  * File Description: Defines the Update Profile layout form fields, validators, and backend save handlers.
  */
 
-// Importing standard I/O for File operations
-import 'dart:io';
 // Importing flutter services for InputFormatters
 import 'package:flutter/services.dart';
 // Importing BLoC state builders
 import 'package:flutter_bloc/flutter_bloc.dart';
-// Importing official Image Picker library package
-import 'package:image_picker/image_picker.dart';
 // Importing routing and localizations
 import 'package:appoynt_mobile_app/core/routing/route_export.dart';
 // Importing Cubit controller
@@ -31,6 +27,8 @@ import 'package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart';
 import 'package:appoynt_mobile_app/core/widgets/app_date_picker.dart';
 // Importing DTO request model representation
 import 'package:appoynt_mobile_app/features/profile/data/models/update_profile_request_model.dart';
+// Importing ProfileAvatarWidget reusable component
+import 'package:appoynt_mobile_app/features/profile/presentation/widgets/profile_avatar_widget.dart';
 
 // Local layout dimensions class to strictly eliminate hardcoded numbers
 class _LocalDimensions {
@@ -42,26 +40,6 @@ class _LocalDimensions {
   static const double min_height = 30.0;
   // Maximum height value
   static const double max_height = 250.0;
-  // Border radius for bottom sheet
-  static const double border_radius_sheet = 24.0;
-  // Title font size representation
-  static const double title_font_size = 18.0;
-  // Avatar box layout size bounds
-  static const double avatar_box_size = 100.0;
-  // Avatar border width
-  static const double avatar_border_width = 2.0;
-  // Avatar shadow blur size
-  static const double avatar_shadow_blur = 8.0;
-  // Avatar shadow offset y representation
-  static const double avatar_shadow_offset_y = 2.0;
-  // Avatar circular radius
-  static const double avatar_radius = 50.0;
-  // Default camera placeholder icon size
-  static const double default_avatar_icon_size = 50.0;
-  // Camera badge container padding
-  static const double camera_badge_padding = 6.0;
-  // Camera badge icon size
-  static const double camera_badge_icon_size = 16.0;
   // Form card padding size
   static const double card_padding = 16.0;
   // Form card border radius
@@ -610,163 +588,6 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
     cubit.update_temp_profile(updated);
   }
 
-  // Simulates photo upload by showing a bottom sheet chooser and updating avatar state
-  void _upload_photo() {
-    // Resolve localized strings
-    final localizations = AppLocalizations.of(context);
-    // Resolve theme brightness modes status
-    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
-    // Show modal bottom sheet display
-    showModalBottomSheet(
-      // context parameter
-      context: context,
-      backgroundColor: AppColors.transparent,
-      barrierColor: AppColors.barrier_color,
-      // bottom sheet layout builder
-      builder: (BuildContext context) {
-        // Return Container providing sheet background and rounded corners
-        return Container(
-          decoration: BoxDecoration(
-            color: is_dark ? AppColors.surface_dark : AppColors.white,
-            borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(_LocalDimensions.border_radius_sheet)),
-          ),
-          // Safe area wrapper
-          child: SafeArea(
-            // Vertical layout column
-            child: Column(
-              // Minimizing height layout constraints
-              mainAxisSize: MainAxisSize.min,
-              // children widgets
-              children: [
-                // Top padding separator
-                const SizedBox(height: AppSpacing.space_m),
-                // Modal title text label
-                Text(
-                  localizations.profile_upload_photo_title,
-                  style: TextStyle(
-                    fontSize: _LocalDimensions.title_font_size,
-                    fontWeight: FontWeight.bold,
-                    color: is_dark
-                        ? AppColors.text_dark_primary
-                        : AppColors.text_light_primary,
-                  ),
-                ),
-                // Separator spacing gap
-                const SizedBox(height: AppSpacing.space_m),
-                // Choose Camera camera selection list item
-                ListTile(
-                  leading: const Icon(Icons.camera_alt_outlined,
-                      color: AppColors.primary_color),
-                  title: Text(localizations.profile_take_photo_option),
-                  onTap: () {
-                    // Dismiss modal overlay sheet
-                    Navigator.of(context).pop();
-                    // Trigger camera picker source sequence
-                    _pick_profile_image(ImageSource.camera);
-                  },
-                ),
-                // Choose Gallery list item option
-                ListTile(
-                  leading: const Icon(Icons.photo_library_outlined,
-                      color: AppColors.primary_color),
-                  title: Text(localizations.profile_choose_gallery_option),
-                  onTap: () {
-                    // Dismiss modal overlay sheet
-                    Navigator.of(context).pop();
-                    // Trigger gallery selection sequence
-                    _pick_profile_image(ImageSource.gallery);
-                  },
-                ),
-                // Bottom offset padding layout spacing box
-                const SizedBox(height: AppSpacing.space_m),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  // Triggers image picking from camera or gallery and updates avatar path
-  Future<void> _pick_profile_image(ImageSource source) async {
-    // Resolve localized strings
-    final localizations = AppLocalizations.of(context);
-    // Instantiate new ImagePicker controller helper representation
-    final ImagePicker image_picker = ImagePicker();
-
-    try {
-      // Pick image file asynchronously using selected source
-      final XFile? picked_file = await image_picker.pickImage(
-        source: source,
-        imageQuality: 85,
-        maxWidth: 800,
-        maxHeight: 800,
-      );
-
-      // Verify if a file was successfully chosen using Yoda style check
-      if (null != picked_file) {
-        // Show circular loading indicator dialog
-        if (mounted) {
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (BuildContext context) {
-              return const Center(
-                child: CircularProgressIndicator(
-                  color: AppColors.primary_color,
-                ),
-              );
-            },
-          );
-        } else {
-          // Empty block
-        }
-
-        // Simulate short local loading transition delay
-        await Future.delayed(const Duration(milliseconds: 300));
-
-        // Verify mount status of widget before dispatching updates
-        if (mounted) {
-          // Dismiss circular loader dialog
-          Navigator.of(context).pop();
-          // Resolve ProfileCubit block context controller
-          final cubit = context.read<ProfileCubit>();
-          // Dispatch avatar path update to Cubit state to trigger dirty tracking checks
-          cubit.update_temp_profile(
-            cubit.state.temp_profile.copyWith(
-              avatar_url: picked_file.path,
-            ),
-          );
-          // Show snackbar notifying success state
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(localizations.profile_photo_selected_success),
-              backgroundColor: AppColors.primary_color,
-            ),
-          );
-        } else {
-          // Empty block
-        }
-      } else {
-        // User cancelled selection
-      }
-    } catch (error) {
-      // Log error
-      debugPrint("Error picking profile image: $error");
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${localizations.profile_photo_pick_failed_prefix}$error'),
-            backgroundColor: AppColors.red,
-          ),
-        );
-      } else {
-        // Empty block
-      }
-    }
-  }
-
   // Pop navigation check displaying unsaved changes warning dialog
   Future<bool> _on_will_pop() async {
     // Resolve profile state dirty tracking flags
@@ -974,79 +795,20 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                             children: [
                               // Center container for avatar photo editor
                               Center(
-                                child: Stack(
-                                  children: [
-                                    GestureDetector(
-                                      onTap: _upload_photo,
-                                      child: Container(
-                                        width: _LocalDimensions.avatar_box_size,
-                                        height: _LocalDimensions.avatar_box_size,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          border: Border.all(
-                                            color: AppColors.primary_color,
-                                            width: _LocalDimensions.avatar_border_width,
-                                          ),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: is_dark
-                                                  ? AppColors.black54
-                                                  : AppColors.black12,
-                                              blurRadius: _LocalDimensions.avatar_shadow_blur,
-                                              offset: const Offset(0.0, _LocalDimensions.avatar_shadow_offset_y),
-                                            ),
-                                          ],
-                                        ),
-                                        child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(_LocalDimensions.avatar_radius),
-                                          child: state.temp_profile.avatar_url
-                                                  .isNotEmpty
-                                              ? (state.temp_profile.avatar_url
-                                                      .startsWith('http')
-                                                  ? Image.network(
-                                                      state.temp_profile
-                                                          .avatar_url,
-                                                      fit: BoxFit.cover,
-                                                    )
-                                                  : Image.file(
-                                                      File(state.temp_profile
-                                                          .avatar_url),
-                                                      fit: BoxFit.cover,
-                                                    ))
-                                              : Container(
-                                                  color: AppColors.primary_color
-                                                      .withValues(alpha: 0.1),
-                                                  child: const Icon(
-                                                    Icons.person_rounded,
-                                                    color:
-                                                        AppColors.primary_color,
-                                                    size: _LocalDimensions.default_avatar_icon_size,
-                                                  ),
-                                                ),
-                                        ),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      bottom: 0,
-                                      right: 0,
-                                      child: GestureDetector(
-                                        onTap: _upload_photo,
-                                        child: Container(
-                                          padding: const EdgeInsets.all(_LocalDimensions.camera_badge_padding),
-                                          decoration: const BoxDecoration(
-                                            color: AppColors.primary_color,
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: const Icon(
-                                            Icons.camera_alt_rounded,
-                                            color: AppColors.white,
-                                            size: _LocalDimensions.camera_badge_icon_size,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                child: ProfileAvatarWidget(
+                                  // Bind temporary avatar URL from draft state or profile state
+                                  avatar_url: state.temp_profile.avatar_url.isNotEmpty
+                                      ? state.temp_profile.avatar_url
+                                      : state.profile.avatar_url,
+                                  // Pass user first name for initials fallback
+                                  first_name: state.profile.first_name,
+                                  // Pass user last name for initials fallback
+                                  last_name: state.profile.last_name,
+                                  // Pass active upload status flag
+                                  is_uploading: ProfileStatus.avatarUploading ==
+                                      state.status,
+                                  // Show camera edit badge overlay on personal information page
+                                  show_camera_badge: true,
                                 ),
                               ),
                               const SizedBox(height: AppSpacing.space_xl),

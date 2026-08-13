@@ -50,6 +50,8 @@ import 'package:appoynt_mobile_app/features/profile/data/datasources/profile_loc
 import 'package:appoynt_mobile_app/features/profile/domain/usecases/get_user_profile_usecase.dart';
 // Profile Update Use Case
 import 'package:appoynt_mobile_app/features/profile/domain/usecases/update_user_profile_usecase.dart';
+// Profile Photo Upload Use Case
+import 'package:appoynt_mobile_app/features/profile/domain/usecases/upload_profile_photo_usecase.dart';
 
 /// Global instance of the service locator.
 final GetIt get_it = GetIt.instance;
@@ -93,6 +95,12 @@ Future<void> setup_service_locator() async {
   /// Registering the Update User Profile Use Case.
   get_it.registerLazySingleton<UpdateUserProfileUseCase>(() {
     return UpdateUserProfileUseCase(get_it<ProfileRepository>());
+  });
+
+  /// Registering the Upload Profile Photo Use Case.
+  get_it.registerLazySingleton<UploadProfilePhotoUseCase>(() {
+    // Inject the profile repository for multipart upload delegation
+    return UploadProfilePhotoUseCase(get_it<ProfileRepository>());
   });
 
   // ── Authentication Feature ─────────────────────────────

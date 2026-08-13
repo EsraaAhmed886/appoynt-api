@@ -2,17 +2,19 @@
  * File Name: profile_repository_impl.dart
  * Author: Kholoud Khaled
  * Date of Creation: 09/08/2026
- * Version Information: V2.0.0
+ * Version Information: V2.1.0
  * Dependencies: profile_repository.dart, profile_remote_data_source.dart,
  *   profile_local_data_source.dart, user_profile_model.dart,
  *   update_profile_request_model.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 10/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 13/08/2026]
  * File Description: Implements the ProfileRepository interface coordinating
  *   remote API calls with local SharedPreferences caching. Implements the
  *   Stale-While-Revalidate strategy: cache writes occur automatically after
  *   every successful remote fetch so the cubit can read stale data instantly
  *   while a background refresh silently revalidates and updates the cache.
+ *   V2.1.0 adds uploadProfilePhoto with URL cache persistence and the
+ *   getCachedProfilePhotoUrl convenience reader.
  */
 
 // Importing domain repository contract interface definition
@@ -51,6 +53,34 @@ class ProfileRepositoryImpl implements ProfileRepository {
         await remote_data_source.getUserProfile();
     // Persist the freshly fetched profile to local cache for instant future reads
     await local_data_source.saveProfileToCache(fresh_profile);
+    // If the server reports an active profile photo, ensure the photo URL is
+    // populated in local cache so the avatar renders immediately on next launch
+    if (fresh_profile.has_profile_photo) {
+      // Only refresh the photo URL cache when the server confirms photo exists
+      final String? existing_url =
+          await local_data_source.getProfilePhotoUrl();
+      // Build patient_id used to derive the photo URL from known fields
+      final String patient_id =
+          fresh_profile.patient_id ?? fresh_profile.id;
+      // Guard: skip URL derivation when patient_id is unavailable
+      if (patient_id.isNotEmpty) {
+        // Construct the image URL from the patient ID
+        final String photo_url =
+            await remote_data_source.buildProfilePhotoUrl(patient_id);
+        // Only overwrite the cache when the URL has changed
+        if (existing_url != photo_url) {
+          // Persist the newly derived photo URL to local cache
+          await local_data_source.saveProfilePhotoUrl(photo_url);
+        } else {
+          // URL is unchanged — no cache write needed
+        }
+      } else {
+        // patient_id unavailable — skip photo URL cache update
+      }
+    } else {
+      // Server reports no profile photo — clear stale URL from cache
+      await local_data_source.clearProfilePhotoUrl();
+    }
     // Return the fresh remote profile to the caller
     return fresh_profile;
   }
@@ -81,5 +111,29 @@ class ProfileRepositoryImpl implements ProfileRepository {
         '$refresh_error',
       );
     }
+  }
+
+  // Uploads a profile photo using POST /api/patients/profile-photo,
+  // caches the resolved image URL locally, and returns it to the caller.
+  @override
+  Future<String> uploadProfilePhoto(String file_path) async {
+    // Delegate multipart upload to the remote data source implementation
+    final String photo_url =
+        await remote_data_source.uploadProfilePhoto(file_path);
+    // Persist the resolved image URL to local SharedPreferences cache
+    await local_data_source.saveProfilePhotoUrl(photo_url);
+    // Log the successful photo upload and URL cache write
+    debugPrint(
+      '[ProfileRepositoryImpl] Profile photo uploaded. URL cached: $photo_url',
+    );
+    // Return the resolved URL so the cubit can update state immediately
+    return photo_url;
+  }
+
+  // Reads the cached profile photo URL from local storage without a network call
+  @override
+  Future<String?> getCachedProfilePhotoUrl() async {
+    // Delegate the photo URL cache read to the local data source implementation
+    return await local_data_source.getProfilePhotoUrl();
   }
 }

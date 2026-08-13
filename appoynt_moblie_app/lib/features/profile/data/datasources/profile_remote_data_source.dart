@@ -2,15 +2,22 @@
  * File Name: profile_remote_data_source.dart
  * Author: Kholoud Khaled
  * Date of Creation: 09/08/2026
- * Version Information: V1.1.0
- * Dependencies: package:dio/dio.dart, change_password_request_model.dart, user_profile_model.dart, update_profile_request_model.dart
+ * Version Information: V1.2.0
+ * Dependencies: package:dio/dio.dart, change_password_request_model.dart,
+ *   user_profile_model.dart, update_profile_request_model.dart,
+ *   api_constants.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 09/08/2026]
- * File Description: Remote data source for profile feature operations, including fetching and updating user profiles.
+ * Last Modified Date: [Kholoud Khaled - 13/08/2026]
+ * File Description: Remote data source for profile feature operations. V1.2.0
+ *   fixes getUserProfile to call the correct GET /api/patients/profile endpoint
+ *   (which returns PatientProfileResponse with hasProfilePhoto), and adds the
+ *   uploadProfilePhoto multipart-form-data POST method.
  */
 
-// Importing Dart standard libraries for json decoding operations
+// Importing Dart standard libraries for JSON decoding operations
 import 'dart:convert';
+// Importing Dart I/O for File operations
+import 'dart:io';
 // Importing Dio client library
 import 'package:dio/dio.dart';
 // Importing token storage dependency
@@ -21,17 +28,29 @@ import 'package:appoynt_mobile_app/features/profile/data/models/change_password_
 import 'package:appoynt_mobile_app/features/profile/data/models/user_profile_model.dart';
 // Importing UpdateProfile DTO request model representation
 import 'package:appoynt_mobile_app/features/profile/data/models/update_profile_request_model.dart';
+// Importing API constants for endpoint and base URL definitions
+import 'package:appoynt_mobile_app/core/api/api_constants.dart';
 
 /// Abstract contract defining remote profile actions.
 abstract class ProfileRemoteDataSource {
   /// Calls the change password API.
   Future<void> changePassword(ChangePasswordRequestModel requestModel);
 
-  /// Fetches the user profile details from the remote API.
+  /// Fetches the user profile details from the remote API
+  /// using GET /api/patients/profile (returns PatientProfileResponse).
   Future<UserProfileModel> getUserProfile();
 
   /// Updates the user profile details via the remote API.
   Future<void> updateUserProfile(UpdateProfileRequestModel requestModel);
+
+  /// Uploads a profile photo file using multipart/form-data.
+  /// Endpoint: POST /api/patients/profile-photo
+  /// Returns the constructed network URL for the uploaded image.
+  Future<String> uploadProfilePhoto(String file_path);
+
+  /// Builds the network URL to fetch the patient profile photo.
+  /// Endpoint: GET /api/patients/{patientId}/profile-photo
+  Future<String> buildProfilePhotoUrl(String patient_id);
 }
 
 /// Concrete implementation of ProfileRemoteDataSource using Dio.
@@ -55,17 +74,17 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   }
 
   @override
-  // Retrieves the profile representation matching the authenticated user
+  // Retrieves the profile using the correct GET /api/patients/profile endpoint
+  // which returns PatientProfileResponse including hasProfilePhoto and pid fields
   Future<UserProfileModel> getUserProfile() async {
-    // Retrieve target user identifier from stored token
-    final String user_id = await _get_user_id();
-    // Execute GET network request fetching data
+    // Execute GET request on the patients/profile route (no ID in path)
     final Response response = await dio.get(
-      // Dynamic profile route mapping target ID
-      'users/$user_id',
+      // Correct endpoint for patient profile per Swagger documentation
+      'patients/profile',
     );
-    // Parse received map into UserProfileModel representation
-    return UserProfileModel.fromJson(response.data as Map<String, dynamic>);
+    // Parse received map into UserProfileModel from PatientProfileResponse layout
+    return UserProfileModel.fromJson(
+        response.data as Map<String, dynamic>);
   }
 
   @override
@@ -80,6 +99,75 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       // Pass serialized update request body parameters
       data: requestModel.toJson(),
     );
+  }
+
+  @override
+  // Uploads the profile image using POST /api/patients/profile-photo with
+  // multipart/form-data encoding and field name 'file' per Swagger spec.
+  // Returns the constructed network URL for the new profile photo.
+  Future<String> uploadProfilePhoto(String file_path) async {
+    // Create a File reference from the provided local path
+    final File image_file = File(file_path);
+    // Extract the base filename from the local path for MIME inference
+    final String file_name = image_file.path.split(Platform.pathSeparator).last;
+    // Build MultipartFile instance from the local file on disk
+    final MultipartFile multipart_file = await MultipartFile.fromFile(
+      // Source file path string
+      file_path,
+      // Attach filename for server-side storage and MIME detection
+      filename: file_name,
+    );
+    // Construct FormData container with the required 'file' field
+    final FormData form_data = FormData.fromMap({
+      // Field name 'file' as specified in the Swagger multipart schema
+      'file': multipart_file,
+    });
+    // Execute POST multipart request to the profile-photo endpoint
+    final Response response = await dio.post(
+      // Upload endpoint per Swagger specification
+      'patients/profile-photo',
+      // Attach constructed form data payload
+      data: form_data,
+    );
+    // Extract patient_id from the PatientResult response to build image URL
+    final Map<String, dynamic> result_body =
+        response.data as Map<String, dynamic>;
+    // Read the patientId from the PatientResult response schema
+    final String? patient_id_from_response =
+        result_body['patientId'] as String?;
+    // Guard against null patient_id in the upload response
+    if (null == patient_id_from_response ||
+        patient_id_from_response.isEmpty) {
+      // Fall back to token-derived ID when server omits patientId
+      final String fallback_id = await _get_user_id();
+      // Construct and return the profile photo network URL
+      return await buildProfilePhotoUrl(fallback_id);
+    } else {
+      // Construct and return the profile photo network URL from response ID
+      return await buildProfilePhotoUrl(patient_id_from_response);
+    }
+  }
+
+  @override
+  // Constructs the full network URL for the patient profile photo endpoint.
+  // The GET /api/patients/{patientId}/profile-photo endpoint returns raw image
+  // bytes served as a direct network resource.
+  Future<String> buildProfilePhotoUrl(String patient_id) async {
+    // Retrieve the access token for authenticated image requests
+    final String? token = await TokenStorage.get_access_token();
+    // Build the full URL using the ApiConstants base URL and patient ID
+    // NOTE: The token cannot be embedded in the URL; it is passed separately
+    // to Image.network via the httpHeaders parameter in the widget layer.
+    final String photo_url =
+        '${ApiConstants.base_url}patients/$patient_id/profile-photo';
+    // Verify token availability for authenticated image loading
+    if (null == token || token.isEmpty) {
+      // Return URL without authentication header when token is absent
+      return photo_url;
+    } else {
+      // Return the constructed URL — caller must attach the Bearer header
+      return photo_url;
+    }
   }
 
   // Decodes active JWT access token to retrieve subject user identity identifier
@@ -105,11 +193,13 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
         // Decode payload string bytes
         final String decoded = utf8.decode(base64.decode(normalized));
         // Parse JSON claims map
-        final Map<String, dynamic> claims = json.decode(decoded) as Map<String, dynamic>;
+        final Map<String, dynamic> claims =
+            json.decode(decoded) as Map<String, dynamic>;
         // Extract user id from common schemas
         final String id = claims['nameid'] ??
             claims['sub'] ??
-            claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] ??
+            claims[
+                'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] ??
             '';
         // Return resolved string representation
         return id;

@@ -2,11 +2,14 @@
  * File Name: profile_state.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/07/2026
- * Version Information: V1.1.0
- * Dependencies: package:appoynt_mobile_app/features/profile/domain/entities/patient_profile.dart, user_profile_model.dart
+ * Version Information: V1.2.0
+ * Dependencies: package:appoynt_mobile_app/features/profile/domain/entities/patient_profile.dart,
+ *   user_profile_model.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 09/08/2026]
- * File Description: Defines the states and subclasses for the Patient Profile BLoC/Cubit pattern.
+ * Last Modified Date: [Kholoud Khaled - 13/08/2026]
+ * File Description: Defines the states and subclasses for the Patient Profile
+ *   BLoC/Cubit pattern. V1.2.0 adds avatarUploading, avatarUploadSuccess,
+ *   and avatarUploadError enum values to support the profile image upload flow.
  */
 
 // Importing the PatientProfile domain entity
@@ -36,6 +39,12 @@ enum ProfileStatus {
   passwordSuccess,
   // Password update failed
   passwordError,
+  // Profile avatar photo upload in progress
+  avatarUploading,
+  // Profile avatar photo upload completed successfully
+  avatarUploadSuccess,
+  // Profile avatar photo upload failed with error
+  avatarUploadError,
 }
 
 // State class representation for Profile feature block operations

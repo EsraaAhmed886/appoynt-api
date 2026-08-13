@@ -2179,4 +2179,22 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get error_cache =>
       'A local storage error occurred. Please restart the app.';
+  // Profile Photo Picker Bottom Sheet Localizations English Overrides
+  @override
+  // English label for the profile photo source selection sheet title
+  String get profile_photo_sheet_title => 'Update Profile Photo';
+  @override
+  // English label for the camera selection option in the sheet
+  String get profile_photo_camera_option => 'Take a Photo';
+  @override
+  // English label for the gallery selection option in the sheet
+  String get profile_photo_gallery_option => 'Choose from Gallery';
+  @override
+  // English message displayed in SnackBar after a successful avatar photo upload
+  String get profile_photo_upload_success =>
+      'Profile photo updated successfully.';
+  @override
+  // English fallback message displayed in SnackBar when avatar upload fails
+  String get profile_photo_upload_error => 'Photo upload failed.';
 }
+

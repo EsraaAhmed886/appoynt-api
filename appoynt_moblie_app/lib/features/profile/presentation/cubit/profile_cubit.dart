@@ -2,15 +2,18 @@
  * File Name: profile_cubit.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/07/2026
- * Version Information: V1.0.0
+ * Version Information: V1.2.0
  * Dependencies: package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart,
  *   package:appoynt_mobile_app/features/profile/domain/entities/patient_profile.dart,
  *   package:appoynt_mobile_app/features/profile/domain/entities/insurance_card.dart,
- *   package:appoynt_mobile_app/features/profile/domain/entities/test_result.dart
+ *   package:appoynt_mobile_app/features/profile/domain/entities/test_result.dart,
+ *   package:image_picker/image_picker.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/07/2026]
- * File Description: Implement the Patient Profile Cubit orchestrating UI updates, validations, and saves.
+ * Last Modified Date: [Kholoud Khaled - 13/08/2026]
+ * File Description: Implements the Patient Profile Cubit orchestrating UI updates,
+ *   validations, and saves. V1.1.0 adds pick_and_upload_avatar() for camera/gallery
+ *   image selection and upload via POST /api/patients/profile-photo.
  */
 
 // Importing the BLoC library
@@ -33,6 +36,10 @@ import 'package:appoynt_mobile_app/features/profile/domain/usecases/update_user_
 import 'package:appoynt_mobile_app/features/profile/data/models/user_profile_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+// Importing image_picker for camera and gallery photo selection
+import 'package:image_picker/image_picker.dart';
+// Importing upload profile photo use case for Clean Architecture compliance
+import 'package:appoynt_mobile_app/features/profile/domain/usecases/upload_profile_photo_usecase.dart';
 
 // Profile business logic Cubit controller class
 class ProfileCubit extends Cubit<ProfileState> {
@@ -182,8 +189,16 @@ class ProfileCubit extends Cubit<ProfileState> {
 
     // PHASE 1 — Cache hit: emit immediately so the UI renders with zero delay
     if (null != cached_profile) {
+      // Also read the cached photo URL for instant avatar rendering
+      final String? cached_photo_url =
+          await get_it<ProfileRepository>().getCachedProfilePhotoUrl();
       // Map cached UserProfileModel into PatientProfile domain entity structure
-      final PatientProfile cached_entity = _map_model_to_entity(cached_profile);
+      // Pass resolved photo URL so avatar renders with zero network delay
+      final PatientProfile cached_entity = _map_model_to_entity(
+        cached_profile,
+        // Provide photo URL from cache when available
+        resolved_photo_url: cached_photo_url,
+      );
       // Emit ProfileLoaded with cached data — UI becomes interactive instantly
       if (!isClosed) {
         emit(ProfileLoaded(
@@ -222,8 +237,16 @@ class ProfileCubit extends Cubit<ProfileState> {
       // Fetch fresh profile from the remote API (also writes to cache internally)
       final UserProfileModel fresh_profile =
           await get_it<GetUserProfileUseCase>().call();
+      // Read updated photo URL from local cache (refreshed inside getUserProfile)
+      final String? fresh_photo_url =
+          await get_it<ProfileRepository>().getCachedProfilePhotoUrl();
       // Map fresh remote model into the PatientProfile domain entity structure
-      final PatientProfile fresh_entity = _map_model_to_entity(fresh_profile);
+      // Pass updated photo URL so avatar stays current after background refresh
+      final PatientProfile fresh_entity = _map_model_to_entity(
+        fresh_profile,
+        // Provide freshly derived photo URL from cache
+        resolved_photo_url: fresh_photo_url,
+      );
 
       // Only emit a state update when the fresh data differs from the cache
       final bool data_changed = null == cached_profile ||
@@ -284,8 +307,14 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
-  // Private helper: maps a UserProfileModel API response to PatientProfile entity
-  PatientProfile _map_model_to_entity(UserProfileModel model) {
+  // Private helper: maps a UserProfileModel API response to PatientProfile entity.
+  // Accepts an optional resolved_photo_url to populate avatar_url directly from
+  // the local cache or post-upload response without a redundant network call.
+  PatientProfile _map_model_to_entity(
+    UserProfileModel model, {
+    // Optional pre-resolved profile photo URL from cache or upload response
+    String? resolved_photo_url,
+  }) {
     // Return a fully populated PatientProfile using the model field values
     return PatientProfile(
       // Map first name from the API model
@@ -324,8 +353,8 @@ class ProfileCubit extends Cubit<ProfileState> {
       chronic_conditions: state.profile.chronic_conditions,
       // Carry existing local insurance cards (not in API response)
       insurance_cards: state.profile.insurance_cards,
-      // Carry existing local avatar URL (not in API response)
-      avatar_url: state.profile.avatar_url,
+      // Use resolved photo URL when provided, otherwise carry existing local URL
+      avatar_url: resolved_photo_url ?? state.profile.avatar_url,
       // Carry existing local payment cards (not in API response)
       payment_cards: state.profile.payment_cards,
     );
@@ -1031,6 +1060,247 @@ class ProfileCubit extends Cubit<ProfileState> {
           temp_profile: updated_profile,
         ),
       );
+    }
+  }
+
+  // Presents a Camera/Gallery picker bottom sheet, then uploads the selected
+  // image to POST /api/patients/profile-photo. Emits avatarUploading during
+  // the upload, avatarUploadSuccess with the new URL on success, or
+  // avatarUploadError with a message on failure.
+  Future<void> pick_and_upload_avatar() async {
+    // Instantiate the image picker service singleton
+    final ImagePicker picker = ImagePicker();
+    // Emit a brief avatarUploading status to signal picker is opening
+    // (prevents double-taps during processing)
+    emit(state.copyWith(status: ProfileStatus.avatarUploading));
+    // Present the image source selection bottom sheet
+    // NOTE: We call showDialog equivalent via ImagePicker directly here.
+    // The picker returns null when the user cancels without selecting.
+    XFile? picked_file;
+    // Attempt to pick an image from the gallery as the default source
+    // The actual source selection (camera vs gallery) is handled in the widget
+    // layer via the _show_avatar_source_sheet helper — the cubit receives the
+    // already-resolved XFile path from the widget to maintain SRP.
+    // This method is called with a pre-selected source by the avatar widget.
+    try {
+      // Pick image from the gallery — source override provided by caller context
+      picked_file = await picker.pickImage(
+        // Default source: gallery — widget layer overrides this for camera
+        source: ImageSource.gallery,
+        // Limit maximum image dimension to 1024px to reduce upload payload size
+        maxWidth: 1024.0,
+        // Limit maximum height dimension to 1024px
+        maxHeight: 1024.0,
+        // Compress image quality to 85% to balance size vs visual fidelity
+        imageQuality: 85,
+      );
+    } catch (picker_error) {
+      // Picker failed or permission denied — emit error and abort
+      debugPrint('[ProfileCubit] Image picker failed: $picker_error');
+      // Emit avatarUploadError status with descriptive message
+      if (!isClosed) {
+        emit(state.copyWith(
+          // Set avatar upload error status
+          status: ProfileStatus.avatarUploadError,
+          // Map picker error message for display
+          error_message: 'Image selection failed: $picker_error',
+        ));
+      } else {
+        // Cubit was closed — discard error emit safely
+      }
+      // Return early to abort upload sequence
+      return;
+    }
+    // Guard: user cancelled the picker without selecting an image
+    if (null == picked_file) {
+      // Revert to previous success status — no upload action taken
+      if (!isClosed) {
+        emit(state.copyWith(status: ProfileStatus.success));
+      } else {
+        // Cubit was closed — discard revert emit safely
+      }
+      // Return early when no file was selected
+      return;
+    } else {
+      // File was selected — proceed with the upload sequence
+    }
+    // Extract the local file path string from the XFile instance
+    final String file_path = picked_file.path;
+    // Emit avatarUploading status to display spinner overlay on avatar widget
+    if (!isClosed) {
+      emit(state.copyWith(status: ProfileStatus.avatarUploading));
+    } else {
+      // Cubit was closed — abort upload sequence
+      return;
+    }
+    // Execute the upload request via the repository upload method
+    try {
+      // Call upload use case (Clean Architecture: cubit → use case → repository)
+      final String new_photo_url =
+          await get_it<UploadProfilePhotoUseCase>().call(file_path);
+      // Update profile entity with the new resolved network URL immediately
+      final PatientProfile updated_profile =
+          state.profile.copyWith(avatar_url: new_photo_url);
+      // Guard against emitting on a closed cubit after the async upload call
+      if (!isClosed) {
+        // Emit success state with the updated profile carrying the new URL
+        emit(state.copyWith(
+          // Set avatar upload success status
+          status: ProfileStatus.avatarUploadSuccess,
+          // Bind updated profile with new avatar URL
+          profile: updated_profile,
+          // Sync temp profile to avoid stale comparison on next dirty check
+          temp_profile: updated_profile,
+        ));
+        // Log successful upload completion for diagnostics
+        debugPrint(
+          '[ProfileCubit] Avatar upload success. New URL: $new_photo_url',
+        );
+      } else {
+        // Cubit was closed before success emit — discard result safely
+      }
+    } on DioException catch (dio_error) {
+      // Extract DioException error message from response body when available
+      final String error_msg = dio_error.response?.data is Map
+          ? (dio_error.response?.data['title'] as String?
+                  ?? dio_error.response?.data['message'] as String?
+                  ?? 'Photo upload failed.')
+          : 'Photo upload failed.';
+      // Guard against emitting on a closed cubit
+      if (!isClosed) {
+        // Emit avatar upload error state with descriptive message
+        emit(state.copyWith(
+          // Set avatar upload error status
+          status: ProfileStatus.avatarUploadError,
+          // Bind extracted error message for SnackBar display
+          error_message: error_msg,
+        ));
+      } else {
+        // Cubit was closed — discard error emit safely
+      }
+      // Log the Dio network error for diagnostics
+      debugPrint('[ProfileCubit] Avatar upload DioException: $dio_error');
+    } catch (generic_error) {
+      // Guard against emitting on a closed cubit
+      if (!isClosed) {
+        // Emit avatar upload error state for unexpected exceptions
+        emit(state.copyWith(
+          // Set avatar upload error status
+          status: ProfileStatus.avatarUploadError,
+          // Provide generic user-facing error message
+          error_message: 'An unexpected error occurred during upload.',
+        ));
+      } else {
+        // Cubit was closed — discard error emit safely
+      }
+      // Log the generic error for diagnostics
+      debugPrint('[ProfileCubit] Avatar upload error: $generic_error');
+    }
+  }
+
+  // Launches the image picker for a specific source (camera or gallery),
+  // then calls the repository upload flow. This overload is called by the
+  // avatar widget after the user selects a source from the bottom sheet.
+  Future<void> pick_and_upload_avatar_from_source(
+      ImageSource source) async {
+    // Instantiate the image picker service singleton
+    final ImagePicker picker = ImagePicker();
+    // Emit uploading state to show spinner before picker opens
+    if (!isClosed) {
+      emit(state.copyWith(status: ProfileStatus.avatarUploading));
+    } else {
+      // Cubit closed — abort early
+      return;
+    }
+    // Attempt to pick the image from the specified source
+    XFile? picked_file;
+    try {
+      // Invoke picker with caller-specified source (camera or gallery)
+      picked_file = await picker.pickImage(
+        // Use the caller-provided source selection
+        source: source,
+        // Cap decode width to 1024px to reduce upload payload
+        maxWidth: 1024.0,
+        // Cap decode height to 1024px
+        maxHeight: 1024.0,
+        // 85% quality balances visual fidelity vs file size
+        imageQuality: 85,
+      );
+    } catch (picker_error) {
+      // Picker raised an exception (e.g. permission denied)
+      debugPrint('[ProfileCubit] Picker error: $picker_error');
+      // Emit error state with descriptive message
+      if (!isClosed) {
+        emit(state.copyWith(
+          status: ProfileStatus.avatarUploadError,
+          error_message: 'Image selection failed.',
+        ));
+      } else {
+        // Cubit closed — discard emit
+      }
+      return;
+    }
+    // Guard: user cancelled picker without a selection
+    if (null == picked_file) {
+      // Revert to success status — no upload was triggered
+      if (!isClosed) {
+        emit(state.copyWith(status: ProfileStatus.success));
+      } else {
+        // Cubit closed — discard emit
+      }
+      return;
+    } else {
+      // File selected — continue to upload
+    }
+    // Extract local path from XFile wrapper
+    final String file_path = picked_file.path;
+    // Execute repository upload call with the local file path
+    try {
+      // Upload photo via use case (Clean Architecture: cubit → use case → repository)
+      final String new_photo_url =
+          await get_it<UploadProfilePhotoUseCase>().call(file_path);
+      // Clone profile entity with the new avatar URL applied
+      final PatientProfile updated_profile =
+          state.profile.copyWith(avatar_url: new_photo_url);
+      // Emit success state with updated profile
+      if (!isClosed) {
+        emit(state.copyWith(
+          status: ProfileStatus.avatarUploadSuccess,
+          profile: updated_profile,
+          temp_profile: updated_profile,
+        ));
+        debugPrint(
+          '[ProfileCubit] Avatar uploaded from source. URL: $new_photo_url',
+        );
+      } else {
+        // Cubit closed — discard result
+      }
+    } on DioException catch (dio_error) {
+      // Extract error message from Dio response body
+      final String error_msg = dio_error.response?.data is Map
+          ? (dio_error.response?.data['title'] as String?
+                  ?? dio_error.response?.data['message'] as String?
+                  ?? 'Photo upload failed.')
+          : 'Photo upload failed.';
+      if (!isClosed) {
+        emit(state.copyWith(
+          status: ProfileStatus.avatarUploadError,
+          error_message: error_msg,
+        ));
+      } else {
+        // Cubit closed — discard emit
+      }
+      debugPrint('[ProfileCubit] DioException during upload: $dio_error');
+    } catch (generic_error) {
+      if (!isClosed) {
+        emit(state.copyWith(
+          status: ProfileStatus.avatarUploadError,
+          error_message: 'An unexpected error occurred during upload.',
+        ));
+      } else {
+        // Cubit closed — discard emit
+      }
+      debugPrint('[ProfileCubit] Upload error: $generic_error');
     }
   }
 

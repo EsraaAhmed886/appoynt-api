@@ -2,15 +2,16 @@
  * File Name: profile_local_data_source.dart
  * Author: Kholoud Khaled
  * Date of Creation: 10/08/2026
- * Version Information: V1.0.0
+ * Version Information: V1.1.0
  * Dependencies: package:shared_preferences/shared_preferences.dart,
  *   user_profile_model.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 10/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 13/08/2026]
  * File Description: Local data source for caching the authenticated user's
- *   profile using SharedPreferences as a JSON string blob. Provides instant
- *   cache-hit reads so the ProfilePage renders with zero latency on entry,
- *   while a background network refresh silently revalidates the data.
+ *   profile using SharedPreferences as a JSON string blob. V1.1.0 bumps the
+ *   cache key version to invalidate stale entries missing has_profile_photo,
+ *   and adds separate photo URL persistence methods so the avatar loads
+ *   instantly on cold start without a network round-trip.
  */
 
 // Importing dart:convert for JSON encoding and decoding operations
@@ -36,6 +37,15 @@ abstract class ProfileLocalDataSource {
 
   // Purges the cached profile entry from local SharedPreferences storage
   Future<void> clearCachedProfile();
+
+  // Persists the resolved profile photo URL string separately for instant loads
+  Future<void> saveProfilePhotoUrl(String photo_url);
+
+  // Reads the previously persisted profile photo URL, or null if absent
+  Future<String?> getProfilePhotoUrl();
+
+  // Purges the locally cached profile photo URL entry
+  Future<void> clearProfilePhotoUrl();
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -45,7 +55,11 @@ abstract class ProfileLocalDataSource {
 // Concrete SharedPreferences-backed implementation of ProfileLocalDataSource
 class ProfileLocalDataSourceImpl implements ProfileLocalDataSource {
   // SharedPreferences key used to store and retrieve the profile JSON blob
-  static const String _cache_key = 'cached_user_profile_v1';
+  // Version bumped from v1 to v2 to invalidate caches missing has_profile_photo
+  static const String _cache_key = 'cached_user_profile_v2';
+
+  // Separate SharedPreferences key for the resolved profile photo URL string
+  static const String _photo_url_key = 'cached_profile_photo_url_v1';
 
   // Override: reads and deserializes the cached profile JSON string from prefs
   @override
@@ -105,5 +119,40 @@ class ProfileLocalDataSourceImpl implements ProfileLocalDataSource {
     await prefs.remove(_cache_key);
     // Log successful cache eviction for debug audit trail purposes
     debugPrint('[ProfileLocalDataSource] Cached profile cleared.');
+  }
+
+  // Override: persists the resolved profile photo URL to SharedPreferences
+  @override
+  Future<void> saveProfilePhotoUrl(String photo_url) async {
+    // Obtain the singleton SharedPreferences instance asynchronously
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    // Persist the photo URL string under the designated photo URL cache key
+    await prefs.setString(_photo_url_key, photo_url);
+    // Log successful photo URL cache write for debug audit trail
+    debugPrint(
+      '[ProfileLocalDataSource] Profile photo URL cached: $photo_url',
+    );
+  }
+
+  // Override: reads the previously persisted profile photo URL from prefs
+  @override
+  Future<String?> getProfilePhotoUrl() async {
+    // Obtain the singleton SharedPreferences instance asynchronously
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    // Read the photo URL string from the designated cache key
+    final String? photo_url = prefs.getString(_photo_url_key);
+    // Return the URL or null if absent
+    return photo_url;
+  }
+
+  // Override: removes the cached photo URL entry from SharedPreferences storage
+  @override
+  Future<void> clearProfilePhotoUrl() async {
+    // Obtain the singleton SharedPreferences instance asynchronously
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    // Remove the photo URL cache entry using the designated storage key
+    await prefs.remove(_photo_url_key);
+    // Log successful cache eviction for debug audit trail purposes
+    debugPrint('[ProfileLocalDataSource] Cached profile photo URL cleared.');
   }
 }

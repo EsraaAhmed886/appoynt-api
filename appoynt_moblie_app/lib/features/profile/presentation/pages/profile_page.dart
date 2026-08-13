@@ -12,8 +12,6 @@
  * File Description: Defines the Patient Profile View Mode screen showing summaries and medical sections.
  */
 
-// Importing standard I/O for File operations
-import 'dart:io';
 // Importing clipboard service for copy-to-clipboard interactions
 import 'package:flutter/services.dart';
 // Importing dart ui for image filter backdrop blur
@@ -36,28 +34,27 @@ import 'package:appoynt_mobile_app/features/payment/presentation/pages/payment_w
 import 'package:appoynt_mobile_app/features/profile/presentation/pages/security_privacy_page.dart';
 import 'package:appoynt_mobile_app/features/profile/presentation/pages/app_settings_page.dart';
 import 'package:appoynt_mobile_app/features/profile/presentation/pages/help_about_page.dart';
+// Importing reusable profile avatar widget with upload and fallback capabilities
+import 'package:appoynt_mobile_app/features/profile/presentation/widgets/profile_avatar_widget.dart';
+// Importing image preview dialog for full-screen zoomable avatar viewing
+import 'package:appoynt_mobile_app/features/profile/presentation/widgets/image_preview_dialog.dart';
 
 // Local layout dimensions class to strictly eliminate hardcoded numbers
 class _LocalDimensions {
   static const double border_radius_default = 16.0;
   static const double border_radius_small = 10.0;
   static const double border_radius_large = 20.0;
-  static const double border_radius_avatar = 50.0;
   static const double border_width_thin = 0.5;
   static const double spacing_tiny = 2.0;
   static const double spacing_small = 4.0;
   static const double spacing_large = 8.0;
-  static const double avatar_size = 100.0;
   static const double icon_container_size = 40.0;
-  static const double icon_size_large = 48.0;
   static const double icon_size_small = 20.0;
   static const double icon_size_tiny = 12.0;
   static const double font_size_subtitle = 16.0;
   static const double shadow_blur = 10.0;
-  static const double shadow_blur_large = 12.0;
   static const double shadow_opacity_dark = 0.2;
   static const double shadow_opacity_light = 0.05;
-  static const double shadow_opacity_light_alt = 0.08;
 }
 
 // Patient profile view mode screen stateful widget
@@ -104,11 +101,67 @@ class _ProfilePageState extends State<ProfilePage> {
                 context, Routes.login, (route) => false);
           }
         },
-        child: BlocBuilder<ProfileCubit, ProfileState>(
+        child: BlocListener<ProfileCubit, ProfileState>(
+          // Listen for avatar upload result states to show feedback SnackBars
+          listenWhen: (previous_state, current_state) {
+            // Only trigger listener when avatar upload status changes
+            return previous_state.status != current_state.status &&
+                (ProfileStatus.avatarUploadError == current_state.status ||
+                    ProfileStatus.avatarUploadSuccess == current_state.status);
+          },
+          listener: (listener_context, upload_state) {
+            // Handle avatar upload success feedback notification
+            if (ProfileStatus.avatarUploadSuccess == upload_state.status) {
+              // Show success SnackBar confirming photo was updated
+              ScaffoldMessenger.of(listener_context).showSnackBar(
+                SnackBar(
+                  // Success message sourced from localized string dictionary
+                  content: Text(
+                    localizations.profile_photo_upload_success,
+                  ),
+                  // Green tint background for success state
+                  backgroundColor: AppColors.primary_color,
+                  // Short duration to minimize screen real estate usage
+                  duration: const Duration(seconds: 2),
+                  // Rounded pill shape for the SnackBar container
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppSpacing.space_m),
+                  ),
+                  // Float above bottom navigation bar
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            } else if (ProfileStatus.avatarUploadError == upload_state.status) {
+              // Show error SnackBar with the failure message from the cubit
+              ScaffoldMessenger.of(listener_context).showSnackBar(
+                SnackBar(
+                  // Display error from state or a localized generic fallback
+                  content: Text(
+                    upload_state.error_message ??
+                        localizations.profile_photo_upload_error,
+                  ),
+                  // Error red-orange tint background for failure state
+                  backgroundColor: Colors.redAccent,
+                  // Standard duration for error messages
+                  duration: const Duration(seconds: 3),
+                  // Rounded pill shape for the SnackBar container
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppSpacing.space_m),
+                  ),
+                  // Float above bottom navigation bar
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            } else {
+              // No matching upload state — no action needed
+            }
+          },
+          child: BlocBuilder<ProfileCubit, ProfileState>(
           // Filter builder state rebuild constraints
           builder: (context, state) {
             // Check if error state is active
-            if (ProfileStatus.error == state.status || ProfileStatus.updateError == state.status) {
+            if (ProfileStatus.error == state.status ||
+                ProfileStatus.updateError == state.status) {
               // Render error layout option with retry actions
               return Scaffold(
                 // Center column alignment
@@ -183,75 +236,29 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                               // Spacing margin gap before photo avatar
                               const SizedBox(height: AppSpacing.space_xl),
-                              // SECTION 1: Personal Info - Premium circular avatar photo frame matching layout specs
-                              GestureDetector(
-                                // Tap handler calling interactive preview dialog modal
-                                onTap: () {
-                                  // Invoke avatar preview dialog modal
-                                  _show_avatar_preview_dialog(
+                              // SECTION 1: Profile avatar widget — handles network
+                              // image, uploading spinner, and initials fallback
+                              ProfileAvatarWidget(
+                                // Bind the current avatar URL from profile state
+                                avatar_url: state.profile.avatar_url,
+                                // Pass first name for initials badge fallback
+                                first_name: state.profile.first_name,
+                                // Pass last name for initials badge fallback
+                                last_name: state.profile.last_name,
+                                // Derive uploading flag from active avatar status
+                                is_uploading: ProfileStatus.avatarUploading ==
+                                    state.status,
+                                // Hide camera edit badge overlay on main profile page
+                                show_camera_badge: false,
+                                // Open full-screen zoomable preview modal on avatar tap
+                                on_tap: () {
+                                  show_image_preview_dialog(
                                     context,
-                                    state.profile.avatar_url,
+                                    image_url: state.profile.avatar_url,
+                                    first_name: state.profile.first_name,
+                                    last_name: state.profile.last_name,
                                   );
                                 },
-                                // Clean isolated circular avatar image container layout
-                                child: Container(
-                                  // Fixed width
-                                  width: _LocalDimensions.avatar_size,
-                                  // Fixed height
-                                  height: _LocalDimensions.avatar_size,
-                                  // Container decoration parameters
-                                  decoration: BoxDecoration(
-                                    // Circular shape
-                                    shape: BoxShape.circle,
-                                    // Ambient soft shadows
-                                    boxShadow: [
-                                      BoxShadow(
-                                        // Shadow colors adapting to dark mode
-                                        color: is_dark
-                                            ? AppColors.black45
-                                            : AppColors.black.withValues(
-                                                alpha: _LocalDimensions
-                                                    .shadow_opacity_light_alt),
-                                        // Blur spread radius
-                                        blurRadius:
-                                            _LocalDimensions.shadow_blur_large,
-                                        // Offset position coordinates
-                                        offset: const Offset(0.0, 4.0),
-                                      ),
-                                    ],
-                                  ),
-                                  // Clip image inside circular bounds
-                                  child: ClipRRect(
-                                    // Corner radius matching half dimensions
-                                    borderRadius: BorderRadius.circular(
-                                        _LocalDimensions.border_radius_avatar),
-                                    // Render network image or fallback icon
-                                    child: state.profile.avatar_url.isNotEmpty
-                                        ? (true ==
-                                                state.profile.avatar_url
-                                                    .startsWith('http')
-                                            ? Image.network(
-                                                state.profile.avatar_url,
-                                                fit: BoxFit.cover,
-                                              )
-                                            : Image.file(
-                                                File(state.profile.avatar_url),
-                                                fit: BoxFit.cover,
-                                              ))
-                                        : Container(
-                                            // Surface fallback fill
-                                            color: AppColors.primary_color
-                                                .withValues(alpha: 0.1),
-                                            // Fallback icon widget
-                                            child: const Icon(
-                                              Icons.person_rounded,
-                                              color: AppColors.primary_color,
-                                              size: _LocalDimensions
-                                                  .icon_size_large,
-                                            ),
-                                          ),
-                                  ),
-                                ),
                               ),
                               // Spacing margin gap before name
                               const SizedBox(height: AppSpacing.space_m),
@@ -671,7 +678,8 @@ class _ProfilePageState extends State<ProfilePage> {
           },
         ),
       ),
-    );
+    ),
+  );
   }
 
   // Helper builder rendering Standalone Logout Card widget
@@ -974,215 +982,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 ],
               ),
             ],
-          ),
-        );
-      },
-    );
-  }
-
-  // Helper method displaying blurred full-screen avatar preview modal with action CTA
-  void _show_avatar_preview_dialog(BuildContext context, String avatar_url) {
-    // Resolve localized strings
-    final AppLocalizations localizations = AppLocalizations.of(context);
-
-    // Show dialog popup modal
-    showDialog(
-      // Bind context
-      context: context,
-      // Barrier dismissible by tapping outside
-      barrierDismissible: true,
-      // Dialog builder constructor
-      builder: (dialog_context) {
-        // BackdropFilter supplying background blur
-        return BackdropFilter(
-          // Blur filter parameters
-          filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-          // Dialog wrapper container
-          child: Dialog(
-            // Transparent surface fill
-            backgroundColor: AppColors.transparent,
-            // Zero elevation shadow
-            elevation: 0.0,
-            // Inner content padding
-            child: Column(
-              // Minimize vertical size
-              mainAxisSize: MainAxisSize.min,
-              // Center cross axis items
-              crossAxisAlignment: CrossAxisAlignment.center,
-              // Children details list
-              children: [
-                // Top header row placing close (X) button
-                Align(
-                  // Align right coordinates
-                  alignment: Alignment.centerRight,
-                  // Close gesture detector button
-                  child: IconButton(
-                    // Icon configuration
-                    icon: Container(
-                      // Inner padding
-                      padding: const EdgeInsets.all(6.0),
-                      // Shape decoration
-                      decoration: BoxDecoration(
-                        // Dark transparent fill
-                        color: AppColors.black.withValues(alpha: 0.4),
-                        // Circular shape
-                        shape: BoxShape.circle,
-                      ),
-                      // Close icon symbol
-                      child: const Icon(
-                        Icons.close_rounded,
-                        color: AppColors.white,
-                        size: 20.0,
-                      ),
-                    ),
-                    // Tap handler popping modal
-                    onPressed: () {
-                      // Pop modal dialog
-                      Navigator.of(dialog_context).pop();
-                    },
-                  ),
-                ),
-                // Spacing gap
-                const SizedBox(height: 12.0),
-                // Circular high-resolution avatar preview container (240px x 240px)
-                Container(
-                  // Fixed width
-                  width: 240.0,
-                  // Fixed height
-                  height: 240.0,
-                  // Layout shape decoration
-                  decoration: BoxDecoration(
-                    // Circular border shape
-                    shape: BoxShape.circle,
-                    // Outer border ring line
-                    border: Border.all(
-                      // White border ring
-                      color: AppColors.white.withValues(alpha: 0.8),
-                      // Border thickness
-                      width: 3.0,
-                    ),
-                    // Soft floating shadow
-                    boxShadow: const [
-                      BoxShadow(
-                        // Color
-                        color: AppColors.black38,
-                        // Blur
-                        blurRadius: 20.0,
-                        // Offset
-                        offset: Offset(0.0, 8.0),
-                      ),
-                    ],
-                  ),
-                  // Clip image in circular mask
-                  child: ClipRRect(
-                    // Rounded corner radius matching half dimensions
-                    borderRadius: BorderRadius.circular(120.0),
-                    // Render image network or fallback icon
-                    child: avatar_url.isNotEmpty
-                        ? (true == avatar_url.startsWith('http')
-                            ? Image.network(
-                                avatar_url,
-                                fit: BoxFit.cover,
-                              )
-                            : Image.file(
-                                File(avatar_url),
-                                fit: BoxFit.cover,
-                              ))
-                        : Container(
-                            // Surface fallback fill
-                            color:
-                                AppColors.primary_color.withValues(alpha: 0.15),
-                            // Fallback icon
-                            child: const Icon(
-                              Icons.person_rounded,
-                              color: AppColors.primary_color,
-                              size: 110.0,
-                            ),
-                          ),
-                  ),
-                ),
-                // Spacing gap
-                const SizedBox(height: 24.0),
-                // Secondary "Change Photo" action CTA button
-                GestureDetector(
-                  // Tap handler: dismiss dialog and navigate to profile editor
-                  onTap: () {
-                    // Close pop-up dialog modal
-                    Navigator.of(dialog_context).pop();
-                    // Navigate to EditProfilePage layout
-                    Navigator.of(context).push(
-                      // Route constructor
-                      MaterialPageRoute(
-                        // Builder constructor wrapping Cubit provider
-                        builder: (route_context) => BlocProvider.value(
-                          // Carry existing ProfileCubit block context forward
-                          value: context.read<ProfileCubit>(),
-                          // Edit profile page widget
-                          child: const UpdateProfilePage(),
-                        ),
-                      ),
-                    );
-                  },
-                  // Action chip container decoration
-                  child: Container(
-                    // Inner padding
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24.0,
-                      vertical: 12.0,
-                    ),
-                    // Decoration layout options
-                    decoration: BoxDecoration(
-                      // Primary brand blue fill
-                      color: AppColors.primary_color,
-                      // Rounded pill corners radius
-                      borderRadius: BorderRadius.circular(24.0),
-                      // Subtle drop shadow
-                      boxShadow: [
-                        BoxShadow(
-                          // Shadow color fill
-                          color:
-                              AppColors.primary_color.withValues(alpha: 0.35),
-                          // Blur radius
-                          blurRadius: 10.0,
-                          // Offset position coordinates
-                          offset: const Offset(0.0, 4.0),
-                        ),
-                      ],
-                    ),
-                    // Action button row icon + text
-                    child: Row(
-                      // Wrap to contents
-                      mainAxisSize: MainAxisSize.min,
-                      // Children list
-                      children: [
-                        // Camera upload icon graphic
-                        const Icon(
-                          Icons.camera_alt_rounded,
-                          color: AppColors.white,
-                          size: 18.0,
-                        ),
-                        // Spacer gap
-                        const SizedBox(width: 8.0),
-                        // Localized "Change Photo" text label
-                        Text(
-                          // Localized string key
-                          localizations.profile_change_photo,
-                          // Typography properties
-                          style: const TextStyle(
-                            // White text
-                            color: AppColors.white,
-                            // Body font size
-                            fontSize: 14.0,
-                            // Bold weight
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
           ),
         );
       },

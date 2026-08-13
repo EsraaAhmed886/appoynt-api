@@ -1077,12 +1077,14 @@ abstract class AppLocalizations {
       return s.error_invalid_credentials;
     }
     // Map phone empty error using Yoda conditions
-    else if ('Phone number cannot be empty.' == cleanMessage || 'phone_empty' == cleanMessage) {
+    else if ('Phone number cannot be empty.' == cleanMessage ||
+        'phone_empty' == cleanMessage) {
       // Return localized phone empty error string
       return s.error_phone_empty;
     }
     // Map OTP invalid error using Yoda conditions
-    else if ('OTP code must be 6 digits.' == cleanMessage || 'otp_invalid' == cleanMessage) {
+    else if ('OTP code must be 6 digits.' == cleanMessage ||
+        'otp_invalid' == cleanMessage) {
       // Return localized OTP length warning error string
       return s.error_otp_invalid;
     }
@@ -1110,6 +1112,21 @@ abstract class AppLocalizations {
       return message;
     }
   }
+
+  // Abstract getter for the profile photo picker bottom sheet title
+  String get profile_photo_sheet_title;
+
+  // Abstract getter for the Camera option in the profile photo picker sheet
+  String get profile_photo_camera_option;
+
+  // Abstract getter for the Gallery option in the profile photo picker sheet
+  String get profile_photo_gallery_option;
+
+  // Abstract getter for the avatar upload success SnackBar message
+  String get profile_photo_upload_success;
+
+  // Abstract getter for the avatar upload failure SnackBar fallback message
+  String get profile_photo_upload_error;
 }
 
 // Defining a short alias for clean and simple type references

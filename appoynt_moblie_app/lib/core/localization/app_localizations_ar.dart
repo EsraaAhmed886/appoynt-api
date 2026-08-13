@@ -2225,4 +2225,22 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get error_cache =>
       'حدث خطأ في التخزين المحلي. يرجى إعادة تشغيل التطبيق.';
+  // Profile Photo Picker Bottom Sheet Localizations Arabic Overrides
+  @override
+  // Arabic label for the profile photo source selection sheet title
+  String get profile_photo_sheet_title => 'تحديث صورة الملف الشخصي';
+  @override
+  // Arabic label for the camera selection option in the sheet
+  String get profile_photo_camera_option => 'التقاط صورة';
+  @override
+  // Arabic label for the gallery selection option in the sheet
+  String get profile_photo_gallery_option => 'الاختيار من المعرض';
+  @override
+  // Arabic message displayed in SnackBar after a successful avatar photo upload
+  String get profile_photo_upload_success =>
+      'تم تحديث صورة الملف الشخصي بنجاح.';
+  @override
+  // Arabic fallback message displayed in SnackBar when avatar upload fails
+  String get profile_photo_upload_error => 'فشل تحميل الصورة.';
 }
+
