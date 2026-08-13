@@ -102,7 +102,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
   Future<void> updateUserProfile(UpdateProfileRequestModel requestModel) async {
     // Call remote data source update method to persist changes on the server
     await remote_data_source.updateUserProfile(requestModel);
-    // Silently refresh and re-cache profile after a successful update operation
+    // Refresh local cache with updated profile immediately
     try {
       // Fetch the updated profile so the cache reflects the server-side state
       final UserProfileModel updated_profile =
@@ -110,10 +110,24 @@ class ProfileRepositoryImpl implements ProfileRepository {
       // Overwrite the stale cache entry with the newly updated profile data
       await local_data_source.saveProfileToCache(updated_profile);
     } catch (refresh_error) {
-      // Cache refresh failed — log but do not propagate to preserve update success
+      // If remote GET fails post-update, update local cache manually with request values
+      final UserProfileModel? cached = await local_data_source.getCachedProfile();
+      if (null != cached) {
+        final UserProfileModel fallback_updated = cached.copyWith(
+          first_name: requestModel.first_name,
+          last_name: requestModel.last_name,
+          date_of_birth: requestModel.date_of_birth ?? cached.date_of_birth,
+          address: requestModel.address ?? cached.address,
+          national_id: requestModel.national_id ?? cached.national_id,
+          weight: requestModel.weight ?? cached.weight,
+          height: requestModel.height ?? cached.height,
+          blood_group: requestModel.blood_group ?? cached.blood_group,
+          gender: requestModel.gender ?? cached.gender,
+        );
+        await local_data_source.saveProfileToCache(fallback_updated);
+      }
       debugPrint(
-        '[ProfileRepositoryImpl] Post-update cache refresh failed: '
-        '$refresh_error',
+        '[ProfileRepositoryImpl] Post-update cache refresh notice: $refresh_error',
       );
     }
   }

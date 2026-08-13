@@ -18,6 +18,8 @@
 import 'dart:convert';
 // Importing Dart I/O for File operations
 import 'dart:io';
+// Importing Flutter foundation for debugPrint
+import 'package:flutter/foundation.dart';
 // Importing Dio client library
 import 'package:dio/dio.dart';
 // Importing token storage dependency
@@ -88,16 +90,33 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   }
 
   @override
-  // Sends update profile request PUT method explicitly to the Patient Profile endpoint
-  // PUT /api/patients/profile per Swagger specification for patient medical records
+  // Sends update profile request PUT method to both Patient Profile (patients/profile)
+  // and User Identity (users/{userId}) endpoints to persist medical details and name changes
   Future<void> updateUserProfile(UpdateProfileRequestModel requestModel) async {
-    // Execute PUT network request on patients/profile endpoint carrying patient medical payload
+    // 1. Execute PUT network request on patients/profile endpoint carrying patient medical payload
     await dio.put(
       // Patient profile update endpoint
       'patients/profile',
       // Serialized update request payload (birthDate, weightKg, heightCm, bloodGroup, etc.)
       data: requestModel.toJson(),
     );
+
+    // 2. Also execute PUT on users/{userId} (Identity User endpoint) for firstName and lastName persistence
+    try {
+      final String user_id = await _get_user_id();
+      if (user_id.isNotEmpty) {
+        await dio.put(
+          'users/$user_id',
+          data: {
+            'firstName': requestModel.first_name,
+            'lastName': requestModel.last_name,
+          },
+        );
+      }
+    } catch (identity_error) {
+      // Log identity update error notice without failing the primary patient update flow
+      debugPrint('[ProfileRemoteDataSource] User identity update notice: $identity_error');
+    }
   }
 
   @override

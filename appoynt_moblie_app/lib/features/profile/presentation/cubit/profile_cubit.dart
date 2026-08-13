@@ -397,6 +397,13 @@ class ProfileCubit extends Cubit<ProfileState> {
         temp_profile: saved_profile,
         is_dirty: false,
       ));
+      // Emit ProfileLoaded state so all listening views (ProfilePage, PersonalInformationPage) refresh UI immediately
+      emit(ProfileLoaded(
+        user: fresh_user,
+        profile: saved_profile,
+        temp_profile: saved_profile,
+        is_dirty: false,
+      ));
       // Catch DioException to extract server error message payload cleanly
     } on DioException catch (dio_error) {
       String clean_message = 'Failed to update profile. Please try again.';

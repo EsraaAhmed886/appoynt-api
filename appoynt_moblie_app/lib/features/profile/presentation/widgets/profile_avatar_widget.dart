@@ -33,12 +33,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart';
 // Importing app color tokens for design consistency
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
-// Importing app spacing tokens for layout dimensions
-import 'package:appoynt_mobile_app/constants/app_spacing.dart';
 // Importing token storage to retrieve Bearer token for authenticated image load
 import 'package:appoynt_mobile_app/core/storage/token_storage.dart';
-// Importing localization context for string resolution
-import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
+
+// Importing PhotoSourceDialog component for pop-up dialog photo source selection
+import 'package:appoynt_mobile_app/features/profile/presentation/widgets/photo_source_dialog.dart';
 
 // Local dimension constants to eliminate hardcoded magic numbers in this widget
 class _AvatarDimensions {
@@ -158,145 +157,21 @@ class _ProfileAvatarWidgetState extends State<ProfileAvatarWidget> {
     return initials.isNotEmpty ? initials : '?';
   }
 
-  // Presents the Camera/Gallery source selection bottom sheet and dispatches
-  // the selected source to the ProfileCubit for the upload sequence.
+  // Presents the centered PhotoSourceDialog pop-up modal and dispatches
+  // the selected image source (Camera vs Gallery) to the ProfileCubit upload handler.
   Future<void> _show_source_picker_sheet(BuildContext sheet_context) async {
-    // Resolve the localization context for sheet labels
-    final AppLocalizations localizations = AppLocalizations.of(sheet_context);
-    // Resolve brightness mode for adaptive theming
-    final bool is_dark =
-        Theme.of(sheet_context).brightness == Brightness.dark;
-    // Present a modal bottom sheet with Camera and Gallery options
-    await showModalBottomSheet<void>(
-      // Provide the current context for sheet rendering
-      context: sheet_context,
-      // Shape the sheet with a rounded top-corner border
-      shape: const RoundedRectangleBorder(
-        // Round the top two corners of the bottom sheet
-        borderRadius: BorderRadius.vertical(
-          // 20px top radius for premium pill appearance
-          top: Radius.circular(AppSpacing.space_xl),
-        ),
-      ),
-      // Build the sheet content layout
-      builder: (modal_context) {
-        // Wrap in SafeArea to avoid system-level overlap on bottom navigation
-        return SafeArea(
-          // Wrap in Padding for inset breathing room
-          child: Padding(
-            // Symmetric horizontal padding with larger bottom padding
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.space_xl,
-              vertical: AppSpacing.space_m,
-            ),
-            // Column stacking the sheet title and option rows
-            child: Column(
-              // Constrain the column to its intrinsic height
-              mainAxisSize: MainAxisSize.min,
-              // Left-align child widgets
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Sheet drag handle indicator
-                Center(
-                  child: Container(
-                    // Fixed width for the drag handle bar
-                    width: 40.0,
-                    // Fixed height for the drag handle bar
-                    height: 4.0,
-                    // Style the handle with rounded ends and muted color
-                    decoration: BoxDecoration(
-                      // Muted color adapting to dark/light mode
-                      color: is_dark
-                          ? AppColors.text_dark_secondary
-                          : AppColors.text_light_secondary,
-                      // Fully rounded capsule shape for the handle bar
-                      borderRadius:
-                          BorderRadius.circular(AppSpacing.space_xs),
-                    ),
-                  ),
-                ),
-                // Spacing after handle
-                const SizedBox(height: AppSpacing.space_m),
-                // Sheet title text
-                Text(
-                  // Localized sheet title from the string dictionary
-                  localizations.profile_photo_sheet_title,
-                  // Style with semi-bold weight and appropriate size
-                  style: TextStyle(
-                    // Bold title weight
-                    fontWeight: FontWeight.w600,
-                    // Adaptive color based on brightness mode
-                    color: is_dark
-                        ? AppColors.white
-                        : AppColors.text_light_primary,
-                    // Title font size token
-                    fontSize: AppSpacing.space_m + AppSpacing.space_xs,
-                  ),
-                ),
-                // Spacing between title and options
-                const SizedBox(height: AppSpacing.space_m),
-                // Camera option tile
-                ListTile(
-                  // Camera icon prefix
-                  leading: const Icon(
-                    Icons.camera_alt_rounded,
-                    color: AppColors.primary_color,
-                  ),
-                  // Camera label from localization
-                  title: Text(
-                    localizations.profile_photo_camera_option,
-                    style: TextStyle(
-                      color: is_dark
-                          ? AppColors.white
-                          : AppColors.text_light_primary,
-                    ),
-                  ),
-                  // Tap callback selecting camera source
-                  onTap: () {
-                    // Dismiss the bottom sheet before launching picker
-                    Navigator.of(modal_context).pop();
-                    // Dispatch camera source to cubit upload handler
-                    sheet_context.read<ProfileCubit>()
-                        .pick_and_upload_avatar_from_source(
-                          ImageSource.camera,
-                        );
-                  },
-                ),
-                // Gallery option tile
-                ListTile(
-                  // Photo library icon prefix
-                  leading: const Icon(
-                    Icons.photo_library_rounded,
-                    color: AppColors.primary_color,
-                  ),
-                  // Gallery label from localization
-                  title: Text(
-                    localizations.profile_photo_gallery_option,
-                    style: TextStyle(
-                      color: is_dark
-                          ? AppColors.white
-                          : AppColors.text_light_primary,
-                    ),
-                  ),
-                  // Tap callback selecting gallery source
-                  onTap: () {
-                    // Dismiss the bottom sheet before launching picker
-                    Navigator.of(modal_context).pop();
-                    // Dispatch gallery source to cubit upload handler
-                    sheet_context.read<ProfileCubit>()
-                        .pick_and_upload_avatar_from_source(
-                          ImageSource.gallery,
-                        );
-                  },
-                ),
-                // Bottom breathing room spacing
-                const SizedBox(height: AppSpacing.space_s),
-              ],
-            ),
-          ),
-        );
-      },
-    );
+    // Show pop-up dialog using the PhotoSourceDialog helper
+    final ImageSource? selected_source =
+        await show_photo_source_dialog(sheet_context);
+    // Verify source selection and context mount status across async gap
+    if (null != selected_source && sheet_context.mounted) {
+      // Dispatch selected source to cubit avatar upload method
+      sheet_context
+          .read<ProfileCubit>()
+          .pick_and_upload_avatar_from_source(selected_source);
+    } else {
+      // User cancelled dialog or context was unmounted
+    }
   }
 
   @override
