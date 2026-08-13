@@ -11,7 +11,7 @@
  *   - @/components/layout/sidebar_item
  *   - @/components/theme_toggle
  * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 05/08/2026]
+ * Last Modified Date: [shimaa salah - 13/08/2026]
  * File Description: Primary sidebar navigation drawer component with embedded brand logo, collapsibility, and localized navigation targets.
  */
 
@@ -59,10 +59,10 @@ export default function Sidebar({
         flex
         flex-col
         overflow-visible
-        bg-app-surface
-        text-app-text-primary
+        bg-app-sidebar
+        text-app-sidebar-text-primary
         border-r
-        border-app-border
+        border-app-sidebar_border
         transition-all
         duration-300
         z-40
@@ -77,7 +77,7 @@ export default function Sidebar({
           h-16
           items-center
           border-b
-          border-app-border
+          border-app-sidebar_border
           px-4
           ${isCollapsed ? "justify-center" : "justify-between"}
         `}
@@ -101,7 +101,7 @@ export default function Sidebar({
           </div>
 
           {!isCollapsed ? (
-            <h1 className="overflow-hidden whitespace-nowrap text-xl font-bold text-app-text-primary transition-all duration-300">
+            <h1 className="overflow-hidden whitespace-nowrap text-xl font-bold text-app-sidebar_text_primary transition-all duration-300">
               {translations.app_name}
             </h1>
           ) : null}
@@ -115,10 +115,10 @@ export default function Sidebar({
             className="
               rounded-lg
               p-2
-              text-app-text-secondary
+              text-app-sidebar_text_secondary
               transition
-              hover:bg-app-input_fill
-              hover:text-app-text-primary
+              hover:bg-app-sidebar_hover
+              hover:text-app-sidebar_text_primary
             "
           >
             <PanelLeftClose size={20} />
@@ -202,7 +202,7 @@ export default function Sidebar({
       </nav>
 
       {/* Footer Container */}
-      <div className="mt-auto space-y-2 border-t border-app-border p-4 overflow-hidden">
+      <div className="mt-auto space-y-2 border-t border-app-sidebar_border p-4 overflow-hidden">
         <div
           className={`flex overflow-hidden ${
             isCollapsed ? "justify-center" : "justify-start"

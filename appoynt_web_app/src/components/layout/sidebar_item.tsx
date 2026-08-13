@@ -9,7 +9,7 @@
  *   - next/navigation
  *   - lucide-react
  * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 05/08/2026]
+ * Last Modified Date: [shimaa salah - 13/08/2026]
  * File Description: Individual navigation item link rendered within the sidebar drawer with active styling and portal tooltip.
  */
 
@@ -48,9 +48,10 @@ export default function SidebarItem({
   useEffect(() => {
     if (is_hovered && item_ref.current) {
       const rect = item_ref.current.getBoundingClientRect();
+      const is_rtl = "undefined" !== typeof document && "rtl" === document.documentElement.dir;
       set_tooltip_position({
         top: rect.top + rect.height / 2,
-        left: rect.right + 12,
+        left: is_rtl ? rect.left - 12 : rect.right + 12,
       });
     } else {
       // Not hovered or no ref
@@ -81,7 +82,7 @@ export default function SidebarItem({
           ${
             is_active
               ? "bg-app-primary text-white font-semibold shadow-sm"
-              : "text-app-text-secondary hover:bg-app-input_fill hover:text-app-text-primary"
+              : "text-app-sidebar_text_secondary hover:bg-app-sidebar_hover hover:text-app-sidebar_text_primary"
           }
         `}
       >
@@ -96,8 +97,9 @@ export default function SidebarItem({
               className="
                 pointer-events-none
                 fixed
-                z-[9999]
+                z-9999
                 -translate-y-1/2
+                rtl:-translate-x-full
                 whitespace-nowrap
                 rounded-xl
                 border

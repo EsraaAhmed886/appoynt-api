@@ -9,7 +9,7 @@
  *   - @/services/clinic.service
  *   - @/types/clinic
  * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 05/08/2026]
+ * Last Modified Date: [shimaa salah - 13/08/2026]
  * File Description:
  *   Client Component managing clinic listings, responsive pagination, search,
  *   filtering, sorting, and modal triggers (Add, Delete, Delete Success).
@@ -21,16 +21,17 @@ import { useEffect, useState } from "react";
 import ClinicTable from "@/components/clinics/clinic_table";
 import ClinicToolbar from "@/components/clinics/clinic_toolbar";
 import AddClinicModal from "@/components/clinics/add_clinic_modal";
-import DeleteClinicModal from "@/components/clinics/delete_clinic_modal";
-import DeleteSuccessModal from "@/components/clinics/delete_success_modal";
-import EmptyState from "@/components/clinics/empty_state";
-import ErrorState from "@/components/clinics/error_state";
-import LoadingState from "@/components/clinics/loading_state";
-import Pagination from "@/components/clinics/pagination";
+import DeleteClinicModal from "@/components/common/confirm_dialog";
+import DeleteSuccessModal from "@/components/common/delete_success_modal";
+import EmptyState from "@/components/common/empty_state";
+import ErrorState from "@/components/common/error_state";
+import LoadingState from "@/components/common/loading_state";
+import Pagination from "@/components/common/pagination";
 import { Clinic } from "@/types/clinic";
 import {
   get_clinics,
-  save_clinics,
+  add_clinic,
+  delete_clinic,
   initialize_clinics,
 } from "@/services/clinic.service";
 
@@ -86,21 +87,13 @@ export default function ClinicsDashboard() {
   }, [search_query, sort_order, status_filter]);
 
   const handle_add_clinic = (new_clinic: Clinic) => {
-    set_clinics((prev_clinics) => {
-      const updated_clinics = [...prev_clinics, new_clinic];
-      save_clinics(updated_clinics);
-      return updated_clinics;
-    });
+    const updated_clinics = add_clinic(new_clinic);
+    set_clinics(updated_clinics);
   };
 
   const handle_delete_clinic = (clinic_id: number) => {
-    set_clinics((prev_clinics) => {
-      const updated_clinics = prev_clinics.filter(
-        (clinic) => clinic.id !== clinic_id
-      );
-      save_clinics(updated_clinics);
-      return updated_clinics;
-    });
+    const updated_clinics = delete_clinic(clinic_id);
+    set_clinics(updated_clinics);
   };
 
   const filtered_clinics = clinics.filter((clinic) => {
@@ -177,6 +170,7 @@ export default function ClinicsDashboard() {
 
         <AddClinicModal
           is_open={is_add_clinic_open}
+          existing_clinics={clinics}
           on_close={() => set_is_add_clinic_open(false)}
           on_add_clinic={handle_add_clinic}
         />

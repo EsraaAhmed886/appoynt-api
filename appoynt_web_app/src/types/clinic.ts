@@ -5,12 +5,13 @@
  * Version Information: V1.0.0
  * Dependencies: None
  * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 05/08/2026]
+ * Last Modified Date: [shimaa salah - 13/08/2026]
  * File Description: Centralized domain type declarations for Clinic entities, form states, schedule items, break items, and validation errors.
  */
 
 export type Clinic = {
   id: number;
+  doctor_id?: string | number;
   name: string;
   location: string;
   phone: string;
@@ -19,6 +20,11 @@ export type Clinic = {
   working_days?: string;
   workingDays?: string;
   status: string;
+  schedule_list?: WorkingScheduleItem[];
+  break_list?: BreakTimeItem[];
+  assigned_receptionists?: ReceptionistItem[];
+  appointment_duration?: string;
+  max_advance_booking?: string;
 };
 
 export type WorkingScheduleItem = {
@@ -43,6 +49,7 @@ export type ReceptionistItem = {
 
 export type ClinicFormState = {
   current_step: number;
+  doctor_id: string | number;
   clinic_name: string;
   clinic_name_error: string;
   phone: string;

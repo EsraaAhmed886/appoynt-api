@@ -10,7 +10,7 @@
  *   - @/components/clinics/clinic_form_constants
  *   - @/lib/validators/clinic_validator
  * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 05/08/2026]
+ * Last Modified Date: [shimaa salah - 13/08/2026]
  * File Description: Step 1 form view with real-time inline validation for clinic name, phone, governorate, city, address, fee, and status.
  */
 
@@ -18,6 +18,7 @@
 
 import CustomSelect from "../custom_select";
 import { useTranslation } from "@/context/language_context";
+import { Clinic } from "@/types/clinic";
 import {
   LABEL_CLASS,
   INPUT_CLASS,
@@ -34,6 +35,8 @@ import {
 } from "@/lib/validators/clinic_validator";
 
 type ClinicInformationStepProps = {
+  existingClinics?: Clinic[];
+  editingClinicId?: number | null;
   form: {
     clinicName: string;
     clinicNameError: string;
@@ -73,6 +76,8 @@ type ClinicInformationStepProps = {
 };
 
 export default function ClinicInformationStep({
+  existingClinics = [],
+  editingClinicId = null,
   form,
   actions,
 }: ClinicInformationStepProps) {
@@ -113,6 +118,12 @@ export default function ClinicInformationStep({
     getInputBorderClass,
   } = actions;
 
+  const get_error_message = (error_key: string): string => {
+    if (!error_key) return "";
+    const translated = translations[error_key as keyof typeof translations];
+    return translated || error_key;
+  };
+
   const has_name_error = "" !== clinicNameError;
   const has_phone_error = "" !== phoneError;
   const has_gov_error = "" !== governorateError;
@@ -146,7 +157,7 @@ export default function ClinicInformationStep({
           className={`${INPUT_CLASS} ${getInputBorderClass(has_name_error)}`}
         />
         {has_name_error ? (
-          <p className={ERROR_CLASS}>{clinicNameError}</p>
+          <p className={ERROR_CLASS}>{get_error_message(clinicNameError)}</p>
         ) : null}
       </div>
 
@@ -162,19 +173,19 @@ export default function ClinicInformationStep({
           onChange={(e) => {
             const val = e.target.value;
             setPhone(val);
-            const err = validate_phone(val);
+            const err = validate_phone(val, existingClinics, editingClinicId);
             setPhoneError(err || "");
             markAsDirty();
           }}
           onBlur={() => {
-            const err = validate_phone(phone);
+            const err = validate_phone(phone, existingClinics, editingClinicId);
             setPhoneError(err || "");
           }}
           placeholder={translations.ph_phone}
           className={`${INPUT_CLASS} ${getInputBorderClass(has_phone_error)}`}
         />
         {has_phone_error ? (
-          <p className={ERROR_CLASS}>{phoneError}</p>
+          <p className={ERROR_CLASS}>{get_error_message(phoneError)}</p>
         ) : null}
       </div>
 
@@ -187,7 +198,7 @@ export default function ClinicInformationStep({
             label={translations.lbl_governorate}
             placeholder={translations.ph_select_governorate}
             value={governorate}
-            error={governorateError}
+            error={get_error_message(governorateError)}
             options={GOVERNORATES}
             on_change={(val) => {
               setGovernorate(val);
@@ -204,7 +215,7 @@ export default function ClinicInformationStep({
             label={translations.lbl_city}
             placeholder={translations.ph_select_city}
             value={city}
-            error={cityError}
+            error={get_error_message(cityError)}
             options={availableCities}
             disabled={!governorate}
             on_change={(val) => {
@@ -241,7 +252,7 @@ export default function ClinicInformationStep({
           />
 
           {has_address_error ? (
-            <p className={ERROR_CLASS}>{addressError}</p>
+            <p className={ERROR_CLASS}>{get_error_message(addressError)}</p>
           ) : null}
         </div>
       </div>
@@ -282,7 +293,7 @@ export default function ClinicInformationStep({
           </div>
         </div>
         {has_fee_error ? (
-          <p className={ERROR_CLASS}>{consultationFeeError}</p>
+          <p className={ERROR_CLASS}>{get_error_message(consultationFeeError)}</p>
         ) : null}
       </div>
 

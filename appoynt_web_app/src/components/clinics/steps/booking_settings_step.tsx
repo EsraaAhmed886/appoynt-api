@@ -9,7 +9,7 @@
  *   - @/components/clinics/custom_select
  *   - @/components/clinics/clinic_form_constants
  * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 05/08/2026]
+ * Last Modified Date: [shimaa salah - 13/08/2026]
  * File Description: Step 5 form view establishing appointment time slot length and advance booking window.
  */
 
@@ -46,7 +46,7 @@ export default function BookingSettingsStep({
           {translations.modal_step_5}
         </h3>
         <p className="text-sm text-app-text-secondary">
-          Set appointment duration and maximum advance booking period.
+          {translations.lbl_booking_settings_desc}
         </p>
       </div>
 
@@ -54,8 +54,8 @@ export default function BookingSettingsStep({
         {/* Appointment Duration */}
         <div className="flex flex-col">
           <CustomSelect
-            label="Appointment Duration"
-            placeholder="Select duration"
+            label={translations.lbl_appointment_duration}
+            placeholder={translations.ph_select_duration}
             value={appointmentDuration}
             options={DURATION_OPTIONS}
             on_change={(val) => {
@@ -64,15 +64,15 @@ export default function BookingSettingsStep({
             }}
           />
           <p className="mt-1.5 text-xs text-app-text-secondary">
-            Select how long each appointment will be.
+            {translations.lbl_appointment_duration_help}
           </p>
         </div>
 
         {/* Maximum Advance Booking */}
         <div className="flex flex-col">
           <CustomSelect
-            label="Maximum Advance Booking"
-            placeholder="Select advance booking"
+            label={translations.lbl_max_advance_booking}
+            placeholder={translations.ph_select_advance_booking}
             value={maxAdvanceBooking}
             options={ADVANCE_BOOKING_OPTIONS}
             on_change={(val) => {
@@ -81,7 +81,7 @@ export default function BookingSettingsStep({
             }}
           />
           <p className="mt-1.5 text-xs text-app-text-secondary">
-            Select how far in advance patients can book.
+            {translations.lbl_max_advance_booking_help}
           </p>
         </div>
       </div>

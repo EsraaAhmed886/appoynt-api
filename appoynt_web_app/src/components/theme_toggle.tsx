@@ -8,7 +8,7 @@
  *   - next-themes
  *   - lucide-react
  * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 05/08/2026]
+ * Last Modified Date: [shimaa salah - 13/08/2026]
  * File Description: Theme toggle button component switching between light and dark visual themes.
  */
 
@@ -39,10 +39,10 @@ export default function ThemeToggle() {
         className="
           rounded-xl
           p-2
-          text-app-text-secondary
+          text-app-sidebar_text_secondary
           transition-colors
-          hover:bg-app-input_fill
-          hover:text-app-text-primary
+          hover:bg-app-sidebar_hover
+          hover:text-app-sidebar_text_primary
           focus:outline-none
         "
       >

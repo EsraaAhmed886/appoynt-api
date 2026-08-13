@@ -11,7 +11,7 @@
  *   - @/context/language_context
  *   - @/components/language_toggle
  * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 05/08/2026]
+ * Last Modified Date: [shimaa salah - 13/08/2026]
  * File Description: Top layout header bar containing mobile menu trigger, route title, language switcher, notifications, and profile avatar.
  */
 
@@ -63,9 +63,9 @@ export default function LayoutHeader({
   };
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-app-border bg-app-surface px-4 transition-colors duration-200 md:px-6">
-      {/* Left Side: Mobile Menu Button & Dynamic Title */}
-      <div className="flex items-center gap-3 min-w-0">
+    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-app-border bg-app-surface px-4 transition-colors duration-200 md:px-6 rtl:flex-row-reverse lg:rtl:flex-row">
+      {/* Left Side (LTR) / Right Side on Desktop (RTL): Mobile Menu Button & Dynamic Title */}
+      <div className="flex items-center gap-3 min-w-0 rtl:flex-row-reverse lg:rtl:flex-row">
         {on_menu_click ? (
           <button
             type="button"
@@ -82,8 +82,8 @@ export default function LayoutHeader({
         </h1>
       </div>
 
-      {/* Right Side: Actions & Profile */}
-      <div className="flex items-center gap-2.5 shrink-0 md:gap-3">
+      {/* Right Side (LTR) / Left Side on Desktop (RTL): Actions & Profile */}
+      <div className="flex items-center gap-2.5 shrink-0 md:gap-3 rtl:flex-row-reverse lg:rtl:flex-row">
         {/* Language Switcher Toggle */}
         <LanguageToggle />
 

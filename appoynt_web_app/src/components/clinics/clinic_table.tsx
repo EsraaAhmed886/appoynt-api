@@ -9,7 +9,7 @@
  *   - @/context/language_context
  *   - @/types/clinic
  * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 05/08/2026]
+ * Last Modified Date: [shimaa salah - 13/08/2026]
  * File Description: Reusable localized table component displaying clinic list rows with delete action.
  */
 
@@ -29,6 +29,16 @@ export default function ClinicTable({
   on_delete_clinic,
 }: ClinicTableProps) {
   const { translations } = useTranslation();
+
+  const get_translated_days_string = (raw_days?: string) => {
+    if (!raw_days || "—" === raw_days) return "—";
+    const days_array = raw_days.split(",").map((d) => d.trim());
+    const translated = days_array.map((day_code) => {
+      const key = `day_${day_code.toLowerCase()}` as keyof typeof translations;
+      return translations[key] || day_code;
+    });
+    return translated.join(", ");
+  };
 
   return (
     <div className="mt-6 overflow-x-auto rounded-xl border border-app-border bg-app-surface shadow-sm">
@@ -89,7 +99,7 @@ export default function ClinicTable({
                 </td>
 
                 <td className="px-4 py-3.5 text-start text-sm lg:px-6 lg:py-4">
-                  {days_value}
+                  {get_translated_days_string(days_value)}
                 </td>
 
                 <td className="px-4 py-3.5 text-start text-sm lg:px-6 lg:py-4">

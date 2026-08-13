@@ -4,8 +4,8 @@
  * Date of Creation: 17/06/2026
  * Version Information: V1.0.0
  * Dependencies: tailwindcss
- * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 14/07/2026]
+ * Contributors: [Kholoud Khaled, shimaa salah]
+ * Last Modified Date: [shimaa salah- 13/08/2026]
  * File Description: Defines global styling rules and Tailwind CSS directives.
  */
 
@@ -16,6 +16,11 @@
   --color-app-primary: var(--app-primary);
   --color-app-background: var(--app-background);
   --color-app-surface: var(--app-surface);
+  --color-app-sidebar: var(--app-sidebar);
+  --color-app-sidebar-text-primary: var(--app-sidebar-text-primary);
+  --color-app-sidebar-text-secondary: var(--app-sidebar-text-secondary);
+  --color-app-sidebar-hover: var(--app-sidebar-hover);
+  --color-app-sidebar-border: var(--app-sidebar-border);
   --color-app-border: var(--app-border);
   --color-app-input-fill: var(--app-input-fill);
   --color-app-text-primary: var(--app-text-primary);
@@ -43,7 +48,12 @@
   --app-background: #ffffff;
   /* Set light mode surface container color token */
   --app-surface: #f8fafc;
-  /* --app-sidebar:#1e293b; */
+  /* Light mode sidebar background color token */
+  --app-sidebar: #0D284C;
+  --app-sidebar-text-primary: #ffffff;
+  --app-sidebar-text-secondary: #ffffff;
+  --app-sidebar-hover: rgba(255, 255, 255, 0.12);
+  --app-sidebar-border: rgba(255, 255, 255, 0.1);
   /* Set light mode border and separator color token */
   --app-border: #e5e7eb;
   /* Set light mode main primary label text color token */
@@ -60,6 +70,12 @@
   --app-background: #0f172a;
 
   --app-surface: #1e293b;
+
+  --app-sidebar: #1e293b;
+  --app-sidebar-text-primary: #f8fafc;
+  --app-sidebar-text-secondary: #94a3b8;
+  --app-sidebar-hover: rgba(255, 255, 255, 0.08);
+  --app-sidebar-border: #334155;
 
   --app-border: #334155;
 

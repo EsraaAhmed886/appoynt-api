@@ -7,7 +7,7 @@
  *   - @/data/clinics
  *   - @/types/clinic
  * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 05/08/2026]
+ * Last Modified Date: [shimaa salah - 13/08/2026]
  * File Description: LocalStorage state persistence and data access service for managing clinic entities.
  */
 
@@ -62,4 +62,53 @@ export function initialize_clinics(): void {
       // Data already initialized
     }
   }
+}
+
+// 4. Add a new clinic to LocalStorage persistent store and return updated list
+export function add_clinic(new_clinic: Clinic): Clinic[] {
+  const current_clinics = get_clinics();
+  const updated_clinics = [...current_clinics, new_clinic];
+  save_clinics(updated_clinics);
+  return updated_clinics;
+}
+
+// 5. Delete a clinic from LocalStorage persistent store by ID and return updated list
+export function delete_clinic(clinic_id: number): Clinic[] {
+  const current_clinics = get_clinics();
+  const updated_clinics = current_clinics.filter(
+    (clinic) => clinic.id !== clinic_id
+  );
+  save_clinics(updated_clinics);
+  return updated_clinics;
+}
+
+// 6. Calculate all occupied working days for a specific doctor across all existing clinics
+export function get_doctor_occupied_working_days(
+  doctor_id: string | number,
+  exclude_clinic_id?: number | null
+): string[] {
+  const all_clinics = get_clinics();
+  const occupied_days_set = new Set<string>();
+
+  all_clinics.forEach((clinic) => {
+    // Match doctor_id (defaulting to "doc_1" if undefined) and ignore exclude_clinic_id when editing
+    const current_doc = clinic.doctor_id ?? "doc_1";
+    if (String(current_doc) === String(doctor_id)) {
+      if (null !== exclude_clinic_id && undefined !== exclude_clinic_id && clinic.id === exclude_clinic_id) {
+        // Exclude current clinic being edited
+      } else {
+        const days_str = clinic.working_days || clinic.workingDays || "";
+        if (days_str) {
+          const days_array = days_str.split(",").map((d) => d.trim());
+          days_array.forEach((day_name) => {
+            if (day_name) {
+              occupied_days_set.add(day_name);
+            }
+          });
+        }
+      }
+    }
+  });
+
+  return Array.from(occupied_days_set);
 }

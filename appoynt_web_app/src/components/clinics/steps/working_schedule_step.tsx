@@ -12,7 +12,7 @@
  *   - @/components/clinics/clinic_form_constants
  *   - @/lib/validators/clinic_validator
  * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 05/08/2026]
+ * Last Modified Date: [shimaa salah - 13/08/2026]
  * File Description: Step 2 form view managing working days and shift operating hours with CustomSelect dropdowns and real-time inline time validation.
  */
 
@@ -36,6 +36,7 @@ export type { WorkingScheduleItem };
 
 type WorkingScheduleStepProps = {
   scheduleList: WorkingScheduleItem[];
+  doctorOccupiedDays?: string[];
   onAddSchedule: (item: WorkingScheduleItem) => void;
   onEditSchedule: (index: number, item: WorkingScheduleItem) => void;
   onDeleteSchedule: (index: number) => void;
@@ -43,6 +44,7 @@ type WorkingScheduleStepProps = {
 
 export default function WorkingScheduleStep({
   scheduleList,
+  doctorOccupiedDays = [],
   onAddSchedule,
   onEditSchedule,
   onDeleteSchedule,
@@ -60,6 +62,18 @@ export default function WorkingScheduleStep({
     start_error?: string;
     end_error?: string;
   }>({});
+
+  const is_editing = null !== editing_index;
+
+  const available_day_options = WORKING_DAYS.filter((day) => {
+    if (doctorOccupiedDays.includes(day)) {
+      return false;
+    } else if (is_editing && selected_day === day) {
+      return true;
+    } else {
+      return !scheduleList.some((item) => item.day === day);
+    }
+  });
 
   const handle_open_modal = (index?: number) => {
     if (undefined !== index && null !== index) {
@@ -89,7 +103,8 @@ export default function WorkingScheduleStep({
       start,
       end,
       scheduleList,
-      editing_index
+      editing_index,
+      doctorOccupiedDays
     );
     set_validation_errors(errs || {});
     return null === errs;
@@ -113,7 +128,18 @@ export default function WorkingScheduleStep({
     }
   };
 
-  const is_editing = null !== editing_index;
+  const get_translated_day = (day_code: string) => {
+    const key = `day_${day_code.toLowerCase()}` as keyof typeof translations;
+    return translations[key] || day_code;
+  };
+
+  const no_days_left_for_doctor = 0 === available_day_options.length && !is_editing;
+
+  const get_error_message = (error_key: string | undefined): string => {
+    if (!error_key) return "";
+    const translated = translations[error_key as keyof typeof translations];
+    return translated || error_key;
+  };
 
   return (
     <div className="space-y-6">
@@ -123,29 +149,36 @@ export default function WorkingScheduleStep({
             {translations.modal_step_2}
           </h3>
           <p className="text-sm text-app-text-secondary">
-            Add the days and working hours when the clinic is available.
+            {translations.lbl_working_schedule_desc}
           </p>
         </div>
 
         <button
           type="button"
+          disabled={no_days_left_for_doctor}
           onClick={() => handle_open_modal()}
-          className="flex items-center justify-center gap-2 rounded-xl bg-app-primary px-4 py-2.5 text-sm font-medium text-white hover:opacity-90 transition-all shadow-sm"
+          className="flex items-center justify-center gap-2 rounded-xl bg-app-primary px-4 py-2.5 text-sm font-medium text-white hover:opacity-90 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Plus size={16} />
-          Add Working Day
+          {translations.btn_add_working_day}
         </button>
       </div>
+
+      {no_days_left_for_doctor ? (
+        <div className="rounded-xl border border-amber-300/40 bg-amber-50 dark:bg-amber-950/20 p-4 text-sm text-amber-700 dark:text-amber-300">
+          {translations.msg_no_available_days_for_doctor}
+        </div>
+      ) : null}
 
       {/* Table Schedule List */}
       <div className="overflow-hidden rounded-xl border border-app-border bg-app-surface shadow-sm">
         <table className="w-full text-start text-sm">
           <thead className="border-b border-app-border bg-app-input_fill text-app-text-secondary">
             <tr>
-              <th className="px-4 py-3 text-start font-semibold">Day</th>
-              <th className="px-4 py-3 text-start font-semibold">Start Time</th>
-              <th className="px-4 py-3 text-start font-semibold">End Time</th>
-              <th className="px-4 py-3 text-end font-semibold">Actions</th>
+              <th className="px-4 py-3 text-start font-semibold">{translations.th_day}</th>
+              <th className="px-4 py-3 text-start font-semibold">{translations.th_start_time}</th>
+              <th className="px-4 py-3 text-start font-semibold">{translations.th_end_time}</th>
+              <th className="px-4 py-3 text-end font-semibold">{translations.th_actions}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-app-border text-app-text-primary">
@@ -155,13 +188,15 @@ export default function WorkingScheduleStep({
                   colSpan={4}
                   className="px-4 py-6 text-center text-app-text-secondary"
                 >
-                  No working days added yet. Please add at least one working day.
+                  {translations.msg_no_working_days}
                 </td>
               </tr>
             ) : (
               scheduleList.map((item, index) => (
-                <tr key={index} className="hover:bg-app-input_fill/50 transition-colors">
-                  <td className="px-4 py-3 font-medium text-start">{item.day}</td>
+                <tr key={item.day || index} className="hover:bg-app-input_fill/50 transition-colors">
+                  <td className="px-4 py-3 font-medium text-start">
+                    {get_translated_day(item.day)}
+                  </td>
                   <td className="px-4 py-3 text-start">{item.startTime}</td>
                   <td className="px-4 py-3 text-start">{item.endTime}</td>
                   <td className="px-4 py-3 text-end">
@@ -195,7 +230,7 @@ export default function WorkingScheduleStep({
           <div className="w-full max-w-md rounded-2xl bg-app-surface p-6 shadow-2xl space-y-4 border border-app-border">
             <div className="flex items-center justify-between border-b border-app-border pb-3">
               <h3 className="text-lg font-bold text-app-text-primary">
-                {is_editing ? "Edit Working Day" : "Add Working Day"}
+                {is_editing ? translations.btn_edit_working_day : translations.btn_add_working_day}
               </h3>
               <button
                 type="button"
@@ -208,11 +243,11 @@ export default function WorkingScheduleStep({
 
             <div className="space-y-4">
               <CustomSelect
-                label="Day"
-                placeholder="Select day"
+                label={translations.th_day}
+                placeholder={translations.ph_select_day}
                 value={selected_day}
-                error={validation_errors.day_error}
-                options={WORKING_DAYS}
+                error={get_error_message(validation_errors.day_error)}
+                options={available_day_options}
                 on_change={(val) => {
                   set_selected_day(val);
                   validate_current_input(val, start_time, end_time);
@@ -222,7 +257,7 @@ export default function WorkingScheduleStep({
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className={LABEL_CLASS}>
-                    Start Time <span className="text-red-500">*</span>
+                    {translations.th_start_time} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="time"
@@ -237,13 +272,13 @@ export default function WorkingScheduleStep({
                     }`}
                   />
                   {validation_errors.start_error ? (
-                    <p className={ERROR_CLASS}>{validation_errors.start_error}</p>
+                    <p className={ERROR_CLASS}>{get_error_message(validation_errors.start_error)}</p>
                   ) : null}
                 </div>
 
                 <div>
                   <label className={LABEL_CLASS}>
-                    End Time <span className="text-red-500">*</span>
+                    {translations.th_end_time} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="time"
@@ -258,7 +293,7 @@ export default function WorkingScheduleStep({
                     }`}
                   />
                   {validation_errors.end_error ? (
-                    <p className={ERROR_CLASS}>{validation_errors.end_error}</p>
+                    <p className={ERROR_CLASS}>{get_error_message(validation_errors.end_error)}</p>
                   ) : null}
                 </div>
               </div>
@@ -277,7 +312,7 @@ export default function WorkingScheduleStep({
                 onClick={handle_save_item}
                 className={`${BUTTON_CLASS} rounded-xl bg-app-primary px-5 py-2 text-white hover:opacity-90 disabled:opacity-50`}
               >
-                {is_editing ? translations.btn_save_changes : "Add Working Day"}
+                {is_editing ? translations.btn_save_changes : translations.btn_add_working_day}
               </button>
             </div>
           </div>

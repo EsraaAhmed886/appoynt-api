@@ -8,7 +8,7 @@
  *   - lucide-react
  *   - @/hooks/use_click_outside
  * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 05/08/2026]
+ * Last Modified Date: [shimaa salah - 13/08/2026]
  * File Description: Customized responsive select dropdown input with smooth open transitions and RTL support.
  */
 
@@ -17,6 +17,7 @@
 import { useRef, useState } from "react";
 import useClickOutside from "@/hooks/use_click_outside";
 import { ChevronDown } from "lucide-react";
+import { useTranslation } from "@/context/language_context";
 
 type CustomSelectProps = {
   label: string;
@@ -37,12 +38,26 @@ export default function CustomSelect({
   on_change,
   disabled = false,
 }: CustomSelectProps) {
+  const { translations } = useTranslation();
   const [is_open, set_is_open] = useState(false);
   const dropdown_ref = useRef<HTMLDivElement>(null);
 
   useClickOutside(dropdown_ref, () => {
     set_is_open(false);
   });
+
+  const get_translated_option = (opt: string) => {
+    if (!opt) return "";
+    const day_key = `day_${opt.toLowerCase()}` as keyof typeof translations;
+    if (translations[day_key]) {
+      return translations[day_key];
+    }
+    const general_key = opt as keyof typeof translations;
+    if (translations[general_key]) {
+      return translations[general_key];
+    }
+    return opt;
+  };
 
   const has_error = "" !== error;
 
@@ -88,7 +103,7 @@ export default function CustomSelect({
             ${disabled ? "cursor-not-allowed opacity-60 bg-app-surface" : "hover:border-app-primary/50"}
           `}
         >
-          <span className="truncate">{value || placeholder}</span>
+          <span className="truncate">{value ? get_translated_option(value) : placeholder}</span>
 
           <ChevronDown
             size={18}
@@ -155,7 +170,7 @@ export default function CustomSelect({
                   }
                 `}
               >
-                {option}
+                {get_translated_option(option)}
               </button>
             );
           })}

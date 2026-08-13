@@ -12,7 +12,7 @@
  *   - @/components/clinics/clinic_form_constants
  *   - @/lib/validators/clinic_validator
  * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 05/08/2026]
+ * Last Modified Date: [shimaa salah - 13/08/2026]
  * File Description: Step 3 form view managing break times with CustomSelect dropdowns and real-time inline bounds validation against working schedules.
  */
 
@@ -87,7 +87,14 @@ export default function BreakTimesStep({
   };
 
   const validate_current_input = (day: string, start: string, end: string) => {
-    const errs = validate_break_time_item(day, start, end, scheduleList);
+    const errs = validate_break_time_item(
+      day,
+      start,
+      end,
+      scheduleList,
+      breakList,
+      editing_index
+    );
     set_validation_errors(errs || {});
     return null === errs;
   };
@@ -112,6 +119,17 @@ export default function BreakTimesStep({
 
   const is_editing = null !== editing_index;
 
+  const get_translated_day = (day_code: string) => {
+    const key = `day_${day_code.toLowerCase()}` as keyof typeof translations;
+    return translations[key] || day_code;
+  };
+
+  const get_error_message = (error_key: string | undefined): string => {
+    if (!error_key) return "";
+    const translated = translations[error_key as keyof typeof translations];
+    return translated || error_key;
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -120,7 +138,7 @@ export default function BreakTimesStep({
             {translations.modal_step_3}
           </h3>
           <p className="text-sm text-app-text-secondary">
-            Add break periods within the working hours.
+            {translations.lbl_break_times_desc}
           </p>
         </div>
 
@@ -130,7 +148,7 @@ export default function BreakTimesStep({
           className="flex items-center justify-center gap-2 rounded-xl bg-app-primary px-4 py-2.5 text-sm font-medium text-white hover:opacity-90 transition-all shadow-sm"
         >
           <Plus size={16} />
-          Add Break
+          {translations.btn_add_break}
         </button>
       </div>
 
@@ -139,10 +157,10 @@ export default function BreakTimesStep({
         <table className="w-full text-start text-sm">
           <thead className="border-b border-app-border bg-app-input_fill text-app-text-secondary">
             <tr>
-              <th className="px-4 py-3 text-start font-semibold">Working Day</th>
-              <th className="px-4 py-3 text-start font-semibold">Break Start</th>
-              <th className="px-4 py-3 text-start font-semibold">Break End</th>
-              <th className="px-4 py-3 text-end font-semibold">Actions</th>
+              <th className="px-4 py-3 text-start font-semibold">{translations.th_day}</th>
+              <th className="px-4 py-3 text-start font-semibold">{translations.th_break_start}</th>
+              <th className="px-4 py-3 text-start font-semibold">{translations.th_break_end}</th>
+              <th className="px-4 py-3 text-end font-semibold">{translations.th_actions}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-app-border text-app-text-primary">
@@ -152,13 +170,15 @@ export default function BreakTimesStep({
                   colSpan={4}
                   className="px-4 py-6 text-center text-app-text-secondary"
                 >
-                  No break times added yet.
+                  {translations.msg_no_break_times}
                 </td>
               </tr>
             ) : (
               breakList.map((item, index) => (
-                <tr key={index} className="hover:bg-app-input_fill/50 transition-colors">
-                  <td className="px-4 py-3 font-medium text-start">{item.day}</td>
+                <tr key={`${item.day}_${item.breakStart}_${item.breakEnd}`} className="hover:bg-app-input_fill/50 transition-colors">
+                  <td className="px-4 py-3 font-medium text-start">
+                    {get_translated_day(item.day)}
+                  </td>
                   <td className="px-4 py-3 text-start">{item.breakStart}</td>
                   <td className="px-4 py-3 text-start">{item.breakEnd}</td>
                   <td className="px-4 py-3 text-end">
@@ -192,7 +212,7 @@ export default function BreakTimesStep({
           <div className="w-full max-w-md rounded-2xl bg-app-surface p-6 shadow-2xl space-y-4 border border-app-border">
             <div className="flex items-center justify-between border-b border-app-border pb-3">
               <h3 className="text-lg font-bold text-app-text-primary">
-                {is_editing ? "Edit Break" : "Add Break"}
+                {is_editing ? translations.btn_edit_break : translations.btn_add_break}
               </h3>
               <button
                 type="button"
@@ -205,10 +225,10 @@ export default function BreakTimesStep({
 
             <div className="space-y-4">
               <CustomSelect
-                label="Working Day"
-                placeholder="Select working day"
+                label={translations.th_day}
+                placeholder={translations.ph_select_working_day}
                 value={selected_day}
-                error={validation_errors.day_error}
+                error={get_error_message(validation_errors.day_error)}
                 options={availableWorkingDays}
                 on_change={(val) => {
                   set_selected_day(val);
@@ -219,7 +239,7 @@ export default function BreakTimesStep({
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className={LABEL_CLASS}>
-                    Break Start <span className="text-red-500">*</span>
+                    {translations.th_break_start} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="time"
@@ -234,13 +254,13 @@ export default function BreakTimesStep({
                     }`}
                   />
                   {validation_errors.start_error ? (
-                    <p className={ERROR_CLASS}>{validation_errors.start_error}</p>
+                    <p className={ERROR_CLASS}>{get_error_message(validation_errors.start_error)}</p>
                   ) : null}
                 </div>
 
                 <div>
                   <label className={LABEL_CLASS}>
-                    Break End <span className="text-red-500">*</span>
+                    {translations.th_break_end} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="time"
@@ -255,7 +275,7 @@ export default function BreakTimesStep({
                     }`}
                   />
                   {validation_errors.end_error ? (
-                    <p className={ERROR_CLASS}>{validation_errors.end_error}</p>
+                    <p className={ERROR_CLASS}>{get_error_message(validation_errors.end_error)}</p>
                   ) : null}
                 </div>
               </div>
@@ -274,7 +294,7 @@ export default function BreakTimesStep({
                 onClick={handle_save_item}
                 className={`${BUTTON_CLASS} rounded-xl bg-app-primary px-5 py-2 text-white hover:opacity-90`}
               >
-                {is_editing ? translations.btn_save_changes : "Add Break"}
+                {is_editing ? translations.btn_save_changes : translations.btn_add_break}
               </button>
             </div>
           </div>
