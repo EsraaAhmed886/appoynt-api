@@ -3,13 +3,20 @@
  * Author         : Mustafa Mahmoud
  * Created Date   : 2026-08-10
  * Version        : v1.0.0
- * Dependencies   : ASP.NET Core MVC, IPatientService, RoleConstants
+ * Dependencies   : ASP.NET Core MVC, IPatientService, RoleConstants, ProfileImageErrorCodes, PatientResult
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-10
+ * Last Modified  : Mustafa Mahmoud - 2026-08-14
  * Description    : Exposes REST API endpoints for patient profile management,
  *                  profile photo upload/retrieval/deletion, and family member CRUD operations.
  */
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+using Appoynt.Application.Common.Constants;
+using Appoynt.Application.Common.Models;
 using Appoynt.Application.Features.Patient;
 using Appoynt.Application.Features.Patient.Contracts;
 using Appoynt.Domain.Common.Constants;
@@ -35,6 +42,7 @@ public sealed class PatientsController : ControllerBase
     /// <param name="patientService">The patient application service.</param>
     public PatientsController(IPatientService patientService)
     {
+        // Store patient service dependency
         _patientService = patientService;
     }
 
@@ -51,14 +59,18 @@ public sealed class PatientsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetProfile(CancellationToken cancellationToken)
     {
+        // Retrieve patient profile via application service
         var profile = await _patientService.GetProfileAsync(cancellationToken);
 
+        // Check if profile exists for the current user
         if (profile == null)
         {
+            // Return 404 Not Found if profile does not exist
             return NotFound();
         }
         else
         {
+            // Return 200 OK with patient profile data
             return Ok(profile);
         }
     }
@@ -77,14 +89,18 @@ public sealed class PatientsController : ControllerBase
         [FromBody] UpdatePatientProfileRequest request,
         CancellationToken cancellationToken)
     {
+        // Execute profile update operation via application service
         var result = await _patientService.UpdateProfileAsync(request, cancellationToken);
 
+        // Evaluate whether the update operation succeeded
         if (!result.Succeeded)
         {
+            // Return 400 Bad Request with validation and business rule errors
             return BadRequest(result.Errors);
         }
         else
         {
+            // Return 200 OK on successful profile update
             return Ok(result);
         }
     }
@@ -96,7 +112,7 @@ public sealed class PatientsController : ControllerBase
     /// <summary>
     /// Uploads or replaces the profile photo for the currently authenticated patient.
     /// </summary>
-    /// <param name="file">The uploaded image file (JPEG, PNG, or WebP up to 5 MB).</param>
+    /// <param name="file">The uploaded image file (JPEG, PNG, or WebP up to 10 MB).</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>An HTTP 200 OK response if successful.</returns>
     [HttpPost("profile-photo")]
@@ -108,29 +124,36 @@ public sealed class PatientsController : ControllerBase
         IFormFile file,
         CancellationToken cancellationToken)
     {
+        // Validate that an image file was supplied and is non-empty
         if (file == null || file.Length == 0)
         {
-            return BadRequest(new[] { new { Code = "patient.profile_photo.empty", Field = "file" } });
+            // Return 400 Bad Request if file payload is empty
+            var emptyFileErrors = new[] { new AuthenticationError(ProfileImageErrorCodes.Empty, "file") };
+            return BadRequest(emptyFileErrors);
         }
         else
         {
-        }
+            // Open read stream for incoming file data
+            await using var stream = file.OpenReadStream();
 
-        await using var stream = file.OpenReadStream();
+            // Delegate photo processing, compression, and persistence to service
+            var result = await _patientService.UploadProfilePhotoAsync(
+                stream,
+                file.FileName,
+                file.Length,
+                cancellationToken);
 
-        var result = await _patientService.UploadProfilePhotoAsync(
-            stream,
-            file.FileName,
-            file.Length,
-            cancellationToken);
-
-        if (!result.Succeeded)
-        {
-            return BadRequest(result.Errors);
-        }
-        else
-        {
-            return Ok(result);
+            // Check if photo upload succeeded
+            if (!result.Succeeded)
+            {
+                // Return 400 Bad Request with processing errors
+                return BadRequest(result.Errors);
+            }
+            else
+            {
+                // Return 200 OK upon successful photo upload and compression
+                return Ok(result);
+            }
         }
     }
 
@@ -150,14 +173,18 @@ public sealed class PatientsController : ControllerBase
         Guid patientId,
         CancellationToken cancellationToken)
     {
+        // Retrieve photo stream and content type from service
         var photo = await _patientService.GetProfilePhotoAsync(patientId, cancellationToken);
 
+        // Verify if photo was located and stream is accessible
         if (photo == null || photo.Value.Stream == null)
         {
+            // Return 404 Not Found when photo does not exist
             return NotFound();
         }
         else
         {
+            // Return image file stream with appropriate content type
             return File(photo.Value.Stream, photo.Value.ContentType);
         }
     }
@@ -173,14 +200,18 @@ public sealed class PatientsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> DeleteProfilePhoto(CancellationToken cancellationToken)
     {
+        // Execute profile photo deletion via application service
         var result = await _patientService.DeleteProfilePhotoAsync(cancellationToken);
 
+        // Check if deletion operation succeeded
         if (!result.Succeeded)
         {
+            // Return 400 Bad Request with deletion error details
             return BadRequest(result.Errors);
         }
         else
         {
+            // Return 200 OK on successful photo removal
             return Ok(result);
         }
     }
@@ -199,7 +230,10 @@ public sealed class PatientsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> GetFamilyMembers(CancellationToken cancellationToken)
     {
+        // Retrieve family members linked to the patient
         var members = await _patientService.GetFamilyMembersAsync(cancellationToken);
+
+        // Return 200 OK with family member collection
         return Ok(members);
     }
 
@@ -217,14 +251,18 @@ public sealed class PatientsController : ControllerBase
         Guid id,
         CancellationToken cancellationToken)
     {
+        // Retrieve family member details by identifier
         var member = await _patientService.GetFamilyMemberByIdAsync(id, cancellationToken);
 
+        // Verify if family member was found
         if (member == null)
         {
+            // Return 404 Not Found if member does not exist or belong to caller
             return NotFound();
         }
         else
         {
+            // Return 200 OK with family member details
             return Ok(member);
         }
     }
@@ -243,14 +281,18 @@ public sealed class PatientsController : ControllerBase
         [FromBody] AddFamilyMemberRequest request,
         CancellationToken cancellationToken)
     {
+        // Execute family member addition via application service
         var result = await _patientService.AddFamilyMemberAsync(request, cancellationToken);
 
+        // Evaluate whether the addition succeeded
         if (!result.Succeeded)
         {
+            // Return 400 Bad Request with validation errors
             return BadRequest(result.Errors);
         }
         else
         {
+            // Return 200 OK on successful addition
             return Ok(result);
         }
     }
@@ -271,14 +313,18 @@ public sealed class PatientsController : ControllerBase
         [FromBody] UpdateFamilyMemberRequest request,
         CancellationToken cancellationToken)
     {
+        // Execute family member update operation
         var result = await _patientService.UpdateFamilyMemberAsync(id, request, cancellationToken);
 
+        // Check if update operation succeeded
         if (!result.Succeeded)
         {
+            // Return 400 Bad Request with validation errors
             return BadRequest(result.Errors);
         }
         else
         {
+            // Return 200 OK on successful update
             return Ok(result);
         }
     }
@@ -297,14 +343,18 @@ public sealed class PatientsController : ControllerBase
         Guid id,
         CancellationToken cancellationToken)
     {
+        // Execute family member soft deletion
         var result = await _patientService.DeleteFamilyMemberAsync(id, cancellationToken);
 
+        // Check if deletion operation succeeded
         if (!result.Succeeded)
         {
+            // Return 400 Bad Request with deletion errors
             return BadRequest(result.Errors);
         }
         else
         {
+            // Return 200 OK on successful deletion
             return Ok(result);
         }
     }

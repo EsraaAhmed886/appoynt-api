@@ -63,8 +63,8 @@ public sealed class CreateDoctorRequestValidator : AbstractValidator<CreateDocto
             .MaximumLength(DoctorConstants.NameMaxLength).WithMessage(DoctorErrorCodes.NameArLengthInvalid);
 
         RuleFor(request => request.NameEn)
-            .NotEmpty().WithMessage(DoctorErrorCodes.NameEnRequired)
-            .MaximumLength(DoctorConstants.NameMaxLength).WithMessage(DoctorErrorCodes.NameEnLengthInvalid);
+            .MaximumLength(DoctorConstants.NameMaxLength).WithMessage(DoctorErrorCodes.NameEnLengthInvalid)
+            .When(request => !string.IsNullOrEmpty(request.NameEn));
 
         RuleFor(request => request.Bio)
             .MaximumLength(DoctorConstants.BioMaxLength).WithMessage(DoctorErrorCodes.BioLengthInvalid)

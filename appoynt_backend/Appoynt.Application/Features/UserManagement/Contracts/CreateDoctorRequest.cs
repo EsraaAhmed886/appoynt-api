@@ -23,12 +23,12 @@ public sealed class CreateDoctorRequest
     #region Identity Properties
 
     /// <summary>
-    /// Gets or initializes the first name of the user.
+    /// Gets or initializes the first name of the user (English).
     /// </summary>
     public string? FirstName { get; init; }
 
     /// <summary>
-    /// Gets or initializes the last name of the user.
+    /// Gets or initializes the last name of the user (English).
     /// </summary>
     public string? LastName { get; init; }
 
@@ -57,7 +57,7 @@ public sealed class CreateDoctorRequest
     public string? NameAr { get; init; }
 
     /// <summary>
-    /// Gets or initializes the doctor's English display name (required).
+    /// Gets or initializes the doctor's English display name (optional; auto-composed from FirstName and LastName if omitted).
     /// </summary>
     public string? NameEn { get; init; }
 

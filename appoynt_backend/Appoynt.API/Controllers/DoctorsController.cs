@@ -47,8 +47,13 @@ public sealed class DoctorsController : ControllerBase
         ICurrentUserService currentUserService,
         ApplicationDbContext dbContext)
     {
+        // Store profile image service dependency
         _profileImageService = profileImageService;
+
+        // Store current user service dependency
         _currentUserService = currentUserService;
+
+        // Store database context dependency
         _dbContext = dbContext;
     }
 
@@ -71,45 +76,48 @@ public sealed class DoctorsController : ControllerBase
         IFormFile file,
         CancellationToken cancellationToken)
     {
-        // Validate that a non-empty file was provided.
+        // Validate that an image file was supplied and is non-empty
         if (file == null || file.Length == 0)
         {
+            // Return 400 Bad Request when file is missing or empty
             return BadRequest(new[] { new AuthenticationError(ProfileImageErrorCodes.Empty, "file") });
         }
         else
         {
-            // Proceed with upload.
-        }
+            // Retrieve authenticated doctor user identifier
+            Guid? userId = _currentUserService.UserId;
 
-        // Retrieve current authenticated doctor's user ID.
-        Guid? userId = _currentUserService.UserId;
-        if (userId == null)
-        {
-            return Unauthorized();
-        }
-        else
-        {
-            // User ID verified.
-        }
+            // Verify user identifier from authentication context
+            if (userId == null)
+            {
+                // Return 401 Unauthorized if user is not authenticated
+                return Unauthorized();
+            }
+            else
+            {
+                // Open read stream for incoming file data
+                await using var stream = file.OpenReadStream();
 
-        // Open read stream for the uploaded file.
-        await using var stream = file.OpenReadStream();
+                // Delegate photo processing, compression, and persistence to service
+                var result = await _profileImageService.UploadProfileImageAsync(
+                    userId.Value,
+                    stream,
+                    file.FileName,
+                    file.Length,
+                    cancellationToken);
 
-        // Delegate upload and image processing to the centralized profile image service.
-        var result = await _profileImageService.UploadProfileImageAsync(
-            userId.Value,
-            stream,
-            file.FileName,
-            file.Length,
-            cancellationToken);
-
-        if (!result.Succeeded)
-        {
-            return BadRequest(result.Errors);
-        }
-        else
-        {
-            return Ok(result);
+                // Check if photo upload and compression succeeded
+                if (!result.Succeeded)
+                {
+                    // Return 400 Bad Request with processing error details
+                    return BadRequest(result.Errors);
+                }
+                else
+                {
+                    // Return 200 OK upon successful photo upload and compression
+                    return Ok(result);
+                }
+            }
         }
     }
 
@@ -128,30 +136,33 @@ public sealed class DoctorsController : ControllerBase
         Guid doctorId,
         CancellationToken cancellationToken)
     {
-        // Look up the doctor entity to resolve their associated ApplicationUser ID.
+        // Look up the doctor entity to resolve associated ApplicationUser identifier
         Doctor? doctor = await _dbContext.Doctors
             .AsNoTracking()
             .FirstOrDefaultAsync(d => d.Id == doctorId, cancellationToken);
 
+        // Verify if doctor entity was located
         if (doctor == null)
         {
+            // Return 404 Not Found when doctor does not exist
             return NotFound();
         }
         else
         {
-            // Doctor found.
-        }
+            // Retrieve profile photo stream for doctor's user account
+            var photo = await _profileImageService.GetProfileImageAsync(doctor.UserId, cancellationToken);
 
-        // Retrieve the profile image stream for the doctor's user account.
-        var photo = await _profileImageService.GetProfileImageAsync(doctor.UserId, cancellationToken);
-
-        if (photo == null || photo.Value.Stream == null)
-        {
-            return NotFound();
-        }
-        else
-        {
-            return File(photo.Value.Stream, photo.Value.ContentType);
+            // Verify if photo was located and stream is accessible
+            if (photo == null || photo.Value.Stream == null)
+            {
+                // Return 404 Not Found if photo is not set or missing
+                return NotFound();
+            }
+            else
+            {
+                // Return JPEG image file stream with appropriate content type
+                return File(photo.Value.Stream, photo.Value.ContentType);
+            }
         }
     }
 
@@ -168,27 +179,31 @@ public sealed class DoctorsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> DeleteProfilePhoto(CancellationToken cancellationToken)
     {
-        // Retrieve current authenticated doctor's user ID.
+        // Retrieve authenticated doctor user identifier
         Guid? userId = _currentUserService.UserId;
+
+        // Verify user identifier from authentication context
         if (userId == null)
         {
+            // Return 401 Unauthorized if user is not authenticated
             return Unauthorized();
         }
         else
         {
-            // User ID verified.
-        }
+            // Delegate photo deletion to centralized profile image service
+            var result = await _profileImageService.DeleteProfileImageAsync(userId.Value, cancellationToken);
 
-        // Delegate deletion to the centralized profile image service.
-        var result = await _profileImageService.DeleteProfileImageAsync(userId.Value, cancellationToken);
-
-        if (!result.Succeeded)
-        {
-            return BadRequest(result.Errors);
-        }
-        else
-        {
-            return Ok(result);
+            // Check if deletion operation succeeded
+            if (!result.Succeeded)
+            {
+                // Return 400 Bad Request with deletion error details
+                return BadRequest(result.Errors);
+            }
+            else
+            {
+                // Return 200 OK upon successful photo deletion
+                return Ok(result);
+            }
         }
     }
 

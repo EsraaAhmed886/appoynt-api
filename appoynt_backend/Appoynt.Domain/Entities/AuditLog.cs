@@ -1,3 +1,15 @@
+/**
+ * File Name      : AuditLog.cs
+ * Author         : Mustafa Mahmoud
+ * Created Date   : 2026-07-27
+ * Version        : v1.0.0
+ * Dependencies   : AuditType, Guid, DateTimeOffset
+ * Contributors   : [Mustafa Mahmoud]
+ * Last Modified  : Mustafa Mahmoud - 2026-08-14
+ * Description    : Represents an audit log entry recording entity mutations across the system.
+ */
+
+using System;
 using Appoynt.Domain.Enums;
 
 namespace Appoynt.Domain.Entities;

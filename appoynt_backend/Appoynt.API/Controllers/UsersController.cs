@@ -1,14 +1,18 @@
 /**
  * File Name      : UsersController.cs
  * Author         : Mustafa Mahmoud
- * Created Date   : 28/07/2026
+ * Created Date   : 2026-07-28
  * Version        : v1.0.0
- * Dependencies   : ASP.NET Core MVC, IUserManagementService
+ * Dependencies   : ASP.NET Core MVC, IUserManagementService, CreateDoctorRequest, CreateStaffRequest, UpdateUserRequest
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 31/07/2026
- * Description    : Exposes endpoints for managing internal staff users.
+ * Last Modified  : Mustafa Mahmoud - 2026-08-14
+ * Description    : Exposes REST API endpoints for managing internal staff users (Admins, Doctors, Receptionists).
  */
 
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Appoynt.Application.Common.Constants;
 using Appoynt.Application.Features.UserManagement;
 using Appoynt.Application.Features.UserManagement.Contracts;
@@ -34,6 +38,7 @@ public sealed class UsersController : ControllerBase
     /// <param name="userManagementService">The user management service.</param>
     public UsersController(IUserManagementService userManagementService)
     {
+        // Store user management service dependency
         _userManagementService = userManagementService;
     }
 
@@ -53,17 +58,20 @@ public sealed class UsersController : ControllerBase
         [FromBody] CreateStaffRequest request,
         CancellationToken cancellationToken)
     {
+        // Delegate administrator creation to user management service
         var result = await _userManagementService.CreateAdminAsync(request, cancellationToken);
 
+        // Check if creation operation succeeded
         if (!result.Succeeded)
         {
+            // Return 400 Bad Request with creation error details
             return BadRequest(result);
         }
         else
         {
+            // Return 201 Created with the new administrator details
+            return StatusCode(StatusCodes.Status201Created, result);
         }
-
-        return StatusCode(StatusCodes.Status201Created, result);
     }
 
     /// <summary>
@@ -82,17 +90,20 @@ public sealed class UsersController : ControllerBase
         [FromBody] CreateDoctorRequest request,
         CancellationToken cancellationToken)
     {
+        // Delegate doctor creation with profile attributes to service
         var result = await _userManagementService.CreateDoctorAsync(request, cancellationToken);
 
+        // Check if creation operation succeeded
         if (!result.Succeeded)
         {
+            // Return 400 Bad Request with validation and business rule errors
             return BadRequest(result);
         }
         else
         {
+            // Return 201 Created with the new doctor details
+            return StatusCode(StatusCodes.Status201Created, result);
         }
-
-        return StatusCode(StatusCodes.Status201Created, result);
     }
 
     /// <summary>
@@ -111,17 +122,20 @@ public sealed class UsersController : ControllerBase
         [FromBody] CreateStaffRequest request,
         CancellationToken cancellationToken)
     {
+        // Delegate receptionist creation to user management service
         var result = await _userManagementService.CreateReceptionistAsync(request, cancellationToken);
 
+        // Check if creation operation succeeded
         if (!result.Succeeded)
         {
+            // Return 400 Bad Request with error details
             return BadRequest(result);
         }
         else
         {
+            // Return 201 Created with the new receptionist details
+            return StatusCode(StatusCodes.Status201Created, result);
         }
-
-        return StatusCode(StatusCodes.Status201Created, result);
     }
 
     /// <summary>
@@ -139,10 +153,10 @@ public sealed class UsersController : ControllerBase
         [FromQuery] UserQueryParameters queryParams,
         CancellationToken cancellationToken)
     {
-        // Delegate to the service layer for paginated, filtered user retrieval.
+        // Retrieve paginated users list from service
         var result = await _userManagementService.GetUsersAsync(queryParams, cancellationToken);
 
-        // Return the paginated response.
+        // Return 200 OK with paginated user data
         return Ok(result);
     }
 
@@ -162,20 +176,20 @@ public sealed class UsersController : ControllerBase
         [FromRoute] Guid id,
         CancellationToken cancellationToken)
     {
-        // Delegate to the service layer for authorized user retrieval.
+        // Retrieve user information by identifier
         var result = await _userManagementService.GetUserByIdAsync(id, cancellationToken);
-        
-        // Return 404 when the user is not found or not accessible.
+
+        // Evaluate whether user was found
         if (result == null)
         {
+            // Return 404 Not Found if user does not exist or caller is unauthorized
             return NotFound();
         }
         else
         {
+            // Return 200 OK with retrieved user details
+            return Ok(result);
         }
-
-        // Return the user details.
-        return Ok(result);
     }
 
     /// <summary>
@@ -196,30 +210,29 @@ public sealed class UsersController : ControllerBase
         [FromBody] UpdateUserRequest request,
         CancellationToken cancellationToken)
     {
-        // Delegate to the service layer for authorized profile update.
+        // Execute user profile update via service
         var result = await _userManagementService.UpdateUserAsync(id, request, cancellationToken);
 
-        // Handle service-level failures.
+        // Evaluate whether the update succeeded
         if (!result.Succeeded)
         {
-            // Return 403 Forbidden when the caller lacks authorization.
+            // Check for forbidden access error
             if (result.Errors.Any(e => e.Code == AuthenticationErrorCodes.Forbidden))
             {
+                // Return 403 Forbidden when caller lacks permissions
                 return Forbid();
             }
             else
             {
+                // Return 400 Bad Request for validation or business rule failures
+                return BadRequest(result);
             }
-
-            // Return 400 Bad Request for validation or business-rule failures.
-            return BadRequest(result);
         }
         else
         {
+            // Return 200 OK with updated result
+            return Ok(result);
         }
-
-        // Return the successful update result.
-        return Ok(result);
     }
 
     /// <summary>
@@ -238,30 +251,29 @@ public sealed class UsersController : ControllerBase
         [FromRoute] Guid id,
         CancellationToken cancellationToken)
     {
-        // Delegate to the service layer for authorized soft-delete.
+        // Execute soft delete for target user
         var result = await _userManagementService.DeleteUserAsync(id, cancellationToken);
 
-        // Handle service-level failures.
+        // Evaluate whether deletion succeeded
         if (!result.Succeeded)
         {
-            // Return 403 Forbidden when the caller lacks authorization.
+            // Check for forbidden access error
             if (result.Errors.Any(e => e.Code == AuthenticationErrorCodes.Forbidden))
             {
+                // Return 403 Forbidden when caller cannot delete target user
                 return Forbid();
             }
             else
             {
+                // Return 400 Bad Request for deletion failure
+                return BadRequest(result);
             }
-
-            // Return 400 Bad Request for validation or business-rule failures.
-            return BadRequest(result);
         }
         else
         {
+            // Return 204 No Content on successful deletion
+            return NoContent();
         }
-
-        // Return 204 No Content on successful soft-delete.
-        return NoContent();
     }
 
     /// <summary>
@@ -277,24 +289,28 @@ public sealed class UsersController : ControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> DeleteAllUsers(CancellationToken cancellationToken)
     {
+        // Execute batch deletion of non-admin users
         var result = await _userManagementService.DeleteAllUsersAsync(cancellationToken);
 
+        // Evaluate whether deletion succeeded
         if (!result.Succeeded)
         {
+            // Check for forbidden access error
             if (result.Errors.Any(e => e.Code == AuthenticationErrorCodes.Forbidden))
             {
+                // Return 403 Forbidden when caller lacks permissions
                 return Forbid();
             }
             else
             {
+                // Return 400 Bad Request for deletion errors
+                return BadRequest(result);
             }
-
-            return BadRequest(result);
         }
         else
         {
+            // Return 204 No Content on successful deletion
+            return NoContent();
         }
-
-        return NoContent();
     }
 }

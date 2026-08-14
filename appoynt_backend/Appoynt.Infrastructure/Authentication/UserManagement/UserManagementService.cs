@@ -203,16 +203,21 @@ public sealed class UserManagementService : IUserManagementService
                 // Role assigned successfully.
             }
 
+            // Determine English display name (auto-composed from FirstName + LastName if not explicitly specified).
+            string resolvedNameEn = !string.IsNullOrWhiteSpace(request.NameEn)
+                ? request.NameEn.Trim()
+                : $"{request.FirstName?.Trim()} {request.LastName?.Trim()}";
+
             // Instantiate and add the Doctor domain entity with profile properties.
             var doctor = new Doctor
             {
                 Id = Guid.NewGuid(),
                 UserId = user.Id,
                 User = user,
-                NameAr = request.NameAr,
-                NameEn = request.NameEn,
-                Bio = request.Bio,
-                Education = request.Education
+                NameAr = request.NameAr?.Trim(),
+                NameEn = resolvedNameEn,
+                Bio = request.Bio?.Trim(),
+                Education = request.Education?.Trim()
             };
 
             _dbContext.Doctors.Add(doctor);

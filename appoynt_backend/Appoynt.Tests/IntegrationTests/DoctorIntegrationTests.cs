@@ -177,7 +177,7 @@ public class DoctorIntegrationTests : IClassFixture<WebApplicationFactory<Appoyn
     }
 
     [Fact]
-    public async Task CreateDoctor_WithMinimalAttributes_ShouldSucceed()
+    public async Task CreateDoctor_WithMinimalAttributes_ShouldAutoComposeNameEn()
     {
         // Arrange
         string adminToken = await GetAdminTokenAsync();
@@ -188,7 +188,6 @@ public class DoctorIntegrationTests : IClassFixture<WebApplicationFactory<Appoyn
             FirstName = "Magdi",
             LastName = "Yacoub",
             NameAr = "د. مجدي يعقوب",
-            NameEn = "Dr. Magdi Yacoub",
             Email = "yacoub@appoynt.com",
             PhoneNumber = "+201055554444",
             Password = "Password123!"
@@ -211,7 +210,7 @@ public class DoctorIntegrationTests : IClassFixture<WebApplicationFactory<Appoyn
 
             doctor.Should().NotBeNull();
             doctor!.NameAr.Should().Be("د. مجدي يعقوب");
-            doctor.NameEn.Should().Be("Dr. Magdi Yacoub");
+            doctor.NameEn.Should().Be("Magdi Yacoub");
             doctor.Bio.Should().BeNull();
             doctor.Education.Should().BeNull();
             doctor.PhoneNumbers.Should().BeEmpty();
