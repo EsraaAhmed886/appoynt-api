@@ -24,23 +24,15 @@ import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
 // Import reusable performance-optimized network image widget
 import 'package:appoynt_mobile_app/core/widgets/app_network_image.dart';
+// Import unified ECG pulse heart button
+import 'package:appoynt_mobile_app/features/shared/widgets/favorite_heart_button.dart';
+
 
 // Local layout dimensions class to strictly eliminate hardcoded numbers
 class _LocalDimensions {
   static const double avatar_border_width = 1.5;
-  static const double favorite_icon_size = 28.0;
-  static const double ecg_stroke_width = 1.8;
-  static const double scale_0_15 = 0.15;
-  static const double scale_0_35 = 0.35;
-  static const double scale_0_42 = 0.42;
-  static const double scale_0_38 = 0.38;
-  static const double scale_0_50 = 0.50;
-  static const double scale_0_62 = 0.62;
-  static const double scale_0_58 = 0.58;
-  static const double scale_0_32 = 0.32;
-  static const double scale_0_66 = 0.66;
-  static const double scale_0_85 = 0.85;
 }
+
 
 // Reusable DoctorCard widget definition
 class DoctorCard extends StatelessWidget {
@@ -250,49 +242,16 @@ class DoctorCard extends StatelessWidget {
               ),
               // Gap spacing between metadata column and favorite button
               const SizedBox(width: AppSpacing.space_xl),
-              // Right side: Custom ECG Heart Favorite Toggle Button using Stack overlay
-              InkWell(
-                // On tap callback invocation
-                onTap: on_favorite_tap,
-                // Touch target padding using AppSpacing design tokens
-                child: Padding(
-                  // Apply comfortable padding around heart button for responsive touch area
-                  padding: const EdgeInsets.all(AppSpacing.space_m),
-                  // Stack layering base heart icon and overlay ECG pulse line trace
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      // Base authentic heart Material Icon
-                      Icon(
-                        is_favorite
-                            ? Icons.favorite_rounded
-                            : Icons.favorite_border_rounded,
-                        color: is_favorite
-                            ? AppColors.dummy_custom_red
-                            : (is_dark
-                                ? AppColors.text_dark_secondary
-                                : AppColors.text_light_secondary),
-                        size: _LocalDimensions.favorite_icon_size,
-                      ),
-                      // Overlay CustomPaint drawing the ECG pulse line trace
-                      CustomPaint(
-                        size: const Size(_LocalDimensions.favorite_icon_size, _LocalDimensions.favorite_icon_size),
-                        painter: EcgLinePainter(
-                          color: is_favorite
-                              ? AppColors.white
-                              : (is_dark
-                                  ? AppColors.text_dark_secondary
-                                  : AppColors.text_light_secondary),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              // Right side: Custom ECG Heart Favorite Toggle Button
+              FavoriteHeartButton(
+                is_favorite: is_favorite,
+                on_tap: on_favorite_tap,
               ),
             ],
           ),
           // Divider space gap using spacing constants
           const SizedBox(height: AppSpacing.space_xl),
+
           // Bottom Row: Availability Status and Book Now CTA Button aligned to far left and far right
           Padding(
             // Symmetrical horizontal padding to align with the card layout boundaries
@@ -421,49 +380,3 @@ class DoctorCard extends StatelessWidget {
   }
 }
 
-// Custom painter drawing only the ECG pulse line trace across the middle of the heart icon
-class EcgLinePainter extends CustomPainter {
-  // Line color matching active status
-  final Color color;
-
-  // Constructor mapping color parameter
-  const EcgLinePainter({
-    required this.color,
-  });
-
-  @override
-  // Draw the pulse line trace path on the canvas bounds
-  void paint(Canvas canvas, Size size) {
-    // ECG line paint styling properties configuration
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = _LocalDimensions.ecg_stroke_width
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round;
-
-    // Construct the zig-zag ECG path centered vertically
-    final path = Path();
-    final double w = size.width;
-    final double h = size.height;
-
-    // Flat line -> small dip -> medium peak -> deep dip -> small peak -> flat line
-    path.moveTo(w * _LocalDimensions.scale_0_15, h * _LocalDimensions.scale_0_50);
-    path.lineTo(w * _LocalDimensions.scale_0_35, h * _LocalDimensions.scale_0_50);
-    path.lineTo(w * _LocalDimensions.scale_0_42, h * _LocalDimensions.scale_0_38);
-    path.lineTo(w * _LocalDimensions.scale_0_50, h * _LocalDimensions.scale_0_62);
-    path.lineTo(w * _LocalDimensions.scale_0_58, h * _LocalDimensions.scale_0_32);
-    path.lineTo(w * _LocalDimensions.scale_0_66, h * _LocalDimensions.scale_0_50);
-    path.lineTo(w * _LocalDimensions.scale_0_85, h * _LocalDimensions.scale_0_50);
-
-    // Render path coordinates onto canvas using paint settings
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  // Prevent unnecessary repaints for static paint properties
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    // Return false representation
-    return false;
-  }
-}

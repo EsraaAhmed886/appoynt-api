@@ -2247,9 +2247,19 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get favorites_title => 'المفضلة';
   @override
-  String get favorites_subtitle => 'أطباؤك المفضلون';
+  String get favorites_subtitle => 'أطباؤك وعروضك وعياداتك المحفوظة';
+  @override
+  String get favorites_subtitle_universal =>
+      'أطباؤك وعروضك وعياداتك المحفوظة';
+  @override
+  String get favorites_subtitle_doctors => 'أطباؤك المفضلون';
+  @override
+  String get favorites_subtitle_offers => 'عروضك المفضلة';
+  @override
+  String get favorites_subtitle_clinics => 'عياداتك المفضلة';
   @override
   String get favorites_search_hint => 'ابحث عن أطبائك المفضلين...';
+
   @override
   String get favorites_count_single => 'طبيب واحد';
   @override
@@ -2278,6 +2288,82 @@ class AppLocalizationsAr extends AppLocalizations {
   String get favorites_sort_price_high_low =>
       'سعر الكشف: من الأعلى للأقل';
   @override
+  String get favorites_sort_discount_high_low => 'نسبة الخصم: من الأعلى للأقل';
+  @override
   String get favorites_apply_button => 'تطبيق الترتيب';
+
+  // Category tabs
+  @override
+  String get favorites_tab_doctors => 'الأطباء';
+  @override
+  String get favorites_tab_offers => 'العروض';
+  @override
+  String get favorites_tab_clinics => 'العيادات';
+
+  // Category search hints
+  @override
+  String get favorites_search_doctors_hint => 'ابحث عن الأطباء المفضلين...';
+  @override
+  String get favorites_search_offers_hint => 'ابحث عن العروض المفضلة...';
+  @override
+  String get favorites_search_clinics_hint => 'ابحث عن العيادات المفضلة...';
+
+  // Category empty states
+  @override
+  String get favorites_empty_doctors_title => 'لم يتم العثور على أطباء مفضلين';
+  @override
+  String get favorites_empty_doctors_subtitle =>
+      'لم تقم بإضافة أي أطباء إلى المفضلات بعد.';
+  @override
+  String get favorites_empty_offers_title => 'لم يتم العثور على عروض مفضلة';
+  @override
+  String get favorites_empty_offers_subtitle =>
+      'لم تقم بإضافة أي عروض إلى المفضلات بعد.';
+  @override
+  String get favorites_empty_clinics_title => 'لم يتم العثور على عيادات مفضلة';
+  @override
+  String get favorites_empty_clinics_subtitle =>
+      'لم تقم بإضافة أي عيادات إلى المفضلات بعد.';
+  @override
+  String get favorites_empty_search_title => 'لم يتم العثور على نتائج مطابقة';
+  @override
+  String get favorites_empty_search_subtitle =>
+      'جرب البحث باسم أو تخصص أو مزود خدمة مختلف.';
+
+  // Guest access prompt
+  @override
+  String get favorites_guest_title => 'سجّل الدخول لعرض المفضلة';
+  @override
+  String get favorites_guest_subtitle =>
+      'احفظ أطباءك وعروضك وعياداتك المفضلة للوصول إليها بسهولة وسرعة.';
+  @override
+  String get favorites_guest_login_button => 'تسجيل الدخول';
+
+  // Feedback notifications
+  @override
+  String get favorites_remove_success => 'تمت إزالة العنصر من المفضلة بنجاح.';
+  @override
+  String get favorites_remove_error =>
+      'تعذر تحديث حالة المفضلة. يرجى المحاولة مرة أخرى.';
+  @override
+  String get favorites_refresh_error =>
+      'تعذر تحديث المفضلة. يتم عرض العناصر المحفوظة.';
+
+  // Badges & Action CTAs
+  @override
+  String get favorites_book_now => 'احجز الآن';
+  @override
+  String get favorites_view_clinic => 'عرض العيادة';
+  @override
+  String get favorites_unavailable_badge => 'غير متاح';
+  @override
+  String get favorites_expired_badge => 'منتهي الصلاحية';
+  @override
+  String get favorites_expires_on => 'ينتهي في';
+  @override
+  String get favorites_off_badge => 'خصم';
+  @override
+  String favorites_reviews_count(int count) => '($count تقييم)';
 }
+
 

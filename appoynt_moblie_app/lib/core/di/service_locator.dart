@@ -52,9 +52,20 @@ import 'package:appoynt_mobile_app/features/profile/domain/usecases/get_user_pro
 import 'package:appoynt_mobile_app/features/profile/domain/usecases/update_user_profile_usecase.dart';
 // Profile Photo Upload Use Case
 import 'package:appoynt_mobile_app/features/profile/domain/usecases/upload_profile_photo_usecase.dart';
+// Favorites Remote Data Source
+import 'package:appoynt_mobile_app/features/favorites/data/datasources/favorites_remote_data_source.dart';
+// Favorites Local Data Source
+import 'package:appoynt_mobile_app/features/favorites/data/datasources/favorites_local_data_source.dart';
+// Favorites Repository Interface
+import 'package:appoynt_mobile_app/features/favorites/domain/repositories/favorites_repository.dart';
+// Favorites Repository Implementation
+import 'package:appoynt_mobile_app/features/favorites/data/repositories/favorites_repository_impl.dart';
+// Favorites Cubit
+import 'package:appoynt_mobile_app/features/favorites/presentation/cubit/favorites_cubit.dart';
 
 /// Global instance of the service locator.
 final GetIt get_it = GetIt.instance;
+
 
 /// Initializes all application-wide dependencies.
 Future<void> setup_service_locator() async {
@@ -156,4 +167,32 @@ Future<void> setup_service_locator() async {
       get_it<ResetPasswordUseCase>(),
     );
   });
+
+  // ── Favorites Feature ──────────────────────────────────
+
+  /// Registering the Favorites Remote Data Source implementation.
+  get_it.registerLazySingleton<FavoritesRemoteDataSource>(() {
+    return FavoritesRemoteDataSourceImpl();
+  });
+
+  /// Registering the Favorites Local Data Source implementation.
+  get_it.registerLazySingleton<FavoritesLocalDataSource>(() {
+    return FavoritesLocalDataSourceImpl();
+  });
+
+  /// Registering the Favorites Repository implementation.
+  get_it.registerLazySingleton<FavoritesRepository>(() {
+    return FavoritesRepositoryImpl(
+      remote_data_source: get_it<FavoritesRemoteDataSource>(),
+      local_data_source: get_it<FavoritesLocalDataSource>(),
+    );
+  });
+
+  /// Registering the Favorites Cubit factory instance.
+  get_it.registerFactory<FavoritesCubit>(() {
+    return FavoritesCubit(
+      repository: get_it<FavoritesRepository>(),
+    );
+  });
 }
+

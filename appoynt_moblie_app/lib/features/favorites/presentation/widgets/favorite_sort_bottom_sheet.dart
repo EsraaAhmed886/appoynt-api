@@ -1,17 +1,14 @@
-/*
+﻿/*
  * File Name: favorite_sort_bottom_sheet.dart
  * Author: Kholoud Khaled
  * Date of Creation: 14/08/2026
- * Version Information: V1.1.0
- * Dependencies: package:flutter/material.dart,
- *   package:appoynt_mobile_app/core/localization/app_localizations.dart,
- *   package:appoynt_mobile_app/constants/app_spacing.dart,
- *   package:appoynt_mobile_app/core/theme/colors/app_colors.dart,
- *   package:appoynt_mobile_app/features/favorites/presentation/cubit/favorites_state.dart
+ * Version Information: V2.0.0
+ * Dependencies: package:flutter/material.dart, app_spacing.dart,
+ *   app_colors.dart, app_localizations.dart, favorites_state.dart
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 14/08/2026]
- * File Description: Renders the modal bottom sheet allowing users to select and apply
- *   sorting algorithms to their favorited doctors list with scrollable viewport overflow prevention.
+ * File Description: Category-aware modal bottom sheet allowing users to select and apply
+ *   sorting algorithms tailored specifically to Doctors, Offers, or Clinics.
  */
 
 // Import standard material design framework
@@ -22,7 +19,7 @@ import 'package:appoynt_mobile_app/constants/app_spacing.dart';
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 // Import localization dictionary
 import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
-// Import FavoriteSortOption enumeration
+// Import FavoriteSortOption and FavoriteCategory enumerations
 import 'package:appoynt_mobile_app/features/favorites/presentation/cubit/favorites_state.dart';
 
 // Local layout dimension constants to strictly eliminate raw numbers
@@ -57,6 +54,8 @@ class _LocalDimensions {
 
 // FavoriteSortBottomSheet modal widget representation
 class FavoriteSortBottomSheet extends StatefulWidget {
+  // Active favorites category
+  final FavoriteCategory category;
   // Currently active sorting option
   final FavoriteSortOption initial_sort;
   // Callback when user taps Apply button with selected sort option
@@ -65,6 +64,7 @@ class FavoriteSortBottomSheet extends StatefulWidget {
   // Constructor mapping required parameters
   const FavoriteSortBottomSheet({
     super.key,
+    required this.category,
     required this.initial_sort,
     required this.on_apply,
   });
@@ -88,6 +88,37 @@ class _FavoriteSortBottomSheetState extends State<FavoriteSortBottomSheet> {
     _selected_sort = widget.initial_sort;
   }
 
+  // Returns list of applicable sort options for the active category
+  List<FavoriteSortOption> _get_applicable_options() {
+    switch (widget.category) {
+      case FavoriteCategory.doctors:
+        return const [
+          FavoriteSortOption.recently_added,
+          FavoriteSortOption.name_a_z,
+          FavoriteSortOption.name_z_a,
+          FavoriteSortOption.rating_high_low,
+          FavoriteSortOption.price_low_high,
+          FavoriteSortOption.price_high_low,
+        ];
+      case FavoriteCategory.offers:
+        return const [
+          FavoriteSortOption.recently_added,
+          FavoriteSortOption.name_a_z,
+          FavoriteSortOption.name_z_a,
+          FavoriteSortOption.discount_high_low,
+          FavoriteSortOption.price_low_high,
+          FavoriteSortOption.price_high_low,
+        ];
+      case FavoriteCategory.clinics:
+        return const [
+          FavoriteSortOption.recently_added,
+          FavoriteSortOption.name_a_z,
+          FavoriteSortOption.name_z_a,
+          FavoriteSortOption.rating_high_low,
+        ];
+    }
+  }
+
   // Returns icon vector associated with each FavoriteSortOption
   IconData _get_option_icon(FavoriteSortOption option) {
     switch (option) {
@@ -103,6 +134,8 @@ class _FavoriteSortBottomSheetState extends State<FavoriteSortBottomSheet> {
         return Icons.arrow_downward_rounded;
       case FavoriteSortOption.price_high_low:
         return Icons.arrow_upward_rounded;
+      case FavoriteSortOption.discount_high_low:
+        return Icons.local_offer_rounded;
     }
   }
 
@@ -124,18 +157,18 @@ class _FavoriteSortBottomSheetState extends State<FavoriteSortBottomSheet> {
         return localizations.favorites_sort_price_low_high;
       case FavoriteSortOption.price_high_low:
         return localizations.favorites_sort_price_high_low;
+      case FavoriteSortOption.discount_high_low:
+        return localizations.favorites_sort_discount_high_low;
     }
   }
 
   @override
   // Build method constructing modal layout
   Widget build(BuildContext context) {
-    // Resolve localization dictionary
     final AppLocalizations localizations = AppLocalizations.of(context);
-    // Resolve dark mode status
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+    final List<FavoriteSortOption> options = _get_applicable_options();
 
-    // Solid surface container with rounded top corners preventing background transparent glitches
     return Container(
       decoration: BoxDecoration(
         color: is_dark ? AppColors.surface_dark : AppColors.white,
@@ -180,8 +213,8 @@ class _FavoriteSortBottomSheetState extends State<FavoriteSortBottomSheet> {
                 ),
               ),
               const SizedBox(height: AppSpacing.space_m),
-              // Render 6 sorting option radio list items
-              ...FavoriteSortOption.values.map((option) {
+              // Render category-specific sorting options
+              ...options.map((option) {
                 final bool is_selected = option == _selected_sort;
                 return Padding(
                   padding: const EdgeInsets.only(
@@ -201,9 +234,7 @@ class _FavoriteSortBottomSheetState extends State<FavoriteSortBottomSheet> {
                 height: _LocalDimensions.cta_height,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Dismiss sheet prior to dispatching callback
                     Navigator.of(context).pop();
-                    // Dispatch selected sort option callback
                     widget.on_apply(_selected_sort);
                   },
                   style: ElevatedButton.styleFrom(
@@ -239,12 +270,9 @@ class _FavoriteSortBottomSheetState extends State<FavoriteSortBottomSheet> {
     required AppLocalizations localizations,
     required bool is_dark,
   }) {
-    // Icon data associated with option
     final IconData icon = _get_option_icon(option);
-    // Localized string label for option
     final String title = _get_option_title(option, localizations);
 
-    // Return Material card container for ink splash
     return Material(
       color: is_selected
           ? (is_dark
@@ -276,7 +304,6 @@ class _FavoriteSortBottomSheetState extends State<FavoriteSortBottomSheet> {
           ),
           child: Row(
             children: [
-              // Icon Badge container with tint background
               Container(
                 width: _LocalDimensions.icon_badge_size,
                 height: _LocalDimensions.icon_badge_size,
@@ -300,7 +327,6 @@ class _FavoriteSortBottomSheetState extends State<FavoriteSortBottomSheet> {
                 ),
               ),
               const SizedBox(width: AppSpacing.space_m),
-              // Option Title Label
               Expanded(
                 child: Text(
                   title,
@@ -315,7 +341,6 @@ class _FavoriteSortBottomSheetState extends State<FavoriteSortBottomSheet> {
                   ),
                 ),
               ),
-              // Radio selection indicator icon
               Icon(
                 is_selected
                     ? Icons.radio_button_checked_rounded
@@ -334,9 +359,10 @@ class _FavoriteSortBottomSheetState extends State<FavoriteSortBottomSheet> {
   }
 }
 
-// Global helper function presenting FavoriteSortBottomSheet modal
+// Global helper function presenting category-aware FavoriteSortBottomSheet modal
 Future<void> show_favorite_sort_bottom_sheet({
   required BuildContext context,
+  required FavoriteCategory category,
   required FavoriteSortOption current_sort,
   required ValueChanged<FavoriteSortOption> on_apply,
 }) async {
@@ -351,6 +377,7 @@ Future<void> show_favorite_sort_bottom_sheet({
     ),
     builder: (modal_context) {
       return FavoriteSortBottomSheet(
+        category: category,
         initial_sort: current_sort,
         on_apply: on_apply,
       );

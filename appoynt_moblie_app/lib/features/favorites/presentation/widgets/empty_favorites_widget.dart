@@ -2,7 +2,7 @@
  * File Name: empty_favorites_widget.dart
  * Author: Kholoud Khaled
  * Date of Creation: 14/08/2026
- * Version Information: V2.0.0
+ * Version Information: V2.1.0
  * Dependencies: package:flutter/material.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart,
  *   package:appoynt_mobile_app/constants/app_spacing.dart,
@@ -10,8 +10,7 @@
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 14/08/2026]
  * File Description: Centered empty state layout displaying a pure Flutter code-rendered
- *   concentric heart illustration and localized title and subtitle when no favorited doctors exist.
- *   V2.0.0 eliminates external SVG asset dependencies completely.
+ *   concentric illustration and localized title and subtitle for tab-specific and search empty states.
  */
 
 // Import standard material design widget framework
@@ -41,8 +40,20 @@ class _LocalDimensions {
 
 // Reusable EmptyFavoritesWidget definition rendering pure code illustration
 class EmptyFavoritesWidget extends StatelessWidget {
-  // Constant constructor
-  const EmptyFavoritesWidget({super.key});
+  // Optional custom title override
+  final String? custom_title;
+  // Optional custom subtitle override
+  final String? custom_subtitle;
+  // Optional custom central icon
+  final IconData? custom_icon;
+
+  // Constant constructor with optional overrides
+  const EmptyFavoritesWidget({
+    super.key,
+    this.custom_title,
+    this.custom_subtitle,
+    this.custom_icon,
+  });
 
   @override
   // Build method constructing centered layout hierarchy
@@ -52,6 +63,11 @@ class EmptyFavoritesWidget extends StatelessWidget {
     // Check if active brightness mode is dark
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
 
+    final String display_title =
+        custom_title ?? localizations.favorites_empty_title;
+    final String display_subtitle =
+        custom_subtitle ?? localizations.favorites_empty_subtitle;
+
     // Return centered padding layout container
     return Center(
       child: Padding(
@@ -60,12 +76,12 @@ class EmptyFavoritesWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Pure Flutter code-rendered concentric layered heart illustration
+            // Pure Flutter code-rendered concentric layered illustration
             _build_illustration(is_dark),
             const SizedBox(height: _LocalDimensions.spacing_illustration),
-            // Title Text: "No favorites yet"
+            // Title Text
             Text(
-              localizations.favorites_empty_title,
+              display_title,
               style: TextStyle(
                 fontSize: AppSpacing.font_size_dialog_title,
                 fontWeight: FontWeight.bold,
@@ -76,13 +92,13 @@ class EmptyFavoritesWidget extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: _LocalDimensions.spacing_title),
-            // Subtitle Text: "You haven't added any doctors to your favorites."
+            // Subtitle Text
             ConstrainedBox(
               constraints: const BoxConstraints(
                 maxWidth: _LocalDimensions.max_subtitle_width,
               ),
               child: Text(
-                localizations.favorites_empty_subtitle,
+                display_subtitle,
                 style: TextStyle(
                   fontSize: AppSpacing.font_size_body_medium,
                   color: is_dark
@@ -99,7 +115,7 @@ class EmptyFavoritesWidget extends StatelessWidget {
     );
   }
 
-  // Private helper building a modern pure code-rendered concentric heart illustration
+  // Private helper building a modern pure code-rendered concentric illustration
   Widget _build_illustration(bool is_dark) {
     // Return outer decorative ring container with primary tint background
     return Container(
@@ -122,10 +138,10 @@ class EmptyFavoritesWidget extends StatelessWidget {
               alpha: is_dark ? 0.22 : 0.15,
             ),
           ),
-          child: const Center(
-            // Central large primary heart icon
+          child: Center(
+            // Central large primary icon
             child: Icon(
-              Icons.favorite_border_rounded,
+              custom_icon ?? Icons.favorite_border_rounded,
               size: _LocalDimensions.icon_size,
               color: AppColors.primary_color,
             ),
@@ -135,3 +151,4 @@ class EmptyFavoritesWidget extends StatelessWidget {
     );
   }
 }
+
