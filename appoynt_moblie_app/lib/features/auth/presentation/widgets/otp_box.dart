@@ -60,7 +60,7 @@ class OtpBox extends StatelessWidget {
         style: TextStyle(
           fontSize: 22, // Large font for readability
           fontWeight: FontWeight.w700, // Bold for emphasis
-          color: true == is_dark
+          color: is_dark
               ? AppColors.text_dark_primary
               : AppColors.text_light_primary, // Dynamic text color
         ),
@@ -73,7 +73,7 @@ class OtpBox extends StatelessWidget {
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12), // Rounded corners matching design
             borderSide: BorderSide(
-              color: true == is_dark
+              color: is_dark
                   ? AppColors.border_dark
                   : AppColors.border_light,
               width: AppSpacing.border_width_thin,
@@ -85,7 +85,7 @@ class OtpBox extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(
               // Same color as default border when disabled
-              color: true == is_dark
+              color: is_dark
                   ? AppColors.border_dark
                   : AppColors.border_light,
               // Thin border width
@@ -99,7 +99,7 @@ class OtpBox extends StatelessWidget {
               /// Highlighting with a subtle border if a value is present, otherwise using default border.
               color: true == filled
                   ? AppColors.primary_color.withValues(alpha: 0.5)
-                  : (true == is_dark
+                  : (is_dark
                       ? AppColors.border_dark
                       : AppColors.border_light),
               width: true == filled ? 1.5 : AppSpacing.border_width_thin,

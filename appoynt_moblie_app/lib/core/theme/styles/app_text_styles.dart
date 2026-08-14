@@ -38,7 +38,7 @@ class AppTextStyles {
     // Check if system brightness is dark mode
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     // Resolve dynamic text color token based on active mode using Yoda style comparison
-    final Color text_color = true == is_dark
+    final Color text_color = is_dark
         ? AppColors.text_dark_primary
         : AppColors.text_light_primary;
 
@@ -69,7 +69,7 @@ class AppTextStyles {
     // Check if system brightness is dark mode
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     // Resolve dynamic text color token based on active mode using Yoda style comparison
-    final Color text_color = true == is_dark
+    final Color text_color = is_dark
         ? AppColors.text_dark_secondary
         : AppColors.text_light_secondary;
 
@@ -100,9 +100,13 @@ class AppTextStyles {
   }
 
   // Method to fetch dynamically configured title text style for the login page
-  static TextStyle get_login_title(bool is_arabic) {
-    // Resolve dynamic text color token based on active mode
-    const Color text_color = AppColors.text_light_primary;
+  static TextStyle get_login_title(BuildContext context, bool is_arabic) {
+    // Check if system brightness matches dark theme mode
+    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+    // Resolve dynamic text color token based on active mode using Yoda style comparison
+    final Color text_color = is_dark
+        ? AppColors.text_dark_primary
+        : AppColors.text_light_primary;
     // Return GoogleFonts config based on language check
     return is_arabic
         // For Arabic, use Cairo font family
@@ -126,9 +130,13 @@ class AppTextStyles {
   }
 
   // Method to fetch dynamically configured subtitle text style for the login page
-  static TextStyle get_login_subtitle(bool is_arabic) {
-    // Resolve dynamic text color token based on active mode
-    const Color text_color = AppColors.text_light_secondary;
+  static TextStyle get_login_subtitle(BuildContext context, bool is_arabic) {
+    // Check if system brightness matches dark theme mode
+    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+    // Resolve dynamic text color token based on active mode using Yoda style comparison
+    final Color text_color = is_dark
+        ? AppColors.text_dark_secondary
+        : AppColors.text_light_secondary;
     // Return GoogleFonts config based on language check
     return is_arabic
         // For Arabic, use Cairo font family
@@ -152,9 +160,13 @@ class AppTextStyles {
   }
 
   // Method to fetch dynamically configured label text style for input form fields
-  static TextStyle get_field_label(bool is_arabic) {
-    // Resolve dynamic text color token based on active mode
-    const Color text_color = AppColors.text_light_primary;
+  static TextStyle get_field_label(BuildContext context, bool is_arabic) {
+    // Check if system brightness matches dark theme mode
+    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+    // Resolve dynamic text color token based on active mode using Yoda style comparison
+    final Color text_color = is_dark
+        ? AppColors.text_dark_primary
+        : AppColors.text_light_primary;
     // Return GoogleFonts config based on language check
     return is_arabic
         // For Arabic, use Cairo font family
@@ -178,9 +190,13 @@ class AppTextStyles {
   }
 
   // Method to fetch dynamically configured body text style with optional custom colors
-  static TextStyle get_body_medium(bool is_arabic, {Color? custom_color}) {
-    // Resolve fallback secondary text color token
-    final Color text_color = custom_color ?? AppColors.text_light_secondary;
+  static TextStyle get_body_medium(BuildContext context, bool is_arabic, {Color? custom_color}) {
+    // Check if system brightness matches dark theme mode
+    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+    // Resolve fallback secondary text color token using Yoda style comparison
+    final Color text_color = custom_color ?? (is_dark
+        ? AppColors.text_dark_secondary
+        : AppColors.text_light_secondary);
     // Return GoogleFonts config based on language check
     return is_arabic
         // For Arabic, use Cairo font family
@@ -204,9 +220,13 @@ class AppTextStyles {
   }
 
   // Method to fetch dynamically configured title text style for the register page
-  static TextStyle get_register_title(bool is_arabic) {
-    // Resolve dynamic text color token based on active mode
-    const Color text_color = AppColors.text_light_primary;
+  static TextStyle get_register_title(BuildContext context, bool is_arabic) {
+    // Check if system brightness matches dark theme mode
+    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+    // Resolve dynamic text color token based on active mode using Yoda style comparison
+    final Color text_color = is_dark
+        ? AppColors.text_dark_primary
+        : AppColors.text_light_primary;
     // Return GoogleFonts config based on language check
     return is_arabic
         // For Arabic, use Cairo font family
@@ -230,9 +250,13 @@ class AppTextStyles {
   }
 
   // Method to fetch dynamically configured subtitle text style for the register page
-  static TextStyle get_register_subtitle(bool is_arabic) {
-    // Resolve dynamic text color token based on active mode
-    const Color text_color = AppColors.text_light_secondary;
+  static TextStyle get_register_subtitle(BuildContext context, bool is_arabic) {
+    // Check if system brightness matches dark theme mode
+    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+    // Resolve dynamic text color token based on active mode using Yoda style comparison
+    final Color text_color = is_dark
+        ? AppColors.text_dark_secondary
+        : AppColors.text_light_secondary;
     // Return GoogleFonts config based on language check
     return is_arabic
         // For Arabic, use Cairo font family
@@ -256,9 +280,13 @@ class AppTextStyles {
   }
 
   // Method to fetch dynamically configured title text style for the OTP page
-  static TextStyle get_otp_title(bool is_arabic) {
-    // Resolve dynamic text color token based on active mode
-    const Color text_color = AppColors.text_light_primary;
+  static TextStyle get_otp_title(BuildContext context, bool is_arabic) {
+    // Check if system brightness matches dark theme mode
+    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+    // Resolve dynamic text color token based on active mode using Yoda style comparison
+    final Color text_color = is_dark
+        ? AppColors.text_dark_primary
+        : AppColors.text_light_primary;
     // Return GoogleFonts config based on language check
     return is_arabic
         // For Arabic, use Cairo font family
@@ -282,9 +310,13 @@ class AppTextStyles {
   }
 
   // Method to fetch dynamically configured subtitle text style for the OTP page
-  static TextStyle get_otp_subtitle(bool is_arabic) {
-    // Resolve dynamic text color token based on active mode
-    const Color text_color = AppColors.text_light_secondary;
+  static TextStyle get_otp_subtitle(BuildContext context, bool is_arabic) {
+    // Check if system brightness matches dark theme mode
+    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+    // Resolve dynamic text color token based on active mode using Yoda style comparison
+    final Color text_color = is_dark
+        ? AppColors.text_dark_secondary
+        : AppColors.text_light_secondary;
     // Return GoogleFonts config based on language check
     return is_arabic
         // For Arabic, use Cairo font family
@@ -308,7 +340,7 @@ class AppTextStyles {
   }
 
   // Method to fetch dynamically configured timer text style for the OTP page
-  static TextStyle get_otp_timer(bool is_arabic) {
+  static TextStyle get_otp_timer(BuildContext context, bool is_arabic) {
     // Resolve dynamic text color token based on active mode
     const Color text_color = AppColors.primary_color;
     // Return GoogleFonts config based on language check
@@ -334,9 +366,13 @@ class AppTextStyles {
   }
 
   // Method to fetch dynamically configured title text style for the Forgot Password page
-  static TextStyle get_forgot_password_title(bool is_arabic) {
-    // Resolve dynamic text color token based on active mode
-    const Color text_color = AppColors.text_light_primary;
+  static TextStyle get_forgot_password_title(BuildContext context, bool is_arabic) {
+    // Check if system brightness matches dark theme mode
+    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+    // Resolve dynamic text color token based on active mode using Yoda style comparison
+    final Color text_color = is_dark
+        ? AppColors.text_dark_primary
+        : AppColors.text_light_primary;
     // Return GoogleFonts config based on language check
     return is_arabic
         // For Arabic, use Cairo font family
@@ -360,9 +396,13 @@ class AppTextStyles {
   }
 
   // Method to fetch dynamically configured subtitle text style for the Forgot Password page
-  static TextStyle get_forgot_password_subtitle(bool is_arabic) {
-    // Resolve dynamic text color token based on active mode
-    const Color text_color = AppColors.text_light_secondary;
+  static TextStyle get_forgot_password_subtitle(BuildContext context, bool is_arabic) {
+    // Check if system brightness matches dark theme mode
+    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+    // Resolve dynamic text color token based on active mode using Yoda style comparison
+    final Color text_color = is_dark
+        ? AppColors.text_dark_secondary
+        : AppColors.text_light_secondary;
     // Return GoogleFonts config based on language check
     return is_arabic
         // For Arabic, use Cairo font family
@@ -386,7 +426,13 @@ class AppTextStyles {
   }
 
   // Method to fetch dynamically configured title text style for the no internet page
-  static TextStyle get_no_internet_title(bool is_arabic) {
+  static TextStyle get_no_internet_title(BuildContext context, bool is_arabic) {
+    // Check if system brightness matches dark theme mode
+    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+    // Resolve dynamic text color token based on active mode using Yoda style comparison
+    final Color text_color = is_dark
+        ? AppColors.text_dark_primary
+        : AppColors.text_light_primary;
     // Return GoogleFonts config based on language check
     return is_arabic
         // For Arabic, use Cairo font family
@@ -395,6 +441,8 @@ class AppTextStyles {
             fontSize: 24.0,
             // Set weight parameter using extra bold helper
             fontWeight: FontWeightHelper.extra_bold,
+            // Apply text color
+            color: text_color,
           )
         // For English, use Inter font family
         : GoogleFonts.inter(
@@ -402,11 +450,19 @@ class AppTextStyles {
             fontSize: 24.0,
             // Set weight parameter using extra bold helper
             fontWeight: FontWeightHelper.extra_bold,
+            // Apply text color
+            color: text_color,
           );
   }
 
   // Method to fetch dynamically configured subtitle text style for the no internet page
-  static TextStyle get_no_internet_subtitle(bool is_arabic) {
+  static TextStyle get_no_internet_subtitle(BuildContext context, bool is_arabic) {
+    // Check if system brightness matches dark theme mode
+    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+    // Resolve dynamic text color token based on active mode using Yoda style comparison
+    final Color text_color = is_dark
+        ? AppColors.text_dark_secondary
+        : AppColors.text_light_secondary;
     // Return GoogleFonts config based on language check
     return is_arabic
         // For Arabic, use Cairo font family
@@ -417,6 +473,8 @@ class AppTextStyles {
             fontWeight: FontWeightHelper.regular,
             // Set relative line height value for readable Arabic line wrapping
             height: 1.6,
+            // Apply text color
+            color: text_color,
           )
         // For English, use Inter font family
         : GoogleFonts.inter(
@@ -426,6 +484,8 @@ class AppTextStyles {
             fontWeight: FontWeightHelper.regular,
             // Set relative line height value for readable English line wrapping
             height: 1.6,
+            // Apply text color
+            color: text_color,
           );
   }
 }

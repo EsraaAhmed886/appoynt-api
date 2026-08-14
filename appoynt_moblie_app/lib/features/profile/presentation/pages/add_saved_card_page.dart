@@ -17,6 +17,28 @@ import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_c
 // Importing flutter_bloc for read context extension method
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+// Local layout dimensions class to strictly eliminate hardcoded numbers
+class _LocalDimensions {
+  static const double border_radius_medium = 12.0;
+  static const double border_width_thick = 1.5;
+  static const double border_width_thin = 1.0;
+  static const double button_height = 50.0;
+  static const double spacing_small = 6.0;
+  static const double spacing_medium = 12.0;
+  static const double spacing_large = 16.0;
+  static const double font_size_body = 14.0;
+  static const double font_size_medium = 13.0;
+  static const double font_size_small = 12.0;
+  static const double font_size_tiny = 11.0;
+  static const double icon_size_small = 18.0;
+  static const double shadow_blur = 10.0;
+  static const double shadow_opacity_dark = 0.15;
+  static const double shadow_opacity_light = 0.03;
+  static const double input_padding_h = 16.0;
+  static const double input_padding_v = 14.0;
+  static const double bottom_spacing_safe = 80.0;
+}
+
 // Stateful widget displaying credit card add form layout
 class AddSavedCardPage extends StatefulWidget {
   // Constructor mapping key
@@ -245,12 +267,12 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
                           'Cardholder Name',
                           // Style specs
                           style: TextStyle(
-                            fontSize: 12.0,
+                            fontSize: _LocalDimensions.font_size_small,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         // Gap spacer height
-                        const SizedBox(height: 6.0),
+                        const SizedBox(height: _LocalDimensions.spacing_small),
                         // Custom input textbox stack
                         _build_secure_input(
                           // Controller link
@@ -272,7 +294,7 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
                           },
                         ),
                         // Height spacer gap
-                        const SizedBox(height: 16.0),
+                        const SizedBox(height: _LocalDimensions.spacing_large),
 
                         // Section Title: Card Number
                         const Text(
@@ -280,12 +302,12 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
                           'Card Number',
                           // Style specs
                           style: TextStyle(
-                            fontSize: 12.0,
+                            fontSize: _LocalDimensions.font_size_small,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         // Gap spacer height
-                        const SizedBox(height: 6.0),
+                        const SizedBox(height: _LocalDimensions.spacing_small),
                         // Custom input textbox stack (forced LTR/credentials alignment)
                         _build_secure_input(
                           // Controller link
@@ -332,12 +354,12 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
                                     'Expiry Date',
                                     // Style
                                     style: TextStyle(
-                                      fontSize: 12.0,
+                                      fontSize: _LocalDimensions.font_size_small,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                   // Spacer height gap
-                                  const SizedBox(height: 6.0),
+                                  const SizedBox(height: _LocalDimensions.spacing_small),
                                   // Input box (forced LTR)
                                   _build_secure_input(
                                     // Controller link
@@ -364,7 +386,7 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
                               ),
                             ),
                             // Horizontal gap spacer
-                            const SizedBox(width: 12.0),
+                            const SizedBox(width: _LocalDimensions.spacing_medium),
                             // CVV Column
                             Expanded(
                               // Stack layout
@@ -379,12 +401,12 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
                                     'CVV',
                                     // Style
                                     style: TextStyle(
-                                      fontSize: 12.0,
+                                      fontSize: _LocalDimensions.font_size_small,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                   // Spacer height gap
-                                  const SizedBox(height: 6.0),
+                                  const SizedBox(height: _LocalDimensions.spacing_small),
                                   // Input box (forced LTR/Secure CVV mask digits)
                                   _build_secure_input(
                                     // Controller link
@@ -416,7 +438,7 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 80.0),
+                        const SizedBox(height: _LocalDimensions.bottom_spacing_safe),
                       ],
                     ),
                   ),
@@ -431,7 +453,7 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
           // Full width
           width: double.infinity,
           // Height dimensions standard
-          height: 50.0,
+          height: _LocalDimensions.button_height,
           // Elevated button solid
           child: ElevatedButton(
             // Action tap trigger validation loop
@@ -491,16 +513,16 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
             style: ElevatedButton.styleFrom(
               // Muted grey background when disabled, solid primary blue when enabled
               backgroundColor: _is_form_valid
-                  ? const Color(0xFF1D4ED8)
-                  : const Color(0xFFE2E8F0),
-              disabledBackgroundColor: const Color(0xFFE2E8F0),
-              foregroundColor: Colors.white,
-              disabledForegroundColor: const Color(0xFF94A3B8),
+                  ? AppColors.primary_color
+                  : AppColors.slate_200,
+              disabledBackgroundColor: AppColors.slate_200,
+              foregroundColor: AppColors.white,
+              disabledForegroundColor: AppColors.slate_400,
               elevation: _is_form_valid ? 2.0 : 0.0,
               // Curves
               shape: RoundedRectangleBorder(
                 // Rounded radius bounds
-                borderRadius: BorderRadius.circular(12.0),
+                borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_medium),
               ),
             ),
             // Centered CTA label Text
@@ -510,9 +532,9 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
               // Typography
               style: TextStyle(
                 // Color white high contrast when enabled, subtle gray when disabled
-                color: _is_form_valid ? Colors.white : const Color(0xFF94A3B8),
+                color: _is_form_valid ? AppColors.white : AppColors.slate_400,
                 // Medium
-                fontSize: 14.0,
+                fontSize: _LocalDimensions.font_size_body,
                 // Bold
                 fontWeight: FontWeight.bold,
               ),
@@ -549,22 +571,22 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
           // Anchored right
           right: 0.0,
           // Height constraints matches field height
-          height: 50.0,
+          height: _LocalDimensions.button_height,
           // Shadow decorator container
           child: Container(
             // Shadow decorator container
             decoration: BoxDecoration(
               // Rounded contours
-              borderRadius: BorderRadius.circular(12.0),
+              borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_medium),
               // Shadow list
               boxShadow: [
                 BoxShadow(
                   // Dynamic shadow opacity matching light/dark configurations
-                  color: true == is_dark
-                      ? Colors.black.withValues(alpha: 0.15)
-                      : Colors.black.withValues(alpha: 0.03),
+                  color: is_dark
+                      ? AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
+                      : AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
                   // Spread
-                  blurRadius: 10.0,
+                  blurRadius: _LocalDimensions.shadow_blur,
                   // Position offset coordinates
                   offset: const Offset(0, 4),
                 ),
@@ -587,10 +609,10 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
           // Styles text entry
           style: TextStyle(
             // Size body normal
-            fontSize: 13.0,
+            fontSize: _LocalDimensions.font_size_medium,
             // Colors
             color:
-                true == is_dark ? Colors.white : AppColors.text_light_primary,
+                is_dark ? AppColors.white : AppColors.text_light_primary,
           ),
           // Input decorations settings
           decoration: InputDecoration(
@@ -599,7 +621,7 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
             // Subdued hint style properties
             hintStyle: const TextStyle(
               // Size
-              fontSize: 13.0,
+              fontSize: _LocalDimensions.font_size_medium,
               // Colors secondary
               color: AppColors.text_light_secondary,
             ),
@@ -612,81 +634,81 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
               // Colors secondary
               color: AppColors.text_light_secondary,
               // Size standard
-              size: 18.0,
+              size: _LocalDimensions.icon_size_small,
             ),
             // Background fill enabled
             filled: true,
             // Background surface color mapping
-            fillColor: true == is_dark ? AppColors.surface_dark : Colors.white,
+            fillColor: is_dark ? AppColors.surface_dark : AppColors.white,
             // Padding offsets details
             contentPadding: const EdgeInsets.symmetric(
               // Horizontal bounds padding offsets
-              horizontal: 16.0,
+              horizontal: _LocalDimensions.input_padding_h,
               // Vertical bounds padding offsets
-              vertical: 14.0,
+              vertical: _LocalDimensions.input_padding_v,
             ),
             // Default border outline contour settings
             border: OutlineInputBorder(
               // Rounded contours
-              borderRadius: BorderRadius.circular(12.0),
+              borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_medium),
               // Thin border line thickness
               borderSide: BorderSide(
                 // Color border matching theme
-                color: true == is_dark
+                color: is_dark
                     ? AppColors.border_dark
-                    : const Color(0xFFE2E8F0),
+                    : AppColors.slate_200,
                 // Thickness thin
-                width: 1.0,
+                width: _LocalDimensions.border_width_thin,
               ),
             ),
             // Enabled state borders
             enabledBorder: OutlineInputBorder(
               // Rounded contours
-              borderRadius: BorderRadius.circular(12.0),
+              borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_medium),
               // Thin border line thickness
               borderSide: BorderSide(
                 // Color border matching theme
-                color: true == is_dark
+                color: is_dark
                     ? AppColors.border_dark
-                    : const Color(0xFFE2E8F0),
+                    : AppColors.slate_200,
                 // Thickness thin
-                width: 1.0,
+                width: _LocalDimensions.border_width_thin,
               ),
             ),
             // Focused state borders
             focusedBorder: OutlineInputBorder(
               // Rounded contours
-              borderRadius: BorderRadius.circular(12.0),
+              borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_medium),
               // Primary colors brand outline borders
               borderSide: const BorderSide(
                 // Colors theme primary
                 color: AppColors.primary_color,
                 // Thickness double thin
-                width: 1.5,
+                width: _LocalDimensions.border_width_thick,
               ),
             ),
             // High-contrast Error state borders outline
             errorBorder: OutlineInputBorder(
               // Rounded contours
-              borderRadius: BorderRadius.circular(12.0),
+              borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_medium),
               // Red error outline borders
               borderSide: const BorderSide(
                 // Red error colors
                 color: AppColors.error,
                 // Thickness double thin
-                width: 1.0,
+                width: _LocalDimensions.border_width_thin,
               ),
             ),
             // High-contrast Focused Error state borders outline
             focusedErrorBorder: OutlineInputBorder(
               // Rounded contours
-              borderRadius: BorderRadius.circular(12.0),
+              borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_medium),
               // Red error outline borders
               borderSide: const BorderSide(
                 // Red error colors
                 color: AppColors.error,
                 // Thickness
-                width: 1.5,
+                width: _LocalDimensions.border_width_thick,
               ),
             ),
             // Style properties for the error message label
@@ -694,7 +716,7 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
               // Colors red
               color: AppColors.error,
               // Size
-              fontSize: 11.0,
+              fontSize: _LocalDimensions.font_size_tiny,
               // Semi-bold
               fontWeight: FontWeight.w500,
             ),

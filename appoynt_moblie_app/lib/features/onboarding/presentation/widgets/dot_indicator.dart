@@ -28,7 +28,7 @@ class DotIndicator extends StatelessWidget {
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
 
     // Resolve dynamic inactive color token adapting to theme mode using Yoda style comparison
-    final Color inactive_color = true == is_dark
+    final Color inactive_color = is_dark
         // Dark theme inactive dot color token
         ? AppColors.border_dark
         // Light theme inactive dot color token

@@ -117,7 +117,7 @@ class _SmartIdentifierFieldState extends State<SmartIdentifierField> {
           // Active label text
           widget.label,
           // Pull centralized style registry
-          style: AppTextStyles.get_field_label(is_arabic),
+          style: AppTextStyles.get_field_label(context, is_arabic),
         ),
         // Height divider using spacing constants
         const SizedBox(height: AppSpacing.space_m),
@@ -130,7 +130,7 @@ class _SmartIdentifierFieldState extends State<SmartIdentifierField> {
             // Resolve dynamic text alignment to switch based on empty state and
             // locale using Yoda style check
             final TextAlign dynamic_align =
-                (true == value.text.isEmpty && true == is_arabic)
+                (true == value.text.isEmpty && is_arabic)
                     // Right-align placeholder in Arabic mode when empty
                     ? TextAlign.right
                     // Left-align placeholders in other states
@@ -163,9 +163,9 @@ class _SmartIdentifierFieldState extends State<SmartIdentifierField> {
                       boxShadow: [
                         BoxShadow(
                           // Choose shadow color based on dark mode using Yoda style check
-                          color: true == is_dark
-                              ? Colors.black.withValues(alpha: 0.25)
-                              : Colors.black.withValues(alpha: 0.04),
+                          color: is_dark
+                              ? AppColors.black.withValues(alpha: 0.25)
+                              : AppColors.black.withValues(alpha: 0.04),
                           // Shadow blur radius
                           blurRadius: 6.0,
                           // Shadow thickness spread
@@ -200,7 +200,7 @@ class _SmartIdentifierFieldState extends State<SmartIdentifierField> {
                   // Set font size using spacing constants
                   fontSize: AppSpacing.font_size_text,
                   // Apply theme-appropriate text color token using Yoda style
-                  color: true == is_dark
+                  color: is_dark
                       ? AppColors.text_dark_primary
                       : AppColors.text_light_primary,
                 ),
@@ -236,7 +236,7 @@ class _SmartIdentifierFieldState extends State<SmartIdentifierField> {
                   // Enable background color fills
                   filled: true,
                   // Apply dynamic background color fill using Yoda style check
-                  fillColor: true == is_dark
+                  fillColor: is_dark
                       ? AppColors.surface_dark
                       : AppColors.input_fill,
                   // Standard enabled border configuration
@@ -247,7 +247,7 @@ class _SmartIdentifierFieldState extends State<SmartIdentifierField> {
                     // Set line border color options using Yoda style check
                     borderSide: BorderSide(
                       // Set color token dynamically
-                      color: true == is_dark
+                      color: is_dark
                           ? AppColors.border_dark
                           : AppColors.border_light,
                       // Set border line thickness using spacing constants

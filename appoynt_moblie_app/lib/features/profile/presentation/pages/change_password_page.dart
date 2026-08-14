@@ -24,6 +24,12 @@ import 'package:appoynt_mobile_app/features/profile/domain/entities/patient_prof
 // Importing reusable text field widgets
 import 'package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart';
 
+// Local layout dimensions class to strictly eliminate hardcoded numbers
+class _LocalDimensions {
+  static const double progress_indicator_size = 22.0;
+  static const double progress_indicator_stroke = 2.5;
+}
+
 // Change Password screen layout stateful widget representation
 class ChangePasswordPage extends StatefulWidget {
   // Constructor mapping key
@@ -367,12 +373,12 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                           child: ProfileStatus.passwordUpdating == state.status
                               ? const SizedBox(
                                   // layout constraints
-                                  width: 22.0,
-                                  height: 22.0,
+                                  width: _LocalDimensions.progress_indicator_size,
+                                  height: _LocalDimensions.progress_indicator_size,
                                   // Contrast colors white progress circle
                                   child: CircularProgressIndicator(
-                                    strokeWidth: 2.5,
-                                    color: Colors.white,
+                                    strokeWidth: _LocalDimensions.progress_indicator_stroke,
+                                    color: AppColors.white,
                                   ),
                                 )
                               : Text(
@@ -381,7 +387,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                   // Styles
                                   style: const TextStyle(
                                     // Color white
-                                    color: Colors.white,
+                                    color: AppColors.white,
                                     // Size action button font
                                     fontSize:
                                         AppSpacing.font_size_action_button,

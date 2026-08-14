@@ -1340,6 +1340,8 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get profile_gender_prefer_not => 'آخر';
   @override
+  String get profile_not_specified => 'غير محدد';
+  @override
   String get profile_smoking_yes => 'نعم';
   @override
   String get profile_smoking_no => 'لا';
@@ -1371,6 +1373,16 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get profile_error_address_invalid =>
       'لا يمكن أن يحتوي العنوان على رموز تعبيرية أو أحرف غير مدعومة.';
+  @override
+  String get profile_upload_photo_title => 'تحميل صورة الملف الشخصي';
+  @override
+  String get profile_take_photo_option => 'التقاط صورة';
+  @override
+  String get profile_choose_gallery_option => 'اختر من المعرض';
+  @override
+  String get profile_photo_selected_success => 'تم تحديد صورة الملف الشخصي بنجاح!';
+  @override
+  String get profile_photo_pick_failed_prefix => 'فشل في اختيار الصورة: ';
   @override
   String get profile_unsaved_changes_title => 'تغييرات غير محفوظة';
   @override
@@ -1571,6 +1583,8 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get allergies_medication_section => 'حساسية الأدوية';
   @override
+  String get environmental_seasonal_allergies => 'حساسية البيئة والفصول';
+  @override
   String get allergies_add_allergy => 'إضافة حساسية';
   @override
   String get allergies_placeholder => 'النوع';
@@ -1704,4 +1718,419 @@ class AppLocalizationsAr extends AppLocalizations {
   String get insurance_add_card_full_btn => 'إضافة بطاقة تأمين';
   @override
   String get insurance_save_card_btn => 'حفظ البطاقة';
+
+  // Payment & Wallet Localizations Arabic Overrides
+  @override
+  String get payment_wallet_title => 'المحفظة والدفع';
+  @override
+  String get payment_balance_label => 'رصيد المحفظة';
+  @override
+  String get payment_priority_label => 'مفتاح الدفع ذو الأولوية';
+  @override
+  String get payment_saved_cards_tile => 'بطاقات الدفع المحفوظة';
+  @override
+  String get payment_saved_cards_subtitle => 'إدارة بطاقات الدفع والخصم المحفوظة الخاصة بك';
+  @override
+  String get payment_history_tile => 'سجل الدفع والفواتير';
+  @override
+  String get payment_history_subtitle => 'عرض المعاملات السابقة وتنزيل الفواتير';
+  @override
+  String get payment_add_money_btn => 'إضافة أموال';
+  @override
+  String get payment_active_status => 'نشط';
+  @override
+  String get payment_inactive_status => 'غير نشط';
+  @override
+  String get payment_default_badge => 'افتراضي';
+  @override
+  String get payment_cardholder_label => 'حامل البطاقة';
+  @override
+  String get payment_valid_thru_label => 'صالح حتى';
+  @override
+  String get payment_add_money_coming_soon => 'ميزة إضافة الأموال ستتوفر قريباً!';
+  @override
+  String get payment_manage_cards_title => 'البطاقات المحفوظة';
+  @override
+  String get payment_cards_count_suffix => 'بطاقات';
+  @override
+  String get payment_set_default_action => 'تعيين كافتراضي';
+  @override
+  String get payment_delete_card_action => 'حذف البطاقة';
+  @override
+  String get payment_card_removed_success => 'تمت إزالة البطاقة بنجاح.';
+  @override
+  String get payment_confirm_delete_title => 'تأكيد الحذف';
+  @override
+  String get payment_confirm_delete_body => 'هل أنت متأكد أنك تريد حذف بطاقة الدفع هذه؟';
+  @override
+  String get payment_delete_card_dialog_body_prefix => 'هل أنت متأكد من رغبتك في إزالة البطاقة "';
+  @override
+  String get payment_delete_card_dialog_body_suffix => '"؟ لا يمكن التراجع عن هذا الإجراء.';
+  @override
+  String get payment_delete_btn => 'حذف';
+  @override
+  String get payment_remove_btn => 'إزالة';
+  @override
+  String get payment_cancel_btn => 'إلغاء';
+  @override
+  String get payment_no_saved_cards_title => 'لا توجد بطاقات محفوظة';
+  @override
+  String get payment_no_saved_cards_body => 'لم تقم بحفظ أي بطاقات دفع بعد.';
+  @override
+  String get payment_add_new_card_btn => 'إضافة بطاقة جديدة';
+  @override
+  String get payment_invoices_history_title => 'الفواتير والسجل';
+  @override
+  String get payment_total_paid_invoices => 'إجمالي الفواتير المدفوعة';
+  @override
+  String get payment_invoices_count_suffix => 'فواتير';
+  @override
+  String get payment_date_filter_prefix => 'التاريخ';
+  @override
+  String get payment_amount_filter_prefix => 'المبلغ';
+  @override
+  String get payment_service_filter_prefix => 'الخدمة';
+  @override
+  String get payment_apply_filter_btn => 'تطبيق الفلتر';
+  @override
+  String get payment_filter_date_range_title => 'تصفية حسب النطاق الزمني';
+  @override
+  String get payment_all_time_option => 'كل الأوقات';
+  @override
+  String get payment_this_month_option => 'هذا الشهر';
+  @override
+  String get payment_last_3_months_option => 'آخر 3 أشهر';
+  @override
+  String get payment_custom_range_option => 'نطاق مخصص';
+  @override
+  String get payment_filter_amount_range_title => 'تصفية حسب نطاق المبلغ';
+  @override
+  String get payment_filter_service_type_title => 'تصفية حسب نوع الخدمة';
+  @override
+  String get payment_no_invoices_found_title => 'لم يتم العثور على فواتير';
+  @override
+  String get payment_no_invoices_found_body => 'لم يتم العثور على فواتير تطابق الفلاتر المحددة. يرجى تعديل خيارات التصفية.';
+  @override
+  String get payment_downloading_invoice_snack => 'جاري تحميل الفاتورة بصيغة PDF...';
+  @override
+  String get payment_min_label => 'الحد الأدنى';
+  @override
+  String get payment_max_label => 'الحد الأقصى';
+
+  // Add test result sub-page Arabic Overrides
+  @override
+  String get add_test_doc_name_label => 'اسم المستند';
+  @override
+  String get add_test_doc_name_hint => 'مثال: صورة دم كاملة (CBC)';
+  @override
+  String get add_test_facility_label => 'المعمل / المركز الطبي';
+  @override
+  String get add_test_facility_hint => 'مثال: معمل البرج، كايرو سكان';
+  @override
+  String get add_test_date_label => 'تاريخ الفحص / الأشعة';
+  @override
+  String get add_test_date_hint => 'اختر التاريخ';
+  @override
+  String get add_test_status_label => 'حالة النتيجة';
+  @override
+  String get add_test_status_normal => 'طبيعي';
+  @override
+  String get add_test_status_abnormal => 'غير طبيعي';
+  @override
+  String get add_test_status_pending => 'قيد المراجعة';
+  @override
+  String get add_test_doctor_label => 'الطبيب المعالج (اختياري)';
+  @override
+  String get add_test_doctor_hint => 'اسم الطبيب المعالج';
+  @override
+  String get add_test_notes_label => 'ملاحظات إضافية (اختياري)';
+  @override
+  String get add_test_notes_hint => 'أضف أي ملاحظات أو تفاصيل إضافية هنا...';
+  @override
+  String get add_test_upload_label => 'تحميل التقرير';
+  @override
+  String get add_test_dropzone_text => 'اضغط هنا لرفع صورة أو ملف PDF للتقرير';
+  @override
+  String get add_test_dropzone_sub => 'الحد الأقصى للملف 10 ميجابايت (JPG, PNG, PDF)';
+  @override
+  String get add_test_validation_name_empty => 'اسم المستند لا يمكن أن يكون فارغاً.';
+  @override
+  String get add_test_validation_date_empty => 'يرجى اختيار التاريخ.';
+  @override
+  String get add_test_uploaded_status => 'تم الرفع';
+  @override
+  List<String> get month_names => const [
+        'يناير',
+        'فبراير',
+        'مارس',
+        'أبريل',
+        'مايو',
+        'يونيو',
+        'يوليو',
+        'أغسطس',
+        'سبتمبر',
+        'أكتوبر',
+        'نوفمبر',
+        'ديسمبر'
+      ];
+
+  // Add family member Arabic Overrides
+  @override
+  String get add_member_edit_title => 'تعديل فرد العائلة';
+  @override
+  String get add_member_add_title => 'إضافة فرد عائلة';
+  @override
+  String get add_member_update_btn => 'تحديث البيانات';
+  @override
+  String get add_member_save_btn => 'حفظ البيانات';
+  @override
+  String get add_member_success_toast => 'تم حفظ بيانات فرد العائلة بنجاح.';
+  @override
+  String get add_member_identity_details_header => 'تفاصيل الهوية';
+  @override
+  String get add_member_full_name_label => 'الاسم الكامل';
+  @override
+  String get add_member_full_name_hint => 'مثال: ليونيل مسعد';
+  @override
+  String get add_member_name_empty_error => 'يرجى إدخال الاسم';
+  @override
+  String get add_member_name_short_error => 'يجب أن يتكون الاسم من 3 أحرف على الأقل';
+  @override
+  String get add_member_relationship_header => 'صلة القرابة';
+  @override
+  String get add_member_dob_header => 'تاريخ الميلاد';
+  @override
+  String get add_member_dob_hint => 'اختر التاريخ';
+  @override
+  String get add_member_required_error => 'مطلوب';
+  @override
+  String get add_member_gender_header => 'تحديد الجنس';
+  @override
+  String get add_member_medical_bg_header => 'الخلفية الطبية';
+  @override
+  String get add_member_medical_bg_label => 'الحساسية، الأدوية أو الأمراض المزمنة';
+  @override
+  String get add_member_medical_bg_hint => 'صف تفاصيل التاريخ الطبي هنا...';
+  @override
+  String get rel_son => 'ابن';
+  @override
+  String get rel_daughter => 'ابنة';
+  @override
+  String get rel_spouse => 'زوج/زوجة';
+  @override
+  String get rel_parent => 'أحد الوالدين';
+  @override
+  String get gender_male => 'ذكر';
+  @override
+  String get gender_female => 'أنثى';
+
+  // Security & Privacy page Arabic Overrides
+  @override
+  String get sec_account_title => 'أمان الحساب';
+  @override
+  String get sec_privacy_title => 'خصوصية البيانات الطبية';
+  @override
+  String get sec_danger_title => 'إجراءات حساسة';
+  @override
+  String get biometric_title => 'المصادقة البيومترية';
+  @override
+  String get biometric_subtitle => 'بصمة الوجه / الإصبع للدخول السريع';
+  @override
+  String get tfa_title => 'التحقق بخطوتين';
+  @override
+  String get tfa_enabled => 'مفعّل';
+  @override
+  String get tfa_disabled => 'معطّل';
+  @override
+  String get change_password_label => 'تغيير كلمة المرور';
+  @override
+  String get change_password_subtitle => 'تحديث بيانات وكلمة مرور حسابك';
+  @override
+  String get autolock_title => 'القفل التلقائي للتطبيق';
+  @override
+  String get autolock_immediately => 'فوري';
+  @override
+  String get autolock_5mins => 'بعد 5 دقائق';
+  @override
+  String get doc_access_title => 'صلاحيات دخول الطبيب';
+  @override
+  String get doc_access_full => 'وصول كامل';
+  @override
+  String get doc_access_request => 'يتطلب إذن';
+  @override
+  String get active_devices_title => 'الأجهزة النشطة حالياً';
+  @override
+  String get active_devices_subtitle => 'آيفون 15 • القاهرة، مصر';
+  @override
+  String get manage_sessions => 'إدارة الجلسات';
+  @override
+  String get export_data_title => 'تصدير البيانات الطبية';
+  @override
+  String get export_data_subtitle => 'طلب نسخة بصيغة PDF أو JSON لسجلك الطبي';
+  @override
+  String get delete_account_title => 'حذف الحساب نهائياً';
+  @override
+  String get delete_account_subtitle => 'سيتم مسح جميع بياناتك وسجلاتك الطبية نهائياً ولا يمكن استرجاعها';
+  @override
+  String get preparing_data_export_toast => 'جاري تحضير ملف البيانات الطبية للتصدير...';
+
+  // Medical context count Arabic overrides
+  @override
+  String get_items_count_text(int count) {
+    if (0 == count) {
+      return 'لا يوجد';
+    } else if (1 == count) {
+      return 'عنصر واحد';
+    } else {
+      return '$count عناصر';
+    }
+  }
+
+  @override
+  String get_prescriptions_count_text(int count) {
+    if (0 == count) {
+      return 'لا يوجد';
+    } else if (1 == count) {
+      return 'روشتة واحدة';
+    } else {
+      return '$count روشتات';
+    }
+  }
+
+  @override
+  String get_files_count_text(int count) {
+    if (0 == count) {
+      return 'لا يوجد';
+    } else if (1 == count) {
+      return 'ملف واحد';
+    } else {
+      return '$count ملفات';
+    }
+  }
+
+  @override
+  String get_cards_count_text(int count) {
+    if (0 == count) {
+      return 'لا يوجد بطاقات';
+    } else if (1 == count) {
+      return 'بطاقة واحدة';
+    } else if (2 == count) {
+      return 'بطاقتان';
+    } else {
+      return '$count بطاقات';
+    }
+  }
+
+  @override
+  String get_members_count_text(int count) {
+    if (0 == count) {
+      return 'لا يوجد أفراد';
+    } else if (1 == count) {
+      return 'عضو واحد';
+    } else if (2 == count) {
+      return 'عضوان';
+    } else {
+      return '$count أعضاء';
+    }
+  }
+
+  // Chronic conditions page Arabic overrides
+  @override
+  String get chronic_remove_dialog_title => 'إزالة الحالة المرضية؟';
+  @override
+  String chronic_remove_dialog_body(String label) => 'هل أنت متأكد من إزالة $label من سجلك الطبي؟ لن يظهر هذا المرض في ملفك الطبي المشارك مع الأطباء.';
+  @override
+  String get chronic_cancel_btn => 'إلغاء';
+  @override
+  String get chronic_remove_btn => 'إزالة';
+  @override
+  String get chronic_status_controlled => 'حالة مستقرة';
+  @override
+  String get chronic_status_monitoring => 'تتطلب المتابعة';
+  @override
+  String get chronic_diag_year_header => 'سنة التشخيص';
+  @override
+  String get chronic_treatment_status_header => 'حالة العلاج';
+  @override
+  String get chronic_controlled_label => 'مستقرة';
+  @override
+  String get chronic_monitoring_label => 'متابعة';
+  @override
+  String get chronic_no_conditions_label => 'لا أعاني من أمراض مزمنة';
+  @override
+  String get chronic_save_btn => 'حفظ سجل الأمراض المزمنة';
+  @override
+  String get chronic_search_hint => 'البحث أو إضافة حالة جديدة (مثل: الربو)...';
+  @override
+  String get chronic_saved_success_toast => 'تم حفظ سجل الأمراض المزمنة بنجاح.';
+  @override
+  String get_chronic_subtitle(String year, String status) => 'تم التشخيص في $year • $status';
+
+  // App preferences and other page Arabic Overrides
+  @override
+  String get profile_select_language => 'اختر اللغة';
+  @override
+  String get profile_select_theme => 'اختر المظهر';
+  @override
+  String get profile_sec_notifications => 'الإشعارات والتنبيهات';
+  @override
+  String get profile_sec_display => 'العرض وإمكانية الوصول';
+  @override
+  String get profile_sec_support => 'الدعم والسياسات';
+  @override
+  String get profile_medication_reminders => 'تنبيهات الأدوية والحبوب';
+  @override
+  String get profile_medication_reminders_sub => 'تذكير بمواعيد أخذ جرعات الأدوية';
+  @override
+  String get profile_calendar_sync => 'مزامنة التقويم';
+  @override
+  String get profile_calendar_sync_sub => 'حفظ المواعيد تلقائياً في تقويم الهاتف';
+  @override
+  String get profile_active_language => 'العربية';
+  @override
+  String get profile_help_center => 'مركز المساعدة والأسئلة الشائعة';
+  @override
+  String get profile_help_center_sub => 'عرض الإرشادات والأسئلة الأكثر شيوعاً';
+  @override
+  String get profile_opening_help_center => 'جاري فتح مركز المساعدة...';
+  @override
+  String get prescriptions_edit_title => 'تعديل بيانات الدواء';
+  @override
+  String get prescriptions_update_btn => 'تحديث الدواء';
+  @override
+  String get login_phone_hint => '01xxxxxxxxx';
+  @override
+  String get date_picker_cancel => 'إلغاء';
+  @override
+  String get date_picker_confirm => 'تأكيد';
+  @override
+  List<String> get weekdays => const ['ن', 'ث', 'ر', 'خ', 'ج', 'س', 'ح'];
+
+  // New settings and help about page Arabic Overrides
+  @override
+  String get profile_app_settings => 'إعدادات التطبيق';
+  @override
+  String get profile_app_settings_sub => 'الإشعارات، اللغة ومظهر العرض';
+  @override
+  String get profile_help_about => 'المساعدة وعن التطبيق';
+  @override
+  String get profile_help_about_sub => 'خط المساعدة، الشروط القانونية وإصدار التطبيق';
+  @override
+  String get help_about_tagline => 'شريكك الرقمي الموثوق للرعاية الصحية';
+  @override
+  String get legal_open_source => 'تراخيص البرمجيات المفتوحة المصدر';
+  @override
+  String get legal_open_source_sub => 'عرض تراخيص الحزم البرمجية للجهات الخارجية';
+  @override
+  String get legal_open_source_content => 'يستخدم هذا التطبيق حزماً برمجية مفتوحة المصدر. يمكنك العثور على تراخيصها في صفحات التوثيق الرسمية الخاصة بتلك الحزم.';
+
+  // Authentication error localized message Arabic overrides
+  @override
+  String get error_invalid_credentials => 'رقم الهاتف أو كلمة المرور غير صحيحة.';
+  @override
+  String get error_phone_empty => 'رقم الهاتف لا يمكن أن يكون فارغاً.';
+  @override
+  String get error_otp_invalid => 'يجب أن يتكون رمز التحقق من 6 أرقام.';
+  @override
+  String get error_password_too_short => 'يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.';
 }

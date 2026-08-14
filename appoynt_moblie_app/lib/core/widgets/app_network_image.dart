@@ -59,18 +59,11 @@ class AppNetworkImage extends StatelessWidget {
       decoration: BoxDecoration(
         // Shape matching border radius configuration
         borderRadius: BorderRadius.circular(border_radius),
-        // Subtle gray border outline matching the mockup
-        border: Border.all(
-          // Slate gray border color adapting dynamically to theme modes using AppColors tokens
-          color: true == is_dark ? AppColors.avatar_border_dark : AppColors.avatar_border_light,
-          // Set thickness to 2.0 pixels to match screenshot spec
-          width: 2.0,
-        ),
       ),
       // Clip child inside rounded corners to avoid content bleeding over borders
       child: ClipRRect(
-        // Bind corner radius subtracting border thickness to align layout curves
-        borderRadius: BorderRadius.circular(border_radius > 2.0 ? border_radius - 2.0 : border_radius),
+        // Bind corner radius to align layout curves
+        borderRadius: BorderRadius.circular(border_radius),
         // Bounded box matching specified layout limits
         child: SizedBox(
           // Set layout width
@@ -83,10 +76,6 @@ class AppNetworkImage extends StatelessWidget {
             image_url,
             // Crop and fill boundary coordinates
             fit: BoxFit.cover,
-            // Set image cache width constraint
-            cacheWidth: cache_width,
-            // Set image cache height constraint
-            cacheHeight: cache_height,
             // Fade-in frame builder preventing layout shift spikes
             frameBuilder: (context, child, frame, was_synchronously_loaded) {
               // Check if image is already loaded synchronously (Yoda comparison)
@@ -121,7 +110,7 @@ class AppNetworkImage extends StatelessWidget {
                   // Match widget height
                   height: height,
                   // Match widget border radius subtracting border thickness
-                  border_radius: border_radius > 2.0 ? border_radius - 2.0 : border_radius,
+                  border_radius: border_radius,
                 );
               }
             },
@@ -136,9 +125,9 @@ class AppNetworkImage extends StatelessWidget {
                 // Card decorations style mappings
                 decoration: BoxDecoration(
                   // Pulsing color matching background skeletons
-                  color: true == is_dark ? AppColors.surface_dark : AppColors.search_chip_bg,
-                  // Rounded corners borders representation subtracting border thickness
-                  borderRadius: BorderRadius.circular(border_radius > 2.0 ? border_radius - 2.0 : border_radius),
+                  color: is_dark ? AppColors.surface_dark : AppColors.search_chip_bg,
+                  // Rounded corners borders representation
+                  borderRadius: BorderRadius.circular(border_radius),
                 ),
                 // Draw fallback vector icon inside center coordinates
                 child: Center(
@@ -252,7 +241,7 @@ class _PulsePlaceholderState extends State<_PulsePlaceholder>
         // Card styling configurations options representation
         decoration: BoxDecoration(
           // Pulsing color matching background skeletons
-          color: true == is_dark ? AppColors.surface_dark : AppColors.search_chip_bg,
+          color: is_dark ? AppColors.surface_dark : AppColors.search_chip_bg,
           // Rounded corners borders representation
           borderRadius: BorderRadius.circular(widget.border_radius),
         ),

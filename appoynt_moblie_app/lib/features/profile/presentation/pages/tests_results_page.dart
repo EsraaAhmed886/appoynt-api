@@ -25,6 +25,16 @@ import 'package:appoynt_mobile_app/features/profile/domain/entities/test_result.
 // Importing add result page screen
 import 'package:appoynt_mobile_app/features/profile/presentation/pages/add_test_result_page.dart';
 
+// Local layout dimensions class to strictly eliminate hardcoded numbers
+class _LocalDimensions {
+  static const double card_shadow_blur = 6.0;
+  static const double card_shadow_spread = 1.0;
+  static const double card_shadow_offset_y = 2.0;
+  static const double card_shadow_opacity_dark = 0.25;
+  static const double card_shadow_opacity_light = 0.04;
+  static const double button_radius = 16.0;
+}
+
 // Tests Results Page layout stateful widget representation
 class TestsResultsPage extends StatefulWidget {
   // Constructor mapping key
@@ -91,7 +101,7 @@ class _TestsResultsPageState extends State<TestsResultsPage> {
                 // Card decorations
                 decoration: BoxDecoration(
                   // Solid gray default background
-                  color: true == is_dark ? AppColors.surface_dark : Colors.grey[100],
+                  color: is_dark ? AppColors.surface_dark : AppColors.slate_50,
                   // Rounded boundaries configurations
                   borderRadius: BorderRadius.circular(
                     // Radius token
@@ -122,8 +132,8 @@ class _TestsResultsPageState extends State<TestsResultsPage> {
                           decoration: BoxDecoration(
                             // Solid white background color fill when active
                             color: 0 == _active_tab
-                                ? (true == is_dark ? AppColors.primary_color : Colors.white)
-                                : Colors.transparent,
+                                ? (is_dark ? AppColors.primary_color : AppColors.white)
+                                : AppColors.transparent,
                             // Rounded boundaries corners configurations
                             borderRadius: BorderRadius.circular(
                               // Radius token
@@ -135,14 +145,14 @@ class _TestsResultsPageState extends State<TestsResultsPage> {
                                     // Ambient card box shadows configuration
                                     BoxShadow(
                                       // Subdued gray shadow color
-                                      color: true == is_dark
-                                          ? Colors.black.withValues(alpha: 0.25)
-                                          : Colors.black.withValues(alpha: 0.04),
+                                      color: is_dark
+                                          ? AppColors.black.withValues(alpha: _LocalDimensions.card_shadow_opacity_dark)
+                                          : AppColors.black.withValues(alpha: _LocalDimensions.card_shadow_opacity_light),
                                       // Blur offset
-                                      blurRadius: 6.0,
+                                      blurRadius: _LocalDimensions.card_shadow_blur,
                                       // Spread offset
-                                      spreadRadius: 1.0,
-                                      offset: const Offset(0.0, 2.0),
+                                      spreadRadius: _LocalDimensions.card_shadow_spread,
+                                      offset: const Offset(0.0, _LocalDimensions.card_shadow_offset_y),
                                     ),
                                   ]
                                 : null,
@@ -157,7 +167,7 @@ class _TestsResultsPageState extends State<TestsResultsPage> {
                               fontWeight: FontWeight.w700,
                               // Color depending on active tab status
                               color: 0 == _active_tab
-                                  ? (true == is_dark ? Colors.white : AppColors.primary_color)
+                                  ? (is_dark ? AppColors.white : AppColors.primary_color)
                                   : AppColors.text_light_secondary,
                             ),
                           ),
@@ -184,8 +194,8 @@ class _TestsResultsPageState extends State<TestsResultsPage> {
                           decoration: BoxDecoration(
                             // Solid white background color fill when active
                             color: 1 == _active_tab
-                                ? (true == is_dark ? AppColors.primary_color : Colors.white)
-                                : Colors.transparent,
+                                ? (is_dark ? AppColors.primary_color : AppColors.white)
+                                : AppColors.transparent,
                             // Rounded boundaries corners configurations
                             borderRadius: BorderRadius.circular(
                               // Radius token
@@ -197,14 +207,14 @@ class _TestsResultsPageState extends State<TestsResultsPage> {
                                     // Ambient card box shadows configuration
                                     BoxShadow(
                                       // Subdued gray shadow color
-                                      color: true == is_dark
-                                          ? Colors.black.withValues(alpha: 0.25)
-                                          : Colors.black.withValues(alpha: 0.04),
+                                      color: is_dark
+                                          ? AppColors.black.withValues(alpha: _LocalDimensions.card_shadow_opacity_dark)
+                                          : AppColors.black.withValues(alpha: _LocalDimensions.card_shadow_opacity_light),
                                       // Blur offset
-                                      blurRadius: 6.0,
+                                      blurRadius: _LocalDimensions.card_shadow_blur,
                                       // Spread offset
-                                      spreadRadius: 1.0,
-                                      offset: const Offset(0.0, 2.0),
+                                      spreadRadius: _LocalDimensions.card_shadow_spread,
+                                      offset: const Offset(0.0, _LocalDimensions.card_shadow_offset_y),
                                     ),
                                   ]
                                 : null,
@@ -219,7 +229,7 @@ class _TestsResultsPageState extends State<TestsResultsPage> {
                               fontWeight: FontWeight.w700,
                               // Color depending on active tab status
                               color: 1 == _active_tab
-                                  ? (true == is_dark ? Colors.white : AppColors.primary_color)
+                                  ? (is_dark ? AppColors.white : AppColors.primary_color)
                                   : AppColors.text_light_secondary,
                             ),
                           ),
@@ -283,7 +293,7 @@ class _TestsResultsPageState extends State<TestsResultsPage> {
                             // Style configurations
                             decoration: BoxDecoration(
                               // Surface colors
-                              color: true == is_dark ? AppColors.surface_dark : Colors.white,
+                              color: is_dark ? AppColors.surface_dark : AppColors.white,
                               // Rounded corners configuration
                               borderRadius: BorderRadius.circular(
                                 // Corner radius token
@@ -292,7 +302,7 @@ class _TestsResultsPageState extends State<TestsResultsPage> {
                               // Border lines boundary decoration outline
                               border: Border.all(
                                 // Outline border colors dynamically adjusting to brightness modes
-                                color: true == is_dark ? AppColors.border_dark : AppColors.border_light,
+                                color: is_dark ? AppColors.border_dark : AppColors.border_light,
                                 // Thin boundary lines thickness
                                 width: AppSpacing.border_width_thin,
                               ),
@@ -334,7 +344,7 @@ class _TestsResultsPageState extends State<TestsResultsPage> {
                                           // bold weight
                                           fontWeight: FontWeight.w700,
                                           // Dynamic text color adjusting to dark/light surfaces
-                                          color: true == is_dark
+                                          color: is_dark
                                               ? AppColors.text_dark_primary
                                               : AppColors.text_light_primary,
                                         ),
@@ -390,13 +400,13 @@ class _TestsResultsPageState extends State<TestsResultsPage> {
                                 backgroundColor: AppColors.primary_color,
                                 elevation: 0.0,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16.0),
+                                  borderRadius: BorderRadius.circular(_LocalDimensions.button_radius),
                                 ),
                               ),
                               child: Text(
                                 cta_label,
                                 style: const TextStyle(
-                                  color: Colors.white,
+                                  color: AppColors.white,
                                   fontSize: AppSpacing.font_size_action_button,
                                   fontWeight: FontWeight.w700,
                                 ),

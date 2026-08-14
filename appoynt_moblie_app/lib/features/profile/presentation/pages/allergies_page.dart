@@ -23,6 +23,37 @@ import 'package:appoynt_mobile_app/core/widgets/auth/auth_text_field.dart';
 import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart';
 
+// Local layout dimensions class to strictly eliminate hardcoded numbers
+class _LocalDimensions {
+  static const double disabled_opacity = 0.45;
+  static const double border_radius_default = 16.0;
+  static const double border_radius_medium = 12.0;
+  static const double border_radius_large = 20.0;
+  static const double shadow_blur_default = 8.0;
+  static const double shadow_offset_y = 2.0;
+  static const double shadow_opacity_dark = 0.2;
+  static const double shadow_opacity_light = 0.04;
+  static const double icon_size_large = 36.0;
+  static const double icon_size_small = 20.0;
+  static const double spacing_small = 8.0;
+  static const double spacing_medium = 10.0;
+  static const double spacing_large = 12.0;
+  static const double font_size_medium = 14.0;
+  static const double font_size_small = 12.0;
+  static const double font_size_tiny = 11.0;
+  static const double font_size_micro = 10.0;
+  static const double image_size = 50.0;
+  static const double spacing_tiny = 6.0;
+  static const double spacing_micro = 4.0;
+  static const double chip_border_width = 1.0;
+  static const double dot_size = 8.0;
+  static const double severity_icon_size = 16.0;
+  static const double border_width_thick = 2.0;
+  static const double border_width_thin = 1.0;
+  static const double icon_container_size = 40.0;
+  static const double icon_size_medium = 22.0;
+}
+
 // Allergies Page layout stateful widget representation
 class AllergiesPage extends StatefulWidget {
   // Constructor mapping key
@@ -127,26 +158,26 @@ class _AllergiesPageState extends State<AllergiesPage> {
   }) {
     return AnimatedOpacity(
       duration: const Duration(milliseconds: 200),
-      opacity: true == is_disabled ? 0.45 : 1.0,
+      opacity: is_disabled ? _LocalDimensions.disabled_opacity : 1.0,
       child: Container(
         margin: const EdgeInsets.only(bottom: AppSpacing.space_l),
         padding: const EdgeInsets.all(AppSpacing.space_l),
         decoration: BoxDecoration(
-          color: true == is_dark ? AppColors.surface_dark : Colors.white,
-          borderRadius: BorderRadius.circular(16.0),
+          color: is_dark ? AppColors.surface_dark : AppColors.white,
+          borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
           border: Border.all(
-            color: true == is_dark
+            color: is_dark
                 ? AppColors.border_dark
                 : const Color(0xFFE2E8F0),
             width: AppSpacing.border_width_thin,
           ),
           boxShadow: [
             BoxShadow(
-              color: true == is_dark
-                  ? Colors.black.withValues(alpha: 0.2)
-                  : Colors.black.withValues(alpha: 0.04),
-              blurRadius: 8.0,
-              offset: const Offset(0.0, 2.0),
+              color: is_dark
+                  ? AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
+                  : AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
+              blurRadius: _LocalDimensions.shadow_blur_default,
+              offset: const Offset(0.0, _LocalDimensions.shadow_offset_y),
             ),
           ],
         ),
@@ -157,25 +188,26 @@ class _AllergiesPageState extends State<AllergiesPage> {
             Row(
               children: [
                 Container(
-                  width: 36.0,
-                  height: 36.0,
+                  width: _LocalDimensions.icon_size_large,
+                  height: _LocalDimensions.icon_size_large,
                   decoration: BoxDecoration(
                     color: AppColors.primary_color.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(icon, color: AppColors.primary_color, size: 20.0),
+                  child: Icon(icon, color: AppColors.primary_color, size: _LocalDimensions.icon_size_small),
                 ),
-                const SizedBox(width: 10.0),
+                const SizedBox(width: _LocalDimensions.spacing_medium),
                 Expanded(
                   child: Text(
                     title,
-                    maxLines: 1,
+                    maxLines: 2, // Allow up to 2 lines to prevent truncation
+                    softWrap: true,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      fontSize: 14.0,
+                      fontSize: _LocalDimensions.font_size_medium,
                       fontWeight: FontWeight.bold,
-                      color: true == is_dark
-                          ? Colors.white
+                      color: is_dark
+                          ? AppColors.white
                           : AppColors.text_light_primary,
                     ),
                   ),
@@ -197,16 +229,16 @@ class _AllergiesPageState extends State<AllergiesPage> {
                       controller: controller,
                     ),
                   ),
-                  const SizedBox(width: 8.0),
+                  const SizedBox(width: _LocalDimensions.spacing_small),
                   Container(
-                    height: 50.0,
-                    width: 50.0,
+                    height: _LocalDimensions.image_size,
+                    width: _LocalDimensions.image_size,
                     decoration: BoxDecoration(
                       color: AppColors.primary_color,
-                      borderRadius: BorderRadius.circular(12.0),
+                      borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_medium),
                     ),
                     child: IconButton(
-                      icon: const Icon(Icons.add_rounded, color: Colors.white),
+                      icon: const Icon(Icons.add_rounded, color: AppColors.white),
                       onPressed: () {
                         _add_allergy_chip(
                             controller.text, active_list, controller);
@@ -222,14 +254,14 @@ class _AllergiesPageState extends State<AllergiesPage> {
             Text(
               'Popular Options',
               style: TextStyle(
-                fontSize: 11.0,
+                fontSize: _LocalDimensions.font_size_tiny,
                 fontWeight: FontWeight.w600,
-                color: true == is_dark
-                    ? Colors.white54
+                color: is_dark
+                    ? AppColors.white54
                     : AppColors.text_light_secondary,
               ),
             ),
-            const SizedBox(height: 6.0),
+            const SizedBox(height: _LocalDimensions.spacing_tiny),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -237,40 +269,40 @@ class _AllergiesPageState extends State<AllergiesPage> {
                   final bool is_added = active_list.any((item) =>
                       item['name']?.toLowerCase() == option.toLowerCase());
                   return Padding(
-                    padding: const EdgeInsets.only(right: 6.0),
+                    padding: const EdgeInsets.only(right: _LocalDimensions.spacing_tiny),
                     child: ActionChip(
                       elevation: 0.0,
                       pressElevation: 0.0,
-                      backgroundColor: true == is_added
+                      backgroundColor: is_added
                           ? AppColors.primary_color.withValues(alpha: 0.12)
-                          : (true == is_dark
+                          : (is_dark
                               ? AppColors.background_dark
                               : const Color(0xFFF1F5F9)),
                       side: BorderSide(
-                        color: true == is_added
+                        color: is_added
                             ? AppColors.primary_color
-                            : Colors.transparent,
-                        width: 1.0,
+                            : AppColors.transparent,
+                        width: _LocalDimensions.chip_border_width,
                       ),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
+                        borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_large),
                       ),
                       label: Text(
                         '+ $option',
                         style: TextStyle(
-                          fontSize: 11.0,
+                          fontSize: _LocalDimensions.font_size_tiny,
                           fontWeight: FontWeight.w600,
-                          color: true == is_added
+                          color: is_added
                               ? AppColors.primary_color
-                              : (true == is_dark
-                                  ? Colors.white70
+                              : (is_dark
+                                  ? AppColors.white70
                                   : AppColors.text_light_primary),
                         ),
                       ),
-                      onPressed: true == is_disabled
+                      onPressed: is_disabled
                           ? null
                           : () {
-                              if (false == is_added) {
+                              if (!is_added) {
                                 _add_allergy_chip(
                                     option, active_list, controller);
                               }
@@ -287,89 +319,89 @@ class _AllergiesPageState extends State<AllergiesPage> {
               Text(
                 'Active Allergies (Tap tag to toggle severity)',
                 style: TextStyle(
-                  fontSize: 11.0,
+                  fontSize: _LocalDimensions.font_size_tiny,
                   fontWeight: FontWeight.w600,
-                  color: true == is_dark
-                      ? Colors.white54
+                  color: is_dark
+                      ? AppColors.white54
                       : AppColors.text_light_secondary,
                 ),
               ),
-              const SizedBox(height: 8.0),
+              const SizedBox(height: _LocalDimensions.spacing_small),
               Wrap(
-                spacing: 8.0,
-                runSpacing: 8.0,
+                spacing: _LocalDimensions.spacing_small,
+                runSpacing: _LocalDimensions.spacing_small,
                 children: active_list.map((item) {
                   final bool is_severe = 'Severe' == item['severity'];
-                  final Color dot_color = true == is_severe
+                  final Color dot_color = is_severe
                       ? const Color(0xFFEF4444)
                       : const Color(0xFFF59E0B);
-                  final Color chip_bg = true == is_severe
+                  final Color chip_bg = is_severe
                       ? const Color(0xFFFEF2F2)
                       : const Color(0xFFFFFBEB);
-                  final Color border_color = true == is_severe
+                  final Color border_color = is_severe
                       ? const Color(0xFFFCA5A5)
                       : const Color(0xFFFDE68A);
 
                   return GestureDetector(
-                    onTap: true == is_disabled
+                    onTap: is_disabled
                         ? null
                         : () => _toggle_severity(item),
                     child: Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 10.0, vertical: 6.0),
+                          horizontal: _LocalDimensions.spacing_medium, vertical: _LocalDimensions.spacing_tiny),
                       decoration: BoxDecoration(
-                        color: true == is_dark
+                        color: is_dark
                             ? AppColors.background_dark
                             : chip_bg,
-                        borderRadius: BorderRadius.circular(20.0),
+                        borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_large),
                         border: Border.all(
-                          color: true == is_dark
+                          color: is_dark
                               ? dot_color.withValues(alpha: 0.5)
                               : border_color,
-                          width: 1.0,
+                          width: _LocalDimensions.chip_border_width,
                         ),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           // Severity Colored Dot Indicator
-                          Container(
-                            width: 8.0,
-                            height: 8.0,
-                            decoration: BoxDecoration(
-                              color: dot_color,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                          const SizedBox(width: 6.0),
-                          Text(
-                            '${item['name']} • ${item['severity']}',
-                            style: TextStyle(
-                              fontSize: 12.0,
-                              fontWeight: FontWeight.bold,
-                              color: true == is_dark
-                                  ? Colors.white
-                                  : AppColors.text_light_primary,
-                            ),
-                          ),
-                          const SizedBox(width: 4.0),
-                          // Inline close icon (X) to delete chip
-                          GestureDetector(
-                            onTap: true == is_disabled
-                                ? null
-                                : () {
-                                    setState(() {
-                                      active_list.remove(item);
-                                    });
-                                  },
-                            child: Icon(
-                              Icons.close_rounded,
-                              size: 16.0,
-                              color: true == is_dark
-                                  ? Colors.white54
-                                  : AppColors.text_light_secondary,
-                            ),
-                          ),
+                           Container(
+                             width: _LocalDimensions.dot_size,
+                             height: _LocalDimensions.dot_size,
+                             decoration: BoxDecoration(
+                               color: dot_color,
+                               shape: BoxShape.circle,
+                             ),
+                           ),
+                           const SizedBox(width: _LocalDimensions.spacing_tiny),
+                           Text(
+                             '${item['name']} • ${item['severity']}',
+                             style: TextStyle(
+                               fontSize: _LocalDimensions.font_size_micro,
+                               fontWeight: FontWeight.bold,
+                               color: is_dark
+                                   ? AppColors.white
+                                   : AppColors.text_light_primary,
+                             ),
+                           ),
+                           const SizedBox(width: _LocalDimensions.spacing_micro),
+                           // Inline close icon (X) to delete chip
+                           GestureDetector(
+                             onTap: is_disabled
+                                 ? null
+                                 : () {
+                                     setState(() {
+                                       active_list.remove(item);
+                                     });
+                                   },
+                             child: Icon(
+                               Icons.close_rounded,
+                               size: _LocalDimensions.severity_icon_size,
+                               color: is_dark
+                                   ? AppColors.white54
+                                   : AppColors.text_light_secondary,
+                             ),
+                           ),
                         ],
                       ),
                     ),
@@ -414,31 +446,31 @@ class _AllergiesPageState extends State<AllergiesPage> {
                   padding: const EdgeInsets.all(AppSpacing.space_l),
                   decoration: BoxDecoration(
                     color:
-                        true == is_dark ? AppColors.surface_dark : Colors.white,
-                    borderRadius: BorderRadius.circular(16.0),
+                        is_dark ? AppColors.surface_dark : AppColors.white,
+                    borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
                     border: Border.all(
                       color: true == _no_known_allergies
                           ? AppColors.primary_color
-                          : (true == is_dark
+                          : (is_dark
                               ? AppColors.border_dark
                               : const Color(0xFFE2E8F0)),
-                      width: true == _no_known_allergies ? 2.0 : 1.0,
+                      width: true == _no_known_allergies ? _LocalDimensions.border_width_thick : _LocalDimensions.border_width_thin,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: true == is_dark
-                            ? Colors.black.withValues(alpha: 0.2)
-                            : Colors.black.withValues(alpha: 0.04),
-                        blurRadius: 8.0,
-                        offset: const Offset(0.0, 2.0),
+                        color: is_dark
+                            ? AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
+                            : AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
+                        blurRadius: _LocalDimensions.shadow_blur_default,
+                        offset: const Offset(0.0, _LocalDimensions.shadow_offset_y),
                       ),
                     ],
                   ),
                   child: Row(
                     children: [
                       Container(
-                        width: 40.0,
-                        height: 40.0,
+                        width: _LocalDimensions.icon_container_size,
+                        height: _LocalDimensions.icon_container_size,
                         decoration: BoxDecoration(
                           color: AppColors.primary_color.withValues(alpha: 0.1),
                           shape: BoxShape.circle,
@@ -446,10 +478,10 @@ class _AllergiesPageState extends State<AllergiesPage> {
                         child: const Icon(
                           Icons.shield_outlined,
                           color: AppColors.primary_color,
-                          size: 22.0,
+                          size: _LocalDimensions.icon_size_medium,
                         ),
                       ),
-                      const SizedBox(width: 12.0),
+                      const SizedBox(width: _LocalDimensions.spacing_large),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -457,18 +489,18 @@ class _AllergiesPageState extends State<AllergiesPage> {
                             Text(
                               'No Known Medical Allergies',
                               style: TextStyle(
-                                fontSize: 14.0,
+                                fontSize: _LocalDimensions.font_size_medium,
                                 fontWeight: FontWeight.bold,
-                                color: true == is_dark
-                                    ? Colors.white
+                                color: is_dark
+                                    ? AppColors.white
                                     : AppColors.text_light_primary,
                               ),
                             ),
-                            const SizedBox(height: 2.0),
+                            const SizedBox(height: _LocalDimensions.spacing_tiny),
                             const Text(
                               'لا يوجد لدي حساسية معروفة',
                               style: TextStyle(
-                                fontSize: 12.0,
+                                fontSize: _LocalDimensions.font_size_small,
                                 color: AppColors.text_light_secondary,
                               ),
                             ),
@@ -491,7 +523,7 @@ class _AllergiesPageState extends State<AllergiesPage> {
                 // Category Card 1: Food Allergies
                 _build_category_card(
                   context: context,
-                  title: 'Food Allergies (حساسية الأطعمة)',
+                  title: localizations.allergies_food_section,
                   icon: Icons.restaurant_rounded,
                   controller: _food_controller,
                   hint_text: 'e.g., Peanuts, Dairy, Shellfish',
@@ -504,7 +536,7 @@ class _AllergiesPageState extends State<AllergiesPage> {
                 // Category Card 2: Medication Allergies
                 _build_category_card(
                   context: context,
-                  title: 'Medication Allergies (حساسية الأدوية)',
+                  title: localizations.allergies_medication_section,
                   icon: Icons.medication_rounded,
                   controller: _medication_controller,
                   hint_text: 'e.g., Penicillin, Aspirin, Ibuprofen',
@@ -517,7 +549,7 @@ class _AllergiesPageState extends State<AllergiesPage> {
                 // Category Card 3: Environmental & Seasonal Allergies
                 _build_category_card(
                   context: context,
-                  title: 'Environmental & Seasonal (حساسية البيئة الغبار)',
+                  title: localizations.environmental_seasonal_allergies,
                   icon: Icons.grass_rounded,
                   controller: _environmental_controller,
                   hint_text: 'e.g., Dust Mites, Pollen, Cat Dander',
@@ -577,7 +609,7 @@ class _AllergiesPageState extends State<AllergiesPage> {
               child: const Text(
                 'Save Allergy Profile',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: AppColors.white,
                   fontSize: AppSpacing.font_size_action_button,
                   fontWeight: FontWeight.w700,
                 ),

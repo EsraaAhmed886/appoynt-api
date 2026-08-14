@@ -610,6 +610,7 @@ abstract class AppLocalizations {
   String get profile_gender_male;
   String get profile_gender_female;
   String get profile_gender_prefer_not;
+  String get profile_not_specified;
   String get profile_smoking_yes;
   String get profile_smoking_no;
   String get profile_smoking_ex;
@@ -623,6 +624,11 @@ abstract class AppLocalizations {
   String get profile_error_gender_required;
   String get profile_error_address_length;
   String get profile_error_address_invalid;
+  String get profile_upload_photo_title;
+  String get profile_take_photo_option;
+  String get profile_choose_gallery_option;
+  String get profile_photo_selected_success;
+  String get profile_photo_pick_failed_prefix;
   String get profile_unsaved_changes_title;
   String get profile_unsaved_changes_message;
   String get profile_unsaved_changes_stay;
@@ -720,6 +726,7 @@ abstract class AppLocalizations {
   String get allergies_title;
   String get allergies_food_section;
   String get allergies_medication_section;
+  String get environmental_seasonal_allergies;
   String get allergies_add_allergy;
   String get allergies_placeholder;
   String get allergies_save_btn;
@@ -790,6 +797,223 @@ abstract class AppLocalizations {
   String get insurance_add_card_btn;
   String get insurance_add_card_full_btn;
   String get insurance_save_card_btn;
+
+  // Payment & Wallet Localizations
+  String get payment_wallet_title;
+  String get payment_balance_label;
+  String get payment_priority_label;
+  String get payment_saved_cards_tile;
+  String get payment_saved_cards_subtitle;
+  String get payment_history_tile;
+  String get payment_history_subtitle;
+  String get payment_add_money_btn;
+  String get payment_active_status;
+  String get payment_inactive_status;
+  String get payment_default_badge;
+  String get payment_cardholder_label;
+  String get payment_valid_thru_label;
+  String get payment_add_money_coming_soon;
+  String get payment_manage_cards_title;
+  String get payment_cards_count_suffix;
+  String get payment_set_default_action;
+  String get payment_delete_card_action;
+  String get payment_card_removed_success;
+  String get payment_confirm_delete_title;
+  String get payment_confirm_delete_body;
+  String get payment_delete_card_dialog_body_prefix;
+  String get payment_delete_card_dialog_body_suffix;
+  String get payment_delete_btn;
+  String get payment_remove_btn;
+  String get payment_cancel_btn;
+  String get payment_no_saved_cards_title;
+  String get payment_no_saved_cards_body;
+  String get payment_add_new_card_btn;
+  String get payment_invoices_history_title;
+  String get payment_total_paid_invoices;
+  String get payment_invoices_count_suffix;
+  String get payment_date_filter_prefix;
+  String get payment_amount_filter_prefix;
+  String get payment_service_filter_prefix;
+  String get payment_apply_filter_btn;
+  String get payment_filter_date_range_title;
+  String get payment_all_time_option;
+  String get payment_this_month_option;
+  String get payment_last_3_months_option;
+  String get payment_custom_range_option;
+  String get payment_filter_amount_range_title;
+  String get payment_filter_service_type_title;
+  String get payment_no_invoices_found_title;
+  String get payment_no_invoices_found_body;
+  String get payment_downloading_invoice_snack;
+  String get payment_min_label;
+  String get payment_max_label;
+
+  // Add test result sub-page localizations
+  String get add_test_doc_name_label;
+  String get add_test_doc_name_hint;
+  String get add_test_facility_label;
+  String get add_test_facility_hint;
+  String get add_test_date_label;
+  String get add_test_date_hint;
+  String get add_test_status_label;
+  String get add_test_status_normal;
+  String get add_test_status_abnormal;
+  String get add_test_status_pending;
+  String get add_test_doctor_label;
+  String get add_test_doctor_hint;
+  String get add_test_notes_label;
+  String get add_test_notes_hint;
+  String get add_test_upload_label;
+  String get add_test_dropzone_text;
+  String get add_test_dropzone_sub;
+  String get add_test_validation_name_empty;
+  String get add_test_validation_date_empty;
+  String get add_test_uploaded_status;
+  List<String> get month_names;
+
+  // Add family member localizations
+  String get add_member_edit_title;
+  String get add_member_add_title;
+  String get add_member_update_btn;
+  String get add_member_save_btn;
+  String get add_member_success_toast;
+  String get add_member_identity_details_header;
+  String get add_member_full_name_label;
+  String get add_member_full_name_hint;
+  String get add_member_name_empty_error;
+  String get add_member_name_short_error;
+  String get add_member_relationship_header;
+  String get add_member_dob_header;
+  String get add_member_dob_hint;
+  String get add_member_required_error;
+  String get add_member_gender_header;
+  String get add_member_medical_bg_header;
+  String get add_member_medical_bg_label;
+  String get add_member_medical_bg_hint;
+  String get rel_son;
+  String get rel_daughter;
+  String get rel_spouse;
+  String get rel_parent;
+  String get gender_male;
+  String get gender_female;
+
+  // Security & Privacy page localizations
+  String get sec_account_title;
+  String get sec_privacy_title;
+  String get sec_danger_title;
+  String get biometric_title;
+  String get biometric_subtitle;
+  String get tfa_title;
+  String get tfa_enabled;
+  String get tfa_disabled;
+  String get change_password_label;
+  String get change_password_subtitle;
+  String get autolock_title;
+  String get autolock_immediately;
+  String get autolock_5mins;
+  String get doc_access_title;
+  String get doc_access_full;
+  String get doc_access_request;
+  String get active_devices_title;
+  String get active_devices_subtitle;
+  String get manage_sessions;
+  String get export_data_title;
+  String get export_data_subtitle;
+  String get delete_account_title;
+  String get delete_account_subtitle;
+  String get preparing_data_export_toast;
+
+  // Medical context count helpers
+  String get_items_count_text(int count);
+  String get_prescriptions_count_text(int count);
+  String get_files_count_text(int count);
+  String get_cards_count_text(int count);
+  String get_members_count_text(int count);
+
+  // Chronic conditions localizations
+  String get chronic_remove_dialog_title;
+  String chronic_remove_dialog_body(String label);
+  String get chronic_cancel_btn;
+  String get chronic_remove_btn;
+  String get chronic_status_controlled;
+  String get chronic_status_monitoring;
+  String get chronic_diag_year_header;
+  String get chronic_treatment_status_header;
+  String get chronic_controlled_label;
+  String get chronic_monitoring_label;
+  String get chronic_no_conditions_label;
+  String get chronic_save_btn;
+  String get chronic_search_hint;
+  String get chronic_saved_success_toast;
+  String get_chronic_subtitle(String year, String status);
+
+  // App preferences and other page localizations
+  String get profile_select_language;
+  String get profile_select_theme;
+  String get profile_sec_notifications;
+  String get profile_sec_display;
+  String get profile_sec_support;
+  String get profile_medication_reminders;
+  String get profile_medication_reminders_sub;
+  String get profile_calendar_sync;
+  String get profile_calendar_sync_sub;
+  String get profile_active_language;
+  String get profile_help_center;
+  String get profile_help_center_sub;
+  String get profile_opening_help_center;
+  String get prescriptions_edit_title;
+  String get prescriptions_update_btn;
+  String get login_phone_hint;
+  String get date_picker_cancel;
+  String get date_picker_confirm;
+  List<String> get weekdays;
+
+  // New settings and help about page keys
+  String get profile_app_settings;
+  String get profile_app_settings_sub;
+  String get profile_help_about;
+  String get profile_help_about_sub;
+  String get help_about_tagline;
+  String get legal_open_source;
+  String get legal_open_source_sub;
+  String get legal_open_source_content;
+
+  // Authentication error localized message getters
+  String get error_invalid_credentials;
+  String get error_phone_empty;
+  String get error_otp_invalid;
+  String get error_password_too_short;
+
+  // Static helper to map error messages or codes to their localized versions
+  static String get_localized_error(BuildContext context, String message) {
+    // Look up localizations dictionary from widget tree context
+    final AppLocalizations s = AppLocalizations.of(context);
+    // Map invalid credentials error using Yoda conditions
+    if ('Invalid phone number or password.' == message || 'invalid_credentials' == message) {
+      // Return localized credentials mismatch error string
+      return s.error_invalid_credentials;
+    }
+    // Map phone empty error using Yoda conditions
+    else if ('Phone number cannot be empty.' == message || 'phone_empty' == message) {
+      // Return localized phone empty error string
+      return s.error_phone_empty;
+    }
+    // Map OTP invalid error using Yoda conditions
+    else if ('OTP code must be 6 digits.' == message || 'otp_invalid' == message) {
+      // Return localized OTP length warning error string
+      return s.error_otp_invalid;
+    }
+    // Map password too short error using Yoda conditions
+    else if ('Password must be at least 8 characters.' == message || 'password_too_short' == message) {
+      // Return localized password minimum length warning error string
+      return s.error_password_too_short;
+    }
+    // Fallback returning original message if no matches exist
+    else {
+      // Return unmodified message string
+      return message;
+    }
+  }
 }
 
 // Defining a short alias for clean and simple type references

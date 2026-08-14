@@ -191,9 +191,9 @@ class _PasswordFieldWithRulesState extends State<PasswordFieldWithRules> {
           widget.label,
           // Pull centralized style registry with theme-adaptive colors
           // Pull centralized style registry with theme-adaptive colors
-          style: AppTextStyles.get_field_label(is_arabic).copyWith(
+          style: AppTextStyles.get_field_label(context, is_arabic).copyWith(
             // Select label color based on theme using Yoda style check
-            color: true == is_dark
+            color: is_dark
                 ? AppColors.text_dark_primary
                 : AppColors.text_light_primary,
           ),
@@ -227,9 +227,9 @@ class _PasswordFieldWithRulesState extends State<PasswordFieldWithRules> {
                   boxShadow: [
                     BoxShadow(
                       // Choose shadow color based on dark mode using Yoda style check
-                      color: true == is_dark
-                          ? Colors.black.withValues(alpha: 0.25)
-                          : Colors.black.withValues(alpha: 0.04),
+                      color: is_dark
+                          ? AppColors.black.withValues(alpha: 0.25)
+                          : AppColors.black.withValues(alpha: 0.04),
                       // Shadow blur radius
                       blurRadius: 6.0,
                       // Shadow thickness spread
@@ -264,13 +264,13 @@ class _PasswordFieldWithRulesState extends State<PasswordFieldWithRules> {
             // Force inputs to LTR direction even in Arabic
             textDirection: TextDirection.ltr,
             // Align password bullets dynamically to the right in Arabic RTL mode (BUG-006)
-            textAlign: true == is_arabic ? TextAlign.right : TextAlign.left,
+            textAlign: is_arabic ? TextAlign.right : TextAlign.left,
                 // Text styling inside field
                 style: TextStyle(
                   // Set font size using spacing constants
                   fontSize: AppSpacing.font_size_text,
                   // Select text color based on theme using Yoda style check
-                  color: true == is_dark
+                  color: is_dark
                       ? AppColors.text_dark_primary
                       : AppColors.text_light_primary,
                 ),
@@ -283,14 +283,14 @@ class _PasswordFieldWithRulesState extends State<PasswordFieldWithRules> {
                   // Hint size matches standard inputs
                   fontSize: AppSpacing.font_size_text,
                   // Select hint color based on theme using Yoda style check
-                  color: true == is_dark
+                  color: is_dark
                       ? AppColors.text_dark_secondary
                       : AppColors.text_light_secondary,
                 ),
                 // Enable background color fills
                 filled: true,
                 // Adapt background colors based on dark mode using Yoda style check
-                fillColor: true == is_dark
+                fillColor: is_dark
                     ? AppColors.surface_dark
                     : AppColors.input_fill,
                 // Suffix icon layout containing toggle action button
@@ -312,7 +312,7 @@ class _PasswordFieldWithRulesState extends State<PasswordFieldWithRules> {
                         // Visible state icon
                         : Icons.visibility_outlined,
                     // Select icon color based on theme using Yoda style check
-                    color: true == is_dark
+                    color: is_dark
                         ? AppColors.text_dark_secondary
                         : AppColors.text_light_secondary,
                     // Set layout size
@@ -326,7 +326,7 @@ class _PasswordFieldWithRulesState extends State<PasswordFieldWithRules> {
                   // Set border side specifications
                   borderSide: BorderSide(
                     // Select border color based on theme using Yoda style check
-                    color: true == is_dark
+                    color: is_dark
                         ? AppColors.border_dark
                         : AppColors.border_light,
                     // Set line thickness using spacing constants
@@ -346,7 +346,7 @@ class _PasswordFieldWithRulesState extends State<PasswordFieldWithRules> {
                         ? (true == _all_passed
                             ? AppColors.primary_color
                             : AppColors.error)
-                        : (true == is_dark
+                        : (is_dark
                             ? AppColors.border_dark
                             : AppColors.border_light),
                     // Set line thickness based on active values using
@@ -604,7 +604,7 @@ class _StrengthBarState extends State<_StrengthBar> {
             // children list
             children: List.generate(3, (index) {
               // Determine if current segment should be filled using Yoda style check
-              final bool is_filled = false == is_empty && score_val > index;
+              final bool is_filled = !is_empty && score_val > index;
               // Return segment wrapper
               return Expanded(
                 // Animated container for smooth size/color switches
@@ -621,11 +621,11 @@ class _StrengthBarState extends State<_StrengthBar> {
                   decoration: BoxDecoration(
                     // Set filled or fallback pale blue background colors
                     // using Yoda style check (BUG/RFE)
-                    color: true == is_filled
+                    color: is_filled
                         // Filled segments use primary brand color
                         ? bar_color
                         // Unfilled segments use theme-specific pale blue color
-                        : (true == is_dark ? AppColors.pale_blue_dark : AppColors.pale_blue),
+                        : (is_dark ? AppColors.pale_blue_dark : AppColors.pale_blue),
                     // Border curves radius using spacing constants
                     borderRadius: BorderRadius.circular(AppSpacing.radius_s),
                   ),
@@ -634,7 +634,7 @@ class _StrengthBarState extends State<_StrengthBar> {
             }),
           ),
           // Display labels dynamically if text inputs exist using Yoda style check
-          if (false == is_empty) ...[
+          if (!is_empty) ...[
             // Vertical space divider using spacing constants
             const SizedBox(height: AppSpacing.space_s),
             // Row layout showing label titles and progress values
@@ -649,8 +649,9 @@ class _StrengthBarState extends State<_StrengthBar> {
                   widget.s.password_strength,
                   // Text styling
                   style: AppTextStyles.get_body_medium(
+                    context,
                     is_arabic,
-                    custom_color: true == is_dark
+                    custom_color: is_dark
                         ? AppColors.text_dark_secondary
                         : AppColors.text_light_secondary,
                   ).copyWith(
@@ -670,6 +671,7 @@ class _StrengthBarState extends State<_StrengthBar> {
                     key: ValueKey<String>(_label),
                     // Text styling
                     style: AppTextStyles.get_body_medium(
+                      context,
                       is_arabic,
                       custom_color: bar_color,
                     ).copyWith(
@@ -815,7 +817,7 @@ class _RulesCardState extends State<_RulesCard> {
       // Visual decoration styling
       decoration: BoxDecoration(
         // Set background color adaptation based on dark mode using Yoda style check
-        color: true == is_dark ? AppColors.surface_dark : AppColors.background_light,
+        color: is_dark ? AppColors.surface_dark : AppColors.background_light,
         // Set corner radius curves using spacing constants
         borderRadius: BorderRadius.circular(AppSpacing.radius_l),
         // Set card borders with partial opacity of validation color
@@ -825,8 +827,8 @@ class _RulesCardState extends State<_RulesCard> {
           // Shadow layout description
           BoxShadow(
             // Shadow color adapts to brightness modes using Yoda style check
-            color: true == is_dark
-                ? Colors.black.withValues(alpha: 0.3)
+            color: is_dark
+                ? AppColors.black.withValues(alpha: 0.3)
                 : AppColors.text_light_primary.withValues(alpha: 0.07),
             // Blur spread radius using spacing constants
             blurRadius: AppSpacing.radius_l,
@@ -849,11 +851,11 @@ class _RulesCardState extends State<_RulesCard> {
             widget.s.password_must,
             // Text styling
             // Text styling
-            style: AppTextStyles.get_field_label(is_arabic).copyWith(
+            style: AppTextStyles.get_field_label(context, is_arabic).copyWith(
               // Bold font weight helper
               fontWeight: FontWeightHelper.bold,
               // Select label color based on theme using Yoda style check
-              color: true == is_dark
+              color: is_dark
                   ? AppColors.text_dark_primary
                   : AppColors.text_light_primary,
             ),
@@ -980,7 +982,7 @@ class _Rule extends StatelessWidget {
               // Requirement text
               label,
               // Text styling
-              style: AppTextStyles.get_body_medium(is_arabic, custom_color: item_color).copyWith(
+              style: AppTextStyles.get_body_medium(context, is_arabic, custom_color: item_color).copyWith(
                 // Small font size
                 fontSize: 12.0,
                 // Medium weight font layout helper

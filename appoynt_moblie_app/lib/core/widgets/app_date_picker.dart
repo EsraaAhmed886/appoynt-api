@@ -121,12 +121,8 @@ class _AppDatePickerDialogState extends State<AppDatePickerDialog> {
     // Resolve year label text
     final String year_text = '${_currentMonth.year}';
 
-    // Weekdays headers
-    final List<String> weekdays_en = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-    final List<String> weekdays_ar = ['ن', 'ث', 'ر', 'خ', 'ج', 'س', 'ح'];
-    // Resolve weekday labels based on active language (Yoda style check)
-    final List<String> weekdays =
-        true == localizations.is_arabic ? weekdays_ar : weekdays_en;
+    // Resolve weekday labels based on active language
+    final List<String> weekdays = localizations.weekdays;
 
     // Days grid building offsets
     final int offset = first_day_weekday - 1;
@@ -146,7 +142,7 @@ class _AppDatePickerDialogState extends State<AppDatePickerDialog> {
     // Dialog layout structure configuration
     return Dialog(
       // Clear legacy background fills
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.transparent,
       // Suppress drop shadows
       elevation: 0.0,
       // Apply standard layout horizontal padding
@@ -161,13 +157,13 @@ class _AppDatePickerDialogState extends State<AppDatePickerDialog> {
         // Card decorations
         decoration: BoxDecoration(
           // Resolve background color adapting to theme (Yoda style check)
-          color: true == is_dark ? AppColors.surface_dark : Colors.white,
+          color: is_dark ? AppColors.surface_dark : AppColors.white,
           // Rounded corners derived from spacing tokens
           borderRadius: BorderRadius.circular(AppSpacing.calendar_dialog_radius),
           // Outline border bounds resolving
           border: Border.all(
             // Resolve border color adapting to theme (Yoda style check)
-            color: true == is_dark ? AppColors.border_dark : AppColors.border_light,
+            color: is_dark ? AppColors.border_dark : AppColors.border_light,
             // Thin border line width
             width: AppSpacing.border_width_thin,
           ),
@@ -175,7 +171,7 @@ class _AppDatePickerDialogState extends State<AppDatePickerDialog> {
           boxShadow: [
             BoxShadow(
               // Shadow color mapping
-              color: Colors.black.withValues(alpha: 0.12),
+              color: AppColors.black.withValues(alpha: 0.12),
               // Soft blur radius
               blurRadius: 12.0,
               // Spread bounds
@@ -209,8 +205,8 @@ class _AppDatePickerDialogState extends State<AppDatePickerDialog> {
                     // Bold emphasis
                     fontWeight: FontWeight.bold,
                     // Colors adapt to theme (Yoda style check)
-                    color: true == is_dark
-                        ? Colors.white
+                    color: is_dark
+                        ? AppColors.white
                         : AppColors.text_light_primary,
                   ),
                 ),
@@ -224,8 +220,8 @@ class _AppDatePickerDialogState extends State<AppDatePickerDialog> {
                       icon: const Icon(Icons.chevron_left_rounded, size: AppSpacing.icon_size_m),
                       // Adaptive icon colors resolving (Yoda style check)
                       color: true == can_go_back
-                          ? (true == is_dark ? Colors.white54 : Colors.black45)
-                          : (true == is_dark ? Colors.white10 : Colors.black12),
+                          ? (is_dark ? AppColors.white54 : AppColors.black45)
+                          : (is_dark ? AppColors.white10 : AppColors.black12),
                       // Clear button inner margins
                       padding: EdgeInsets.zero,
                       // Shrink targets
@@ -260,8 +256,8 @@ class _AppDatePickerDialogState extends State<AppDatePickerDialog> {
                       icon: const Icon(Icons.chevron_right_rounded, size: AppSpacing.icon_size_m),
                       // Adaptive icon colors resolving (Yoda style check)
                       color: true == can_go_forward
-                          ? (true == is_dark ? Colors.white54 : Colors.black45)
-                          : (true == is_dark ? Colors.white10 : Colors.black12),
+                          ? (is_dark ? AppColors.white54 : AppColors.black45)
+                          : (is_dark ? AppColors.white10 : AppColors.black12),
                       // Clear button inner margins
                       padding: EdgeInsets.zero,
                       // Shrink targets
@@ -375,7 +371,7 @@ class _AppDatePickerDialogState extends State<AppDatePickerDialog> {
                 // GestureDetector intercepts selections
                 return GestureDetector(
                   // Handle day selection tap (Yoda style check)
-                  onTap: true == is_enabled
+                  onTap: is_enabled
                       ? () {
                           setState(() {
                             // Update selected date state
@@ -392,15 +388,15 @@ class _AppDatePickerDialogState extends State<AppDatePickerDialog> {
                       // Day shape coordinates circle border format
                       shape: BoxShape.circle,
                       // Active selected day colored blue (Yoda style check)
-                      color: true == is_selected
+                      color: is_selected
                           ? AppColors.primary_color
-                          : Colors.transparent,
+                          : AppColors.transparent,
                       // Today has outline borders if not selected (Yoda style check)
-                      border: true == is_today_date && false == is_selected
+                      border: is_today_date && !is_selected
                           ? Border.all(color: AppColors.primary_color, width: AppSpacing.border_width_thin)
                           : null,
                       // Apply glow shadows only when selected (Yoda style check)
-                      boxShadow: true == is_selected
+                      boxShadow: is_selected
                           ? [
                               BoxShadow(
                                 // Soft primary shadow
@@ -421,13 +417,13 @@ class _AppDatePickerDialogState extends State<AppDatePickerDialog> {
                         // Font size derived from spacing tokens
                         fontSize: AppSpacing.calendar_day_font_size,
                         // Highlight selected font weights (Yoda style check)
-                        fontWeight: true == is_selected ? FontWeight.bold : FontWeight.normal,
+                        fontWeight: is_selected ? FontWeight.bold : FontWeight.normal,
                         // Resolve text color depending on state (Yoda style check)
-                        color: true == is_selected
-                            ? Colors.white
-                            : (false == is_enabled
-                                ? (true == is_dark ? Colors.white24 : Colors.black12)
-                                : (true == is_dark ? Colors.white : AppColors.text_light_primary)),
+                        color: is_selected
+                            ? AppColors.white
+                            : (!is_enabled
+                                ? (is_dark ? AppColors.white24 : AppColors.black12)
+                                : (is_dark ? AppColors.white : AppColors.text_light_primary)),
                       ),
                     ),
                   ),
@@ -451,7 +447,7 @@ class _AppDatePickerDialogState extends State<AppDatePickerDialog> {
                       // Visual button style overrides
                       style: ElevatedButton.styleFrom(
                         // Muted background colors resolving using design tokens (Yoda style check)
-                        backgroundColor: true == is_dark
+                        backgroundColor: is_dark
                             ? AppColors.border_dark
                             : AppColors.border_light,
                         // Suppress shadows
@@ -469,13 +465,12 @@ class _AppDatePickerDialogState extends State<AppDatePickerDialog> {
                       },
                       // Cancel label widget
                       child: Text(
-                        // Localized cancel label string (Yoda style check)
-                        true == localizations.is_arabic ? 'إلغاء' : 'Cancel',
+                        localizations.date_picker_cancel,
                         // Label styles
                         style: TextStyle(
                           // Muted label text color resolving using design tokens (Yoda style check)
-                          color: true == is_dark
-                              ? Colors.white70
+                          color: is_dark
+                              ? AppColors.white70
                               : AppColors.text_light_secondary,
                           // Label font size derived from spacing tokens
                           fontSize: AppSpacing.font_size_label,
@@ -515,12 +510,11 @@ class _AppDatePickerDialogState extends State<AppDatePickerDialog> {
                       },
                       // Confirm label widget
                       child: Text(
-                        // Localized confirm label string (Yoda style check)
-                        true == localizations.is_arabic ? 'تأكيد' : 'Confirm',
+                        localizations.date_picker_confirm,
                         // Label styles
                         style: const TextStyle(
                           // Standard white labels on active CTA
-                          color: Colors.white,
+                          color: AppColors.white,
                           // Label font size derived from spacing tokens
                           fontSize: AppSpacing.font_size_label,
                           // Bold emphasis

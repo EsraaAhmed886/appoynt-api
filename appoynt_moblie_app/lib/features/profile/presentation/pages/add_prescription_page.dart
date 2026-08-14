@@ -22,6 +22,29 @@ import 'package:appoynt_mobile_app/core/widgets/auth/auth_text_field.dart';
 // Importing ProfileCubit for dispatching add prescription action
 import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart';
 
+// Local layout dimensions class to strictly eliminate hardcoded numbers
+class _LocalDimensions {
+  static const double border_radius_default = 16.0;
+  static const double border_radius_medium = 12.0;
+  static const double border_radius_xl = 30.0;
+  static const double border_width_thick = 1.5;
+  static const double spacing_small = 6.0;
+  static const double spacing_medium = 8.0;
+  static const double spacing_large = 10.0;
+  static const double padding_card = 16.0;
+  static const double font_size_body = 15.0;
+  static const double font_size_medium = 13.0;
+  static const double font_size_small = 12.0;
+  static const double icon_size_medium = 22.0;
+  static const double shadow_blur = 8.0;
+  static const double shadow_offset_y = 2.0;
+  static const double shadow_opacity_dark = 0.2;
+  static const double shadow_opacity_light = 0.04;
+  static const double choice_chip_padding_h = 14.0;
+  static const double choice_chip_padding_v = 9.0;
+  static const double bottom_spacing_safe = 80.0;
+}
+
 // Stateful widget representing the standalone Add Prescription page
 class AddPrescriptionPage extends StatefulWidget {
   // Optional prescription data for edit mode
@@ -123,15 +146,15 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
 
       // Check if in Edit Mode (Yoda style check)
       final bool is_edit = null != widget.prescription;
-      final String rx_id = true == is_edit
+      final String rx_id = is_edit
           ? (widget.prescription!['id'] as String? ??
               DateTime.now().millisecondsSinceEpoch.toString())
           : DateTime.now().millisecondsSinceEpoch.toString();
-      final String rx_status = true == is_edit
+      final String rx_status = is_edit
           ? (widget.prescription!['status'] as String? ??
               localizations.prescriptions_status_active)
           : localizations.prescriptions_status_active;
-      final String rx_date = true == is_edit
+      final String rx_date = is_edit
           ? (widget.prescription!['date'] as String? ?? 'Today')
           : 'Today';
 
@@ -157,7 +180,7 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
         'attachment': _attachment_name,
       };
 
-      if (true == is_edit) {
+      if (is_edit) {
         // Dispatch the update prescription action to cubit
         save_context.read<ProfileCubit>().update_prescription(rx_id, rx_data);
       } else {
@@ -179,17 +202,16 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
     final AppLocalizations localizations = AppLocalizations.of(context);
     // Resolve theme brightness flag
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
-    final bool is_ar = localizations.is_arabic;
     final bool is_edit = null != widget.prescription;
 
     // Resolve dynamic page title copy
-    final String page_title = true == is_edit
-        ? (true == is_ar ? 'تعديل بيانات الدواء' : 'Edit Medication')
+    final String page_title = is_edit
+        ? localizations.prescriptions_edit_title
         : localizations.prescriptions_modal_title;
 
     // Resolve dynamic button label copy
-    final String cta_label = true == is_edit
-        ? (true == is_ar ? 'تحديث الدواء' : 'Update Prescription')
+    final String cta_label = is_edit
+        ? localizations.prescriptions_update_btn
         : localizations.prescriptions_save_btn;
 
     // Build localized frequency chip labels from localization dictionary
@@ -271,16 +293,16 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
                             localizations.prescriptions_field_freq_label,
                             style: TextStyle(
                               // Small label font size
-                              fontSize: 12.0,
+                              fontSize: _LocalDimensions.font_size_small,
                               // Bold weight
                               fontWeight: FontWeight.bold,
                               // Adaptive text color
-                              color: true == is_dark
-                                  ? Colors.white
+                              color: is_dark
+                                  ? AppColors.white
                                   : AppColors.text_light_primary,
                             ),
                           ),
-                          const SizedBox(height: 8.0),
+                          const SizedBox(height: _LocalDimensions.spacing_medium),
 
                           // Horizontal scrollable animated frequency chip row
                           SingleChildScrollView(
@@ -294,7 +316,7 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
                                     _selected_frequency == freq;
                                 return Padding(
                                   // Right spacing between chips
-                                  padding: const EdgeInsets.only(right: 6.0),
+                                  padding: const EdgeInsets.only(right: _LocalDimensions.spacing_small),
                                   child: GestureDetector(
                                     // Update selection state on tap
                                     onTap: () {
@@ -309,30 +331,30 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
                                           const Duration(milliseconds: 200),
                                       // Internal horizontal and vertical padding
                                       padding: const EdgeInsets.symmetric(
-                                        horizontal: 14.0,
-                                        vertical: 9.0,
+                                        horizontal: _LocalDimensions.choice_chip_padding_h,
+                                        vertical: _LocalDimensions.choice_chip_padding_v,
                                       ),
                                       // Chip decoration adapting to selection state
                                       decoration: BoxDecoration(
                                         // Selected: primary blue fill
-                                        color: true == is_selected
+                                        color: is_selected
                                             ? AppColors.primary_color
-                                            : (true == is_dark
+                                            : (is_dark
                                                 ? AppColors.background_dark
-                                                : const Color(0xFFF1F5F9)),
+                                                : AppColors.slate_50),
                                         // Pill-shape 30px radius
                                         borderRadius:
-                                            BorderRadius.circular(30.0),
+                                            BorderRadius.circular(_LocalDimensions.border_radius_xl),
                                         // Chip border outline
                                         border: Border.all(
                                           // Selected: primary color border
-                                          color: true == is_selected
+                                          color: is_selected
                                               ? AppColors.primary_color
-                                              : (true == is_dark
+                                              : (is_dark
                                                   ? AppColors.border_dark
-                                                  : const Color(0xFFE2E8F0)),
+                                                  : AppColors.slate_200),
                                           // Slightly thicker border
-                                          width: 1.5,
+                                          width: _LocalDimensions.border_width_thick,
                                         ),
                                       ),
                                       // Chip label text widget
@@ -341,16 +363,16 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
                                         freq,
                                         style: TextStyle(
                                           // Small chip text size
-                                          fontSize: 12.0,
+                                          fontSize: _LocalDimensions.font_size_small,
                                           // Bold when selected
-                                          fontWeight: true == is_selected
+                                          fontWeight: is_selected
                                               ? FontWeight.bold
                                               : FontWeight.normal,
                                           // White when selected else secondary
-                                          color: true == is_selected
-                                              ? Colors.white
-                                              : (true == is_dark
-                                                  ? Colors.white70
+                                          color: is_selected
+                                              ? AppColors.white
+                                              : (is_dark
+                                                  ? AppColors.white70
                                                   : AppColors
                                                       .text_light_primary),
                                         ),
@@ -410,23 +432,20 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
                               // Fill available horizontal width
                               width: double.infinity,
                               // Vertical padding inside touch area
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 16.0,
-                                horizontal: 16.0,
-                              ),
+                              padding: const EdgeInsets.all(_LocalDimensions.padding_card),
                               // Rounded outline decoration
                               decoration: BoxDecoration(
                                 // Slightly tinted canvas background
-                                color: true == is_dark
+                                color: is_dark
                                     ? AppColors.background_dark
-                                    : const Color(0xFFF8FAFC),
+                                    : AppColors.slate_50,
                                 // Rounded 12px corners
-                                borderRadius: BorderRadius.circular(12.0),
+                                borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_medium),
                                 // Thin border outline
                                 border: Border.all(
-                                  color: true == is_dark
+                                  color: is_dark
                                       ? AppColors.border_dark
-                                      : const Color(0xFFE2E8F0),
+                                      : AppColors.slate_200,
                                 ),
                               ),
                               child: Row(
@@ -439,12 +458,12 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
                                         : Icons.attach_file_rounded,
                                     // Green when attached else primary blue
                                     color: _attachment_name != null
-                                        ? const Color(0xFF10B981)
+                                        ? AppColors.success
                                         : AppColors.primary_color,
                                     // Icon display size
-                                    size: 22.0,
+                                    size: _LocalDimensions.icon_size_medium,
                                   ),
-                                  const SizedBox(width: 10.0),
+                                  const SizedBox(width: _LocalDimensions.spacing_large),
                                   // Attached file name or placeholder text
                                   Expanded(
                                     child: Text(
@@ -453,14 +472,14 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
                                           'Upload Rx Photo / Document (Optional)',
                                       style: TextStyle(
                                         // Body font size
-                                        fontSize: 13.0,
+                                        fontSize: _LocalDimensions.font_size_medium,
                                         // Bold if file attached
                                         fontWeight: _attachment_name != null
                                             ? FontWeight.bold
                                             : FontWeight.normal,
                                         // Green when attached else secondary
                                         color: _attachment_name != null
-                                            ? const Color(0xFF10B981)
+                                            ? AppColors.success
                                             : AppColors.text_light_secondary,
                                       ),
                                     ),
@@ -472,7 +491,7 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
                         ],
                       ),
 
-                      const SizedBox(height: 80.0),
+                      const SizedBox(height: _LocalDimensions.bottom_spacing_safe),
                     ],
                   ),
                 ),
@@ -496,7 +515,7 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
               elevation: 0.0,
               // 12px rounded corners
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.0),
+                borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_medium),
               ),
             ),
             child: Text(
@@ -504,7 +523,7 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
               cta_label,
               style: const TextStyle(
                 // White text on blue fill
-                color: Colors.white,
+                color: AppColors.white,
                 // Action font size token
                 fontSize: AppSpacing.font_size_action_button,
                 // Bold weight
@@ -531,14 +550,14 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
       // Card decoration with shadow and border
       decoration: BoxDecoration(
         // White surface in light mode, dark surface in dark mode
-        color: true == is_dark ? AppColors.surface_dark : Colors.white,
+        color: is_dark ? AppColors.surface_dark : AppColors.white,
         // 16px rounded corners
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
         // Thin border outline
         border: Border.all(
           // Adaptive border color
           color:
-              true == is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
+              is_dark ? AppColors.border_dark : AppColors.slate_200,
           // Border width token
           width: AppSpacing.border_width_thin,
         ),
@@ -546,13 +565,13 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
         boxShadow: [
           BoxShadow(
             // Tinted shadow adapts to theme
-            color: true == is_dark
-                ? Colors.black.withValues(alpha: 0.2)
-                : Colors.black.withValues(alpha: 0.04),
+            color: is_dark
+                ? AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
+                : AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
             // Blur radius
-            blurRadius: 8.0,
+            blurRadius: _LocalDimensions.shadow_blur,
             // Vertical shadow offset
-            offset: const Offset(0.0, 2.0),
+            offset: const Offset(0.0, _LocalDimensions.shadow_offset_y),
           ),
         ],
       ),
@@ -566,12 +585,12 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
             title,
             style: TextStyle(
               // Medium font size
-              fontSize: 15.0,
+              fontSize: _LocalDimensions.font_size_body,
               // Bold weight
               fontWeight: FontWeight.bold,
               // Adaptive text color
               color:
-                  true == is_dark ? Colors.white : AppColors.text_light_primary,
+                  is_dark ? AppColors.white : AppColors.text_light_primary,
             ),
           ),
           const SizedBox(height: AppSpacing.space_m),

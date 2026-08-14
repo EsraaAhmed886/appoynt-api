@@ -26,9 +26,35 @@ import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_s
 // Importing sub-pages for navigation routing
 import 'package:appoynt_mobile_app/features/profile/presentation/pages/edit_profile_page.dart';
 import 'package:appoynt_mobile_app/features/profile/presentation/pages/medical_context_page.dart';
-import 'package:appoynt_mobile_app/features/profile/presentation/pages/payment_wallet_page.dart';
+import 'package:appoynt_mobile_app/features/payment/presentation/pages/payment_wallet_page.dart';
 import 'package:appoynt_mobile_app/features/profile/presentation/pages/security_privacy_page.dart';
-import 'package:appoynt_mobile_app/features/profile/presentation/pages/app_preferences_page.dart';
+import 'package:appoynt_mobile_app/features/profile/presentation/pages/app_settings_page.dart';
+import 'package:appoynt_mobile_app/features/profile/presentation/pages/help_about_page.dart';
+
+// Local layout dimensions class to strictly eliminate hardcoded numbers
+class _LocalDimensions {
+  static const double border_radius_default = 16.0;
+  static const double border_radius_medium = 12.0;
+  static const double border_radius_small = 10.0;
+  static const double border_radius_large = 20.0;
+  static const double border_radius_avatar = 50.0;
+  static const double border_width_thin = 0.5;
+  static const double spacing_tiny = 2.0;
+  static const double spacing_small = 4.0;
+  static const double spacing_large = 8.0;
+  static const double avatar_size = 100.0;
+  static const double icon_container_size = 40.0;
+  static const double icon_size_large = 48.0;
+  static const double icon_size_small = 20.0;
+  static const double icon_size_tiny = 12.0;
+  static const double font_size_subtitle = 16.0;
+  static const double font_size_tiny = 11.0;
+  static const double shadow_blur = 10.0;
+  static const double shadow_blur_large = 12.0;
+  static const double shadow_opacity_dark = 0.2;
+  static const double shadow_opacity_light = 0.05;
+  static const double shadow_opacity_light_alt = 0.08;
+}
 
 // Patient profile view mode screen stateful widget
 class ProfilePage extends StatefulWidget {
@@ -97,7 +123,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     // Style label text parameters options
                     style: TextStyle(
                       // Text colors
-                      color: true == is_dark
+                      color: is_dark
                           ? AppColors.text_dark_primary
                           : AppColors.text_light_primary,
                     ),
@@ -167,9 +193,9 @@ class _ProfilePageState extends State<ProfilePage> {
                             // Clean isolated circular avatar image container layout
                             child: Container(
                               // Fixed width
-                              width: 100.0,
+                              width: _LocalDimensions.avatar_size,
                               // Fixed height
-                              height: 100.0,
+                              height: _LocalDimensions.avatar_size,
                               // Container decoration parameters
                               decoration: BoxDecoration(
                                 // Circular shape
@@ -178,11 +204,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                 boxShadow: [
                                   BoxShadow(
                                     // Shadow colors adapting to dark mode
-                                    color: true == is_dark
-                                        ? Colors.black45
-                                        : Colors.black.withValues(alpha: 0.08),
+                                    color: is_dark
+                                        ? AppColors.black45
+                                        : AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light_alt),
                                     // Blur spread radius
-                                    blurRadius: 12.0,
+                                    blurRadius: _LocalDimensions.shadow_blur_large,
                                     // Offset position coordinates
                                     offset: const Offset(0.0, 4.0),
                                   ),
@@ -191,7 +217,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               // Clip image inside circular bounds
                               child: ClipRRect(
                                 // Corner radius matching half dimensions
-                                borderRadius: BorderRadius.circular(50.0),
+                                borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_avatar),
                                 // Render network image or fallback icon
                                 child: state.profile.avatar_url.isNotEmpty
                                     ? (true == state.profile.avatar_url.startsWith('http')
@@ -211,7 +237,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         child: const Icon(
                                           Icons.person_rounded,
                                           color: AppColors.primary_color,
-                                          size: 48.0,
+                                          size: _LocalDimensions.icon_size_large,
                                         ),
                                       ),
                               ),
@@ -223,10 +249,10 @@ class _ProfilePageState extends State<ProfilePage> {
                           Text(
                             '${state.profile.first_name} ${state.profile.last_name}',
                             style: TextStyle(
-                              fontSize: 16.0,
+                              fontSize: _LocalDimensions.font_size_subtitle,
                               fontWeight: FontWeight.bold,
-                              color: true == is_dark
-                                  ? Colors.white
+                              color: is_dark
+                                  ? AppColors.white
                                   : AppColors.text_light_primary,
                             ),
                           ),
@@ -239,13 +265,13 @@ class _ProfilePageState extends State<ProfilePage> {
                               // Email verified badge
                               Container(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 8.0, vertical: 4.0),
+                                    horizontal: _LocalDimensions.spacing_large, vertical: _LocalDimensions.spacing_small),
                                 decoration: BoxDecoration(
-                                  color: Colors.green.withValues(alpha: 0.08),
-                                  borderRadius: BorderRadius.circular(12.0),
+                                  color: AppColors.success.withValues(alpha: 0.08),
+                                  borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_medium),
                                   border: Border.all(
-                                    color: Colors.green.withValues(alpha: 0.2),
-                                    width: 0.5,
+                                    color: AppColors.success.withValues(alpha: 0.2),
+                                    width: _LocalDimensions.border_width_thin,
                                   ),
                                 ),
                                 child: Row(
@@ -253,14 +279,14 @@ class _ProfilePageState extends State<ProfilePage> {
                                   children: [
                                     const Icon(
                                       Icons.check_circle_rounded,
-                                      color: Colors.green,
-                                      size: 12.0,
+                                      color: AppColors.success,
+                                      size: _LocalDimensions.icon_size_tiny,
                                     ),
-                                    const SizedBox(width: 4.0),
+                                    const SizedBox(width: _LocalDimensions.spacing_small),
                                     Text(
                                       state.profile.email,
                                       style: const TextStyle(
-                                        fontSize: 11.0,
+                                        fontSize: _LocalDimensions.font_size_tiny,
                                         color: AppColors.text_light_secondary,
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -273,13 +299,13 @@ class _ProfilePageState extends State<ProfilePage> {
                               // Phone verified badge
                               Container(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 8.0, vertical: 4.0),
+                                    horizontal: _LocalDimensions.spacing_large, vertical: _LocalDimensions.spacing_small),
                                 decoration: BoxDecoration(
-                                  color: Colors.green.withValues(alpha: 0.08),
-                                  borderRadius: BorderRadius.circular(12.0),
+                                  color: AppColors.success.withValues(alpha: 0.08),
+                                  borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_medium),
                                   border: Border.all(
-                                    color: Colors.green.withValues(alpha: 0.2),
-                                    width: 0.5,
+                                    color: AppColors.success.withValues(alpha: 0.2),
+                                    width: _LocalDimensions.border_width_thin,
                                   ),
                                 ),
                                 child: Row(
@@ -287,14 +313,14 @@ class _ProfilePageState extends State<ProfilePage> {
                                   children: [
                                     const Icon(
                                       Icons.check_circle_rounded,
-                                      color: Colors.green,
-                                      size: 12.0,
+                                      color: AppColors.success,
+                                      size: _LocalDimensions.icon_size_tiny,
                                     ),
-                                    const SizedBox(width: 4.0),
+                                    const SizedBox(width: _LocalDimensions.spacing_small),
                                     Text(
                                       state.profile.phone,
                                       style: const TextStyle(
-                                        fontSize: 11.0,
+                                        fontSize: _LocalDimensions.font_size_tiny,
                                         color: AppColors.text_light_secondary,
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -319,7 +345,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 decoration: BoxDecoration(
                                   color: AppColors.primary_color
                                       .withValues(alpha: 0.06),
-                                  borderRadius: BorderRadius.circular(20.0),
+                                  borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_large),
                                 ),
                                 child: Row(
                                   children: [
@@ -332,8 +358,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                     Text(
                                       '${state.profile.height.isEmpty ? '--' : state.profile.height} CM',
                                       style: TextStyle(
-                                        color: true == is_dark
-                                            ? Colors.white
+                                        color: is_dark
+                                            ? AppColors.white
                                             : AppColors.primary_color,
                                         fontSize:
                                             AppSpacing.font_size_body_small,
@@ -354,7 +380,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 decoration: BoxDecoration(
                                   color: AppColors.primary_color
                                       .withValues(alpha: 0.06),
-                                  borderRadius: BorderRadius.circular(20.0),
+                                  borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_large),
                                 ),
                                 child: Row(
                                   children: [
@@ -367,8 +393,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                     Text(
                                       '${state.profile.weight.isEmpty ? '--' : state.profile.weight} KG',
                                       style: TextStyle(
-                                        color: true == is_dark
-                                            ? Colors.white
+                                        color: is_dark
+                                            ? AppColors.white
                                             : AppColors.primary_color,
                                         fontSize:
                                             AppSpacing.font_size_body_small,
@@ -394,23 +420,23 @@ class _ProfilePageState extends State<ProfilePage> {
                       vertical: AppSpacing.space_xs,
                     ),
                     decoration: BoxDecoration(
-                      color: true == is_dark
+                      color: is_dark
                           ? AppColors.surface_dark
-                          : Colors.white,
-                      borderRadius: BorderRadius.circular(16.0),
+                          : AppColors.white,
+                      borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
                       boxShadow: [
                         BoxShadow(
-                          color: true == is_dark
-                              ? Colors.black.withValues(alpha: 0.2)
-                              : Colors.black.withValues(alpha: 0.05),
-                          blurRadius: 10.0,
+                          color: is_dark
+                              ? AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
+                              : AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
+                          blurRadius: _LocalDimensions.shadow_blur,
                           offset: const Offset(0.0, 4.0),
                         ),
                       ],
                       border: Border.all(
-                        color: true == is_dark
+                        color: is_dark
                             ? AppColors.border_dark
-                            : const Color(0xFFE2E8F0),
+                            : AppColors.slate_200,
                         width: AppSpacing.border_width_thin,
                       ),
                     ),
@@ -434,7 +460,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           },
                         ),
                         const Divider(
-                            height: 1.0, thickness: 0.5, indent: 64.0),
+                            height: 1.0, thickness: _LocalDimensions.border_width_thin, indent: 64.0),
                         // Option 2: Medical History
                         _ProfileOptionCard(
                           title: localizations.profile_medical_history,
@@ -452,7 +478,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           },
                         ),
                         const Divider(
-                            height: 1.0, thickness: 0.5, indent: 64.0),
+                            height: 1.0, thickness: _LocalDimensions.border_width_thin, indent: 64.0),
                         // Option 3: Payment & Wallet
                         _ProfileOptionCard(
                           title: localizations.profile_payment_wallet,
@@ -470,7 +496,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           },
                         ),
                         const Divider(
-                            height: 1.0, thickness: 0.5, indent: 64.0),
+                            height: 1.0, thickness: _LocalDimensions.border_width_thin, indent: 64.0),
                         // Option 4: Security & Privacy
                         _ProfileOptionCard(
                           title: localizations.profile_security_privacy,
@@ -488,18 +514,36 @@ class _ProfilePageState extends State<ProfilePage> {
                           },
                         ),
                         const Divider(
-                            height: 1.0, thickness: 0.5, indent: 64.0),
-                        // Option 5: App Preferences
+                            height: 1.0, thickness: _LocalDimensions.border_width_thin, indent: 64.0),
+                        // Option 5: App Settings
                         _ProfileOptionCard(
-                          title: localizations.profile_app_preferences,
-                          subtitle: 'Notifications, language & app themes',
+                          title: localizations.profile_app_settings,
+                          subtitle: localizations.profile_app_settings_sub,
                           icon: Icons.settings_outlined,
                           on_press: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (route_context) => BlocProvider.value(
                                   value: context.read<ProfileCubit>(),
-                                  child: const AppPreferencesPage(),
+                                  child: const AppSettingsPage(),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        const Divider(
+                            height: 1.0, thickness: _LocalDimensions.border_width_thin, indent: 64.0),
+                        // Option 6: Help & About App
+                        _ProfileOptionCard(
+                          title: localizations.profile_help_about,
+                          subtitle: localizations.profile_help_about_sub,
+                          icon: Icons.info_outline_rounded,
+                          on_press: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (route_context) => BlocProvider.value(
+                                  value: context.read<ProfileCubit>(),
+                                  child: const HelpAndAboutPage(),
                                 ),
                               ),
                             );
@@ -544,18 +588,18 @@ class _ProfilePageState extends State<ProfilePage> {
       // Card background decoration
       decoration: BoxDecoration(
         // Dynamic surface color
-        color: true == is_dark ? AppColors.surface_dark : Colors.white,
+        color: is_dark ? AppColors.surface_dark : AppColors.white,
         // Rounded corner radius bounds (16.0px)
         borderRadius: BorderRadius.circular(AppSpacing.radius_xl),
         // Ambient soft shadow
         boxShadow: [
           BoxShadow(
             // Shadow colors
-            color: true == is_dark
-                ? Colors.black.withValues(alpha: 0.2)
-                : Colors.black.withValues(alpha: 0.05),
+            color: is_dark
+                ? AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
+                : AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
             // Blur radius
-            blurRadius: 10.0,
+            blurRadius: _LocalDimensions.shadow_blur,
             // Spread offset
             offset: const Offset(0.0, 4.0),
           ),
@@ -564,7 +608,7 @@ class _ProfilePageState extends State<ProfilePage> {
         border: Border.all(
           // Border color adaptions
           color:
-              true == is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
+              is_dark ? AppColors.border_dark : AppColors.slate_200,
           // Thin width
           width: AppSpacing.border_width_thin,
         ),
@@ -591,9 +635,9 @@ class _ProfilePageState extends State<ProfilePage> {
               // Circular soft low-saturated red tinted background icon container
               Container(
                 // Width 40px
-                width: 40.0,
+                width: _LocalDimensions.icon_container_size,
                 // Height 40px
-                height: 40.0,
+                height: _LocalDimensions.icon_container_size,
                 // Styling
                 decoration: BoxDecoration(
                   // Soft red tinted background fill
@@ -608,7 +652,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   // Low-saturated destructive red color
                   color: AppColors.error,
                   // Icon size
-                  size: 20.0,
+                  size: _LocalDimensions.icon_size_small,
                 ),
               ),
               // Horizontal gap spacer (12px)
@@ -636,7 +680,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ),
                     // Spacing gap (2px)
-                    const SizedBox(height: 2.0),
+                    const SizedBox(height: _LocalDimensions.spacing_tiny),
                     // Micro Subtitle detail text widget
                     Text(
                       // Localized subtitle description
@@ -648,7 +692,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         // Height ratio 1.3
                         height: 1.3,
                         // Muted color adaptions
-                        color: true == is_dark
+                        color: is_dark
                             ? AppColors.text_dark_secondary
                             : AppColors.text_light_secondary,
                       ),
@@ -699,7 +743,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             // Background surface color mapping light/dark modes
             backgroundColor:
-                true == is_dark ? AppColors.surface_dark : Colors.white,
+                is_dark ? AppColors.surface_dark : AppColors.white,
             // Title Text widget
             title: Text(
               // Localized dialog title
@@ -711,8 +755,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 // Extra bold weight
                 fontWeight: FontWeight.w800,
                 // Colors
-                color: true == is_dark
-                    ? Colors.white
+                color: is_dark
+                    ? AppColors.white
                     : AppColors.text_light_primary,
               ),
             ),
@@ -727,7 +771,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 // Line height ratio 1.4
                 height: 1.4,
                 // Muted text colors
-                color: true == is_dark
+                color: is_dark
                     ? AppColors.text_dark_secondary
                     : AppColors.text_light_secondary,
               ),
@@ -751,7 +795,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         // Border color adaptions
                         side: BorderSide(
                           // Muted border lines
-                          color: true == is_dark
+                          color: is_dark
                               ? AppColors.border_dark
                               : AppColors.border_light,
                         ),
@@ -772,8 +816,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           // Bold weight
                           fontWeight: FontWeight.bold,
                           // Dynamic colors
-                          color: true == is_dark
-                              ? Colors.white70
+                          color: is_dark
+                              ? AppColors.white70
                               : AppColors.text_light_primary,
                         ),
                       ),
@@ -800,7 +844,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         // High-contrast solid red background
                         backgroundColor: AppColors.error,
                         // White foreground text
-                        foregroundColor: Colors.white,
+                        foregroundColor: AppColors.white,
                         // Zero elevation shadow
                         elevation: 0,
                         // Rounded corners radius
@@ -852,7 +896,7 @@ class _ProfilePageState extends State<ProfilePage> {
           // Dialog wrapper container
           child: Dialog(
             // Transparent surface fill
-            backgroundColor: Colors.transparent,
+            backgroundColor: AppColors.transparent,
             // Zero elevation shadow
             elevation: 0.0,
             // Inner content padding
@@ -876,14 +920,14 @@ class _ProfilePageState extends State<ProfilePage> {
                       // Shape decoration
                       decoration: BoxDecoration(
                         // Dark transparent fill
-                        color: Colors.black.withValues(alpha: 0.4),
+                        color: AppColors.black.withValues(alpha: 0.4),
                         // Circular shape
                         shape: BoxShape.circle,
                       ),
                       // Close icon symbol
                       child: const Icon(
                         Icons.close_rounded,
-                        color: Colors.white,
+                        color: AppColors.white,
                         size: 20.0,
                       ),
                     ),
@@ -909,7 +953,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     // Outer border ring line
                     border: Border.all(
                       // White border ring
-                      color: Colors.white.withValues(alpha: 0.8),
+                      color: AppColors.white.withValues(alpha: 0.8),
                       // Border thickness
                       width: 3.0,
                     ),
@@ -917,7 +961,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     boxShadow: const [
                       BoxShadow(
                         // Color
-                        color: Colors.black38,
+                        color: AppColors.black38,
                         // Blur
                         blurRadius: 20.0,
                         // Offset
@@ -1010,7 +1054,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         // Camera upload icon graphic
                         const Icon(
                           Icons.camera_alt_rounded,
-                          color: Colors.white,
+                          color: AppColors.white,
                           size: 18.0,
                         ),
                         // Spacer gap
@@ -1022,7 +1066,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           // Typography properties
                           style: const TextStyle(
                             // White text
-                            color: Colors.white,
+                            color: AppColors.white,
                             // Body font size
                             fontSize: 14.0,
                             // Bold weight
@@ -1086,15 +1130,15 @@ class _ProfileOptionCard extends StatelessWidget {
             // Soft rounded container housing category icon
             Container(
               // Badge width
-              width: 40.0,
+              width: _LocalDimensions.icon_container_size,
               // Badge height
-              height: 40.0,
+              height: _LocalDimensions.icon_container_size,
               // Layout style configurations
               decoration: BoxDecoration(
                 // Pastel primary brand shade background
                 color: AppColors.primary_color.withValues(alpha: 0.08),
                 // Soft rounded square corner layout
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_small),
               ),
               // Icon graphic centered inside container
               child: Icon(
@@ -1130,7 +1174,7 @@ class _ProfileOptionCard extends StatelessWidget {
                       // Bold weight indicator
                       fontWeight: FontWeight.w700,
                       // Dynamic text color adjusting to dark/light surfaces
-                      color: true == is_dark
+                      color: is_dark
                           ? AppColors.text_dark_primary
                           : AppColors.text_light_primary,
                     ),

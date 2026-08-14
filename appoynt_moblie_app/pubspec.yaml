@@ -41,6 +41,7 @@ dependencies:
   # Local Storage
   flutter_secure_storage: ^9.2.2
   shared_preferences: ^2.2.3
+  package_info_plus: ^8.1.0
 
   # Local Database
   hive: ^2.2.3
@@ -95,6 +96,8 @@ flutter:
   assets:
     # Add path to the local assets/images directory
     - assets/images/
+    # Add path to the local assets/icons directory
+    - assets/icons/
 
 # Configuration for generating app launcher icons
 flutter_launcher_icons:

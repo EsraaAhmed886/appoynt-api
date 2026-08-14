@@ -80,9 +80,11 @@ if (Test-Path "test") {
     Write-Host "INFO: No test directory detected, skipping tests." -ForegroundColor Yellow
 }
 
-# Step 5: Compile release APK package with architecture splits to optimize size
-Write-Host "[5/5] Building release APK file with split-per-abi..." -ForegroundColor Green
-flutter build apk --release --split-per-abi
+# Step 5: Compile release APK package with architecture splits and dynamic build number
+# Calculate dynamic build number from current timestamp (YYMMDDHHMM)
+$BUILD_NUMBER = Get-Date -Format "yyMMddHHmm"
+Write-Host "[5/5] Building release APK file with split-per-abi and Build Number: $BUILD_NUMBER..." -ForegroundColor Green
+flutter build apk --release --split-per-abi --build-number=$BUILD_NUMBER
 # Yoda check checking last command execution status code
 if (0 -ne $LASTEXITCODE) {
     # Warn developer and terminate build steps

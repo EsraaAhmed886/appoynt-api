@@ -15,6 +15,31 @@ import 'package:appoynt_mobile_app/core/routing/route_export.dart';
 // Importing custom date picker
 import 'package:appoynt_mobile_app/core/widgets/app_date_picker.dart';
 
+// Local layout dimensions class to strictly eliminate hardcoded numbers
+class _LocalDimensions {
+  static const double border_radius_default = 16.0;
+  static const double border_radius_medium = 12.0;
+  static const double border_radius_large = 20.0;
+  static const double border_width_thick = 1.5;
+  static const double border_width_thin = 1.0;
+  static const double border_width_half = 0.5;
+  static const double button_height = 50.0;
+  static const double choice_chip_height = 38.0;
+  static const double spacing_small = 6.0;
+  static const double font_size_body = 14.0;
+  static const double font_size_medium = 13.0;
+  static const double font_size_small = 12.0;
+  static const double font_size_tiny = 11.0;
+  static const double icon_size_small = 18.0;
+  static const double shadow_blur = 10.0;
+  static const double shadow_offset_y = 4.0;
+  static const double shadow_opacity_dark = 0.2;
+  static const double shadow_opacity_light = 0.03;
+  static const double choice_chip_padding_h = 2.0;
+  static const double input_padding = 10.0;
+  static const double bottom_spacing_safe = 80.0;
+}
+
 // Stateful widget representing the full screen Add Family Member page
 class AddFamilyMemberPage extends StatefulWidget {
   // Optional family member data for edit mode
@@ -86,25 +111,24 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     // Resolve localization dictionary helper
     final AppLocalizations localizations = AppLocalizations.of(context);
-    final bool is_ar = localizations.is_arabic;
     final bool is_edit = null != widget.member;
 
     // Resolve dynamic page title copy
-    final String page_title = true == is_edit
-        ? (true == is_ar ? 'تعديل فرد العائلة' : 'Edit Family Member')
-        : (true == is_ar ? 'إضافة فرد عائلة' : 'Add Family Member');
+    final String page_title = is_edit
+        ? localizations.add_member_edit_title
+        : localizations.add_member_add_title;
 
     // Resolve dynamic button label copy
-    final String cta_label = true == is_edit
-        ? (true == is_ar ? 'تحديث البيانات' : 'Update Member Profile')
-        : (true == is_ar ? 'حفظ البيانات' : 'Save Member Profile');
+    final String cta_label = is_edit
+        ? localizations.add_member_update_btn
+        : localizations.add_member_save_btn;
 
     // Return root Scaffold container
     return Scaffold(
       bottomNavigationBar: StickyBottomBar(
         child: SizedBox(
           width: double.infinity,
-          height: 50.0,
+          height: _LocalDimensions.button_height,
           child: ElevatedButton(
             // Trigger validations and pop context route on tap
             onPressed: () {
@@ -115,9 +139,9 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                 // Show successfully saved toast message
                 ScaffoldMessenger.of(context).showSnackBar(
                   // SnackBar configs
-                  const SnackBar(
+                  SnackBar(
                     // Label text content
-                    content: Text('Saved Member Profile successfully.'),
+                    content: Text(localizations.add_member_success_toast),
                     // Primary blue success color tint
                     backgroundColor: AppColors.primary_color,
                   ),
@@ -131,7 +155,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
               // Curved radius shape
               shape: RoundedRectangleBorder(
                 // Rounded corner radius
-                borderRadius: BorderRadius.circular(12.0),
+                borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_medium),
               ),
             ),
             // Bold button label text widget
@@ -141,11 +165,11 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
               // Typographic style configurations
               style: const TextStyle(
                 // White colors
-                color: Colors.white,
+                color: AppColors.white,
                 // Bold label indicators
                 fontWeight: FontWeight.bold,
                 // Size
-                fontSize: 14.0,
+                fontSize: _LocalDimensions.font_size_body,
               ),
             ),
           ),
@@ -193,31 +217,31 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                     // Decoration layouts details
                     decoration: BoxDecoration(
                       // Color
-                      color: true == is_dark
+                      color: is_dark
                           ? AppColors.surface_dark
-                          : Colors.white,
+                          : AppColors.white,
                       // Corner curvature matching radius tokens
-                      borderRadius: BorderRadius.circular(16.0),
+                      borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
                       // Drop shadows
                       boxShadow: [
                         // Soft card shadow
                         BoxShadow(
                           // Color
-                          color: true == is_dark
-                              ? Colors.black.withValues(alpha: 0.2)
-                              : Colors.black.withValues(alpha: 0.03),
+                          color: is_dark
+                              ? AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
+                              : AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
                           // Blur
-                          blurRadius: 10.0,
+                          blurRadius: _LocalDimensions.shadow_blur,
                           // Offsets
-                          offset: const Offset(0.0, 4.0),
+                          offset: const Offset(0.0, _LocalDimensions.shadow_offset_y),
                         ),
                       ],
                       // Border boundary outline
                       border: Border.all(
                         // Colors
-                        color: true == is_dark
+                        color: is_dark
                             ? AppColors.border_dark
-                            : AppColors.border_light.withValues(alpha: 0.5),
+                            : AppColors.border_light.withValues(alpha: _LocalDimensions.border_width_half),
                         // Thickness
                         width: AppSpacing.border_width_thin,
                       ),
@@ -231,16 +255,16 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                         // Card header title
                         Text(
                           // Block label title
-                          'Identity Details',
+                          localizations.add_member_identity_details_header,
                           // Typographic options
                           style: TextStyle(
                             // Size
-                            fontSize: 13.0,
+                            fontSize: _LocalDimensions.font_size_medium,
                             // Bold indicators
                             fontWeight: FontWeight.bold,
                             // Muted text colors
-                            color: true == is_dark
-                                ? Colors.white70
+                            color: is_dark
+                                ? AppColors.white70
                                 : AppColors.text_light_secondary,
                           ),
                         ),
@@ -253,33 +277,33 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                           // Styling
                           style: TextStyle(
                             // Color
-                            color: true == is_dark
-                                ? Colors.white
+                            color: is_dark
+                                ? AppColors.white
                                 : AppColors.text_light_primary,
                           ),
                           // Decoration parameters
                           decoration: InputDecoration(
                             // Floating label text
-                            labelText: 'Full Name',
+                            labelText: localizations.add_member_full_name_label,
                             // Label style
                             labelStyle: TextStyle(
                               // Muted colors
-                              color: true == is_dark
-                                  ? Colors.white54
+                              color: is_dark
+                                  ? AppColors.white54
                                   : AppColors.text_light_secondary,
                             ),
                             // Placeholders hint
-                            hintText: 'e.g. Leo Mangood',
+                            hintText: localizations.add_member_full_name_hint,
                             // Style
-                            hintStyle: const TextStyle(color: Colors.grey),
+                            hintStyle: const TextStyle(color: AppColors.grey),
                             // Prefix person outline icon
                             prefixIcon: const Icon(Icons.person_outline_rounded,
                                 color: AppColors.primary_color),
                             // Color fills parameters
                             filled: true,
                             // Fill background colors
-                            fillColor: true == is_dark
-                                ? Colors.black12
+                            fillColor: is_dark
+                                ? AppColors.black12
                                 : AppColors.input_fill,
                             // Boundary outline borders
                             border: OutlineInputBorder(
@@ -295,12 +319,12 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                             // Check if blank
                             if (null == val || val.trim().isEmpty) {
                               // Validation error
-                              return 'Please enter a name';
+                              return localizations.add_member_name_empty_error;
                             }
                             // Check characters size
                             if (val.trim().length < 3) {
                               // Too short error message
-                              return 'Name must be at least 3 characters';
+                              return localizations.add_member_name_short_error;
                             }
                             // Return null if valid
                             return null;
@@ -311,24 +335,32 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                         // Relationship Label Text widget
                         Text(
                           // Label text
-                          'Relationship Type',
+                          localizations.add_member_relationship_header,
                           // Typographic options
                           style: TextStyle(
                             // Small font size
-                            fontSize: 11.0,
+                            fontSize: _LocalDimensions.font_size_tiny,
                             // Color adaptions
-                            color: true == is_dark
-                                ? Colors.white70
+                            color: is_dark
+                                ? AppColors.white70
                                 : AppColors.text_light_secondary,
                           ),
                         ),
                         // Spacer gap
-                        const SizedBox(height: 6.0),
+                        const SizedBox(height: _LocalDimensions.spacing_small),
                         // Segmented relationship selector buttons row
                         Row(
                           // children list mapping selection values
                           children: ['Son', 'Daughter', 'Spouse', 'Parent']
                               .map((rel) {
+                            // Localize relationship display text
+                            final String display_text = 'Son' == rel
+                                ? localizations.rel_son
+                                : ('Daughter' == rel
+                                    ? localizations.rel_daughter
+                                    : ('Spouse' == rel
+                                        ? localizations.rel_spouse
+                                        : localizations.rel_parent));
                             // Selected state check using Yoda condition comparison
                             final bool is_selected =
                                 rel == _selected_relationship;
@@ -347,19 +379,19 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                                 // Container item styling
                                 child: Container(
                                   // Height constraints
-                                  height: 38.0,
+                                  height: _LocalDimensions.choice_chip_height,
                                   // Centered text
                                   alignment: Alignment.center,
                                   // Margins offset spacing
                                   margin: const EdgeInsets.symmetric(
-                                      horizontal: 2.0),
+                                      horizontal: _LocalDimensions.choice_chip_padding_h),
                                   // Decoration properties
                                   decoration: BoxDecoration(
                                     // Active solid blue color or inactive background fills
-                                    color: true == is_selected
+                                    color: is_selected
                                         ? AppColors.primary_color
-                                        : (true == is_dark
-                                            ? Colors.black12
+                                        : (is_dark
+                                            ? AppColors.black12
                                             : AppColors.input_fill),
                                     // Rounded borders matching design tokens radius
                                     borderRadius: BorderRadius.circular(
@@ -367,32 +399,32 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                                     // Borders outline line
                                     border: Border.all(
                                       // Active blue outline or default borders
-                                      color: true == is_selected
+                                      color: is_selected
                                           ? AppColors.primary_color
-                                          : (true == is_dark
+                                          : (is_dark
                                               ? AppColors.border_dark
                                               : AppColors.border_light),
                                       // Thin outline size
-                                      width: 1.0,
+                                      width: _LocalDimensions.border_width_thin,
                                     ),
                                   ),
                                   // Relationship label text widget
                                   child: Text(
                                     // Bind relationship text value
-                                    rel,
+                                    display_text,
                                     // Styles options
                                     style: TextStyle(
                                       // Small font sizes
-                                      fontSize: 11.0,
+                                      fontSize: _LocalDimensions.font_size_tiny,
                                       // Bold indicator if active selected state
-                                      fontWeight: true == is_selected
+                                      fontWeight: is_selected
                                           ? FontWeight.bold
                                           : FontWeight.normal,
                                       // White color if active, or default primary text color
-                                      color: true == is_selected
-                                          ? Colors.white
-                                          : (true == is_dark
-                                              ? Colors.white70
+                                      color: is_selected
+                                          ? AppColors.white
+                                          : (is_dark
+                                              ? AppColors.white70
                                               : AppColors.text_light_primary),
                                     ),
                                   ),
@@ -420,29 +452,29 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                     // Decoration details
                     decoration: BoxDecoration(
                       // Colors surface adaptions
-                      color: true == is_dark
+                      color: is_dark
                           ? AppColors.surface_dark
-                          : Colors.white,
+                          : AppColors.white,
                       // Radius corner shape
-                      borderRadius: BorderRadius.circular(16.0),
+                      borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
                       // Drop shadows
                       boxShadow: [
                         // Soft card shadow
                         BoxShadow(
                           // Color
-                          color: true == is_dark
-                              ? Colors.black.withValues(alpha: 0.2)
-                              : Colors.black.withValues(alpha: 0.03),
+                          color: is_dark
+                              ? AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
+                              : AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
                           // Blur spreads
-                          blurRadius: 10.0,
+                          blurRadius: _LocalDimensions.shadow_blur,
                         ),
                       ],
                       // Outline borders
                       border: Border.all(
                         // Border colors
-                        color: true == is_dark
+                        color: is_dark
                             ? AppColors.border_dark
-                            : AppColors.border_light.withValues(alpha: 0.5),
+                            : AppColors.border_light.withValues(alpha: _LocalDimensions.border_width_half),
                         // Thickness
                         width: AppSpacing.border_width_thin,
                       ),
@@ -464,19 +496,19 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                               // Text label
                               Text(
                                 // Date of birth label
-                                'Date of Birth',
+                                localizations.add_member_dob_header,
                                 // Typographic specs
                                 style: TextStyle(
                                   // Size
-                                  fontSize: 11.0,
+                                  fontSize: _LocalDimensions.font_size_tiny,
                                   // Muted colors
-                                  color: true == is_dark
-                                      ? Colors.white70
+                                  color: is_dark
+                                      ? AppColors.white70
                                       : AppColors.text_light_secondary,
                                 ),
                               ),
                               // Spacer gap height
-                              const SizedBox(height: 6.0),
+                              const SizedBox(height: _LocalDimensions.spacing_small),
                               // DOB input text field
                               TextFormField(
                                 // Bind controller
@@ -486,31 +518,31 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                                 // Styles
                                 style: TextStyle(
                                   // Colors
-                                  color: true == is_dark
-                                      ? Colors.white
+                                  color: is_dark
+                                      ? AppColors.white
                                       : AppColors.text_light_primary,
                                 ),
                                 // Input decorations
                                 decoration: InputDecoration(
                                   // Placeholder hints
-                                  hintText: 'Select Date',
+                                  hintText: localizations.add_member_dob_hint,
                                   // Hint style
                                   hintStyle: const TextStyle(
-                                      color: Colors.grey, fontSize: 12.0),
+                                      color: AppColors.grey, fontSize: _LocalDimensions.font_size_small),
                                   // Prefix calendar icon graphic representation
                                   prefixIcon: const Icon(
                                       Icons.calendar_month_outlined,
                                       color: AppColors.primary_color,
-                                      size: 18.0),
+                                      size: _LocalDimensions.icon_size_small),
                                   // Color fills parameters
                                   filled: true,
                                   // Fill background colors
-                                  fillColor: true == is_dark
-                                      ? Colors.black12
+                                  fillColor: is_dark
+                                      ? AppColors.black12
                                       : AppColors.input_fill,
                                   // Inner input field content padding
                                   contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 10.0, vertical: 10.0),
+                                      horizontal: _LocalDimensions.input_padding, vertical: _LocalDimensions.input_padding),
                                   // Outline borders
                                   border: OutlineInputBorder(
                                     // Radius
@@ -551,7 +583,7 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                                   // Required check
                                   if (null == val || val.trim().isEmpty) {
                                     // Validation error
-                                    return 'Required';
+                                    return localizations.add_member_required_error;
                                   }
                                   // Return null if valid
                                   return null;
@@ -573,23 +605,27 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                               // Text label
                               Text(
                                 // Gender label
-                                'Gender Selection',
+                                localizations.add_member_gender_header,
                                 // Typographic style specs
                                 style: TextStyle(
                                   // Size
-                                  fontSize: 11.0,
+                                  fontSize: _LocalDimensions.font_size_tiny,
                                   // Muted colors adaptions
-                                  color: true == is_dark
-                                      ? Colors.white70
+                                  color: is_dark
+                                      ? AppColors.white70
                                       : AppColors.text_light_secondary,
                                 ),
                               ),
                               // Spacer gap height
-                              const SizedBox(height: 6.0),
+                              const SizedBox(height: _LocalDimensions.spacing_small),
                               // Fluid premium clickable option pills row
                               Row(
                                 // children
                                 children: ['Male', 'Female'].map((gen) {
+                                  // Localize gender display text
+                                  final String display_text = 'Male' == gen
+                                      ? localizations.gender_male
+                                      : localizations.gender_female;
                                   // Selected state check using Yoda comparison
                                   final bool is_selected =
                                       gen == _selected_gender;
@@ -608,54 +644,53 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                                       // Capsule container styling
                                       child: Container(
                                         // Height constraints
-                                        height: 38.0,
+                                        height: _LocalDimensions.choice_chip_height,
                                         // Centered text
                                         alignment: Alignment.center,
                                         // Margins bounds spacer
                                         margin: const EdgeInsets.symmetric(
-                                            horizontal: 2.0),
+                                            horizontal: _LocalDimensions.choice_chip_padding_h),
                                         // Decoration options
                                         decoration: BoxDecoration(
                                           // Active primary blue color fill or default inactive background
-                                          color: true == is_selected
+                                          color: is_selected
                                               ? AppColors.primary_color
-                                              : (true == is_dark
-                                                  ? Colors.black12
+                                              : (is_dark
+                                                  ? AppColors.black12
                                                   : AppColors.input_fill),
                                           // Capsule rounded shape (20px radius)
                                           borderRadius:
-                                              BorderRadius.circular(20.0),
+                                              BorderRadius.circular(_LocalDimensions.border_radius_large),
                                           // Outline borders
                                           border: Border.all(
                                             // Selected primary blue color border or default boundary lines
-                                            color: true == is_selected
+                                            color: is_selected
                                                 ? AppColors.primary_color
-                                                : (true == is_dark
+                                                : (is_dark
                                                     ? AppColors.border_dark
                                                     : AppColors.border_light),
                                             // Thin border line thickness
-                                            width: 1.0,
+                                            width: _LocalDimensions.border_width_thin,
                                           ),
                                         ),
                                         // Gender text label widget
                                         child: Text(
                                           // Bind gender text value
-                                          gen,
+                                          display_text,
                                           // Styles options
                                           style: TextStyle(
                                             // Size
-                                            fontSize: 11.0,
+                                            fontSize: _LocalDimensions.font_size_tiny,
                                             // Bold weight if active selection
-                                            fontWeight: true == is_selected
+                                            fontWeight: is_selected
                                                 ? FontWeight.bold
                                                 : FontWeight.normal,
                                             // White color if active, or default primary text color
-                                            color: true == is_selected
-                                                ? Colors.white
-                                                : (true == is_dark
-                                                    ? Colors.white70
-                                                    : AppColors
-                                                        .text_light_primary),
+                                            color: is_selected
+                                                ? AppColors.white
+                                                : (is_dark
+                                                    ? AppColors.white70
+                                                    : AppColors.text_light_primary),
                                           ),
                                         ),
                                       ),
@@ -685,29 +720,29 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                     // Decoration details
                     decoration: BoxDecoration(
                       // Colors surface adaptions
-                      color: true == is_dark
+                      color: is_dark
                           ? AppColors.surface_dark
-                          : Colors.white,
+                          : AppColors.white,
                       // Rounded corner radius shape
-                      borderRadius: BorderRadius.circular(16.0),
+                      borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
                       // Drop shadows
                       boxShadow: [
                         // Soft card shadow
                         BoxShadow(
                           // Color
-                          color: true == is_dark
-                              ? Colors.black.withValues(alpha: 0.2)
-                              : Colors.black.withValues(alpha: 0.03),
+                          color: is_dark
+                              ? AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
+                              : AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
                           // Spread blur
-                          blurRadius: 10.0,
+                          blurRadius: _LocalDimensions.shadow_blur,
                         ),
                       ],
                       // Outline borders
                       border: Border.all(
                         // Colors
-                        color: true == is_dark
+                        color: is_dark
                             ? AppColors.border_dark
-                            : AppColors.border_light.withValues(alpha: 0.5),
+                            : AppColors.border_light.withValues(alpha: _LocalDimensions.border_width_half),
                         // Thickness
                         width: AppSpacing.border_width_thin,
                       ),
@@ -721,16 +756,16 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                         // Card header title
                         Text(
                           // Block title label
-                          'Medical Background',
+                          localizations.add_member_medical_bg_header,
                           // Typographic options
                           style: TextStyle(
                             // Size
-                            fontSize: 13.0,
+                            fontSize: _LocalDimensions.font_size_medium,
                             // Bold indicators
                             fontWeight: FontWeight.bold,
                             // Subdued colors
-                            color: true == is_dark
-                                ? Colors.white70
+                            color: is_dark
+                                ? AppColors.white70
                                 : AppColors.text_light_secondary,
                           ),
                         ),
@@ -745,33 +780,33 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                           // Text style options
                           style: TextStyle(
                             // Color
-                            color: true == is_dark
-                                ? Colors.white
+                            color: is_dark
+                                ? AppColors.white
                                 : AppColors.text_light_primary,
                           ),
                           // Input decoration configurations
                           decoration: InputDecoration(
                             // Floating label text
                             labelText:
-                                'Allergies, Medications or Chronic Conditions',
+                                localizations.add_member_medical_bg_label,
                             // Label text style
                             labelStyle: TextStyle(
                               // Muted colors
-                              color: true == is_dark
-                                  ? Colors.white54
+                              color: is_dark
+                                  ? AppColors.white54
                                   : AppColors.text_light_secondary,
                             ),
                             // Placeholder instructions hint
                             hintText:
-                                'Describe medical history details dynamically...',
+                                localizations.add_member_medical_bg_hint,
                             // Hint style
                             hintStyle: const TextStyle(
-                                color: Colors.grey, fontSize: 13.0),
+                                color: AppColors.grey, fontSize: _LocalDimensions.font_size_medium),
                             // Color fills parameters
                             filled: true,
                             // Fill background colors
-                            fillColor: true == is_dark
-                                ? Colors.black12
+                            fillColor: is_dark
+                                ? AppColors.black12
                                 : AppColors.input_fill,
                             // Outline borders
                             border: OutlineInputBorder(
@@ -788,14 +823,14 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                                   BorderRadius.circular(AppSpacing.radius_l),
                               // Active blue outline accent boundary line
                               borderSide: const BorderSide(
-                                  color: AppColors.primary_color, width: 1.5),
+                                  color: AppColors.primary_color, width: _LocalDimensions.border_width_thick),
                             ),
                           ),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 80.0),
+                  const SizedBox(height: _LocalDimensions.bottom_spacing_safe),
                 ],
               ),
             ),

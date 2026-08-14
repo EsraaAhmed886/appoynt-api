@@ -63,16 +63,16 @@ class AppAssets {
       // Return image path for page index 0
       case 0:
         // Return dark or light image based on Yoda comparison
-        return true == is_dark ? onboarding_1_dark : onboarding_1_light;
+        return is_dark ? onboarding_1_dark : onboarding_1_light;
       // Return image path for page index 1
       case 1:
         // Return dark or light image based on Yoda comparison
-        return true == is_dark ? onboarding_2_dark : onboarding_2_light;
+        return is_dark ? onboarding_2_dark : onboarding_2_light;
       // Return image path for page index 2
       case 2:
       default:
         // Return dark or light image based on Yoda comparison
-        return true == is_dark ? onboarding_3_dark : onboarding_3_light;
+        return is_dark ? onboarding_3_dark : onboarding_3_light;
     }
   }
 }

@@ -24,6 +24,43 @@ import 'package:appoynt_mobile_app/core/widgets/app_date_picker.dart';
 import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart';
 
 
+// Local layout dimensions class to strictly eliminate hardcoded numbers
+class _LocalDimensions {
+  static const double border_radius_default = 16.0;
+  static const double border_radius_medium = 12.0;
+  static const double border_width_thick = 1.5;
+  static const double border_width_thin = 1.0;
+  static const double border_width_accent = 2.0;
+  static const double button_height = 50.0;
+  static const double button_height_large = 100.0;
+  static const double button_height_small = 44.0;
+  static const double upload_zone_height = 120.0;
+  static const double spacing_tiny = 4.0;
+  static const double spacing_small = 8.0;
+  static const double spacing_medium = 12.0;
+  static const double spacing_large = 16.0;
+  static const double spacing_xl = 20.0;
+  static const double padding_card = 20.0;
+  static const double padding_large = 16.0;
+  static const double padding_small = 8.0;
+  static const double font_size_body = 14.0;
+  static const double font_size_medium = 13.0;
+  static const double font_size_small = 12.0;
+  static const double font_size_tiny = 11.0;
+  static const double icon_size_small = 20.0;
+  static const double icon_size_medium = 24.0;
+  static const double icon_size_large = 36.0;
+  static const double icon_size_tiny = 12.0;
+  static const double file_icon_container_size = 48.0;
+  static const double shadow_blur_default = 10.0;
+  static const double shadow_blur_small = 6.0;
+  static const double shadow_opacity_dark = 0.25;
+  static const double shadow_opacity_light = 0.03;
+  static const double shadow_opacity_light_alt = 0.04;
+  static const double dash_width = 6.0;
+  static const double dash_space = 4.0;
+}
+
 // Add Test Result Page layout stateful widget representation
 class AddTestResultPage extends StatefulWidget {
   // Initial active category type (lab_test / scan)
@@ -99,37 +136,7 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
     );
 
     if (selected != null && context.mounted) {
-      final List<String> months_en = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December'
-      ];
-      final List<String> months_ar = [
-        'يناير',
-        'فبراير',
-        'مارس',
-        'أبريل',
-        'مايو',
-        'يونيو',
-        'يوليو',
-        'أغسطس',
-        'سبتمبر',
-        'أكتوبر',
-        'نوفمبر',
-        'ديسمبر'
-      ];
-      final String month = localizations.is_arabic
-          ? months_ar[selected.month - 1]
-          : months_en[selected.month - 1];
+      final String month = localizations.month_names[selected.month - 1];
 
       // E.g. "23 July 2026" / "23 يوليو 2026"
       final String formatted = "${selected.day} $month ${selected.year}";
@@ -199,17 +206,17 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
   }) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20.0),
+      padding: const EdgeInsets.all(_LocalDimensions.padding_card),
       decoration: BoxDecoration(
-        color: is_dark ? AppColors.surface_dark : Colors.white,
-        borderRadius: BorderRadius.circular(16.0),
+        color: is_dark ? AppColors.surface_dark : AppColors.white,
+        borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
         boxShadow: [
           BoxShadow(
             color: is_dark
-                ? Colors.black.withValues(alpha: 0.25)
-                : Colors.black.withValues(alpha: 0.03),
-            blurRadius: 10.0,
-            spreadRadius: 1.0,
+                ? AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
+                : AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
+            blurRadius: _LocalDimensions.shadow_blur_default,
+            spreadRadius: _LocalDimensions.border_width_thin,
             offset: const Offset(0.0, 2.0),
           ),
         ],
@@ -247,7 +254,7 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                 : AppColors.text_light_primary,
           ),
         ),
-        const SizedBox(height: 8.0),
+        const SizedBox(height: _LocalDimensions.spacing_small),
         // Isolated TextFormField with shadow
         Stack(
           clipBehavior: Clip.none,
@@ -256,17 +263,17 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
               top: 0.0,
               left: 0.0,
               right: 0.0,
-              height: max_lines == 1 ? 50.0 : 100.0,
+              height: max_lines == 1 ? _LocalDimensions.button_height : _LocalDimensions.button_height_large,
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(AppSpacing.radius_input),
                   boxShadow: [
                     BoxShadow(
                       color: is_dark
-                          ? Colors.black.withValues(alpha: 0.25)
-                          : Colors.black.withValues(alpha: 0.04),
-                      blurRadius: 6.0,
-                      spreadRadius: 1.0,
+                          ? AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
+                          : AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light_alt),
+                      blurRadius: _LocalDimensions.shadow_blur_small,
+                      spreadRadius: _LocalDimensions.border_width_thin,
                       offset: const Offset(0.0, 2.0),
                     ),
                   ],
@@ -300,7 +307,7 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                         color: is_dark
                             ? AppColors.text_dark_secondary
                             : AppColors.text_light_secondary,
-                        size: 20.0,
+                        size: _LocalDimensions.icon_size_small,
                       )
                     : null,
                 border: OutlineInputBorder(
@@ -353,18 +360,18 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
           });
         },
         child: Container(
-          height: 44.0,
+          height: _LocalDimensions.button_height_small,
           alignment: Alignment.center,
           decoration: BoxDecoration(
             color: is_selected
                 ? bg_color
-                : (is_dark ? AppColors.surface_dark : Colors.white),
-            borderRadius: BorderRadius.circular(12.0),
+                : (is_dark ? AppColors.surface_dark : AppColors.white),
+            borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_medium),
             border: Border.all(
               color: is_selected
                   ? border_color
-                  : (is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0)),
-              width: is_selected ? 2.0 : 1.0,
+                  : (is_dark ? AppColors.border_dark : AppColors.slate_200),
+              width: is_selected ? _LocalDimensions.border_width_accent : _LocalDimensions.border_width_thin,
             ),
           ),
           child: Text(
@@ -372,9 +379,9 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
             style: TextStyle(
               color: is_selected
                   ? text_color
-                  : (is_dark ? Colors.white70 : AppColors.text_light_secondary),
+                  : (is_dark ? AppColors.white70 : AppColors.text_light_secondary),
               fontWeight: is_selected ? FontWeight.bold : FontWeight.normal,
-              fontSize: 13.0,
+              fontSize: _LocalDimensions.font_size_medium,
             ),
           ),
         ),
@@ -391,55 +398,30 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
 
     // Localized layout Strings
-    final String doc_name_label =
-        localizations.is_arabic ? "اسم المستند" : "Document Name";
-    final String doc_name_hint = localizations.is_arabic
-        ? "مثال: صورة دم كاملة (CBC)"
-        : "e.g., Complete Blood Count (CBC)";
+    final String doc_name_label = localizations.add_test_doc_name_label;
+    final String doc_name_hint = localizations.add_test_doc_name_hint;
 
-    final String facility_label = localizations.is_arabic
-        ? "المعمل / المركز الطبي"
-        : "Facility / Lab Name";
-    final String facility_hint = localizations.is_arabic
-        ? "مثال: معمل البرج، كايرو سكان"
-        : "e.g., Al Borg Laboratories, Cairo Scan";
+    final String facility_label = localizations.add_test_facility_label;
+    final String facility_hint = localizations.add_test_facility_hint;
 
-    final String date_label =
-        localizations.is_arabic ? "تاريخ الفحص / الأشعة" : "Test / Scan Date";
-    final String date_hint =
-        localizations.is_arabic ? "اختر التاريخ" : "Select Date";
+    final String date_label = localizations.add_test_date_label;
+    final String date_hint = localizations.add_test_date_hint;
 
-    final String status_label =
-        localizations.is_arabic ? "حالة النتيجة" : "Result Status";
+    final String status_label = localizations.add_test_status_label;
 
-    final String status_normal = localizations.is_arabic ? "طبيعي" : "Normal";
-    final String status_abnormal =
-        localizations.is_arabic ? "غير طبيعي" : "Abnormal";
-    final String status_pending =
-        localizations.is_arabic ? "قيد المراجعة" : "Pending";
+    final String status_normal = localizations.add_test_status_normal;
+    final String status_abnormal = localizations.add_test_status_abnormal;
+    final String status_pending = localizations.add_test_status_pending;
 
-    final String doctor_label = localizations.is_arabic
-        ? "الطبيب المعالج (اختياري)"
-        : "Prescribing Doctor (Optional)";
-    final String doctor_hint = localizations.is_arabic
-        ? "اسم الطبيب المعالج"
-        : "Prescribed by Dr. ...";
+    final String doctor_label = localizations.add_test_doctor_label;
+    final String doctor_hint = localizations.add_test_doctor_hint;
 
-    final String notes_label = localizations.is_arabic
-        ? "ملاحظات إضافية (اختياري)"
-        : "Quick Notes (Optional)";
-    final String notes_hint = localizations.is_arabic
-        ? "أضف أي ملاحظات أو تفاصيل إضافية هنا..."
-        : "Add any additional details or notes here...";
+    final String notes_label = localizations.add_test_notes_label;
+    final String notes_hint = localizations.add_test_notes_hint;
 
-    final String upload_label =
-        localizations.is_arabic ? "تحميل التقرير" : "Upload Document";
-    final String dropzone_text = localizations.is_arabic
-        ? "اضغط هنا لرفع صورة أو ملف PDF للتقرير"
-        : "Tap to upload image or PDF report";
-    final String dropzone_sub = localizations.is_arabic
-        ? "الحد الأقصى للملف 10 ميجابايت (JPG, PNG, PDF)"
-        : "Supports JPG, PNG, PDF up to 10MB";
+    final String upload_label = localizations.add_test_upload_label;
+    final String dropzone_text = localizations.add_test_dropzone_text;
+    final String dropzone_sub = localizations.add_test_dropzone_sub;
 
     // Return root Scaffold layout container
     return Scaffold(
@@ -451,10 +433,10 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
             children: [
               Padding(
                 padding: const EdgeInsets.only(
-                  left: 16.0,
-                  right: 16.0,
-                  top: 16.0,
-                  bottom: 8.0,
+                  left: _LocalDimensions.padding_large,
+                  right: _LocalDimensions.padding_large,
+                  top: _LocalDimensions.padding_large,
+                  bottom: _LocalDimensions.padding_small,
                 ),
                 child: CustomProfileAppBar(
                   title: localizations.tests_add_title,
@@ -470,7 +452,7 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                       height: AppSpacing.dummy_height_search_bar,
                       decoration: BoxDecoration(
                         color:
-                            is_dark ? AppColors.surface_dark : Colors.grey[200],
+                            is_dark ? AppColors.surface_dark : AppColors.slate_200,
                         borderRadius:
                             BorderRadius.circular(AppSpacing.radius_xl),
                       ),
@@ -489,8 +471,8 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                                   color: 'lab_test' == _active_type
                                       ? (is_dark
                                           ? AppColors.primary_color
-                                          : Colors.white)
-                                      : Colors.transparent,
+                                          : AppColors.white)
+                                      : AppColors.transparent,
                                   borderRadius: BorderRadius.circular(
                                       AppSpacing.radius_xl),
                                 ),
@@ -500,7 +482,7 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                                     fontWeight: FontWeight.w700,
                                     color: 'lab_test' == _active_type
                                         ? (is_dark
-                                            ? Colors.white
+                                            ? AppColors.white
                                             : AppColors.primary_color)
                                         : AppColors.text_light_secondary,
                                   ),
@@ -521,8 +503,8 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                                   color: 'scan' == _active_type
                                       ? (is_dark
                                           ? AppColors.primary_color
-                                          : Colors.white)
-                                      : Colors.transparent,
+                                          : AppColors.white)
+                                      : AppColors.transparent,
                                   borderRadius: BorderRadius.circular(
                                       AppSpacing.radius_xl),
                                 ),
@@ -532,7 +514,7 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                                     fontWeight: FontWeight.w700,
                                     color: 'scan' == _active_type
                                         ? (is_dark
-                                            ? Colors.white
+                                            ? AppColors.white
                                             : AppColors.primary_color)
                                         : AppColors.text_light_secondary,
                                   ),
@@ -543,7 +525,7 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 20.0),
+                    const SizedBox(height: _LocalDimensions.spacing_xl),
 
                     // Card 1: Document & Lab Details
                     _build_card(
@@ -557,12 +539,12 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                           is_dark: is_dark,
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
-                              return 'Document Name cannot be empty.';
+                              return localizations.add_test_validation_name_empty;
                             }
                             return null;
                           },
                         ),
-                        const SizedBox(height: 16.0),
+                        const SizedBox(height: _LocalDimensions.spacing_large),
                         // Facility Name input field
                         _build_input_field(
                           label: facility_label,
@@ -570,7 +552,7 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                           controller: _facility_controller,
                           is_dark: is_dark,
                         ),
-                        const SizedBox(height: 16.0),
+                        const SizedBox(height: _LocalDimensions.spacing_large),
                         // Test Date picker field
                         _build_input_field(
                           label: date_label,
@@ -581,7 +563,7 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                           prefix_icon: Icons.calendar_today_rounded,
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
-                              return 'Please select a date.';
+                              return localizations.add_test_validation_date_empty;
                             }
                             return null;
                           },
@@ -590,7 +572,7 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                                 context, is_dark, localizations);
                           },
                         ),
-                        const SizedBox(height: 16.0),
+                        const SizedBox(height: _LocalDimensions.spacing_large),
                         // Doctor Name input field
                         _build_input_field(
                           label: doctor_label,
@@ -600,7 +582,7 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20.0),
+                    const SizedBox(height: _LocalDimensions.spacing_xl),
 
                     // Card 2: File Upload & Status
                     _build_card(
@@ -617,7 +599,7 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                                 : AppColors.text_light_primary,
                           ),
                         ),
-                        const SizedBox(height: 12.0),
+                        const SizedBox(height: _LocalDimensions.spacing_medium),
                         // Segmented Chip Selector Row
                         Row(
                           children: [
@@ -635,7 +617,7 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                                   : const Color(0xFF15803D),
                               is_dark,
                             ),
-                            const SizedBox(width: 8.0),
+                            const SizedBox(width: _LocalDimensions.spacing_small),
                             _build_status_chip(
                               'abnormal',
                               status_abnormal,
@@ -650,7 +632,7 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                                   : const Color(0xFFB91C1C),
                               is_dark,
                             ),
-                            const SizedBox(width: 8.0),
+                            const SizedBox(width: _LocalDimensions.spacing_small),
                             _build_status_chip(
                               'pending',
                               status_pending,
@@ -667,7 +649,7 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 20.0),
+                        const SizedBox(height: _LocalDimensions.spacing_xl),
                         // Upload label
                         Text(
                           upload_label,
@@ -679,18 +661,18 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                                 : AppColors.text_light_primary,
                           ),
                         ),
-                        const SizedBox(height: 12.0),
+                        const SizedBox(height: _LocalDimensions.spacing_medium),
                         // Dashed dropzone box or file preview card
                         _uploaded_file_path.isEmpty
                             ? CustomPaint(
                                 painter: _DashedBorderPainter(
                                   color: is_dark
                                       ? AppColors.border_dark
-                                      : const Color(0xFFCBD5E1),
-                                  strokeWidth: 1.5,
-                                  dashWidth: 6.0,
-                                  dashSpace: 4.0,
-                                  radius: 16.0,
+                                      : AppColors.slate_300,
+                                  strokeWidth: _LocalDimensions.border_width_thick,
+                                  dashWidth: _LocalDimensions.dash_width,
+                                  dashSpace: _LocalDimensions.dash_space,
+                                  radius: _LocalDimensions.border_radius_default,
                                 ),
                                 child: GestureDetector(
                                   onTap: () {
@@ -711,12 +693,12 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                                   },
                                   child: Container(
                                     width: double.infinity,
-                                    height: 120.0,
+                                    height: _LocalDimensions.upload_zone_height,
                                     decoration: BoxDecoration(
                                       color: is_dark
                                           ? AppColors.surface_dark
-                                          : const Color(0xFFF8FAFC),
-                                      borderRadius: BorderRadius.circular(16.0),
+                                          : AppColors.slate_50,
+                                      borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
                                     ),
                                     child: Column(
                                       mainAxisAlignment:
@@ -725,26 +707,26 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                                         const Icon(
                                           Icons.cloud_upload_outlined,
                                           color: AppColors.primary_color,
-                                          size: 36.0,
+                                          size: _LocalDimensions.icon_size_large,
                                         ),
-                                        const SizedBox(height: 8.0),
+                                        const SizedBox(height: _LocalDimensions.spacing_small),
                                         Text(
                                           dropzone_text,
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
-                                            fontSize: 14.0,
+                                            fontSize: _LocalDimensions.font_size_body,
                                             fontWeight: FontWeight.w600,
                                             color: is_dark
-                                                ? Colors.white70
-                                                : const Color(0xFF475569),
+                                                ? AppColors.white70
+                                                : AppColors.slate_600,
                                           ),
                                         ),
-                                        const SizedBox(height: 4.0),
+                                        const SizedBox(height: _LocalDimensions.spacing_tiny),
                                         Text(
                                           dropzone_sub,
                                           style: const TextStyle(
-                                            fontSize: 11.0,
-                                            color: Color(0xFF94A3B8),
+                                            fontSize: _LocalDimensions.font_size_tiny,
+                                            color: AppColors.slate_400,
                                           ),
                                         ),
                                       ],
@@ -754,38 +736,38 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                               )
                             : Container(
                                 width: double.infinity,
-                                padding: const EdgeInsets.all(16.0),
+                                padding: const EdgeInsets.all(_LocalDimensions.padding_large),
                                 decoration: BoxDecoration(
                                   color: is_dark
                                       ? AppColors.surface_dark
-                                      : Colors.white,
-                                  borderRadius: BorderRadius.circular(16.0),
+                                      : AppColors.white,
+                                  borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
                                   border: Border.all(
                                     color: is_dark
                                         ? AppColors.border_dark
-                                        : const Color(0xFFE2E8F0),
+                                        : AppColors.slate_200,
                                   ),
                                 ),
                                 child: Row(
                                   children: [
                                     // File type icon container (PDF representation)
                                     Container(
-                                      width: 48.0,
-                                      height: 48.0,
+                                      width: _LocalDimensions.file_icon_container_size,
+                                      height: _LocalDimensions.file_icon_container_size,
                                       decoration: BoxDecoration(
                                         color: is_dark
-                                            ? const Color(0xFF1E293B)
-                                            : const Color(0xFFEFF6FF),
+                                            ? AppColors.border_dark
+                                            : AppColors.slate_50,
                                         borderRadius:
-                                            BorderRadius.circular(12.0),
+                                            BorderRadius.circular(_LocalDimensions.border_radius_medium),
                                       ),
                                       child: const Icon(
                                         Icons.picture_as_pdf_rounded,
                                         color: AppColors.primary_color,
-                                        size: 24.0,
+                                        size: _LocalDimensions.icon_size_medium,
                                       ),
                                     ),
-                                    const SizedBox(width: 12.0),
+                                    const SizedBox(width: _LocalDimensions.spacing_medium),
                                     // File details
                                     Expanded(
                                       child: Column(
@@ -795,49 +777,49 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                                           Text(
                                             _uploaded_file_name,
                                             style: TextStyle(
-                                              fontSize: 14.0,
+                                              fontSize: _LocalDimensions.font_size_body,
                                               fontWeight: FontWeight.bold,
                                               color: is_dark
-                                                  ? Colors.white
+                                                  ? AppColors.white
                                                   : AppColors
                                                       .text_light_primary,
                                             ),
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                           ),
-                                          const SizedBox(height: 4.0),
+                                          const SizedBox(height: _LocalDimensions.spacing_tiny),
                                           Text(
-                                            "$_uploaded_file_size • Uploaded",
+                                            "$_uploaded_file_size • ${localizations.add_test_uploaded_status}",
                                             style: const TextStyle(
-                                              fontSize: 12.0,
-                                              color: Color(0xFF94A3B8),
+                                              fontSize: _LocalDimensions.font_size_small,
+                                              color: AppColors.slate_400,
                                             ),
                                           ),
                                         ],
                                       ),
                                     ),
-                                    const SizedBox(width: 8.0),
+                                    const SizedBox(width: _LocalDimensions.spacing_small),
                                     // Success checkmark badge
                                     Container(
-                                      width: 20.0,
-                                      height: 20.0,
+                                      width: _LocalDimensions.icon_size_small,
+                                      height: _LocalDimensions.icon_size_small,
                                       decoration: const BoxDecoration(
-                                        color: Color(0xFF10B981),
+                                        color: AppColors.success,
                                         shape: BoxShape.circle,
                                       ),
                                       child: const Icon(
                                         Icons.check,
-                                        color: Colors.white,
-                                        size: 12.0,
+                                        color: AppColors.white,
+                                        size: _LocalDimensions.icon_size_tiny,
                                       ),
                                     ),
-                                    const SizedBox(width: 12.0),
+                                    const SizedBox(width: _LocalDimensions.spacing_medium),
                                     // Trash Icon to remove file
                                     IconButton(
                                       icon: const Icon(
                                         Icons.delete_outline_rounded,
-                                        color: Color(0xFFEF4444),
-                                        size: 20.0,
+                                        color: AppColors.error,
+                                        size: _LocalDimensions.icon_size_small,
                                       ),
                                       onPressed: () {
                                         setState(() {
@@ -850,7 +832,7 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                                   ],
                                 ),
                               ),
-                        const SizedBox(height: 20.0),
+                        const SizedBox(height: _LocalDimensions.spacing_xl),
                         // Quick Notes optional multi-line input field
                         _build_input_field(
                           label: notes_label,
@@ -891,7 +873,7 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
               child: Text(
                 localizations.tests_confirm_upload_btn,
                 style: const TextStyle(
-                  color: Colors.white,
+                  color: AppColors.white,
                   fontSize: AppSpacing.font_size_action_button,
                   fontWeight: FontWeight.w700,
                 ),

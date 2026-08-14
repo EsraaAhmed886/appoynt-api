@@ -42,8 +42,8 @@ final ThemeData dark_mode_theme = ThemeData(
   ),
   // Configuring global bottom sheet styles
   bottomSheetTheme: const BottomSheetThemeData(
-    backgroundColor: Colors.transparent,
-    modalBackgroundColor: Colors.transparent,
+    backgroundColor: AppColors.transparent,
+    modalBackgroundColor: AppColors.transparent,
     modalBarrierColor: AppColors.barrier_color,
     elevation: 0.0,
     shape: RoundedRectangleBorder(

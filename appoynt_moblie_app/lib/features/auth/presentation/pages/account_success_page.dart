@@ -103,10 +103,10 @@ class _AccountSuccessPageState extends State<AccountSuccessPage>
     /// Check if system brightness matches dark mode.
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     
-    final Color text_primary = true == is_dark
+    final Color text_primary = is_dark
         ? AppColors.text_dark_primary
         : AppColors.text_light_primary;
-    final Color text_secondary = true == is_dark
+    final Color text_secondary = is_dark
         ? AppColors.text_dark_secondary
         : AppColors.text_light_secondary;
 
@@ -240,7 +240,7 @@ class _AccountSuccessPageState extends State<AccountSuccessPage>
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
-                        color: Colors.white, // High contrast text
+                        color: AppColors.white, // High contrast text
                       ),
                     ),
                   ),
@@ -286,7 +286,7 @@ class _DefaultSuccessIcon extends StatelessWidget {
       /// The central checkmark icon.
       child: const Icon(
         Icons.check_rounded,
-        color: Colors.white, // High contrast white icon
+        color: AppColors.white, // High contrast white icon
         size: 80, // Large emphasized size
       ),
     );

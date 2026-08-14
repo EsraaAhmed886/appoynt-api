@@ -48,7 +48,7 @@ class FloatingInputCard extends StatelessWidget {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.white,
         borderRadius: BorderRadius.circular(AppSpacing.radius_l),
         border: Border.all(
           color: AppColors.slate_200,

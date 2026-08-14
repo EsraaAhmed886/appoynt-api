@@ -1337,6 +1337,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get profile_gender_prefer_not => 'Other';
   @override
+  String get profile_not_specified => 'Not Specified';
+  @override
   String get profile_smoking_yes => 'Yes';
   @override
   String get profile_smoking_no => 'No';
@@ -1362,6 +1364,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profile_error_address_length => 'Address must not exceed 250 characters.';
   @override
   String get profile_error_address_invalid => 'Address cannot contain emojis or unsupported characters.';
+  @override
+  String get profile_upload_photo_title => 'Upload Profile Photo';
+  @override
+  String get profile_take_photo_option => 'Take Photo';
+  @override
+  String get profile_choose_gallery_option => 'Choose from Gallery';
+  @override
+  String get profile_photo_selected_success => 'Profile picture selected successfully!';
+  @override
+  String get profile_photo_pick_failed_prefix => 'Failed to pick image: ';
   @override
   String get profile_unsaved_changes_title => 'Unsaved Changes';
   @override
@@ -1555,6 +1567,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get allergies_medication_section => 'Medication allergies';
   @override
+  String get environmental_seasonal_allergies => 'Environmental & Seasonal';
+  @override
   String get allergies_add_allergy => 'Add allergy';
   @override
   String get allergies_placeholder => 'Type';
@@ -1687,4 +1701,415 @@ class AppLocalizationsEn extends AppLocalizations {
   String get insurance_add_card_full_btn => 'Add Insurance Card';
   @override
   String get insurance_save_card_btn => 'Save Card';
+
+  // Payment & Wallet Localizations English Overrides
+  @override
+  String get payment_wallet_title => 'Wallet & Payment';
+  @override
+  String get payment_balance_label => 'Wallet Balance';
+  @override
+  String get payment_priority_label => 'Priority Payment Switch';
+  @override
+  String get payment_saved_cards_tile => 'Saved Payment Cards';
+  @override
+  String get payment_saved_cards_subtitle => 'Manage your saved debit/credit cards';
+  @override
+  String get payment_history_tile => 'Payment History & Invoices';
+  @override
+  String get payment_history_subtitle => 'View past transactions and download invoices';
+  @override
+  String get payment_add_money_btn => 'Add Money';
+  @override
+  String get payment_active_status => 'Active';
+  @override
+  String get payment_inactive_status => 'Inactive';
+  @override
+  String get payment_default_badge => 'Default';
+  @override
+  String get payment_cardholder_label => 'CARDHOLDER';
+  @override
+  String get payment_valid_thru_label => 'VALID THRU';
+  @override
+  String get payment_add_money_coming_soon => 'Add Money feature coming soon!';
+  @override
+  String get payment_manage_cards_title => 'Saved Cards';
+  @override
+  String get payment_cards_count_suffix => 'Cards';
+  @override
+  String get payment_set_default_action => 'Set as Default';
+  @override
+  String get payment_delete_card_action => 'Delete Card';
+  @override
+  String get payment_card_removed_success => 'Card removed successfully.';
+  @override
+  String get payment_confirm_delete_title => 'Confirm Deletion';
+  @override
+  String get payment_confirm_delete_body => 'Are you sure you want to delete this payment card?';
+  @override
+  String get payment_delete_card_dialog_body_prefix => 'Are you sure you want to remove card "';
+  @override
+  String get payment_delete_card_dialog_body_suffix => '"? This action cannot be undone.';
+  @override
+  String get payment_delete_btn => 'Delete';
+  @override
+  String get payment_remove_btn => 'Remove';
+  @override
+  String get payment_cancel_btn => 'Cancel';
+  @override
+  String get payment_no_saved_cards_title => 'No Saved Cards';
+  @override
+  String get payment_no_saved_cards_body => 'You haven\'t saved any payment cards yet.';
+  @override
+  String get payment_add_new_card_btn => 'Add New Card';
+  @override
+  String get payment_invoices_history_title => 'Invoices & History';
+  @override
+  String get payment_total_paid_invoices => 'Total Paid Invoices';
+  @override
+  String get payment_invoices_count_suffix => 'Invoices';
+  @override
+  String get payment_date_filter_prefix => 'Date';
+  @override
+  String get payment_amount_filter_prefix => 'Amount';
+  @override
+  String get payment_service_filter_prefix => 'Service';
+  @override
+  String get payment_apply_filter_btn => 'Apply Filter';
+  @override
+  String get payment_filter_date_range_title => 'Filter by Date Range';
+  @override
+  String get payment_all_time_option => 'All Time';
+  @override
+  String get payment_this_month_option => 'This Month';
+  @override
+  String get payment_last_3_months_option => 'Last 3 Months';
+  @override
+  String get payment_custom_range_option => 'Custom Range';
+  @override
+  String get payment_filter_amount_range_title => 'Filter by Amount Range';
+  @override
+  String get payment_filter_service_type_title => 'Filter by Service Type';
+  @override
+  String get payment_no_invoices_found_title => 'No Invoices Found';
+  @override
+  String get payment_no_invoices_found_body => 'No invoices found for selected filters. Try adjusting filter selections.';
+  @override
+  String get payment_downloading_invoice_snack => 'Downloading Invoice PDF...';
+  @override
+  String get payment_min_label => 'Min';
+  @override
+  String get payment_max_label => 'Max';
+
+  // Add test result sub-page English Overrides
+  @override
+  String get add_test_doc_name_label => 'Document Name';
+  @override
+  String get add_test_doc_name_hint => 'e.g., Complete Blood Count (CBC)';
+  @override
+  String get add_test_facility_label => 'Facility / Lab Name';
+  @override
+  String get add_test_facility_hint => 'e.g., Al Borg Laboratories, Cairo Scan';
+  @override
+  String get add_test_date_label => 'Test / Scan Date';
+  @override
+  String get add_test_date_hint => 'Select Date';
+  @override
+  String get add_test_status_label => 'Result Status';
+  @override
+  String get add_test_status_normal => 'Normal';
+  @override
+  String get add_test_status_abnormal => 'Abnormal';
+  @override
+  String get add_test_status_pending => 'Pending';
+  @override
+  String get add_test_doctor_label => 'Prescribing Doctor (Optional)';
+  @override
+  String get add_test_doctor_hint => 'Prescribed by Dr. ...';
+  @override
+  String get add_test_notes_label => 'Quick Notes (Optional)';
+  @override
+  String get add_test_notes_hint => 'Add any additional details or notes here...';
+  @override
+  String get add_test_upload_label => 'Upload Document';
+  @override
+  String get add_test_dropzone_text => 'Tap to upload image or PDF report';
+  @override
+  String get add_test_dropzone_sub => 'Supports JPG, PNG, PDF up to 10MB';
+  @override
+  String get add_test_validation_name_empty => 'Document Name cannot be empty.';
+  @override
+  String get add_test_validation_date_empty => 'Please select a date.';
+  @override
+  String get add_test_uploaded_status => 'Uploaded';
+  @override
+  List<String> get month_names => const [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December'
+      ];
+
+  // Add family member English Overrides
+  @override
+  String get add_member_edit_title => 'Edit Family Member';
+  @override
+  String get add_member_add_title => 'Add Family Member';
+  @override
+  String get add_member_update_btn => 'Update Member Profile';
+  @override
+  String get add_member_save_btn => 'Save Member Profile';
+  @override
+  String get add_member_success_toast => 'Saved Member Profile successfully.';
+  @override
+  String get add_member_identity_details_header => 'Identity Details';
+  @override
+  String get add_member_full_name_label => 'Full Name';
+  @override
+  String get add_member_full_name_hint => 'e.g. Leo Mangood';
+  @override
+  String get add_member_name_empty_error => 'Please enter a name';
+  @override
+  String get add_member_name_short_error => 'Name must be at least 3 characters';
+  @override
+  String get add_member_relationship_header => 'Relationship Type';
+  @override
+  String get add_member_dob_header => 'Date of Birth';
+  @override
+  String get add_member_dob_hint => 'Select Date';
+  @override
+  String get add_member_required_error => 'Required';
+  @override
+  String get add_member_gender_header => 'Gender Selection';
+  @override
+  String get add_member_medical_bg_header => 'Medical Background';
+  @override
+  String get add_member_medical_bg_label => 'Allergies, Medications or Chronic Conditions';
+  @override
+  String get add_member_medical_bg_hint => 'Describe medical history details dynamically...';
+  @override
+  String get rel_son => 'Son';
+  @override
+  String get rel_daughter => 'Daughter';
+  @override
+  String get rel_spouse => 'Spouse';
+  @override
+  String get rel_parent => 'Parent';
+  @override
+  String get gender_male => 'Male';
+  @override
+  String get gender_female => 'Female';
+
+  // Security & Privacy page English Overrides
+  @override
+  String get sec_account_title => 'ACCOUNT SECURITY';
+  @override
+  String get sec_privacy_title => 'MEDICAL DATA PRIVACY';
+  @override
+  String get sec_danger_title => 'DANGER ZONE';
+  @override
+  String get biometric_title => 'Biometric Authentication';
+  @override
+  String get biometric_subtitle => 'Biometric Authentication (Face ID / Fingerprint)';
+  @override
+  String get tfa_title => 'Two-Factor Authentication';
+  @override
+  String get tfa_enabled => 'Enabled';
+  @override
+  String get tfa_disabled => 'Disabled';
+  @override
+  String get change_password_label => 'Change Password';
+  @override
+  String get change_password_subtitle => 'Update password credentials';
+  @override
+  String get autolock_title => 'Auto-Lock App Timeout';
+  @override
+  String get autolock_immediately => 'Immediately';
+  @override
+  String get autolock_5mins => 'After 5 Mins';
+  @override
+  String get doc_access_title => 'Doctor Access Permissions';
+  @override
+  String get doc_access_full => 'Full Access';
+  @override
+  String get doc_access_request => 'Requires Request';
+  @override
+  String get active_devices_title => 'Active Logged-in Devices';
+  @override
+  String get active_devices_subtitle => 'iPhone 15 • Cairo';
+  @override
+  String get manage_sessions => 'Manage Sessions';
+  @override
+  String get export_data_title => 'Export Medical Data';
+  @override
+  String get export_data_subtitle => 'Request PDF/JSON health log archive';
+  @override
+  String get delete_account_title => 'Delete Account';
+  @override
+  String get delete_account_subtitle => 'Permanently erase your personal medical logs and account';
+  @override
+  String get preparing_data_export_toast => 'Preparing medical data archive...';
+
+  // Medical context count English overrides
+  @override
+  String get_items_count_text(int count) {
+    if (0 == count) {
+      return 'No items';
+    } else if (1 == count) {
+      return '1 item';
+    } else {
+      return '$count items';
+    }
+  }
+
+  @override
+  String get_prescriptions_count_text(int count) {
+    if (0 == count) {
+      return 'No prescriptions';
+    } else if (1 == count) {
+      return '1 prescription';
+    } else {
+      return '$count prescriptions';
+    }
+  }
+
+  @override
+  String get_files_count_text(int count) {
+    if (0 == count) {
+      return 'No files';
+    } else if (1 == count) {
+      return '1 file';
+    } else {
+      return '$count files';
+    }
+  }
+
+  @override
+  String get_cards_count_text(int count) {
+    if (0 == count) {
+      return 'No cards';
+    } else if (1 == count) {
+      return '1 card';
+    } else {
+      return '$count cards';
+    }
+  }
+
+  @override
+  String get_members_count_text(int count) {
+    if (0 == count) {
+      return 'No members';
+    } else if (1 == count) {
+      return '1 member';
+    } else {
+      return '$count members';
+    }
+  }
+
+  // Chronic conditions page English overrides
+  @override
+  String get chronic_remove_dialog_title => 'Remove Condition?';
+  @override
+  String chronic_remove_dialog_body(String label) => 'Are you sure you want to remove $label from your medical record? This will no longer be visible to your healthcare providers.';
+  @override
+  String get chronic_cancel_btn => 'Cancel';
+  @override
+  String get chronic_remove_btn => 'Remove';
+  @override
+  String get chronic_status_controlled => 'Controlled';
+  @override
+  String get chronic_status_monitoring => 'Requires Monitoring';
+  @override
+  String get chronic_diag_year_header => 'Diagnosed Year';
+  @override
+  String get chronic_treatment_status_header => 'Treatment Status';
+  @override
+  String get chronic_controlled_label => 'Controlled';
+  @override
+  String get chronic_monitoring_label => 'Monitoring';
+  @override
+  String get chronic_no_conditions_label => 'No Chronic Conditions';
+  @override
+  String get chronic_save_btn => 'Save Conditions Profile';
+  @override
+  String get chronic_search_hint => 'Search or add condition (e.g., Asthma)...';
+  @override
+  String get chronic_saved_success_toast => 'Chronic Conditions profile saved successfully.';
+  @override
+  String get_chronic_subtitle(String year, String status) => 'Diagnosed in $year • $status';
+
+  // App preferences and other page English Overrides
+  @override
+  String get profile_select_language => 'Select Language';
+  @override
+  String get profile_select_theme => 'Select Theme';
+  @override
+  String get profile_sec_notifications => 'NOTIFICATIONS & ALERTS';
+  @override
+  String get profile_sec_display => 'DISPLAY & ACCESSIBILITY';
+  @override
+  String get profile_sec_support => 'SUPPORT & LEGAL';
+  @override
+  String get profile_medication_reminders => 'Medication & Pill Reminders';
+  @override
+  String get profile_medication_reminders_sub => 'Get notified for your prescribed pills';
+  @override
+  String get profile_calendar_sync => 'Calendar Synchronization';
+  @override
+  String get profile_calendar_sync_sub => 'Sync medical bookings to phone calendar';
+  @override
+  String get profile_active_language => 'English';
+  @override
+  String get profile_help_center => 'Help Center & FAQs';
+  @override
+  String get profile_help_center_sub => 'Browse guides and common answers';
+  @override
+  String get profile_opening_help_center => 'Opening Help Center...';
+  @override
+  String get prescriptions_edit_title => 'Edit Medication';
+  @override
+  String get prescriptions_update_btn => 'Update Prescription';
+  @override
+  String get login_phone_hint => '+1 234 567 8900';
+  @override
+  String get date_picker_cancel => 'Cancel';
+  @override
+  String get date_picker_confirm => 'Confirm';
+  @override
+  List<String> get weekdays => const ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+
+  // New settings and help about page English Overrides
+  @override
+  String get profile_app_settings => 'App Settings';
+  @override
+  String get profile_app_settings_sub => 'Notifications, language & display themes';
+  @override
+  String get profile_help_about => 'Help & About App';
+  @override
+  String get profile_help_about_sub => 'Support hotline, legal terms & app version';
+  @override
+  String get help_about_tagline => 'Your Trusted Digital Healthcare Partner';
+  @override
+  String get legal_open_source => 'Open Source Licenses';
+  @override
+  String get legal_open_source_sub => 'View licenses for third-party packages';
+  @override
+  String get legal_open_source_content => 'This app utilizes open source packages. You can find their licenses on their official package documentation pages.';
+
+  // Authentication error localized message English overrides
+  @override
+  String get error_invalid_credentials => 'Invalid phone number or password.';
+  @override
+  String get error_phone_empty => 'Phone number cannot be empty.';
+  @override
+  String get error_otp_invalid => 'OTP code must be 6 digits.';
+  @override
+  String get error_password_too_short => 'Password must be at least 8 characters.';
 }

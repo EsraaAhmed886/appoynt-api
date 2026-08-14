@@ -64,14 +64,14 @@ class InsuranceCardWidget extends StatelessWidget {
             // Ambient soft shadow
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.15),
+                color: AppColors.black.withValues(alpha: 0.15),
                 blurRadius: 10.0,
                 offset: const Offset(0.0, 4.0),
               ),
             ],
           ),
           child: Material(
-            color: Colors.transparent,
+            color: AppColors.transparent,
             child: InkWell(
               borderRadius: BorderRadius.circular(16.0),
               onTap: onTap,
@@ -91,7 +91,7 @@ class InsuranceCardWidget extends StatelessWidget {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
-                              color: Colors.white70,
+                              color: AppColors.white70,
                               fontSize: 10.0,
                               fontWeight: FontWeight.bold,
                               letterSpacing: 1.0,
@@ -102,7 +102,7 @@ class InsuranceCardWidget extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.all(4.0),
                           decoration: const BoxDecoration(
-                            color: Colors.white12,
+                            color: AppColors.white12,
                             shape: BoxShape.circle,
                           ),
                           child: const Icon(
@@ -120,7 +120,7 @@ class InsuranceCardWidget extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                        color: Colors.white,
+                        color: AppColors.white,
                         fontSize: 18.0,
                         fontWeight: FontWeight.bold,
                       ),
@@ -140,7 +140,7 @@ class InsuranceCardWidget extends StatelessWidget {
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
-                                  color: Colors.white60,
+                                  color: AppColors.white60,
                                   fontSize: 10.0,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -151,7 +151,7 @@ class InsuranceCardWidget extends StatelessWidget {
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
-                                  color: Colors.white,
+                                  color: AppColors.white,
                                   fontSize: 13.0,
                                   fontWeight: FontWeight.bold,
                                   fontFamily: 'monospace',
@@ -171,7 +171,7 @@ class InsuranceCardWidget extends StatelessWidget {
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
-                                  color: Colors.white60,
+                                  color: AppColors.white60,
                                   fontSize: 10.0,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -182,7 +182,7 @@ class InsuranceCardWidget extends StatelessWidget {
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
-                                  color: Colors.white,
+                                  color: AppColors.white,
                                   fontSize: 13.0,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -206,24 +206,24 @@ class InsuranceCardWidget extends StatelessWidget {
       width: double.infinity,
       margin: const EdgeInsets.symmetric(vertical: AppSpacing.space_s),
       decoration: BoxDecoration(
-        color: true == is_dark ? AppColors.surface_dark : Colors.white,
+        color: is_dark ? AppColors.surface_dark : AppColors.white,
         borderRadius: BorderRadius.circular(16.0),
         border: Border.all(
-          color: true == is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
+          color: is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
           width: AppSpacing.border_width_thin,
         ),
         boxShadow: [
           BoxShadow(
-            color: true == is_dark
-                ? Colors.black.withValues(alpha: 0.25)
-                : Colors.black.withValues(alpha: 0.04),
+            color: is_dark
+                ? AppColors.black.withValues(alpha: 0.25)
+                : AppColors.black.withValues(alpha: 0.04),
             blurRadius: 8.0,
             offset: const Offset(0.0, 2.0),
           ),
         ],
       ),
       child: Material(
-        color: Colors.transparent,
+        color: AppColors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(16.0),
           onTap: onTap,
@@ -260,7 +260,7 @@ class InsuranceCardWidget extends StatelessWidget {
                         style: TextStyle(
                           fontSize: AppSpacing.font_size_body_medium,
                           fontWeight: FontWeight.w700,
-                          color: true == is_dark
+                          color: is_dark
                               ? AppColors.text_dark_primary
                               : AppColors.text_light_primary,
                         ),
@@ -292,7 +292,7 @@ class InsuranceCardWidget extends StatelessWidget {
                 // Trailing chevron icon
                 Icon(
                   Icons.chevron_right_rounded,
-                  color: true == is_dark ? Colors.white60 : AppColors.primary_color,
+                  color: is_dark ? AppColors.white60 : AppColors.primary_color,
                   size: 24.0,
                 ),
               ],
@@ -332,24 +332,24 @@ class NoInsuranceCardWidget extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: true == is_dark ? AppColors.surface_dark : Colors.white,
+        color: is_dark ? AppColors.surface_dark : AppColors.white,
         borderRadius: BorderRadius.circular(16.0),
         boxShadow: [
           BoxShadow(
-            color: true == is_dark
-                ? Colors.black.withValues(alpha: 0.2)
-                : Colors.black.withValues(alpha: 0.05),
+            color: is_dark
+                ? AppColors.black.withValues(alpha: 0.2)
+                : AppColors.black.withValues(alpha: 0.05),
             blurRadius: 10.0,
             offset: const Offset(0, 4),
           ),
         ],
         border: Border.all(
-          color: true == is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
+          color: is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
           width: AppSpacing.border_width_thin,
         ),
       ),
       child: Material(
-        color: Colors.transparent,
+        color: AppColors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(16.0),
           onTap: onTap,
@@ -365,12 +365,12 @@ class NoInsuranceCardWidget extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
-                    color: Colors.blue.withValues(alpha: 0.1),
+                    color: AppColors.blue.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     icon,
-                    color: Colors.blue,
+                    color: AppColors.blue,
                     size: 20.0,
                   ),
                 ),
@@ -384,8 +384,8 @@ class NoInsuranceCardWidget extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 14.0,
                       fontWeight: FontWeight.bold,
-                      color: true == is_dark
-                          ? Colors.white
+                      color: is_dark
+                          ? AppColors.white
                           : AppColors.text_light_primary,
                     ),
                   ),
@@ -399,8 +399,8 @@ class NoInsuranceCardWidget extends StatelessWidget {
                       vertical: 4.0,
                     ),
                     decoration: BoxDecoration(
-                      color: true == is_dark
-                          ? Colors.white.withValues(alpha: 0.05)
+                      color: is_dark
+                          ? AppColors.white.withValues(alpha: 0.05)
                           : AppColors.primary_color.withValues(alpha: 0.05),
                       borderRadius: BorderRadius.circular(12.0),
                     ),
@@ -411,8 +411,8 @@ class NoInsuranceCardWidget extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 11.0,
                         fontWeight: FontWeight.w600,
-                        color: true == is_dark
-                            ? Colors.white70
+                        color: is_dark
+                            ? AppColors.white70
                             : AppColors.primary_color,
                       ),
                     ),
@@ -422,8 +422,8 @@ class NoInsuranceCardWidget extends StatelessWidget {
                 // Right navigation chevron indicator
                 Icon(
                   Icons.chevron_right_rounded,
-                  color: true == is_dark
-                      ? Colors.white30
+                  color: is_dark
+                      ? AppColors.white30
                       : AppColors.text_light_secondary,
                 ),
               ],

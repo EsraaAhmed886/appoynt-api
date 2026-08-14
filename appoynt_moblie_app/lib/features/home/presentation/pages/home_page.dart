@@ -59,7 +59,8 @@ class _HomePageState extends State<HomePage> {
             // Check if context remains mounted using Yoda style check
             if (true == context.mounted) {
               // Route to the dedicated search page using slide/fade transition
-              Navigator.of(context).push<int>(
+              Navigator.of(context)
+                  .push<int>(
                 // Page route transition configs
                 PageRouteBuilder(
                   // Target search page constructor mapping builder
@@ -83,7 +84,8 @@ class _HomePageState extends State<HomePage> {
                     milliseconds: AppSpacing.duration_fade_ms,
                   ),
                 ),
-              ).then((result_index) {
+              )
+                  .then((result_index) {
                 // Check if a result index was returned and widget remains active
                 if (result_index != null && true == context.mounted) {
                   // Rebuild screen selecting the requested tab index
@@ -232,7 +234,7 @@ class _HomeTab extends StatelessWidget {
                         // Accent bold typographic weight indicator
                         fontWeight: FontWeight.w800,
                         // Dynamic text color adjusting to theme modes
-                        color: true == is_dark
+                        color: is_dark
                             ? AppColors.text_dark_primary
                             : AppColors.text_light_primary,
                       ),
@@ -249,7 +251,9 @@ class _HomeTab extends StatelessWidget {
                 // Layout border and backgrounds styling properties representation
                 decoration: BoxDecoration(
                   // Dynamic background color matching surface theme
-                  color: true == is_dark ? AppColors.surface_dark : AppColors.background_light,
+                  color: is_dark
+                      ? AppColors.surface_dark
+                      : AppColors.background_light,
                   // Circular rounded container shape configurations
                   borderRadius: BorderRadius.circular(
                     // Radius value using dummy constants token
@@ -258,7 +262,9 @@ class _HomeTab extends StatelessWidget {
                   // Border lines border representations
                   border: Border.all(
                     // Border boundary outline color mappings
-                    color: true == is_dark ? AppColors.border_dark : AppColors.border_light,
+                    color: is_dark
+                        ? AppColors.border_dark
+                        : AppColors.border_light,
                     // Explicit border width definition
                     width: AppSpacing.border_width_thin,
                   ),
@@ -274,7 +280,7 @@ class _HomeTab extends StatelessWidget {
                       // Bell icon token
                       Icons.notifications_outlined,
                       // Bell color matching header texts
-                      color: true == is_dark
+                      color: is_dark
                           ? AppColors.text_dark_primary
                           : AppColors.text_light_primary,
                       // Icon display size bounds
@@ -319,7 +325,8 @@ class _HomeTab extends StatelessWidget {
               // Check if context remains mounted using Yoda style check
               if (true == context.mounted) {
                 // Route to the dedicated search page using slide/fade transition
-                Navigator.of(context).push<int>(
+                Navigator.of(context)
+                    .push<int>(
                   // Page route transition configs
                   PageRouteBuilder(
                     // Target search page constructor mapping builder
@@ -343,7 +350,8 @@ class _HomeTab extends StatelessWidget {
                       milliseconds: AppSpacing.duration_fade_ms,
                     ),
                   ),
-                ).then((result_index) {
+                )
+                    .then((result_index) {
                   // If a result index was returned, forward it through callback
                   if (result_index != null) {
                     onSearchReturn(result_index);
@@ -358,63 +366,72 @@ class _HomeTab extends StatelessWidget {
             child: Hero(
               // Hero unique identifier tag
               tag: "search_bar",
-              // Container mimicking search bar text field layout
-              child: Container(
-                // Container height constraint
-                height: AppSpacing.dummy_height_search_bar,
-                // Card decorations style mappings
-                decoration: BoxDecoration(
-                  // Dynamic background surface color
-                  color: true == is_dark ? AppColors.surface_dark : AppColors.background_light,
-                  // Rounded container corners configurations
-                  borderRadius: BorderRadius.circular(
-                    // Radius token value
-                    AppSpacing.dummy_search_bar_radius,
+              // Material wrapper ensuring input text style renders properly during hero morphs
+              child: Material(
+                // Fully transparent background representation
+                color: AppColors.transparent,
+                // Container mimicking search bar text field layout
+                child: Container(
+                  // Container height constraint
+                  height: AppSpacing.dummy_height_search_bar,
+                  // Card decorations style mappings
+                  decoration: BoxDecoration(
+                    // Dynamic background surface color
+                    color: is_dark
+                        ? AppColors.surface_dark
+                        : AppColors.background_light,
+                    // Rounded container corners configurations
+                    borderRadius: BorderRadius.circular(
+                      // Radius token value
+                      AppSpacing.dummy_search_bar_radius,
+                    ),
+                    // Border line boundary decoration options
+                    border: Border.all(
+                      // Border outline colors matching dividers
+                      color: is_dark
+                          ? AppColors.border_dark
+                          : AppColors.border_light,
+                      // Explicit border width definition
+                      width: AppSpacing.border_width_thin,
+                    ),
                   ),
-                  // Border line boundary decoration options
-                  border: Border.all(
-                    // Border outline colors matching dividers
-                    color: true == is_dark ? AppColors.border_dark : AppColors.border_light,
-                    // Explicit border width definition
-                    width: AppSpacing.border_width_thin,
-                  ),
-                ),
-                // Horizontal row placing search indicator and text
-                child: Row(
-                  // Align elements vertically centered inside box
-                  children: [
-                    // Left margin space separator
-                    const SizedBox(
-                      // Width spacer value
-                      width: AppSpacing.dummy_search_bar_padding_left,
-                    ),
-                    // Search icon graphic asset representation
-                    const Icon(
-                      // Search icon graphic representation
-                      Icons.search_rounded,
-                      // Icon color matching subtext descriptions
-                      color: AppColors.text_light_secondary,
-                      // Icon size constraint
-                      size: AppSpacing.dummy_size_icon_notification,
-                    ),
-                    // Separator space between icon and label text
-                    const SizedBox(
-                      // Width spacer value
-                      width: AppSpacing.dummy_search_bar_spacing,
-                    ),
-                    // Placeholder label text display option
-                    Text(
-                      // Search label text string
-                      localizations.dummy_search_hint,
-                      // Typographic text parameters options
-                      style: const TextStyle(
-                        // Small text body size
-                        fontSize: AppSpacing.font_size_body_medium,
-                        // Subdued color representing text inputs hint layout
-                        color: AppColors.text_light_secondary,
+                  // Horizontal row placing search indicator and text
+                  child: Row(
+                    // Align elements vertically centered inside box
+                    children: [
+                      // Left margin space separator
+                      const SizedBox(
+                        // Width spacer value
+                        width: AppSpacing.dummy_search_bar_padding_left,
                       ),
-                    ),
-                  ],
+                      // Search icon graphic asset representation
+                      const Icon(
+                        // Search icon graphic representation
+                        Icons.search_rounded,
+                        // Icon color matching subtext descriptions
+                        color: AppColors.text_light_secondary,
+                        // Icon size constraint
+                        size: AppSpacing.dummy_size_icon_notification,
+                      ),
+                      // Separator space between icon and label text
+                      const SizedBox(
+                        // Width spacer value
+                        width: AppSpacing.dummy_search_bar_spacing,
+                      ),
+                      // Placeholder label text display option
+                      Text(
+                        // Search label text string
+                        localizations.dummy_search_hint,
+                        // Typographic text parameters options
+                        style: const TextStyle(
+                          // Small text body size
+                          fontSize: AppSpacing.font_size_body_medium,
+                          // Subdued color representing text inputs hint layout
+                          color: AppColors.text_light_secondary,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -536,7 +553,7 @@ class _HomeTab extends StatelessWidget {
                         // Label typography settings
                         style: const TextStyle(
                           // Text color white with moderate opacity levels
-                          color: Colors.white70,
+                          color: AppColors.white70,
                           // Small font size mapping subhead layouts
                           fontSize: AppSpacing.font_size_label,
                         ),
@@ -553,7 +570,7 @@ class _HomeTab extends StatelessWidget {
                         // Label typography parameters options
                         style: const TextStyle(
                           // White text color for high contrast representation
-                          color: Colors.white,
+                          color: AppColors.white,
                           // Moderate header font size
                           fontSize: AppSpacing.font_size_body_medium,
                           // Extra bold weight settings
@@ -572,7 +589,7 @@ class _HomeTab extends StatelessWidget {
                         // Label typography settings
                         style: const TextStyle(
                           // White text color with moderate opacity levels
-                          color: Colors.white70,
+                          color: AppColors.white70,
                           // Small font size mapping subhead layouts
                           fontSize: AppSpacing.font_size_label,
                         ),
@@ -587,14 +604,15 @@ class _HomeTab extends StatelessWidget {
                         // Padding within badge borders
                         padding: const EdgeInsets.symmetric(
                           // Horizontal padding value
-                          horizontal: AppSpacing.dummy_doctor_card_btn_padding_horizontal,
+                          horizontal: AppSpacing
+                              .dummy_doctor_card_btn_padding_horizontal,
                           // Vertical padding value
                           vertical: AppSpacing.dummy_padding_small_badge,
                         ),
                         // Layout decorations details
                         decoration: BoxDecoration(
                           // Solid white background fill
-                          color: Colors.white,
+                          color: AppColors.white,
                           // Rounded border edges configurations
                           borderRadius: BorderRadius.circular(
                             // Circular boundary radius parameter value
@@ -624,7 +642,8 @@ class _HomeTab extends StatelessWidget {
                   // Calendar icon representation
                   Icons.calendar_today_rounded,
                   // Semi-transparent white color to overlay subtly
-                  color: Colors.white.withValues(alpha: AppSpacing.dummy_opacity_bell_badge),
+                  color: AppColors.white
+                      .withValues(alpha: AppSpacing.dummy_opacity_bell_badge),
                   // Large graphical representation boundaries size
                   size: AppSpacing.dummy_banner_icon_size,
                 ),
@@ -653,7 +672,7 @@ class _HomeTab extends StatelessWidget {
                   // Bold typography indicator
                   fontWeight: FontWeight.w700,
                   // Dynamic text color adjusting to brightness mode
-                  color: true == is_dark
+                  color: is_dark
                       ? AppColors.text_dark_primary
                       : AppColors.text_light_primary,
                 ),
@@ -759,7 +778,7 @@ class _HomeTab extends StatelessWidget {
                   // Bold typography indicator
                   fontWeight: FontWeight.w700,
                   // Dynamic text color adjusting to brightness mode
-                  color: true == is_dark
+                  color: is_dark
                       ? AppColors.text_dark_primary
                       : AppColors.text_light_primary,
                 ),
@@ -878,7 +897,8 @@ class _ComingSoonTab extends StatelessWidget {
             // Circle decoration configurations parameters options
             decoration: BoxDecoration(
               // Brand primary color with light transparency tint overlay
-              color: AppColors.primary_color.withValues(alpha: AppSpacing.dummy_opacity_active),
+              color: AppColors.primary_color
+                  .withValues(alpha: AppSpacing.dummy_opacity_active),
               // Circular bounding shape decoration
               shape: BoxShape.circle,
             ),
@@ -908,7 +928,7 @@ class _ComingSoonTab extends StatelessWidget {
               // Bold typography weight indicator
               fontWeight: FontWeight.w800,
               // Dynamic text color adjusting to brightness mode
-              color: true == is_dark
+              color: is_dark
                   ? AppColors.text_dark_primary
                   : AppColors.text_light_primary,
             ),
@@ -1063,7 +1083,9 @@ class _SpecialtyChip extends StatelessWidget {
       // Card decorations style mappings
       decoration: BoxDecoration(
         // Dynamic background surface color
-        color: true == is_dark ? AppColors.surface_dark : AppColors.background_light,
+        color: is_dark
+            ? AppColors.surface_dark
+            : AppColors.background_light,
         // Rounded container corners configurations
         borderRadius: BorderRadius.circular(
           // Radius token value
@@ -1072,7 +1094,8 @@ class _SpecialtyChip extends StatelessWidget {
         // Border line boundary decoration options
         border: Border.all(
           // Border outline colors matching dividers
-          color: true == is_dark ? AppColors.border_dark : AppColors.border_light,
+          color:
+              is_dark ? AppColors.border_dark : AppColors.border_light,
           // Explicit border width definition
           width: AppSpacing.border_width_thin,
         ),
@@ -1108,7 +1131,7 @@ class _SpecialtyChip extends StatelessWidget {
               // Semi-bold typography indicator
               fontWeight: FontWeight.w600,
               // Dynamic text color adjusting to theme modes
-              color: true == is_dark
+              color: is_dark
                   ? AppColors.text_dark_primary
                   : AppColors.text_light_primary,
             ),
@@ -1159,7 +1182,9 @@ class _DoctorCard extends StatelessWidget {
       // Card decorations style mappings
       decoration: BoxDecoration(
         // Dynamic background surface color
-        color: true == is_dark ? AppColors.surface_dark : AppColors.background_light,
+        color: is_dark
+            ? AppColors.surface_dark
+            : AppColors.background_light,
         // Rounded container corners configurations
         borderRadius: BorderRadius.circular(
           // Radius token value
@@ -1168,7 +1193,8 @@ class _DoctorCard extends StatelessWidget {
         // Border line boundary decoration options
         border: Border.all(
           // Border outline colors matching dividers
-          color: true == is_dark ? AppColors.border_dark : AppColors.border_light,
+          color:
+              is_dark ? AppColors.border_dark : AppColors.border_light,
           // Explicit border width definition
           width: AppSpacing.border_width_thin,
         ),
@@ -1220,11 +1246,12 @@ class _DoctorCard extends StatelessWidget {
                   // Typography layouts parameters options
                   style: TextStyle(
                     // Font size matching standard list headers
-                    fontSize: AppSpacing.font_size_forgot_link + AppSpacing.border_width_thin,
+                    fontSize: AppSpacing.font_size_forgot_link +
+                        AppSpacing.border_width_thin,
                     // Bold typographic weight indicator
                     fontWeight: FontWeight.w700,
                     // Dynamic text color adjusting to theme modes
-                    color: true == is_dark
+                    color: is_dark
                         ? AppColors.text_dark_primary
                         : AppColors.text_light_primary,
                   ),
@@ -1280,7 +1307,7 @@ class _DoctorCard extends StatelessWidget {
                         // Semi-bold typography indicator
                         fontWeight: FontWeight.w600,
                         // Dynamic text color adjusting to theme modes
-                        color: true == is_dark
+                        color: is_dark
                             ? AppColors.text_dark_primary
                             : AppColors.text_light_primary,
                       ),
@@ -1347,7 +1374,7 @@ class _DoctorCard extends StatelessWidget {
               // Label text styling parameters options
               style: const TextStyle(
                 // White text color for contrast representation
-                color: Colors.white,
+                color: AppColors.white,
                 // Small font size
                 fontSize: AppSpacing.font_size_label,
                 // Bold text weight representation
@@ -1360,7 +1387,5 @@ class _DoctorCard extends StatelessWidget {
     );
   }
 }
-
-
 
 // TODO: END OF DUMMY HOME SCREEN IMPLEMENTATION

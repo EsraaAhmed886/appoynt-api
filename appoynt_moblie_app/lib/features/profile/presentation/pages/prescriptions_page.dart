@@ -26,6 +26,43 @@ import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_s
 // Importing standalone add-prescription page for navigation
 import 'package:appoynt_mobile_app/features/profile/presentation/pages/add_prescription_page.dart';
 
+// Local layout dimensions class to strictly eliminate hardcoded numbers
+class _LocalDimensions {
+  static const double border_radius_default = 16.0;
+  static const double border_radius_large = 20.0;
+  static const double border_width_thin = 1.0;
+  static const double padding_card = 16.0;
+  static const double spacing_small = 8.0;
+  static const double spacing_medium = 12.0;
+  static const double spacing_large = 24.0;
+  static const double icon_size_default = 20.0;
+  static const double icon_size_large = 48.0;
+  static const double icon_container_size = 44.0;
+  static const double icon_size_medium = 22.0;
+  static const double hero_image_size = 100.0;
+  static const double font_size_title = 20.0;
+  static const double font_size_body = 14.0;
+  static const double font_size_medium = 15.0;
+  static const double font_size_small = 12.5;
+  static const double font_size_tiny = 11.0;
+  static const double font_size_micro = 11.5;
+  static const double font_size_nanopic = 13.0;
+  static const double line_height_hero = 1.6;
+  static const double spacing_xl = 32.0;
+  static const double spacing_micro = 4.0;
+  static const double spacing_nanopic = 10.0;
+  static const double card_margin_bottom = 14.0;
+  static const double shadow_blur = 12.0;
+  static const double shadow_opacity_dark = 0.2;
+  static const double shadow_opacity_light = 0.05;
+  static const double shadow_offset_y = 3.0;
+  static const double status_padding_h = 10.0;
+  static const double status_padding_v = 4.0;
+  static const double text_size_sub_small = 14.0;
+  static const double edit_button_opacity = 0.7;
+  static const double edit_icon_size = 18.0;
+}
+
 // Prescriptions Page layout stateful widget representation
 class PrescriptionsPage extends StatefulWidget {
   // Default constructor
@@ -71,7 +108,7 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
         return AlertDialog(
           // Rounded corner shape
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.0),
+            borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
           ),
           // Dialog title text
           title: Text(
@@ -133,7 +170,7 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
             // Left 16px margin
             AppSpacing.space_xl,
             // Top 8px spacing above button
-            8.0,
+            _LocalDimensions.spacing_small,
             // Right 16px margin
             AppSpacing.space_xl,
             // Bottom 16px safe margin above system navigation bar
@@ -152,9 +189,9 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                 // Add circle icon
                 Icons.add_circle_outline_rounded,
                 // White icon
-                color: Colors.white,
+                color: AppColors.white,
                 // Icon display size
-                size: 20.0,
+                size: _LocalDimensions.icon_size_default,
               ),
               // Button label text
               label: Text(
@@ -162,7 +199,7 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                 localizations.prescriptions_add_btn,
                 style: const TextStyle(
                   // White text
-                  color: Colors.white,
+                  color: AppColors.white,
                   // Action button font size token
                   fontSize: AppSpacing.font_size_action_button,
                   // Bold weight for CTA
@@ -177,7 +214,7 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                 elevation: 0.0,
                 // 16px rounded corners
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16.0),
+                  borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
                 ),
               ),
             ),
@@ -270,8 +307,8 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
             // ── Soft blue circular pill illustration ─────────────────
             Container(
               // Circle container size
-              width: 100.0,
-              height: 100.0,
+              width: _LocalDimensions.hero_image_size,
+              height: _LocalDimensions.hero_image_size,
               // Circular decoration with primary tint
               decoration: BoxDecoration(
                 // Pale blue tint background
@@ -285,10 +322,10 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                 // Primary blue icon color
                 color: AppColors.primary_color,
                 // Large icon size
-                size: 48.0,
+                size: _LocalDimensions.icon_size_large,
               ),
             ),
-            const SizedBox(height: 24.0),
+            const SizedBox(height: _LocalDimensions.spacing_large),
 
             // ── Empty State Title ─────────────────────────────────────
             Text(
@@ -298,16 +335,16 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 // Large section title size
-                fontSize: 20.0,
+                fontSize: _LocalDimensions.font_size_title,
                 // Heavy bold weight
                 fontWeight: FontWeight.w800,
                 // Adaptive primary text color
-                color: true == is_dark
+                color: is_dark
                     ? AppColors.text_dark_primary
                     : AppColors.text_light_primary,
               ),
             ),
-            const SizedBox(height: 12.0),
+            const SizedBox(height: _LocalDimensions.spacing_medium),
 
             // ── Empty State Subtitle ──────────────────────────────────
             Text(
@@ -317,16 +354,16 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
               textAlign: TextAlign.center,
               style: const TextStyle(
                 // Smaller body text size
-                fontSize: 14.0,
+                fontSize: _LocalDimensions.font_size_body,
                 // Normal weight for supporting text
                 fontWeight: FontWeight.normal,
                 // Muted secondary color
                 color: AppColors.text_light_secondary,
                 // Relaxed line height for readability
-                height: 1.6,
+                height: _LocalDimensions.line_height_hero,
               ),
             ),
-            const SizedBox(height: 32.0),
+            const SizedBox(height: _LocalDimensions.spacing_xl),
 
             // ── Primary Empty CTA Button ──────────────────────────────
             SizedBox(
@@ -342,7 +379,7 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                   // Add rounded icon
                   Icons.add_rounded,
                   // White icon
-                  color: Colors.white,
+                  color: AppColors.white,
                 ),
                 // Button label text
                 label: Text(
@@ -350,7 +387,7 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                   localizations.prescriptions_empty_cta,
                   style: const TextStyle(
                     // White text
-                    color: Colors.white,
+                    color: AppColors.white,
                     // Action font size
                     fontSize: AppSpacing.font_size_action_button,
                     // Bold weight
@@ -365,7 +402,7 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                   elevation: 0.0,
                   // Rounded corners
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16.0),
+                    borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
                   ),
                 ),
               ),
@@ -410,17 +447,17 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
     // Return the fully decorated floating card container
     return Container(
       // Vertical bottom margin between cards
-      margin: const EdgeInsets.only(bottom: 14.0),
+      margin: const EdgeInsets.only(bottom: _LocalDimensions.card_margin_bottom),
       // Card decoration with shadow
       decoration: BoxDecoration(
         // White surface background
-        color: true == is_dark ? AppColors.surface_dark : Colors.white,
+        color: is_dark ? AppColors.surface_dark : AppColors.white,
         // 16px rounded corners
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
         // Thin border outline
         border: Border.all(
           // Adaptive border color
-          color: true == is_dark
+          color: is_dark
               ? AppColors.border_dark
               : const Color(0xFFE2E8F0),
           // Border width
@@ -430,19 +467,19 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
         boxShadow: [
           BoxShadow(
             // Soft shadow tint
-            color: true == is_dark
-                ? Colors.black.withValues(alpha: 0.2)
-                : Colors.black.withValues(alpha: 0.05),
+            color: is_dark
+                ? AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
+                : AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
             // Blur radius
-            blurRadius: 12.0,
+            blurRadius: _LocalDimensions.shadow_blur,
             // Vertical shadow offset
-            offset: const Offset(0.0, 3.0),
+            offset: const Offset(0.0, _LocalDimensions.shadow_offset_y),
           ),
         ],
       ),
       child: Padding(
         // Internal card padding
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(_LocalDimensions.padding_card),
         child: Column(
           // Cross axis stretches full width
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -455,8 +492,8 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                 // Soft blue circular pill icon tint
                 Container(
                   // Circle container dimensions
-                  width: 44.0,
-                  height: 44.0,
+                  width: _LocalDimensions.icon_container_size,
+                  height: _LocalDimensions.icon_container_size,
                   // Circular decoration
                   decoration: BoxDecoration(
                     // Pale blue tint background
@@ -470,10 +507,10 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                     // Primary blue icon
                     color: AppColors.primary_color,
                     // Icon size
-                    size: 22.0,
+                    size: _LocalDimensions.icon_size_medium,
                   ),
                 ),
-                const SizedBox(width: 12.0),
+                const SizedBox(width: _LocalDimensions.spacing_medium),
 
                 // Medication name label takes expanded space
                 Expanded(
@@ -482,11 +519,11 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                     name,
                     style: TextStyle(
                       // Medium-large body size
-                      fontSize: 15.0,
+                      fontSize: _LocalDimensions.font_size_medium,
                       // Bold weight
                       fontWeight: FontWeight.bold,
                       // Adaptive primary text color
-                      color: true == is_dark
+                      color: is_dark
                           ? AppColors.text_dark_primary
                           : AppColors.text_light_primary,
                     ),
@@ -495,28 +532,28 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const SizedBox(width: 8.0),
+                const SizedBox(width: _LocalDimensions.spacing_small),
 
                 // ── Status Badge Pill ──────────────────────────────
                 Container(
                   // Horizontal padding inside badge
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 10.0,
-                    vertical: 4.0,
+                    horizontal: _LocalDimensions.status_padding_h,
+                    vertical: _LocalDimensions.status_padding_v,
                   ),
                   // Rounded pill badge
                   decoration: BoxDecoration(
                     // Light tint of status color as background
                     color: status_color.withValues(alpha: 0.12),
                     // Pill border radius
-                    borderRadius: BorderRadius.circular(20.0),
+                    borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_large),
                   ),
                   child: Text(
                     // Status label string
                     status,
                     style: TextStyle(
                       // Small badge text
-                      fontSize: 11.0,
+                      fontSize: _LocalDimensions.font_size_tiny,
                       // Bold weight
                       fontWeight: FontWeight.bold,
                       // Status badge text color
@@ -526,17 +563,17 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                 ),
               ],
             ),
-            const SizedBox(height: 12.0),
+            const SizedBox(height: _LocalDimensions.spacing_medium),
 
             // ── Divider separator line ─────────────────────────────
             Container(
               // Full width divider
-              height: 1.0,
-              color: true == is_dark
+              height: _LocalDimensions.border_width_thin,
+              color: is_dark
                   ? AppColors.border_dark
                   : const Color(0xFFF1F5F9),
             ),
-            const SizedBox(height: 12.0),
+            const SizedBox(height: _LocalDimensions.spacing_medium),
 
             // ── Sub-data Row: Dosage, Frequency, Duration ──────────
             Row(
@@ -547,9 +584,9 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                   // Muted icon color
                   color: AppColors.text_light_secondary,
                   // Small icon size
-                  size: 14.0,
+                  size: _LocalDimensions.text_size_sub_small,
                 ),
-                const SizedBox(width: 4.0),
+                const SizedBox(width: _LocalDimensions.spacing_micro),
                 // Dosage and frequency metadata text
                 Expanded(
                   child: Text(
@@ -557,7 +594,7 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                     '$dosage • $frequency',
                     style: const TextStyle(
                       // Small metadata text size
-                      fontSize: 12.5,
+                      fontSize: _LocalDimensions.font_size_small,
                       // Muted secondary color
                       color: AppColors.text_light_secondary,
                     ),
@@ -572,23 +609,23 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                   // Muted icon color
                   color: AppColors.text_light_secondary,
                   // Small icon size
-                  size: 14.0,
+                  size: _LocalDimensions.text_size_sub_small,
                 ),
-                const SizedBox(width: 4.0),
+                const SizedBox(width: _LocalDimensions.spacing_micro),
                 // Duration text label
                 Text(
                   // Duration string value
                   duration,
                   style: const TextStyle(
                     // Small metadata size
-                    fontSize: 12.5,
+                    fontSize: _LocalDimensions.font_size_small,
                     // Muted secondary color
                     color: AppColors.text_light_secondary,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 10.0),
+            const SizedBox(height: _LocalDimensions.spacing_nanopic),
 
             // ── Footer: Doctor, Date, Action Icons ─────────────────
             Row(
@@ -605,9 +642,9 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                         // Muted color
                         color: AppColors.text_light_secondary,
                         // Small size
-                        size: 13.0,
+                        size: _LocalDimensions.font_size_nanopic,
                       ),
-                      const SizedBox(width: 4.0),
+                      const SizedBox(width: _LocalDimensions.spacing_micro),
                       // Doctor name and date text
                       Expanded(
                         child: Text(
@@ -615,7 +652,7 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                           '$doctor  •  $date',
                           style: const TextStyle(
                             // Small text size
-                            fontSize: 11.5,
+                            fontSize: _LocalDimensions.font_size_micro,
                             // Muted color
                             color: AppColors.text_light_secondary,
                           ),
@@ -634,7 +671,7 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                     // Low-opacity edit icon button placeholder
                     Opacity(
                       // 70% opacity matching other active action buttons
-                      opacity: 0.7,
+                      opacity: _LocalDimensions.edit_button_opacity,
                       child: IconButton(
                         // Compact visual density
                         visualDensity: VisualDensity.compact,
@@ -657,7 +694,7 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                           // Slate muted color
                           color: Color(0xFF64748B),
                           // Icon size
-                          size: 18.0,
+                          size: _LocalDimensions.edit_icon_size,
                         ),
                         // Constrained padding
                         padding: EdgeInsets.zero,
@@ -665,12 +702,12 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                         constraints: const BoxConstraints(),
                       ),
                     ),
-                    const SizedBox(width: 4.0),
+                    const SizedBox(width: _LocalDimensions.spacing_micro),
 
                     // Low-opacity delete icon button
                     Opacity(
                       // 70% opacity for muted error state
-                      opacity: 0.7,
+                      opacity: _LocalDimensions.edit_button_opacity,
                       child: IconButton(
                         // Compact visual density
                         visualDensity: VisualDensity.compact,
@@ -689,7 +726,7 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                           // Muted error color
                           color: AppColors.error,
                           // Icon size
-                          size: 18.0,
+                          size: _LocalDimensions.edit_icon_size,
                         ),
                         // Constrained padding
                         padding: EdgeInsets.zero,
