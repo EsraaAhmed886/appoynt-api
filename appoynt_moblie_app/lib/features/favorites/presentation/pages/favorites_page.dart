@@ -213,7 +213,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.space_xl,
                     ),
-                    child: _build_category_tabs(context, state, localizations, is_dark),
+                    child: _build_category_tabs(
+                        context, state, localizations, is_dark),
                   ),
                   const SizedBox(height: AppSpacing.space_m),
                   // Section 3: Debounced In-Page Search Field
@@ -221,7 +222,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.space_xl,
                     ),
-                    child: _build_search_field(context, state, localizations, is_dark),
+                    child: _build_search_field(
+                        context, state, localizations, is_dark),
                   ),
                   const SizedBox(height: AppSpacing.space_m),
                   // Section 4: Count & Sort Trigger Row
@@ -229,7 +231,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.space_xl,
                     ),
-                    child: _build_count_and_sort_row(context, state, localizations, is_dark),
+                    child: _build_count_and_sort_row(
+                        context, state, localizations, is_dark),
                   ),
                   const SizedBox(height: AppSpacing.space_m),
                   // Section 5: Dynamic Category Tab View
@@ -307,7 +310,6 @@ class _FavoritesPageState extends State<FavoritesPage> {
     }
   }
 
-
   // 3-Category Segmented Tabs: Doctors (default), Offers, Clinics
   Widget _build_category_tabs(
     BuildContext context,
@@ -320,7 +322,6 @@ class _FavoritesPageState extends State<FavoritesPage> {
       padding: const EdgeInsets.all(AppSpacing.space_xs),
       decoration: BoxDecoration(
         color: is_dark ? AppColors.surface_dark : AppColors.slate_50,
-
         borderRadius:
             BorderRadius.circular(_LocalDimensions.tab_segment_radius),
         border: Border.all(
@@ -370,15 +371,12 @@ class _FavoritesPageState extends State<FavoritesPage> {
           _search_controller.clear();
           context.read<FavoritesCubit>().switch_category(category);
         },
-        borderRadius:
-            BorderRadius.circular(_LocalDimensions.tab_item_radius),
+        borderRadius: BorderRadius.circular(_LocalDimensions.tab_item_radius),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: is_active
-                ? AppColors.primary_color
-                : Colors.transparent,
+            color: is_active ? AppColors.primary_color : Colors.transparent,
             borderRadius:
                 BorderRadius.circular(_LocalDimensions.tab_item_radius),
           ),
@@ -412,8 +410,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
       height: _LocalDimensions.search_bar_height,
       decoration: BoxDecoration(
         color: is_dark ? AppColors.surface_dark : AppColors.background_light,
-        borderRadius:
-            BorderRadius.circular(_LocalDimensions.search_bar_radius),
+        borderRadius: BorderRadius.circular(_LocalDimensions.search_bar_radius),
         border: Border.all(
           color: is_dark ? AppColors.border_dark : AppColors.slate_200,
           width: AppSpacing.border_width_thin,
@@ -473,7 +470,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
   ) {
     final String count_label = _get_items_count_label(state, localizations);
     final FavoriteSortOption active_sort = _get_active_sort(state);
-    final String sort_label = _get_sort_trigger_label(active_sort, localizations);
+    final String sort_label =
+        _get_sort_trigger_label(active_sort, localizations);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,

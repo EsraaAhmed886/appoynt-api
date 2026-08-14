@@ -34,12 +34,19 @@ import 'package:appoynt_mobile_app/features/search/presentation/cubit/search_sta
 import 'package:appoynt_mobile_app/core/widgets/app_bottom_nav_bar.dart';
 // Import shared reusable doctor card widget
 import 'package:appoynt_mobile_app/features/shared/widgets/doctor_card.dart';
+// Import unified search sort bottom sheet modal
+import 'package:appoynt_mobile_app/features/search/presentation/widgets/search_sort_bottom_sheet.dart';
+
 
 // Local layout dimensions class to strictly eliminate hardcoded numbers
 class _LocalDimensions {
   static const double filter_button_size = 64.0;
   static const double border_radius_sheet = 24.0;
+  static const double sort_chip_radius = 10.0;
+  static const double sort_chip_padding_h = 10.0;
+  static const double sort_chip_padding_v = 6.0;
 }
+
 
 // Main search screen gateway page widget
 class SearchPage extends StatefulWidget {
@@ -810,45 +817,88 @@ class _SearchPageState extends State<SearchPage> {
 
       // Show suggestions list cards matching queries input (State B Autocomplete suggestions)
       case SearchStatus.suggestionsLoaded:
+        final int count = state.suggestions.length;
+        final String count_label = (1 == count)
+            ? localizations.favorites_count_single
+            : localizations.favorites_count_plural(count);
+        final String sort_label = _get_sort_label(state.selected_sort_option, localizations);
+
         return Column(
           children: [
-            // Sort by header row
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                InkWell(
-                  onTap: () {
-                    _show_sort_by_modal(context, cubit, state, localizations, is_dark);
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.space_xl,
-                      vertical: AppSpacing.space_m,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          "${localizations.search_sort_title}: ${_get_sort_label(state.selected_sort_option, localizations)}",
-                          style: TextStyle(
-                            fontSize: AppSpacing.font_size_body_medium,
-                            fontWeight: FontWeight.bold,
-                            color: is_dark ? AppColors.text_dark_primary : AppColors.text_light_primary,
-                          ),
-                        ),
-                        const SizedBox(width: AppSpacing.space_s),
-                        Icon(
-                          Icons.keyboard_arrow_down_rounded,
-                          color: is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary,
-                        ),
-                      ],
+            // Count indicator & Sort Trigger Pill Row matching FavoritesPage
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.space_xl,
+                vertical: AppSpacing.space_m,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Left: Result count text
+                  Text(
+                    count_label,
+                    style: TextStyle(
+                      fontSize: AppSpacing.font_size_body_small,
+                      fontWeight: FontWeight.w600,
+                      color: is_dark
+                          ? AppColors.text_dark_secondary
+                          : AppColors.text_light_secondary,
                     ),
                   ),
-                ),
-              ],
+                  // Right: Sort Trigger Pill / Chip button
+                  InkWell(
+                    onTap: () {
+                      show_search_sort_bottom_sheet(
+                        context: context,
+                        current_sort: state.selected_sort_option,
+                        on_apply: (selected_sort) {
+                          cubit.select_sort_option(selected_sort);
+                        },
+                      );
+                    },
+                    borderRadius: BorderRadius.circular(_LocalDimensions.sort_chip_radius),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: _LocalDimensions.sort_chip_padding_h,
+                        vertical: _LocalDimensions.sort_chip_padding_v,
+                      ),
+                      decoration: BoxDecoration(
+                        color: is_dark
+                            ? AppColors.primary_color.withValues(alpha: 0.15)
+                            : AppColors.primary_color.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(_LocalDimensions.sort_chip_radius),
+                        border: Border.all(
+                          color: is_dark ? AppColors.border_dark : AppColors.slate_200,
+                          width: AppSpacing.border_width_thin,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.sort_rounded,
+                            size: AppSpacing.font_size_body_medium,
+                            color: AppColors.primary_color,
+                          ),
+                          const SizedBox(width: AppSpacing.space_xs),
+                          Text(
+                            sort_label,
+                            style: const TextStyle(
+                              fontSize: AppSpacing.font_size_body_small,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.primary_color,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
             // Scrollable list view of Doctor Cards
             Expanded(
+
               child: ListView.builder(
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.space_xl,
@@ -1548,195 +1598,10 @@ class _SearchPageState extends State<SearchPage> {
         return localizations.search_sort_fee_high_to_low;
     }
   }
-
-  // Renders the bottom sheet sorting options list modal dialog
-  void _show_sort_by_modal(
-    BuildContext context,
-    SearchCubit cubit,
-    SearchState state,
-    AppLocalizations localizations,
-    bool is_dark,
-  ) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: AppColors.transparent,
-      barrierColor: AppColors.barrier_color,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setModalState) {
-            return Container(
-              decoration: BoxDecoration(
-                color: is_dark ? AppColors.surface_dark : AppColors.white,
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(_LocalDimensions.border_radius_sheet),
-                ),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: AppSpacing.space_xl),
-                Center(
-                  child: Text(
-                    localizations.search_sort_title,
-                    style: TextStyle(
-                      fontSize: AppSpacing.font_size_dialog_title,
-                      fontWeight: FontWeight.bold,
-                      color: is_dark ? AppColors.text_dark_primary : AppColors.text_light_primary,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.space_xl),
-                Expanded(
-                  child: ListView(
-                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space_xl),
-                    children: [
-                      _build_sort_option_tile(
-                        context,
-                        cubit,
-                        state,
-                        SearchSortOption.recentlyAdded,
-                        localizations.search_sort_recently_added,
-                        localizations.search_sort_recently_added_desc,
-                        Icons.access_time_rounded,
-                        is_dark,
-                      ),
-                      _build_sort_option_tile(
-                        context,
-                        cubit,
-                        state,
-                        SearchSortOption.nameAToZ,
-                        localizations.search_sort_name_a_to_z,
-                        localizations.search_sort_name_a_to_z_desc,
-                        Icons.sort_by_alpha_rounded,
-                        is_dark,
-                      ),
-                      _build_sort_option_tile(
-                        context,
-                        cubit,
-                        state,
-                        SearchSortOption.nameZToA,
-                        localizations.search_sort_name_z_to_a,
-                        localizations.search_sort_name_z_to_a_desc,
-                        Icons.sort_by_alpha_rounded,
-                        is_dark,
-                      ),
-                      _build_sort_option_tile(
-                        context,
-                        cubit,
-                        state,
-                        SearchSortOption.ratingHighToLow,
-                        localizations.search_sort_rating_high_to_low,
-                        localizations.search_sort_rating_high_to_low_desc,
-                        Icons.star_outline_rounded,
-                        is_dark,
-                      ),
-                      _build_sort_option_tile(
-                        context,
-                        cubit,
-                        state,
-                        SearchSortOption.feeLowToHigh,
-                        localizations.search_sort_fee_low_to_high,
-                        localizations.search_sort_fee_low_to_high_desc,
-                        Icons.arrow_downward_rounded,
-                        is_dark,
-                      ),
-                      _build_sort_option_tile(
-                        context,
-                        cubit,
-                        state,
-                        SearchSortOption.feeHighToLow,
-                        localizations.search_sort_fee_high_to_low,
-                        localizations.search_sort_fee_high_to_low_desc,
-                        Icons.arrow_upward_rounded,
-                        is_dark,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.space_xl),
-              ],
-            ),
-          );
-        },
-      );
-    },
-  );
-}
-
-  // Renders a single sorting option list tile component
-  Widget _build_sort_option_tile(
-    BuildContext context,
-    SearchCubit cubit,
-    SearchState state,
-    SearchSortOption option,
-    String title,
-    String description,
-    IconData icon,
-    bool is_dark,
-  ) {
-    final bool is_selected = state.selected_sort_option == option;
-    return InkWell(
-      onTap: () {
-        cubit.select_sort_option(option);
-        Navigator.pop(context);
-      },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: AppSpacing.space_l),
-        child: Row(
-          children: [
-            Icon(
-              icon,
-              size: AppSpacing.search_nav_icon_size,
-              color: is_selected
-                  ? AppColors.primary_color
-                  : (is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary),
-            ),
-            const SizedBox(width: AppSpacing.space_xl),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: AppSpacing.font_size_forgot_link,
-                      fontWeight: is_selected ? FontWeight.bold : FontWeight.w500,
-                      color: is_selected
-                          ? AppColors.primary_color
-                          : (is_dark ? AppColors.text_dark_primary : AppColors.text_light_primary),
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.border_width_thin),
-                  Text(
-                    description,
-                    style: TextStyle(
-                      fontSize: AppSpacing.font_size_body_small,
-                      color: is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(
-              is_selected
-                  ? Icons.radio_button_checked_rounded
-                  : Icons.radio_button_off_rounded,
-              color: is_selected
-                  ? AppColors.primary_color
-                  : (is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary),
-              size: AppSpacing.search_nav_icon_size,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-
 }
 
 // Custom internal stateless widget constructing Location and Specialty filter chips
+
 class _FilterChip extends StatelessWidget {
   // Leading icon graphic asset representation
   final IconData icon;
