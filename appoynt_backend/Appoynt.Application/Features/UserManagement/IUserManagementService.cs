@@ -2,11 +2,11 @@
  * File Name      : IUserManagementService.cs
  * Author         : Mustafa Mahmoud
  * Created Date   : 28/07/2026
- * Version        : v1.0.0
- * Dependencies   : CreateStaffRequest, Result, UpdateUserRequest, UserQueryParameters, UserResponse, PagedResponse
+ * Version        : v1.1.0
+ * Dependencies   : CreateDoctorRequest, CreateStaffRequest, Result, UpdateUserRequest, UserQueryParameters, UserResponse, PagedResponse
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-07-31
- * Description    : Defines the contract for user management operations.
+ * Last Modified  : Mustafa Mahmoud - 2026-08-14
+ * Description    : Defines the contract for user management operations including staff and doctor creation.
  */
 
 using Appoynt.Application.Common.Models;
@@ -30,13 +30,13 @@ public interface IUserManagementService
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Creates a new doctor account.
+    /// Creates a new doctor account with profile, specializations, and phone numbers.
     /// </summary>
     /// <param name="request">The creation request data.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A result containing the user ID if successful, or validation errors.</returns>
     Task<UserManagementResult> CreateDoctorAsync(
-        CreateStaffRequest request,
+        CreateDoctorRequest request,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -89,5 +89,13 @@ public interface IUserManagementService
     /// <returns>A result indicating success or containing validation errors.</returns>
     Task<UserManagementResult> DeleteUserAsync(
         Guid id,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Soft deletes all users in the system except the currently authenticated administrator.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A result indicating success or containing validation errors.</returns>
+    Task<UserManagementResult> DeleteAllUsersAsync(
         CancellationToken cancellationToken = default);
 }

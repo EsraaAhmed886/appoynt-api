@@ -85,25 +85,23 @@ public static class DatabaseInitializationExtensions
                 logger.LogInformation("Test database schema created successfully.");
             }
 
+            logger.LogInformation("Ensuring system roles exist in database.");
+            IRoleSeeder roleSeeder = services.GetRequiredService<IRoleSeeder>();
+            await roleSeeder.SeedAsync(cancellationToken).ConfigureAwait(false);
+
             if (!seedOptions.Enabled)
             {
-                logger.LogInformation(
-                    "Database seeding is disabled via configuration.");
-
+                logger.LogInformation("Optional demo data seeding is disabled via configuration.");
                 return;
             }
             else
             {
             }
 
-            logger.LogInformation("Starting database seeding.");
+            logger.LogInformation("Starting database demo data seeding.");
 
-            IDatabaseSeeder databaseSeeder =
-                services.GetRequiredService<IDatabaseSeeder>();
-
-            await databaseSeeder
-                .SeedAsync(cancellationToken)
-                .ConfigureAwait(false);
+            IAdminSeeder adminSeeder = services.GetRequiredService<IAdminSeeder>();
+            await adminSeeder.SeedAsync(cancellationToken).ConfigureAwait(false);
 
             logger.LogInformation("Database seeding completed successfully.");
         }

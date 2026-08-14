@@ -22,6 +22,7 @@ using Appoynt.Application.Features.Authentication.Otp.Contracts;
 using Appoynt.Domain.Common.Constants;
 using Appoynt.Domain.Entities;
 using Appoynt.Domain.Enums;
+using Appoynt.Infrastructure.Authentication.Patient;
 using Appoynt.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -154,11 +155,26 @@ public sealed class RegistrationService : IRegistrationService
             {
             }
 
-            _dbContext.Patients.Add(new Patient
+            // Generate a unique random 7-digit family number and PID.
+            var random = Random.Shared;
+            string familyNumber;
+            bool isUnique;
+            do
+            {
+                familyNumber = PidGenerator.GenerateRandomFamilyNumber(random);
+                isUnique = !await _dbContext.Patients.IgnoreQueryFilters().AnyAsync(p => p.FamilyNumber == familyNumber, cancellationToken);
+            }
+            while (!isUnique);
+
+            string pid = PidGenerator.GeneratePid(familyNumber, FamilyRelationship.User, 0);
+
+            _dbContext.Patients.Add(new Appoynt.Domain.Entities.Patient
             {
                 Id = Guid.NewGuid(),
                 UserId = user.Id,
-                User = user
+                User = user,
+                PID = pid,
+                FamilyNumber = familyNumber
             });
 
             await _dbContext.SaveChangesAsync(cancellationToken);

@@ -67,7 +67,7 @@ public sealed class UsersController : ControllerBase
     }
 
     /// <summary>
-    /// Creates a new doctor account.
+    /// Creates a new doctor account with profile, specializations, and phone numbers.
     /// </summary>
     /// <param name="request">The creation request data.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
@@ -79,7 +79,7 @@ public sealed class UsersController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> CreateDoctor(
-        [FromBody] CreateStaffRequest request,
+        [FromBody] CreateDoctorRequest request,
         CancellationToken cancellationToken)
     {
         var result = await _userManagementService.CreateDoctorAsync(request, cancellationToken);
@@ -261,6 +261,40 @@ public sealed class UsersController : ControllerBase
         }
 
         // Return 204 No Content on successful soft-delete.
+        return NoContent();
+    }
+
+    /// <summary>
+    /// Soft deletes all users except the currently authenticated administrator.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An HTTP 204 No Content response if successful.</returns>
+    [HttpDelete]
+    [Authorize(Roles = RoleConstants.Admin)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> DeleteAllUsers(CancellationToken cancellationToken)
+    {
+        var result = await _userManagementService.DeleteAllUsersAsync(cancellationToken);
+
+        if (!result.Succeeded)
+        {
+            if (result.Errors.Any(e => e.Code == AuthenticationErrorCodes.Forbidden))
+            {
+                return Forbid();
+            }
+            else
+            {
+            }
+
+            return BadRequest(result);
+        }
+        else
+        {
+        }
+
         return NoContent();
     }
 }

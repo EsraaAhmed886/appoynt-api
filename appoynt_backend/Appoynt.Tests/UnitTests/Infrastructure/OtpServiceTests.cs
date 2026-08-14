@@ -9,6 +9,7 @@ using Appoynt.Infrastructure.Persistence;
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using Moq;
 
 namespace Appoynt.Tests.UnitTests.Infrastructure;
@@ -37,6 +38,13 @@ public sealed class OtpServiceTests
         return new Mock<UserManager<ApplicationUser>>(store.Object, null!, null!, null!, null!, null!, null!, null!, null!);
     }
 
+    private static Mock<IHostEnvironment> CreateDevEnvironmentMock()
+    {
+        var envMock = new Mock<IHostEnvironment>();
+        envMock.Setup(e => e.EnvironmentName).Returns("Development");
+        return envMock;
+    }
+
     [Fact]
     public async Task IssueAsync_ShouldCreateChallengeAndSendSms_WhenValidUser()
     {
@@ -47,7 +55,8 @@ public sealed class OtpServiceTests
             .ReturnsAsync(true);
 
         var userManagerMock = CreateUserManagerMock();
-        var service = new OtpService(dbContext, smsSenderMock.Object, userManagerMock.Object);
+        var envMock = CreateDevEnvironmentMock();
+        var service = new OtpService(dbContext, smsSenderMock.Object, userManagerMock.Object, envMock.Object);
 
         var user = new ApplicationUser
         {
@@ -83,7 +92,8 @@ public sealed class OtpServiceTests
             .ReturnsAsync(true);
 
         var userManagerMock = CreateUserManagerMock();
-        var service = new OtpService(dbContext, smsSenderMock.Object, userManagerMock.Object);
+        var envMock = CreateDevEnvironmentMock();
+        var service = new OtpService(dbContext, smsSenderMock.Object, userManagerMock.Object, envMock.Object);
 
         var user = new ApplicationUser
         {
@@ -118,7 +128,8 @@ public sealed class OtpServiceTests
         using ApplicationDbContext dbContext = CreateDbContext();
         var smsSenderMock = new Mock<ISmsSender>();
         var userManagerMock = CreateUserManagerMock();
-        var service = new OtpService(dbContext, smsSenderMock.Object, userManagerMock.Object);
+        var envMock = CreateDevEnvironmentMock();
+        var service = new OtpService(dbContext, smsSenderMock.Object, userManagerMock.Object, envMock.Object);
 
         var user = new ApplicationUser
         {
@@ -159,7 +170,8 @@ public sealed class OtpServiceTests
         using ApplicationDbContext dbContext = CreateDbContext();
         var smsSenderMock = new Mock<ISmsSender>();
         var userManagerMock = CreateUserManagerMock();
-        var service = new OtpService(dbContext, smsSenderMock.Object, userManagerMock.Object);
+        var envMock = CreateDevEnvironmentMock();
+        var service = new OtpService(dbContext, smsSenderMock.Object, userManagerMock.Object, envMock.Object);
 
         var user = new ApplicationUser
         {
@@ -199,7 +211,8 @@ public sealed class OtpServiceTests
         using ApplicationDbContext dbContext = CreateDbContext();
         var smsSenderMock = new Mock<ISmsSender>();
         var userManagerMock = CreateUserManagerMock();
-        var service = new OtpService(dbContext, smsSenderMock.Object, userManagerMock.Object);
+        var envMock = CreateDevEnvironmentMock();
+        var service = new OtpService(dbContext, smsSenderMock.Object, userManagerMock.Object, envMock.Object);
 
         var user = new ApplicationUser
         {

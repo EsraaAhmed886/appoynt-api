@@ -1,14 +1,12 @@
-﻿/**
+/**
  * File Name      : PatientConfiguration.cs
  * Author         : Mustafa Mahmoud
- * Created Date   : 21/07/2026
- * Version        : v1.0.0
- * Dependencies   : Patient, BaseAuditableEntityConfiguration<Patient>, Entity Framework Core
+ * Created Date   : 2026-08-10
+ * Version        : v2.0.0
+ * Dependencies   : Patient, BaseAuditableEntityConfiguration, EntityTypeBuilder
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 21/07/2026
- * Description    : Configures the Entity Framework Core mapping for the
- *                  Patient entity, including table mapping, primary key,
- *                  indexes, and relationships.
+ * Last Modified  : Mustafa Mahmoud - 2026-08-14
+ * Description    : EF Core configuration for Patient entity. Profile photo is now centrally mapped on ApplicationUser.
  */
 
 using Appoynt.Domain.Entities;
@@ -19,53 +17,88 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace Appoynt.Infrastructure.Persistence.Configurations;
 
 /// <summary>
-/// Configures the database mapping for the <see cref="Patient"/> entity.
+/// Configuration for the Patient entity.
 /// </summary>
-public sealed class PatientConfiguration
-    : BaseAuditableEntityConfiguration<Patient>
+public class PatientConfiguration : BaseAuditableEntityConfiguration<Patient>
 {
     /// <summary>
-    /// Configures the Patient entity using the Entity Framework Core Fluent API.
+    /// Configures the entity.
     /// </summary>
-    /// <param name="builder">
-    /// The builder used to configure the entity.
-    /// </param>
     public override void Configure(EntityTypeBuilder<Patient> builder)
     {
-        // Apply the common audit configuration defined in the base class.
+        // Call base configuration
         base.Configure(builder);
 
-        #region Table Configuration
-
-        // Map the entity to the "Patients" table.
+        // Set table name
         builder.ToTable("Patients");
 
-        #endregion
+        // Set primary key
+        builder.HasKey(p => p.Id);
 
-        #region Primary Key Configuration
+        // Configure PID
+        builder.Property(p => p.PID)
+            .IsRequired()
+            .HasMaxLength(9);
+            
+        // Unique index for PID
+        builder.HasIndex(p => p.PID)
+            .IsUnique()
+            .HasDatabaseName("UX_Patients_PID");
 
-        // Configure the primary key.
-        builder.HasKey(patient => patient.Id);
+        // Configure FamilyNumber
+        builder.Property(p => p.FamilyNumber)
+            .IsRequired()
+            .HasMaxLength(7);
 
-        #endregion
+        // Configure NationalId
+        builder.Property(p => p.NationalId)
+            .HasMaxLength(14)
+            .IsRequired(false);
 
-        #region Index Configuration
+        // Unique filtered index for NationalId
+        builder.HasIndex(p => p.NationalId)
+            .IsUnique()
+            .HasFilter("[DeletedAt] IS NULL AND [NationalId] IS NOT NULL")
+            .HasDatabaseName("UX_Patients_NationalId");
 
-        // Ensure that each user can be associated with only one patient record.
-        builder.HasIndex(patient => patient.UserId)
-            .HasDatabaseName("UX_Patients_UserId")
-            .IsUnique();
+        // Configure BirthDate
+        builder.Property(p => p.BirthDate)
+            .HasColumnType("date")
+            .IsRequired(false);
 
-        #endregion
+        // Configure WeightKg
+        builder.Property(p => p.WeightKg)
+            .HasColumnType("decimal(5,1)")
+            .IsRequired(false);
 
-        #region Relationship Configuration
+        // Configure HeightCm
+        builder.Property(p => p.HeightCm)
+            .HasColumnType("decimal(5,1)")
+            .IsRequired(false);
 
-        // Configure the one-to-one relationship between Patient and User.
-        builder.HasOne(patient => patient.User)
-            .WithOne(user => user.Patient)
-            .HasForeignKey<Patient>(patient => patient.UserId)
+        // Configure BloodGroup
+        builder.Property(p => p.BloodGroup)
+            .IsRequired(false);
+
+        // Configure SmokingStatus
+        builder.Property(p => p.SmokingStatus)
+            .IsRequired(false);
+
+        // Unique index for UserId
+        builder.HasIndex(p => p.UserId)
+            .IsUnique()
+            .HasDatabaseName("UX_Patients_UserId");
+
+        // Configure relationship with ApplicationUser
+        builder.HasOne(p => p.User)
+            .WithOne(u => u.Patient)
+            .HasForeignKey<Patient>(p => p.UserId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        #endregion
+        // Configure relationship with FamilyMembers
+        builder.HasMany(p => p.FamilyMembers)
+            .WithOne(f => f.Patient)
+            .HasForeignKey(f => f.PatientId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

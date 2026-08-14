@@ -109,6 +109,26 @@ public class ApplicationDbContext
     /// </summary>
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
 
+    /// <summary>
+    /// Gets the family members linked to patient accounts.
+    /// </summary>
+    public DbSet<FamilyMember> FamilyMembers => Set<FamilyMember>();
+
+    /// <summary>
+    /// Gets the additional contact phone numbers for doctors.
+    /// </summary>
+    public DbSet<DoctorPhoneNumber> DoctorPhoneNumbers => Set<DoctorPhoneNumber>();
+
+    /// <summary>
+    /// Gets the medical specializations registered in the system.
+    /// </summary>
+    public DbSet<Specialization> Specializations => Set<Specialization>();
+
+    /// <summary>
+    /// Gets the doctor-specialization join entries.
+    /// </summary>
+    public DbSet<DoctorSpecialization> DoctorSpecializations => Set<DoctorSpecialization>();
+
     #endregion
 
     #region Model Configuration

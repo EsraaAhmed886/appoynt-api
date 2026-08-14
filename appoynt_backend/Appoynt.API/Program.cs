@@ -100,19 +100,13 @@ public class Program
         // Use global exception handling middleware.
         app.UseExceptionHandler();
 
-        // Enable Swagger only in the Development environment.
-        if (app.Environment.IsDevelopment())
+        // Enable Swagger UI for API testing and documentation.
+        app.UseSwagger();
+        app.UseSwaggerUI(options =>
         {
-            app.UseSwagger();
-            app.UseSwaggerUI(options =>
-            {
-                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Appoynt API v1");
-                options.RoutePrefix = string.Empty; // Set Swagger UI as the root page
-            });
-        }
-        else
-        {
-        }
+            options.SwaggerEndpoint("/swagger/v1/swagger.json", "Appoynt API v1");
+            options.RoutePrefix = string.Empty; // Set Swagger UI as the root page
+        });
 
         // Redirect HTTP requests to HTTPS.
         app.UseHttpsRedirection();

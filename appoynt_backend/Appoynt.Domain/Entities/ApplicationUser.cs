@@ -1,14 +1,14 @@
-﻿/**
+/**
  * File Name      : ApplicationUser.cs
  * Author         : Mustafa Mahmoud
  * Created Date   : 21/07/2026
- * Version        : v1.0.0
+ * Version        : v1.1.0
  * Dependencies   : IdentityUser<Guid>, Gender, Doctor, Patient,
  *                  Admin, Receptionist, RefreshToken
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 21/07/2026
+ * Last Modified  : Mustafa Mahmoud - 2026-08-14
  * Description    : Represents an application user with business information,
- *                  audit information, and navigation properties.
+ *                  profile picture path, audit information, and navigation properties.
  */
 
 using Appoynt.Domain.Enums;
@@ -40,6 +40,12 @@ public class ApplicationUser : IdentityUser<Guid>
 
     // Indicates whether the user account is active.
     public bool IsActive { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets the relative storage path for the user's profile picture.
+    /// Example: profiles/{guid}/profile.jpg.
+    /// </summary>
+    public string? ProfilePicturePath { get; set; }
 
     #endregion
 

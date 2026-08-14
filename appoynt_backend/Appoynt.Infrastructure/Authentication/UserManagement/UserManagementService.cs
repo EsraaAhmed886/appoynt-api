@@ -36,6 +36,7 @@ public sealed class UserManagementService : IUserManagementService
     private readonly ApplicationDbContext _dbContext;
     private readonly ICurrentUserService _currentUserService;
     private readonly IValidator<CreateStaffRequest> _validator;
+    private readonly IValidator<CreateDoctorRequest> _doctorValidator;
     private readonly IValidator<UpdateUserRequest> _updateValidator;
     private readonly ILogger<UserManagementService> _logger;
 
@@ -48,6 +49,7 @@ public sealed class UserManagementService : IUserManagementService
         ApplicationDbContext dbContext,
         ICurrentUserService currentUserService,
         IValidator<CreateStaffRequest> validator,
+        IValidator<CreateDoctorRequest> doctorValidator,
         IValidator<UpdateUserRequest> updateValidator,
         ILogger<UserManagementService> logger)
     {
@@ -56,6 +58,7 @@ public sealed class UserManagementService : IUserManagementService
         _dbContext = dbContext;
         _currentUserService = currentUserService;
         _validator = validator;
+        _doctorValidator = doctorValidator;
         _updateValidator = updateValidator;
         _logger = logger;
     }
@@ -70,10 +73,214 @@ public sealed class UserManagementService : IUserManagementService
 
     /// <inheritdoc />
     public async Task<UserManagementResult> CreateDoctorAsync(
-        CreateStaffRequest request,
+        CreateDoctorRequest request,
         CancellationToken cancellationToken = default)
     {
-        return await CreateStaffUserAsync(request, RoleConstants.Doctor, cancellationToken);
+        ArgumentNullException.ThrowIfNull(request);
+
+        // Validate the doctor creation request payload.
+        var validationResult = await _doctorValidator.ValidateAsync(request, cancellationToken);
+
+        if (!validationResult.IsValid)
+        {
+            var errors = validationResult.Errors
+                .Select(e => new AuthenticationError(e.ErrorCode, e.PropertyName))
+                .ToList();
+            return new UserManagementResult { Errors = errors };
+        }
+        else
+        {
+            // No action required.
+        }
+
+        // Normalize email and check for existing registration.
+        string normalizedEmail = _userManager.NormalizeEmail(request.Email!);
+
+        if (await _userManager.Users.AnyAsync(
+                user => user.NormalizedEmail == normalizedEmail,
+                cancellationToken))
+        {
+            return Failure(AuthenticationErrorCodes.EmailAlreadyRegistered, "Email");
+        }
+        else
+        {
+            // No action required.
+        }
+
+        // Check for duplicate phone number registration.
+        if (await _userManager.Users.AnyAsync(
+                user => user.PhoneNumber == request.PhoneNumber,
+                cancellationToken))
+        {
+            return Failure(AuthenticationErrorCodes.PhoneAlreadyRegistered, "PhoneNumber");
+        }
+        else
+        {
+            // No action required.
+        }
+
+        // Verify that the Doctor system role exists.
+        if (!await _roleManager.RoleExistsAsync(RoleConstants.Doctor))
+        {
+            return Failure(AuthenticationErrorCodes.RegistrationFailed);
+        }
+        else
+        {
+            // No action required.
+        }
+
+        // If specialization IDs were supplied, verify all exist in the database.
+        List<Guid> distinctSpecializationIds = [];
+        if (request.SpecializationIds != null && request.SpecializationIds.Count > 0)
+        {
+            distinctSpecializationIds = request.SpecializationIds.Distinct().ToList();
+
+            var existingCount = await _dbContext.Specializations
+                .CountAsync(s => distinctSpecializationIds.Contains(s.Id), cancellationToken);
+
+            if (existingCount != distinctSpecializationIds.Count)
+            {
+                return Failure(DoctorErrorCodes.SpecializationNotFound, nameof(request.SpecializationIds));
+            }
+            else
+            {
+                // All specializations exist.
+            }
+        }
+        else
+        {
+            // No specializations provided.
+        }
+
+        // Begin an atomic database transaction to prevent partial state creation.
+        await using var transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
+
+        try
+        {
+            // Instantiate the identity application user.
+            var user = new ApplicationUser
+            {
+                FirstName = request.FirstName!,
+                LastName = request.LastName!,
+                UserName = request.Email,
+                Email = request.Email,
+                PhoneNumber = request.PhoneNumber,
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true,
+                LockoutEnabled = true,
+                IsActive = true
+            };
+
+            // Create the user in ASP.NET Core Identity.
+            IdentityResult createUserResult = await _userManager.CreateAsync(user, request.Password!);
+
+            if (!createUserResult.Succeeded)
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                var errors = createUserResult.Errors
+                    .Select(e => new AuthenticationError(e.Code, e.Description))
+                    .ToList();
+                return new UserManagementResult { Errors = errors };
+            }
+            else
+            {
+                // User created successfully.
+            }
+
+            // Assign the Doctor role to the user.
+            IdentityResult addRoleResult = await _userManager.AddToRoleAsync(user, RoleConstants.Doctor);
+
+            if (!addRoleResult.Succeeded)
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                var errors = addRoleResult.Errors
+                    .Select(e => new AuthenticationError(e.Code, e.Description))
+                    .ToList();
+                return new UserManagementResult { Errors = errors };
+            }
+            else
+            {
+                // Role assigned successfully.
+            }
+
+            // Instantiate and add the Doctor domain entity with profile properties.
+            var doctor = new Doctor
+            {
+                Id = Guid.NewGuid(),
+                UserId = user.Id,
+                User = user,
+                NameAr = request.NameAr,
+                NameEn = request.NameEn,
+                Bio = request.Bio,
+                Education = request.Education
+            };
+
+            _dbContext.Doctors.Add(doctor);
+
+            // Add specialization join rows if provided.
+            if (distinctSpecializationIds.Count > 0)
+            {
+                foreach (var specId in distinctSpecializationIds)
+                {
+                    var specialization = await _dbContext.Specializations
+                        .FirstAsync(s => s.Id == specId, cancellationToken);
+
+                    _dbContext.DoctorSpecializations.Add(new DoctorSpecialization
+                    {
+                        DoctorId = doctor.Id,
+                        Doctor = doctor,
+                        SpecializationId = specId,
+                        Specialization = specialization
+                    });
+                }
+            }
+            else
+            {
+                // No specializations to link.
+            }
+
+            // Add additional contact phone numbers if provided.
+            if (request.PhoneNumbers != null && request.PhoneNumbers.Count > 0)
+            {
+                foreach (var phoneDto in request.PhoneNumbers)
+                {
+                    _dbContext.DoctorPhoneNumbers.Add(new DoctorPhoneNumber
+                    {
+                        Id = Guid.NewGuid(),
+                        DoctorId = doctor.Id,
+                        Doctor = doctor,
+                        PhoneNumber = phoneDto.PhoneNumber!,
+                        Label = phoneDto.Label!
+                    });
+                }
+            }
+            else
+            {
+                // No additional phone numbers to link.
+            }
+
+            // Save all related entities to the database.
+            await _dbContext.SaveChangesAsync(cancellationToken);
+
+            // Commit the transaction.
+            await transaction.CommitAsync(cancellationToken);
+
+            _logger.LogInformation("Doctor account {DoctorId} for user {UserId} created successfully", doctor.Id, user.Id);
+
+            return UserManagementResult.Success(user.Id);
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "A database error occurred while creating a doctor account.");
+            await transaction.RollbackAsync(cancellationToken);
+            return Failure(AuthenticationErrorCodes.RegistrationFailed);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An unexpected error occurred while creating a doctor account.");
+            await transaction.RollbackAsync(cancellationToken);
+            return Failure(AuthenticationErrorCodes.RegistrationFailed);
+        }
     }
 
     /// <inheritdoc />
@@ -91,6 +298,7 @@ public sealed class UserManagementService : IUserManagementService
         }
         else
         {
+            // Proceed with doctor lookup.
         }
 
         var doctor = await _dbContext.Doctors
@@ -102,6 +310,7 @@ public sealed class UserManagementService : IUserManagementService
         }
         else
         {
+            // Doctor found.
         }
 
         return await CreateStaffUserAsync(
@@ -597,6 +806,40 @@ public sealed class UserManagementService : IUserManagementService
 
         // Return the soft-deleted user's identifier.
         return UserManagementResult.Success(user.Id);
+    }
+
+    /// <inheritdoc />
+    public async Task<UserManagementResult> DeleteAllUsersAsync(CancellationToken cancellationToken = default)
+    {
+        // Only administrators are allowed to perform bulk user deletion.
+        var currentRole = _currentUserService.Role;
+        if (currentRole != RoleConstants.Admin)
+        {
+            return UserManagementResult.Failure(AuthenticationErrorCodes.Forbidden);
+        }
+        else
+        {
+        }
+
+        var currentUserId = _currentUserService.UserId;
+
+        // Fetch all active users except the performing administrator to prevent self-lockout.
+        var usersToDelete = await _dbContext.Users
+            .Where(u => u.IsActive && u.Id != currentUserId)
+            .ToListAsync(cancellationToken);
+
+        var now = DateTime.UtcNow;
+
+        foreach (var user in usersToDelete)
+        {
+            user.IsActive = false;
+            user.DeletedAt = now;
+            user.DeletedById = currentUserId;
+        }
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return UserManagementResult.Success(currentUserId ?? Guid.Empty);
     }
 
     /// <summary>

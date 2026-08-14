@@ -1,15 +1,15 @@
-﻿/**
+/**
  * File Name      : ApplicationUserConfiguration.cs
  * Author         : Mustafa Mahmoud
  * Created Date   : 21/07/2026
- * Version        : v1.0.0
- * Dependencies   : ApplicationUser, UserConstants, Entity Framework Core
+ * Version        : v1.1.0
+ * Dependencies   : ApplicationUser, UserConstants, ProfilePictureConstants, Entity Framework Core
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 21/07/2026
+ * Last Modified  : Mustafa Mahmoud - 2026-08-14
  * Description    : Configures the Entity Framework Core mapping for the
  *                  ApplicationUser entity, including business properties,
- *                  identity properties, audit configuration, indexes,
- *                  relationships, and the global soft-delete query filter.
+ *                  profile picture path, identity properties, audit configuration,
+ *                  indexes, relationships, and the global soft-delete query filter.
  */
 
 using Appoynt.Domain.Common.Constants;
@@ -67,6 +67,11 @@ public sealed class ApplicationUserConfiguration
         // Set newly created users as active by default.
         builder.Property(user => user.IsActive)
             .HasDefaultValue(true);
+
+        // Configure the centralized profile picture path.
+        builder.Property(user => user.ProfilePicturePath)
+            .HasMaxLength(ProfilePictureConstants.PathMaxLength)
+            .IsRequired(false);
 
         #endregion
 

@@ -1,13 +1,12 @@
-﻿/**
+/**
  * File Name      : ServicesDependencyInjection.cs
  * Author         : Mustafa Mahmoud
  * Created Date   : 22/07/2026
- * Version        : v1.0.0
- * Dependencies   : CurrentUserService, DateTimeProvider
+ * Version        : v1.1.0
+ * Dependencies   : CurrentUserService, DateTimeProvider, LocalFileStorageService, ImageProcessingService, ProfileImageService
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 22/07/2026
- * Description    : Registers infrastructure services used throughout
- *                  the application.
+ * Last Modified  : Mustafa Mahmoud - 2026-08-14
+ * Description    : Registers infrastructure services used throughout the application.
  */
 
 using Appoynt.Application.Common.Interfaces;
@@ -41,6 +40,15 @@ internal static class ServicesDependencyInjection
 
         // Register the system date and time provider.
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+
+        // Register local file storage service.
+        services.AddSingleton<IFileStorageService, Appoynt.Infrastructure.FileStorage.LocalFileStorageService>();
+
+        // Register image processing and compression service.
+        services.AddSingleton<IImageProcessingService, ImageProcessingService>();
+
+        // Register centralized profile image management service.
+        services.AddScoped<IProfileImageService, ProfileImageService>();
 
         return services;
     }

@@ -6,7 +6,7 @@
  * Dependencies   : IOtpService, ISmsSender, ApplicationDbContext,
  *                  UserManager, PasswordHasher
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 25/07/2026
+ * Last Modified  : Mustafa Mahmoud - 06/08/2026
  * Description    : Implements mobile OTP issuance and verification for phone
  *                  confirmation and Login verification.
  */
@@ -23,6 +23,7 @@ using Appoynt.Domain.Enums;
 using Appoynt.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 
 namespace Appoynt.Infrastructure.Authentication;
 
@@ -34,17 +35,24 @@ public sealed class OtpService : IOtpService
     private readonly ApplicationDbContext _dbContext;
     private readonly ISmsSender _smsSender;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IHostEnvironment _environment;
     private readonly PasswordHasher<OtpChallenge> _passwordHasher = new();
 
     /// <summary>Initializes a new instance of the <see cref="OtpService"/> class.</summary>
+    /// <param name="dbContext">The application database context.</param>
+    /// <param name="smsSender">The SMS delivery service.</param>
+    /// <param name="userManager">The ASP.NET Core Identity user manager.</param>
+    /// <param name="environment">The hosting environment.</param>
     public OtpService(
         ApplicationDbContext dbContext,
         ISmsSender smsSender,
-        UserManager<ApplicationUser> userManager)
+        UserManager<ApplicationUser> userManager,
+        IHostEnvironment environment)
     {
         _dbContext = dbContext;
         _smsSender = smsSender;
         _userManager = userManager;
+        _environment = environment;
     }
 
     /// <inheritdoc />
@@ -58,7 +66,8 @@ public sealed class OtpService : IOtpService
         string phoneNumber = user.PhoneNumber
             ?? throw new InvalidOperationException("OTP requires a phone number.");
 
-        string code = RandomNumberGenerator.GetInt32(0, 1_000_000).ToString("D6");
+        // Fixed OTP code "123456" for system testing across environments.
+        string code = "123456";
 
         if (!await _smsSender.SendOtpAsync(phoneNumber, code, cancellationToken))
         {

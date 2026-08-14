@@ -83,10 +83,14 @@ public class UserManagementIntegrationTests : IClassFixture<WebApplicationFactor
         string token = await GetAdminTokenAsync();
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var request = new CreateStaffRequest
+        var request = new CreateDoctorRequest
         {
             FirstName = "Gregory",
             LastName = "House",
+            NameAr = "د. جريجوري هاوس",
+            NameEn = "Dr. Gregory House",
+            Bio = "Diagnostic Medicine",
+            Education = "Johns Hopkins",
             Email = "house@appoynt.com",
             PhoneNumber = "15558889999",
             Password = "Password123!"
@@ -107,6 +111,8 @@ public class UserManagementIntegrationTests : IClassFixture<WebApplicationFactor
 
         doctor.Should().NotBeNull();
         doctor!.User.FirstName.Should().Be("Gregory");
+        doctor.NameAr.Should().Be("د. جريجوري هاوس");
+        doctor.NameEn.Should().Be("Dr. Gregory House");
     }
 
     [Fact]
@@ -115,10 +121,12 @@ public class UserManagementIntegrationTests : IClassFixture<WebApplicationFactor
         // Arrange: Try without any token
         _client.DefaultRequestHeaders.Authorization = null;
 
-        var request = new CreateStaffRequest
+        var request = new CreateDoctorRequest
         {
             FirstName = "Gregory",
             LastName = "House",
+            NameAr = "د. جريجوري هاوس",
+            NameEn = "Dr. Gregory House",
             Email = "house2@appoynt.com",
             PhoneNumber = "15558889998",
             Password = "Password123!"
@@ -138,10 +146,12 @@ public class UserManagementIntegrationTests : IClassFixture<WebApplicationFactor
         string adminToken = await GetAdminTokenAsync();
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", adminToken);
 
-        var doctorRequest = new CreateStaffRequest
+        var doctorRequest = new CreateDoctorRequest
         {
             FirstName = "Doctor",
             LastName = "Strange",
+            NameAr = "د. ستيفن سترينج",
+            NameEn = "Dr. Stephen Strange",
             Email = "strange@appoynt.com",
             PhoneNumber = "15558887777",
             Password = "Password123!"
@@ -191,10 +201,12 @@ public class UserManagementIntegrationTests : IClassFixture<WebApplicationFactor
         string adminToken = await GetAdminTokenAsync();
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", adminToken);
 
-        var doctorRequest = new CreateStaffRequest
+        var doctorRequest = new CreateDoctorRequest
         {
             FirstName = "Doctor",
             LastName = "Who",
+            NameAr = "د. هو",
+            NameEn = "Dr. Who",
             Email = "who@appoynt.com",
             PhoneNumber = "15551112222",
             Password = "Password123!"
@@ -228,20 +240,24 @@ public class UserManagementIntegrationTests : IClassFixture<WebApplicationFactor
         string adminToken = await GetAdminTokenAsync();
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", adminToken);
 
-        var firstDoctor = new CreateStaffRequest
+        var firstDoctor = new CreateDoctorRequest
         {
             FirstName = "John",
             LastName = "Doe",
+            NameAr = "د. جون دو",
+            NameEn = "Dr. John Doe",
             Email = "duplicate@appoynt.com",
             PhoneNumber = "15553334444",
             Password = "Password123!"
         };
         await _client.PostAsJsonAsync("/api/users/doctors", firstDoctor);
 
-        var secondDoctor = new CreateStaffRequest
+        var secondDoctor = new CreateDoctorRequest
         {
             FirstName = "Jane",
             LastName = "Doe",
+            NameAr = "د. جين دو",
+            NameEn = "Dr. Jane Doe",
             Email = "duplicate@appoynt.com",
             PhoneNumber = "15553335555",
             Password = "Password123!"
@@ -263,20 +279,24 @@ public class UserManagementIntegrationTests : IClassFixture<WebApplicationFactor
         string adminToken = await GetAdminTokenAsync();
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", adminToken);
 
-        var firstDoctor = new CreateStaffRequest
+        var firstDoctor = new CreateDoctorRequest
         {
             FirstName = "Mark",
             LastName = "Smith",
+            NameAr = "د. مارك سميث",
+            NameEn = "Dr. Mark Smith",
             Email = "mark@appoynt.com",
             PhoneNumber = "15556667777",
             Password = "Password123!"
         };
         await _client.PostAsJsonAsync("/api/users/doctors", firstDoctor);
 
-        var secondDoctor = new CreateStaffRequest
+        var secondDoctor = new CreateDoctorRequest
         {
             FirstName = "Sarah",
             LastName = "Smith",
+            NameAr = "د. سارة سميث",
+            NameEn = "Dr. Sarah Smith",
             Email = "sarah@appoynt.com",
             PhoneNumber = "15556667777",
             Password = "Password123!"

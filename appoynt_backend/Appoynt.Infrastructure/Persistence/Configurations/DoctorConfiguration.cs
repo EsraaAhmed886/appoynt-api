@@ -1,16 +1,17 @@
-﻿/**
+/**
  * File Name      : DoctorConfiguration.cs
  * Author         : Mustafa Mahmoud
  * Created Date   : 21/07/2026
- * Version        : v1.0.0
- * Dependencies   : Doctor, BaseAuditableEntityConfiguration<Doctor>, Entity Framework Core
+ * Version        : v2.0.0
+ * Dependencies   : Doctor, BaseAuditableEntityConfiguration<Doctor>, DoctorConstants, Entity Framework Core
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 21/07/2026
+ * Last Modified  : Mustafa Mahmoud - 2026-08-14
  * Description    : Configures the Entity Framework Core mapping for the
  *                  Doctor entity, including table mapping, primary key,
- *                  indexes, and relationships.
+ *                  business properties, indexes, and relationships.
  */
 
+using Appoynt.Domain.Common.Constants;
 using Appoynt.Domain.Entities;
 using Appoynt.Infrastructure.Persistence.Configurations.Base;
 using Microsoft.EntityFrameworkCore;
@@ -49,6 +50,30 @@ public sealed class DoctorConfiguration
 
         #endregion
 
+        #region Business Properties Configuration
+
+        // Configure Arabic display name column.
+        builder.Property(doctor => doctor.NameAr)
+            .HasMaxLength(DoctorConstants.NameMaxLength)
+            .IsRequired(false);
+
+        // Configure English display name column.
+        builder.Property(doctor => doctor.NameEn)
+            .HasMaxLength(DoctorConstants.NameMaxLength)
+            .IsRequired(false);
+
+        // Configure biography column.
+        builder.Property(doctor => doctor.Bio)
+            .HasMaxLength(DoctorConstants.BioMaxLength)
+            .IsRequired(false);
+
+        // Configure education summary column.
+        builder.Property(doctor => doctor.Education)
+            .HasMaxLength(DoctorConstants.EducationMaxLength)
+            .IsRequired(false);
+
+        #endregion
+
         #region Index Configuration
 
         // Ensure that each user can be associated with only one doctor record.
@@ -64,6 +89,18 @@ public sealed class DoctorConfiguration
         builder.HasOne(doctor => doctor.User)
             .WithOne(user => user.Doctor)
             .HasForeignKey<Doctor>(doctor => doctor.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Configure one-to-many relationship with DoctorPhoneNumber.
+        builder.HasMany(doctor => doctor.PhoneNumbers)
+            .WithOne(phone => phone.Doctor)
+            .HasForeignKey(phone => phone.DoctorId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Configure one-to-many relationship with DoctorSpecialization join entity.
+        builder.HasMany(doctor => doctor.DoctorSpecializations)
+            .WithOne(ds => ds.Doctor)
+            .HasForeignKey(ds => ds.DoctorId)
             .OnDelete(DeleteBehavior.Restrict);
 
         #endregion

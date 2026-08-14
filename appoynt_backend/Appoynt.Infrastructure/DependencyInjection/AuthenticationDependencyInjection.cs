@@ -20,6 +20,7 @@ using Appoynt.Application.Features.Authentication.Login;
 using Appoynt.Application.Features.Authentication.Otp;
 using Appoynt.Application.Features.Authentication.PasswordRecovery;
 using Appoynt.Application.Features.Authentication.Registration;
+using Appoynt.Application.Features.Patient;
 using Appoynt.Application.Features.UserManagement;
 using Appoynt.Application.Features.UserManagement.Contracts;
 using Appoynt.Application.Features.UserManagement.Validation;
@@ -100,6 +101,7 @@ internal static class AuthenticationDependencyInjection
         services.AddScoped<IRegistrationService, RegistrationService>();
         services.AddScoped<IUserManagementService, UserManagementService>();
         services.AddScoped<FluentValidation.IValidator<CreateStaffRequest>, CreateStaffRequestValidator>();
+        services.AddScoped<FluentValidation.IValidator<CreateDoctorRequest>, CreateDoctorRequestValidator>();
         services.AddScoped<FluentValidation.IValidator<UpdateUserRequest>, UpdateUserRequestValidator>();
         services.AddScoped<ILoginService, LoginService>();
         services.AddScoped<IPasswordRecoveryService, PasswordRecoveryService>();
@@ -108,13 +110,14 @@ internal static class AuthenticationDependencyInjection
         services.AddScoped<UnavailableSmsSender>();
         services.AddScoped<ISmsSender>(serviceProvider =>
         {
-            IHostEnvironment environment =
-                serviceProvider.GetRequiredService<IHostEnvironment>();
-
-            return environment.IsDevelopment()
-                ? serviceProvider.GetRequiredService<DevelopmentSmsSender>()
-                : serviceProvider.GetRequiredService<UnavailableSmsSender>();
+            // Default to DevelopmentSmsSender (logs OTP and returns success) until a production SMS gateway is configured.
+            return serviceProvider.GetRequiredService<DevelopmentSmsSender>();
         });
+
+        services.AddScoped<IPatientService, Appoynt.Infrastructure.Authentication.Patient.PatientService>();
+        services.AddScoped<FluentValidation.IValidator<Appoynt.Application.Features.Patient.Contracts.UpdatePatientProfileRequest>, Appoynt.Application.Features.Patient.Validation.UpdatePatientProfileValidator>();
+        services.AddScoped<FluentValidation.IValidator<Appoynt.Application.Features.Patient.Contracts.AddFamilyMemberRequest>, Appoynt.Application.Features.Patient.Validation.AddFamilyMemberValidator>();
+        services.AddScoped<FluentValidation.IValidator<Appoynt.Application.Features.Patient.Contracts.UpdateFamilyMemberRequest>, Appoynt.Application.Features.Patient.Validation.UpdateFamilyMemberValidator>();
 
         return services;
     }
