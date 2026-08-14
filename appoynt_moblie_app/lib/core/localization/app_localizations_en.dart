@@ -2196,5 +2196,42 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   // English fallback message displayed in SnackBar when avatar upload fails
   String get profile_photo_upload_error => 'Photo upload failed.';
+
+  // Favorites Feature English Localizations
+  @override
+  String get favorites_title => 'Favorites';
+  @override
+  String get favorites_subtitle => 'Your favorite doctors';
+  @override
+  String get favorites_search_hint => 'Search your favorite doctors...';
+  @override
+  String get favorites_count_single => '1 Doctor';
+  @override
+  String favorites_count_plural(int count) => '$count Doctors';
+  @override
+  String get favorites_sort_by => 'Sort by';
+  @override
+  String get favorites_empty_title => 'No favorites yet';
+  @override
+  String get favorites_empty_subtitle =>
+      "You haven't added any doctors to your favorites.";
+  @override
+  String get favorites_sort_title => 'Sort Favorites';
+  @override
+  String get favorites_sort_recently_added => 'Recently Added';
+  @override
+  String get favorites_sort_name_a_z => 'Name: A to Z';
+  @override
+  String get favorites_sort_name_z_a => 'Name: Z to A';
+  @override
+  String get favorites_sort_rating_high_low => 'Rating: High to Low';
+  @override
+  String get favorites_sort_price_low_high =>
+      'Consultation Fee: Low to High';
+  @override
+  String get favorites_sort_price_high_low =>
+      'Consultation Fee: High to Low';
+  @override
+  String get favorites_apply_button => 'Apply Sort';
 }
 

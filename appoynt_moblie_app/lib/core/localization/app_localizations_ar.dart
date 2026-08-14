@@ -2242,5 +2242,42 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   // Arabic fallback message displayed in SnackBar when avatar upload fails
   String get profile_photo_upload_error => 'فشل تحميل الصورة.';
+
+  // Favorites Feature Arabic Localizations
+  @override
+  String get favorites_title => 'المفضلة';
+  @override
+  String get favorites_subtitle => 'أطباؤك المفضلون';
+  @override
+  String get favorites_search_hint => 'ابحث عن أطبائك المفضلين...';
+  @override
+  String get favorites_count_single => 'طبيب واحد';
+  @override
+  String favorites_count_plural(int count) => '$count أطباء';
+  @override
+  String get favorites_sort_by => 'ترتيب حسب';
+  @override
+  String get favorites_empty_title => 'لا توجد مفضلات بعد';
+  @override
+  String get favorites_empty_subtitle =>
+      'لم تقم بإضافة أي أطباء إلى المفضلات بعد.';
+  @override
+  String get favorites_sort_title => 'ترتيب المفضلة';
+  @override
+  String get favorites_sort_recently_added => 'المضاف حديثاً';
+  @override
+  String get favorites_sort_name_a_z => 'الاسم: من أ إلى ي';
+  @override
+  String get favorites_sort_name_z_a => 'الاسم: من ي إلى أ';
+  @override
+  String get favorites_sort_rating_high_low => 'التقييم: من الأعلى للأقل';
+  @override
+  String get favorites_sort_price_low_high =>
+      'سعر الكشف: من الأقل للأعلى';
+  @override
+  String get favorites_sort_price_high_low =>
+      'سعر الكشف: من الأعلى للأقل';
+  @override
+  String get favorites_apply_button => 'تطبيق الترتيب';
 }
 
