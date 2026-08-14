@@ -2,22 +2,20 @@
  * File Name: empty_favorites_widget.dart
  * Author: Kholoud Khaled
  * Date of Creation: 14/08/2026
- * Version Information: V1.0.0
+ * Version Information: V2.0.0
  * Dependencies: package:flutter/material.dart,
- *   package:flutter_svg/flutter_svg.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart,
  *   package:appoynt_mobile_app/constants/app_spacing.dart,
  *   package:appoynt_mobile_app/core/theme/colors/app_colors.dart
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 14/08/2026]
- * File Description: Centered empty state layout displaying the empty_favorites SVG
- *   and localized title and subtitle when no favorited doctors exist.
+ * File Description: Centered empty state layout displaying a pure Flutter code-rendered
+ *   concentric heart illustration and localized title and subtitle when no favorited doctors exist.
+ *   V2.0.0 eliminates external SVG asset dependencies completely.
  */
 
 // Import standard material design widget framework
 import 'package:flutter/material.dart';
-// Import flutter_svg for SVG asset rendering
-import 'package:flutter_svg/flutter_svg.dart';
 // Import layout design tokens
 import 'package:appoynt_mobile_app/constants/app_spacing.dart';
 // Import central color palette tokens
@@ -25,27 +23,29 @@ import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 // Import localization dictionary
 import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
 
-// Local layout dimension constants to strictly eliminate raw numbers
+// Local layout dimension constants strictly eliminating raw hardcoded numbers
 class _LocalDimensions {
-  // SVG illustration height in logical pixels
-  static const double svg_height = 180.0;
-  // SVG illustration width in logical pixels
-  static const double svg_width = 180.0;
-  // Vertical spacing after SVG illustration
-  static const double spacing_svg = 24.0;
-  // Vertical spacing after title text
+  // Outer decorative ring container diameter (140px)
+  static const double outer_ring_size = 140.0;
+  // Inner accent circle container diameter (100px)
+  static const double inner_ring_size = 100.0;
+  // Primary central heart icon logical size (60px)
+  static const double icon_size = 60.0;
+  // Vertical spacing after code illustration (24px)
+  static const double spacing_illustration = 24.0;
+  // Vertical spacing after title text (8px)
   static const double spacing_title = 8.0;
-  // Max width constraint for subtitle text container
+  // Max width constraint for subtitle text container (280px)
   static const double max_subtitle_width = 280.0;
 }
 
-// Reusable EmptyFavoritesWidget definition
+// Reusable EmptyFavoritesWidget definition rendering pure code illustration
 class EmptyFavoritesWidget extends StatelessWidget {
   // Constant constructor
   const EmptyFavoritesWidget({super.key});
 
   @override
-  // Build method constructing centered layout
+  // Build method constructing centered layout hierarchy
   Widget build(BuildContext context) {
     // Resolve localization dictionary context
     final AppLocalizations localizations = AppLocalizations.of(context);
@@ -60,20 +60,9 @@ class EmptyFavoritesWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Centered Empty Favorites SVG illustration with error fallback
-            SvgPicture.asset(
-              'assets/svgs/empty_favorites.svg',
-              height: _LocalDimensions.svg_height,
-              width: _LocalDimensions.svg_width,
-              placeholderBuilder: (BuildContext placeholder_context) {
-                return Icon(
-                  Icons.favorite_border_rounded,
-                  size: 80.0,
-                  color: AppColors.primary_color.withValues(alpha: 0.4),
-                );
-              },
-            ),
-            const SizedBox(height: _LocalDimensions.spacing_svg),
+            // Pure Flutter code-rendered concentric layered heart illustration
+            _build_illustration(is_dark),
+            const SizedBox(height: _LocalDimensions.spacing_illustration),
             // Title Text: "No favorites yet"
             Text(
               localizations.favorites_empty_title,
@@ -105,6 +94,42 @@ class EmptyFavoritesWidget extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  // Private helper building a modern pure code-rendered concentric heart illustration
+  Widget _build_illustration(bool is_dark) {
+    // Return outer decorative ring container with primary tint background
+    return Container(
+      width: _LocalDimensions.outer_ring_size,
+      height: _LocalDimensions.outer_ring_size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: AppColors.primary_color.withValues(
+          alpha: is_dark ? 0.12 : 0.08,
+        ),
+      ),
+      child: Center(
+        // Inner accent circle container with stronger primary opacity
+        child: Container(
+          width: _LocalDimensions.inner_ring_size,
+          height: _LocalDimensions.inner_ring_size,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: AppColors.primary_color.withValues(
+              alpha: is_dark ? 0.22 : 0.15,
+            ),
+          ),
+          child: const Center(
+            // Central large primary heart icon
+            child: Icon(
+              Icons.favorite_border_rounded,
+              size: _LocalDimensions.icon_size,
+              color: AppColors.primary_color,
+            ),
+          ),
         ),
       ),
     );

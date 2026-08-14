@@ -143,8 +143,8 @@ class _SearchPageState extends State<SearchPage> {
 
            // Return base scaffold widget applying off-white background
           return Scaffold(
-            // Prevent bottom navigation bar from shifting up with the keyboard
-            resizeToAvoidBottomInset: false,
+            // Allow scaffold to resize viewInsets when soft keyboard is active
+            resizeToAvoidBottomInset: true,
             // Stack overlaying alert confirmation dialogs above body (BR-11/FR-15 wrapper)
             body: Stack(
               // Draw child layouts
@@ -153,8 +153,9 @@ class _SearchPageState extends State<SearchPage> {
                 IgnorePointer(
                   // Ignore flag mapping modal visibility
                   ignoring: state.is_confirm_modal_visible,
-                  // Safe area placing core components
+                  // Safe area placing core components with bottom inset disabled for keyboard
                   child: SafeArea(
+                    bottom: false,
                     // Column listing search header, chip filters, dynamic body, and bottom nav
                     child: Column(
                       // Align layout children
@@ -420,18 +421,13 @@ class _SearchPageState extends State<SearchPage> {
                         // Expanded view displaying active dynamic body state
                         Expanded(
                           // Switch widget representing different search statuses (dynamic body states)
-                          child: Padding(
-                            // Add bottom padding matching active keyboard height to avoid results blockage
-                            padding: EdgeInsets.only(
-                              bottom: MediaQuery.of(context).viewInsets.bottom,
-                            ),
-                            child: _build_dynamic_body(context, state, cubit, localizations, is_dark),
-                          ),
+                          child: _build_dynamic_body(context, state, cubit, localizations, is_dark),
                         ),
-                        // Fixed Bottom Navigation Bar layout component (84px height) using reusable AppBottomNavBar component
-                        AppBottomNavBar(
-                          // Highlight Search tab as active index 2
-                          selected_index: 2,
+                        // Fixed Bottom Navigation Bar component shown only when soft keyboard is closed
+                        if (0 == MediaQuery.of(context).viewInsets.bottom)
+                          AppBottomNavBar(
+                            // Highlight Search tab as active index 2
+                            selected_index: 2,
                           // Handle tap on navigation items
                           on_tap: (index) {
                             // Check if page remains mounted using Yoda style check
