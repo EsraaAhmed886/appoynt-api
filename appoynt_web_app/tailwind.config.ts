@@ -4,8 +4,8 @@
  * Date of Creation: 28/06/2026
  * Version Information: V1.0.0
  * Dependencies: tailwindcss
- * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Contributors: [Kholoud Khaled, shimaa salah]
+ * Last Modified Date: [shimaa salah - 13/08/2026]
  * File Description: Defines design tokens, theme palettes, and font configurations for tailwind.
  */
 
@@ -14,6 +14,8 @@ import type { Config } from "tailwindcss";
 
 // Declaring tailwind_config configuration object block
 const tailwind_config: Config = {
+  // Enabling class-based dark mode Strategy
+  darkMode: "class",
   // Specifying directory path templates to scan for CSS utility class injections
   content: [
     // Scanning source pages layouts
@@ -37,10 +39,18 @@ const tailwind_config: Config = {
           background: "var(--app-background)",
           // Dynamic container card backdrop token mapping
           surface: "var(--app-surface)",
+          // Sidebar theme tokens
+          sidebar: "var(--app-sidebar)",
+          sidebar_text_primary: "var(--app-sidebar-text-primary)",
+          sidebar_text_secondary: "var(--app-sidebar-text-secondary)",
+          sidebar_hover: "var(--app-sidebar-hover)",
+          sidebar_border: "var(--app-sidebar-border)",
           // Dynamic grid layout borders token mapping
           border: "var(--app-border)",
           // Dynamic input box background color token mapping
           input_fill: "var(--app-input-fill)",
+          // Alias shortcut for input background color
+          input: "var(--app-input-fill)",
           // Nested grouping for layout typography text settings
           text: {
             // High contrast text labels configuration
