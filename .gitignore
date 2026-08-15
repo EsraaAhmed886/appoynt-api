@@ -6,6 +6,8 @@
 *.ipr
 *.iws
 *.agents
+*.cursor/
+*.claude/
 
 # Operating System files
 .DS_Store
