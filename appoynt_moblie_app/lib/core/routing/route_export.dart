@@ -69,4 +69,8 @@ export 'package:appoynt_mobile_app/core/widgets/sticky_bottom_bar.dart';
 // TODO: END OF DUMMY HOME SCREEN EXPORT
 // Exporting dedicated search page widget representation
 export 'package:appoynt_mobile_app/features/search/presentation/pages/search_page.dart';
+// Exporting application routes definition constants
+export 'package:appoynt_mobile_app/core/routing/routes.dart';
+// Exporting route settings generator router
+export 'package:appoynt_mobile_app/core/routing/app_router.dart';
 // End of route_export.dart

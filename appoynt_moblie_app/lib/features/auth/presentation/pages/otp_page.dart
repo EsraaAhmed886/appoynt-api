@@ -117,9 +117,42 @@ class _OtpPageState extends State<OtpPage> {
     /// Automatically focusing the first digit box after the screen is rendered.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        _nodes[0].requestFocus();
+        final authCubit = get_it<AuthCubit>();
+        if (null == authCubit.challengeId || authCubit.challengeId!.isEmpty) {
+          _show_graceful_recovery_dialog();
+        } else {
+          _nodes[0].requestFocus();
+        }
       }
     });
+  }
+
+  /// Gracefully displays a verification error dialog when the challenge ID is missing.
+  void _show_graceful_recovery_dialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        final AppLocalizations s = AppLocalizations.of(context);
+        return AlertDialog(
+          title: Text(s.is_arabic ? 'خطأ في المصادقة' : 'Verification Error'),
+          content: Text(
+            s.is_arabic
+                ? 'فقدت جلسة التحقق. يرجى الرجوع إلى الصفحة السابقة وإعادة المحاولة.'
+                : 'Verification session lost. Please return to the previous page and try again.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                widget.on_back();
+              },
+              child: Text(s.is_arabic ? 'رجوع' : 'Go Back'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   // Method executing when OTP value updates
@@ -230,20 +263,20 @@ class _OtpPageState extends State<OtpPage> {
         : AppColors.text_light_secondary;
 
     // Return BlocProvider setting up AuthCubit on top of the tree
-    return BlocProvider<AuthCubit>(
-      // Create and initialize new auth cubit instance
-      create: (context) {
-        // Return initialized auth cubit resolved from service locator container
-        return get_it<AuthCubit>();
-      },
+    return BlocProvider<AuthCubit>.value(
+      value: get_it<AuthCubit>(),
       // Bind consumer widget to intercept state changes
       child: BlocConsumer<AuthCubit, AuthState>(
         // Listener callback intercepts transition changes
         listener: (context, state) {
           // Check if verification succeeds using Yoda style check
-          if (state is AuthSuccess) {
+          if (state is VerifyOtpSuccess) {
             // Trigger OTP verification success callback
             widget.on_verified();
+          } else if (state is AuthError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.message)),
+            );
           } else {
             // Empty action block to satisfy compiler
           }
@@ -389,10 +422,14 @@ class _OtpPageState extends State<OtpPage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 // Children list
                                 children: [
-                                  /// Clickable label for resending the code (enabled only when timer is 0).
                                   GestureDetector(
-                                    // Trigger timer restart on tap if time is up
-                                    onTap: 0 == _seconds_left ? _start_timer : null,
+                                    // Trigger resend and timer restart on tap if time is up
+                                    onTap: 0 == _seconds_left
+                                        ? () {
+                                            context.read<AuthCubit>().resend_otp();
+                                            _start_timer();
+                                          }
+                                        : null,
                                     // Text label widget
                                     child: Text(
                                       // Localized label string

@@ -2,15 +2,20 @@
  * File Name: profile_state.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/07/2026
- * Version Information: V1.0.0
- * Dependencies: package:appoynt_mobile_app/features/profile/domain/entities/patient_profile.dart
+ * Version Information: V1.2.0
+ * Dependencies: package:appoynt_mobile_app/features/profile/domain/entities/patient_profile.dart,
+ *   user_profile_model.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 19/07/2026]
- * File Description: Defines the states for the Patient Profile BLoC/Cubit pattern.
+ * Last Modified Date: [Kholoud Khaled - 13/08/2026]
+ * File Description: Defines the states and subclasses for the Patient Profile
+ *   BLoC/Cubit pattern. V1.2.0 adds avatarUploading, avatarUploadSuccess,
+ *   and avatarUploadError enum values to support the profile image upload flow.
  */
 
 // Importing the PatientProfile domain entity
 import 'package:appoynt_mobile_app/features/profile/domain/entities/patient_profile.dart';
+// Importing UserProfileModel representation
+import 'package:appoynt_mobile_app/features/profile/data/models/user_profile_model.dart';
 
 // Represents the state status enumeration options
 enum ProfileStatus {
@@ -34,6 +39,12 @@ enum ProfileStatus {
   passwordSuccess,
   // Password update failed
   passwordError,
+  // Profile avatar photo upload in progress
+  avatarUploading,
+  // Profile avatar photo upload completed successfully
+  avatarUploadSuccess,
+  // Profile avatar photo upload failed with error
+  avatarUploadError,
 }
 
 // State class representation for Profile feature block operations
@@ -102,4 +113,69 @@ class ProfileState {
       is_dirty: is_dirty ?? this.is_dirty,
     );
   }
+}
+
+// State representing the loading state when fetching profile
+class ProfileLoading extends ProfileState {
+  // Constructor forwarding parameters to base state
+  const ProfileLoading({
+    required super.profile,
+    required super.temp_profile,
+    required super.is_dirty,
+  }) : super(status: ProfileStatus.loading);
+}
+
+// State representing successful fetch of user profile data
+class ProfileLoaded extends ProfileState {
+  // The retrieved user profile data model
+  final UserProfileModel user;
+
+  // Constructor taking user profile model and forwarding default parameters to base state
+  const ProfileLoaded({
+    required this.user,
+    required super.profile,
+    required super.temp_profile,
+    required super.is_dirty,
+  }) : super(status: ProfileStatus.success);
+}
+
+// State representing profile update submission in progress
+class ProfileUpdating extends ProfileState {
+  // Constructor forwarding parameters to base state
+  const ProfileUpdating({
+    required super.profile,
+    required super.temp_profile,
+    required super.is_dirty,
+  }) : super(status: ProfileStatus.updating);
+}
+
+// State representing successful profile update operation
+class ProfileUpdateSuccess extends ProfileState {
+  // Optional updated UserProfileModel reference
+  final UserProfileModel? user;
+
+  // Constructor forwarding parameters to base state
+  const ProfileUpdateSuccess({
+    this.user,
+    required super.profile,
+    required super.temp_profile,
+    required super.is_dirty,
+  }) : super(status: ProfileStatus.updateSuccess);
+}
+
+// State representing profile update failure operation
+class ProfileUpdateError extends ProfileState {
+  // The error message received
+  final String message;
+
+  // Constructor mapping the message and forwarding parameters to base state
+  const ProfileUpdateError({
+    required this.message,
+    required super.profile,
+    required super.temp_profile,
+    required super.is_dirty,
+  }) : super(
+          status: ProfileStatus.updateError,
+          error_message: message,
+        );
 }

@@ -983,30 +983,128 @@ abstract class AppLocalizations {
   String get error_phone_empty;
   String get error_otp_invalid;
   String get error_password_too_short;
+  String get error_user_not_found;
+  String get error_email_already_exists;
+  String get error_auth_general;
 
-  // Static helper to map error messages or codes to their localized versions
+  // Network and security error localized message getters
+  String get error_no_internet;
+  String get error_timeout;
+  String get error_ssl_handshake;
+  String get error_request_cancelled;
+
+  // Auth and access control error localized message getters
+  String get error_session_expired;
+  String get error_forbidden;
+
+  // Client and business logic error localized message getters
+  String get error_bad_request;
+  String get error_not_found;
+  String get error_conflict;
+  String get error_payload_too_large;
+  String get error_unprocessable;
+  String get error_rate_limit;
+
+  // System and app lifecycle error localized message getters
+  String get error_app_update_required;
+  String get error_server;
+  String get error_maintenance;
+  String get error_data_parsing;
+  String get error_unknown;
+  String get error_cache;
+
+  // Static helper to map Failure message_key or legacy message strings to
+  // their localized UI display values. Prioritizes failure keys over raw strings.
   static String get_localized_error(BuildContext context, String message) {
     // Look up localizations dictionary from widget tree context
     final AppLocalizations s = AppLocalizations.of(context);
+    final String cleanMessage = message.trim();
+
+    // ── Network & Security ────────────────────────────────────────────────
+    if ('error_no_internet' == cleanMessage) {
+      return s.error_no_internet;
+    } else if ('error_timeout' == cleanMessage) {
+      return s.error_timeout;
+    } else if ('error_ssl_handshake' == cleanMessage) {
+      return s.error_ssl_handshake;
+    } else if ('error_request_cancelled' == cleanMessage) {
+      return s.error_request_cancelled;
+    }
+
+    // ── Auth & Access Control ─────────────────────────────────────────────
+    else if ('error_session_expired' == cleanMessage) {
+      return s.error_session_expired;
+    } else if ('error_forbidden' == cleanMessage) {
+      return s.error_forbidden;
+    }
+
+    // ── Client & Business Logic ───────────────────────────────────────────
+    else if ('error_bad_request' == cleanMessage) {
+      return s.error_bad_request;
+    } else if ('error_not_found' == cleanMessage) {
+      return s.error_not_found;
+    } else if ('error_conflict' == cleanMessage) {
+      return s.error_conflict;
+    } else if ('error_payload_too_large' == cleanMessage) {
+      return s.error_payload_too_large;
+    } else if ('error_unprocessable' == cleanMessage) {
+      return s.error_unprocessable;
+    } else if ('error_rate_limit' == cleanMessage) {
+      return s.error_rate_limit;
+    }
+
+    // ── System & App Lifecycle ────────────────────────────────────────────
+    else if ('error_app_update_required' == cleanMessage) {
+      return s.error_app_update_required;
+    } else if ('error_server' == cleanMessage) {
+      return s.error_server;
+    } else if ('error_maintenance' == cleanMessage) {
+      return s.error_maintenance;
+    } else if ('error_data_parsing' == cleanMessage) {
+      return s.error_data_parsing;
+    } else if ('error_unknown' == cleanMessage) {
+      return s.error_unknown;
+    } else if ('error_cache' == cleanMessage) {
+      return s.error_cache;
+    }
+
+    // ── Legacy Auth String Mappings ───────────────────────────────────────
     // Map invalid credentials error using Yoda conditions
-    if ('Invalid phone number or password.' == message || 'invalid_credentials' == message) {
+    else if ('Invalid phone number or password.' == cleanMessage ||
+        'invalid_credentials' == cleanMessage ||
+        'auth.login.invalid_credentials' == cleanMessage) {
       // Return localized credentials mismatch error string
       return s.error_invalid_credentials;
     }
     // Map phone empty error using Yoda conditions
-    else if ('Phone number cannot be empty.' == message || 'phone_empty' == message) {
+    else if ('Phone number cannot be empty.' == cleanMessage ||
+        'phone_empty' == cleanMessage) {
       // Return localized phone empty error string
       return s.error_phone_empty;
     }
     // Map OTP invalid error using Yoda conditions
-    else if ('OTP code must be 6 digits.' == message || 'otp_invalid' == message) {
+    else if ('OTP code must be 6 digits.' == cleanMessage ||
+        'otp_invalid' == cleanMessage) {
       // Return localized OTP length warning error string
       return s.error_otp_invalid;
     }
     // Map password too short error using Yoda conditions
-    else if ('Password must be at least 8 characters.' == message || 'password_too_short' == message) {
+    else if ('Password must be at least 8 characters.' == cleanMessage ||
+        'password_too_short' == cleanMessage) {
       // Return localized password minimum length warning error string
       return s.error_password_too_short;
+    }
+    // Map user not found error using Yoda conditions
+    else if ('auth.user_not_found' == cleanMessage) {
+      return s.error_user_not_found;
+    }
+    // Map email already exists error using Yoda conditions
+    else if ('auth.email_already_exists' == cleanMessage) {
+      return s.error_email_already_exists;
+    }
+    // Map general auth errors
+    else if (cleanMessage.contains('.')) {
+      return s.error_auth_general;
     }
     // Fallback returning original message if no matches exist
     else {
@@ -1014,6 +1112,21 @@ abstract class AppLocalizations {
       return message;
     }
   }
+
+  // Abstract getter for the profile photo picker bottom sheet title
+  String get profile_photo_sheet_title;
+
+  // Abstract getter for the Camera option in the profile photo picker sheet
+  String get profile_photo_camera_option;
+
+  // Abstract getter for the Gallery option in the profile photo picker sheet
+  String get profile_photo_gallery_option;
+
+  // Abstract getter for the avatar upload success SnackBar message
+  String get profile_photo_upload_success;
+
+  // Abstract getter for the avatar upload failure SnackBar fallback message
+  String get profile_photo_upload_error;
 }
 
 // Defining a short alias for clean and simple type references

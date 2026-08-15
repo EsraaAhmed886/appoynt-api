@@ -2,15 +2,18 @@
  * File Name: profile_cubit.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/07/2026
- * Version Information: V1.0.0
+ * Version Information: V1.2.0
  * Dependencies: package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart,
  *   package:appoynt_mobile_app/features/profile/domain/entities/patient_profile.dart,
  *   package:appoynt_mobile_app/features/profile/domain/entities/insurance_card.dart,
- *   package:appoynt_mobile_app/features/profile/domain/entities/test_result.dart
+ *   package:appoynt_mobile_app/features/profile/domain/entities/test_result.dart,
+ *   package:image_picker/image_picker.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/07/2026]
- * File Description: Implement the Patient Profile Cubit orchestrating UI updates, validations, and saves.
+ * Last Modified Date: [Kholoud Khaled - 13/08/2026]
+ * File Description: Implements the Patient Profile Cubit orchestrating UI updates,
+ *   validations, and saves. V1.1.0 adds pick_and_upload_avatar() for camera/gallery
+ *   image selection and upload via POST /api/patients/profile-photo.
  */
 
 // Importing the BLoC library
@@ -23,6 +26,20 @@ import 'package:appoynt_mobile_app/features/profile/domain/entities/patient_prof
 import 'package:appoynt_mobile_app/features/profile/domain/entities/insurance_card.dart';
 // Importing the test result model definition
 import 'package:appoynt_mobile_app/features/profile/domain/entities/test_result.dart';
+import 'package:appoynt_mobile_app/core/di/service_locator.dart';
+import 'package:appoynt_mobile_app/features/profile/data/datasources/profile_remote_data_source.dart';
+import 'package:appoynt_mobile_app/features/profile/data/models/change_password_request_model.dart';
+import 'package:appoynt_mobile_app/features/profile/data/models/update_profile_request_model.dart';
+import 'package:appoynt_mobile_app/features/profile/domain/repositories/profile_repository.dart';
+import 'package:appoynt_mobile_app/features/profile/domain/usecases/get_user_profile_usecase.dart';
+import 'package:appoynt_mobile_app/features/profile/domain/usecases/update_user_profile_usecase.dart';
+import 'package:appoynt_mobile_app/features/profile/data/models/user_profile_model.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+// Importing image_picker for camera and gallery photo selection
+import 'package:image_picker/image_picker.dart';
+// Importing upload profile photo use case for Clean Architecture compliance
+import 'package:appoynt_mobile_app/features/profile/domain/usecases/upload_profile_photo_usecase.dart';
 
 // Profile business logic Cubit controller class
 class ProfileCubit extends Cubit<ProfileState> {
@@ -78,116 +95,359 @@ class ProfileCubit extends Cubit<ProfileState> {
   // Constructor initializing with initial blank state configuration
   ProfileCubit() : super(ProfileState.initial());
 
-  // Triggers loading sequence for retrieving patient profile details
-  Future<void> load_profile() async {
-    // Emit loading state values
-    emit(state.copyWith(status: ProfileStatus.loading));
-    // Simulate API fetch delay
-    await Future.delayed(
-      // Delay parameters
-      const Duration(
-        // Delay count in milliseconds
-        milliseconds: 800,
-      ),
-    );
-    // Populate mockup initial patient details
-    const PatientProfile loaded_profile = PatientProfile(
-      // First name
-      first_name: 'kareem',
-      // Last name
-      last_name: 'mangood',
-      // Read-only phone mockup
-      phone: '01234567890',
-      // Saved email representation
-      email: 'admin@gmail.com',
-      // Gender setting selection
-      gender: 'Male',
-      // Address string
-      address: 'Cairo, Egypt',
-      // National ID (14 digits)
-      national_id: '29712050102345',
-      // Weight indicator
-      weight: '80',
-      // Height indicator
-      height: '180',
-      // Smoking flag
-      smoking: 'No',
-      // Food allergies array
-      food_allergies: ['Peanuts'],
-      // Medication allergies array
-      medication_allergies: ['Penicillin'],
-      // Prescriptions array (rich map schema with clinical metadata)
-      prescriptions: [
-        {
-          'id': '1',
-          'name': 'Panadol Extra 500mg',
-          'dosage': '1 Tablet',
-          'frequency': 'Twice Daily',
-          'duration': '7 Days',
-          'status': 'Active',
-          'doctor': 'Dr. Ahmed Hassan',
-          'date': '20 Jul 2026',
-          'attachment': null,
-        }
-      ],
-      // Lab test list
-      lab_tests: [],
-      // Scan test list
-      scans: [],
-      // Chronic diseases array
-      chronic_conditions: ['Hypertension'],
-      // Insurance plan array
-      insurance_cards: [
-        // MetLife mockup card details
-        InsuranceCard(
-          // Card label
-          card_name: 'MetLife Medical Insurance',
-          // Policy code
-          card_number: '12345678',
-          // Provider brand
-          provider_name: 'MetLife Egypt',
-          // File attachment path
-          document_path: '/docs/metlife.pdf',
-          // Active expiry timing info
-          expiry_date: '26 December 2025',
-        ),
-      ],
-      // Empty mock avatar URL path
-      avatar_url: '',
-      // Default initial payment cards list
-      payment_cards: [
-        {
-          'id': '1',
-          'brand': 'Visa',
-          'number': '4000 1234 5678 4321',
-          'expiry': '12/2029',
-          'holder': 'Kareem Mangood',
-          'is_default': 'true',
-        },
-        {
-          'id': '2',
-          'brand': 'Mastercard',
-          'number': '5105 4321 8765 8877',
-          'expiry': '08/2028',
-          'holder': 'Kareem Mangood',
-          'is_default': 'false',
-        },
-      ],
-    );
-    // Emit successfully loaded state updates
-    emit(
-      // State details copy with loaded structures
-      state.copyWith(
-        // Set success
-        status: ProfileStatus.success,
-        // Bind profile
+  // Fetches the user profile data from the remote API and updates state
+  Future<void> fetchUserProfile() async {
+    // Emit ProfileLoading state to trigger loading UI
+    emit(ProfileLoading(
+      // Keep existing profile
+      profile: state.profile,
+      // Keep existing temp profile
+      temp_profile: state.temp_profile,
+      // Keep existing dirty state
+      is_dirty: state.is_dirty,
+    ));
+    // Try catch block to handle network exceptions
+    try {
+      // Call GetUserProfileUseCase to fetch user details
+      final user_profile = await get_it<GetUserProfileUseCase>().call();
+      // Map API model values to domain PatientProfile entity to populate local UI fields
+      final loaded_profile = PatientProfile(
+        // Map first name
+        first_name: user_profile.first_name,
+        // Map last name
+        last_name: user_profile.last_name,
+        // Map phone number
+        phone: user_profile.phone_number,
+        // Map email
+        email: user_profile.email,
+        // Convert gender integer to localized text string
+        gender: 0 == user_profile.gender ? 'Male' : (1 == user_profile.gender ? 'Female' : ''),
+        // Map address
+        address: user_profile.address ?? '',
+        // Map national ID from model or keep local
+        national_id: user_profile.national_id ?? state.profile.national_id,
+        // Map weight from model or keep local
+        weight: user_profile.weight ?? state.profile.weight,
+        // Map height from model or keep local
+        height: user_profile.height ?? state.profile.height,
+        // Map blood group from model or keep local
+        blood_group: user_profile.blood_group ?? state.profile.blood_group,
+        // Keep existing local smoking status
+        smoking: state.profile.smoking,
+        // Keep existing local food allergies
+        food_allergies: state.profile.food_allergies,
+        // Keep existing local medication allergies
+        medication_allergies: state.profile.medication_allergies,
+        // Keep existing local prescriptions
+        prescriptions: state.profile.prescriptions,
+        // Keep existing local lab tests
+        lab_tests: state.profile.lab_tests,
+        // Keep existing local scans
+        scans: state.profile.scans,
+        // Keep existing local chronic conditions
+        chronic_conditions: state.profile.chronic_conditions,
+        // Keep existing local insurance cards
+        insurance_cards: state.profile.insurance_cards,
+        // Keep existing local avatar url
+        avatar_url: state.profile.avatar_url,
+        // Keep existing local payment cards
+        payment_cards: state.profile.payment_cards,
+      );
+      // Emit ProfileLoaded state with fetched user model and mapped patient profile
+      emit(ProfileLoaded(
+        // Bind fetched user profile model
+        user: user_profile,
+        // Bind mapped profile
         profile: loaded_profile,
-        // Bind temp profile copy
+        // Bind temp profile
         temp_profile: loaded_profile,
         // Reset dirty status
         is_dirty: false,
-      ),
+      ));
+      // Catch all block for network and parsing exceptions
+    } catch (e) {
+      // Emit ProfileUpdateError state with the error message
+      emit(ProfileUpdateError(
+        // Set error message
+        message: e.toString(),
+        // Keep existing profile
+        profile: state.profile,
+        // Keep existing temp profile
+        temp_profile: state.temp_profile,
+        // Keep existing dirty status
+        is_dirty: state.is_dirty,
+      ));
+    }
+  }
+
+  // Stale-While-Revalidate entry point called by ProfilePage on initState.
+  // Phase 1: emits cached profile instantly (zero-latency UI render).
+  // Phase 2: fetches fresh profile from the API silently in the background
+  //   and re-emits only when the remote data differs from the cached snapshot.
+  Future<void> load_from_cache_then_refresh() async {
+    // Read the cached profile from SharedPreferences synchronously via repo
+    final UserProfileModel? cached_profile =
+        await get_it<ProfileRepository>().getCachedProfile();
+
+    // PHASE 1 — Cache hit: emit immediately so the UI renders with zero delay
+    if (null != cached_profile) {
+      // Also read the cached photo URL for instant avatar rendering
+      final String? cached_photo_url =
+          await get_it<ProfileRepository>().getCachedProfilePhotoUrl();
+      // Map cached UserProfileModel into PatientProfile domain entity structure
+      // Pass resolved photo URL so avatar renders with zero network delay
+      final PatientProfile cached_entity = _map_model_to_entity(
+        cached_profile,
+        // Provide photo URL from cache when available
+        resolved_photo_url: cached_photo_url,
+      );
+      // Emit ProfileLoaded with cached data — UI becomes interactive instantly
+      if (!isClosed) {
+        emit(ProfileLoaded(
+          // Bind the cached user profile model for PID/email display
+          user: cached_profile,
+          // Bind mapped patient profile entity for all form fields
+          profile: cached_entity,
+          // Bind temp profile to cached snapshot for edit form baseline
+          temp_profile: cached_entity,
+          // Reset dirty flag on cache-sourced load
+          is_dirty: false,
+        ));
+      } else {
+        // Cubit was closed before cache emit — abort safely
+        return;
+      }
+    } else {
+      // Cache miss — emit loading state so the UI shows a shimmer indicator
+      if (!isClosed) {
+        emit(ProfileLoading(
+          // Carry existing profile state during initial load
+          profile: state.profile,
+          // Carry existing temp profile state during initial load
+          temp_profile: state.temp_profile,
+          // Carry existing dirty flag value during initial load
+          is_dirty: state.is_dirty,
+        ));
+      } else {
+        // Cubit was closed before loading emit — abort safely
+        return;
+      }
+    }
+
+    // PHASE 2 — Background refresh: fetch from remote, update cache and UI
+    try {
+      // Fetch fresh profile from the remote API (also writes to cache internally)
+      final UserProfileModel fresh_profile =
+          await get_it<GetUserProfileUseCase>().call();
+      // Read updated photo URL from local cache (refreshed inside getUserProfile)
+      final String? fresh_photo_url =
+          await get_it<ProfileRepository>().getCachedProfilePhotoUrl();
+      // Map fresh remote model into the PatientProfile domain entity structure
+      // Pass updated photo URL so avatar stays current after background refresh
+      final PatientProfile fresh_entity = _map_model_to_entity(
+        fresh_profile,
+        // Provide freshly derived photo URL from cache
+        resolved_photo_url: fresh_photo_url,
+      );
+
+      // Only emit a state update when the fresh data differs from the cache
+      final bool data_changed = null == cached_profile ||
+          fresh_profile.first_name != cached_profile.first_name ||
+          fresh_profile.last_name != cached_profile.last_name ||
+          fresh_profile.email != cached_profile.email ||
+          fresh_profile.phone_number != cached_profile.phone_number ||
+          fresh_profile.gender != cached_profile.gender ||
+          fresh_profile.date_of_birth != cached_profile.date_of_birth ||
+          fresh_profile.address != cached_profile.address ||
+          fresh_profile.patient_id != cached_profile.patient_id;
+
+      // Guard against emitting on a closed cubit after the async network call
+      if (!isClosed && data_changed) {
+        // Emit refreshed state so UI silently updates with the latest data
+        emit(ProfileLoaded(
+          // Bind fresh remote user profile model
+          user: fresh_profile,
+          // Bind mapped fresh patient profile entity
+          profile: fresh_entity,
+          // Bind fresh entity as the edit form baseline
+          temp_profile: fresh_entity,
+          // Reset dirty flag after successful background refresh
+          is_dirty: false,
+        ));
+        // Log silent refresh for audit diagnostics
+        debugPrint(
+          '[ProfileCubit] Background refresh completed — UI updated silently.',
+        );
+      } else if (!isClosed) {
+        // Data is identical to cache — no UI re-emit needed
+        debugPrint(
+          '[ProfileCubit] Background refresh completed — data unchanged.',
+        );
+      } else {
+        // Cubit was closed during background network call — discard result
+      }
+    } catch (refresh_error) {
+      // Background refresh failed — do NOT overwrite existing cache-sourced state
+      debugPrint(
+        '[ProfileCubit] Background refresh failed (non-fatal): $refresh_error',
+      );
+      // Emit error only when no cached data was available (cold start failure)
+      if (null == cached_profile && !isClosed) {
+        emit(ProfileUpdateError(
+          // Set error message from the caught exception
+          message: refresh_error.toString(),
+          // Carry existing profile state
+          profile: state.profile,
+          // Carry existing temp profile state
+          temp_profile: state.temp_profile,
+          // Carry existing dirty flag value
+          is_dirty: state.is_dirty,
+        ));
+      } else {
+        // Cached data was already emitted — silently absorb the refresh failure
+      }
+    }
+  }
+
+  // Private helper: maps a UserProfileModel API response to PatientProfile entity.
+  // Accepts an optional resolved_photo_url to populate avatar_url directly from
+  // the local cache or post-upload response without a redundant network call.
+  PatientProfile _map_model_to_entity(
+    UserProfileModel model, {
+    // Optional pre-resolved profile photo URL from cache or upload response
+    String? resolved_photo_url,
+  }) {
+    // Return a fully populated PatientProfile using the model field values
+    return PatientProfile(
+      // Map first name from the API model
+      first_name: model.first_name,
+      // Map last name from the API model
+      last_name: model.last_name,
+      // Map phone number from the API model
+      phone: model.phone_number,
+      // Map email from the API model
+      email: model.email,
+      // Map gender integer (0=Male, 1=Female) to display string
+      gender: 0 == model.gender
+          ? 'Male'
+          : (1 == model.gender ? 'Female' : ''),
+      // Map address from the API model with empty-string fallback
+      address: model.address ?? '',
+      // Map national ID from the API model or carry existing
+      national_id: model.national_id ?? state.profile.national_id,
+      // Map weight from the API model or carry existing
+      weight: model.weight ?? state.profile.weight,
+      // Map height from the API model or carry existing
+      height: model.height ?? state.profile.height,
+      // Map blood group from the API model or carry existing
+      blood_group: model.blood_group ?? state.profile.blood_group,
+      // Carry existing local smoking status (not in API response)
+      smoking: state.profile.smoking,
+      // Carry existing local food allergies (not in API response)
+      food_allergies: state.profile.food_allergies,
+      // Carry existing local medication allergies (not in API response)
+      medication_allergies: state.profile.medication_allergies,
+      // Carry existing local prescriptions (not in API response)
+      prescriptions: state.profile.prescriptions,
+      // Carry existing local lab tests (not in API response)
+      lab_tests: state.profile.lab_tests,
+      // Carry existing local scans (not in API response)
+      scans: state.profile.scans,
+      // Carry existing local chronic conditions (not in API response)
+      chronic_conditions: state.profile.chronic_conditions,
+      // Carry existing local insurance cards (not in API response)
+      insurance_cards: state.profile.insurance_cards,
+      // Use resolved photo URL when provided, otherwise carry existing local URL
+      avatar_url: resolved_photo_url ?? state.profile.avatar_url,
+      // Carry existing local payment cards (not in API response)
+      payment_cards: state.profile.payment_cards,
     );
+  }
+
+  // Updates the user profile data via the remote API
+  Future<void> updateUserProfile(UpdateProfileRequestModel requestModel) async {
+    // Emit ProfileUpdating state to trigger spinner on save button
+    emit(ProfileUpdating(
+      // Keep existing profile
+      profile: state.profile,
+      // Keep existing temp profile
+      temp_profile: state.temp_profile,
+      // Keep existing dirty status
+      is_dirty: state.is_dirty,
+    ));
+    // Try catch block to handle network exceptions
+    try {
+      // Call UpdateUserProfileUseCase to perform PUT /api/patients/profile
+      await get_it<UpdateUserProfileUseCase>().call(requestModel);
+      // Re-fetch fresh UserProfileModel from GET /api/patients/profile (also updates cache)
+      final UserProfileModel fresh_user =
+          await get_it<GetUserProfileUseCase>().call();
+      // Read updated photo URL from local cache
+      final String? fresh_photo_url =
+          await get_it<ProfileRepository>().getCachedProfilePhotoUrl();
+      // Map fresh model into domain entity
+      final PatientProfile saved_profile = _map_model_to_entity(
+        fresh_user,
+        resolved_photo_url: fresh_photo_url,
+      );
+      // Emit ProfileUpdateSuccess state with fresh user model and mapped patient profile
+      emit(ProfileUpdateSuccess(
+        user: fresh_user,
+        profile: saved_profile,
+        temp_profile: saved_profile,
+        is_dirty: false,
+      ));
+      // Emit ProfileLoaded state so all listening views (ProfilePage, PersonalInformationPage) refresh UI immediately
+      emit(ProfileLoaded(
+        user: fresh_user,
+        profile: saved_profile,
+        temp_profile: saved_profile,
+        is_dirty: false,
+      ));
+      // Catch DioException to extract server error message payload cleanly
+    } on DioException catch (dio_error) {
+      String clean_message = 'Failed to update profile. Please try again.';
+      if (dio_error.response?.data is Map) {
+        final Map<String, dynamic> data =
+            dio_error.response!.data as Map<String, dynamic>;
+        if (data.containsKey('title') && data['title'] != null) {
+          clean_message = data['title'].toString();
+        } else if (data.containsKey('message') && data['message'] != null) {
+          clean_message = data['message'].toString();
+        } else if (data.containsKey('errors') && data['errors'] is Map) {
+          final Map errors = data['errors'] as Map;
+          if (errors.isNotEmpty) {
+            final first_val = errors.values.first;
+            if (first_val is List && first_val.isNotEmpty) {
+              clean_message = first_val.first.toString();
+            } else {
+              clean_message = first_val.toString();
+            }
+          }
+        }
+      }
+      // Emit ProfileUpdateError state with extracted clean error message
+      emit(ProfileUpdateError(
+        message: clean_message,
+        profile: state.profile,
+        temp_profile: state.temp_profile,
+        is_dirty: state.is_dirty,
+      ));
+    } catch (e) {
+      // Emit ProfileUpdateError state with generic failure description
+      emit(ProfileUpdateError(
+        message: 'An unexpected error occurred. Please try again.',
+        profile: state.profile,
+        temp_profile: state.temp_profile,
+        is_dirty: state.is_dirty,
+      ));
+    }
+  }
+
+  // Triggers loading sequence for retrieving patient profile details
+  Future<void> load_profile() async {
+    // Forward directly to remote fetch API sequence
+    await fetchUserProfile();
   }
 
   // Update temp draft properties inside profile state tracker
@@ -359,33 +619,45 @@ class ProfileCubit extends Cubit<ProfileState> {
   Future<void> change_password(String current_pw, String new_pw) async {
     // Emits password updating status
     emit(state.copyWith(status: ProfileStatus.passwordUpdating));
-    // Simulate delay
-    await Future.delayed(
-      // Delay specs
-      const Duration(
-        // Duration count
-        milliseconds: 600,
-      ),
-    );
-    // Verify current password matches static credentials using Yoda comparison
-    if ("123asdASD!@#" != current_pw) {
-      // Emit password update error status
-      emit(
-        // State copy with error msg details
-        state.copyWith(
-          // Set error
-          status: ProfileStatus.passwordError,
-          // Bind description
-          error_message: 'Current password is incorrect.',
-        ),
+
+    // Trim current password and new password to satisfy spec 3
+    final String currentPwTrimmed = current_pw.trim();
+    final String newPwTrimmed = new_pw.trim();
+
+    try {
+      final requestModel = ChangePasswordRequestModel(
+        currentPassword: currentPwTrimmed,
+        newPassword: newPwTrimmed,
+        confirmPassword: newPwTrimmed,
       );
-    } else {
+
+      // Log the exact JSON payload before dispatching (spec 1)
+      debugPrint('Change Password Payload: ${requestModel.toJson()}');
+
+      // Call the remote data source
+      await get_it<ProfileRemoteDataSource>().changePassword(requestModel);
+
       // Emit password change success status
       emit(
-        // State copy
         state.copyWith(
-          // Set success
           status: ProfileStatus.passwordSuccess,
+        ),
+      );
+    } on DioException catch (e) {
+      final String errorMsg = e.response?.data is Map
+          ? (e.response?.data['message'] as String? ?? 'Password update failed.')
+          : 'Password update failed.';
+      emit(
+        state.copyWith(
+          status: ProfileStatus.passwordError,
+          error_message: errorMsg,
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          status: ProfileStatus.passwordError,
+          error_message: 'An unexpected error occurred.',
         ),
       );
     }
@@ -821,6 +1093,247 @@ class ProfileCubit extends Cubit<ProfileState> {
           temp_profile: updated_profile,
         ),
       );
+    }
+  }
+
+  // Presents a Camera/Gallery picker bottom sheet, then uploads the selected
+  // image to POST /api/patients/profile-photo. Emits avatarUploading during
+  // the upload, avatarUploadSuccess with the new URL on success, or
+  // avatarUploadError with a message on failure.
+  Future<void> pick_and_upload_avatar() async {
+    // Instantiate the image picker service singleton
+    final ImagePicker picker = ImagePicker();
+    // Emit a brief avatarUploading status to signal picker is opening
+    // (prevents double-taps during processing)
+    emit(state.copyWith(status: ProfileStatus.avatarUploading));
+    // Present the image source selection bottom sheet
+    // NOTE: We call showDialog equivalent via ImagePicker directly here.
+    // The picker returns null when the user cancels without selecting.
+    XFile? picked_file;
+    // Attempt to pick an image from the gallery as the default source
+    // The actual source selection (camera vs gallery) is handled in the widget
+    // layer via the _show_avatar_source_sheet helper — the cubit receives the
+    // already-resolved XFile path from the widget to maintain SRP.
+    // This method is called with a pre-selected source by the avatar widget.
+    try {
+      // Pick image from the gallery — source override provided by caller context
+      picked_file = await picker.pickImage(
+        // Default source: gallery — widget layer overrides this for camera
+        source: ImageSource.gallery,
+        // Limit maximum image dimension to 1024px to reduce upload payload size
+        maxWidth: 1024.0,
+        // Limit maximum height dimension to 1024px
+        maxHeight: 1024.0,
+        // Compress image quality to 85% to balance size vs visual fidelity
+        imageQuality: 85,
+      );
+    } catch (picker_error) {
+      // Picker failed or permission denied — emit error and abort
+      debugPrint('[ProfileCubit] Image picker failed: $picker_error');
+      // Emit avatarUploadError status with descriptive message
+      if (!isClosed) {
+        emit(state.copyWith(
+          // Set avatar upload error status
+          status: ProfileStatus.avatarUploadError,
+          // Map picker error message for display
+          error_message: 'Image selection failed: $picker_error',
+        ));
+      } else {
+        // Cubit was closed — discard error emit safely
+      }
+      // Return early to abort upload sequence
+      return;
+    }
+    // Guard: user cancelled the picker without selecting an image
+    if (null == picked_file) {
+      // Revert to previous success status — no upload action taken
+      if (!isClosed) {
+        emit(state.copyWith(status: ProfileStatus.success));
+      } else {
+        // Cubit was closed — discard revert emit safely
+      }
+      // Return early when no file was selected
+      return;
+    } else {
+      // File was selected — proceed with the upload sequence
+    }
+    // Extract the local file path string from the XFile instance
+    final String file_path = picked_file.path;
+    // Emit avatarUploading status to display spinner overlay on avatar widget
+    if (!isClosed) {
+      emit(state.copyWith(status: ProfileStatus.avatarUploading));
+    } else {
+      // Cubit was closed — abort upload sequence
+      return;
+    }
+    // Execute the upload request via the repository upload method
+    try {
+      // Call upload use case (Clean Architecture: cubit → use case → repository)
+      final String new_photo_url =
+          await get_it<UploadProfilePhotoUseCase>().call(file_path);
+      // Update profile entity with the new resolved network URL immediately
+      final PatientProfile updated_profile =
+          state.profile.copyWith(avatar_url: new_photo_url);
+      // Guard against emitting on a closed cubit after the async upload call
+      if (!isClosed) {
+        // Emit success state with the updated profile carrying the new URL
+        emit(state.copyWith(
+          // Set avatar upload success status
+          status: ProfileStatus.avatarUploadSuccess,
+          // Bind updated profile with new avatar URL
+          profile: updated_profile,
+          // Sync temp profile to avoid stale comparison on next dirty check
+          temp_profile: updated_profile,
+        ));
+        // Log successful upload completion for diagnostics
+        debugPrint(
+          '[ProfileCubit] Avatar upload success. New URL: $new_photo_url',
+        );
+      } else {
+        // Cubit was closed before success emit — discard result safely
+      }
+    } on DioException catch (dio_error) {
+      // Extract DioException error message from response body when available
+      final String error_msg = dio_error.response?.data is Map
+          ? (dio_error.response?.data['title'] as String?
+                  ?? dio_error.response?.data['message'] as String?
+                  ?? 'Photo upload failed.')
+          : 'Photo upload failed.';
+      // Guard against emitting on a closed cubit
+      if (!isClosed) {
+        // Emit avatar upload error state with descriptive message
+        emit(state.copyWith(
+          // Set avatar upload error status
+          status: ProfileStatus.avatarUploadError,
+          // Bind extracted error message for SnackBar display
+          error_message: error_msg,
+        ));
+      } else {
+        // Cubit was closed — discard error emit safely
+      }
+      // Log the Dio network error for diagnostics
+      debugPrint('[ProfileCubit] Avatar upload DioException: $dio_error');
+    } catch (generic_error) {
+      // Guard against emitting on a closed cubit
+      if (!isClosed) {
+        // Emit avatar upload error state for unexpected exceptions
+        emit(state.copyWith(
+          // Set avatar upload error status
+          status: ProfileStatus.avatarUploadError,
+          // Provide generic user-facing error message
+          error_message: 'An unexpected error occurred during upload.',
+        ));
+      } else {
+        // Cubit was closed — discard error emit safely
+      }
+      // Log the generic error for diagnostics
+      debugPrint('[ProfileCubit] Avatar upload error: $generic_error');
+    }
+  }
+
+  // Launches the image picker for a specific source (camera or gallery),
+  // then calls the repository upload flow. This overload is called by the
+  // avatar widget after the user selects a source from the bottom sheet.
+  Future<void> pick_and_upload_avatar_from_source(
+      ImageSource source) async {
+    // Instantiate the image picker service singleton
+    final ImagePicker picker = ImagePicker();
+    // Emit uploading state to show spinner before picker opens
+    if (!isClosed) {
+      emit(state.copyWith(status: ProfileStatus.avatarUploading));
+    } else {
+      // Cubit closed — abort early
+      return;
+    }
+    // Attempt to pick the image from the specified source
+    XFile? picked_file;
+    try {
+      // Invoke picker with caller-specified source (camera or gallery)
+      picked_file = await picker.pickImage(
+        // Use the caller-provided source selection
+        source: source,
+        // Cap decode width to 1024px to reduce upload payload
+        maxWidth: 1024.0,
+        // Cap decode height to 1024px
+        maxHeight: 1024.0,
+        // 85% quality balances visual fidelity vs file size
+        imageQuality: 85,
+      );
+    } catch (picker_error) {
+      // Picker raised an exception (e.g. permission denied)
+      debugPrint('[ProfileCubit] Picker error: $picker_error');
+      // Emit error state with descriptive message
+      if (!isClosed) {
+        emit(state.copyWith(
+          status: ProfileStatus.avatarUploadError,
+          error_message: 'Image selection failed.',
+        ));
+      } else {
+        // Cubit closed — discard emit
+      }
+      return;
+    }
+    // Guard: user cancelled picker without a selection
+    if (null == picked_file) {
+      // Revert to success status — no upload was triggered
+      if (!isClosed) {
+        emit(state.copyWith(status: ProfileStatus.success));
+      } else {
+        // Cubit closed — discard emit
+      }
+      return;
+    } else {
+      // File selected — continue to upload
+    }
+    // Extract local path from XFile wrapper
+    final String file_path = picked_file.path;
+    // Execute repository upload call with the local file path
+    try {
+      // Upload photo via use case (Clean Architecture: cubit → use case → repository)
+      final String new_photo_url =
+          await get_it<UploadProfilePhotoUseCase>().call(file_path);
+      // Clone profile entity with the new avatar URL applied
+      final PatientProfile updated_profile =
+          state.profile.copyWith(avatar_url: new_photo_url);
+      // Emit success state with updated profile
+      if (!isClosed) {
+        emit(state.copyWith(
+          status: ProfileStatus.avatarUploadSuccess,
+          profile: updated_profile,
+          temp_profile: updated_profile,
+        ));
+        debugPrint(
+          '[ProfileCubit] Avatar uploaded from source. URL: $new_photo_url',
+        );
+      } else {
+        // Cubit closed — discard result
+      }
+    } on DioException catch (dio_error) {
+      // Extract error message from Dio response body
+      final String error_msg = dio_error.response?.data is Map
+          ? (dio_error.response?.data['title'] as String?
+                  ?? dio_error.response?.data['message'] as String?
+                  ?? 'Photo upload failed.')
+          : 'Photo upload failed.';
+      if (!isClosed) {
+        emit(state.copyWith(
+          status: ProfileStatus.avatarUploadError,
+          error_message: error_msg,
+        ));
+      } else {
+        // Cubit closed — discard emit
+      }
+      debugPrint('[ProfileCubit] DioException during upload: $dio_error');
+    } catch (generic_error) {
+      if (!isClosed) {
+        emit(state.copyWith(
+          status: ProfileStatus.avatarUploadError,
+          error_message: 'An unexpected error occurred during upload.',
+        ));
+      } else {
+        // Cubit closed — discard emit
+      }
+      debugPrint('[ProfileCubit] Upload error: $generic_error');
     }
   }
 

@@ -2103,7 +2103,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get legal_open_source_content => 'This app utilizes open source packages. You can find their licenses on their official package documentation pages.';
 
-  // Authentication error localized message English overrides
   @override
   String get error_invalid_credentials => 'Invalid phone number or password.';
   @override
@@ -2112,4 +2111,90 @@ class AppLocalizationsEn extends AppLocalizations {
   String get error_otp_invalid => 'OTP code must be 6 digits.';
   @override
   String get error_password_too_short => 'Password must be at least 8 characters.';
+  @override
+  String get error_user_not_found => 'Account not found.';
+  @override
+  String get error_email_already_exists => 'Email is already registered.';
+  @override
+  String get error_auth_general => 'An error occurred during authentication, please verify your details.';
+
+  // Network and security error EN string overrides
+  @override
+  String get error_no_internet =>
+      'No internet connection. Please check your network and try again.';
+  @override
+  String get error_timeout =>
+      'The request timed out. Please try again.';
+  @override
+  String get error_ssl_handshake =>
+      'Secure connection failed. Please check your network settings.';
+  @override
+  String get error_request_cancelled =>
+      'The request was cancelled.';
+
+  // Auth and access control error EN string overrides
+  @override
+  String get error_session_expired =>
+      'Your session has expired. Please log in again.';
+  @override
+  String get error_forbidden =>
+      'You do not have permission to perform this action.';
+
+  // Client and business logic error EN string overrides
+  @override
+  String get error_bad_request =>
+      'Invalid request. Please check your input and try again.';
+  @override
+  String get error_not_found =>
+      'The requested information could not be found.';
+  @override
+  String get error_conflict =>
+      'A conflict occurred. This record may already exist.';
+  @override
+  String get error_payload_too_large =>
+      'The file or data you are uploading is too large.';
+  @override
+  String get error_unprocessable =>
+      'The server could not process your request. Please review your input.';
+  @override
+  String get error_rate_limit =>
+      'Too many requests. Please wait a moment and try again.';
+
+  // System and app lifecycle error EN string overrides
+  @override
+  String get error_app_update_required =>
+      'A new version of the app is required. Please update from the store.';
+  @override
+  String get error_server =>
+      'Something went wrong on our end. Please try again later.';
+  @override
+  String get error_maintenance =>
+      'The service is currently under maintenance. Please try again shortly.';
+  @override
+  String get error_data_parsing =>
+      'An error occurred while reading server data. Please try again.';
+  @override
+  String get error_unknown =>
+      'An unexpected error occurred. Please try again.';
+  @override
+  String get error_cache =>
+      'A local storage error occurred. Please restart the app.';
+  // Profile Photo Picker Bottom Sheet Localizations English Overrides
+  @override
+  // English label for the profile photo source selection sheet title
+  String get profile_photo_sheet_title => 'Update Profile Photo';
+  @override
+  // English label for the camera selection option in the sheet
+  String get profile_photo_camera_option => 'Take a Photo';
+  @override
+  // English label for the gallery selection option in the sheet
+  String get profile_photo_gallery_option => 'Choose from Gallery';
+  @override
+  // English message displayed in SnackBar after a successful avatar photo upload
+  String get profile_photo_upload_success =>
+      'Profile photo updated successfully.';
+  @override
+  // English fallback message displayed in SnackBar when avatar upload fails
+  String get profile_photo_upload_error => 'Photo upload failed.';
 }
+

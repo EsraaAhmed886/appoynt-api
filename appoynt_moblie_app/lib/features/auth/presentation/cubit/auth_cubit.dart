@@ -14,71 +14,100 @@
 import 'package:appoynt_mobile_app/features/auth/domain/usecases/login_usecase.dart';
 // Registration logic
 import 'package:appoynt_mobile_app/features/auth/domain/usecases/register_usecase.dart';
+// Verify OTP logic
+import 'package:appoynt_mobile_app/features/auth/domain/usecases/verify_otp_usecase.dart';
+// Resend OTP logic
+import 'package:appoynt_mobile_app/features/auth/domain/usecases/resend_otp_usecase.dart';
+// Forgot password logic
+import 'package:appoynt_mobile_app/features/auth/domain/usecases/forgot_password_usecase.dart';
+// Reset password logic
+import 'package:appoynt_mobile_app/features/auth/domain/usecases/reset_password_usecase.dart';
+// Secure storage
+import 'package:appoynt_mobile_app/core/storage/token_storage.dart';
+import 'package:appoynt_mobile_app/core/error/failures.dart';
 // Value-based comparison
 import 'package:equatable/equatable.dart';
 // BLoC state management
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'auth_state.dart'; // Linking the associated state file
 
 /// Cubit responsible for handling authentication-related operations.
 class AuthCubit extends Cubit<AuthState> {
-  /// Reference to the login use case.
-  // ignore: unused_field
   final LoginUseCase _login_usecase;
-  /// Reference to the registration use case.
-  // ignore: unused_field
   final RegisterUseCase _register_usecase;
+  final VerifyOtpUseCase _verify_otp_usecase;
+  final ResendOtpUseCase _resend_otp_usecase;
+  final ForgotPasswordUseCase _forgot_password_usecase;
+  final ResetPasswordUseCase _reset_password_usecase;
 
-  // Static cache of registered user credentials to allow dynamic login of newly registered users (BUG/RFE)
-  static String? _registered_email;
-  static String? _registered_phone;
-  static String? _registered_password;
-
-  // Static cache for admin password to allow mock forgot password updates (BUG/RFE)
-  static String _admin_password = "123asdASD!@#";
+  // Active validation state variables preserved during flows
+  String? challengeId;
+  String? identifier;
+  String? resetToken;
 
   /// Constructor requiring the use case instances.
-  AuthCubit(this._login_usecase, this._register_usecase) : super(AuthInitial());
+  AuthCubit(
+    this._login_usecase,
+    this._register_usecase,
+    this._verify_otp_usecase,
+    this._resend_otp_usecase,
+    this._forgot_password_usecase,
+    this._reset_password_usecase,
+  ) : super(AuthInitial());
 
   /// Orchestrates the login process for a user.
-  /// [identifier] Can be an email or phone number.
-  /// [password] The user's secret password.
   Future<void> login(String identifier, String password) async {
-    /// Emitting the loading state to update the UI.
+    debugPrint('--- [AuthCubit.login] Triggered for: $identifier ---');
     emit(AuthLoading());
+    final result = await _login_usecase(
+      LoginParams(identifier: identifier, password: password),
+    );
+    debugPrint('--- [AuthCubit.login] Result received: $result ---');
+    result.fold(
+      (failure) {
+        final String errorMsg =
+            failure is ServerFailure ? (failure.message_key ?? 'Login failed.') : 'Login failed.';
+        debugPrint('--- [AuthCubit.login] Failure emitted: $errorMsg ---');
+        emit(AuthError(errorMsg));
+      },
+      (user) async {
+        debugPrint('--- [AuthCubit.login] Success user token: ${user.token} ---');
+        // Securely persist active token
+        await TokenStorage.save_access_token(user.token);
+        emit(AuthSuccess());
+      },
+    );
+  }
 
-    // TODO: START OF DUMMY LOGIN BYPASS - REMOVE ONCE FINAL HOME IS COMPLETED
-    // Verify credentials match static criteria or memory cached registered credentials using Yoda style comparison
-    final bool is_static_valid = ("admin@gmail.com" == identifier && _admin_password == password);
-    final bool is_registered_valid = (null != _registered_password &&
-        _registered_password == password &&
-        (_registered_email == identifier || _registered_phone == identifier));
-
-    // Handle valid credentials matching either admin or registered user
-    if (is_static_valid || is_registered_valid) {
-      // Simulate minor network delay for visual loading states
-      await Future.delayed(
-        // Duration parameter configuration
-        const Duration(
-          // Delay duration in milliseconds
-          milliseconds: 500,
-        ),
-      );
-      // Emit successful authentication state to trigger home screen routing
-      emit(AuthSuccess());
-      // Return early to skip use case processing
-      return;
+  /// Purges stored credentials and transitions user session to unauthenticated.
+  Future<void> logout() async {
+    debugPrint('--- [AuthCubit.logout] Triggered ---');
+    // 1. Clear secure tokens first
+    await TokenStorage.clear_access_token();
+    // 2. Safely emit state if cubit is still active
+    if (!isClosed) {
+      // Emit unauthenticated state to propagate logout across the widget tree
+      emit(AuthUnauthenticated());
     } else {
-      // Emit error state with instructions for invalid credentials
-      emit(
-        // Emit error state with instructions
-        const AuthError('Invalid phone number or password.'),
-      );
-      // Return to terminate execution
-      return;
+      // Cubit is closed — skip state emission silently
     }
-    // TODO: END OF DUMMY LOGIN BYPASS
+  }
+
+  // Forces the AuthUnauthenticated state without clearing tokens.
+  // Called by SessionManager after the 401 interceptor has already cleared
+  // tokens, ensuring the widget tree reflects the expired session state.
+  void force_unauthenticated() {
+    // Log the forced state transition for debugging diagnostics
+    debugPrint('--- [AuthCubit.force_unauthenticated] Triggered by 401 ---');
+    // Guard against emitting on a closed cubit to prevent state errors
+    if (!isClosed) {
+      // Emit unauthenticated state so BlocListeners respond to session expiry
+      emit(AuthUnauthenticated());
+    } else {
+      // Cubit is already closed — skip state emission silently
+    }
   }
 
   /// Orchestrates the registration process for a new user.
@@ -89,132 +118,148 @@ class AuthCubit extends Cubit<AuthState> {
     required String phone,
     required String password,
   }) async {
-    /// Emitting the loading state.
     emit(AuthLoading());
-
-    // TODO: START OF DUMMY REGISTER BYPASS - REMOVE ONCE FINAL HOME IS COMPLETED
-    // Cache the user's registration credentials to allow dynamic login of newly registered users
-    _registered_email = email;
-    _registered_phone = phone;
-    _registered_password = password;
-
-    // Simulate minor network delay for visual loading states
-    await Future.delayed(
-      // Duration parameter configuration
-      const Duration(
-        // Delay duration in milliseconds
-        milliseconds: 500,
+    final result = await _register_usecase(
+      RegisterParams(
+        first_name: first_name,
+        last_name: last_name,
+        email: email,
+        phone: phone,
+        password: password,
       ),
     );
-    // Emit successful authentication state to trigger next flow / success routing
-    emit(AuthSuccess());
-    // Return early to skip use case processing
-    return;
-    // TODO: END OF DUMMY REGISTER BYPASS
+    result.fold(
+      (failure) {
+        final String errorMsg =
+            failure is ServerFailure ? (failure.message_key ?? 'Registration failed.') : 'Registration failed.';
+        emit(AuthError(errorMsg));
+      },
+      (response) {
+        challengeId = response.challengeId;
+        identifier = phone;
+        emit(RegisterSuccess(challengeId: response.challengeId));
+      },
+    );
   }
 
-  /// Initiates the forgot password code request (mock bypass).
-  /// [phone] The phone number to dispatch the reset code.
+  /// Initiates the forgot password code request.
   Future<void> forgot_password(String phone) async {
-    /// Emitting the loading state to update UI.
     emit(AuthLoading());
-
-    // Verify phone format check exists or bypass directly
-    if (phone.isNotEmpty) {
-      // Simulate minor network delay for visual loading states
-      await Future.delayed(
-        // Duration parameter configuration
-        const Duration(
-          // Delay duration in milliseconds
-          milliseconds: 500,
-        ),
-      );
-      // Emit success state to allow OTP page transition
-      emit(AuthSuccess());
-      // Return early to skip use case processing
-      return;
-    } else {
-      // Emit error state with instructions
-      emit(
-        // Emit error state
-        const AuthError('Phone number cannot be empty.'),
-      );
-      // Return to terminate execution
-      return;
-    }
+    final result = await _forgot_password_usecase(
+      ForgotPasswordParams(identifier: phone),
+    );
+    result.fold(
+      (failure) {
+        final String errorMsg =
+            failure is ServerFailure ? (failure.message_key ?? 'Failed to send recovery code.') : 'Failed to send recovery code.';
+        emit(AuthError(errorMsg));
+      },
+      (response) {
+        challengeId = response.challengeId;
+        identifier = phone;
+        emit(ForgotPasswordSuccess(challengeId: response.challengeId));
+      },
+    );
   }
 
-  /// Verifies the OTP code (mock bypass).
-  /// [code] The 6-digit verification code.
+  /// Verifies the OTP code.
   Future<void> verify_otp(String code) async {
-    /// Emitting the loading state to update UI.
     emit(AuthLoading());
-
-    // Verify OTP code length matches exactly 6 digits using Yoda comparison
-    if (6 == code.length) {
-      // Simulate minor network delay for visual loading states
-      await Future.delayed(
-        // Duration parameter configuration
-        const Duration(
-          // Delay duration in milliseconds
-          milliseconds: 500,
-        ),
-      );
-      // Emit success state to allow page transition
-      emit(AuthSuccess());
-      // Return early to skip use case processing
+    final String activeChallenge = challengeId ?? '';
+    if (activeChallenge.isEmpty) {
+      emit(const AuthError('Verification challenge context lost.'));
       return;
     } else {
-      // Emit error state with instructions
-      emit(
-        // Emit error state
-        const AuthError('OTP code must be 6 digits.'),
-      );
-      // Return to terminate execution
-      return;
+      // Proceed
     }
+
+    final result = await _verify_otp_usecase(
+      VerifyOtpParams(challengeId: activeChallenge, code: code),
+    );
+    result.fold(
+      (failure) {
+        final String errorMsg =
+            failure is ServerFailure ? (failure.message_key ?? 'OTP verification failed.') : 'OTP verification failed.';
+        emit(AuthError(errorMsg));
+      },
+      (response) {
+        resetToken = response.passwordResetToken;
+        emit(VerifyOtpSuccess(resetToken: response.passwordResetToken));
+      },
+    );
   }
 
-  /// Updates the password of the registered user (mock reset password bypass).
-  /// [new_password] The user's new security password choice.
+  /// Resends verification OTP code.
+  Future<void> resend_otp() async {
+    final String activeChallenge = challengeId ?? '';
+    if (activeChallenge.isEmpty) {
+      emit(const AuthError('Verification challenge context lost.'));
+      return;
+    } else {
+      // Proceed
+    }
+
+    final result = await _resend_otp_usecase(
+      ResendOtpParams(challengeId: activeChallenge),
+    );
+    result.fold(
+      (failure) {
+        final String errorMsg =
+            failure is ServerFailure ? (failure.message_key ?? 'Failed to resend code.') : 'Failed to resend code.';
+        emit(AuthError(errorMsg));
+      },
+      (response) {
+        challengeId = response.challengeId;
+        // Keep initial identifier, emit a temporary initial state to stop loading
+        emit(AuthInitial());
+      },
+    );
+  }
+
+  /// Updates the password of the registered user.
   Future<void> reset_password({
     required String new_password,
   }) async {
-    /// Emitting the loading state to update UI.
     emit(AuthLoading());
+    final String activeIdentifier = identifier ?? '';
+    final String activeToken = resetToken ?? '';
 
-    // Verify password is not empty and complies with minimum length using Yoda comparison
-    if (8 <= new_password.length) {
-      // Simulate minor network delay for visual loading states
-      await Future.delayed(
-        // Duration parameter configuration
-        const Duration(
-          // Delay duration in milliseconds
-          milliseconds: 500,
-        ),
-      );
-      // If there is a registered user, update their cached password
-      if (null != _registered_email) {
-        // Assign new password to memory cached password
-        _registered_password = new_password;
-      } else {
-        // Empty action block to satisfy compiler
+    if (activeIdentifier.isEmpty || activeToken.isEmpty) {
+      if (!isClosed) {
+        emit(const AuthError('Reset token or identifier context lost.'));
       }
-      // Update admin password as well so that if they reset admin password, it takes effect
-      _admin_password = new_password;
-
-      // Emit success state to allow success page routing
-      emit(AuthSuccess());
-      // Return early to skip use case processing
       return;
     } else {
-      // Emit error state with instructions
-      emit(
-        // Emit error state
-        const AuthError('Password must be at least 8 characters.'),
+      // Proceed
+    }
+
+    try {
+      final result = await _reset_password_usecase(
+        ResetPasswordParams(
+          identifier: activeIdentifier,
+          resetToken: activeToken,
+          newPassword: new_password,
+          confirmPassword: new_password,
+        ),
       );
-      // Return to terminate execution
-      return;
+      if (!isClosed) {
+        result.fold(
+          (failure) {
+            final String errorMsg = failure is ServerFailure
+                ? (failure.message_key ?? 'Password reset failed.')
+                : 'Password reset failed.';
+            emit(AuthError(errorMsg));
+          },
+          (_) {
+            emit(ResetPasswordSuccess());
+          },
+        );
+      }
+    } catch (e) {
+      if (!isClosed) {
+        emit(const AuthError(
+            'An unexpected error occurred during password reset'));
+      }
     }
   }
 

@@ -22,6 +22,8 @@ import 'package:appoynt_mobile_app/features/splash/presentation/pages/splash_scr
 import 'package:appoynt_mobile_app/core/widgets/connectivity_wrapper.dart';
 // Importing dependency injection service locator setup representation
 import 'package:appoynt_mobile_app/core/di/service_locator.dart';
+// Importing session manager for global navigator key and 401 logout flow
+import 'package:appoynt_mobile_app/core/services/session_manager.dart';
 // Importing flutter bloc package for state management provider scopes
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -88,6 +90,11 @@ class MyApp extends StatelessWidget {
                 supportedLocales: app_supported_locales,
                 // Defining the landing splash screen as the initial home page
                 home: const SplashScreen(),
+                // Configure routes generator to map route settings
+                onGenerateRoute: AppRouter.generateRoute,
+                // Bind the global navigator key from SessionManager to enable
+                // context-free navigation triggered by the 401 Dio interceptor
+                navigatorKey: SessionManager.instance.navigator_key,
                 // Wrapping the navigator to globally show NoInternetPage when offline
                 builder: (context, child) {
                   // Return dynamic connectivity widget wrapping children

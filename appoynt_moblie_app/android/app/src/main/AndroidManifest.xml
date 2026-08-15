@@ -2,18 +2,30 @@
  * File Name: AndroidManifest.xml
  * Author: Kholoud Khaled
  * Date of Creation: 03/07/2026
- * Version Information: V1.0.0
+ * Version Information: V1.1.0
  * Dependencies: None
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 03/07/2026]
- * File Description: Main Android manifest declaring app name, activities, and metadata.
+ * Last Modified Date: [Kholoud Khaled - 13/08/2026]
+ * File Description: Main Android manifest declaring app name, activities,
+ *   permissions, and metadata. V1.1.0 adds CAMERA, READ_MEDIA_IMAGES, and
+ *   READ_EXTERNAL_STORAGE permissions required by the image_picker plugin for
+ *   profile photo selection from camera and gallery sources.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Camera permission required for ImageSource.camera picker source -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- Gallery permission for Android 13+ (API 33+) using READ_MEDIA_IMAGES -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <!-- Legacy gallery permission for Android 12 and below (API <= 32) -->
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
     <!-- Main application configurations -->
     <application
         android:label="Appoynt"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".MainActivity"
             android:exported="true"
