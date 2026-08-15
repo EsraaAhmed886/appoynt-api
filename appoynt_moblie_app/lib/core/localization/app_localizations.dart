@@ -1127,7 +1127,71 @@ abstract class AppLocalizations {
 
   // Abstract getter for the avatar upload failure SnackBar fallback message
   String get profile_photo_upload_error;
+
+  // Abstract getters for Favorites screen features
+  String get favorites_title;
+  String get favorites_subtitle;
+  String get favorites_subtitle_universal;
+  String get favorites_subtitle_doctors;
+  String get favorites_subtitle_offers;
+  String get favorites_subtitle_clinics;
+  String get favorites_search_hint;
+
+  String get favorites_count_single;
+  String favorites_count_plural(int count);
+  String get favorites_sort_by;
+  String get favorites_empty_title;
+  String get favorites_empty_subtitle;
+  String get favorites_sort_title;
+  String get favorites_sort_recently_added;
+  String get favorites_sort_name_a_z;
+  String get favorites_sort_name_z_a;
+  String get favorites_sort_rating_high_low;
+  String get favorites_sort_price_low_high;
+  String get favorites_sort_price_high_low;
+  String get favorites_sort_discount_high_low;
+  String get favorites_apply_button;
+
+  // Category tabs
+  String get favorites_tab_doctors;
+  String get favorites_tab_offers;
+  String get favorites_tab_clinics;
+
+  // Category search hints
+  String get favorites_search_doctors_hint;
+  String get favorites_search_offers_hint;
+  String get favorites_search_clinics_hint;
+
+  // Category empty states
+  String get favorites_empty_doctors_title;
+  String get favorites_empty_doctors_subtitle;
+  String get favorites_empty_offers_title;
+  String get favorites_empty_offers_subtitle;
+  String get favorites_empty_clinics_title;
+  String get favorites_empty_clinics_subtitle;
+  String get favorites_empty_search_title;
+  String get favorites_empty_search_subtitle;
+
+  // Guest access prompt
+  String get favorites_guest_title;
+  String get favorites_guest_subtitle;
+  String get favorites_guest_login_button;
+
+  // Feedback notifications
+  String get favorites_remove_success;
+  String get favorites_remove_error;
+  String get favorites_refresh_error;
+
+  // Badges & Action CTAs
+  String get favorites_book_now;
+  String get favorites_view_clinic;
+  String get favorites_unavailable_badge;
+  String get favorites_expired_badge;
+  String get favorites_expires_on;
+  String get favorites_off_badge;
+  String favorites_reviews_count(int count);
 }
 
 // Defining a short alias for clean and simple type references
 typedef AppStrings = AppLocalizations;
+

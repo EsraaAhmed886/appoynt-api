@@ -76,6 +76,7 @@ dependencies:
   json_annotation: ^4.9.0
   lucide_icons: ^0.257.0
   image_picker: ^1.2.3
+  flutter_svg: ^2.0.10+1
 
 dev_dependencies:
   flutter_test:
@@ -98,6 +99,8 @@ flutter:
     - assets/images/
     # Add path to the local assets/icons directory
     - assets/icons/
+    # Add path to the local assets/svgs directory
+    - assets/svgs/
 
 # Configuration for generating app launcher icons
 flutter_launcher_icons:

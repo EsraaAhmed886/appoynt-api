@@ -2196,5 +2196,128 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   // English fallback message displayed in SnackBar when avatar upload fails
   String get profile_photo_upload_error => 'Photo upload failed.';
+
+  // Favorites Feature English Localizations
+  @override
+  String get favorites_title => 'Favorites';
+  @override
+  String get favorites_subtitle => 'Your saved doctors, offers & clinics';
+  @override
+  String get favorites_subtitle_universal =>
+      'Your saved doctors, offers & clinics';
+  @override
+  String get favorites_subtitle_doctors => 'Your favorite doctors';
+  @override
+  String get favorites_subtitle_offers => 'Your favorite offers';
+  @override
+  String get favorites_subtitle_clinics => 'Your favorite clinics';
+  @override
+  String get favorites_search_hint => 'Search your favorite doctors...';
+
+  @override
+  String get favorites_count_single => '1 Doctor';
+  @override
+  String favorites_count_plural(int count) => '$count Doctors';
+  @override
+  String get favorites_sort_by => 'Sort by';
+  @override
+  String get favorites_empty_title => 'No favorites yet';
+  @override
+  String get favorites_empty_subtitle =>
+      "You haven't added any doctors to your favorites.";
+  @override
+  String get favorites_sort_title => 'Sort Favorites';
+  @override
+  String get favorites_sort_recently_added => 'Recently Added';
+  @override
+  String get favorites_sort_name_a_z => 'Name: A to Z';
+  @override
+  String get favorites_sort_name_z_a => 'Name: Z to A';
+  @override
+  String get favorites_sort_rating_high_low => 'Rating: High to Low';
+  @override
+  String get favorites_sort_price_low_high =>
+      'Consultation Fee: Low to High';
+  @override
+  String get favorites_sort_price_high_low =>
+      'Consultation Fee: High to Low';
+  @override
+  String get favorites_sort_discount_high_low => 'Discount: High to Low';
+  @override
+  String get favorites_apply_button => 'Apply Sort';
+
+  // Category tabs
+  @override
+  String get favorites_tab_doctors => 'Doctors';
+  @override
+  String get favorites_tab_offers => 'Offers';
+  @override
+  String get favorites_tab_clinics => 'Clinics';
+
+  // Category search hints
+  @override
+  String get favorites_search_doctors_hint => 'Search favorite doctors...';
+  @override
+  String get favorites_search_offers_hint => 'Search favorite offers...';
+  @override
+  String get favorites_search_clinics_hint => 'Search favorite clinics...';
+
+  // Category empty states
+  @override
+  String get favorites_empty_doctors_title => 'No favorite doctors found';
+  @override
+  String get favorites_empty_doctors_subtitle =>
+      "You haven't added any doctors to your favorites.";
+  @override
+  String get favorites_empty_offers_title => 'No favorite offers found';
+  @override
+  String get favorites_empty_offers_subtitle =>
+      "You haven't added any offers to your favorites.";
+  @override
+  String get favorites_empty_clinics_title => 'No favorite clinics found';
+  @override
+  String get favorites_empty_clinics_subtitle =>
+      "You haven't added any clinics to your favorites.";
+  @override
+  String get favorites_empty_search_title => 'No matching favorites found';
+  @override
+  String get favorites_empty_search_subtitle =>
+      'Try searching with a different name or specialty.';
+
+  // Guest access prompt
+  @override
+  String get favorites_guest_title => 'Sign in to view favorites';
+  @override
+  String get favorites_guest_subtitle =>
+      'Save your favorite doctors, offers, and clinics to access them quickly.';
+  @override
+  String get favorites_guest_login_button => 'Sign In';
+
+  // Feedback notifications
+  @override
+  String get favorites_remove_success => 'Favorite removed successfully.';
+  @override
+  String get favorites_remove_error =>
+      'Unable to update favorite status. Please try again.';
+  @override
+  String get favorites_refresh_error =>
+      'Unable to refresh favorites. Showing cached items.';
+
+  // Badges & Action CTAs
+  @override
+  String get favorites_book_now => 'Book Now';
+  @override
+  String get favorites_view_clinic => 'View Clinic';
+  @override
+  String get favorites_unavailable_badge => 'Unavailable';
+  @override
+  String get favorites_expired_badge => 'Expired';
+  @override
+  String get favorites_expires_on => 'Expires on';
+  @override
+  String get favorites_off_badge => 'OFF';
+  @override
+  String favorites_reviews_count(int count) => '($count reviews)';
 }
+
 
