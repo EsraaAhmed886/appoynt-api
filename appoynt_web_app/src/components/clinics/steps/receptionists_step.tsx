@@ -1,3 +1,18 @@
+/*
+ * File Name: receptionist_step.tsx
+ * Author: shimaa salah
+ * Date of Creation: 28/07/2026
+ * Version Information: V1.0.0
+ * Dependencies:
+ *   - react
+ *   - @/context/language_context
+ *   - @/components/clinics/custom_select
+ *   - @/components/clinics/clinic_form_constants
+ *   - @/lib/validators/clinic_validator
+ * Contributors: shimaa salah
+ * Last Modified Date: [shimaa salah - 15/08/2026]
+ * File Description: Step 1 form view for entering and validating receptionist information, including personal details, contact information, clinic assignment, and account credentials.
+ */
 import { useState } from "react";
 import {
   UserPlus,

@@ -143,9 +143,11 @@ export default function WorkingScheduleStep({
   const get_error_message = (error_key: string | undefined): string => {
     if (!error_key) {
       return "";
+    } else {
+      const translated = translations[error_key as keyof typeof translations];
+
+      return translated || error_key;
     }
-    const translated = translations[error_key as keyof typeof translations];
-    return translated || error_key;
   };
 
   return (

@@ -30,17 +30,19 @@ export default function ClinicTable({
 }: ClinicTableProps) {
   const { translations } = useTranslation();
 
-  const get_translated_days_string = (raw_days?: string) => {
-    if (!raw_days || "—" === raw_days) {
-      return "—";
-    }
+ const get_translated_days_string = (raw_days?: string) => {
+  if (!raw_days || "—" === raw_days) {
+    return "—";
+  } else {
     const days_array = raw_days.split(",").map((d) => d.trim());
     const translated = days_array.map((day_code) => {
       const key = `day_${day_code.toLowerCase()}` as keyof typeof translations;
       return translations[key] || day_code;
     });
+
     return translated.join(", ");
-  };
+  }
+};
 
   return (
     <div className="mt-6 overflow-x-auto rounded-xl border border-app-border bg-app-surface shadow-sm">
