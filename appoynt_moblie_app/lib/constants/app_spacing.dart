@@ -151,6 +151,9 @@ class AppSpacing {
   // Typographic font size for small body text content
   static const double font_size_body_small = 12.0;
 
+  // Typographic font size for caption metadata and timestamps
+  static const double font_size_caption = 11.0;
+
   // Typographic font size for standard dialog/bottom sheet titles
   static const double font_size_dialog_title = 18.0;
 

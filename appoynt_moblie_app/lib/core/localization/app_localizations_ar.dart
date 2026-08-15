@@ -2364,6 +2364,85 @@ class AppLocalizationsAr extends AppLocalizations {
   String get favorites_off_badge => 'خصم';
   @override
   String favorites_reviews_count(int count) => '($count تقييم)';
+
+  // ── Notifications Feature Arabic Strings ──────────────────
+  @override
+  String get notifications_page_title => 'الإشعارات';
+  @override
+  String get notifications_mark_all_read => 'تعيين الكل كمقروء';
+  @override
+  String get notifications_section_today => 'اليوم';
+  @override
+  String get notifications_section_yesterday => 'أمس';
+  @override
+  String get notifications_section_earlier => 'سابقاً';
+  @override
+  String get notifications_empty_title => 'لا توجد إشعارات بعد';
+  @override
+  String get notifications_empty_subtitle =>
+      'سنخطرك عندما يكون هناك شيء مهم.';
+  @override
+  String get notifications_empty_cta => 'الذهاب للرئيسية';
+  @override
+  String get notifications_error_title => 'تعذر تحميل الإشعارات';
+  @override
+  String get notifications_error_subtitle =>
+      'يرجى التحقق من اتصال الإنترنت والمحاولة مرة أخرى.';
+  @override
+  String get notifications_retry_btn => 'إعادة المحاولة';
+  @override
+  String get notifications_unavailable_entity =>
+      'المحتوى المرتبط لم يعد متوفراً';
+  @override
+  String get notifications_marked_all_read_success =>
+      'تم تعيين جميع الإشعارات كمقروءة';
+
+  // Filter Chips Arabic Overrides
+  @override
+  String get notifications_filter_all => 'الكل';
+  @override
+  String get notifications_filter_unread => 'غير المقروءة';
+  @override
+  String get notifications_filter_appointments => 'المواعيد';
+  @override
+  String get notifications_filter_payments => 'المدفوعات';
+  @override
+  String get notifications_filter_prescriptions => 'الوصفات الطبية';
+
+  // Notification Details Screen Arabic Overrides
+  @override
+  String get notification_details_title => 'تفاصيل الإشعار';
+  @override
+  String get notification_details_section_info => 'المعلومات';
+  @override
+  String get notification_details_date => 'التاريخ';
+  @override
+  String get notification_details_time => 'الوقت';
+  @override
+  String get notification_details_doctor => 'الطبيب';
+  @override
+  String get notification_details_location => 'الموقع';
+  @override
+  String get notification_details_specialty => 'التخصص';
+  @override
+  String get notification_details_amount => 'المبلغ';
+  @override
+  String get notification_details_transaction_id => 'رقم المعاملة';
+  @override
+  String get notification_details_status => 'الحالة';
+  @override
+  String get notification_details_status_completed => 'مكتمل';
+  @override
+  String get notification_details_status_failed => 'مرفوض';
+  @override
+  String get notification_details_view_appointment => 'عرض الموعد';
+  @override
+  String get notification_details_view_prescription => 'عرض الروشتة';
+  @override
+  String get notification_details_add_to_calendar => 'إضافة إلى التقويم';
+  @override
+  String get notification_details_calendar_added =>
+      'تمت إضافة الموعد إلى التقويم';
 }
 
 

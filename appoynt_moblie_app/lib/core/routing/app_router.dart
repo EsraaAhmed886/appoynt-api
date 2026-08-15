@@ -23,6 +23,7 @@ import 'package:appoynt_mobile_app/features/auth/presentation/pages/account_succ
 import 'package:appoynt_mobile_app/features/auth/presentation/pages/reset_password_page.dart';
 import 'package:appoynt_mobile_app/features/auth/presentation/pages/password_success_page.dart';
 import 'package:appoynt_mobile_app/features/home/presentation/pages/home_page.dart';
+import 'package:appoynt_mobile_app/features/notifications/presentation/pages/notifications_page.dart';
 import 'package:appoynt_mobile_app/core/logic/global_cubit.dart';
 
 /// Router class responsible for parsing route settings and building views.
@@ -37,6 +38,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const SplashScreen());
       case Routes.home:
         return MaterialPageRoute(builder: (_) => const HomePage());
+      case Routes.notifications:
+        return MaterialPageRoute(builder: (_) => const NotificationsPage());
       case Routes.login:
         return PageRouteBuilder(
           pageBuilder: (context, anim, secAnim) {

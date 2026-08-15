@@ -2318,6 +2318,85 @@ class AppLocalizationsEn extends AppLocalizations {
   String get favorites_off_badge => 'OFF';
   @override
   String favorites_reviews_count(int count) => '($count reviews)';
+
+  // ── Notifications Feature English Strings ─────────────────
+  @override
+  String get notifications_page_title => 'Notifications';
+  @override
+  String get notifications_mark_all_read => 'Mark all as read';
+  @override
+  String get notifications_section_today => 'Today';
+  @override
+  String get notifications_section_yesterday => 'Yesterday';
+  @override
+  String get notifications_section_earlier => 'Earlier';
+  @override
+  String get notifications_empty_title => 'No notifications yet';
+  @override
+  String get notifications_empty_subtitle =>
+      'We\'ll notify you when there is something important.';
+  @override
+  String get notifications_empty_cta => 'Go to Home';
+  @override
+  String get notifications_error_title => 'Couldn\'t load notifications';
+  @override
+  String get notifications_error_subtitle =>
+      'Please check your internet connection and try again.';
+  @override
+  String get notifications_retry_btn => 'Try Again';
+  @override
+  String get notifications_unavailable_entity =>
+      'Related content is no longer available';
+  @override
+  String get notifications_marked_all_read_success =>
+      'All notifications marked as read';
+
+  // Filter Chips English Overrides
+  @override
+  String get notifications_filter_all => 'All';
+  @override
+  String get notifications_filter_unread => 'Unread';
+  @override
+  String get notifications_filter_appointments => 'Appointments';
+  @override
+  String get notifications_filter_payments => 'Payments';
+  @override
+  String get notifications_filter_prescriptions => 'Prescriptions';
+
+  // Notification Details Screen English Overrides
+  @override
+  String get notification_details_title => 'Notification Detail';
+  @override
+  String get notification_details_section_info => 'Information';
+  @override
+  String get notification_details_date => 'Date';
+  @override
+  String get notification_details_time => 'Time';
+  @override
+  String get notification_details_doctor => 'Doctor';
+  @override
+  String get notification_details_location => 'Location';
+  @override
+  String get notification_details_specialty => 'Specialty';
+  @override
+  String get notification_details_amount => 'Amount';
+  @override
+  String get notification_details_transaction_id => 'Transaction ID';
+  @override
+  String get notification_details_status => 'Status';
+  @override
+  String get notification_details_status_completed => 'Completed';
+  @override
+  String get notification_details_status_failed => 'Declined';
+  @override
+  String get notification_details_view_appointment => 'View Appointment';
+  @override
+  String get notification_details_view_prescription => 'View Prescription';
+  @override
+  String get notification_details_add_to_calendar => 'Add to Calendar';
+  @override
+  String get notification_details_calendar_added =>
+      'Appointment added to calendar';
 }
 
 
