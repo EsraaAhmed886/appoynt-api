@@ -12,7 +12,7 @@
  *   - @/lib/validators/clinic_validator
  *   - @/components/clinics/*
  * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 13/08/2026]
+ * Last Modified Date: [shimaa salah - 15/08/2026]
  * File Description: Multi-step modal component for adding a new clinic record with step navigation locks and centralized validation.
  */
 
@@ -37,10 +37,7 @@ import ReceptionistsStep from "./steps/receptionists_step";
 import BookingSettingsStep from "./steps/booking_settings_step";
 
 import { get_doctor_occupied_working_days } from "@/services/clinic.service";
-import {
-  CITIES_BY_GOVERNORATE,
-  PHONE_REGEX,
-} from "./clinic_form_constants";
+import { CITIES_BY_GOVERNORATE, PHONE_REGEX } from "./clinic_form_constants";
 import {
   validate_clinic_name,
   validate_phone,
@@ -104,7 +101,7 @@ export default function AddClinicModal({
 
   const doctor_occupied_days = get_doctor_occupied_working_days(
     form_state.doctor_id || doctor_id,
-    editing_clinic_id
+    editing_clinic_id,
   );
 
   const steps_labels = [
@@ -128,6 +125,8 @@ export default function AddClinicModal({
       if (form_state.is_dirty) {
         event.preventDefault();
         event.returnValue = "";
+      } else {
+        // No action needed
       }
     };
 
@@ -142,7 +141,7 @@ export default function AddClinicModal({
 
   const update_field = <K extends keyof ClinicFormState>(
     field: K,
-    value: ClinicFormState[K]
+    value: ClinicFormState[K],
   ) => {
     set_form_state((prev) => ({
       ...prev,
@@ -173,7 +172,7 @@ export default function AddClinicModal({
       const phone_err = validate_phone(
         form_state.phone,
         existing_clinics,
-        editing_clinic_id
+        editing_clinic_id,
       );
       const gov_err = validate_governorate(form_state.governorate);
       const city_err = validate_city(form_state.city);
@@ -253,7 +252,7 @@ export default function AddClinicModal({
         form_state,
         existing_clinics,
         editing_clinic_id,
-        doctor_occupied_days
+        doctor_occupied_days,
       );
 
       if (!is_step3_ok) {
@@ -261,7 +260,9 @@ export default function AddClinicModal({
         return;
       } else {
         const fee_text = `${form_state.consultation_fee} EGP`;
-        const schedule_text = form_state.schedule_list.map((s) => s.day).join(", ");
+        const schedule_text = form_state.schedule_list
+          .map((s) => s.day)
+          .join(", ");
 
         const new_clinic: Clinic = {
           id: Date.now(),
@@ -320,7 +321,8 @@ export default function AddClinicModal({
     setPhone: (val: string) => update_field("phone", val),
     setPhoneError: (val: string) => update_field("phone_error", val),
     setGovernorate: (val: string) => update_field("governorate", val),
-    setGovernorateError: (val: string) => update_field("governorate_error", val),
+    setGovernorateError: (val: string) =>
+      update_field("governorate_error", val),
     setCity: (val: string) => update_field("city", val),
     setCityError: (val: string) => update_field("city_error", val),
     setAddress: (val: string) => update_field("address", val),
@@ -341,7 +343,7 @@ export default function AddClinicModal({
     form_state,
     existing_clinics,
     editing_clinic_id,
-    doctor_occupied_days
+    doctor_occupied_days,
   );
 
   if (false === is_open) {
@@ -393,8 +395,8 @@ export default function AddClinicModal({
                             is_completed
                               ? "bg-emerald-600 text-white"
                               : is_active
-                              ? "bg-app-primary text-white"
-                              : "border border-app-border bg-app-surface text-app-text-secondary"
+                                ? "bg-app-primary text-white"
+                                : "border border-app-border bg-app-surface text-app-text-secondary"
                           }
                         `}
                       >
@@ -412,8 +414,8 @@ export default function AddClinicModal({
                             is_active
                               ? "font-bold text-app-primary"
                               : is_completed
-                              ? "text-app-text-primary"
-                              : "text-app-text-secondary opacity-70"
+                                ? "text-app-text-primary"
+                                : "text-app-text-secondary opacity-70"
                           }
                         `}
                       >
@@ -465,7 +467,7 @@ export default function AddClinicModal({
                   }}
                   onEditSchedule={(index, updated_item) => {
                     const next_list = form_state.schedule_list.map((it, i) =>
-                      i === index ? updated_item : it
+                      i === index ? updated_item : it,
                     );
                     update_field("schedule_list", next_list);
                     mark_as_dirty();
@@ -474,10 +476,10 @@ export default function AddClinicModal({
                     const target_item = form_state.schedule_list[index];
                     const deleted_day = target_item ? target_item.day : "";
                     const next_schedules = form_state.schedule_list.filter(
-                      (_, i) => i !== index
+                      (_, i) => i !== index,
                     );
                     const next_breaks = form_state.break_list.filter(
-                      (b) => b.day !== deleted_day
+                      (b) => b.day !== deleted_day,
                     );
                     update_field("schedule_list", next_schedules);
                     update_field("break_list", next_breaks);
@@ -490,22 +492,27 @@ export default function AddClinicModal({
               {3 === form_state.current_step && (
                 <BreakTimesStep
                   breakList={form_state.break_list}
-                  availableWorkingDays={form_state.schedule_list.map((s) => s.day)}
+                  availableWorkingDays={form_state.schedule_list.map(
+                    (s) => s.day,
+                  )}
                   scheduleList={form_state.schedule_list}
                   onAddBreak={(item) => {
-                    update_field("break_list", [...form_state.break_list, item]);
+                    update_field("break_list", [
+                      ...form_state.break_list,
+                      item,
+                    ]);
                     mark_as_dirty();
                   }}
                   onEditBreak={(index, updated_item) => {
                     const next_list = form_state.break_list.map((it, i) =>
-                      i === index ? updated_item : it
+                      i === index ? updated_item : it,
                     );
                     update_field("break_list", next_list);
                     mark_as_dirty();
                   }}
                   onDeleteBreak={(index) => {
                     const next_list = form_state.break_list.filter(
-                      (_, i) => i !== index
+                      (_, i) => i !== index,
                     );
                     update_field("break_list", next_list);
                     mark_as_dirty();

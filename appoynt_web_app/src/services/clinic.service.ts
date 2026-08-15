@@ -76,7 +76,7 @@ export function add_clinic(new_clinic: Clinic): Clinic[] {
 export function delete_clinic(clinic_id: number): Clinic[] {
   const current_clinics = get_clinics();
   const updated_clinics = current_clinics.filter(
-    (clinic) => clinic.id !== clinic_id
+    (clinic) => clinic.id !== clinic_id,
   );
   save_clinics(updated_clinics);
   return updated_clinics;
@@ -85,7 +85,7 @@ export function delete_clinic(clinic_id: number): Clinic[] {
 // 6. Calculate all occupied working days for a specific doctor across all existing clinics
 export function get_doctor_occupied_working_days(
   doctor_id: string | number,
-  exclude_clinic_id?: number | null
+  exclude_clinic_id?: number | null,
 ): string[] {
   const all_clinics = get_clinics();
   const occupied_days_set = new Set<string>();
@@ -94,17 +94,27 @@ export function get_doctor_occupied_working_days(
     // Match doctor_id (defaulting to "doc_1" if undefined) and ignore exclude_clinic_id when editing
     const current_doc = clinic.doctor_id ?? "doc_1";
     if (String(current_doc) === String(doctor_id)) {
-      if (null !== exclude_clinic_id && undefined !== exclude_clinic_id && clinic.id === exclude_clinic_id) {
+      if (
+        null !== exclude_clinic_id &&
+        undefined !== exclude_clinic_id &&
+        clinic.id === exclude_clinic_id
+      ) {
         // Exclude current clinic being edited
       } else {
         const days_str = clinic.working_days || clinic.workingDays || "";
+
         if (days_str) {
           const days_array = days_str.split(",").map((d) => d.trim());
+
           days_array.forEach((day_name) => {
             if (day_name) {
               occupied_days_set.add(day_name);
+            } else {
+              // No action needed
             }
           });
+        } else {
+          // No action needed
         }
       }
     }

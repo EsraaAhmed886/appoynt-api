@@ -8,7 +8,7 @@
  *   - lucide-react
  *   - @/hooks/use_click_outside
  * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 13/08/2026]
+ * Last Modified Date: [shimaa salah - 15/08/2026]
  * File Description: Customized responsive select dropdown input with smooth open transitions and RTL support.
  */
 
@@ -47,7 +47,9 @@ export default function CustomSelect({
   });
 
   const get_translated_option = (opt: string) => {
-    if (!opt) return "";
+    if (!opt) {
+      return "";
+    }
     const day_key = `day_${opt.toLowerCase()}` as keyof typeof translations;
     if (translations[day_key]) {
       return translations[day_key];
@@ -103,7 +105,9 @@ export default function CustomSelect({
             ${disabled ? "cursor-not-allowed opacity-60 bg-app-surface" : "hover:border-app-primary/50"}
           `}
         >
-          <span className="truncate">{value ? get_translated_option(value) : placeholder}</span>
+          <span className="truncate">
+            {value ? get_translated_option(value) : placeholder}
+          </span>
 
           <ChevronDown
             size={18}

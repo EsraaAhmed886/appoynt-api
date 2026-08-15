@@ -9,7 +9,7 @@
  *   - @/types/notification
  *   - @/context/language_context
  * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 05/08/2026]
+ * Last Modified Date: [shimaa salah - 15/08/2026]
  * File Description: Floating toast alert component for notification deletion feedback with undo action and manual dismissal.
  */
 import React from "react";
@@ -29,7 +29,9 @@ export default function NotificationToast({
   onDismiss,
 }: NotificationToastProps) {
   const { t } = useTranslation();
-  if (!deletedItem) return null;
+  if (!deletedItem) {
+    return null;
+  }
 
   return (
     <div

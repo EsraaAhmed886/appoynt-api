@@ -12,7 +12,7 @@
  *   - @/components/clinics/clinic_form_constants
  *   - @/lib/validators/clinic_validator
  * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 13/08/2026]
+ * Last Modified Date: [shimaa salah - 15/08/2026]
  * File Description: Step 2 form view managing working days and shift operating hours with CustomSelect dropdowns and real-time inline time validation.
  */
 
@@ -104,7 +104,7 @@ export default function WorkingScheduleStep({
       end,
       scheduleList,
       editing_index,
-      doctorOccupiedDays
+      doctorOccupiedDays,
     );
     set_validation_errors(errs || {});
     return null === errs;
@@ -116,7 +116,11 @@ export default function WorkingScheduleStep({
     if (!is_valid) {
       return;
     } else {
-      const new_item = { day: selected_day, startTime: start_time, endTime: end_time };
+      const new_item = {
+        day: selected_day,
+        startTime: start_time,
+        endTime: end_time,
+      };
 
       if (null !== editing_index) {
         onEditSchedule(editing_index, new_item);
@@ -133,10 +137,13 @@ export default function WorkingScheduleStep({
     return translations[key] || day_code;
   };
 
-  const no_days_left_for_doctor = 0 === available_day_options.length && !is_editing;
+  const no_days_left_for_doctor =
+    0 === available_day_options.length && !is_editing;
 
   const get_error_message = (error_key: string | undefined): string => {
-    if (!error_key) return "";
+    if (!error_key) {
+      return "";
+    }
     const translated = translations[error_key as keyof typeof translations];
     return translated || error_key;
   };
@@ -175,10 +182,18 @@ export default function WorkingScheduleStep({
         <table className="w-full text-start text-sm">
           <thead className="border-b border-app-border bg-app-input_fill text-app-text-secondary">
             <tr>
-              <th className="px-4 py-3 text-start font-semibold">{translations.th_day}</th>
-              <th className="px-4 py-3 text-start font-semibold">{translations.th_start_time}</th>
-              <th className="px-4 py-3 text-start font-semibold">{translations.th_end_time}</th>
-              <th className="px-4 py-3 text-end font-semibold">{translations.th_actions}</th>
+              <th className="px-4 py-3 text-start font-semibold">
+                {translations.th_day}
+              </th>
+              <th className="px-4 py-3 text-start font-semibold">
+                {translations.th_start_time}
+              </th>
+              <th className="px-4 py-3 text-start font-semibold">
+                {translations.th_end_time}
+              </th>
+              <th className="px-4 py-3 text-end font-semibold">
+                {translations.th_actions}
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-app-border text-app-text-primary">
@@ -193,7 +208,10 @@ export default function WorkingScheduleStep({
               </tr>
             ) : (
               scheduleList.map((item, index) => (
-                <tr key={item.day || index} className="hover:bg-app-input_fill/50 transition-colors">
+                <tr
+                  key={item.day || index}
+                  className="hover:bg-app-input_fill/50 transition-colors"
+                >
                   <td className="px-4 py-3 font-medium text-start">
                     {get_translated_day(item.day)}
                   </td>
@@ -230,7 +248,9 @@ export default function WorkingScheduleStep({
           <div className="w-full max-w-md rounded-2xl bg-app-surface p-6 shadow-2xl space-y-4 border border-app-border">
             <div className="flex items-center justify-between border-b border-app-border pb-3">
               <h3 className="text-lg font-bold text-app-text-primary">
-                {is_editing ? translations.btn_edit_working_day : translations.btn_add_working_day}
+                {is_editing
+                  ? translations.btn_edit_working_day
+                  : translations.btn_add_working_day}
               </h3>
               <button
                 type="button"
@@ -257,7 +277,8 @@ export default function WorkingScheduleStep({
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className={LABEL_CLASS}>
-                    {translations.th_start_time} <span className="text-red-500">*</span>
+                    {translations.th_start_time}{" "}
+                    <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="time"
@@ -272,13 +293,16 @@ export default function WorkingScheduleStep({
                     }`}
                   />
                   {validation_errors.start_error ? (
-                    <p className={ERROR_CLASS}>{get_error_message(validation_errors.start_error)}</p>
+                    <p className={ERROR_CLASS}>
+                      {get_error_message(validation_errors.start_error)}
+                    </p>
                   ) : null}
                 </div>
 
                 <div>
                   <label className={LABEL_CLASS}>
-                    {translations.th_end_time} <span className="text-red-500">*</span>
+                    {translations.th_end_time}{" "}
+                    <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="time"
@@ -293,7 +317,9 @@ export default function WorkingScheduleStep({
                     }`}
                   />
                   {validation_errors.end_error ? (
-                    <p className={ERROR_CLASS}>{get_error_message(validation_errors.end_error)}</p>
+                    <p className={ERROR_CLASS}>
+                      {get_error_message(validation_errors.end_error)}
+                    </p>
                   ) : null}
                 </div>
               </div>
@@ -312,7 +338,9 @@ export default function WorkingScheduleStep({
                 onClick={handle_save_item}
                 className={`${BUTTON_CLASS} rounded-xl bg-app-primary px-5 py-2 text-white hover:opacity-90 disabled:opacity-50`}
               >
-                {is_editing ? translations.btn_save_changes : translations.btn_add_working_day}
+                {is_editing
+                  ? translations.btn_save_changes
+                  : translations.btn_add_working_day}
               </button>
             </div>
           </div>

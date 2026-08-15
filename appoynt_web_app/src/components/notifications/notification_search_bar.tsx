@@ -7,7 +7,7 @@
  *   - react
  *   - lucide-react
  * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 05/08/2026]
+ * Last Modified Date: [shimaa salah - 15/08/2026]
  * File Description: Reusable search bar input component for filtering notifications with dynamic clear button and input length restriction.
  */
 import React from "react";
@@ -43,8 +43,11 @@ export default function NotificationSearchBar({
         <button
           type="button"
           onClick={() => {
-            if (onClear) onClear();
-            else onChange("");
+            if (onClear) {
+              onClear();
+            } else {
+              onChange("");
+            }
           }}
           aria-label="Clear search"
           className="absolute right-3 top-2.5 text-app-text-secondary hover:text-app-text-primary transition-colors focus:outline-none"

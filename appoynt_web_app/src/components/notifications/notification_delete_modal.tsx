@@ -7,7 +7,7 @@
  *   - react
  *   - @/context/language_context
  * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 05/08/2026]
+ * Last Modified Date: [shimaa salah - 15/08/2026]
  * File Description: Accessible confirmation modal for deleting notifications with keyboard event listener (Escape key) and localized action labels.
  */
 import React, { useEffect } from "react";
@@ -27,7 +27,9 @@ export default function NotificationDeleteModal({
   const { t } = useTranslation();
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {
+      return;
+    }
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -39,7 +41,9 @@ export default function NotificationDeleteModal({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
 
   return (
     <div

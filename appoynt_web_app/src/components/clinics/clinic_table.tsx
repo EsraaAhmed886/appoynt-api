@@ -9,7 +9,7 @@
  *   - @/context/language_context
  *   - @/types/clinic
  * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 13/08/2026]
+ * Last Modified Date: [shimaa salah - 15/08/2026]
  * File Description: Reusable localized table component displaying clinic list rows with delete action.
  */
 
@@ -31,7 +31,9 @@ export default function ClinicTable({
   const { translations } = useTranslation();
 
   const get_translated_days_string = (raw_days?: string) => {
-    if (!raw_days || "—" === raw_days) return "—";
+    if (!raw_days || "—" === raw_days) {
+      return "—";
+    }
     const days_array = raw_days.split(",").map((d) => d.trim());
     const translated = days_array.map((day_code) => {
       const key = `day_${day_code.toLowerCase()}` as keyof typeof translations;
@@ -73,8 +75,7 @@ export default function ClinicTable({
           {clinics.map((clinic) => {
             const fee_value =
               clinic.consultation_fee || clinic.consultationFee || "—";
-            const days_value =
-              clinic.working_days || clinic.workingDays || "—";
+            const days_value = clinic.working_days || clinic.workingDays || "—";
             const is_active = "Active" === clinic.status;
 
             return (

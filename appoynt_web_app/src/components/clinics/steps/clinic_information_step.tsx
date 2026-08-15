@@ -10,7 +10,7 @@
  *   - @/components/clinics/clinic_form_constants
  *   - @/lib/validators/clinic_validator
  * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 13/08/2026]
+ * Last Modified Date: [shimaa salah - 15/08/2026]
  * File Description: Step 1 form view with real-time inline validation for clinic name, phone, governorate, city, address, fee, and status.
  */
 
@@ -119,7 +119,9 @@ export default function ClinicInformationStep({
   } = actions;
 
   const get_error_message = (error_key: string): string => {
-    if (!error_key) return "";
+    if (!error_key) {
+      return "";
+    }
     const translated = translations[error_key as keyof typeof translations];
     return translated || error_key;
   };
@@ -260,7 +262,8 @@ export default function ClinicInformationStep({
       {/* Consultation Fee */}
       <div className="flex flex-col">
         <label className={LABEL_CLASS}>
-          {translations.lbl_consultation_fee} <span className="text-red-500">*</span>
+          {translations.lbl_consultation_fee}{" "}
+          <span className="text-red-500">*</span>
         </label>
 
         <div className="flex w-full">
@@ -293,7 +296,9 @@ export default function ClinicInformationStep({
           </div>
         </div>
         {has_fee_error ? (
-          <p className={ERROR_CLASS}>{get_error_message(consultationFeeError)}</p>
+          <p className={ERROR_CLASS}>
+            {get_error_message(consultationFeeError)}
+          </p>
         ) : null}
       </div>
 

@@ -10,7 +10,7 @@
  *   - @/lib/validators
  *   - @/context/language_context
  * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 05/08/2026]
+ * Last Modified Date: [shimaa salah - 15/08/2026]
  * File Description: Side drawer component for displaying detailed notification metadata, patient details, status indicators, and validated internal target URLs.
  */
 import React from "react";
@@ -36,7 +36,7 @@ export default function NotificationDetailsDrawer({
   onClose,
 }: NotificationDetailsDrawerProps) {
   const { t } = useTranslation();
-  if (!notification) return null;
+  if (!notification){ return null;}
 
   const hasValidUrl = isSafeInternalUrl(notification.targetUrl);
 

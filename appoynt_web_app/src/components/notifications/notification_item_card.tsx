@@ -9,7 +9,7 @@
  *   - @/types/notification
  *   - ./notification_badge
  * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 05/08/2026]
+ * Last Modified Date: [shimaa salah - 15/08/2026]
  * File Description: Interactive notification item card component with unread indicator, selection handling, priority badge, and delete trigger.
  */
 import React from "react";
@@ -41,6 +41,8 @@ export default function NotificationItemCard({
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           onSelect(item);
+        } else {
+          // No action needed
         }
       }}
       aria-label={`Notification: ${item.title}`}
