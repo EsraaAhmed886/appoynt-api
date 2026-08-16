@@ -18,6 +18,8 @@ import { Inter, Cairo } from "next/font/google";
 import { LanguageProvider } from "@/context/language_context";
 // Importing client state store provider wrapper container
 import { StoreProvider } from "@/store/store_provider";
+// Importing custom AppThemeProvider context wrapper component function
+import AppThemeProvider from "@/components/theme_provider";
 // Importing global CSS layouts definitions file
 import "./globals.css";
 
@@ -70,8 +72,11 @@ export default function RootLayout({
         <StoreProvider>
           {/* Wrapping application pages layout inside Bilingual localization */}
           <LanguageProvider>
-            {/* Injecting current page child elements into layout container */}
-            {children}
+            {/* Wrapping application pages layout inside ThemeProvider */}
+            <AppThemeProvider>
+              {/* Injecting current page child elements into layout container */}
+              {children}
+            </AppThemeProvider>
           </LanguageProvider>
         </StoreProvider>
       </body>
