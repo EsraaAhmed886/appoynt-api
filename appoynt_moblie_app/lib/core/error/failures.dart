@@ -5,7 +5,7 @@
  * Version Information: V2.0.0
  * Dependencies: package:equatable/equatable.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 09/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Defines the comprehensive failure hierarchy used to represent
  *   every category of domain-level error across the application's clean architecture
  *   layers. Each subclass maps to a distinct localization key group so that no raw

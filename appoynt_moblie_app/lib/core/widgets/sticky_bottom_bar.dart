@@ -6,7 +6,7 @@
  * Dependencies: package:flutter/material.dart,
  *   package:appoynt_mobile_app/core/theme/colors/app_colors.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 25/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: A reusable sticky bottom bar wrapper containing action buttons with customizable borders and safety padding.
  */
 

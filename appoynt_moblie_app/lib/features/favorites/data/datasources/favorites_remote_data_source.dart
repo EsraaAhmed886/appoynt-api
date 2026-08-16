@@ -5,7 +5,7 @@
  * Version Information: V1.0.0
  * Dependencies: favorited_doctor.dart, favorited_offer.dart, favorited_clinic.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 14/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Remote data source contract and mock API implementation
  *   serving paginated favorites data and backend removal endpoints.
  */

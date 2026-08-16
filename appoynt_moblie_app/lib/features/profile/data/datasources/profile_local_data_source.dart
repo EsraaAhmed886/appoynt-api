@@ -6,7 +6,7 @@
  * Dependencies: package:shared_preferences/shared_preferences.dart,
  *   user_profile_model.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 13/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Local data source for caching the authenticated user's
  *   profile using SharedPreferences as a JSON string blob. V1.1.0 bumps the
  *   cache key version to invalidate stale entries missing has_profile_photo,

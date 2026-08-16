@@ -7,7 +7,7 @@
  *   package:appoynt_mobile_app/core/routing/route_export.dart,
  *   package:appoynt_mobile_app/features/profile/domain/entities/insurance_card.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 25/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Shared, zero-overflow InsuranceCard and NoInsuranceCard widget components matching global app design system specifications.
  */
 
@@ -37,8 +37,6 @@ class InsuranceCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     // Resolve theme brightness modes status
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
-    // Resolve localized strings
-    final AppLocalizations localizations = AppLocalizations.of(context);
 
     if (true == isGradientStyle) {
       // ── Premium Digital Gradient Insurance Card ─────────────────────
@@ -199,108 +197,127 @@ class InsuranceCardWidget extends StatelessWidget {
           ),
         ),
       );
-    }
-
-    // ── Standard White/Dark Surface List Insurance Card ───────────────
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(vertical: AppSpacing.space_s),
-      decoration: BoxDecoration(
-        color: is_dark ? AppColors.surface_dark : AppColors.white,
-        borderRadius: BorderRadius.circular(16.0),
-        border: Border.all(
-          color: is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
-          width: AppSpacing.border_width_thin,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: is_dark
-                ? AppColors.black.withValues(alpha: 0.25)
-                : AppColors.black.withValues(alpha: 0.04),
-            blurRadius: 8.0,
-            offset: const Offset(0.0, 2.0),
-          ),
-        ],
-      ),
-      child: Material(
-        color: AppColors.transparent,
-        child: InkWell(
+    } else {
+      // ── Standard White/Dark Surface List Insurance Card ───────────────
+      return Container(
+        width: double.infinity,
+        margin: const EdgeInsets.symmetric(vertical: AppSpacing.space_s),
+        decoration: BoxDecoration(
+          color: is_dark ? AppColors.surface_dark : AppColors.white,
           borderRadius: BorderRadius.circular(16.0),
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.space_m),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                // Heart icon badge container
-                Container(
-                  width: 48.0,
-                  height: 48.0,
-                  decoration: BoxDecoration(
-                    color: AppColors.primary_color.withValues(alpha: 0.1),
-                    shape: BoxShape.circle,
+          border: Border.all(
+            color: is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
+            width: AppSpacing.border_width_thin,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: is_dark
+                  ? AppColors.black.withValues(alpha: 0.25)
+                  : AppColors.black.withValues(alpha: 0.04),
+              blurRadius: 8.0,
+              offset: const Offset(0.0, 2.0),
+            ),
+          ],
+        ),
+        child: Material(
+          color: AppColors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(16.0),
+            onTap: onTap,
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.space_m),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  // Heart icon badge container
+                  Container(
+                    width: 48.0,
+                    height: 48.0,
+                    decoration: BoxDecoration(
+                      color: AppColors.primary_color.withValues(alpha: 0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.favorite_rounded,
+                      color: AppColors.primary_color,
+                      size: AppSpacing.icon_size_m,
+                    ),
                   ),
-                  child: const Icon(
-                    Icons.favorite_rounded,
-                    color: AppColors.primary_color,
+                  const SizedBox(width: AppSpacing.space_m),
+                  // Card details column wrapped in Expanded
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          card.card_name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: AppSpacing.font_size_body_medium,
+                            fontWeight: FontWeight.w700,
+                            color: is_dark
+                                ? AppColors.text_dark_primary
+                                : AppColors.text_light_primary,
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.space_xs),
+                        Text(
+                          card.provider_name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: AppSpacing.font_size_body_small,
+                            color: AppColors.text_light_secondary,
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.space_xs),
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Text(
+                              'Policy: ',
+                              style: TextStyle(
+                                fontSize: AppSpacing.font_size_caption,
+                                color: is_dark
+                                    ? AppColors.text_dark_secondary
+                                    : AppColors.text_light_secondary,
+                              ),
+                            ),
+                            const SizedBox(width: AppSpacing.space_xs),
+                            Expanded(
+                              child: Text(
+                                card.card_number,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: AppSpacing.font_size_caption,
+                                  fontWeight: FontWeight.w600,
+                                  color: is_dark
+                                      ? AppColors.text_dark_primary
+                                      : AppColors.text_light_primary,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Optional chevron / selection indicator
+                  const Icon(
+                    Icons.chevron_right_rounded,
+                    color: AppColors.text_light_secondary,
                     size: AppSpacing.icon_size_m,
                   ),
-                ),
-                const SizedBox(width: AppSpacing.space_m),
-                // Card details column wrapped in Expanded
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        card.card_name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: AppSpacing.font_size_body_medium,
-                          fontWeight: FontWeight.w700,
-                          color: is_dark
-                              ? AppColors.text_dark_primary
-                              : AppColors.text_light_primary,
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.space_xs),
-                      Text(
-                        card.provider_name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: AppSpacing.font_size_body_small,
-                          color: AppColors.text_light_secondary,
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.space_xs),
-                      Text(
-                        '${localizations.insurance_expiry_label} ${card.expiry_date}',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: AppSpacing.font_size_body_small,
-                          color: AppColors.text_light_secondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.space_s),
-                // Trailing chevron icon
-                Icon(
-                  Icons.chevron_right_rounded,
-                  color: is_dark ? AppColors.white60 : AppColors.primary_color,
-                  size: 24.0,
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    }
   }
 }
 

@@ -9,7 +9,7 @@
  *   package:appoynt_mobile_app/core/widgets/connectivity_wrapper.dart,
  *   package:appoynt_mobile_app/core/di/service_locator.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Entry point of the Appoynt mobile application,
  *   configuring themes and initial splash route.
  */

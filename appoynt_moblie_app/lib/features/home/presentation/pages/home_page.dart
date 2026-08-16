@@ -6,7 +6,7 @@
  * Dependencies: flutter/material.dart,
  *   package:appoynt_mobile_app/core/routing/route_export.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 17/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Defines the temporary dummy home screen and components.
  */
 
@@ -22,6 +22,8 @@ import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_c
 import 'package:appoynt_mobile_app/features/profile/presentation/pages/profile_page.dart';
 // Importing FavoritesPage widget screen definition
 import 'package:appoynt_mobile_app/features/favorites/presentation/pages/favorites_page.dart';
+// Importing NotificationsPage widget screen definition
+import 'package:appoynt_mobile_app/features/notifications/presentation/pages/notifications_page.dart';
 
 // Defining the HomePage stateful widget representation
 class HomePage extends StatefulWidget {
@@ -99,6 +101,8 @@ class _HomePageState extends State<HomePage> {
                   // Empty block
                 }
               });
+            } else {
+              // No action needed
             }
             // TODO: END OF DUMMY HOME ROUTING
           } else {
@@ -246,71 +250,80 @@ class _HomeTab extends StatelessWidget {
                 ),
               ),
               // Container containing the notification bell wrapper
-              Container(
-                // Bell box width constraint
-                width: AppSpacing.dummy_size_notification_bell,
-                // Bell box height constraint
-                height: AppSpacing.dummy_size_notification_bell,
-                // Layout border and backgrounds styling properties representation
-                decoration: BoxDecoration(
-                  // Dynamic background color matching surface theme
-                  color: is_dark
-                      ? AppColors.surface_dark
-                      : AppColors.background_light,
-                  // Circular rounded container shape configurations
-                  borderRadius: BorderRadius.circular(
-                    // Radius value using dummy constants token
-                    AppSpacing.radius_l,
-                  ),
-                  // Border lines border representations
-                  border: Border.all(
-                    // Border boundary outline color mappings
-                    color: is_dark
-                        ? AppColors.border_dark
-                        : AppColors.border_light,
-                    // Explicit border width definition
-                    width: AppSpacing.border_width_thin,
-                  ),
-                ),
-                // Stack overlaying alert indicators above icon
-                child: Stack(
-                  // Center stack items content alignments
-                  alignment: Alignment.center,
-                  // Stack child elements
-                  children: [
-                    // Notification bell icon widget representation
-                    Icon(
-                      // Bell icon token
-                      Icons.notifications_outlined,
-                      // Bell color matching header texts
-                      color: is_dark
-                          ? AppColors.text_dark_primary
-                          : AppColors.text_light_primary,
-                      // Icon display size bounds
-                      size: AppSpacing.dummy_size_icon_notification,
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => const NotificationsPage(),
                     ),
-                    // Positioned notification indicator dot representation
-                    Positioned(
-                      // Top offset position coordinate
-                      top: AppSpacing.dummy_notification_badge_offset,
-                      // Right offset position coordinate
-                      right: AppSpacing.dummy_notification_badge_offset,
-                      // Red alert circle container
-                      child: Container(
-                        // Dot width layout constraint
-                        width: AppSpacing.dummy_notification_badge_size,
-                        // Dot height layout constraint
-                        height: AppSpacing.dummy_notification_badge_size,
-                        // Dot shape configurations
-                        decoration: const BoxDecoration(
-                          // Red accent color matching error notifications
-                          color: AppColors.error,
-                          // Round circle shape
-                          shape: BoxShape.circle,
+                  );
+                },
+                child: Container(
+                  // Bell box width constraint
+                  width: AppSpacing.dummy_size_notification_bell,
+                  // Bell box height constraint
+                  height: AppSpacing.dummy_size_notification_bell,
+                  // Layout border and backgrounds styling properties representation
+                  decoration: BoxDecoration(
+                    // Dynamic background color matching surface theme
+                    color: is_dark
+                        ? AppColors.surface_dark
+                        : AppColors.background_light,
+                    // Circular rounded container shape configurations
+                    borderRadius: BorderRadius.circular(
+                      // Radius value using dummy constants token
+                      AppSpacing.radius_l,
+                    ),
+                    // Border lines border representations
+                    border: Border.all(
+                      // Border boundary outline color mappings
+                      color: is_dark
+                          ? AppColors.border_dark
+                          : AppColors.border_light,
+                      // Explicit border width definition
+                      width: AppSpacing.border_width_thin,
+                    ),
+                  ),
+                  // Stack overlaying alert indicators above icon
+                  child: Stack(
+                    // Center stack items content alignments
+                    alignment: Alignment.center,
+                    // Stack child elements
+                    children: [
+                      // Notification bell icon widget representation
+                      Icon(
+                        // Bell icon token
+                        Icons.notifications_outlined,
+                        // Bell color matching header texts
+                        color: is_dark
+                            ? AppColors.text_dark_primary
+                            : AppColors.text_light_primary,
+                        // Icon display size bounds
+                        size: AppSpacing.dummy_size_icon_notification,
+                      ),
+                      // Positioned notification indicator dot representation
+                      Positioned(
+                        // Top offset position coordinate
+                        top: AppSpacing.dummy_notification_badge_offset,
+                        // Right offset position coordinate
+                        right: AppSpacing.dummy_notification_badge_offset,
+                        // Red alert circle container
+                        child: Container(
+                          // Dot width layout constraint
+                          width: AppSpacing.dummy_notification_badge_size,
+                          // Dot height layout constraint
+                          height: AppSpacing.dummy_notification_badge_size,
+                          // Dot shape configurations
+                          decoration: const BoxDecoration(
+                            // Red accent color matching error notifications
+                            color: AppColors.error,
+                            // Round circle shape
+                            shape: BoxShape.circle,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -362,6 +375,8 @@ class _HomeTab extends StatelessWidget {
                     // Empty block
                   }
                 });
+              } else {
+                // No action needed
               }
               // TODO: END OF DUMMY HOME ROUTING
             },

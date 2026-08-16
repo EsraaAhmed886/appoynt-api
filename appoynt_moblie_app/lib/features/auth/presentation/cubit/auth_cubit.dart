@@ -6,7 +6,7 @@
  * Dependencies: package:equatable/equatable.dart, package:flutter_bloc/flutter_bloc.dart,
  *   login_usecase.dart, register_usecase.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 23/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Manages the authentication states and business logic for the application.
  */
 
@@ -170,7 +170,7 @@ class AuthCubit extends Cubit<AuthState> {
       emit(const AuthError('Verification challenge context lost.'));
       return;
     } else {
-      // Proceed
+      // No action needed
     }
 
     final result = await _verify_otp_usecase(
@@ -196,7 +196,7 @@ class AuthCubit extends Cubit<AuthState> {
       emit(const AuthError('Verification challenge context lost.'));
       return;
     } else {
-      // Proceed
+      // No action needed
     }
 
     final result = await _resend_otp_usecase(
@@ -227,10 +227,12 @@ class AuthCubit extends Cubit<AuthState> {
     if (activeIdentifier.isEmpty || activeToken.isEmpty) {
       if (!isClosed) {
         emit(const AuthError('Reset token or identifier context lost.'));
+      } else {
+        // No action needed
       }
       return;
     } else {
-      // Proceed
+      // No action needed
     }
 
     try {
@@ -254,11 +256,15 @@ class AuthCubit extends Cubit<AuthState> {
             emit(ResetPasswordSuccess());
           },
         );
+      } else {
+        // No action needed
       }
     } catch (e) {
       if (!isClosed) {
         emit(const AuthError(
             'An unexpected error occurred during password reset'));
+      } else {
+        // No action needed
       }
     }
   }

@@ -9,7 +9,7 @@
  *   - get_user_profile_usecase.dart
  *   - service_locator.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 10/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Cubit responsible for managing the initialization logic of
  *   the splash screen. After the splash delay, triggers a fire-and-forget
  *   background profile preload so SharedPreferences cache is populated before

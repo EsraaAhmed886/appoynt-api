@@ -5,7 +5,7 @@
  * Version Information: V1.0.0
  * Dependencies: package:flutter/material.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 17/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Defines the abstract contract for application-wide custom localizations.
  */
 
@@ -1190,6 +1190,46 @@ abstract class AppLocalizations {
   String get favorites_expires_on;
   String get favorites_off_badge;
   String favorites_reviews_count(int count);
+
+  // ── Notifications Feature Strings ─────────────────────────
+  String get notifications_page_title;
+  String get notifications_mark_all_read;
+  String get notifications_section_today;
+  String get notifications_section_yesterday;
+  String get notifications_section_earlier;
+  String get notifications_empty_title;
+  String get notifications_empty_subtitle;
+  String get notifications_empty_cta;
+  String get notifications_error_title;
+  String get notifications_error_subtitle;
+  String get notifications_retry_btn;
+  String get notifications_unavailable_entity;
+  String get notifications_marked_all_read_success;
+
+  // Filter Chips Strings
+  String get notifications_filter_all;
+  String get notifications_filter_unread;
+  String get notifications_filter_appointments;
+  String get notifications_filter_payments;
+  String get notifications_filter_prescriptions;
+
+  // Notification Details Screen Strings
+  String get notification_details_title;
+  String get notification_details_section_info;
+  String get notification_details_date;
+  String get notification_details_time;
+  String get notification_details_doctor;
+  String get notification_details_location;
+  String get notification_details_specialty;
+  String get notification_details_amount;
+  String get notification_details_transaction_id;
+  String get notification_details_status;
+  String get notification_details_status_completed;
+  String get notification_details_status_failed;
+  String get notification_details_view_appointment;
+  String get notification_details_view_prescription;
+  String get notification_details_add_to_calendar;
+  String get notification_details_calendar_added;
 }
 
 // Defining a short alias for clean and simple type references

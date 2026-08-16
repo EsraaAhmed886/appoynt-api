@@ -8,7 +8,7 @@
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Defines the upload form screen to attach new health insurance policy cards.
  */
 
@@ -268,6 +268,8 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
         // Pop addition form screen layout returning back to list screen
         Navigator.of(context).pop();
       }
+    } else {
+      // Form entries are invalid
     }
   }
 

@@ -5,7 +5,7 @@
  * Version Information: V1.0.0
  * Dependencies: None
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 19/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Defines centralized dimension, spacing, border radius, and animation constants.
  */
 
@@ -150,6 +150,9 @@ class AppSpacing {
 
   // Typographic font size for small body text content
   static const double font_size_body_small = 12.0;
+
+  // Typographic font size for caption metadata and timestamps
+  static const double font_size_caption = 11.0;
 
   // Typographic font size for standard dialog/bottom sheet titles
   static const double font_size_dialog_title = 18.0;

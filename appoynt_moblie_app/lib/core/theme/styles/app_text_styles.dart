@@ -6,7 +6,7 @@
  * Dependencies: package:google_fonts/google_fonts.dart,
  *   package:appoynt_mobile_app/core/routing/route_export.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Typographic directory holding all text style definitions.
  */
 

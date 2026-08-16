@@ -8,7 +8,7 @@
  *   package:appoynt_mobile_app/constants/app_spacing.dart,
  *   package:appoynt_mobile_app/core/theme/colors/app_colors.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 14/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Centered empty state layout displaying a pure Flutter code-rendered
  *   concentric illustration and localized title and subtitle for tab-specific and search empty states.
  */

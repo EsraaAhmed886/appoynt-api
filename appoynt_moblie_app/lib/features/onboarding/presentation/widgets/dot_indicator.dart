@@ -6,7 +6,7 @@
  * Dependencies:
  *   - package:appoynt_mobile_app/core/routing/route_export.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/06/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: A theme-aware widget representing a page indicator dot in a slide sequence.
  */
 

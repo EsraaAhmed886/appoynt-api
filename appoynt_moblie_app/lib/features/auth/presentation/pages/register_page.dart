@@ -10,7 +10,7 @@
  *   package:flutter/gestures.dart,
  *   package:flutter_bloc/flutter_bloc.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 23/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Renders the registration page containing the form fields, terms check box,
  *   and validations adapting fully to light/dark themes and localizations.
  */

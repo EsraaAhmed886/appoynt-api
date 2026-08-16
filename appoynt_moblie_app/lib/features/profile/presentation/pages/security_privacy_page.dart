@@ -9,7 +9,7 @@
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 23/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Completely refactored Security & Privacy screen with categorized cards, M3 styled settings, auto-lock timeouts, active sessions, and Danger Zone.
  */
 
@@ -244,12 +244,12 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
           child: rowContent,
         ),
       );
+    } else {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: _LocalDimensions.padding_vertical, horizontal: _LocalDimensions.padding_horizontal),
+        child: rowContent,
+      );
     }
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: _LocalDimensions.padding_vertical, horizontal: _LocalDimensions.padding_horizontal),
-      child: rowContent,
-    );
   }
 
   @override
@@ -418,6 +418,8 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                                 setState(() {
                                   _auto_lock_timeout = val;
                                 });
+                              } else {
+                                // No change
                               }
                             },
                           ),
@@ -471,6 +473,8 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                                 setState(() {
                                   _doctor_access = val;
                                 });
+                              } else {
+                                // No change
                               }
                             },
                           ),

@@ -6,7 +6,7 @@
  * Dependencies: package:flutter/material.dart,
  *   package:appoynt_mobile_app/core/routing/route_export.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Dedicated full-screen sub-page layout to register and add a new family dependent profile.
  */
 
@@ -146,6 +146,8 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                     backgroundColor: AppColors.primary_color,
                   ),
                 );
+              } else {
+                // Form validation failed
               }
             },
             // Button style properties
@@ -320,14 +322,13 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                             if (null == val || val.trim().isEmpty) {
                               // Validation error
                               return localizations.add_member_name_empty_error;
-                            }
-                            // Check characters size
-                            if (val.trim().length < 3) {
+                            } else if (val.trim().length < 3) {
                               // Too short error message
                               return localizations.add_member_name_short_error;
+                            } else {
+                              // Return null if valid
+                              return null;
                             }
-                            // Return null if valid
-                            return null;
                           },
                         ),
                         // Spacing gap height
@@ -576,6 +577,8 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                                       // Set controller text value
                                       _dob_controller.text = formatted;
                                     });
+                                  } else {
+                                    // Date picker cancelled
                                   }
                                 },
                                 // Validation logic
@@ -584,9 +587,10 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
                                   if (null == val || val.trim().isEmpty) {
                                     // Validation error
                                     return localizations.add_member_required_error;
+                                  } else {
+                                    // Return null if valid
+                                    return null;
                                   }
-                                  // Return null if valid
-                                  return null;
                                 },
                               ),
                             ],

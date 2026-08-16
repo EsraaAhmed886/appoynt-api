@@ -7,7 +7,7 @@
  *   app_colors.dart, app_localizations.dart, app_network_image.dart,
  *   favorited_clinic.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 14/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Defines a reusable, highly polished Clinic Card component
  *   displaying clinic name, specialties, address, star rating, phone, removal loading
  *   guard, and inactive CTA guard.

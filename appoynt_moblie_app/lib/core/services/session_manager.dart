@@ -6,7 +6,7 @@
  * Dependencies: package:flutter/material.dart, package:get_it/get_it.dart,
  *   token_storage.dart, auth_cubit.dart, routes.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 10/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Singleton service that owns the global NavigatorKey and
  *   orchestrates the full HTTP 401 session-expiry flow: token purge, AuthCubit
  *   state reset, navigation to LoginPage, and user-facing SnackBar feedback.

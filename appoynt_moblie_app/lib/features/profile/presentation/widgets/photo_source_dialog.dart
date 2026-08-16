@@ -8,7 +8,7 @@
  *   package:appoynt_mobile_app/core/theme/colors/app_colors.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 13/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Modernized centered pop-up dialog with side-by-side action cards
  *   for selecting photo source (Camera vs Gallery) matching dark theme design standards.
  *   V1.2.0 fixes card text truncation with soft wrapping and 8px horizontal padding.

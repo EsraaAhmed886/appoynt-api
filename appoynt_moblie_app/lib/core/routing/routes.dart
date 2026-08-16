@@ -5,7 +5,7 @@
  * Version Information: V1.0.0
  * Dependencies: none
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 09/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Defines the static route name constants for the application.
  */
 
@@ -17,4 +17,5 @@ class Routes {
   static const String splash = '/';
   static const String login = '/login';
   static const String home = '/home';
+  static const String notifications = '/notifications';
 }

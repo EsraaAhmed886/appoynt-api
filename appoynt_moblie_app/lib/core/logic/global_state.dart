@@ -5,7 +5,7 @@
  * Version Information: V1.0.0
  * Dependencies: package:equatable/equatable.dart, package:flutter/material.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Defines the configuration states for global settings,
  *   such as current locale (language).
  */
