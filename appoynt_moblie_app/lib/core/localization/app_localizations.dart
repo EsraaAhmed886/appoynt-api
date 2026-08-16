@@ -1275,6 +1275,10 @@ abstract class AppLocalizations {
   String get release_slot_hold_msg;
   String get stay_action;
   String get leave_and_release_action;
+  String get view_on_map;
+  String get reservation_expired;
+  String get reservation_expired_msg;
+  String get select_new_slot;
 }
 
 // Defining a short alias for clean and simple type references

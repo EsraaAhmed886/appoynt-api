@@ -2,9 +2,9 @@
  * File Name: choose_slots_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 17/08/2026
- * Version Information: V1.1.0
+ * Version Information: V2.0.0
  * Dependencies: package:flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
- *   service_locator.dart, app_colors.dart, app_spacing.dart,
+ *   service_locator.dart, app_colors.dart, app_spacing.dart, custom_profile_app_bar.dart,
  *   slot_booking_cubit.dart, slot_booking_state.dart, clinic_context_selector_card.dart,
  *   change_clinic_bottom_sheet.dart, horizontal_calendar_date_strip.dart,
  *   time_of_day_filter_chips.dart, doctor_slot_grid.dart, active_hold_countdown_banner.dart,
@@ -13,8 +13,8 @@
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 17/08/2026]
  * File Description: Comprehensive Doctor Multi-Clinic & Time Slot Booking screen featuring
- *   branch switching, 14-day date strip, TTL countdown ticker, responsive 3-column slot grid,
- *   and PopScope-guarded hold release workflows.
+ *   generous 68px toolbar with AppBackButton, doctor verification badge, equal-width segmented
+ *   filters, docked hold indicator, and animated hold expiration dialogs.
  */
 
 // Import Flutter and BLoC frameworks
@@ -24,6 +24,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:appoynt_mobile_app/core/di/service_locator.dart';
 import 'package:appoynt_mobile_app/constants/app_spacing.dart';
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
+import 'package:appoynt_mobile_app/core/widgets/custom_profile_app_bar.dart';
 // Import Cubit and State
 import 'package:appoynt_mobile_app/features/booking/presentation/cubit/slot_booking_cubit.dart';
 import 'package:appoynt_mobile_app/features/booking/presentation/cubit/slot_booking_state.dart';
@@ -82,6 +83,93 @@ class _ChooseSlotsView extends StatelessWidget {
     required this.args,
   });
 
+  void _show_expired_hold_modal(BuildContext context, SlotBookingCubit cubit) {
+    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+
+    showModalBottomSheet(
+      context: context,
+      isDismissible: true,
+      backgroundColor: AppColors.transparent,
+      builder: (modal_context) {
+        return Container(
+          padding: const EdgeInsets.all(AppSpacing.space_xxl),
+          decoration: BoxDecoration(
+            color: is_dark ? AppColors.surface_dark : AppColors.white,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(AppSpacing.radius_xxl),
+              topRight: Radius.circular(AppSpacing.radius_xxl),
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 64.0,
+                height: 64.0,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFD97706).withValues(alpha: 0.15),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.alarm_off_rounded,
+                  color: Color(0xFFD97706),
+                  size: 32.0,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.space_l),
+              Text(
+                'Reservation Expired',
+                style: TextStyle(
+                  fontSize: AppSpacing.font_size_title_medium,
+                  fontWeight: FontWeight.w800,
+                  color: is_dark
+                      ? AppColors.text_dark_primary
+                      : AppColors.text_light_primary,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.space_s),
+              Text(
+                "Your temporary slot hold has expired. We've refreshed the schedule for you.",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: AppSpacing.font_size_body_small,
+                  height: 1.4,
+                  color: is_dark
+                      ? AppColors.text_dark_secondary
+                      : AppColors.text_light_secondary,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.space_xl),
+              SizedBox(
+                width: double.infinity,
+                height: 50.0,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(modal_context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary_color,
+                    foregroundColor: AppColors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14.0),
+                    ),
+                  ),
+                  child: const Text(
+                    'Select New Slot',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 15.0,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
@@ -90,13 +178,17 @@ class _ChooseSlotsView extends StatelessWidget {
     return BlocConsumer<SlotBookingCubit, SlotBookingState>(
       listener: (context, state) {
         if (state is SlotBookingLoaded && state.feedback_message != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.feedback_message!),
-              backgroundColor: AppColors.amber,
-              duration: const Duration(seconds: 3),
-            ),
-          );
+          if (state.feedback_message!.contains('expired')) {
+            _show_expired_hold_modal(context, cubit);
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.feedback_message!),
+                backgroundColor: AppColors.amber,
+                duration: const Duration(seconds: 3),
+              ),
+            );
+          }
         }
       },
       builder: (context, state) {
@@ -124,31 +216,31 @@ class _ChooseSlotsView extends StatelessWidget {
                   ? AppColors.surface_dark
                   : AppColors.background_light,
               elevation: 0.5,
+              toolbarHeight: 68.0,
               centerTitle: true,
-              leading: IconButton(
-                icon: Icon(
-                  Icons.arrow_back_ios_new_rounded,
-                  size: 20.0,
-                  color: is_dark
-                      ? AppColors.text_dark_primary
-                      : AppColors.text_light_primary,
-                ),
-                onPressed: () async {
-                  if (has_active_hold) {
-                    final bool should_leave =
-                        await HoldReleaseConfirmationDialog.show(context);
-                    if (should_leave && context.mounted) {
-                      await cubit.releaseActiveHold();
-                      if (context.mounted) {
-                        Navigator.of(context).pop();
+              leading: Padding(
+                padding: const EdgeInsets.only(left: 14.0),
+                child: Center(
+                  child: AppBackButton(
+                    onTap: () async {
+                      if (has_active_hold) {
+                        final bool should_leave =
+                            await HoldReleaseConfirmationDialog.show(context);
+                        if (should_leave && context.mounted) {
+                          await cubit.releaseActiveHold();
+                          if (context.mounted) {
+                            Navigator.of(context).pop();
+                          }
+                        }
+                      } else {
+                        Navigator.of(context).maybePop();
                       }
-                    }
-                  } else {
-                    Navigator.of(context).maybePop();
-                  }
-                },
+                    },
+                  ),
+                ),
               ),
               title: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     'Select Appointment Slot',
@@ -160,18 +252,34 @@ class _ChooseSlotsView extends StatelessWidget {
                           : AppColors.text_light_primary,
                     ),
                   ),
-                  Text(
-                    args.doctor_name,
-                    style: const TextStyle(
-                      fontSize: AppSpacing.font_size_caption,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.primary_color,
-                    ),
+                  const SizedBox(height: 2.0),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.verified_rounded,
+                        size: 14.0,
+                        color: AppColors.primary_color,
+                      ),
+                      const SizedBox(width: 4.0),
+                      Text(
+                        args.doctor_name,
+                        style: const TextStyle(
+                          fontSize: 14.5,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.primary_color,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
-            body: _build_body(context, state, cubit, is_dark),
+            body: SafeArea(
+              top: false,
+              bottom: false,
+              child: _build_body(context, state, cubit, is_dark),
+            ),
           ),
         );
       },
@@ -296,7 +404,9 @@ class _ChooseSlotsView extends StatelessWidget {
                     clinic: state.selected_clinic,
                     on_date_selected: (date) => cubit.selectDate(date),
                   ),
-                  const SizedBox(height: AppSpacing.space_l),
+
+                  // Enhanced 20px rhythm spacing between Date Strip and Slots Title
+                  const SizedBox(height: 20.0),
 
                   // 3. Time Slots Header & Filter Chips
                   Padding(
@@ -328,11 +438,15 @@ class _ChooseSlotsView extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.space_m),
+                  const SizedBox(height: AppSpacing.space_m + 2.0),
                   TimeOfDayFilterChips(
                     active_filter: state.active_filter,
                     on_filter_changed: (filter) => cubit.setFilter(filter),
                   ),
+
+                  // Enhanced 16px rhythm spacing between Filter Bar and Slots Grid
+                  const SizedBox(height: 16.0),
+
                   // 4. Responsive Slots Grid or Empty State
                   if (state.filtered_slots.isNotEmpty)
                     DoctorSlotGrid(
@@ -372,6 +486,7 @@ class _ChooseSlotsView extends StatelessWidget {
                   ),
                 StickySlotBookingBottomBar(
                   clinic: state.selected_clinic,
+                  selected_date: state.selected_date,
                   selected_slot: state.selected_slot,
                   has_active_hold: state.has_active_hold,
                   on_continue_pressed: () {

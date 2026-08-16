@@ -2528,6 +2528,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get stay_action => 'البقاء';
   @override
   String get leave_and_release_action => 'الخروج والإلغاء';
+  @override
+  String get view_on_map => 'الموقع';
+  @override
+  String get reservation_expired => 'انتهت مهلة الحجز المؤقت';
+  @override
+  String get reservation_expired_msg =>
+      'انتهت مهلة حجز الموعد المؤقت. قمنا بتحديث المواعيد المتاحة لك.';
+  @override
+  String get select_new_slot => 'اختيار موعد جديد';
 }
 
 

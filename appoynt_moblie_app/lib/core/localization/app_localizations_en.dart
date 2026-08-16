@@ -2482,6 +2482,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get stay_action => 'Stay';
   @override
   String get leave_and_release_action => 'Leave & Release';
+  @override
+  String get view_on_map => 'View on Map';
+  @override
+  String get reservation_expired => 'Reservation Expired';
+  @override
+  String get reservation_expired_msg =>
+      "Your temporary slot hold has expired. We've refreshed the schedule for you.";
+  @override
+  String get select_new_slot => 'Select New Slot';
 }
 
 

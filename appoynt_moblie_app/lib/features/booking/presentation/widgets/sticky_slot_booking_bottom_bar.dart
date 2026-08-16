@@ -2,12 +2,12 @@
  * File Name: sticky_slot_booking_bottom_bar.dart
  * Author: Kholoud Khaled
  * Date of Creation: 17/08/2026
- * Version Information: V1.0.0
+ * Version Information: V2.0.0
  * Dependencies: package:flutter/material.dart, app_colors.dart, app_spacing.dart,
  *   doctor_slot_entity.dart, clinic_location_entity.dart
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 17/08/2026]
- * File Description: Sticky bottom confirmation bar displaying the active slot summary,
+ * File Description: Sticky bottom confirmation bar displaying formatted date & time summary,
  *   consultation fee, and Continue button guarded by active hold validation.
  */
 
@@ -23,6 +23,8 @@ import 'package:appoynt_mobile_app/features/booking/domain/entities/doctor_slot_
 class StickySlotBookingBottomBar extends StatelessWidget {
   // Active clinic location
   final ClinicLocationEntity clinic;
+  // Currently selected date
+  final DateTime selected_date;
   // Selected slot entity
   final DoctorSlotEntity? selected_slot;
   // Whether an active hold is confirmed
@@ -34,10 +36,30 @@ class StickySlotBookingBottomBar extends StatelessWidget {
   const StickySlotBookingBottomBar({
     super.key,
     required this.clinic,
+    required this.selected_date,
     required this.selected_slot,
     required this.has_active_hold,
     required this.on_continue_pressed,
   });
+
+  static const List<String> _month_names = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+
+  String _format_date(DateTime date) {
+    return "${date.day} ${_month_names[date.month - 1]}";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +68,7 @@ class StickySlotBookingBottomBar extends StatelessWidget {
     return Container(
       padding: EdgeInsets.fromLTRB(
         AppSpacing.space_xl,
-        AppSpacing.space_m,
+        AppSpacing.space_m + 2.0,
         AppSpacing.space_xl,
         MediaQuery.of(context).padding.bottom + AppSpacing.space_m,
       ),
@@ -74,16 +96,19 @@ class StickySlotBookingBottomBar extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                // Date & Time Summary
                 Row(
                   children: [
-                    const Icon(
-                      Icons.schedule_rounded,
-                      size: 16.0,
-                      color: AppColors.primary_color,
+                    Icon(
+                      Icons.calendar_today_rounded,
+                      size: 15.0,
+                      color: is_dark
+                          ? AppColors.text_dark_secondary
+                          : AppColors.text_light_secondary,
                     ),
-                    const SizedBox(width: 6.0),
+                    const SizedBox(width: 4.0),
                     Text(
-                      selected_slot!.start_time,
+                      _format_date(selected_date),
                       style: TextStyle(
                         fontSize: AppSpacing.font_size_body_medium,
                         fontWeight: FontWeight.w700,
@@ -92,19 +117,47 @@ class StickySlotBookingBottomBar extends StatelessWidget {
                             : AppColors.text_light_primary,
                       ),
                     ),
+                    const SizedBox(width: 6.0),
+                    Text(
+                      '•',
+                      style: TextStyle(
+                        fontSize: AppSpacing.font_size_body_medium,
+                        fontWeight: FontWeight.w800,
+                        color: is_dark
+                            ? AppColors.text_dark_secondary
+                            : AppColors.text_light_secondary,
+                      ),
+                    ),
+                    const SizedBox(width: 6.0),
+                    const Icon(
+                      Icons.schedule_rounded,
+                      size: 15.0,
+                      color: AppColors.primary_color,
+                    ),
+                    const SizedBox(width: 4.0),
+                    Text(
+                      selected_slot!.start_time,
+                      style: const TextStyle(
+                        fontSize: AppSpacing.font_size_body_medium,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.primary_color,
+                      ),
+                    ),
                   ],
                 ),
+
+                // Fee Display
                 Text(
                   "${clinic.consultation_fee.toStringAsFixed(0)} ${clinic.currency}",
                   style: const TextStyle(
-                    fontSize: AppSpacing.font_size_body_medium,
+                    fontSize: AppSpacing.font_size_title_medium,
                     fontWeight: FontWeight.w800,
                     color: AppColors.primary_color,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacing.space_m),
+            const SizedBox(height: AppSpacing.space_m + 2.0),
           ],
 
           // Full Width Continue CTA
