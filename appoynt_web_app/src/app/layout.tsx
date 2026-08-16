@@ -6,7 +6,7 @@
  * Dependencies: next, next/font/google, ./globals.css,
  *   @/context/language_context, @/store/store_provider
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [shimaa salah - 16/08/2026]
  * File Description: Defines the master Root Layout configuration for the Web application.
  */
 
