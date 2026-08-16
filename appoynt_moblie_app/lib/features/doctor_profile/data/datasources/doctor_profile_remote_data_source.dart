@@ -2,13 +2,13 @@
  * File Name: doctor_profile_remote_data_source.dart
  * Author: Kholoud Khaled
  * Date of Creation: 16/08/2026
- * Version Information: V1.2.0
+ * Version Information: V1.3.0
  * Dependencies: package:dio/dio.dart, doctor_profile_model.dart, doctor_profile_entity.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 17/08/2026]
  * File Description: Remote data source handling HTTP requests for doctor profile
  *   details, booking availability slots, and favorite toggles with a rich multi-doctor
- *   mock dataset supporting dynamic doctor ID routing.
+ *   mock dataset featuring stable, high-availability public MP4 video streams.
  */
 
 // Import Dio networking library
@@ -243,6 +243,14 @@ class DoctorProfileRemoteDataSourceImpl
           ),
           DoctorMediaModel(
             id: 'med_d_2',
+            type: DoctorMediaType.video,
+            url:
+                'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+            thumbnail_url:
+                'https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&q=80&w=400',
+          ),
+          DoctorMediaModel(
+            id: 'med_d_3',
             type: DoctorMediaType.image,
             url:
                 'https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&q=80&w=800',
@@ -362,6 +370,14 @@ class DoctorProfileRemoteDataSourceImpl
           ),
           DoctorMediaModel(
             id: 'med_p_2',
+            type: DoctorMediaType.video,
+            url:
+                'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
+            thumbnail_url:
+                'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&q=80&w=400',
+          ),
+          DoctorMediaModel(
+            id: 'med_p_3',
             type: DoctorMediaType.image,
             url:
                 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&q=80&w=800',
@@ -481,6 +497,14 @@ class DoctorProfileRemoteDataSourceImpl
           ),
           DoctorMediaModel(
             id: 'med_o_2',
+            type: DoctorMediaType.video,
+            url:
+                'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+            thumbnail_url:
+                'https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&q=80&w=400',
+          ),
+          DoctorMediaModel(
+            id: 'med_o_3',
             type: DoctorMediaType.image,
             url:
                 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&q=80&w=800',
@@ -623,7 +647,7 @@ class DoctorProfileRemoteDataSourceImpl
           id: 'med_203',
           type: DoctorMediaType.video,
           url:
-              'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+              'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
           thumbnail_url:
               'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=400',
         ),
