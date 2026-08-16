@@ -5,7 +5,7 @@
  * Version Information: V1.1.0
  * Dependencies: user_profile_model.dart, update_profile_request_model.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 13/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Defines the repository interface for profile operations in
  *   the domain layer. V1.1.0 adds the uploadProfilePhoto contract method that
  *   initiates the multipart file upload and returns the resolved image URL.

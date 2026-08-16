@@ -6,7 +6,7 @@
  * Dependencies: package:flutter/material.dart, app_spacing.dart,
  *   app_colors.dart, app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 15/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Error and offline fallback widget displaying a pure Flutter code
  *   illustration, localized error descriptions, and a Try Again retry action.
  */

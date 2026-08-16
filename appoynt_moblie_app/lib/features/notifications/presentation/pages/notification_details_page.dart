@@ -7,7 +7,7 @@
  *   app_colors.dart, app_localizations.dart, app_notification.dart,
  *   prescriptions_page.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 15/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Dedicated Notification Details screen displaying rich structured
  *   metadata, type illustration badge, and context-specific action CTAs.
  */
@@ -93,6 +93,12 @@ class NotificationDetailsPage extends StatelessWidget {
           icon: Icons.medication_outlined,
           color: AppColors.purple,
           bg_color: AppColors.purple.withValues(alpha: is_dark ? 0.20 : 0.12),
+        );
+      default:
+        return _DetailTheme(
+          icon: Icons.notifications_rounded,
+          color: AppColors.primary_color,
+          bg_color: AppColors.primary_color.withValues(alpha: is_dark ? 0.20 : 0.12),
         );
     }
   }

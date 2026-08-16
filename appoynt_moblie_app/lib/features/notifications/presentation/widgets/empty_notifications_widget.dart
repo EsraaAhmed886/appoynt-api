@@ -6,7 +6,7 @@
  * Dependencies: package:flutter/material.dart, app_spacing.dart,
  *   app_colors.dart, app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 15/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Centered empty state layout displaying a pure Flutter code-rendered
  *   concentric bell illustration, localized titles, and a Go to Home action button.
  */

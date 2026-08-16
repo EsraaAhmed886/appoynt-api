@@ -7,7 +7,7 @@
  *   auth_remote_datasource.dart, auth_repository_impl.dart, login_usecase.dart,
  *   register_usecase.dart, auth_cubit.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Initializes and manages the singleton instances of services,
  *   repositories, use cases, and cubits using the GetIt service locator.
  */

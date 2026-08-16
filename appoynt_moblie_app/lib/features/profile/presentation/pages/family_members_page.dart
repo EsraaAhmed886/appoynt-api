@@ -7,7 +7,7 @@
  *   package:appoynt_mobile_app/core/routing/route_export.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/pages/add_family_member_page.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Redesigned Family Members & Dependents page displaying vertical member cards with bottom primary CTA.
  */
 
@@ -140,6 +140,8 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
                   _family_members.removeAt(index);
                   if (_selected_family_index >= _family_members.length) {
                     _selected_family_index = 0;
+                  } else {
+                    // Index is valid
                   }
                 });
                 ScaffoldMessenger.of(context).showSnackBar(

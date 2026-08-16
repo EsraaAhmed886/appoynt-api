@@ -8,7 +8,7 @@
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 23/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Defines the upload form screen to attach new diagnostic lab reports or scanning files with modern cards and upload zones.
  */
 
@@ -143,6 +143,8 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
       setState(() {
         _date_controller.text = formatted;
       });
+    } else {
+      // Picker cancelled
     }
   }
 
@@ -196,6 +198,8 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
         // Pop upload form screen layout returning back to list screen
         Navigator.of(context).pop();
       }
+    } else {
+      // Form entries are invalid
     }
   }
 
@@ -540,8 +544,9 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
                               return localizations.add_test_validation_name_empty;
+                            } else {
+                              return null;
                             }
-                            return null;
                           },
                         ),
                         const SizedBox(height: _LocalDimensions.spacing_large),
@@ -564,8 +569,9 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
                               return localizations.add_test_validation_date_empty;
+                            } else {
+                              return null;
                             }
-                            return null;
                           },
                           on_tap: () {
                             _show_custom_date_picker(

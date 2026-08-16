@@ -9,7 +9,7 @@
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Redesigned Medical Allergies page with master switch, modular category cards, quick-add chips, and severity-coded tags.
  */
 
@@ -134,6 +134,8 @@ class _AllergiesPageState extends State<AllergiesPage> {
         list.add({'name': clean_tag, 'severity': 'Mild'});
       });
       controller.clear();
+    } else {
+      // Tag is empty or already in list
     }
   }
 
@@ -305,6 +307,8 @@ class _AllergiesPageState extends State<AllergiesPage> {
                               if (!is_added) {
                                 _add_allergy_chip(
                                     option, active_list, controller);
+                              } else {
+                                // Already added
                               }
                             },
                     ),

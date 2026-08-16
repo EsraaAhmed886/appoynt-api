@@ -6,7 +6,7 @@
  * Dependencies: package:flutter_bloc/flutter_bloc.dart,
  *   token_storage.dart, favorites_repository.dart, favorites_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 14/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Business logic controller for the Favorites feature managing
  *   tab navigation, auth guards, independent pagination, search filtering,
  *   sorting algorithms, and backend-confirmed favorite removal across Doctors,
@@ -93,6 +93,8 @@ class FavoritesCubit extends Cubit<FavoritesState> {
         return state.offers_status;
       case FavoriteCategory.clinics:
         return state.clinics_status;
+      default:
+        return state.doctors_status;
     }
   }
 
@@ -110,6 +112,8 @@ class FavoritesCubit extends Cubit<FavoritesState> {
           break;
         case FavoriteCategory.clinics:
           await _load_clinics(is_refresh: is_refresh);
+          break;
+        default:
           break;
       }
     }
@@ -252,6 +256,8 @@ class FavoritesCubit extends Cubit<FavoritesState> {
           break;
         case FavoriteCategory.clinics:
           await _load_more_clinics();
+          break;
+        default:
           break;
       }
     }
@@ -425,6 +431,8 @@ class FavoritesCubit extends Cubit<FavoritesState> {
             filtered_clinics: filtered,
           ));
           break;
+        default:
+          break;
       }
     });
   }
@@ -464,6 +472,8 @@ class FavoritesCubit extends Cubit<FavoritesState> {
           clinics_sort: sort_option,
           filtered_clinics: filtered,
         ));
+        break;
+      default:
         break;
     }
   }
@@ -547,6 +557,8 @@ class FavoritesCubit extends Cubit<FavoritesState> {
               // Discard emit
             }
             break;
+          default:
+            break;
         }
       } catch (e) {
         final Set<String> cleared = Set<String>.from(state.removing_ids)
@@ -619,6 +631,8 @@ class FavoritesCubit extends Cubit<FavoritesState> {
       case FavoriteSortOption.discount_high_low:
         sorted.sort((a, b) => b.rating.compareTo(a.rating));
         break;
+      default:
+        break;
     }
     return sorted;
   }
@@ -659,6 +673,8 @@ class FavoritesCubit extends Cubit<FavoritesState> {
         break;
       case FavoriteSortOption.price_high_low:
         sorted.sort((a, b) => b.discounted_price.compareTo(a.discounted_price));
+        break;
+      default:
         break;
     }
     return sorted;
@@ -701,6 +717,8 @@ class FavoritesCubit extends Cubit<FavoritesState> {
       case FavoriteSortOption.price_low_high:
       case FavoriteSortOption.price_high_low:
         sorted.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+        break;
+      default:
         break;
     }
     return sorted;

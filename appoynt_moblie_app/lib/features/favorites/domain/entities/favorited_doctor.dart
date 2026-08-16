@@ -5,7 +5,7 @@
  * Version Information: V1.1.0
  * Dependencies: package:equatable/equatable.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 14/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Domain entity model representing a favorited doctor record.
  *   V1.1.0 adds the is_active flag to support Phase 7 inactive doctor guards.
  */

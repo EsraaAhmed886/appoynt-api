@@ -5,7 +5,7 @@
  * Version Information: V1.0.0
  * Dependencies: app_notification.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 15/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Data transfer model for notifications with JSON serialization.
  */
 

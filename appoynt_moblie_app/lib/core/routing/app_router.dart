@@ -7,7 +7,7 @@
  *   forgot_password_page.dart, home_page.dart, global_cubit.dart, otp_page.dart,
  *   account_success_page.dart, reset_password_page.dart, password_success_page.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 09/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Main application router for generating page transitions from route settings.
  */
 
@@ -50,7 +50,7 @@ class AppRouter {
                     MaterialPageRoute(builder: (_) => const HomePage()),
                   );
                 } else {
-                  // Empty block to satisfy compiler
+                  // No action needed
                 }
               },
               on_go_to_register: () {
@@ -75,6 +75,8 @@ class AppRouter {
                                           ),
                                         ),
                                       );
+                                    } else {
+                                      // No action needed
                                     }
                                   },
                                   on_back: () {
@@ -86,6 +88,8 @@ class AppRouter {
                                 ),
                               ),
                             );
+                          } else {
+                            // No action needed
                           }
                         },
                         on_go_to_login: () {
@@ -98,7 +102,7 @@ class AppRouter {
                     ),
                   );
                 } else {
-                  // Empty block to satisfy compiler
+                  // No action needed
                 }
               },
               on_forgot_password: () {
@@ -143,11 +147,15 @@ class AppRouter {
                                                     ),
                                                   ),
                                                 );
+                                              } else {
+                                                // No action needed
                                               }
                                             },
                                           ),
                                         ),
                                       );
+                                    } else {
+                                      // No action needed
                                     }
                                   },
                                   on_back: () {
@@ -159,13 +167,15 @@ class AppRouter {
                                 ),
                               ),
                             );
+                          } else {
+                            // No action needed
                           }
                         },
                       ),
                     ),
                   );
                 } else {
-                  // Empty block to satisfy compiler
+                  // No action needed
                 }
               },
               on_toggle_language: () {

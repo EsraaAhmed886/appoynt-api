@@ -9,7 +9,7 @@
  *   doctor_favorite_tab.dart, offer_favorite_tab.dart, clinic_favorite_tab.dart,
  *   guest_favorites_widget.dart, favorite_sort_bottom_sheet.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 14/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Main Favorites Screen featuring 3 category tabs (Doctors,
  *   Offers, Clinics), guest session guard, debounced search bar, category-aware
  *   sorting modal, and tab-specific list rendering.
@@ -101,6 +101,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
         return localizations.favorites_sort_price_high_low;
       case FavoriteSortOption.discount_high_low:
         return localizations.favorites_sort_discount_high_low;
+      default:
+        return localizations.favorites_sort_recently_added;
     }
   }
 
@@ -116,6 +118,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
         return localizations.favorites_search_offers_hint;
       case FavoriteCategory.clinics:
         return localizations.favorites_search_clinics_hint;
+      default:
+        return localizations.favorites_search_doctors_hint;
     }
   }
 
@@ -136,6 +140,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
       case FavoriteCategory.clinics:
         final int count = state.filtered_clinics.length;
         return '$count ${localizations.favorites_tab_clinics}';
+      default:
+        return '';
     }
   }
 
@@ -148,6 +154,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
         return state.offers_sort;
       case FavoriteCategory.clinics:
         return state.clinics_sort;
+      default:
+        return state.doctors_sort;
     }
   }
 
@@ -306,6 +314,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
           return localizations.favorites_subtitle_offers;
         case FavoriteCategory.clinics:
           return localizations.favorites_subtitle_clinics;
+        default:
+          return localizations.favorites_subtitle_universal;
       }
     }
   }
@@ -551,6 +561,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
         return const OfferFavoriteTab();
       case FavoriteCategory.clinics:
         return const ClinicFavoriteTab();
+      default:
+        return const DoctorFavoriteTab();
     }
   }
 }

@@ -11,7 +11,7 @@
  *   package:appoynt_mobile_app/core/theme/modes/dark_mode.dart,
  *   package:appoynt_mobile_app/core/theme/modes/theme_mode.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 17/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Acts as a central global barrel file for the
  *   application's foundational UI layer.
  */

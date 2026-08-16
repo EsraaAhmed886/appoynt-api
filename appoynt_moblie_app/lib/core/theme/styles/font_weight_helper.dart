@@ -5,7 +5,7 @@
  * Version Information: V1.0.0
  * Dependencies: package:flutter/material.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Centralizes standard font weight constant mapping
  *   keys to ensure design system consistency.
  */

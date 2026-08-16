@@ -6,7 +6,7 @@
  * Dependencies: package:appoynt_mobile_app/features/profile/domain/entities/patient_profile.dart,
  *   user_profile_model.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 13/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Defines the states and subclasses for the Patient Profile
  *   BLoC/Cubit pattern. V1.2.0 adds avatarUploading, avatarUploadSuccess,
  *   and avatarUploadError enum values to support the profile image upload flow.

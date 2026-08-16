@@ -10,7 +10,7 @@
  *   package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart,
  *   package:appoynt_mobile_app/core/di/service_locator.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 23/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: The OTP Verification screen. It handles the input of a 6-digit code,
  *   manages a resend timer, and follows the centralized design system.
  */
@@ -123,6 +123,8 @@ class _OtpPageState extends State<OtpPage> {
         } else {
           _nodes[0].requestFocus();
         }
+      } else {
+        // No action needed
       }
     });
   }

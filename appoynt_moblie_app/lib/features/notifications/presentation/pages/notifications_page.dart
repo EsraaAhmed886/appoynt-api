@@ -11,7 +11,7 @@
  *   notification_filter_chips.dart, notification_details_page.dart,
  *   app_notification.dart, routes.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 15/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Notifications screen featuring centered geometric header,
  *   dynamic filter chips, chronological grouping, pull-to-refresh, infinite scroll,
  *   and navigation to the dedicated Notification Details screen.

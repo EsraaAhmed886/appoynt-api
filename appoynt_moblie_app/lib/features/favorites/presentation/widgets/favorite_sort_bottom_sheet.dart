@@ -1,4 +1,4 @@
-﻿/*
+/*
  * File Name: favorite_sort_bottom_sheet.dart
  * Author: Kholoud Khaled
  * Date of Creation: 14/08/2026
@@ -6,7 +6,7 @@
  * Dependencies: package:flutter/material.dart, app_spacing.dart,
  *   app_colors.dart, app_localizations.dart, favorites_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 14/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Category-aware modal bottom sheet allowing users to select and apply
  *   sorting algorithms tailored specifically to Doctors, Offers, or Clinics.
  */
@@ -52,13 +52,13 @@ class _LocalDimensions {
   static const double sheet_top_radius = 24.0;
 }
 
-// FavoriteSortBottomSheet modal widget representation
+// Category-Aware FavoriteSortBottomSheet modal stateful widget
 class FavoriteSortBottomSheet extends StatefulWidget {
-  // Active favorites category
+  // Category context determining available sort algorithms
   final FavoriteCategory category;
-  // Currently active sorting option
+  // Currently selected sorting option
   final FavoriteSortOption initial_sort;
-  // Callback when user taps Apply button with selected sort option
+  // Callback when user taps Apply button
   final ValueChanged<FavoriteSortOption> on_apply;
 
   // Constructor mapping required parameters
@@ -116,6 +116,12 @@ class _FavoriteSortBottomSheetState extends State<FavoriteSortBottomSheet> {
           FavoriteSortOption.name_z_a,
           FavoriteSortOption.rating_high_low,
         ];
+      default:
+        return const [
+          FavoriteSortOption.recently_added,
+          FavoriteSortOption.name_a_z,
+          FavoriteSortOption.name_z_a,
+        ];
     }
   }
 
@@ -136,6 +142,8 @@ class _FavoriteSortBottomSheetState extends State<FavoriteSortBottomSheet> {
         return Icons.arrow_upward_rounded;
       case FavoriteSortOption.discount_high_low:
         return Icons.local_offer_rounded;
+      default:
+        return Icons.history_rounded;
     }
   }
 
@@ -159,6 +167,8 @@ class _FavoriteSortBottomSheetState extends State<FavoriteSortBottomSheet> {
         return localizations.favorites_sort_price_high_low;
       case FavoriteSortOption.discount_high_low:
         return localizations.favorites_sort_discount_high_low;
+      default:
+        return localizations.favorites_sort_recently_added;
     }
   }
 

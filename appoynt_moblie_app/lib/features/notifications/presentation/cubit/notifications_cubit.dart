@@ -7,7 +7,7 @@
  *   token_storage.dart, app_notification.dart,
  *   notifications_repository.dart, notifications_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 15/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Business logic controller for the Notifications feature managing
  *   auth verification, paginated fetching, category filtering, infinite scrolling,
  *   mark as read, and mark all as read.

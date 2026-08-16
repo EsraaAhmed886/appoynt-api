@@ -6,7 +6,7 @@
  * Dependencies: flutter/material.dart,
  *   package:appoynt_mobile_app/core/routing/route_export.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 17/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Defines the temporary dummy home screen and components.
  */
 
@@ -101,6 +101,8 @@ class _HomePageState extends State<HomePage> {
                   // Empty block
                 }
               });
+            } else {
+              // No action needed
             }
             // TODO: END OF DUMMY HOME ROUTING
           } else {
@@ -373,6 +375,8 @@ class _HomeTab extends StatelessWidget {
                     // Empty block
                   }
                 });
+              } else {
+                // No action needed
               }
               // TODO: END OF DUMMY HOME ROUTING
             },

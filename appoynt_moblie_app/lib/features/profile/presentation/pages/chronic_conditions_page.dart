@@ -9,7 +9,7 @@
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Redesigned Chronic Conditions page featuring compact list cards, expandable sub-forms, top search bar, and master toggle switch.
  */
 
@@ -224,7 +224,11 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
           };
           _search_controller.clear();
         });
+      } else {
+        // Condition already exists
       }
+    } else {
+      // Query is empty
     }
   }
 
@@ -386,9 +390,13 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                                 setState(() {
                                   if ('custom' == option['icon_key']) {
                                     _custom_conditions.remove(option);
+                                  } else {
+                                    // Predefined condition
                                   }
                                   _condition_details.remove(name_en);
                                 });
+                              } else {
+                                // Deletion cancelled
                               }
                             },
                             child: const Padding(
@@ -496,6 +504,8 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                                           _condition_details[name_en]!['year'] =
                                               val;
                                         });
+                                      } else {
+                                        // No change
                                       }
                                     },
                                   ),
@@ -814,6 +824,8 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                                   _no_chronic_conditions = val;
                                   if (val) {
                                     _condition_details.clear();
+                                  } else {
+                                    // Switch disabled
                                   }
                                 });
                               },
@@ -859,6 +871,8 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                   conditions_to_save.add(
                       '$name (${details['year']} • ${details['status']})');
                 });
+              } else {
+                // No chronic conditions
               }
 
               context.read<ProfileCubit>().update_profile_field(

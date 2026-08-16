@@ -8,7 +8,7 @@
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Defines the Patient Profile View Mode screen showing summaries and medical sections.
  */
 
@@ -99,6 +99,8 @@ class _ProfilePageState extends State<ProfilePage> {
           if (state is AuthUnauthenticated) {
             Navigator.pushNamedAndRemoveUntil(
                 context, Routes.login, (route) => false);
+          } else {
+            // No action needed
           }
         },
         child: BlocListener<ProfileCubit, ProfileState>(
@@ -584,6 +586,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                 );
                                 if (context.mounted) {
                                   context.read<ProfileCubit>().fetchUserProfile();
+                                } else {
+                                  // Context unmounted
                                 }
                               },
                             ),
@@ -988,6 +992,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             Routes.login,
                             (route) => false,
                           );
+                        } else {
+                          // Context unmounted
                         }
                       },
                       // Styling

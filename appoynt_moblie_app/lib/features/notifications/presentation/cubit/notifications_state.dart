@@ -5,7 +5,7 @@
  * Version Information: V2.0.0
  * Dependencies: app_notification.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 15/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Defines the immutable state class, filter enum, and status enum for notifications.
  */
 
@@ -111,6 +111,8 @@ class NotificationsState {
         return notifications.where((item) {
           return NotificationType.prescription_available == item.type;
         }).toList();
+      default:
+        return notifications;
     }
   }
 

@@ -6,7 +6,7 @@
  * Dependencies: package:flutter/material.dart, app_spacing.dart,
  *   app_colors.dart, app_localizations.dart, notifications_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 15/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Horizontal scrollable filter bar rendering category chips
  *   with active state styling and unread count badges.
  */
@@ -64,6 +64,8 @@ class NotificationFilterChips extends StatelessWidget {
         return localizations.notifications_filter_payments;
       case NotificationFilter.prescriptions:
         return localizations.notifications_filter_prescriptions;
+      default:
+        return localizations.notifications_filter_all;
     }
   }
 

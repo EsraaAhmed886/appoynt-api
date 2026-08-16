@@ -5,7 +5,7 @@
  * Version Information: V1.0.0
  * Dependencies: package:dio/dio.dart, failures.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 09/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Centralized error processing utility that maps every
  *   Dio/HTTP exception, SSL/handshake error, and JSON parsing failure to a
  *   strongly-typed Failure subclass. No raw exception or server message is

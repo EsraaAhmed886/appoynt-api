@@ -12,7 +12,7 @@
  *   package:appoynt_mobile_app/core/storage/token_storage.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 13/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Reusable stateful widget rendering the patient's circular
  *   profile avatar. Handles three visual states: network image (authenticated
  *   via Bearer token in httpHeaders), uploading spinner overlay, and initials
@@ -320,6 +320,8 @@ class _ProfileAvatarWidgetState extends State<ProfileAvatarWidget> {
           ),
         ),
       );
+    } else {
+      // Token resolved
     }
     // Construct the Authorization header map for authenticated image loading
     final Map<String, String> auth_headers = {

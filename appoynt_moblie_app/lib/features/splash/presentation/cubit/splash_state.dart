@@ -6,7 +6,7 @@
  * Dependencies:
  *   - package:appoynt_mobile_app/features/splash/presentation/cubit/splash_cubit.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 19/06/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Defines the states for the SplashCubit state machine.
  */
 

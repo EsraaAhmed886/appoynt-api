@@ -6,7 +6,7 @@
  * Dependencies: package:flutter/material.dart, app_spacing.dart,
  *   app_colors.dart, app_localizations.dart, app_notification.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 15/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Custom card widget representing an individual notification item
  *   with type-specific icon badge, read/unread visual styling, and navigation handling.
  */
@@ -91,6 +91,12 @@ class NotificationItemCard extends StatelessWidget {
           icon: Icons.medication_outlined,
           icon_color: AppColors.purple,
           bg_color: AppColors.purple.withValues(alpha: is_dark ? 0.20 : 0.12),
+        );
+      default:
+        return _IconConfig(
+          icon: Icons.notifications_rounded,
+          icon_color: AppColors.primary_color,
+          bg_color: AppColors.primary_color.withValues(alpha: is_dark ? 0.20 : 0.12),
         );
     }
   }

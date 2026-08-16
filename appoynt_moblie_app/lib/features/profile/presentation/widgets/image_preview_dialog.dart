@@ -8,7 +8,7 @@
  *   package:appoynt_mobile_app/constants/app_spacing.dart,
  *   package:appoynt_mobile_app/core/storage/token_storage.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 13/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Renders a full-screen zoomable image preview modal dialog
  *   allowing users to view their profile avatar photo with pinch-to-zoom support.
  */
@@ -200,6 +200,8 @@ class _ImagePreviewDialogState extends State<ImagePreviewDialog> {
           color: AppColors.primary_color,
         ),
       );
+    } else {
+      // Token resolved
     }
     // Construct header map with Bearer token
     final Map<String, String> headers = {

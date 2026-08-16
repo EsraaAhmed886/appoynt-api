@@ -9,7 +9,7 @@
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/pages/add_prescription_page.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 23/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Defines the Prescription List screen featuring rich
  * floating clinical cards, an empty-state hero view, and a delete confirmation
  * dialog. The add-medication flow navigates to the standalone AddPrescriptionPage.
