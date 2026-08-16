@@ -25,6 +25,7 @@ import 'package:appoynt_mobile_app/features/auth/presentation/pages/password_suc
 import 'package:appoynt_mobile_app/features/home/presentation/pages/home_page.dart';
 import 'package:appoynt_mobile_app/features/notifications/presentation/pages/notifications_page.dart';
 import 'package:appoynt_mobile_app/features/doctor_profile/presentation/pages/doctor_profile_page.dart';
+import 'package:appoynt_mobile_app/features/booking/presentation/pages/choose_slots_page.dart';
 import 'package:appoynt_mobile_app/core/logic/global_cubit.dart';
 
 /// Router class responsible for parsing route settings and building views.
@@ -48,6 +49,19 @@ class AppRouter {
             : (args is String ? args : 'doc_101');
         return MaterialPageRoute(
           builder: (_) => DoctorProfilePage(doctor_id: doctor_id),
+        );
+      case Routes.choose_slots:
+        final args = settings.arguments;
+        final ChooseSlotsArgs slot_args = (args is ChooseSlotsArgs)
+            ? args
+            : ChooseSlotsArgs(
+                doctor_id: args is String ? args : 'doc_101',
+                doctor_name: 'Dr. Sarah Jenkins',
+                specialty: 'Senior Consultant Cardiologist',
+                consultation_fee: 550.0,
+              );
+        return MaterialPageRoute(
+          builder: (_) => ChooseSlotsPage(args: slot_args),
         );
       case Routes.login:
         return PageRouteBuilder(

@@ -82,10 +82,25 @@ import 'package:appoynt_mobile_app/features/doctor_profile/domain/usecases/get_d
 import 'package:appoynt_mobile_app/features/doctor_profile/domain/usecases/toggle_favorite_doctor_use_case.dart';
 // Doctor Profile Cubit
 import 'package:appoynt_mobile_app/features/doctor_profile/presentation/cubit/doctor_profile_cubit.dart';
+// Booking Availability Remote Data Source
+import 'package:appoynt_mobile_app/features/booking/data/datasources/availability_remote_data_source.dart';
+// Booking Availability Repository Contract
+import 'package:appoynt_mobile_app/features/booking/domain/repositories/availability_repository.dart';
+// Booking Availability Repository Implementation
+import 'package:appoynt_mobile_app/features/booking/data/repositories/availability_repository_impl.dart';
+// Booking Use Cases
+import 'package:appoynt_mobile_app/features/booking/domain/usecases/get_doctor_clinics_use_case.dart';
+import 'package:appoynt_mobile_app/features/booking/domain/usecases/get_available_slots_use_case.dart';
+import 'package:appoynt_mobile_app/features/booking/domain/usecases/create_slot_hold_use_case.dart';
+import 'package:appoynt_mobile_app/features/booking/domain/usecases/release_slot_hold_use_case.dart';
+// Booking Cubit
+import 'package:appoynt_mobile_app/features/booking/presentation/cubit/slot_booking_cubit.dart';
 
 /// Global instance of the service locator.
 final GetIt get_it = GetIt.instance;
 
+/// Short alias for the service locator instance matching sl convention.
+final GetIt sl = get_it;
 
 /// Initializes all application-wide dependencies.
 Future<void> setup_service_locator() async {
@@ -273,6 +288,48 @@ Future<void> setup_service_locator() async {
           get_it<GetDoctorAvailableSlotsUseCase>(),
       toggle_favorite_doctor_use_case:
           get_it<ToggleFavoriteDoctorUseCase>(),
+    );
+  });
+
+  // ── Booking & Time Slots Feature ───────────────────────
+
+  /// Registering Availability Remote Data Source.
+  get_it.registerLazySingleton<AvailabilityRemoteDataSource>(() {
+    return AvailabilityRemoteDataSourceImpl(get_it<Dio>());
+  });
+
+  /// Registering Availability Repository.
+  get_it.registerLazySingleton<AvailabilityRepository>(() {
+    return AvailabilityRepositoryImpl(get_it<AvailabilityRemoteDataSource>());
+  });
+
+  /// Registering Get Doctor Clinics Use Case.
+  get_it.registerLazySingleton<GetDoctorClinicsUseCase>(() {
+    return GetDoctorClinicsUseCase(get_it<AvailabilityRepository>());
+  });
+
+  /// Registering Get Available Slots Use Case.
+  get_it.registerLazySingleton<GetAvailableSlotsUseCase>(() {
+    return GetAvailableSlotsUseCase(get_it<AvailabilityRepository>());
+  });
+
+  /// Registering Create Slot Hold Use Case.
+  get_it.registerLazySingleton<CreateSlotHoldUseCase>(() {
+    return CreateSlotHoldUseCase(get_it<AvailabilityRepository>());
+  });
+
+  /// Registering Release Slot Hold Use Case.
+  get_it.registerLazySingleton<ReleaseSlotHoldUseCase>(() {
+    return ReleaseSlotHoldUseCase(get_it<AvailabilityRepository>());
+  });
+
+  /// Registering Slot Booking Cubit factory instance.
+  get_it.registerFactory<SlotBookingCubit>(() {
+    return SlotBookingCubit(
+      get_doctor_clinics_use_case: get_it<GetDoctorClinicsUseCase>(),
+      get_available_slots_use_case: get_it<GetAvailableSlotsUseCase>(),
+      create_slot_hold_use_case: get_it<CreateSlotHoldUseCase>(),
+      release_slot_hold_use_case: get_it<ReleaseSlotHoldUseCase>(),
     );
   });
 }

@@ -1258,6 +1258,23 @@ abstract class AppLocalizations {
   String get verified_patient;
   String get rating_summary;
   String get all_reviews;
+
+  // Booking & Time Slot Selection getters
+  String get select_appointment_slot;
+  String get select_clinic_location;
+  String get change_clinic;
+  String get select_date;
+  String get available_time_slots;
+  String get all_slots;
+  String get morning_period;
+  String get evening_period;
+  String get continue_to_confirmation;
+  String get no_available_slots;
+  String get check_next_date;
+  String get release_slot_hold_title;
+  String get release_slot_hold_msg;
+  String get stay_action;
+  String get leave_and_release_action;
 }
 
 // Defining a short alias for clean and simple type references

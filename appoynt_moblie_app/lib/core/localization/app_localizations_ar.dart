@@ -2497,6 +2497,37 @@ class AppLocalizationsAr extends AppLocalizations {
   String get rating_summary => 'ملخص التقييمات';
   @override
   String get all_reviews => 'جميع التقييمات';
+  @override
+  String get select_appointment_slot => 'اختر موعد الحجز';
+  @override
+  String get select_clinic_location => 'اختر موقع العيادة';
+  @override
+  String get change_clinic => 'تغيير';
+  @override
+  String get select_date => 'اختر التاريخ';
+  @override
+  String get available_time_slots => 'المواعيد المتاحة';
+  @override
+  String get all_slots => 'جميع المواعيد';
+  @override
+  String get morning_period => 'صباحاً';
+  @override
+  String get evening_period => 'مساءً';
+  @override
+  String get continue_to_confirmation => 'المتابعة للتأكيد';
+  @override
+  String get no_available_slots => 'لا توجد مواعيد متاحة';
+  @override
+  String get check_next_date => 'البحث في اليوم التالي';
+  @override
+  String get release_slot_hold_title => 'إلغاء حجز الموعد؟';
+  @override
+  String get release_slot_hold_msg =>
+      'الخروج من هذه الصفحة سيؤدي إلى إلغاء حجز الموعد المؤقت المخصص لك.';
+  @override
+  String get stay_action => 'البقاء';
+  @override
+  String get leave_and_release_action => 'الخروج والإلغاء';
 }
 
 

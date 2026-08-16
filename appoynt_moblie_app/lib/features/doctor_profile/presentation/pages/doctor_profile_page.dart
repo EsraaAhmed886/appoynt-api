@@ -23,6 +23,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:appoynt_mobile_app/constants/app_spacing.dart';
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 import 'package:appoynt_mobile_app/core/di/service_locator.dart';
+import 'package:appoynt_mobile_app/core/routing/routes.dart';
+import 'package:appoynt_mobile_app/features/booking/presentation/pages/choose_slots_page.dart';
 // Import Cubit and State
 import 'package:appoynt_mobile_app/features/doctor_profile/presentation/cubit/doctor_profile_cubit.dart';
 import 'package:appoynt_mobile_app/features/doctor_profile/presentation/cubit/doctor_profile_state.dart';
@@ -170,7 +172,17 @@ class _DoctorProfileView extends StatelessWidget {
           child: DoctorStickyBookingBar(
             profile: profile,
             on_book_pressed: () {
-              // Placeholder preparing for upcoming ChooseSlotsPage navigation
+              Navigator.of(context).pushNamed(
+                Routes.choose_slots,
+                arguments: ChooseSlotsArgs(
+                  doctor_id: profile.doctor_id,
+                  doctor_name: profile.full_name,
+                  specialty: profile.specialty,
+                  consultation_fee: profile.consultation_fee,
+                  currency: profile.currency,
+                  profile_photo_url: profile.profile_photo_url,
+                ),
+              );
             },
           ),
         ),
