@@ -23,7 +23,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:appoynt_mobile_app/constants/app_spacing.dart';
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 import 'package:appoynt_mobile_app/core/di/service_locator.dart';
-import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
 // Import Cubit and State
 import 'package:appoynt_mobile_app/features/doctor_profile/presentation/cubit/doctor_profile_cubit.dart';
 import 'package:appoynt_mobile_app/features/doctor_profile/presentation/cubit/doctor_profile_state.dart';
@@ -36,6 +35,7 @@ import 'package:appoynt_mobile_app/features/doctor_profile/presentation/widgets/
 import 'package:appoynt_mobile_app/features/doctor_profile/presentation/widgets/doctor_procedures_section.dart';
 import 'package:appoynt_mobile_app/features/doctor_profile/presentation/widgets/doctor_certificates_gallery.dart';
 import 'package:appoynt_mobile_app/features/doctor_profile/presentation/widgets/doctor_media_gallery.dart';
+import 'package:appoynt_mobile_app/features/doctor_profile/presentation/widgets/doctor_reviews_section.dart';
 import 'package:appoynt_mobile_app/features/doctor_profile/presentation/widgets/doctor_sticky_booking_bar.dart';
 
 /// Arguments bundle for navigating to DoctorProfilePage.
@@ -152,7 +152,7 @@ class _DoctorProfileView extends StatelessWidget {
                   ),
 
                   // 8. Verified Patient Reviews
-                  _build_reviews_section(context, profile, is_dark),
+                  DoctorReviewsSection(profile: profile),
 
                   // Bottom padding spacer to clear floating bottom bar
                   const SizedBox(height: 120.0),
@@ -175,162 +175,6 @@ class _DoctorProfileView extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _build_reviews_section(
-    BuildContext context,
-    DoctorProfileEntity profile,
-    bool is_dark,
-  ) {
-    if (profile.reviews_list.isEmpty) {
-      return const SizedBox.shrink();
-    }
-    final AppLocalizations localizations = AppLocalizations.of(context);
-
-    return Container(
-      margin: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.space_xl,
-        vertical: AppSpacing.space_s,
-      ),
-      padding: const EdgeInsets.all(AppSpacing.space_xl),
-      decoration: BoxDecoration(
-        color: is_dark ? AppColors.surface_dark : AppColors.background_light,
-        borderRadius: BorderRadius.circular(AppSpacing.radius_xl),
-        border: Border.all(
-          color: is_dark ? AppColors.border_dark : AppColors.slate_200,
-          width: 1.0,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Section Title
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(6.0),
-                    decoration: BoxDecoration(
-                      color: AppColors.amber.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: const Icon(
-                      Icons.star_rounded,
-                      size: 20.0,
-                      color: AppColors.amber,
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.space_m),
-                  Text(
-                    localizations.patient_reviews,
-                    style: TextStyle(
-                      fontSize: AppSpacing.font_size_title_medium,
-                      fontWeight: FontWeight.w700,
-                      color: is_dark
-                          ? AppColors.text_dark_primary
-                          : AppColors.text_light_primary,
-                    ),
-                  ),
-                ],
-              ),
-              Text(
-                '${profile.average_rating} (${profile.reviews_count})',
-                style: const TextStyle(
-                  fontSize: AppSpacing.font_size_body_small,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.amber,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.space_l),
-
-          // Reviews List
-          Column(
-            children: profile.reviews_list.map((review) {
-              return Container(
-                margin: const EdgeInsets.only(bottom: AppSpacing.space_m),
-                padding: const EdgeInsets.all(AppSpacing.space_m),
-                decoration: BoxDecoration(
-                  color: is_dark
-                      ? AppColors.inner_container_dark
-                      : AppColors.slate_100,
-                  borderRadius: BorderRadius.circular(AppSpacing.radius_l),
-                  border: Border.all(
-                    color: is_dark
-                        ? AppColors.border_dark
-                        : AppColors.slate_200,
-                    width: 1.0,
-                  ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          review.patient_name,
-                          style: TextStyle(
-                            fontSize: AppSpacing.font_size_body_small,
-                            fontWeight: FontWeight.w700,
-                            color: is_dark
-                                ? AppColors.text_dark_primary
-                                : AppColors.text_light_primary,
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.star_rounded,
-                              color: AppColors.amber,
-                              size: 16.0,
-                            ),
-                            const SizedBox(width: 2.0),
-                            Text(
-                              review.rating.toStringAsFixed(1),
-                              style: TextStyle(
-                                fontSize: AppSpacing.font_size_caption,
-                                fontWeight: FontWeight.w700,
-                                color: is_dark
-                                    ? AppColors.text_dark_primary
-                                    : AppColors.text_light_primary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 4.0),
-                    Text(
-                      review.comment,
-                      style: TextStyle(
-                        fontSize: AppSpacing.font_size_caption,
-                        color: is_dark
-                            ? AppColors.text_dark_secondary
-                            : AppColors.text_light_secondary,
-                      ),
-                    ),
-                    const SizedBox(height: 4.0),
-                    Text(
-                      review.date,
-                      style: TextStyle(
-                        fontSize: 10.0,
-                        color: is_dark
-                            ? AppColors.text_dark_secondary
-                            : AppColors.text_light_secondary,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }).toList(),
-          ),
-        ],
-      ),
     );
   }
 

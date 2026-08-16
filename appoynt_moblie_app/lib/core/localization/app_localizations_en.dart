@@ -2443,6 +2443,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clinic_photo => 'Clinic Photo';
   @override
   String get consultation_fee_label => 'Consultation Fee';
+  @override
+  String get see_all => 'See All';
+  @override
+  String get verified_patient => 'Verified Patient';
+  @override
+  String get rating_summary => 'Rating Summary';
+  @override
+  String get all_reviews => 'All Reviews';
 }
 
 

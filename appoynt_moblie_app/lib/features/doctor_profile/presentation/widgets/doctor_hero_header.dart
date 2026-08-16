@@ -2,15 +2,15 @@
  * File Name: doctor_hero_header.dart
  * Author: Kholoud Khaled
  * Date of Creation: 16/08/2026
- * Version Information: V1.4.0
+ * Version Information: V1.5.0
  * Dependencies: package:flutter/material.dart, app_colors.dart, app_spacing.dart,
  *   app_localizations.dart, app_network_image.dart, custom_profile_app_bar.dart,
  *   doctor_profile_entity.dart, favorite_heart_button.dart
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 17/08/2026]
- * File Description: Modern edge-to-edge Hero Banner featuring a seamless borderless
- *   portrait with gradient ShaderMask, standardized AppBackButton integration,
- *   floating action buttons, and verified doctor specialty credentials.
+ * File Description: Modern edge-to-edge Hero Banner featuring 44x44 action buttons,
+ *   decoupled 2-tier metadata badges (standalone specialty chip + dedicated
+ *   availability/fee row), borderless portrait with gradient ShaderMask, and verified credentials.
  */
 
 // Import Flutter material library
@@ -20,7 +20,6 @@ import 'package:appoynt_mobile_app/constants/app_spacing.dart';
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
 import 'package:appoynt_mobile_app/core/widgets/app_network_image.dart';
-import 'package:appoynt_mobile_app/core/widgets/custom_profile_app_bar.dart';
 import 'package:appoynt_mobile_app/features/shared/widgets/favorite_heart_button.dart';
 import 'package:appoynt_mobile_app/features/doctor_profile/domain/entities/doctor_profile_entity.dart';
 
@@ -58,7 +57,7 @@ class DoctorHeroHeader extends StatelessWidget {
       children: [
         // 1. Ambient Background Gradient Glow
         Container(
-          height: 350.0,
+          height: 355.0,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
@@ -113,12 +112,21 @@ class DoctorHeroHeader extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Top Navigation Action Bar with Standard AppBackButton
+                // Top Navigation Action Bar with 44x44 Accessible Buttons
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    AppBackButton(
-                      onTap: on_back_tap ?? () => Navigator.of(context).maybePop(),
+                    _build_action_button(
+                      is_dark: is_dark,
+                      on_tap: on_back_tap ?? () => Navigator.of(context).maybePop(),
+                      child: Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        size: 20.0,
+                        color: is_dark
+                            ? AppColors.text_dark_primary
+                            : AppColors.text_light_primary,
+                        textDirection: Directionality.of(context),
+                      ),
                     ),
                     Row(
                       children: [
@@ -137,7 +145,7 @@ class DoctorHeroHeader extends StatelessWidget {
                               },
                           child: Icon(
                             Icons.share_outlined,
-                            size: 18.0,
+                            size: 22.0,
                             color: is_dark
                                 ? AppColors.text_dark_primary
                                 : AppColors.text_light_primary,
@@ -150,7 +158,7 @@ class DoctorHeroHeader extends StatelessWidget {
                           child: FavoriteHeartButton(
                             is_favorite: is_favorite,
                             on_tap: on_favorite_tap,
-                            size: 20.0,
+                            size: 22.0,
                           ),
                         ),
                       ],
@@ -159,7 +167,7 @@ class DoctorHeroHeader extends StatelessWidget {
                 ),
 
                 // Spacer to place Doctor details neatly over bottom gradient
-                const SizedBox(height: 155.0),
+                const SizedBox(height: 150.0),
 
                 // Doctor Full Name + Verified Badge
                 Row(
@@ -193,97 +201,55 @@ class DoctorHeroHeader extends StatelessWidget {
                     ],
                   ],
                 ),
-                const SizedBox(height: AppSpacing.space_m),
+                const SizedBox(height: AppSpacing.space_s + 2.0),
 
-                // Subtitle badges in flexible Wrap
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  spacing: 8.0,
-                  runSpacing: 6.0,
-                  children: [
-                    // Constrained Specialty badge
-                    ConstrainedBox(
-                      constraints: BoxConstraints(
-                        maxWidth: screen_width * 0.85,
-                      ),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.space_m,
-                          vertical: AppSpacing.space_xs + 1.0,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary_color.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(AppSpacing.radius_l),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(
-                              Icons.medical_services_outlined,
-                              color: AppColors.primary_color,
-                              size: 15.0,
-                            ),
-                            const SizedBox(width: 5.0),
-                            Flexible(
-                              child: Text(
-                                profile.specialty,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontSize: AppSpacing.font_size_body_small,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.primary_color,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                // ── Tier 1: Standalone Specialty Chip ──
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: screen_width * 0.88,
+                  ),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.space_m,
+                      vertical: AppSpacing.space_xs + 1.0,
                     ),
-
-                    // Fee badge
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.space_m,
-                        vertical: AppSpacing.space_xs + 1.0,
-                      ),
-                      decoration: BoxDecoration(
-                        color: is_dark
-                            ? AppColors.inner_container_dark
-                            : AppColors.slate_100,
-                        borderRadius: BorderRadius.circular(AppSpacing.radius_l),
-                        border: Border.all(
-                          color: is_dark
-                              ? AppColors.border_dark
-                              : AppColors.border_light,
-                          width: 1.0,
+                    decoration: BoxDecoration(
+                      color: AppColors.primary_color.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(AppSpacing.radius_l),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.medical_services_outlined,
+                          color: AppColors.primary_color,
+                          size: 15.0,
                         ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.payments_outlined,
-                            color: AppColors.dummy_custom_green,
-                            size: 15.0,
-                          ),
-                          const SizedBox(width: 5.0),
-                          Text(
-                            "${profile.consultation_fee.toStringAsFixed(0)} ${profile.currency}",
-                            style: TextStyle(
+                        const SizedBox(width: 5.0),
+                        Flexible(
+                          child: Text(
+                            profile.specialty,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
                               fontSize: AppSpacing.font_size_body_small,
-                              fontWeight: FontWeight.w700,
-                              color: is_dark
-                                  ? AppColors.text_dark_primary
-                                  : AppColors.text_light_primary,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.primary_color,
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
+                  ),
+                ),
+                const SizedBox(height: 8.0),
 
+                // ── Tier 2: Dedicated Row for Availability & Fee Badges ──
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
                     // Availability indicator badge
                     Container(
                       padding: const EdgeInsets.symmetric(
@@ -325,6 +291,48 @@ class DoctorHeroHeader extends StatelessWidget {
                         ],
                       ),
                     ),
+                    const SizedBox(width: 8.0),
+
+                    // Fee badge
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.space_m,
+                        vertical: AppSpacing.space_xs + 1.0,
+                      ),
+                      decoration: BoxDecoration(
+                        color: is_dark
+                            ? AppColors.inner_container_dark
+                            : AppColors.slate_100,
+                        borderRadius: BorderRadius.circular(AppSpacing.radius_l),
+                        border: Border.all(
+                          color: is_dark
+                              ? AppColors.border_dark
+                              : AppColors.border_light,
+                          width: 1.0,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.payments_outlined,
+                            color: AppColors.dummy_custom_green,
+                            size: 15.0,
+                          ),
+                          const SizedBox(width: 5.0),
+                          Text(
+                            "${profile.consultation_fee.toStringAsFixed(0)} ${profile.currency}",
+                            style: TextStyle(
+                              fontSize: AppSpacing.font_size_body_small,
+                              fontWeight: FontWeight.w700,
+                              color: is_dark
+                                  ? AppColors.text_dark_primary
+                                  : AppColors.text_light_primary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ],
@@ -343,8 +351,8 @@ class DoctorHeroHeader extends StatelessWidget {
     return GestureDetector(
       onTap: on_tap,
       child: Container(
-        width: 40.0,
-        height: 40.0,
+        width: 44.0,
+        height: 44.0,
         decoration: BoxDecoration(
           color: is_dark ? AppColors.surface_dark : AppColors.white,
           borderRadius: BorderRadius.circular(AppSpacing.radius_l),
@@ -356,7 +364,7 @@ class DoctorHeroHeader extends StatelessWidget {
             BoxShadow(
               color: is_dark
                   ? AppColors.black26
-                  : AppColors.black.withValues(alpha: 0.05),
+                  : AppColors.black.withValues(alpha: 0.06),
               blurRadius: 8.0,
               offset: const Offset(0.0, 2.0),
             ),

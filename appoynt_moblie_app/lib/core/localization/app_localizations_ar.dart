@@ -2489,6 +2489,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get clinic_photo => 'صورة العيادة';
   @override
   String get consultation_fee_label => 'سعر الكشف';
+  @override
+  String get see_all => 'عرض الكل';
+  @override
+  String get verified_patient => 'مريض مؤكد';
+  @override
+  String get rating_summary => 'ملخص التقييمات';
+  @override
+  String get all_reviews => 'جميع التقييمات';
 }
 
 

@@ -1254,6 +1254,10 @@ abstract class AppLocalizations {
   String get clinic_tour;
   String get clinic_photo;
   String get consultation_fee_label;
+  String get see_all;
+  String get verified_patient;
+  String get rating_summary;
+  String get all_reviews;
 }
 
 // Defining a short alias for clean and simple type references
