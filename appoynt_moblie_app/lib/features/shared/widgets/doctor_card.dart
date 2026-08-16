@@ -54,6 +54,8 @@ class DoctorCard extends StatelessWidget {
   final bool is_favorite;
   // Doctor photo avatar URL
   final String avatar_url;
+  // Main card tap callback
+  final VoidCallback? on_tap;
   // Booking button callback
   final VoidCallback? on_book_tap;
   // Favorite toggling callback
@@ -71,6 +73,7 @@ class DoctorCard extends StatelessWidget {
     required this.is_available,
     required this.is_favorite,
     required this.avatar_url,
+    this.on_tap,
     this.on_book_tap,
     this.on_favorite_tap,
   });
@@ -83,31 +86,33 @@ class DoctorCard extends StatelessWidget {
     // Check if system brightness matches dark theme mode
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
 
-    // Return container displaying card contents
-    return Container(
-      // Apply margin at the bottom of the card using design tokens
-      margin: const EdgeInsets.only(bottom: AppSpacing.space_xl),
-      // Apply internal padding inside the card using design tokens
-      padding: const EdgeInsets.all(AppSpacing.space_xl),
-      // Visual styling decoration configurations
-      decoration: BoxDecoration(
-        // Set background color matching active theme
-        color: is_dark
-            ? AppColors.surface_dark
-            : AppColors.background_light,
-        // Set corner rounded curves using spacing constants
-        borderRadius:
-            BorderRadius.circular(AppSpacing.dummy_doctor_card_radius),
-        // Draw outline border stroke
-        border: Border.all(
-          // Resolve border color based on theme
-          color: is_dark ? AppColors.border_dark : AppColors.slate_200,
-          // Set thin border width
-          width: AppSpacing.border_width_thin,
+    // Return gesture detector wrapping container displaying card contents
+    return GestureDetector(
+      onTap: on_tap,
+      child: Container(
+        // Apply margin at the bottom of the card using design tokens
+        margin: const EdgeInsets.only(bottom: AppSpacing.space_xl),
+        // Apply internal padding inside the card using design tokens
+        padding: const EdgeInsets.all(AppSpacing.space_xl),
+        // Visual styling decoration configurations
+        decoration: BoxDecoration(
+          // Set background color matching active theme
+          color: is_dark
+              ? AppColors.surface_dark
+              : AppColors.background_light,
+          // Set corner rounded curves using spacing constants
+          borderRadius:
+              BorderRadius.circular(AppSpacing.dummy_doctor_card_radius),
+          // Draw outline border stroke
+          border: Border.all(
+            // Resolve border color based on theme
+            color: is_dark ? AppColors.border_dark : AppColors.slate_200,
+            // Set thin border width
+            width: AppSpacing.border_width_thin,
+          ),
         ),
-      ),
-      // Arrange items inside card vertically
-      child: Column(
+        // Arrange items inside card vertically
+        child: Column(
         // Align children starting from the horizontal edge
         crossAxisAlignment: CrossAxisAlignment.start,
         // Card children layout list
@@ -337,6 +342,7 @@ class DoctorCard extends StatelessWidget {
           ),
         ],
       ),
+    ),
     );
   }
 

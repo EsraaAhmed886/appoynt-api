@@ -70,6 +70,18 @@ import 'package:appoynt_mobile_app/features/notifications/domain/repositories/no
 import 'package:appoynt_mobile_app/features/notifications/data/repositories/notifications_repository_impl.dart';
 // Notifications Cubit
 import 'package:appoynt_mobile_app/features/notifications/presentation/cubit/notifications_cubit.dart';
+// Doctor Profile Remote Data Source
+import 'package:appoynt_mobile_app/features/doctor_profile/data/datasources/doctor_profile_remote_data_source.dart';
+// Doctor Profile Repository Contract
+import 'package:appoynt_mobile_app/features/doctor_profile/domain/repositories/doctor_profile_repository.dart';
+// Doctor Profile Repository Implementation
+import 'package:appoynt_mobile_app/features/doctor_profile/data/repositories/doctor_profile_repository_impl.dart';
+// Doctor Profile Use Cases
+import 'package:appoynt_mobile_app/features/doctor_profile/domain/usecases/get_doctor_profile_use_case.dart';
+import 'package:appoynt_mobile_app/features/doctor_profile/domain/usecases/get_doctor_available_slots_use_case.dart';
+import 'package:appoynt_mobile_app/features/doctor_profile/domain/usecases/toggle_favorite_doctor_use_case.dart';
+// Doctor Profile Cubit
+import 'package:appoynt_mobile_app/features/doctor_profile/presentation/cubit/doctor_profile_cubit.dart';
 
 /// Global instance of the service locator.
 final GetIt get_it = GetIt.instance;
@@ -221,6 +233,46 @@ Future<void> setup_service_locator() async {
   get_it.registerFactory<NotificationsCubit>(() {
     return NotificationsCubit(
       repository: get_it<NotificationsRepository>(),
+    );
+  });
+
+  // ── Doctor Profile Feature ───────────────────────────────
+
+  /// Registering the Doctor Profile Remote Data Source implementation.
+  get_it.registerLazySingleton<DoctorProfileRemoteDataSource>(() {
+    return DoctorProfileRemoteDataSourceImpl(get_it<Dio>());
+  });
+
+  /// Registering the Doctor Profile Repository implementation.
+  get_it.registerLazySingleton<DoctorProfileRepository>(() {
+    return DoctorProfileRepositoryImpl(
+      remote_data_source: get_it<DoctorProfileRemoteDataSource>(),
+    );
+  });
+
+  /// Registering Get Doctor Profile Use Case.
+  get_it.registerLazySingleton<GetDoctorProfileUseCase>(() {
+    return GetDoctorProfileUseCase(get_it<DoctorProfileRepository>());
+  });
+
+  /// Registering Get Doctor Available Slots Use Case.
+  get_it.registerLazySingleton<GetDoctorAvailableSlotsUseCase>(() {
+    return GetDoctorAvailableSlotsUseCase(get_it<DoctorProfileRepository>());
+  });
+
+  /// Registering Toggle Favorite Doctor Use Case.
+  get_it.registerLazySingleton<ToggleFavoriteDoctorUseCase>(() {
+    return ToggleFavoriteDoctorUseCase(get_it<DoctorProfileRepository>());
+  });
+
+  /// Registering Doctor Profile Cubit factory instance.
+  get_it.registerFactory<DoctorProfileCubit>(() {
+    return DoctorProfileCubit(
+      get_doctor_profile_use_case: get_it<GetDoctorProfileUseCase>(),
+      get_doctor_available_slots_use_case:
+          get_it<GetDoctorAvailableSlotsUseCase>(),
+      toggle_favorite_doctor_use_case:
+          get_it<ToggleFavoriteDoctorUseCase>(),
     );
   });
 }

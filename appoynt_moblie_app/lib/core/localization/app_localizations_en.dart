@@ -2397,6 +2397,52 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get notification_details_calendar_added =>
       'Appointment added to calendar';
+
+  // Doctor Profile Screen Strings English Overrides
+  @override
+  String get about_doctor => 'About Doctor';
+  @override
+  String get experience_label => 'Experience';
+  @override
+  String get patients_label => 'Patients';
+  @override
+  String get reviews_label => 'Reviews';
+  @override
+  String get rating_label => 'Rating';
+  @override
+  String get career_and_education => 'Career & Education';
+  @override
+  String get education_tab => 'Education';
+  @override
+  String get experience_tab => 'Experience';
+  @override
+  String get procedures_and_services => 'Procedures & Services';
+  @override
+  String get certificates_label => 'Certificates';
+  @override
+  String get media_gallery_label => 'Media & Photos';
+  @override
+  String get book_appointment => 'Book Appointment';
+  @override
+  String get available_today => 'Available Today';
+  @override
+  String get unavailable_today => 'Unavailable Today';
+  @override
+  String get read_more => 'Read More';
+  @override
+  String get read_less => 'Read Less';
+  @override
+  String get currency_egp => 'EGP';
+  @override
+  String get years_exp => 'y+';
+  @override
+  String get patient_reviews => 'Patient Reviews';
+  @override
+  String get clinic_tour => 'Clinic Procedure Tour';
+  @override
+  String get clinic_photo => 'Clinic Photo';
+  @override
+  String get consultation_fee_label => 'Consultation Fee';
 }
 
 
