@@ -77,8 +77,11 @@ class SlotBookingLoaded extends SlotBookingState {
 
   /// Filtered slots matching the active time of day filter.
   List<DoctorSlotEntity> get filtered_slots {
-    if (active_filter == null) return slots;
-    return slots.where((slot) => slot.time_of_day == active_filter).toList();
+    if (active_filter == null) {
+      return slots;
+    } else {
+      return slots.where((slot) => slot.time_of_day == active_filter).toList();
+    }
   }
 
   /// Whether a valid active hold exists with positive remaining countdown seconds.

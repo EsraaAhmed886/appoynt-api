@@ -2,7 +2,7 @@
  * File Name: choose_slots_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 17/08/2026
- * Version Information: V2.0.0
+ * Version Information: V2.1.0
  * Dependencies: package:flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
  *   service_locator.dart, app_colors.dart, app_spacing.dart, custom_profile_app_bar.dart,
  *   slot_booking_cubit.dart, slot_booking_state.dart, clinic_context_selector_card.dart,
@@ -70,7 +70,8 @@ class ChooseSlotsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => get_it<SlotBookingCubit>()..init(doctor_id: args.doctor_id),
+      create: (context) =>
+          get_it<SlotBookingCubit>()..init(doctor_id: args.doctor_id),
       child: _ChooseSlotsView(args: args),
     );
   }
@@ -189,6 +190,8 @@ class _ChooseSlotsView extends StatelessWidget {
               ),
             );
           }
+        } else {
+          // No action needed
         }
       },
       builder: (context, state) {
@@ -198,13 +201,20 @@ class _ChooseSlotsView extends StatelessWidget {
         return PopScope(
           canPop: !has_active_hold,
           onPopInvokedWithResult: (didPop, result) async {
-            if (didPop) return;
-            final bool should_leave =
-                await HoldReleaseConfirmationDialog.show(context);
-            if (should_leave && context.mounted) {
-              await cubit.releaseActiveHold();
-              if (context.mounted) {
-                Navigator.of(context).pop();
+            if (didPop) {
+              return;
+            } else {
+              final bool should_leave =
+                  await HoldReleaseConfirmationDialog.show(context);
+              if (should_leave && context.mounted) {
+                await cubit.releaseActiveHold();
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                } else {
+                  // No action needed
+                }
+              } else {
+                // No action needed
               }
             }
           },
@@ -230,7 +240,11 @@ class _ChooseSlotsView extends StatelessWidget {
                           await cubit.releaseActiveHold();
                           if (context.mounted) {
                             Navigator.of(context).pop();
+                          } else {
+                            // No action needed
                           }
+                        } else {
+                          // No action needed
                         }
                       } else {
                         Navigator.of(context).maybePop();
@@ -299,9 +313,7 @@ class _ChooseSlotsView extends StatelessWidget {
           strokeWidth: 3.0,
         ),
       );
-    }
-
-    if (state is SlotBookingError) {
+    } else if (state is SlotBookingError) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.space_xxl),
@@ -341,9 +353,7 @@ class _ChooseSlotsView extends StatelessWidget {
           ),
         ),
       );
-    }
-
-    if (state is SlotBookingLoaded) {
+    } else if (state is SlotBookingLoaded) {
       return Stack(
         children: [
           // Scrollable Content Surface
@@ -405,8 +415,8 @@ class _ChooseSlotsView extends StatelessWidget {
                     on_date_selected: (date) => cubit.selectDate(date),
                   ),
 
-                  // Enhanced 20px rhythm spacing between Date Strip and Slots Title
-                  const SizedBox(height: 20.0),
+                  // Clean 24px rhythm spacing between Date Strip and Slots Title
+                  const SizedBox(height: 24.0),
 
                   // 3. Time Slots Header & Filter Chips
                   Padding(
@@ -426,7 +436,7 @@ class _ChooseSlotsView extends StatelessWidget {
                                 : AppColors.text_light_primary,
                           ),
                         ),
-                        if (state.is_refreshing_slots)
+                        if (state.is_refreshing_slots) ...[
                           const SizedBox(
                             width: 16.0,
                             height: 16.0,
@@ -435,6 +445,9 @@ class _ChooseSlotsView extends StatelessWidget {
                               color: AppColors.primary_color,
                             ),
                           ),
+                        ] else ...[
+                          const SizedBox.shrink(),
+                        ],
                       ],
                     ),
                   ),
@@ -448,14 +461,14 @@ class _ChooseSlotsView extends StatelessWidget {
                   const SizedBox(height: 16.0),
 
                   // 4. Responsive Slots Grid or Empty State
-                  if (state.filtered_slots.isNotEmpty)
+                  if (state.filtered_slots.isNotEmpty) ...[
                     DoctorSlotGrid(
                       slots: state.filtered_slots,
                       selected_slot: state.selected_slot,
                       is_holding_slot: state.is_holding_slot,
                       on_slot_selected: (slot) => cubit.selectSlot(slot),
-                    )
-                  else
+                    ),
+                  ] else ...[
                     EmptySlotsWidget(
                       on_next_date_tap: () {
                         cubit.selectDate(
@@ -463,6 +476,7 @@ class _ChooseSlotsView extends StatelessWidget {
                         );
                       },
                     ),
+                  ],
 
                   // Bottom padding spacer to clear sticky confirmation bar and banner
                   const SizedBox(height: 170.0),
@@ -479,11 +493,14 @@ class _ChooseSlotsView extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (state.has_active_hold)
+                if (state.has_active_hold) ...[
                   ActiveHoldCountdownBanner(
                     remaining_seconds: state.remaining_seconds,
                     is_visible: state.has_active_hold,
                   ),
+                ] else ...[
+                  const SizedBox.shrink(),
+                ],
                 StickySlotBookingBottomBar(
                   clinic: state.selected_clinic,
                   selected_date: state.selected_date,
@@ -498,9 +515,9 @@ class _ChooseSlotsView extends StatelessWidget {
           ),
         ],
       );
+    } else {
+      return const SizedBox.shrink();
     }
-
-    return const SizedBox.shrink();
   }
 
   void _on_continue_to_confirmation(

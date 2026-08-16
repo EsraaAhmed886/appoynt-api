@@ -66,11 +66,14 @@ class HorizontalCalendarDateStrip extends StatelessWidget {
     final DateTime now = DateTime.now();
 
     return SizedBox(
-      height: 86.0,
+      height: 88.0,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space_xl),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.space_xl,
+          vertical: 2.0,
+        ),
         itemCount: 14,
         itemBuilder: (context, index) {
           final DateTime date = now.add(Duration(days: index));

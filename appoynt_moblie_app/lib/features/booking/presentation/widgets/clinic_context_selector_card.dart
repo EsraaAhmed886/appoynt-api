@@ -47,6 +47,8 @@ class ClinicContextSelectorCard extends StatelessWidget {
           'https://www.google.com/maps/search/?api=1&query=${Uri.encodeComponent(clinic.address)}',
         );
         await launchUrl(search_uri, mode: LaunchMode.externalApplication);
+      } else {
+        // No action needed
       }
     } catch (_) {
       if (context.mounted) {
@@ -56,6 +58,8 @@ class ClinicContextSelectorCard extends StatelessWidget {
             duration: Duration(seconds: 2),
           ),
         );
+      } else {
+        // No action needed
       }
     }
   }

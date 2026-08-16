@@ -2,7 +2,7 @@
  * File Name: availability_remote_data_source.dart
  * Author: Kholoud Khaled
  * Date of Creation: 17/08/2026
- * Version Information: V1.1.0
+ * Version Information: V1.2.0
  * Dependencies: package:dio/dio.dart, clinic_location_model.dart,
  *   doctor_slot_model.dart, slot_hold_model.dart
  * Contributors: [Kholoud Khaled]
@@ -63,23 +63,29 @@ class AvailabilityRemoteDataSourceImpl implements AvailabilityRemoteDataSource {
             .whereType<Map<String, dynamic>>()
             .map((e) => ClinicLocationModel.fromJson(e))
             .toList();
-        if (result.isNotEmpty) return result;
+        if (result.isNotEmpty) {
+          return result;
+        } else {
+          return _get_mock_clinics(doctor_id);
+        }
       } else if (response.data is Map<String, dynamic>) {
         final Map<String, dynamic> map = response.data as Map<String, dynamic>;
-        final List<dynamic> list =
-            map['clinics'] as List<dynamic>? ?? map['data'] as List<dynamic>? ?? [];
+        final List<dynamic> list = map['clinics'] as List<dynamic>? ??
+            map['data'] as List<dynamic>? ??
+            [];
         final result = list
             .whereType<Map<String, dynamic>>()
             .map((e) => ClinicLocationModel.fromJson(e))
             .toList();
-        if (result.isNotEmpty) return result;
-      }
-      return _get_mock_clinics(doctor_id);
-    } on DioException catch (dioError) {
-      // Graceful fallback for 404 or connection failures in development
-      if (dioError.response?.statusCode == 404 || dioError.type != DioExceptionType.unknown) {
+        if (result.isNotEmpty) {
+          return result;
+        } else {
+          return _get_mock_clinics(doctor_id);
+        }
+      } else {
         return _get_mock_clinics(doctor_id);
       }
+    } on DioException catch (_) {
       return _get_mock_clinics(doctor_id);
     } catch (_) {
       return _get_mock_clinics(doctor_id);
@@ -95,15 +101,25 @@ class AvailabilityRemoteDataSourceImpl implements AvailabilityRemoteDataSource {
     String? time_of_day,
   }) async {
     try {
+      final Map<String, dynamic> query = {
+        'clinicId': clinic_id,
+        'doctorId': doctor_id,
+        'date': date,
+      };
+      if (timezone != null) {
+        query['timezone'] = timezone;
+      } else {
+        // No action needed
+      }
+      if (time_of_day != null) {
+        query['timeOfDay'] = time_of_day;
+      } else {
+        // No action needed
+      }
+
       final Response response = await dio.get(
         'availability/slots',
-        queryParameters: {
-          'clinicId': clinic_id,
-          'doctorId': doctor_id,
-          'date': date,
-          if (timezone != null) 'timezone': timezone,
-          if (time_of_day != null) 'timeOfDay': time_of_day,
-        },
+        queryParameters: query,
       );
 
       if (response.data is List) {
@@ -112,23 +128,29 @@ class AvailabilityRemoteDataSourceImpl implements AvailabilityRemoteDataSource {
             .whereType<Map<String, dynamic>>()
             .map((e) => DoctorSlotModel.fromJson(e))
             .toList();
-        if (result.isNotEmpty) return result;
+        if (result.isNotEmpty) {
+          return result;
+        } else {
+          return _get_mock_slots_for_date(clinic_id, date);
+        }
       } else if (response.data is Map<String, dynamic>) {
         final Map<String, dynamic> map = response.data as Map<String, dynamic>;
-        final List<dynamic> list =
-            map['slots'] as List<dynamic>? ?? map['data'] as List<dynamic>? ?? [];
+        final List<dynamic> list = map['slots'] as List<dynamic>? ??
+            map['data'] as List<dynamic>? ??
+            [];
         final result = list
             .whereType<Map<String, dynamic>>()
             .map((e) => DoctorSlotModel.fromJson(e))
             .toList();
-        if (result.isNotEmpty) return result;
-      }
-      return _get_mock_slots_for_date(clinic_id, date);
-    } on DioException catch (dioError) {
-      // Graceful development fallback on 404 or backend endpoints not deployed yet
-      if (dioError.response?.statusCode == 404 || dioError.type != DioExceptionType.unknown) {
+        if (result.isNotEmpty) {
+          return result;
+        } else {
+          return _get_mock_slots_for_date(clinic_id, date);
+        }
+      } else {
         return _get_mock_slots_for_date(clinic_id, date);
       }
+    } on DioException catch (_) {
       return _get_mock_slots_for_date(clinic_id, date);
     } catch (_) {
       return _get_mock_slots_for_date(clinic_id, date);
@@ -156,14 +178,14 @@ class AvailabilityRemoteDataSourceImpl implements AvailabilityRemoteDataSource {
       if (response.data is Map<String, dynamic>) {
         final Map<String, dynamic> map = response.data as Map<String, dynamic>;
         final Map<String, dynamic> payload =
-            map['data'] is Map<String, dynamic> ? map['data'] as Map<String, dynamic> : map;
+            map['data'] is Map<String, dynamic>
+                ? map['data'] as Map<String, dynamic>
+                : map;
         return SlotHoldModel.fromJson(payload);
-      }
-      return _generate_mock_hold(slot_id, clinic_id, doctor_id);
-    } on DioException catch (dioError) {
-      if (dioError.response?.statusCode == 404 || dioError.type != DioExceptionType.unknown) {
+      } else {
         return _generate_mock_hold(slot_id, clinic_id, doctor_id);
       }
+    } on DioException catch (_) {
       return _generate_mock_hold(slot_id, clinic_id, doctor_id);
     } catch (_) {
       return _generate_mock_hold(slot_id, clinic_id, doctor_id);
@@ -222,82 +244,126 @@ class AvailabilityRemoteDataSourceImpl implements AvailabilityRemoteDataSource {
     ];
   }
 
-  /// Generates dynamic slots for a given clinic and date with available and booked states.
-  List<DoctorSlotModel> _get_mock_slots_for_date(String clinic_id, String date_str) {
-    final List<DoctorSlotModel> slots = [];
+  /// Generates dynamic slots corresponding to the selected clinic and date.
+  List<DoctorSlotModel> _get_mock_slots_for_date(
+      String clinic_id, String date) {
+    // Generate realistic multi-period slots
+    return [
+      // Morning slots (09:00 AM - 12:00 PM)
+      const DoctorSlotModel(
+        slot_id: 's_01',
+        start_time: '09:00 AM',
+        end_time: '09:30 AM',
+        time_of_day: SlotTimeOfDay.morning,
+        status: SlotStatus.available,
+      ),
+      const DoctorSlotModel(
+        slot_id: 's_02',
+        start_time: '09:30 AM',
+        end_time: '10:00 AM',
+        time_of_day: SlotTimeOfDay.morning,
+        status: SlotStatus.booked,
+      ),
+      const DoctorSlotModel(
+        slot_id: 's_03',
+        start_time: '10:00 AM',
+        end_time: '10:30 AM',
+        time_of_day: SlotTimeOfDay.morning,
+        status: SlotStatus.available,
+      ),
+      const DoctorSlotModel(
+        slot_id: 's_04',
+        start_time: '10:30 AM',
+        end_time: '11:00 AM',
+        time_of_day: SlotTimeOfDay.morning,
+        status: SlotStatus.available,
+      ),
+      const DoctorSlotModel(
+        slot_id: 's_05',
+        start_time: '11:00 AM',
+        end_time: '11:30 AM',
+        time_of_day: SlotTimeOfDay.morning,
+        status: SlotStatus.booked,
+      ),
+      const DoctorSlotModel(
+        slot_id: 's_06',
+        start_time: '11:30 AM',
+        end_time: '12:00 PM',
+        time_of_day: SlotTimeOfDay.morning,
+        status: SlotStatus.available,
+      ),
 
-    // Morning Slot Definitions
-    final List<String> morning_times = [
-      '09:00 AM',
-      '09:30 AM',
-      '10:00 AM',
-      '10:30 AM',
-      '11:00 AM',
-      '11:30 AM',
+      // Afternoon & Evening slots (01:00 PM - 07:00 PM)
+      const DoctorSlotModel(
+        slot_id: 's_07',
+        start_time: '01:00 PM',
+        end_time: '01:30 PM',
+        time_of_day: SlotTimeOfDay.afternoon_evening,
+        status: SlotStatus.available,
+      ),
+      const DoctorSlotModel(
+        slot_id: 's_08',
+        start_time: '01:30 PM',
+        end_time: '02:00 PM',
+        time_of_day: SlotTimeOfDay.afternoon_evening,
+        status: SlotStatus.available,
+      ),
+      const DoctorSlotModel(
+        slot_id: 's_09',
+        start_time: '02:00 PM',
+        end_time: '02:30 PM',
+        time_of_day: SlotTimeOfDay.afternoon_evening,
+        status: SlotStatus.booked,
+      ),
+      const DoctorSlotModel(
+        slot_id: 's_10',
+        start_time: '04:00 PM',
+        end_time: '04:30 PM',
+        time_of_day: SlotTimeOfDay.afternoon_evening,
+        status: SlotStatus.available,
+      ),
+      const DoctorSlotModel(
+        slot_id: 's_11',
+        start_time: '04:30 PM',
+        end_time: '05:00 PM',
+        time_of_day: SlotTimeOfDay.afternoon_evening,
+        status: SlotStatus.available,
+      ),
+      const DoctorSlotModel(
+        slot_id: 's_12',
+        start_time: '05:00 PM',
+        end_time: '05:30 PM',
+        time_of_day: SlotTimeOfDay.afternoon_evening,
+        status: SlotStatus.booked,
+      ),
+      const DoctorSlotModel(
+        slot_id: 's_13',
+        start_time: '06:00 PM',
+        end_time: '06:30 PM',
+        time_of_day: SlotTimeOfDay.afternoon_evening,
+        status: SlotStatus.available,
+      ),
+      const DoctorSlotModel(
+        slot_id: 's_14',
+        start_time: '06:30 PM',
+        end_time: '07:00 PM',
+        time_of_day: SlotTimeOfDay.afternoon_evening,
+        status: SlotStatus.available,
+      ),
     ];
-
-    // Afternoon & Evening Slot Definitions
-    final List<String> evening_times = [
-      '01:00 PM',
-      '01:30 PM',
-      '02:00 PM',
-      '02:45 PM',
-      '03:30 PM',
-      '04:15 PM',
-      '05:00 PM',
-      '05:45 PM',
-      '06:30 PM',
-    ];
-
-    int slot_counter = 1;
-
-    for (final String time in morning_times) {
-      final bool is_booked = (slot_counter % 3 == 0);
-      slots.add(
-        DoctorSlotModel(
-          slot_id: 'slot_${clinic_id}_${date_str}_$slot_counter',
-          start_time: time,
-          end_time: '',
-          time_of_day: SlotTimeOfDay.morning,
-          status: is_booked ? SlotStatus.booked : SlotStatus.available,
-        ),
-      );
-      slot_counter++;
-    }
-
-    for (final String time in evening_times) {
-      final bool is_booked = (slot_counter % 4 == 0);
-      slots.add(
-        DoctorSlotModel(
-          slot_id: 'slot_${clinic_id}_${date_str}_$slot_counter',
-          start_time: time,
-          end_time: '',
-          time_of_day: SlotTimeOfDay.afternoon_evening,
-          status: is_booked ? SlotStatus.booked : SlotStatus.available,
-        ),
-      );
-      slot_counter++;
-    }
-
-    return slots;
   }
 
-  /// Generates a realistic mock hold entity with a 5-minute countdown TTL.
+  /// Generates a valid temporary hold lock response (300 seconds TTL).
   SlotHoldModel _generate_mock_hold(
-    String slot_id,
-    String clinic_id,
-    String doctor_id,
-  ) {
-    final DateTime expires_at_utc = DateTime.now().toUtc().add(const Duration(minutes: 5));
-    final String hold_token = 'hold_tk_${DateTime.now().millisecondsSinceEpoch}_${slot_id.hashCode.abs()}';
-
+      String slot_id, String clinic_id, String doctor_id) {
+    final DateTime expires =
+        DateTime.now().toUtc().add(const Duration(seconds: 300));
     return SlotHoldModel(
-      hold_token: hold_token,
-      expires_at_utc: expires_at_utc,
+      hold_token: 'hold_${DateTime.now().millisecondsSinceEpoch}',
       slot_id: slot_id,
       clinic_id: clinic_id,
       doctor_id: doctor_id,
-      correlation_id: 'cor_${DateTime.now().millisecondsSinceEpoch}',
+      expires_at_utc: expires,
     );
   }
 }

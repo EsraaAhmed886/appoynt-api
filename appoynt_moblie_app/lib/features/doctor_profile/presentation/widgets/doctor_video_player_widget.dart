@@ -65,74 +65,87 @@ class _DoctorVideoPlayerWidgetState extends State<DoctorVideoPlayerWidget> {
     if (oldWidget.video_url != widget.video_url) {
       _dispose_controller();
       _initialize_video_player();
+    } else {
+      // No action needed
     }
   }
 
   /// Initializes the video controller cleanly using official networkUrl loader.
   Future<void> _initialize_video_player() async {
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    } else {
+      _dispose_controller();
 
-    _dispose_controller();
+      setState(() {
+        _is_initializing = true;
+        _has_error = false;
+      });
 
-    setState(() {
-      _is_initializing = true;
-      _has_error = false;
-    });
+      try {
+        final String trimmed_url = widget.video_url.trim();
+        debugPrint('Loading Video URL: $trimmed_url');
 
-    try {
-      final String trimmed_url = widget.video_url.trim();
-      debugPrint('Loading Video URL: $trimmed_url');
+        final Uri uri = Uri.parse(trimmed_url);
+        final VideoPlayerController controller =
+            VideoPlayerController.networkUrl(uri);
 
-      final Uri uri = Uri.parse(trimmed_url);
-      final VideoPlayerController controller =
-          VideoPlayerController.networkUrl(uri);
+        _controller = controller;
 
-      _controller = controller;
+        controller.addListener(_video_listener);
 
-      controller.addListener(_video_listener);
+        await controller.initialize();
 
-      await controller.initialize();
+        if (!mounted) {
+          await controller.dispose();
+          return;
+        } else {
+          await controller.setLooping(true);
 
-      if (!mounted) {
-        await controller.dispose();
-        return;
-      }
+          if (widget.auto_play) {
+            await controller.play();
+          } else {
+            // No action needed
+          }
 
-      await controller.setLooping(true);
-
-      if (widget.auto_play) {
-        await controller.play();
-      }
-
-      if (mounted) {
-        setState(() {
-          _is_initializing = false;
-          _has_error = controller.value.hasError;
-        });
-      }
-    } catch (e) {
-      debugPrint('Video initialization failed: $e');
-      if (mounted) {
-        setState(() {
-          _is_initializing = false;
-          _has_error = true;
-        });
+          if (mounted) {
+            setState(() {
+              _is_initializing = false;
+              _has_error = controller.value.hasError;
+            });
+          } else {
+            // No action needed
+          }
+        }
+      } catch (e) {
+        debugPrint('Video initialization failed: $e');
+        if (mounted) {
+          setState(() {
+            _is_initializing = false;
+            _has_error = true;
+          });
+        } else {
+          // No action needed
+        }
       }
     }
   }
 
   void _video_listener() {
-    if (!mounted) return;
-
-    final VideoPlayerController? controller = _controller;
-    if (controller != null && controller.value.hasError) {
-      debugPrint('Video controller error: ${controller.value.errorDescription}');
-      setState(() {
-        _has_error = true;
-        _is_initializing = false;
-      });
+    if (!mounted) {
+      return;
     } else {
-      setState(() {});
+      final VideoPlayerController? controller = _controller;
+      if (controller != null && controller.value.hasError) {
+        debugPrint(
+            'Video controller error: ${controller.value.errorDescription}');
+        setState(() {
+          _has_error = true;
+          _is_initializing = false;
+        });
+      } else {
+        setState(() {});
+      }
     }
   }
 
@@ -151,17 +164,19 @@ class _DoctorVideoPlayerWidgetState extends State<DoctorVideoPlayerWidget> {
 
   void _toggle_play_pause() {
     final VideoPlayerController? controller = _controller;
-    if (controller == null || !controller.value.isInitialized) return;
-
-    setState(() {
-      if (controller.value.isPlaying) {
-        controller.pause();
-        _show_controls = true;
-      } else {
-        controller.play();
-        _show_controls = false;
-      }
-    });
+    if (controller == null || !controller.value.isInitialized) {
+      return;
+    } else {
+      setState(() {
+        if (controller.value.isPlaying) {
+          controller.pause();
+          _show_controls = true;
+        } else {
+          controller.play();
+          _show_controls = false;
+        }
+      });
+    }
   }
 
   String _format_duration(Duration duration) {
@@ -257,7 +272,7 @@ class _DoctorVideoPlayerWidgetState extends State<DoctorVideoPlayerWidget> {
                 VideoPlayer(controller),
 
                 // Animated Center Play/Pause Indicator
-                if (_show_controls || !is_playing)
+                if (_show_controls || !is_playing) ...[
                   AnimatedOpacity(
                     opacity: _show_controls || !is_playing ? 1.0 : 0.0,
                     duration: const Duration(milliseconds: 250),
@@ -285,15 +300,19 @@ class _DoctorVideoPlayerWidgetState extends State<DoctorVideoPlayerWidget> {
                       ),
                     ),
                   ),
+                ] else ...[
+                  const SizedBox.shrink(),
+                ],
 
                 // Bottom Controls Bar with Time and Scrubber
-                if (_show_controls || !is_playing)
+                if (_show_controls || !is_playing) ...[
                   Positioned(
                     bottom: 0,
                     left: 0,
                     right: 0,
                     child: Container(
-                      padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 10.0),
+                      padding:
+                          const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 10.0),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.bottomCenter,
@@ -348,6 +367,9 @@ class _DoctorVideoPlayerWidgetState extends State<DoctorVideoPlayerWidget> {
                       ),
                     ),
                   ),
+                ] else ...[
+                  const SizedBox.shrink(),
+                ],
               ],
             ),
           ),

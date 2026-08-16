@@ -63,10 +63,13 @@ class _ActiveHoldCountdownBannerState extends State<ActiveHoldCountdownBanner>
   }
 
   String _format_timer(int total_seconds) {
-    if (total_seconds <= 0) return '00:00';
-    final int minutes = total_seconds ~/ 60;
-    final int seconds = total_seconds % 60;
-    return "${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
+    if (total_seconds <= 0) {
+      return '00:00';
+    } else {
+      final int minutes = total_seconds ~/ 60;
+      final int seconds = total_seconds % 60;
+      return "${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
+    }
   }
 
   @override

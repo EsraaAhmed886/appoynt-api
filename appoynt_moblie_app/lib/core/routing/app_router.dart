@@ -7,7 +7,7 @@
  *   forgot_password_page.dart, home_page.dart, global_cubit.dart, otp_page.dart,
  *   account_success_page.dart, reset_password_page.dart, password_success_page.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 17/08/2026]
  * File Description: Main application router for generating page transitions from route settings.
  */
 

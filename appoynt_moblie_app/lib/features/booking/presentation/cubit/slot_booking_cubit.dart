@@ -2,7 +2,7 @@
  * File Name: slot_booking_cubit.dart
  * Author: Kholoud Khaled
  * Date of Creation: 17/08/2026
- * Version Information: V1.0.0
+ * Version Information: V1.2.0
  * Dependencies: package:flutter_bloc/flutter_bloc.dart, package:dartz/dartz.dart,
  *   get_doctor_clinics_use_case.dart, get_available_slots_use_case.dart,
  *   create_slot_hold_use_case.dart, release_slot_hold_use_case.dart,
@@ -64,25 +64,26 @@ class SlotBookingCubit extends Cubit<SlotBookingState> {
         if (clinics.isEmpty) {
           emit(const SlotBookingError('error_not_found'));
           return;
+        } else {
+          final ClinicLocationEntity initial_clinic = clinics.first;
+          final DateTime initial_date =
+              _get_first_available_date(initial_clinic);
+
+          // Fetch slots for initial clinic and date
+          final List<DoctorSlotEntity> slots = await _fetch_slots(
+            clinic_id: initial_clinic.clinic_id,
+            date: _format_date(initial_date),
+          );
+
+          emit(
+            SlotBookingLoaded(
+              clinics: clinics,
+              selected_clinic: initial_clinic,
+              selected_date: initial_date,
+              slots: slots,
+            ),
+          );
         }
-
-        final ClinicLocationEntity initial_clinic = clinics.first;
-        final DateTime initial_date = _get_first_available_date(initial_clinic);
-
-        // Fetch slots for initial clinic and date
-        final List<DoctorSlotEntity> slots = await _fetch_slots(
-          clinic_id: initial_clinic.clinic_id,
-          date: _format_date(initial_date),
-        );
-
-        emit(
-          SlotBookingLoaded(
-            clinics: clinics,
-            selected_clinic: initial_clinic,
-            selected_date: initial_date,
-            slots: slots,
-          ),
-        );
       },
     );
   }
@@ -90,166 +91,196 @@ class SlotBookingCubit extends Cubit<SlotBookingState> {
   /// Switches active clinic branch, clears existing hold, and reloads slots.
   Future<void> selectClinic(ClinicLocationEntity new_clinic) async {
     final SlotBookingState current = state;
-    if (current is! SlotBookingLoaded) return;
-    if (current.selected_clinic.clinic_id == new_clinic.clinic_id) return;
+    if (current is! SlotBookingLoaded) {
+      return;
+    } else if (current.selected_clinic.clinic_id == new_clinic.clinic_id) {
+      return;
+    } else {
+      // Release any active hold before switching clinic
+      await _release_current_hold_silently();
 
-    // Release any active hold before switching clinic
-    await _release_current_hold_silently();
+      DateTime target_date = current.selected_date;
+      if (!_is_clinic_open_on_date(new_clinic, target_date)) {
+        target_date = _get_first_available_date(new_clinic);
+      } else {
+        // No action needed
+      }
 
-    DateTime target_date = current.selected_date;
-    if (!_is_clinic_open_on_date(new_clinic, target_date)) {
-      target_date = _get_first_available_date(new_clinic);
+      emit(
+        current.copyWith(
+          selected_clinic: new_clinic,
+          selected_date: target_date,
+          clear_selected_slot: true,
+          clear_active_hold: true,
+          remaining_seconds: 0,
+          is_refreshing_slots: true,
+          clear_feedback_message: true,
+        ),
+      );
+
+      final List<DoctorSlotEntity> slots = await _fetch_slots(
+        clinic_id: new_clinic.clinic_id,
+        date: _format_date(target_date),
+      );
+
+      if (state is SlotBookingLoaded) {
+        emit(
+          (state as SlotBookingLoaded).copyWith(
+            slots: slots,
+            is_refreshing_slots: false,
+          ),
+        );
+      } else {
+        // No action needed
+      }
     }
-
-    emit(
-      current.copyWith(
-        selected_clinic: new_clinic,
-        selected_date: target_date,
-        clear_selected_slot: true,
-        clear_active_hold: true,
-        remaining_seconds: 0,
-        is_refreshing_slots: true,
-        clear_feedback_message: true,
-      ),
-    );
-
-    final List<DoctorSlotEntity> slots = await _fetch_slots(
-      clinic_id: new_clinic.clinic_id,
-      date: _format_date(target_date),
-    );
-
-    emit(
-      (state as SlotBookingLoaded).copyWith(
-        slots: slots,
-        is_refreshing_slots: false,
-      ),
-    );
   }
 
   /// Selects an appointment date, releases any active hold, and refreshes slots.
   Future<void> selectDate(DateTime new_date) async {
     final SlotBookingState current = state;
-    if (current is! SlotBookingLoaded) return;
-
-    // Normalize date to compare day/month/year
-    if (current.selected_date.year == new_date.year &&
+    if (current is! SlotBookingLoaded) {
+      return;
+    } else if (current.selected_date.year == new_date.year &&
         current.selected_date.month == new_date.month &&
         current.selected_date.day == new_date.day) {
       return;
+    } else {
+      // Release any active hold before changing date
+      await _release_current_hold_silently();
+
+      emit(
+        current.copyWith(
+          selected_date: new_date,
+          clear_selected_slot: true,
+          clear_active_hold: true,
+          remaining_seconds: 0,
+          is_refreshing_slots: true,
+          clear_feedback_message: true,
+        ),
+      );
+
+      final List<DoctorSlotEntity> slots = await _fetch_slots(
+        clinic_id: current.selected_clinic.clinic_id,
+        date: _format_date(new_date),
+      );
+
+      if (state is SlotBookingLoaded) {
+        emit(
+          (state as SlotBookingLoaded).copyWith(
+            slots: slots,
+            is_refreshing_slots: false,
+          ),
+        );
+      } else {
+        // No action needed
+      }
     }
-
-    // Release any active hold before changing date
-    await _release_current_hold_silently();
-
-    emit(
-      current.copyWith(
-        selected_date: new_date,
-        clear_selected_slot: true,
-        clear_active_hold: true,
-        remaining_seconds: 0,
-        is_refreshing_slots: true,
-        clear_feedback_message: true,
-      ),
-    );
-
-    final List<DoctorSlotEntity> slots = await _fetch_slots(
-      clinic_id: current.selected_clinic.clinic_id,
-      date: _format_date(new_date),
-    );
-
-    emit(
-      (state as SlotBookingLoaded).copyWith(
-        slots: slots,
-        is_refreshing_slots: false,
-      ),
-    );
   }
 
   /// Sets the active time of day filter (Morning, Afternoon/Evening, or All).
   void setFilter(SlotTimeOfDay? filter) {
     final SlotBookingState current = state;
-    if (current is! SlotBookingLoaded) return;
-
-    emit(
-      current.copyWith(
-        active_filter: filter,
-        clear_filter: filter == null,
-      ),
-    );
+    if (current is! SlotBookingLoaded) {
+      return;
+    } else {
+      emit(
+        current.copyWith(
+          active_filter: filter,
+          clear_filter: filter == null,
+        ),
+      );
+    }
   }
 
   /// Places a temporary hold lock on a selected slot with 1-second countdown ticker.
   Future<void> selectSlot(DoctorSlotEntity slot) async {
     final SlotBookingState current = state;
-    if (current is! SlotBookingLoaded) return;
-    if (slot.status != SlotStatus.available) return;
-    if (current.selected_slot?.slot_id == slot.slot_id && current.has_active_hold) return;
+    if (current is! SlotBookingLoaded) {
+      return;
+    } else if (slot.status != SlotStatus.available) {
+      return;
+    } else if (current.selected_slot?.slot_id == slot.slot_id &&
+        current.has_active_hold) {
+      return;
+    } else {
+      // Release previous hold if one exists
+      await _release_current_hold_silently();
 
-    // Release previous hold if one exists
-    await _release_current_hold_silently();
+      emit(
+        current.copyWith(
+          selected_slot: slot,
+          is_holding_slot: true,
+          clear_active_hold: true,
+          remaining_seconds: 0,
+          clear_feedback_message: true,
+        ),
+      );
 
-    emit(
-      current.copyWith(
-        selected_slot: slot,
-        is_holding_slot: true,
-        clear_active_hold: true,
-        remaining_seconds: 0,
-        clear_feedback_message: true,
-      ),
-    );
-
-    final Either<Failure, SlotHoldEntity> result = await create_slot_hold_use_case(
-      CreateSlotHoldParams(
-        slot_id: slot.slot_id,
-        clinic_id: current.selected_clinic.clinic_id,
-        doctor_id: _doctor_id,
-      ),
-    );
-
-    result.fold(
-      (failure) async {
-        // Refresh slots in case of conflict
-        final List<DoctorSlotEntity> refreshed_slots = await _fetch_slots(
+      final Either<Failure, SlotHoldEntity> result =
+          await create_slot_hold_use_case(
+        CreateSlotHoldParams(
+          slot_id: slot.slot_id,
           clinic_id: current.selected_clinic.clinic_id,
-          date: _format_date(current.selected_date),
-        );
+          doctor_id: _doctor_id,
+        ),
+      );
 
-        emit(
-          (state as SlotBookingLoaded).copyWith(
-            slots: refreshed_slots,
-            is_holding_slot: false,
-            clear_selected_slot: true,
-            feedback_message: 'This slot is no longer available. Please choose another.',
-          ),
-        );
-      },
-      (hold) {
-        emit(
-          (state as SlotBookingLoaded).copyWith(
-            active_hold: hold,
-            remaining_seconds: hold.remaining_seconds,
-            is_holding_slot: false,
-          ),
-        );
+      result.fold(
+        (failure) async {
+          // Refresh slots in case of conflict
+          final List<DoctorSlotEntity> refreshed_slots = await _fetch_slots(
+            clinic_id: current.selected_clinic.clinic_id,
+            date: _format_date(current.selected_date),
+          );
 
-        _start_countdown_timer(hold.expires_at_utc);
-      },
-    );
+          if (state is SlotBookingLoaded) {
+            emit(
+              (state as SlotBookingLoaded).copyWith(
+                slots: refreshed_slots,
+                is_holding_slot: false,
+                clear_selected_slot: true,
+                feedback_message:
+                    'This slot is no longer available. Please choose another.',
+              ),
+            );
+          } else {
+            // No action needed
+          }
+        },
+        (hold) {
+          if (state is SlotBookingLoaded) {
+            emit(
+              (state as SlotBookingLoaded).copyWith(
+                active_hold: hold,
+                remaining_seconds: hold.remaining_seconds,
+                is_holding_slot: false,
+              ),
+            );
+            _start_countdown_timer(hold.expires_at_utc);
+          } else {
+            // No action needed
+          }
+        },
+      );
+    }
   }
 
   /// Manually releases active hold (e.g. upon user deselecting or leaving).
   Future<void> releaseActiveHold() async {
     await _release_current_hold_silently();
     final SlotBookingState current = state;
-    if (current is! SlotBookingLoaded) return;
-
-    emit(
-      current.copyWith(
-        clear_selected_slot: true,
-        clear_active_hold: true,
-        remaining_seconds: 0,
-      ),
-    );
+    if (current is! SlotBookingLoaded) {
+      return;
+    } else {
+      emit(
+        current.copyWith(
+          clear_selected_slot: true,
+          clear_active_hold: true,
+          remaining_seconds: 0,
+        ),
+      );
+    }
   }
 
   /// Starts the 1-second interval ticker synchronized against the server UTC expiration.
@@ -269,6 +300,8 @@ class SlotBookingCubit extends Cubit<SlotBookingState> {
               remaining_seconds: remaining,
             ),
           );
+        } else {
+          // No action needed
         }
       }
     });
@@ -277,24 +310,27 @@ class SlotBookingCubit extends Cubit<SlotBookingState> {
   /// Handles expiration of the 5-minute hold lock.
   Future<void> _on_hold_expired() async {
     final SlotBookingState current = state;
-    if (current is! SlotBookingLoaded) return;
+    if (current is! SlotBookingLoaded) {
+      return;
+    } else {
+      await _release_current_hold_silently();
 
-    await _release_current_hold_silently();
+      final List<DoctorSlotEntity> refreshed_slots = await _fetch_slots(
+        clinic_id: current.selected_clinic.clinic_id,
+        date: _format_date(current.selected_date),
+      );
 
-    final List<DoctorSlotEntity> refreshed_slots = await _fetch_slots(
-      clinic_id: current.selected_clinic.clinic_id,
-      date: _format_date(current.selected_date),
-    );
-
-    emit(
-      current.copyWith(
-        slots: refreshed_slots,
-        clear_selected_slot: true,
-        clear_active_hold: true,
-        remaining_seconds: 0,
-        feedback_message: 'Reservation hold expired. Please select a time slot again.',
-      ),
-    );
+      emit(
+        current.copyWith(
+          slots: refreshed_slots,
+          clear_selected_slot: true,
+          clear_active_hold: true,
+          remaining_seconds: 0,
+          feedback_message:
+              'Reservation hold expired. Please select a time slot again.',
+        ),
+      );
+    }
   }
 
   /// Internal helper to release current hold without blocking or crashing.
@@ -310,7 +346,11 @@ class SlotBookingCubit extends Cubit<SlotBookingState> {
         } catch (_) {
           // Idempotent safe release ignore
         }
+      } else {
+        // No action needed
       }
+    } else {
+      // No action needed
     }
   }
 
@@ -328,7 +368,10 @@ class SlotBookingCubit extends Cubit<SlotBookingState> {
       ),
     );
 
-    return result.fold((failure) => [], (slots) => slots);
+    return result.fold(
+      (failure) => [],
+      (slots) => slots,
+    );
   }
 
   /// Formats DateTime into YYYY-MM-DD string.
@@ -338,7 +381,15 @@ class SlotBookingCubit extends Cubit<SlotBookingState> {
 
   /// Returns whether a clinic is open on the given date.
   bool _is_clinic_open_on_date(ClinicLocationEntity clinic, DateTime date) {
-    const List<String> day_names = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const List<String> day_names = [
+      'Mon',
+      'Tue',
+      'Wed',
+      'Thu',
+      'Fri',
+      'Sat',
+      'Sun',
+    ];
     final String day_short = day_names[date.weekday - 1];
     return clinic.isOpenOn(day_short);
   }
@@ -349,6 +400,8 @@ class SlotBookingCubit extends Cubit<SlotBookingState> {
     for (int i = 0; i < 14; i++) {
       if (_is_clinic_open_on_date(clinic, candidate)) {
         return candidate;
+      } else {
+        // No action needed
       }
       candidate = candidate.add(const Duration(days: 1));
     }

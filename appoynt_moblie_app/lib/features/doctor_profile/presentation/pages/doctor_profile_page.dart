@@ -2,7 +2,7 @@
  * File Name: doctor_profile_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 16/08/2026
- * Version Information: V1.1.0
+ * Version Information: V1.2.0
  * Dependencies: package:flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
  *   app_colors.dart, app_spacing.dart, service_locator.dart, doctor_profile_cubit.dart,
  *   doctor_profile_state.dart, doctor_hero_header.dart, doctor_quick_stats_row.dart,
@@ -10,7 +10,7 @@
  *   doctor_certificates_gallery.dart, doctor_media_gallery.dart,
  *   doctor_sticky_booking_bar.dart, favorite_heart_button.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 17/08/2026]
  * File Description: Comprehensive Doctor Profile page implementing a fluid
  *   CustomScrollView with collapsible SliverAppBar, interactive medical sections,
  *   credentials galleries, and sticky confirmation bar with safe bottom padding.
@@ -94,8 +94,9 @@ class _DoctorProfileView extends StatelessWidget {
             return _build_error_view(context, state.error_message, is_dark);
           } else if (state is DoctorProfileLoaded) {
             return _build_loaded_content(context, state, is_dark);
+          } else {
+            return const SizedBox.shrink();
           }
-          return const SizedBox.shrink();
         },
       ),
     );
