@@ -7,9 +7,9 @@
  *   - react
  *   - next-themes
  *   - lucide-react
- * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 13/08/2026]
- * File Description: Theme toggle button component switching between light and dark visual themes.
+ * Contributors: shimaa salah, Kholoud Khaled
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: Theme toggle button component switching between light and dark visual themes using next-themes resolvedTheme.
  */
 
 "use client";
@@ -19,7 +19,7 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
 export default function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -27,27 +27,32 @@ export default function ThemeToggle() {
   }, []);
 
   if (!mounted) {
-    return null;
-  } else {
-    const is_dark = "dark" === theme;
-
     return (
-      <button
-        type="button"
-        onClick={() => setTheme(is_dark ? "light" : "dark")}
-        aria-label="Toggle theme"
-        className="
-          rounded-xl
-          p-2
-          text-app-sidebar_text_secondary
-          transition-colors
-          hover:bg-app-sidebar_hover
-          hover:text-app-sidebar_text_primary
-          focus:outline-none
-        "
-      >
-        {is_dark ? <Sun size={20} /> : <Moon size={20} />}
-      </button>
+      <div className="w-9 h-9 rounded-xl p-2" />
     );
   }
+
+  const is_dark = "dark" === resolvedTheme;
+
+  return (
+    <button
+      type="button"
+      onClick={() => setTheme(is_dark ? "light" : "dark")}
+      aria-label="Toggle theme"
+      className="
+        rounded-xl
+        p-2
+        text-slate-400
+        dark:text-slate-400
+        transition-colors
+        hover:bg-slate-100
+        dark:hover:bg-slate-800
+        hover:text-slate-900
+        dark:hover:text-slate-100
+        focus:outline-none
+      "
+    >
+      {is_dark ? <Sun size={20} className="text-amber-400" /> : <Moon size={20} className="text-slate-600" />}
+    </button>
+  );
 }

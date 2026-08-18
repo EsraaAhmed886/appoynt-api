@@ -5,11 +5,13 @@
  * Version Information: V1.0.0
  * Dependencies: tailwindcss
  * Contributors: [Kholoud Khaled, shimaa salah]
- * Last Modified Date: [shimaa salah- 13/08/2026]
- * File Description: Defines global styling rules and Tailwind CSS directives.
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * File Description: Defines global styling rules, Tailwind CSS directives, and class-based Dark Mode variant bindings.
  */
 
 @import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   /* Mappings for app design token colors */
@@ -35,9 +37,6 @@
   --background-image-brand-gradient: var(--brand-gradient);
 }
 
-
-@import "tailwindcss";
-
 /* Define global variables for default light mode */
 :root {
   /* Set light mode brand gradient transition colors */
@@ -45,9 +44,9 @@
   /* Set light mode primary brand blue color token */
   --app-primary: #0353E3;
   /* Set light mode body backdrop background color token */
-  --app-background: #ffffff;
+  --app-background: #f8fafc;
   /* Set light mode surface container color token */
-  --app-surface: #f8fafc;
+  --app-surface: #ffffff;
   /* Light mode sidebar background color token */
   --app-sidebar: #0D284C;
   --app-sidebar-text-primary: #ffffff;
@@ -57,78 +56,57 @@
   /* Set light mode border and separator color token */
   --app-border: #e5e7eb;
   /* Set light mode main primary label text color token */
-  --app-text-primary: #111827;
+  --app-text-primary: #0f172a;
   /* Set light mode secondary descriptor text color token */
-  --app-text-secondary: #6b7280;
+  --app-text-secondary: #64748b;
   /* Set light mode input box background color token */
   --app-input-fill: #f9fafb;
 }
 
 .dark {
   --app-primary: #2563eb;
-
-  --app-background: #0f172a;
-
-  --app-surface: #1e293b;
-
-  --app-sidebar: #1e293b;
+  --app-background: #070D1E;
+  --app-surface: #0E1726;
+  --app-sidebar: #0E1726;
   --app-sidebar-text-primary: #f8fafc;
   --app-sidebar-text-secondary: #94a3b8;
   --app-sidebar-hover: rgba(255, 255, 255, 0.08);
-  --app-sidebar-border: #334155;
-
-  --app-border: #334155;
-
+  --app-sidebar-border: #1e293b;
+  --app-border: #1e293b;
   --app-text-primary: #f8fafc;
-
   --app-text-secondary: #94a3b8;
+  --app-input-fill: #131D31;
+}
 
-  --app-input-fill: #0f172a;
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-900 dark:bg-[#070D1E] dark:text-slate-100 transition-colors duration-200;
+  }
 }
 
 /* Force global font inheritance for all input and button tags */
 html, body, input, button, textarea, select {
-  /* Default typography family configuration set to Inter variable */
   font-family: var(--font-inter), system-ui, sans-serif;
 }
 
 /* Force Cairo font family when document direction is set to right-to-left */
 [dir="rtl"], [dir="rtl"] body, [dir="rtl"] input, [dir="rtl"] button {
-  /* Dynamic font override mapping to Cairo variables */
   font-family: var(--font-cairo), sans-serif;
-}
-
-/* Apply global layout styles to body element */
-body {
-  /* Bind body text color to dynamic primary text token variables */
-  color: var(--app-text-primary);
-  /* Bind body backdrop background color to dynamic background token variables */
-  background-color: var(--app-background);
-  /* Configure smooth rendering for all active color conversions */
-  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* Animation for input error shake feedback effect */
 @keyframes shake {
-  /* Start animation keyframe position */
   0%, 100% {
-    /* Set shift translate value to zero */
     transform: translateX(0);
   }
-  /* First shake left transition position */
   25% {
-    /* Shift element left by four pixels */
     transform: translateX(-4px);
   }
-  /* Second shake right transition position */
   75% {
-    /* Shift element right by four pixels */
     transform: translateX(4px);
   }
 }
 
-/* Selector class mapping the custom shake animation keyframes */
 .animate-shake {
-  /* Apply the custom keyframe name with standard duration ease settings */
   animation: shake 0.4s ease-in-out;
 }

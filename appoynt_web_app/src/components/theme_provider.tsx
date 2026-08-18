@@ -6,8 +6,8 @@
  * Dependencies:
  *   - react
  *   - next-themes
- * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 05/08/2026]
+ * Contributors: shimaa salah, Kholoud Khaled
+ * Last Modified Date: [Kholoud Khaled - 28/05/2026]
  * File Description: Theme provider context wrapper integrating dark/light mode attribute management.
  */
 
@@ -23,8 +23,8 @@ export default function AppThemeProvider({ children }: ThemeProviderProps) {
   return (
     <ThemeProvider
       attribute="class"
-      defaultTheme="light"
-      enableSystem={false}
+      defaultTheme="system"
+      enableSystem
       disableTransitionOnChange
     >
       {children}
