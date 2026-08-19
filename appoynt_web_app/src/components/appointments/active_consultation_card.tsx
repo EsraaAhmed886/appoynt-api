@@ -2,11 +2,11 @@
  * File Name: active_consultation_card.tsx
  * Author: shimaa salah
  * Created Date: 18/08/2026
- * Version: v1.3.0
+ * Version: v1.4.0
  * Dependencies: react, lucide-react, @/types/appointment, @/hooks/use_consultation_timer, @/context/language_context
  * Contributors: [shimaa salah]
  * Last Modified: [shimaa salah - 19/08/2026]
- * Description: Client component rendering active consultation patient info, persistent timer, quick snapshot snapshot, and action buttons with 10-min minimum consultation time rules.
+ * Description: Client component rendering active consultation patient info, persistent timer, quick snapshot snapshot, and action buttons.
  */
 
 "use client";
@@ -17,7 +17,6 @@ import {
   Phone,
   Clock,
   CheckCircle2,
-  FileText,
   Pill,
   UserX,
   ExternalLink,
@@ -263,14 +262,6 @@ export default function active_consultation_card({
               </span>
             ) : null}
           </div>
-
-          <button
-            type="button"
-            className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-app-border bg-app-surface text-app-text-primary text-sm font-semibold hover:bg-app-input_fill transition"
-          >
-            <FileText className="h-4 w-4 text-app-text-secondary" />
-            {translations.btn_add_note}
-          </button>
 
           <button
             type="button"
