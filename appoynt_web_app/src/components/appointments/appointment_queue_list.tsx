@@ -2,7 +2,7 @@
  * File Name: appointment_queue_list.tsx
  * Author: shimaa salah
  * Created Date: 18/08/2026
- * Version: v1.1.0
+ * Version: v1.3.0
  * Dependencies: react, lucide-react, @/types/appointment, @/context/language_context
  * Contributors: [shimaa salah]
  * Last Modified: [shimaa salah - 19/08/2026]
@@ -11,7 +11,7 @@
 
 "use client";
 
-import { Users, MoreVertical, SlidersHorizontal } from "lucide-react";
+import { Users } from "lucide-react";
 import { queue_item } from "@/types/appointment";
 import { useTranslation } from "@/context/language_context";
 
@@ -96,9 +96,6 @@ export default function appointment_queue_list({
                   <th className="py-3 px-3">{translations.col_type}</th>
                   <th className="py-3 px-3">{translations.col_status}</th>
                   <th className="py-3 px-3">{translations.col_eta}</th>
-                  <th className="py-3 px-3 text-right rtl:text-left">
-                    {translations.col_actions}
-                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-app-border/30">
@@ -157,26 +154,6 @@ export default function appointment_queue_list({
                         ) : (
                           <span className="text-app-text-secondary">—</span>
                         )}
-                      </td>
-
-                      {/* Actions */}
-                      <td className="py-3.5 px-3 text-right rtl:text-left">
-                        <div className="flex items-center justify-end gap-1">
-                          <button
-                            type="button"
-                            aria-label="Filter action"
-                            className="p-1.5 rounded-lg text-app-text-secondary hover:bg-app-input_fill transition"
-                          >
-                            <SlidersHorizontal className="h-3.5 w-3.5" />
-                          </button>
-                          <button
-                            type="button"
-                            aria-label="More options"
-                            className="p-1.5 rounded-lg text-app-text-secondary hover:bg-app-input_fill transition"
-                          >
-                            <MoreVertical className="h-3.5 w-3.5" />
-                          </button>
-                        </div>
                       </td>
                     </tr>
                   );

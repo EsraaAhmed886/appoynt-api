@@ -2,11 +2,11 @@
  * File Name: appointments_dashboard.tsx
  * Author: shimaa salah
  * Created Date: 18/08/2026
- * Version: v1.2.0
- * Dependencies: react, @/context/language_context, @/services/appointment.service, @/types/appointment, @/components/common/loading_state, @/components/common/error_state
+ * Version: v1.4.0
+ * Dependencies: react, @/context/language_context, @/services/appointment.service, @/types/appointment, @/hooks/use_consultation_timer, @/components/common/loading_state, @/components/common/error_state
  * Contributors: [shimaa salah]
  * Last Modified: [shimaa salah - 19/08/2026]
- * Description: Interactive client dashboard container orchestrating appointments state, service calls, rigid sticky time slots panel layout, and end consultation workflow.
+ * Description: Interactive client dashboard container orchestrating appointments state, service calls, 10-min min / 5-min warning / auto-max consultation time rules, and end consultation workflow.
  */
 
 "use client";
@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "@/context/language_context";
 import { appointment_service } from "@/services/appointment.service";
 import { appointments_data_response } from "@/types/appointment";
+import { use_consultation_timer } from "@/hooks/use_consultation_timer";
 import LoadingState from "@/components/common/loading_state";
 import ErrorState from "@/components/common/error_state";
 import ActiveConsultationCard from "./active_consultation_card";
@@ -34,6 +35,12 @@ export default function AppointmentsDashboard() {
   // Modal interaction states
   const [is_end_modal_open, set_is_end_modal_open] = useState<boolean>(false);
   const [is_submitting_end, set_is_submitting_end] = useState<boolean>(false);
+
+  // Track active consultation ID to fire 5-minute warning notification only once per patient
+  const [warning_consultation_id, set_warning_consultation_id] = useState<string | null>(null);
+
+  const active_consultation = appointments_data?.active_consultation;
+  const timer_data = use_consultation_timer(active_consultation?.started_at);
 
   // Fetch initial appointments data from service layer
   const fetch_dashboard_data = async () => {
@@ -68,7 +75,55 @@ export default function AppointmentsDashboard() {
     }
   }, [toast_message]);
 
-  // Submit consultation completion request
+  // Monitor consultation time rules (5-min warning notification & automatic max-duration completion)
+  useEffect(() => {
+    if (null === active_consultation || undefined === active_consultation) {
+      return;
+    } else {
+      const slot_duration_mins = active_consultation.patient.visit_duration_mins ?? 30;
+      const max_duration_seconds = slot_duration_mins * 60;
+      const warning_threshold_seconds = Math.max(0, max_duration_seconds - 300);
+
+      // 1. Trigger 5-minute warning notification ONCE per active consultation session
+      if (
+        timer_data.elapsed_seconds >= warning_threshold_seconds &&
+        timer_data.elapsed_seconds < max_duration_seconds &&
+        warning_consultation_id !== active_consultation.consultation_id
+      ) {
+        set_warning_consultation_id(active_consultation.consultation_id);
+        set_toast_message(translations.toast_5min_warning);
+      } else {
+        // Warning threshold not reached or already notified
+      }
+
+      // 2. Automatically end consultation when reaching maximum time slot duration limit
+      if (timer_data.elapsed_seconds >= max_duration_seconds && false === is_submitting_end) {
+        set_is_submitting_end(true);
+        appointment_service.end_consultation(active_consultation.consultation_id).then((result) => {
+          if (true === result.success) {
+            set_appointments_data(result.data);
+            set_toast_message(translations.toast_auto_ended);
+          } else {
+            set_toast_message(translations.toast_consultation_end_failed);
+          }
+          set_is_submitting_end(false);
+        }).catch((auto_end_err) => {
+          console.error("Auto end consultation error:", auto_end_err);
+          set_is_submitting_end(false);
+        });
+      } else {
+        // Consultation remains within time limits
+      }
+    }
+  }, [
+    timer_data.elapsed_seconds,
+    active_consultation,
+    warning_consultation_id,
+    is_submitting_end,
+    translations,
+  ]);
+
+  // Submit consultation completion request manually
   const handle_confirm_end_consultation = async () => {
     if (null === appointments_data || null === appointments_data.active_consultation) {
       set_is_end_modal_open(false);

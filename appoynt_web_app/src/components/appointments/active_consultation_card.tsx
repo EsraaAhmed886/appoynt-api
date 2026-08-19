@@ -2,11 +2,11 @@
  * File Name: active_consultation_card.tsx
  * Author: shimaa salah
  * Created Date: 18/08/2026
- * Version: v1.2.0
+ * Version: v1.3.0
  * Dependencies: react, lucide-react, @/types/appointment, @/hooks/use_consultation_timer, @/context/language_context
  * Contributors: [shimaa salah]
  * Last Modified: [shimaa salah - 19/08/2026]
- * Description: Client component rendering active consultation patient info, persistent timer, quick summary snapshot, and action buttons with language-independent LTR timer formatting.
+ * Description: Client component rendering active consultation patient info, persistent timer, quick snapshot snapshot, and action buttons with 10-min minimum consultation time rules.
  */
 
 "use client";
@@ -68,6 +68,12 @@ export default function active_consultation_card({
         ? translations.visit_type_follow_up
         : translations.visit_type_new;
 
+    // Minimum consultation time calculations (10 minutes / 600 seconds)
+    const slot_duration_mins = patient.visit_duration_mins ?? 30;
+    const max_duration_seconds = slot_duration_mins * 60;
+    const min_duration_seconds = Math.min(600, max_duration_seconds);
+    const is_end_disabled = timer_data.elapsed_seconds < min_duration_seconds;
+
     return (
       <div className="rounded-2xl bg-app-surface p-5 md:p-6 border border-app-border shadow-xs space-y-6">
         {/* Header Title and Status Badge */}
@@ -111,7 +117,7 @@ export default function active_consultation_card({
                   {patient.full_name}
                 </h3>
                 <p className="text-xs text-app-text-secondary mt-0.5">
-                  {visit_type_label} • {patient.visit_duration_mins ?? 15} {translations.label_min}
+                  {visit_type_label} • {slot_duration_mins} {translations.label_min}
                 </p>
               </div>
 
@@ -237,14 +243,26 @@ export default function active_consultation_card({
 
         {/* Action Buttons Row */}
         <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-app-border/40">
-          <button
-            type="button"
-            onClick={on_end_click}
-            className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-app-primary text-white text-sm font-semibold hover:opacity-90 transition shadow-xs"
-          >
-            <CheckCircle2 className="h-4 w-4" />
-            {translations.btn_end_consultation}
-          </button>
+          <div className="flex flex-col gap-1">
+            <button
+              type="button"
+              onClick={on_end_click}
+              disabled={is_end_disabled}
+              title={is_end_disabled ? translations.lbl_min_consultation_time_help : undefined}
+              className={`
+                flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-app-primary text-white text-sm font-semibold transition shadow-xs
+                ${is_end_disabled ? "opacity-50 cursor-not-allowed" : "hover:opacity-90"}
+              `}
+            >
+              <CheckCircle2 className="h-4 w-4" />
+              {translations.btn_end_consultation}
+            </button>
+            {is_end_disabled ? (
+              <span className="text-[11px] text-app-text-secondary font-medium">
+                {translations.lbl_min_consultation_time_help}
+              </span>
+            ) : null}
+          </div>
 
           <button
             type="button"
