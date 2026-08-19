@@ -2,10 +2,10 @@
  * File Name: mock_appointments_data.ts
  * Author: shimaa salah
  * Created Date: 18/08/2026
- * Version: v1.0.0
+ * Version: v1.1.0
  * Dependencies: @/types/appointment
  * Contributors: [shimaa salah]
- * Last Modified: [shimaa salah - 18/08/2026]
+ * Last Modified: [shimaa salah - 19/08/2026]
  * Description: Seed mock dataset for daily appointments, active patient consultation, waiting queue, and time slots matching the UI design specs.
  */
 
@@ -40,7 +40,7 @@ export const initial_appointments_data: appointments_data_response = {
     status: "in_consultation",
   },
 
-  // Waiting queue list matching the middle table in wireframe
+  // Waiting queue list with complete patient profiles
   queue: [
     {
       id: "q_1",
@@ -50,7 +50,14 @@ export const initial_appointments_data: appointments_data_response = {
         full_name: "Mohamed Ali",
         age: 26,
         gender: "male",
+        phone_number: "0102 345 6789",
         visit_type: "follow_up",
+        visit_duration_mins: 15,
+        summary: {
+          chronic_diseases: ["Hypertension"],
+          allergies: ["Penicillin"],
+          last_visit_date: "Apr 10, 2024",
+        },
       },
       scheduled_time: "10:15 AM",
       visit_type: "follow_up",
@@ -64,7 +71,14 @@ export const initial_appointments_data: appointments_data_response = {
         full_name: "Sara Hossam",
         age: 32,
         gender: "female",
+        phone_number: "0111 892 3456",
         visit_type: "new",
+        visit_duration_mins: 20,
+        summary: {
+          chronic_diseases: ["Diabetes Type 2"],
+          allergies: ["Latex"],
+          last_visit_date: "May 02, 2024",
+        },
       },
       scheduled_time: "10:30 AM",
       visit_type: "new",
@@ -79,7 +93,14 @@ export const initial_appointments_data: appointments_data_response = {
         full_name: "Omar Khaled",
         age: 45,
         gender: "male",
+        phone_number: "0122 743 9182",
         visit_type: "follow_up",
+        visit_duration_mins: 15,
+        summary: {
+          chronic_diseases: ["Asthma"],
+          allergies: ["Aspirin"],
+          last_visit_date: "Mar 15, 2024",
+        },
       },
       scheduled_time: "11:00 AM",
       visit_type: "follow_up",
@@ -94,7 +115,14 @@ export const initial_appointments_data: appointments_data_response = {
         full_name: "Nourhan Saad",
         age: 23,
         gender: "female",
+        phone_number: "0100 564 1239",
         visit_type: "new",
+        visit_duration_mins: 15,
+        summary: {
+          chronic_diseases: ["Anemia"],
+          allergies: ["None"],
+          last_visit_date: "Apr 28, 2024",
+        },
       },
       scheduled_time: "11:30 AM",
       visit_type: "new",
