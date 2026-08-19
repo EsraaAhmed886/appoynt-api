@@ -2,11 +2,11 @@
  * File Name: appointments_dashboard.tsx
  * Author: shimaa salah
  * Created Date: 18/08/2026
- * Version: v1.1.0
+ * Version: v1.2.0
  * Dependencies: react, @/context/language_context, @/services/appointment.service, @/types/appointment, @/components/common/loading_state, @/components/common/error_state
  * Contributors: [shimaa salah]
  * Last Modified: [shimaa salah - 19/08/2026]
- * Description: Interactive client dashboard container orchestrating appointments state, service calls, section layouts, and end consultation workflow.
+ * Description: Interactive client dashboard container orchestrating appointments state, service calls, rigid sticky time slots panel layout, and end consultation workflow.
  */
 
 "use client";
@@ -136,7 +136,7 @@ export default function AppointmentsDashboard() {
       ) : null}
 
       {/* Main Grid Layout: 2 Columns on Desktop (lg:12), Single Column on Mobile */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Column (8 cols on desktop): Active Consultation & Queue List */}
         <div className="lg:col-span-8 space-y-6">
           <ActiveConsultationCard
@@ -147,8 +147,8 @@ export default function AppointmentsDashboard() {
           <AppointmentQueueList queue={appointments_data.queue} />
         </div>
 
-        {/* Right Column (4 cols on desktop): Time Slots Panel */}
-        <div className="lg:col-span-4">
+        {/* Right Column (4 cols on desktop): Rigid Sticky Time Slots Panel */}
+        <div className="lg:col-span-4 lg:sticky lg:top-0 self-start">
           <TimeSlotsPanel
             selected_date={appointments_data.selected_date}
             time_slots={appointments_data.time_slots}
