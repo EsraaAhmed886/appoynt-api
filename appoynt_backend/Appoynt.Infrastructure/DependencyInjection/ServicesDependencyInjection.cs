@@ -50,18 +50,6 @@ internal static class ServicesDependencyInjection
         // Register centralized profile image management service.
         services.AddScoped<IProfileImageService, ProfileImageService>();
 
-        // Register clinic management and slot services
-        services.AddScoped<Appoynt.Application.Common.Interfaces.IClinicService, Appoynt.Infrastructure.Services.ClinicService>();
-        services.AddScoped<Appoynt.Application.Common.Interfaces.ISlotGenerationService, Appoynt.Infrastructure.Services.SlotGenerationService>();
-        services.AddScoped<Appoynt.Application.Common.Interfaces.Seeding.IGovernorateSeeder, Appoynt.Infrastructure.Persistence.Seed.GovernorateSeeder>();
-        services.AddHostedService<Appoynt.Infrastructure.BackgroundServices.SlotMaintenanceService>();
-
-        // Register clinic validators
-        services.AddScoped<FluentValidation.IValidator<Appoynt.Application.Features.Clinics.Contracts.CreateClinicRequest>, Appoynt.Application.Features.Clinics.Validation.CreateClinicRequestValidator>();
-        services.AddScoped<FluentValidation.IValidator<Appoynt.Application.Features.Clinics.Contracts.UpdateClinicRequest>, Appoynt.Application.Features.Clinics.Validation.UpdateClinicRequestValidator>();
-        services.AddScoped<FluentValidation.IValidator<Appoynt.Application.Features.Clinics.Contracts.WorkingPeriodRequest>, Appoynt.Application.Features.Clinics.Validation.WorkingPeriodRequestValidator>();
-        services.AddScoped<FluentValidation.IValidator<Appoynt.Application.Features.Clinics.Contracts.BreakRequest>, Appoynt.Application.Features.Clinics.Validation.BreakRequestValidator>();
-
         return services;
     }
 }
