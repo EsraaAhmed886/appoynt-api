@@ -2,19 +2,20 @@
  * File Name: step2_medications.tsx
  * Author: Kholoud Khaled
  * Date of Creation: 20/08/2026
- * Version Information: v1.1.0
+ * Version Information: v1.2.0
  * Dependencies:
  *   - react
  *   - lucide-react
  *   - @/types/medical_record
  *   - @/context/medical_record_context
+ *   - @/components/medical-record/banners/clinical_alerts_banner
  *   - @/components/medical-record/modals/add_medication_modal
  *   - @/components/medical-record/modals/edit_medication_modal
  *   - @/components/medical-record/modals/confirm_deletion_modal
  *   - @/context/language_context
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 20/08/2026]
- * File Description: Step 2 Prescription Management workspace with active medications table, empty states, AI drug interaction verification card with recheck action, contraindicated allergy warning banner with mandatory acknowledgment, prescription instructions editor, and workflow stepper navigation.
+ * File Description: Step 2 Prescription Management workspace with pinned unified ClinicalAlertsBanner, active medications table, empty states, AI drug-disease interaction verification, contraindicated allergy warning banner with mandatory acknowledgment, and prescription instructions editor.
  */
 
 "use client";
@@ -35,6 +36,7 @@ import {
 } from "lucide-react";
 import { MedicationItem } from "@/types/medical_record";
 import { useMedicalRecordWorkflow } from "@/context/medical_record_context";
+import ClinicalAlertsBanner from "@/components/medical-record/banners/clinical_alerts_banner";
 import AddMedicationModal from "@/components/medical-record/modals/add_medication_modal";
 import EditMedicationModal from "@/components/medical-record/modals/edit_medication_modal";
 import ConfirmDeletionModal from "@/components/medical-record/modals/confirm_deletion_modal";
@@ -117,7 +119,7 @@ export default function Step2Medications() {
               {translations.step2_title || "Step 2: Medications & Prescriptions"}
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              {translations.step2_desc || "Manage prescription items, specify precise dosage & durations, and evaluate real-time drug interaction safety."}
+              {translations.step2_desc || translations.step2_subtitle || "Manage prescription items, specify precise dosage & durations, and evaluate real-time drug interaction safety."}
             </p>
           </div>
         </div>
@@ -132,14 +134,20 @@ export default function Step2Medications() {
         </button>
       </div>
 
-      {/* 2. Contraindication Alert Banner (Amber) if conflicts exist */}
+      {/* 2. Pinned Unified Clinical Alerts Banner (Allergies + Chronic Conditions) */}
+      <ClinicalAlertsBanner
+        allergies={patient?.activeAllergies || []}
+        conditions={patient?.chronicConditions || []}
+      />
+
+      {/* 3. Contraindication Alert Banner (Amber) if conflicts exist */}
       {hasContraindications && (
         <div className="p-4 md:p-5 bg-amber-50 dark:bg-amber-950/40 border-2 border-amber-300 dark:border-amber-700/80 rounded-2xl space-y-3 shadow-xs">
           <div className="flex items-start gap-3">
             <AlertTriangle className="w-6 h-6 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
             <div className="space-y-1">
               <h4 className="text-sm font-bold text-amber-900 dark:text-amber-100">
-                Potential Allergy Contraindication Detected
+                {translations.allergy_conflict_detected || "Potential Allergy Contraindication Detected"}
               </h4>
               <p className="text-xs text-amber-800 dark:text-amber-300 leading-relaxed">
                 The prescribed medication stack intersects with known patient allergy sensitivities:
@@ -161,7 +169,7 @@ export default function Step2Medications() {
               onChange={(e) => setContraindicationAcknowledged(e.target.checked)}
               className="rounded-md text-amber-600 focus:ring-amber-500 w-4 h-4 cursor-pointer"
             />
-            <span>I acknowledge this potential contraindication and confirm clinical override to proceed.</span>
+            <span>{translations.acknowledge_warnings_prompt || "I acknowledge this potential contraindication and confirm clinical override to proceed."}</span>
           </label>
         </div>
       )}
@@ -174,13 +182,13 @@ export default function Step2Medications() {
               <thead className="bg-slate-50 dark:bg-[#131E35] border-b-2 border-slate-200 dark:border-slate-800 uppercase text-[11px] font-bold text-slate-500 dark:text-slate-400">
                 <tr>
                   <th className="py-3.5 px-4 text-start w-10">#</th>
-                  <th className="py-3.5 px-4 text-start">{translations.medication_name || "Medication"}</th>
+                  <th className="py-3.5 px-4 text-start">{translations.medication_name || "Medication Name"}</th>
                   <th className="py-3.5 px-4 text-start">{translations.dosage || "Dosage"}</th>
                   <th className="py-3.5 px-4 text-start">{translations.frequency || "Frequency"}</th>
                   <th className="py-3.5 px-4 text-start">{translations.duration || "Duration"}</th>
                   <th className="py-3.5 px-4 text-start">{translations.route || "Route"}</th>
                   <th className="py-3.5 px-4 text-start">{translations.instructions || "Instructions"}</th>
-                  <th className="py-3.5 px-4 text-end">{translations.actions || "Actions"}</th>
+                  <th className="py-3.5 px-4 text-end">{translations.col_actions || translations.actions || "Actions"}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800 font-medium">
@@ -211,7 +219,7 @@ export default function Step2Medications() {
                     <td className="py-3.5 px-4 whitespace-nowrap">
                       {med.isOngoing ? (
                         <span className="px-2 py-0.5 bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 rounded-md font-bold text-[11px]">
-                          Ongoing
+                          {translations.chronic_ongoing || translations.ongoing_treatment || "Ongoing"}
                         </span>
                       ) : (
                         `${med.durationValue} ${med.durationUnit}`
@@ -255,7 +263,7 @@ export default function Step2Medications() {
               </span>
               <span className="inline-flex items-center gap-1.5 font-bold text-emerald-600 dark:text-emerald-400">
                 <CheckCircle2 className="w-4 h-4" />
-                <span>✓ AI Check: No major interactions detected</span>
+                <span>✓ {translations.ai_safety_ok || "AI Check: No major drug-drug interactions or chronic condition contraindications detected."}</span>
               </span>
             </div>
           </div>
@@ -267,10 +275,10 @@ export default function Step2Medications() {
             </div>
             <div className="space-y-1">
               <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                {translations.no_medications_added || "No medications added yet."}
+                {translations.no_medications || translations.no_medications_added || "No medications added yet."}
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
-                Add prescription regimens and dosing instructions to accompany this consultation encounter.
+                {translations.no_medications_sub || "Add prescription regimens and dosing instructions to accompany this consultation encounter."}
               </p>
             </div>
             <button
@@ -293,10 +301,10 @@ export default function Step2Medications() {
           </div>
           <div>
             <h4 className="text-xs md:text-sm font-bold text-emerald-900 dark:text-emerald-200">
-              AI Drug-Drug Interaction Safety Verification
+              {translations.ai_safety_title || "AI Drug-Drug & Disease Interaction Safety Verification"}
             </h4>
             <p className="text-xs text-emerald-700 dark:text-emerald-400">
-              All active prescriptions evaluated against standard pharmacopeia databases for severe interaction flags.
+              {translations.ai_safety_ok || "AI Check: No major drug-drug interactions or chronic condition contraindications detected."}
             </p>
           </div>
         </div>
@@ -308,7 +316,7 @@ export default function Step2Medications() {
           className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-xs transition flex items-center justify-center gap-1.5 shrink-0 cursor-pointer"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${isRechecking ? "animate-spin" : ""}`} />
-          <span>{isRechecking ? "Checking..." : "Recheck"}</span>
+          <span>{isRechecking ? "Checking..." : (translations.recheck || "Recheck")}</span>
         </button>
       </div>
 
@@ -316,7 +324,7 @@ export default function Step2Medications() {
       <div className="bg-white dark:bg-[#0E1726] border-2 border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-xs space-y-3">
         <div className="flex items-center justify-between">
           <label className="block text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-            {translations.instructions || "General Prescription & Pharmacy Instructions"}
+            {translations.patient_prescription_instructions || translations.instructions || "Prescription Instructions (For Patient)"}
           </label>
           <span className="text-[11px] font-mono text-slate-400">
             {(record.prescriptionInstructions || "").length} / 500
@@ -328,7 +336,7 @@ export default function Step2Medications() {
           maxLength={500}
           value={record.prescriptionInstructions || ""}
           onChange={(e) => setPrescriptionInstructions(e.target.value)}
-          placeholder="Enter patient pharmacy instructions (e.g. Take with food, finish entire course of antibiotics, avoid alcohol)..."
+          placeholder={translations.patient_instructions_placeholder || "Enter patient pharmacy instructions (e.g. Take with food, finish entire course of antibiotics, avoid alcohol)..."}
           className="w-full bg-slate-50 dark:bg-[#131E35] border-2 border-slate-200 dark:border-slate-700 rounded-xl p-3.5 text-xs md:text-sm font-medium text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 transition"
         />
       </div>
@@ -341,7 +349,7 @@ export default function Step2Medications() {
           className="px-5 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition flex items-center gap-1.5 cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4 rtl:rotate-180" />
-          <span>{translations.btn_back || "Back to Diagnoses"}</span>
+          <span>{translations.previous || translations.back || "Previous"}</span>
         </button>
 
         <div className="flex items-center gap-3 self-end sm:self-auto">
@@ -362,7 +370,7 @@ export default function Step2Medications() {
                 : "bg-slate-400 dark:bg-slate-700 cursor-not-allowed opacity-60"
             }`}
           >
-            <span>{translations.btn_next || "Next: Diagnostic Tests"}</span>
+            <span>{translations.next || "Next"}</span>
             <ArrowRight className="w-4 h-4 rtl:rotate-180" />
           </button>
         </div>
@@ -388,9 +396,9 @@ export default function Step2Medications() {
         onConfirm={() => {
           if (deletingMedId) removeMedication(deletingMedId);
         }}
-        title="Remove Medication"
-        description="Are you sure you want to delete this medication from the active prescription list?"
-        confirmLabel="Delete"
+        title={translations.confirm_deletion || "Remove Medication"}
+        description={translations.delete_confirmation_desc || "Are you sure you want to delete this medication from the active prescription list?"}
+        confirmLabel={translations.delete || "Delete"}
       />
 
       {/* Discard Draft Modal */}
@@ -400,9 +408,9 @@ export default function Step2Medications() {
         onConfirm={() => {
           window.location.reload();
         }}
-        title="Discard Draft Changes"
-        description="Are you sure you want to discard this consultation draft? Any unsaved edits will be lost."
-        confirmLabel="Discard Draft"
+        title={translations.discard_modal_title || "Discard Draft Changes"}
+        description={translations.discard_modal_body || "Are you sure you want to discard this consultation draft? Any unsaved edits will be lost."}
+        confirmLabel={translations.discard_confirm_btn || "Discard Draft"}
       />
     </div>
   );

@@ -2,18 +2,18 @@
  * File Name: patient_summary_tab.tsx
  * Author: Kholoud Khaled
  * Date of Creation: 20/08/2026
- * Version Information: v1.1.0
+ * Version Information: v1.3.0
  * Dependencies:
  *   - react
  *   - next/image
  *   - lucide-react
  *   - @/types/medical_record
  *   - @/components/medical-record/cards/record_status_card
- *   - @/components/medical-record/banners/allergy_alert_banner
+ *   - @/components/medical-record/banners/clinical_alerts_banner
  *   - @/context/language_context
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 20/08/2026]
- * File Description: Top-level Patient Summary dashboard tab component orchestrating the top 3-card demographic & status grid, dual-state clinical allergy alert banner, and continuity of care prior visit table.
+ * File Description: Top-level Patient Summary dashboard tab component orchestrating the top 3-card demographic & status grid, unified symmetrical clinical alerts banner, and continuity of care prior visit table.
  */
 
 "use client";
@@ -39,7 +39,7 @@ import {
   MedicalHistoryItem,
 } from "@/types/medical_record";
 import RecordStatusCard from "@/components/medical-record/cards/record_status_card";
-import AllergyAlertBanner from "@/components/medical-record/banners/allergy_alert_banner";
+import ClinicalAlertsBanner from "@/components/medical-record/banners/clinical_alerts_banner";
 import { useTranslation } from "@/context/language_context";
 
 interface PatientSummaryTabProps {
@@ -226,7 +226,7 @@ export default function PatientSummaryTab({
             {/* Layer 2: Clinical Outcome */}
             <div className="bg-slate-50 dark:bg-[#131E35] border-2 border-slate-200/80 dark:border-slate-700/70 rounded-xl p-3 space-y-0.5">
               <p className="font-bold text-[10px] uppercase tracking-wider text-blue-600 dark:text-blue-400">
-                {translations.medrec_outcome_title || "Clinical Outcome"}
+                {translations.clinical_outcome || translations.medrec_outcome_title || "Clinical Outcome"}
               </p>
               <p className="text-xs md:text-sm font-bold text-slate-900 dark:text-white">
                 {record.clinicalOutcome ? record.clinicalOutcome.replace(/_/g, " ") : "Follow Up In 1 Month"}
@@ -248,9 +248,10 @@ export default function PatientSummaryTab({
         />
       </div>
 
-      {/* 2. Allergy Alert Banner */}
-      <AllergyAlertBanner
+      {/* 2. Clinical Safety Section: Allergies & Chronic Conditions */}
+      <ClinicalAlertsBanner
         allergies={patient.activeAllergies || []}
+        conditions={patient.chronicConditions || []}
         isLoading={isLoading}
         isError={isError}
         onRetry={onRetry}
@@ -262,11 +263,11 @@ export default function PatientSummaryTab({
           <div className="flex items-center gap-2">
             <Activity className="w-4 h-4 text-blue-600 dark:text-blue-400" />
             <h3 className="text-sm md:text-base font-bold text-slate-900 dark:text-white">
-              {translations.continuity_of_care || "Continuity of Care (Last 3 Encounters)"}
+              {translations.continuity_title || translations.continuity_of_care || "Continuity of Care (Last 3 Encounters)"}
             </h3>
           </div>
           <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-            Showing last {last3Visits.length} recorded consultations
+            {translations.continuity_sub || `Showing last ${last3Visits.length} recorded consultations`}
           </span>
         </div>
 
@@ -274,10 +275,10 @@ export default function PatientSummaryTab({
           <table className="w-full text-xs text-slate-700 dark:text-slate-200 text-start">
             <thead className="bg-slate-50 dark:bg-[#131E35] border-b-2 border-slate-200 dark:border-slate-800 uppercase text-[11px] font-bold text-slate-500 dark:text-slate-400">
               <tr>
-                <th className="py-3 px-4 text-start whitespace-nowrap">{translations.date || "Visit Date"}</th>
-                <th className="py-3 px-4 text-start">{translations.primary_diagnosis || "Primary Diagnosis"}</th>
-                <th className="py-3 px-4 text-start">{translations.doctor || "Attending Doctor"}</th>
-                <th className="py-3 px-4 text-end">{translations.actions || "Actions"}</th>
+                <th className="py-3 px-4 text-start whitespace-nowrap">{translations.col_date || translations.date || "Visit Date"}</th>
+                <th className="py-3 px-4 text-start">{translations.col_diagnosis || translations.primary_diagnosis || "Primary Diagnosis"}</th>
+                <th className="py-3 px-4 text-start">{translations.col_doctor || translations.doctor || "Attending Doctor"}</th>
+                <th className="py-3 px-4 text-end">{translations.col_actions || translations.actions || "Actions"}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800 font-medium">
@@ -308,7 +309,7 @@ export default function PatientSummaryTab({
                         className="p-1.5 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/50 rounded-lg transition inline-flex items-center gap-1 cursor-pointer font-bold"
                       >
                         <Eye className="w-4 h-4" />
-                        <span>{translations.view_medical_record || "View"}</span>
+                        <span>{translations.view_record || translations.view_medical_record || "View"}</span>
                       </button>
                     </td>
                   </tr>

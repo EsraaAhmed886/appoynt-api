@@ -6,7 +6,7 @@
  * Dependencies:
  *   - @/types/medical_record
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 20/08/2026]
  * File Description: Realistic offline mock datasets for clinical consultation scenarios, ICD-10 catalogues, medication formulary, diagnostic test menus, and patient medical histories.
  */
 
@@ -45,23 +45,29 @@ export const MOCK_PATIENT_SUMMARY: PatientSummary = {
     {
       id: "cc-01",
       name: "Type 2 Diabetes Mellitus",
+      icd10_code: "E11.9",
       icd10Code: "E11.9",
+      diagnosed_date: "2021-03-15",
       diagnosedYear: "2021",
-      status: "CONTROLLED",
+      status: "controlled",
     },
     {
       id: "cc-02",
       name: "Essential Hypertension",
+      icd10_code: "I10",
       icd10Code: "I10",
+      diagnosed_date: "2019-11-20",
       diagnosedYear: "2019",
-      status: "ACTIVE",
+      status: "active",
     },
     {
       id: "cc-03",
       name: "Bronchial Asthma",
+      icd10_code: "J45.909",
       icd10Code: "J45.909",
+      diagnosed_date: "2015-06-10",
       diagnosedYear: "2015",
-      status: "CONTROLLED",
+      status: "managed",
     },
   ],
 };

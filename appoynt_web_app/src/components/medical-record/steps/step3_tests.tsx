@@ -131,7 +131,7 @@ export default function Step3Tests() {
               {translations.step3_title || "Step 3: Diagnostic Tests & Attachments"}
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              {translations.step3_desc || "Order laboratory diagnostics, upload supporting medical images or clinical PDF attachments, and finalize record."}
+              {translations.step3_desc || translations.step3_subtitle || "Order laboratory diagnostics, upload supporting medical images or clinical PDF attachments, and finalize record."}
             </p>
           </div>
         </div>
@@ -142,7 +142,7 @@ export default function Step3Tests() {
           className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-md transition flex items-center justify-center gap-2 shrink-0 cursor-pointer"
         >
           <Plus className="w-4 h-4" />
-          <span>{translations.add_new_test || "Order New Test"}</span>
+          <span>{translations.order_test || translations.add_new_test || "Order Diagnostic Test"}</span>
         </button>
       </div>
 
@@ -159,7 +159,7 @@ export default function Step3Tests() {
                   <th className="py-3.5 px-4 text-start">{translations.priority || "Priority"}</th>
                   <th className="py-3.5 px-4 text-start">{translations.status || "Status"}</th>
                   <th className="py-3.5 px-4 text-start">{translations.date || "Ordered Date"}</th>
-                  <th className="py-3.5 px-4 text-end">{translations.actions || "Actions"}</th>
+                  <th className="py-3.5 px-4 text-end">{translations.col_actions || translations.actions || "Actions"}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800 font-medium">
@@ -235,10 +235,10 @@ export default function Step3Tests() {
             </div>
             <div className="space-y-1">
               <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                {translations.no_tests_ordered || "No Tests Ordered Yet"}
+                {translations.no_tests || translations.no_tests_ordered || "No Tests Ordered Yet"}
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
-                Order laboratory or radiological workups to support the clinical management plan.
+                {translations.no_tests_sub || "Order laboratory or radiological workups to support the clinical management plan."}
               </p>
             </div>
             <button
@@ -247,7 +247,7 @@ export default function Step3Tests() {
               className="px-5 py-2 text-xs font-bold text-blue-600 hover:text-blue-700 bg-blue-50 dark:bg-blue-950/60 hover:bg-blue-100 dark:hover:bg-blue-900/60 rounded-xl transition inline-flex items-center gap-1.5 cursor-pointer"
             >
               <Plus className="w-4 h-4" />
-              <span>{translations.add_new_test || "Order Diagnostic Test"}</span>
+              <span>{translations.order_test || translations.add_new_test || "Order Diagnostic Test"}</span>
             </button>
           </div>
         )}
@@ -259,11 +259,11 @@ export default function Step3Tests() {
           <div className="flex items-center gap-2">
             <Paperclip className="w-4 h-4 text-blue-600 dark:text-blue-400" />
             <h3 className="text-sm md:text-base font-bold text-slate-900 dark:text-white">
-              Supporting Attachments & Diagnostic Images
+              {translations.attachments_title || "Supporting Attachments & Diagnostic Images"}
             </h3>
           </div>
           <span className="text-xs text-slate-400">
-            PDF, JPG, PNG (Max 10 MB per file)
+            {translations.attachments_sub || "PDF, JPG, PNG (Max 10 MB per file)"}
           </span>
         </div>
 
@@ -295,10 +295,13 @@ export default function Step3Tests() {
               <UploadCloud className="w-6 h-6" />
             </div>
             <p className="text-xs md:text-sm font-bold text-slate-800 dark:text-slate-200">
-              Drag & drop diagnostic reports or <span className="text-blue-600 dark:text-blue-400 underline">browse files</span>
+              {translations.drag_drop_title || "Drag & drop diagnostic reports or"}{" "}
+              <span className="text-blue-600 dark:text-blue-400 underline">
+                {translations.browse_files || "browse files"}
+              </span>
             </p>
             <p className="text-[11px] text-slate-400">
-              Upload lab results, ultrasound captures, radiology films, or ECG telemetry strips.
+              {translations.drag_drop_sub || "Upload lab results, ultrasound captures, radiology films, or ECG telemetry strips."}
             </p>
           </div>
         </div>
@@ -352,7 +355,7 @@ export default function Step3Tests() {
           className="px-5 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition flex items-center gap-1.5 cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4 rtl:rotate-180" />
-          <span>{translations.btn_back || "Back to Medications"}</span>
+          <span>{translations.previous || translations.back || "Previous"}</span>
         </button>
 
         <div className="flex items-center gap-3 self-end sm:self-auto">
@@ -370,7 +373,7 @@ export default function Step3Tests() {
             className="px-6 py-2.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-md transition flex items-center gap-2 cursor-pointer"
           >
             <Lock className="w-4 h-4" />
-            <span>{isFinalizing ? "Finalizing & Signing..." : (translations.finalize_consultation || "Finalize & Sign Medical Record")}</span>
+            <span>{isFinalizing ? "Finalizing & Signing..." : (translations.finalize_sign || translations.finalize_consultation || "Finalize & Sign Medical Record")}</span>
           </button>
         </div>
       </div>
@@ -388,9 +391,9 @@ export default function Step3Tests() {
         onConfirm={() => {
           if (deletingTestId) removeTestOrder(deletingTestId);
         }}
-        title="Remove Diagnostic Test"
-        description="Are you sure you want to cancel this diagnostic test order from the consultation record?"
-        confirmLabel="Remove Test"
+        title={translations.confirm_deletion || "Remove Diagnostic Test"}
+        description={translations.delete_confirmation_desc || "Are you sure you want to cancel this diagnostic test order from the consultation record?"}
+        confirmLabel={translations.delete || "Remove Test"}
       />
 
       {/* Finalize Locking Confirmation Modal */}
@@ -400,10 +403,10 @@ export default function Step3Tests() {
         onConfirm={async () => {
           await finalizeRecordNow();
         }}
-        title="Finalize & Lock Medical Record"
-        description="Are you sure you want to finalize and sign this medical record? Once finalized, the consultation will be locked against direct modification in compliance with clinical audit standards."
-        confirmLabel="Finalize & Sign Record"
-        cancelLabel="Keep in Draft"
+        title={translations.finalize_consultation || "Finalize & Lock Medical Record"}
+        description={translations.finalize_modal_body || "Are you sure you want to finalize and sign this medical record? Once finalized, the consultation will be locked against direct modification in compliance with clinical audit standards."}
+        confirmLabel={translations.finalize_sign || "Finalize & Sign Record"}
+        cancelLabel={translations.keep_in_draft || "Keep in Draft"}
         variant="primary"
       />
 
@@ -414,9 +417,9 @@ export default function Step3Tests() {
         onConfirm={() => {
           window.location.reload();
         }}
-        title="Discard Draft Changes"
-        description="Are you sure you want to discard this consultation draft? Any unsaved edits will be lost."
-        confirmLabel="Discard Draft"
+        title={translations.discard_modal_title || "Discard Draft Changes"}
+        description={translations.discard_modal_body || "Are you sure you want to discard this consultation draft? Any unsaved edits will be lost."}
+        confirmLabel={translations.discard_confirm_btn || "Discard Draft"}
       />
     </div>
   );

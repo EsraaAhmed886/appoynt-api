@@ -39,13 +39,17 @@ export interface PatientAllergy {
 
 export type AllergyItem = PatientAllergy;
 
-export interface PatientChronicCondition {
+export interface ChronicCondition {
   id: string;
   name: string;
+  icd10_code: string;
+  diagnosed_date?: string;
+  status: "active" | "managed" | "controlled" | "ACTIVE" | "CONTROLLED" | "MANAGED" | string;
   icd10Code?: string;
   diagnosedYear?: string;
-  status?: "ACTIVE" | "CONTROLLED" | string;
 }
+
+export type PatientChronicCondition = ChronicCondition;
 
 export interface PatientSummary {
   patientId: string;
@@ -58,7 +62,7 @@ export interface PatientSummary {
   email?: string;
   bloodType?: string;
   activeAllergies: PatientAllergy[];
-  chronicConditions?: PatientChronicCondition[];
+  chronicConditions?: ChronicCondition[];
 }
 
 export interface DiagnosisItem {

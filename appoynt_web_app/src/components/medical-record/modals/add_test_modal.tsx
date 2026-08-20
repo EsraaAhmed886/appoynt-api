@@ -57,6 +57,14 @@ export default function AddTestModal({
   const { addTestOrder } = useMedicalRecordWorkflow();
   const { translations } = useTranslation();
 
+  const categoryOptions: DropdownOption[] = [
+    { value: "All", label: translations.all_categories || "All Categories" },
+    { value: "Laboratory", label: translations.cat_lab || "Laboratory (Blood & Urine)" },
+    { value: "Radiology", label: translations.cat_radiology || "Radiology & Imaging" },
+    { value: "Cardiology", label: translations.cat_cardiology || "Cardiology Diagnostics" },
+    { value: "Pathology", label: translations.cat_pathology || "Pathology & Biopsy" },
+  ];
+
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [testResults, setTestResults] = useState<TestCatalogItem[]>([]);
@@ -159,7 +167,7 @@ export default function AddTestModal({
           {/* 1. Category Filter */}
           <CustomSelectDropdown
             label={translations.filter_record_type || "Test Category"}
-            options={CATEGORY_OPTIONS}
+            options={categoryOptions}
             value={selectedCategory}
             onChange={(val) => setSelectedCategory(val)}
             searchable={false}
@@ -176,7 +184,7 @@ export default function AddTestModal({
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search by test name, code, or department..."
+                placeholder={translations.search_tests || "Search by test name, code, or department..."}
                 className="w-full bg-slate-50 dark:bg-[#131E35] border-2 border-slate-200 dark:border-slate-700 rounded-xl ps-10 pe-4 py-2.5 text-xs md:text-sm font-medium text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
               />
             </div>
@@ -209,7 +217,7 @@ export default function AddTestModal({
                           </span>
                         </div>
                         <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                          {test.code} • Turnaround: {test.typicalTurnaround} {test.fastingRequired ? "• Fasting Required" : ""}
+                          {test.code} • {(translations.turnaround_time || "Turnaround: {time}").replace("{time}", test.typicalTurnaround || "")} {test.fastingRequired ? "• Fasting Required" : ""}
                         </p>
                       </div>
                       {isSelected && (
@@ -237,7 +245,7 @@ export default function AddTestModal({
                   {
                     value: "Routine",
                     label: translations.priority_routine || "Routine",
-                    desc: "Standard queue",
+                    desc: translations.priority_standard_queue || "Standard queue",
                     icon: Clock,
                     color: "border-slate-300 text-slate-700 dark:text-slate-200",
                     activeBg: "border-blue-600 bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300",
@@ -245,7 +253,7 @@ export default function AddTestModal({
                   {
                     value: "Urgent",
                     label: translations.priority_urgent || "Urgent",
-                    desc: "< 4 Hours",
+                    desc: translations.priority_within_4h || "Within 4 hours",
                     icon: Zap,
                     color: "border-amber-300 text-amber-700 dark:text-amber-200",
                     activeBg: "border-amber-500 bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300",
@@ -253,7 +261,7 @@ export default function AddTestModal({
                   {
                     value: "STAT",
                     label: translations.priority_stat || "STAT",
-                    desc: "Immediate",
+                    desc: translations.priority_immediate || "Immediate",
                     icon: Zap,
                     color: "border-rose-300 text-rose-700 dark:text-rose-200",
                     activeBg: "border-rose-600 bg-rose-50 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300",
@@ -304,7 +312,7 @@ export default function AddTestModal({
               rows={3}
               value={clinicalNotes}
               onChange={(e) => setClinicalNotes(e.target.value)}
-              placeholder="e.g. Evaluate elevated transaminases, patient fasting for 12 hours..."
+              placeholder={translations.test_instructions_placeholder || "e.g. Evaluate elevated transaminases, patient fasting for 12 hours..."}
               className="w-full bg-slate-50 dark:bg-[#131E35] border-2 border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs md:text-sm font-medium text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
             />
           </div>

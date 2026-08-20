@@ -31,6 +31,8 @@ import {
   FileCheck,
   User,
   CheckCircle2,
+  Clock,
+  ArrowRight,
 } from "lucide-react";
 import { useMedicalHistoryQuery } from "@/hooks/use_medical_record";
 import CustomSelectDropdown, { DropdownOption } from "@/components/ui/custom_select_dropdown";
@@ -113,20 +115,19 @@ export default function MedicalHistoryTab({
                 {total}
               </span>
               <span className="text-xs text-emerald-600 dark:text-emerald-400 font-bold">
-                • Finalized Records
+                • {translations.finalized_records_label || "Finalized Records"}
               </span>
             </div>
           </div>
         </div>
 
-        {/* Card 2: Latest Record Summary */}
         <div className="bg-white dark:bg-[#0E1726] border-2 border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-xs flex items-center justify-between gap-4">
           <div className="space-y-1 min-w-0">
             <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               {translations.latest_record || "Latest Finalized Record"}
             </p>
             <h4 className="text-sm md:text-base font-bold text-slate-900 dark:text-white truncate">
-              {latestRecord ? latestRecord.primaryDiagnosisTitle : "No History Records Found"}
+              {latestRecord ? latestRecord.primaryDiagnosisTitle : (translations.no_history_found || "No History Records Found")}
             </h4>
             <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
               {latestRecord
@@ -139,9 +140,10 @@ export default function MedicalHistoryTab({
             <button
               type="button"
               onClick={() => onViewRecordDetail(latestRecord.recordId)}
-              className="px-4 py-2 text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 hover:bg-blue-100 dark:hover:bg-blue-900/60 border border-blue-200 dark:border-blue-800 rounded-xl transition shrink-0 cursor-pointer"
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-xs transition flex items-center gap-1.5 shrink-0 cursor-pointer"
             >
-              {translations.view_latest || "View Latest"}
+              <span>{translations.view_latest || "View"}</span>
+              <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
             </button>
           )}
         </div>
@@ -166,7 +168,6 @@ export default function MedicalHistoryTab({
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-          {/* 1. Search Query */}
           <div className="relative">
             <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
               {translations.search || "Search Diagnosis"}
@@ -179,13 +180,12 @@ export default function MedicalHistoryTab({
                 onChange={(e) =>
                   setFilters({ ...filters, searchQuery: e.target.value })
                 }
-                placeholder="Search diagnosis code or name..."
+                placeholder={translations.search_diagnosis_placeholder || "Search diagnosis code or name..."}
                 className="w-full ps-10 pe-4 h-11 bg-slate-50 dark:bg-[#131E35] border-2 border-slate-200 dark:border-slate-700 rounded-xl text-xs md:text-sm font-medium text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 transition"
               />
             </div>
           </div>
 
-          {/* 2. Date Range Picker */}
           <div>
             <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
               {translations.date || "Date Range"}
@@ -201,7 +201,6 @@ export default function MedicalHistoryTab({
             </div>
           </div>
 
-          {/* 3. Record Status Select */}
           <CustomSelectDropdown
             label={translations.filter_record_status || "Record Status"}
             options={statusOptions}
@@ -210,7 +209,6 @@ export default function MedicalHistoryTab({
             searchable={false}
           />
 
-          {/* 4. Attending Doctor Select */}
           <CustomSelectDropdown
             label={translations.doctor || "Attending Doctor"}
             options={doctorOptions}
@@ -229,25 +227,25 @@ export default function MedicalHistoryTab({
               <table className="w-full text-xs text-slate-700 dark:text-slate-200 text-start">
                 <thead className="bg-slate-50 dark:bg-[#131E35] border-b-2 border-slate-200 dark:border-slate-800 uppercase text-[11px] font-bold text-slate-500 dark:text-slate-400">
                   <tr>
-                    <th className="py-3.5 px-4 text-start whitespace-nowrap">{translations.date || "Visit Date"}</th>
-                    <th className="py-3.5 px-4 text-start">{translations.primary_diagnosis || "Primary Diagnosis"}</th>
-                    <th className="py-3.5 px-4 text-start">{translations.status || "Status"}</th>
-                    <th className="py-3.5 px-4 text-start">{translations.doctor || "Attending Doctor"}</th>
-                    <th className="py-3.5 px-4 text-end">{translations.actions || "Actions"}</th>
+                    <th className="py-3 px-4 font-bold">{translations.col_date || "Date & Time"}</th>
+                    <th className="py-3 px-4 font-bold">{translations.col_diagnosis || "Primary Diagnosis"}</th>
+                    <th className="py-3 px-4 font-bold">{translations.col_doctor || "Attending Doctor"}</th>
+                    <th className="py-3 px-4 font-bold">{translations.status || "Status"}</th>
+                    <th className="py-3 px-4 font-bold text-end">{translations.col_actions || "Actions"}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800 font-medium">
+                <tbody className="divide-y-2 divide-slate-100 dark:divide-slate-800/80">
                   {historyItems.map((item) => (
                     <tr
                       key={item.recordId}
-                      className="hover:bg-slate-50/80 dark:hover:bg-[#131E35]/60 transition"
+                      className="hover:bg-slate-50 dark:hover:bg-[#131E35] transition"
                     >
-                      <td className="py-3.5 px-4 whitespace-nowrap font-bold text-slate-900 dark:text-white">
+                      <td className="py-3.5 px-4 font-mono font-medium text-slate-900 dark:text-white">
                         {item.visitDate}
                       </td>
                       <td className="py-3.5 px-4">
                         <div className="flex items-center gap-2">
-                          <span className="font-mono text-[11px] font-bold px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300">
+                          <span className="font-mono text-[11px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 px-2 py-0.5 rounded border border-blue-200 dark:border-blue-800">
                             {item.primaryDiagnosisCode}
                           </span>
                           <span className="font-bold text-slate-900 dark:text-white truncate">
@@ -255,30 +253,30 @@ export default function MedicalHistoryTab({
                           </span>
                         </div>
                       </td>
-                      <td className="py-3.5 px-4 whitespace-nowrap">
-                        <span
-                          className={`px-3 py-1 rounded-full text-[11px] font-bold whitespace-nowrap ${
-                            "FINALIZED_WITH_AMENDMENTS" === item.displayState
-                              ? "bg-purple-100 dark:bg-purple-950/60 text-purple-800 dark:text-purple-300 border border-purple-300 dark:border-purple-800"
-                              : "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800"
-                          }`}
-                        >
-                          {"FINALIZED_WITH_AMENDMENTS" === item.displayState
-                            ? (translations.finalized_with_amendments || "Finalized with Amendments")
-                            : `✓ ${translations.finalized || "Finalized"}`}
-                        </span>
-                      </td>
-                      <td className="py-3.5 px-4 whitespace-nowrap text-slate-700 dark:text-slate-300">
+                      <td className="py-3.5 px-4 font-medium text-slate-700 dark:text-slate-300">
                         {item.doctorName}
                       </td>
-                      <td className="py-3.5 px-4 text-end whitespace-nowrap">
+                      <td className="py-3.5 px-4">
+                        {item.status === "Finalized" ? (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                            <CheckCircle2 className="w-3.5 h-3.5" />
+                            <span>{translations.finalized || "Finalized"}</span>
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                            <Clock className="w-3.5 h-3.5" />
+                            <span>{translations.draft || "Draft"}</span>
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-3.5 px-4 text-end">
                         <button
                           type="button"
                           onClick={() => onViewRecordDetail(item.recordId)}
-                          className="p-1.5 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/60 rounded-lg transition inline-flex items-center gap-1 font-bold cursor-pointer"
+                          className="px-3 py-1.5 text-xs font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/60 rounded-lg transition inline-flex items-center gap-1 cursor-pointer"
                         >
-                          <Eye className="w-4 h-4" />
-                          <span>{translations.view_medical_record || "View"}</span>
+                          <Eye className="w-3.5 h-3.5" />
+                          <span>{translations.view || "View Record"}</span>
                         </button>
                       </td>
                     </tr>
@@ -287,10 +285,12 @@ export default function MedicalHistoryTab({
               </table>
             </div>
 
-            {/* Pagination Controls */}
             <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-[#131E35] border-t-2 border-slate-200 dark:border-slate-800 text-xs font-medium">
               <span className="text-slate-500 dark:text-slate-400">
-                Showing {((page - 1) * 10) + 1} to {Math.min(page * 10, total)} of {total} records
+                {(translations.showing_records_count || "Showing {from} to {to} of {total} records")
+                  .replace("{from}", String(((page - 1) * 10) + 1))
+                  .replace("{to}", String(Math.min(page * 10, total)))
+                  .replace("{total}", String(total))}
               </span>
 
               <div className="flex items-center gap-2">
@@ -303,7 +303,9 @@ export default function MedicalHistoryTab({
                   <ChevronLeft className="w-4 h-4 rtl:rotate-180" />
                 </button>
                 <span className="px-3 py-1 text-xs font-bold text-slate-800 dark:text-slate-200">
-                  Page {page} of {Math.max(1, totalPages)}
+                  {(translations.page_indicator || "Page {current} of {total}")
+                    .replace("{current}", String(page))
+                    .replace("{total}", String(Math.max(1, totalPages)))}
                 </span>
                 <button
                   type="button"
@@ -317,7 +319,6 @@ export default function MedicalHistoryTab({
             </div>
           </div>
         ) : (
-          /* Empty State */
           <div className="p-16 text-center space-y-3">
             <div className="w-14 h-14 bg-slate-100 dark:bg-slate-800 text-slate-400 rounded-full flex items-center justify-center mx-auto">
               <FolderOpen className="w-7 h-7" />
@@ -326,14 +327,14 @@ export default function MedicalHistoryTab({
               {translations.no_history_found || "No Medical Records Found"}
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
-              No previous encounters matched the specified filters. Try adjusting your query or date range.
+              {translations.no_history_desc || "No previous encounters matched the specified filters. Try adjusting your query or date range."}
             </p>
             <button
               type="button"
               onClick={handleResetFilters}
               className="px-4 py-2 text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
             >
-              Clear all filters
+              {translations.reset_filters || translations.reset || "Clear all filters"}
             </button>
           </div>
         )}

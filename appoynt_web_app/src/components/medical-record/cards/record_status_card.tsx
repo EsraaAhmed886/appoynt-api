@@ -68,7 +68,7 @@ export default function RecordStatusCard({
 
           {isDraft && (
             <span className="bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 font-bold px-3 py-1 rounded-full text-[11px] border border-amber-300 dark:border-amber-700/60 animate-pulse whitespace-nowrap">
-              {translations.draft || "Draft"} (Step {currentStep} of 3)
+              {translations.draft || "Draft"} ({(translations.step_of || "Step {current} of {total}").replace("{current}", String(currentStep)).replace("{total}", "3")})
             </span>
           )}
 
@@ -106,7 +106,7 @@ export default function RecordStatusCard({
                 <span className="font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                   <Clock className="w-3.5 h-3.5 text-amber-500" />
                   <span>
-                    Last saved: {record.lastSavedAtUtc ? new Date(record.lastSavedAtUtc).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Just now"}
+                    {translations.last_saved || "Last saved"}: {record.lastSavedAtUtc ? new Date(record.lastSavedAtUtc).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Just now"}
                   </span>
                 </span>
                 <span className="font-bold text-amber-600 dark:text-amber-400">
@@ -161,7 +161,7 @@ export default function RecordStatusCard({
             className="w-full py-2.5 px-4 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
           >
             <Sparkles className="w-4 h-4" />
-            <span>{translations.create_medical_record || "Create Medical Record"}</span>
+            <span>{translations.create_record || translations.create_medical_record || "Create Medical Record"}</span>
           </button>
         )}
 
@@ -172,7 +172,7 @@ export default function RecordStatusCard({
             className="w-full py-2.5 px-4 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer tracking-wider uppercase"
           >
             <FileEdit className="w-4 h-4" />
-            <span>{translations.continue_medical_record || "Continue Medical Record"}</span>
+            <span>{translations.continue_record || translations.continue_medical_record || "Continue Medical Record"}</span>
             <ArrowRight className="w-4 h-4 rtl:rotate-180" />
           </button>
         )}
@@ -185,7 +185,7 @@ export default function RecordStatusCard({
               className="w-full py-2.5 px-4 text-xs font-bold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/60 hover:bg-blue-100 dark:hover:bg-blue-900/60 border border-blue-200 dark:border-blue-800 rounded-xl transition flex items-center justify-center gap-2 cursor-pointer"
             >
               <Eye className="w-4 h-4" />
-              <span>{translations.view_medical_record || "View Medical Record"}</span>
+              <span>{translations.view_record || translations.view_medical_record || "View Medical Record"}</span>
             </button>
             {isAmended && (
               <button

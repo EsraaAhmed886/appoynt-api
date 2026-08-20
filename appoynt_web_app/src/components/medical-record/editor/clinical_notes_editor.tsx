@@ -147,7 +147,7 @@ export default function ClinicalNotesEditor({
             className="text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-50 dark:bg-blue-950/60 hover:bg-blue-100 dark:hover:bg-blue-900/60 transition cursor-pointer"
           >
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Insert Clinical Template</span>
+            <span>{translations.insert_template || "Insert Clinical Template"}</span>
           </button>
 
           {showTemplates && (
@@ -163,7 +163,7 @@ export default function ClinicalNotesEditor({
                   className="w-full text-start p-2 rounded-lg text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#131E35] transition cursor-pointer"
                 >
                   <p className="font-bold">{tmpl.label}</p>
-                  <p className="text-[10px] text-slate-400 truncate">{tmpl.text.slice(0, 45)}...</p>
+                  <p className="text-[11px] text-slate-500 truncate">{tmpl.text.replace(/\n/g, " ")}</p>
                 </button>
               ))}
             </div>
@@ -171,26 +171,26 @@ export default function ClinicalNotesEditor({
         </div>
       </div>
 
-      {/* Editor Container */}
+      {/* Editor Surface */}
       <div
-        className={`bg-white dark:bg-[#0E1726] border-2 ${
+        className={`w-full rounded-2xl border-2 transition overflow-hidden bg-white dark:bg-[#0E1726] shadow-xs ${
           error
-            ? "border-rose-500"
+            ? "border-rose-500 dark:border-rose-500"
             : isMinMet
-            ? "border-slate-300 dark:border-slate-700 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20"
-            : "border-amber-300 dark:border-amber-700/80"
-        } rounded-2xl overflow-hidden shadow-xs transition`}
+            ? "border-slate-200 dark:border-slate-800 focus-within:border-blue-500 dark:focus-within:border-blue-500"
+            : "border-slate-200 dark:border-slate-800 focus-within:border-blue-500"
+        }`}
       >
         {/* Formatting Toolbar */}
-        <div className="flex flex-wrap items-center justify-between gap-1 p-2 bg-slate-50 dark:bg-[#131E35] border-b-2 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300">
-          <div className="flex items-center gap-0.5">
+        <div className="flex flex-wrap items-center justify-between gap-1 p-2 bg-slate-50/80 dark:bg-[#131E35] border-b border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300">
+          <div className="flex flex-wrap items-center gap-0.5">
             {/* Undo / Redo */}
             <button
               type="button"
-              disabled={disabled || historyIndex === 0}
+              disabled={disabled || historyIndex <= 0}
               onClick={handleUndo}
               title="Undo"
-              className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 disabled:opacity-40 transition cursor-pointer"
+              className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 disabled:opacity-30 transition cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5" />
             </button>
@@ -199,20 +199,20 @@ export default function ClinicalNotesEditor({
               disabled={disabled || historyIndex >= history.length - 1}
               onClick={handleRedo}
               title="Redo"
-              className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 disabled:opacity-40 transition cursor-pointer"
+              className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 disabled:opacity-30 transition cursor-pointer"
             >
               <RotateCw className="w-3.5 h-3.5" />
             </button>
 
             <span className="h-4 w-px bg-slate-300 dark:bg-slate-700 mx-1" />
 
-            {/* Bold, Italic, Underline */}
+            {/* Inline Formatting */}
             <button
               type="button"
               disabled={disabled}
               onClick={() => insertFormatting("**", "**")}
-              title="Bold"
-              className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition cursor-pointer font-bold"
+              title="Bold (**text**)"
+              className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition cursor-pointer"
             >
               <Bold className="w-3.5 h-3.5" />
             </button>
@@ -220,8 +220,8 @@ export default function ClinicalNotesEditor({
               type="button"
               disabled={disabled}
               onClick={() => insertFormatting("*", "*")}
-              title="Italic"
-              className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition cursor-pointer italic"
+              title="Italic (*text*)"
+              className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition cursor-pointer"
             >
               <Italic className="w-3.5 h-3.5" />
             </button>
@@ -230,7 +230,7 @@ export default function ClinicalNotesEditor({
               disabled={disabled}
               onClick={() => insertFormatting("<u>", "</u>")}
               title="Underline"
-              className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition cursor-pointer underline"
+              className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition cursor-pointer"
             >
               <Underline className="w-3.5 h-3.5" />
             </button>
@@ -242,7 +242,7 @@ export default function ClinicalNotesEditor({
               type="button"
               disabled={disabled}
               onClick={() => insertFormatting("\n- ", "")}
-              title="Bullet List"
+              title="Bulleted List"
               className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition cursor-pointer"
             >
               <List className="w-3.5 h-3.5" />
@@ -310,10 +310,6 @@ export default function ClinicalNotesEditor({
               <Paperclip className="w-3.5 h-3.5" />
             </button>
           </div>
-
-          <div className="text-[11px] font-mono text-slate-400 dark:text-slate-500 pe-2">
-            Markdown Supported
-          </div>
         </div>
 
         {/* Textarea Area */}
@@ -324,28 +320,28 @@ export default function ClinicalNotesEditor({
           onChange={(e) => updateValueWithHistory(e.target.value)}
           maxLength={maxChars}
           rows={7}
-          placeholder="Record history of present illness, physical examination observations, clinical impression, and management strategy..."
+          placeholder={translations.clinical_notes_placeholder || "Record history of present illness, physical examination observations, clinical impression, and management strategy..."}
           className="w-full p-4 bg-transparent text-xs md:text-sm font-normal text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none resize-y leading-relaxed font-sans"
         />
 
-        {/* Bottom Strip: Validation status on left, character counter on right */}
+        {/* Bottom Strip */}
         <div className="flex items-center justify-between px-4 py-2.5 bg-slate-50/80 dark:bg-[#131E35]/60 border-t border-slate-200 dark:border-slate-800 text-xs">
           <div>
             {isMinMet ? (
               <span className="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold">
                 <CheckCircle2 className="w-3.5 h-3.5" />
-                <span>✓ Minimum length requirement met (10 characters)</span>
+                <span>{translations.notes_min_met || "✓ Minimum length requirement met (10 characters)"}</span>
               </span>
             ) : (
               <span className="inline-flex items-center gap-1.5 text-rose-600 dark:text-rose-400 font-semibold">
                 <AlertCircle className="w-3.5 h-3.5" />
-                <span>Please enter detailed notes (at least 10 characters)</span>
+                <span>{translations.notes_min_error || translations.min_notes_error || "Please enter detailed notes (at least 10 characters)"}</span>
               </span>
             )}
           </div>
 
           <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
-            Characters: {charCount} / {maxChars}
+            {(translations.chars_count || "Characters: {current} / {max}").replace("{current}", String(charCount)).replace("{max}", String(maxChars))}
           </span>
         </div>
       </div>

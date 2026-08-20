@@ -2,14 +2,14 @@
  * File Name: custom_select_dropdown.tsx
  * Author: Kholoud Khaled
  * Date of Creation: 20/08/2026
- * Version Information: v1.0.0
+ * Version Information: v1.1.0
  * Dependencies:
  *   - react
  *   - lucide-react
  *   - @/hooks/use_click_outside
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 20/08/2026]
- * File Description: Highly polished custom searchable select dropdown with trailing SVG chevron, blue checkmark active item indicator, keyword search filtering, and bottom action link triggers.
+ * File Description: Highly polished custom searchable select dropdown with clinical status indicator dots, trailing SVG chevron, blue checkmark active item indicator, keyword search filtering, and bottom action link triggers.
  */
 
 "use client";
@@ -17,12 +17,14 @@
 import React, { useState, useRef, useMemo, useId } from "react";
 import { ChevronDown, Check, Search, Plus, LucideIcon } from "lucide-react";
 import useClickOutside from "@/hooks/use_click_outside";
+import { useTranslation } from "@/context/language_context";
 
 export interface DropdownOption {
   value: string;
   label: string;
   subLabel?: string;
   icon?: LucideIcon;
+  dotColor?: string;
 }
 
 export interface CustomSelectDropdownProps {
@@ -41,6 +43,8 @@ export interface CustomSelectDropdownProps {
   onBottomAction?: () => void;
   icon?: LucideIcon;
   className?: string;
+  triggerClassName?: string;
+  menuClassName?: string;
 }
 
 export default function CustomSelectDropdown({
@@ -49,8 +53,8 @@ export default function CustomSelectDropdown({
   options,
   value,
   onChange,
-  placeholder = "Select an option...",
-  searchPlaceholder = "Search...",
+  placeholder,
+  searchPlaceholder,
   error,
   helperText,
   disabled = false,
@@ -59,7 +63,13 @@ export default function CustomSelectDropdown({
   onBottomAction,
   icon: Icon,
   className = "",
+  triggerClassName = "",
+  menuClassName = "",
 }: CustomSelectDropdownProps) {
+  const { translations } = useTranslation();
+  const defaultPlaceholder = placeholder || translations.select_option || "Select an option...";
+  const defaultSearchPlaceholder = searchPlaceholder || translations.search || "Search...";
+
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -114,7 +124,7 @@ export default function CustomSelectDropdown({
           className={`
             w-full flex items-center justify-between
             bg-slate-50 dark:bg-[#131E35]
-            border-2
+            border
             ${
               error
                 ? "border-rose-500"
@@ -122,25 +132,29 @@ export default function CustomSelectDropdown({
                 ? "border-blue-600 dark:border-blue-500"
                 : "border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600"
             }
-            rounded-xl px-3.5 py-2.5 h-11 text-xs md:text-sm font-medium
-            text-slate-800 dark:text-slate-100 shadow-2xs outline-none focus:outline-none
+            rounded-xl shadow-2xs outline-none focus:outline-none
+            text-slate-800 dark:text-slate-100
             cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed !transition-none
+            ${triggerClassName || "px-3.5 py-2.5 h-11 text-xs md:text-sm font-medium"}
           `}
         >
-          <div className="flex items-center gap-2.5 min-w-0">
+          <div className="flex items-center gap-2 min-w-0">
             {Icon && <Icon className="w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0" />}
+            {selectedOption?.dotColor && (
+              <span className={`w-2 h-2 rounded-full ${selectedOption.dotColor} shrink-0`} />
+            )}
             {selectedOption ? (
               <span className="truncate font-semibold text-slate-900 dark:text-white">
                 {selectedOption.label}
               </span>
             ) : (
               <span className="text-slate-400 dark:text-slate-500 truncate">
-                {placeholder}
+                {defaultPlaceholder}
               </span>
             )}
           </div>
           <ChevronDown
-            className={`w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0 ${
+            className={`w-3.5 h-3.5 text-slate-400 dark:text-slate-500 shrink-0 transition-transform duration-150 ${
               isOpen ? "rotate-180 text-blue-600 dark:text-blue-400" : ""
             }`}
           />
@@ -157,7 +171,7 @@ export default function CustomSelectDropdown({
               transform: "none",
               contain: "paint layout",
             }}
-            className="!transition-none !transform-none !animate-none !m-0 !p-0 absolute top-[calc(100%+4px)] start-0 end-0 z-50 bg-white dark:bg-[#131E35] border border-slate-200 dark:border-slate-700/80 rounded-xl shadow-lg max-h-56 overflow-hidden flex flex-col"
+            className={`!transition-none !transform-none !animate-none !m-0 !p-0 absolute top-[calc(100%+4px)] start-0 end-0 z-50 bg-white dark:bg-[#131E35] border border-slate-200 dark:border-slate-700/80 rounded-xl shadow-lg max-h-56 overflow-hidden flex flex-col ${menuClassName}`}
           >
             {/* Search Bar */}
             {searchable && (
@@ -168,7 +182,7 @@ export default function CustomSelectDropdown({
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder={searchPlaceholder}
+                    placeholder={defaultSearchPlaceholder}
                     className="w-full bg-slate-50 dark:bg-[#131E35] border border-slate-200 dark:border-slate-700 rounded-lg ps-8 pe-3 py-1.5 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500"
                   />
                 </div>
@@ -196,13 +210,18 @@ export default function CustomSelectDropdown({
                         }
                       `}
                     >
-                      <div className="min-w-0 pe-2">
-                        <p className="truncate">{opt.label}</p>
-                        {opt.subLabel && (
-                          <p className="text-[11px] text-slate-400 dark:text-slate-500 truncate">
-                            {opt.subLabel}
-                          </p>
+                      <div className="min-w-0 pe-2 flex items-center gap-2">
+                        {opt.dotColor && (
+                          <span className={`w-2 h-2 rounded-full ${opt.dotColor} shrink-0`} />
                         )}
+                        <div>
+                          <p className="truncate">{opt.label}</p>
+                          {opt.subLabel && (
+                            <p className="text-[11px] text-slate-400 dark:text-slate-500 truncate">
+                              {opt.subLabel}
+                            </p>
+                          )}
+                        </div>
                       </div>
                       {isSelected && (
                         <Check className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
@@ -212,7 +231,7 @@ export default function CustomSelectDropdown({
                 })
               ) : (
                 <div className="px-3 py-4 text-center text-xs text-slate-400 dark:text-slate-500">
-                  No matching options found
+                  {translations.no_matching_options || "No matching options found"}
                 </div>
               )}
             </div>

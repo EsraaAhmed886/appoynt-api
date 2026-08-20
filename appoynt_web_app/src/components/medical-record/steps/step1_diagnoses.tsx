@@ -2,7 +2,7 @@
  * File Name: step1_diagnoses.tsx
  * Author: Kholoud Khaled
  * Date of Creation: 20/08/2026
- * Version Information: v1.1.0
+ * Version Information: v1.2.0
  * Dependencies:
  *   - react
  *   - lucide-react
@@ -11,10 +11,11 @@
  *   - @/services/medical_record_service
  *   - @/components/medical-record/editor/clinical_notes_editor
  *   - @/components/medical-record/modals/confirm_deletion_modal
+ *   - @/components/ui/custom_select_dropdown
  *   - @/context/language_context
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 20/08/2026]
- * File Description: Step 1 Clinical Consultation presentation component providing dual-column ICD-10 diagnosis search, duplicate validation, ICD-10 detail cards, rich text clinical notes editor, autosave footer, and discard/next workflow navigation.
+ * File Description: Step 1 Clinical Consultation presentation component providing dual-column ICD-10 diagnosis search, custom styled clinical outcome assessment dropdown, duplicate validation, ICD-10 detail cards, rich text clinical notes editor, autosave footer, and discard/next workflow navigation.
  */
 
 "use client";
@@ -41,6 +42,7 @@ import { useMedicalRecordWorkflow } from "@/context/medical_record_context";
 import { MedicalRecordService } from "@/services/medical_record_service";
 import ClinicalNotesEditor from "@/components/medical-record/editor/clinical_notes_editor";
 import ConfirmDeletionModal from "@/components/medical-record/modals/confirm_deletion_modal";
+import CustomSelectDropdown, { DropdownOption } from "@/components/ui/custom_select_dropdown";
 import { useTranslation } from "@/context/language_context";
 
 export default function Step1Diagnoses() {
@@ -186,12 +188,35 @@ export default function Step1Diagnoses() {
   const isNotesValid = notesLength >= 10;
   const canProceed = isPrimarySelected && isNotesValid;
 
+  const outcomeOptions: DropdownOption[] = [
+    {
+      value: "DISCHARGED",
+      label: translations.outcome_discharged || "Discharged / Resolved",
+      dotColor: "bg-emerald-500",
+    },
+    {
+      value: "FOLLOW_UP_REQUIRED",
+      label: translations.outcome_follow_up || "Follow-up Required",
+      dotColor: "bg-amber-500",
+    },
+    {
+      value: "REFERRED_TO_SPECIALIST",
+      label: translations.outcome_specialist || "Referred to Specialist",
+      dotColor: "bg-purple-500",
+    },
+    {
+      value: "ADMITTED_TO_HOSPITAL",
+      label: translations.outcome_hospital || "Admitted to Hospital",
+      dotColor: "bg-rose-500",
+    },
+  ];
+
   return (
-    <div className="space-y-6 animate-in fade-in duration-200 text-start">
-      {/* 1. Header Step Banner */}
-      <div className="bg-white dark:bg-[#0E1726] border-2 border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-center gap-3.5">
-          <div className="p-3 bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 rounded-2xl border border-blue-200 dark:border-blue-800 shrink-0">
+    <div className="space-y-6 text-start">
+      {/* 1. Header Banner */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-[#0E1726] border-2 border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-xs">
+        <div className="flex items-center gap-3">
+          <div className="p-3 bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 rounded-xl">
             <Stethoscope className="w-6 h-6" />
           </div>
           <div>
@@ -199,26 +224,25 @@ export default function Step1Diagnoses() {
               {translations.step1_title || "Step 1: Diagnoses & Clinical Notes"}
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              {translations.step1_desc || "Identify standardized ICD-10 diagnostic classifications and document thorough clinical findings."}
+              {translations.step1_desc || translations.step1_subtitle || "Identify standardized ICD-10 diagnostic classifications and document thorough clinical findings."}
             </p>
           </div>
         </div>
 
         {/* Clinical Outcome Selector */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 whitespace-nowrap">
-            {translations.medrec_outcome_title || "Outcome"}:
+            {translations.clinical_outcome || translations.medrec_outcome_title || "Outcome"}:
           </label>
-          <select
-            value={record.clinicalOutcome}
-            onChange={(e) => setClinicalOutcome(e.target.value)}
-            className="bg-slate-50 dark:bg-[#131E35] border-2 border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer"
-          >
-            <option value="DISCHARGED">Discharged / Resolved</option>
-            <option value="FOLLOW_UP_REQUIRED">Follow-up Required</option>
-            <option value="REFERRED_TO_SPECIALIST">Referred to Specialist</option>
-            <option value="ADMITTED_TO_HOSPITAL">Admitted to Hospital</option>
-          </select>
+          <div className="w-56">
+            <CustomSelectDropdown
+              options={outcomeOptions}
+              value={record.clinicalOutcome || "FOLLOW_UP_REQUIRED"}
+              onChange={(val) => setClinicalOutcome(val as any)}
+              searchable={false}
+              triggerClassName="h-9 px-3 py-1.5 text-xs font-semibold rounded-xl bg-slate-50 dark:bg-[#131E35] border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 shadow-2xs"
+            />
+          </div>
         </div>
       </div>
 
@@ -233,11 +257,11 @@ export default function Step1Diagnoses() {
             {isPrimarySelected ? (
               <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-300 dark:border-emerald-700">
                 <CheckCircle2 className="w-3.5 h-3.5" />
-                <span>✓ Valid ICD-10 code selected</span>
+                <span>✓ {translations.valid_icd10 || "Valid ICD-10 code selected"}</span>
               </span>
             ) : (
               <span className="text-[11px] text-rose-500 font-semibold">
-                Required
+                {translations.required_badge || "Required"}
               </span>
             )}
           </div>
@@ -249,7 +273,7 @@ export default function Step1Diagnoses() {
               type="text"
               value={primarySearch}
               onChange={(e) => setPrimarySearch(e.target.value)}
-              placeholder="Search ICD-10 by code or keyword (e.g., I10, Hypertension, E11)..."
+              placeholder={translations.search_icd10_placeholder || "Search ICD-10 by code or keyword (e.g., I10, Hypertension)..."}
               className="w-full bg-slate-50 dark:bg-[#131E35] border-2 border-slate-200 dark:border-slate-700 rounded-xl ps-10 pe-4 py-2.5 text-xs md:text-sm font-medium text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 transition"
             />
 
@@ -311,13 +335,13 @@ export default function Step1Diagnoses() {
                 }}
                 className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1 pt-1 cursor-pointer"
               >
-                <span>View ICD-10 Details</span>
+                <span>{translations.view_icd10_details || "View ICD-10 Details"}</span>
                 <ExternalLink className="w-3 h-3" />
               </button>
             </div>
           ) : (
             <div className="p-6 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-center text-xs text-slate-400 dark:text-slate-500">
-              No primary diagnosis selected. Search the ICD-10 catalog above to bind primary condition.
+              {translations.search_icd10_placeholder || "Search the ICD-10 catalog above to bind primary condition."}
             </div>
           )}
 
@@ -333,10 +357,10 @@ export default function Step1Diagnoses() {
         <div className="bg-white dark:bg-[#0E1726] border-2 border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-xs space-y-4">
           <div className="flex items-center justify-between">
             <label className="block text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-              {translations.secondary_diagnoses || "Secondary Diagnoses (Optional)"}
+              {translations.secondary_diagnoses || translations.secondary_diagnosis || "Secondary Diagnoses (Optional)"}
             </label>
             <span className="text-[11px] text-slate-400 font-medium">
-              {(record.secondaryDiagnoses || []).length} added
+              {(translations.added_count || "Added {count}").replace("{count}", String((record.secondaryDiagnoses || []).length))}
             </span>
           </div>
 
@@ -347,7 +371,7 @@ export default function Step1Diagnoses() {
               type="text"
               value={secondarySearch}
               onChange={(e) => setSecondarySearch(e.target.value)}
-              placeholder="Search additional comorbidities (e.g. Type 2 Diabetes, Dyslipidemia)..."
+              placeholder={translations.search_icd10_placeholder || "Search additional comorbidities..."}
               className="w-full bg-slate-50 dark:bg-[#131E35] border-2 border-slate-200 dark:border-slate-700 rounded-xl ps-10 pe-4 py-2.5 text-xs md:text-sm font-medium text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 transition"
             />
 
@@ -408,7 +432,7 @@ export default function Step1Diagnoses() {
               ))
             ) : (
               <div className="p-6 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-center text-xs text-slate-400 dark:text-slate-500">
-                No secondary diagnoses added. Optional for recording comorbidities.
+                {translations.no_secondary_diagnoses || "No secondary diagnoses added. Optional for recording comorbidities."}
               </div>
             )}
           </div>
@@ -469,9 +493,9 @@ export default function Step1Diagnoses() {
               <button
                 type="button"
                 onClick={() => setSelectedDetailsItem(null)}
-                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-xs font-bold rounded-xl"
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-xs font-bold rounded-xl cursor-pointer"
               >
-                Close
+                {translations.cancel || "Close"}
               </button>
             </div>
           </div>
@@ -486,8 +510,8 @@ export default function Step1Diagnoses() {
           <span>
             {saveBanner ||
               (record.lastSavedAtUtc
-                ? `Draft autosaved • Last saved ${new Date(record.lastSavedAtUtc).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
-                : "Draft autosave active")}
+                ? (translations.draft_autosaved || "Draft autosaved • Last saved {time}").replace("{time}", new Date(record.lastSavedAtUtc).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }))
+                : (translations.draft_autosave_active || "Draft autosave active"))}
           </span>
           <button
             type="button"
@@ -496,7 +520,7 @@ export default function Step1Diagnoses() {
             className="ms-2 px-2.5 py-1 text-[11px] font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition inline-flex items-center gap-1 cursor-pointer"
           >
             <Save className="w-3 h-3" />
-            <span>{isSaving ? "Saving..." : "Save Now"}</span>
+            <span>{isSaving ? (translations.medrec_autosave_saving || "Saving...") : (translations.save_now || "Save Now")}</span>
           </button>
         </div>
 
@@ -532,9 +556,9 @@ export default function Step1Diagnoses() {
         onConfirm={() => {
           window.location.reload();
         }}
-        title="Discard Draft Changes"
-        description="Are you sure you want to discard this consultation draft? Any unsaved edits will be lost."
-        confirmLabel="Discard Draft"
+        title={translations.discard_modal_title || "Discard Draft Changes"}
+        description={translations.discard_modal_body || "Are you sure you want to discard this consultation draft? Any unsaved edits will be lost."}
+        confirmLabel={translations.discard_confirm_btn || "Discard Draft"}
       />
     </div>
   );

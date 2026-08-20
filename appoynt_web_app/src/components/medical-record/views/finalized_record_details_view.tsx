@@ -112,13 +112,15 @@ export default function FinalizedRecordDetailsView({
               </span>
             </div>
             <p className="text-xs text-emerald-800 dark:text-emerald-300">
-              Signed & authenticated by {record.doctorName || "Dr. Nada Khan"} • Verified on {record.finalizedAtUtc ? new Date(record.finalizedAtUtc).toLocaleString() : "2026-08-18"}
+              {(translations.signed_and_authenticated || "Signed & authenticated by {doctor} • Verified on {date}")
+                .replace("{doctor}", record.doctorName || "Dr. Nada Khan")
+                .replace("{date}", record.finalizedAtUtc ? new Date(record.finalizedAtUtc).toLocaleString() : "2026-08-18")}
             </p>
           </div>
         </div>
 
         <span className="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 font-bold text-xs rounded-full border border-emerald-300 dark:border-emerald-700 whitespace-nowrap self-start sm:self-auto">
-          ✓ Certified Signed
+          {translations.certified_signed || "Certified Signed ✓"}
         </span>
       </div>
 
@@ -185,7 +187,9 @@ export default function FinalizedRecordDetailsView({
               </span>
             </div>
           ) : (
-            <p className="text-xs text-slate-400">No primary diagnosis recorded.</p>
+            <p className="text-xs text-slate-400">
+              {translations.no_primary_diagnosis_recorded || "No primary diagnosis recorded."}
+            </p>
           )}
         </div>
 
@@ -217,7 +221,7 @@ export default function FinalizedRecordDetailsView({
             {translations.clinical_notes || "Clinical Notes"}
           </p>
           <div className="p-4 bg-slate-50 dark:bg-[#131E35] border-2 border-slate-200/80 dark:border-slate-700 rounded-xl text-xs md:text-sm text-slate-800 dark:text-slate-200 whitespace-pre-wrap leading-relaxed">
-            {record.clinicalNotes || "No notes recorded."}
+            {record.clinicalNotes || (translations.no_notes_recorded || "No notes recorded.")}
           </div>
         </div>
       </div>
@@ -259,7 +263,9 @@ export default function FinalizedRecordDetailsView({
             </table>
           </div>
         ) : (
-          <p className="text-xs text-slate-400">No medications prescribed during this encounter.</p>
+          <p className="text-xs text-slate-400">
+            {translations.no_medications_recorded || "No medications prescribed during this encounter."}
+          </p>
         )}
       </div>
 
@@ -296,14 +302,16 @@ export default function FinalizedRecordDetailsView({
             </table>
           </div>
         ) : (
-          <p className="text-xs text-slate-400">No laboratory or diagnostic tests ordered.</p>
+          <p className="text-xs text-slate-400">
+            {translations.no_tests_recorded || "No laboratory or diagnostic tests ordered."}
+          </p>
         )}
       </div>
 
       {/* 7. Bottom Locked Banner */}
       <div className="p-4 bg-slate-100 dark:bg-[#131E35] border-2 border-slate-200 dark:border-slate-700/80 rounded-2xl flex items-center justify-center gap-2 text-xs font-bold text-slate-600 dark:text-slate-300">
         <Lock className="w-4 h-4 text-slate-500" />
-        <span>🔒 This is a finalized record and cannot be edited.</span>
+        <span>{translations.finalized_locked_banner || "This is a finalized record and cannot be edited 🔒"}</span>
       </div>
     </div>
   );
