@@ -1,4 +1,4 @@
-﻿/*
+/*
  * File Name: medical_history_table.tsx
  * Author: Kholoud Khaled
  * Date of Creation: 18/08/2026
@@ -143,7 +143,7 @@ export default function MedicalHistoryTable({
                     {/* Status Badge: explicit min-w-[190px] whitespace-nowrap */}
                     <td className="py-4 px-6 min-w-[190px] whitespace-nowrap">
                       <RecordStatusBadge
-                        status={item.status}
+                        status={item.status || "FINALIZED"}
                         hasAmendments={item.hasAmendments}
                       />
                     </td>
@@ -154,7 +154,7 @@ export default function MedicalHistoryTable({
                         type="button"
                         onClick={() => onViewRecordDetail(item.recordId)}
                         className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer inline-flex items-center justify-center"
-                        title={translations.view || "View Record"}
+                        title={translations.view_medical_record || "View Record"}
                       >
                         <Eye className="w-4 h-4" />
                       </button>

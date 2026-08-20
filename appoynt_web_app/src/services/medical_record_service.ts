@@ -121,7 +121,7 @@ export class MedicalRecordService {
           const q = filters.searchQuery.toLowerCase();
           list = list.filter(
             (i) =>
-              i.primaryDiagnosisName.toLowerCase().includes(q) ||
+              (i.primaryDiagnosisName || i.primaryDiagnosisTitle || "").toLowerCase().includes(q) ||
               i.primaryDiagnosisCode.toLowerCase().includes(q) ||
               i.doctorName.toLowerCase().includes(q)
           );
@@ -293,7 +293,7 @@ export class MedicalRecordService {
     return MOCK_ICD10_CATALOG.filter(
       (item) =>
         item.code.toLowerCase().includes(q) ||
-        item.name.toLowerCase().includes(q) ||
+        (item.name || item.title || "").toLowerCase().includes(q) ||
         (item.category && item.category.toLowerCase().includes(q))
     );
   }
@@ -328,7 +328,8 @@ export class MedicalRecordService {
       list = list.filter(
         (item) =>
           item.name.toLowerCase().includes(q) ||
-          item.commonType.toLowerCase().includes(q)
+          (item.commonType && item.commonType.toLowerCase().includes(q)) ||
+          (item.category && item.category.toLowerCase().includes(q))
       );
     }
     return list;

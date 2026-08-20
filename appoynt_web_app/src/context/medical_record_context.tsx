@@ -50,6 +50,7 @@ interface MedicalRecordWorkflowContextType {
   addMedication: (medication: MedicationItem) => void;
   updateMedication: (medication: MedicationItem) => void;
   removeMedication: (id: string) => void;
+  setPrescriptionInstructions: (instructions: string) => void;
   addTestOrder: (test: TestOrderItem) => void;
   removeTestOrder: (id: string) => void;
   addAttachment: (attachment: AttachmentItem) => void;
@@ -229,6 +230,14 @@ export function MedicalRecordWorkflowProvider({
     markChanged();
   }, []);
 
+  const setPrescriptionInstructions = useCallback((instructions: string) => {
+    setRecord((prev) => ({
+      ...prev,
+      prescriptionInstructions: instructions,
+    }));
+    markChanged();
+  }, []);
+
   const addTestOrder = useCallback((test: TestOrderItem) => {
     setRecord((prev) => ({
       ...prev,
@@ -249,7 +258,7 @@ export function MedicalRecordWorkflowProvider({
   const addAttachment = useCallback((attachment: AttachmentItem) => {
     setRecord((prev) => ({
       ...prev,
-      attachments: [...prev.attachments, attachment],
+      attachments: [...(prev.attachments || []), attachment],
       status: "DRAFT",
     }));
     markChanged();
@@ -258,7 +267,7 @@ export function MedicalRecordWorkflowProvider({
   const removeAttachment = useCallback((id: string) => {
     setRecord((prev) => ({
       ...prev,
-      attachments: prev.attachments.filter((a) => a.id !== id),
+      attachments: (prev.attachments || []).filter((a) => a.id !== id),
     }));
     markChanged();
   }, []);
@@ -337,6 +346,7 @@ export function MedicalRecordWorkflowProvider({
         addMedication,
         updateMedication,
         removeMedication,
+        setPrescriptionInstructions,
         addTestOrder,
         removeTestOrder,
         addAttachment,

@@ -2,10 +2,10 @@
  * File Name: medical_record.ts
  * Author: Kholoud Khaled
  * Date of Creation: 18/08/2026
- * Version Information: v1.0.0
+ * Version Information: v1.2.0
  * Dependencies: None
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 20/08/2026]
  * File Description: TypeScript domain definitions and interfaces for the medical record consultation lifecycle including patient summaries, ICD-10 diagnostics, prescription regimens, test orders, and versioned audit histories.
  */
 
@@ -14,7 +14,12 @@ export type MedicalRecordStatus = "NOT_STARTED" | "DRAFT" | "FINALIZED";
 export type ClinicalOutcome =
   | "CONFIRMED_DIAGNOSIS"
   | "NO_ILLNESS_DETECTED"
-  | "DIAGNOSIS_PENDING";
+  | "DIAGNOSIS_PENDING"
+  | "DISCHARGED"
+  | "FOLLOW_UP_REQUIRED"
+  | "REFERRED_TO_SPECIALIST"
+  | "ADMITTED_TO_HOSPITAL"
+  | string;
 
 export type DisplayState =
   | "NOT_STARTED"
@@ -22,20 +27,24 @@ export type DisplayState =
   | "DRAFT_STEP_2"
   | "DRAFT_STEP_3"
   | "FINALIZED_CLEAN"
-  | "FINALIZED_WITH_AMENDMENTS";
+  | "FINALIZED_WITH_AMENDMENTS"
+  | string;
 
 export interface PatientAllergy {
+  id?: string;
   name: string;
-  severity: "MILD" | "MODERATE" | "SEVERE";
+  severity: "MILD" | "MODERATE" | "SEVERE" | string;
   reaction?: string;
 }
+
+export type AllergyItem = PatientAllergy;
 
 export interface PatientChronicCondition {
   id: string;
   name: string;
   icd10Code?: string;
   diagnosedYear?: string;
-  status?: "ACTIVE" | "CONTROLLED";
+  status?: "ACTIVE" | "CONTROLLED" | string;
 }
 
 export interface PatientSummary {
@@ -54,7 +63,8 @@ export interface PatientSummary {
 
 export interface DiagnosisItem {
   code: string; // ICD-10 Code
-  name: string;
+  name?: string;
+  title?: string;
   category?: string;
   description?: string;
   isPrimary?: boolean;
@@ -64,29 +74,34 @@ export interface MedicationItem {
   id: string;
   medicationName: string;
   dosageAmount: number;
-  dosageUnit: "mg" | "mL" | "tablet" | "capsule" | "drops" | "puff" | "patch" | "IU";
+  dosageUnit: "mg" | "mcg" | "g" | "mL" | "tablet" | "tablets" | "capsule" | "capsules" | "drops" | "puff" | "puffs" | "patch" | "IU" | string;
   frequency:
     | "Once daily"
     | "Twice daily"
     | "Three times daily"
     | "Four times daily"
+    | "Every 4 hours"
     | "Every 8 hours"
     | "Every 12 hours"
     | "With meals"
     | "Before bed"
-    | "As Needed";
+    | "At Bedtime"
+    | "As Needed"
+    | string;
   isOngoing: boolean;
   durationValue?: number;
-  durationUnit?: "Days" | "Weeks" | "Months" | "Years";
+  durationUnit?: "Days" | "Weeks" | "Months" | "Years" | string;
   route:
     | "Oral"
+    | "Sublingual"
     | "Topical"
     | "Inhalation"
     | "Intravenous"
     | "Intramuscular"
     | "Subcutaneous"
     | "Ophthalmic"
-    | "Otic";
+    | "Otic"
+    | string;
   instructions?: string;
   isIncomplete?: boolean;
   allergyConflict?: {
@@ -103,9 +118,11 @@ export interface TestOrderItem {
   testName: string;
   type: "Laboratory" | "Radiology" | "Cardiology" | "Pathology" | string;
   priority: TestPriority;
-  status: "Ordered" | "Sample Collected" | "Completed" | "Cancelled";
-  orderedOn: string;
+  status?: "Ordered" | "Sample Collected" | "Pending" | "Completed" | "Cancelled" | string;
+  orderedOn?: string;
+  orderedAtUtc?: string;
   clinicalNotes?: string;
+  requiresFast?: boolean;
 }
 
 export interface AttachmentItem {
@@ -121,7 +138,7 @@ export interface MedicalRecord {
   recordId: string;
   appointmentId: string;
   patientId: string;
-  doctorId: string;
+  doctorId?: string;
   doctorName?: string;
   clinicId?: string;
   clinicName?: string;
@@ -135,12 +152,13 @@ export interface MedicalRecord {
   clinicalNotes: string;
   medications: MedicationItem[];
   testsOrdered: TestOrderItem[];
-  attachments: AttachmentItem[];
-  isLocked: boolean;
-  hasUnsavedChanges: boolean;
-  lastSavedAtUtc: string | null;
-  finalizedAtUtc: string | null;
-  version: number;
+  attachments?: AttachmentItem[];
+  prescriptionInstructions?: string;
+  isLocked?: boolean;
+  hasUnsavedChanges?: boolean;
+  lastSavedAtUtc?: string | null;
+  finalizedAtUtc?: string | null;
+  version?: number;
   amendmentNotes?: string;
 }
 
@@ -151,17 +169,21 @@ export interface MedicalHistoryItem {
   doctorName: string;
   clinicName?: string;
   primaryDiagnosisCode: string;
-  primaryDiagnosisName: string;
-  status: "FINALIZED" | "DRAFT";
-  hasAmendments: boolean;
-  outcome: string;
+  primaryDiagnosisName?: string;
+  primaryDiagnosisTitle?: string;
+  status?: "FINALIZED" | "DRAFT" | string;
+  displayState?: DisplayState;
+  hasAmendments?: boolean;
+  outcome?: string;
 }
 
 export interface Icd10CatalogItem {
   code: string;
-  name: string;
+  name?: string;
+  title?: string;
   category: string;
   description?: string;
+  chapter?: string;
 }
 
 export interface MedicationCatalogItem {
@@ -169,15 +191,18 @@ export interface MedicationCatalogItem {
   name: string;
   category: string;
   defaultUnit: MedicationItem["dosageUnit"];
-  commonDosages: number[];
+  commonDosages: (number | string)[];
   allergenTag?: string;
 }
 
 export interface TestCatalogItem {
   id: string;
   name: string;
+  code?: string;
   category: string;
-  commonType: string;
+  commonType?: string;
+  typicalTurnaround?: string;
+  fastingRequired?: boolean;
 }
 
 export interface DrugInteractionCheckResult {
