@@ -89,6 +89,10 @@ public static class DatabaseInitializationExtensions
             IRoleSeeder roleSeeder = services.GetRequiredService<IRoleSeeder>();
             await roleSeeder.SeedAsync(cancellationToken).ConfigureAwait(false);
 
+            logger.LogInformation("Ensuring Egyptian governorates and cities exist in database.");
+            IGovernorateSeeder governorateSeeder = services.GetRequiredService<IGovernorateSeeder>();
+            await governorateSeeder.SeedAsync(cancellationToken).ConfigureAwait(false);
+
             if (!seedOptions.Enabled)
             {
                 logger.LogInformation("Optional demo data seeding is disabled via configuration.");

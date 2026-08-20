@@ -7,7 +7,7 @@
  *                  ICurrentUserService, IDateTimeProvider,
  *                  ApplicationUser, BaseEntity, OtpChallenge
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 25/07/2026
+ * Last Modified  : Mustafa Mahmoud - 2026-08-20
  * Description    : Represents the application's primary database context.
  *                  Responsible for entity mapping, persistence operations,
  *                  auditing, and soft-delete behavior.
@@ -128,6 +128,46 @@ public class ApplicationDbContext
     /// Gets the doctor-specialization join entries.
     /// </summary>
     public DbSet<DoctorSpecialization> DoctorSpecializations => Set<DoctorSpecialization>();
+
+    /// <summary>
+    /// Gets the governorates available in the system.
+    /// </summary>
+    public DbSet<Governorate> Governorates => Set<Governorate>();
+
+    /// <summary>
+    /// Gets the cities available in the system.
+    /// </summary>
+    public DbSet<City> Cities => Set<City>();
+
+    /// <summary>
+    /// Gets the clinics registered in the system.
+    /// </summary>
+    public DbSet<Clinic> Clinics => Set<Clinic>();
+
+    /// <summary>
+    /// Gets the additional contact phone numbers for clinics.
+    /// </summary>
+    public DbSet<ClinicPhoneNumber> ClinicPhoneNumbers => Set<ClinicPhoneNumber>();
+
+    /// <summary>
+    /// Gets the working periods for clinics.
+    /// </summary>
+    public DbSet<ClinicWorkingPeriod> ClinicWorkingPeriods => Set<ClinicWorkingPeriod>();
+
+    /// <summary>
+    /// Gets the breaks during clinic working periods.
+    /// </summary>
+    public DbSet<ClinicBreak> ClinicBreaks => Set<ClinicBreak>();
+
+    /// <summary>
+    /// Gets the appointment slots for clinics.
+    /// </summary>
+    public DbSet<AppointmentSlot> AppointmentSlots => Set<AppointmentSlot>();
+
+    /// <summary>
+    /// Gets the clinic-receptionist join entries.
+    /// </summary>
+    public DbSet<ClinicReceptionist> ClinicReceptionists => Set<ClinicReceptionist>();
 
     #endregion
 
