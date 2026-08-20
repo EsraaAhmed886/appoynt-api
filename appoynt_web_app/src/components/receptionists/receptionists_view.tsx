@@ -79,7 +79,7 @@ export default function ReceptionistsView() {
   const hasNoClinics = clinics.length === 0;
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200 text-start max-w-7xl mx-auto pb-12">
+    <div className="w-full space-y-6 animate-in fade-in duration-200 text-start pb-12">
       {/* Toast Notification Alert */}
       {toast && (
         <div

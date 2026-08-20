@@ -18,7 +18,7 @@ export default function ReceptionistTableSkeleton() {
   const rows = Array.from({ length: 5 });
 
   return (
-    <div className="bg-white dark:bg-[#0E1726] border-2 border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs overflow-hidden">
+    <div className="w-full bg-white dark:bg-[#0E1726] border-2 border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-xs text-start">
           <thead className="bg-slate-50 dark:bg-[#131E35] border-b-2 border-slate-200 dark:border-slate-800">

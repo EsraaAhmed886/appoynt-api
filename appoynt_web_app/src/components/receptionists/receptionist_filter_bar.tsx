@@ -131,7 +131,7 @@ export default function ReceptionistFilterBar() {
     sort !== "newest";
 
   return (
-    <div className="bg-white dark:bg-[#0E1726] border-2 border-slate-200 dark:border-slate-800 rounded-2xl p-4 md:p-5 shadow-xs space-y-4">
+    <div className="w-full bg-white dark:bg-[#0E1726] border-2 border-slate-200 dark:border-slate-800 rounded-2xl p-4 md:p-5 shadow-xs space-y-4">
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2 text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
           <Filter className="w-4 h-4 text-blue-600 dark:text-blue-400" />
