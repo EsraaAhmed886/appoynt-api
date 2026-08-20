@@ -1,4 +1,15 @@
-﻿using System;
+/**
+ * File Name      : 20260820004141_AddClinicManagementAndScheduling.cs
+ * Author         : Mustafa Mahmoud
+ * Created Date   : 2026-08-20
+ * Version        : v1.0.0
+ * Dependencies   : Microsoft.EntityFrameworkCore.Migrations
+ * Contributors   : [Mustafa Mahmoud]
+ * Last Modified  : Mustafa Mahmoud - 2026-08-20
+ * Description    : Database migration schema definition for Clinic management, working periods, breaks, and appointment slots.
+ */
+
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
