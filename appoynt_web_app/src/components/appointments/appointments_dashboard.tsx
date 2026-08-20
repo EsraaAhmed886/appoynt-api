@@ -27,7 +27,8 @@ export default function AppointmentsDashboard() {
   const { translations } = useTranslation();
 
   // Dashboard component states using snake_case
-  const [appointments_data, set_appointments_data] = useState<appointments_data_response | null>(null);
+  const [appointments_data, set_appointments_data] =
+    useState<appointments_data_response | null>(null);
   const [is_loading, set_is_loading] = useState<boolean>(true);
   const [has_error, set_has_error] = useState<boolean>(false);
   const [toast_message, set_toast_message] = useState<string | null>(null);
@@ -37,7 +38,9 @@ export default function AppointmentsDashboard() {
   const [is_submitting_end, set_is_submitting_end] = useState<boolean>(false);
 
   // Track active consultation ID to fire 5-minute warning notification only once per patient
-  const [warning_consultation_id, set_warning_consultation_id] = useState<string | null>(null);
+  const [warning_consultation_id, set_warning_consultation_id] = useState<
+    string | null
+  >(null);
 
   const active_consultation = appointments_data?.active_consultation;
   const timer_data = use_consultation_timer(active_consultation?.started_at);
@@ -80,7 +83,8 @@ export default function AppointmentsDashboard() {
     if (null === active_consultation || undefined === active_consultation) {
       return;
     } else {
-      const slot_duration_mins = active_consultation.patient.visit_duration_mins ?? 30;
+      const slot_duration_mins =
+        active_consultation.patient.visit_duration_mins ?? 30;
       const max_duration_seconds = slot_duration_mins * 60;
       const warning_threshold_seconds = Math.max(0, max_duration_seconds - 300);
 
@@ -105,7 +109,10 @@ export default function AppointmentsDashboard() {
 
   // Submit consultation completion request manually by doctor action
   const handle_confirm_end_consultation = async () => {
-    if (null === appointments_data || null === appointments_data.active_consultation) {
+    if (
+      null === appointments_data ||
+      null === appointments_data.active_consultation
+    ) {
       set_is_end_modal_open(false);
     } else {
       set_is_submitting_end(true);
@@ -136,6 +143,8 @@ export default function AppointmentsDashboard() {
         <LoadingState variant="list" rows={5} />
       </div>
     );
+  } else {
+    // No action needed
   }
 
   // Handle Error UI State using existing ErrorState component with Retry action
@@ -152,6 +161,8 @@ export default function AppointmentsDashboard() {
         </button>
       </div>
     );
+  } else {
+    // No action needed
   }
 
   return (
