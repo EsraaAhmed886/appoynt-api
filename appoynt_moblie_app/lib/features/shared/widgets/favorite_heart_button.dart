@@ -5,7 +5,7 @@
  * Version Information: V1.0.0
  * Dependencies: package:flutter/material.dart, app_spacing.dart, app_colors.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 14/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Unified reusable ECG Heart Pulse favorite button component
  *   shared across Doctors, Offers, and Clinics cards for 100% visual consistency.
  */

@@ -8,7 +8,7 @@
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 08/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Help & About screen containing support helpline, legal terms, open source licenses, and application version info.
  */
 
@@ -234,15 +234,15 @@ class _HelpAndAboutPageState extends State<HelpAndAboutPage> {
           child: rowContent,
         ),
       );
+    } else {
+      return Padding(
+        padding: const EdgeInsets.symmetric(
+          vertical: _LocalDimensions.input_padding_v,
+          horizontal: _LocalDimensions.input_padding_h,
+        ),
+        child: rowContent,
+      );
     }
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: _LocalDimensions.input_padding_v,
-        horizontal: _LocalDimensions.input_padding_h,
-      ),
-      child: rowContent,
-    );
   }
 
   @override

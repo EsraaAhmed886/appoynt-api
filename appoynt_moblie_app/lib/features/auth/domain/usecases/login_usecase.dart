@@ -6,7 +6,7 @@
  * Dependencies: package:dartz/dartz.dart, package:appoynt_mobile_app/core/error/failures.dart,
  *   package:appoynt_mobile_app/core/usecases/usecase.dart, auth_repository.dart, user_entity.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Represents the login business logic action.
  */
 

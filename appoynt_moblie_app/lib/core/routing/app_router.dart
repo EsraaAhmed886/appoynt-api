@@ -7,7 +7,7 @@
  *   forgot_password_page.dart, home_page.dart, global_cubit.dart, otp_page.dart,
  *   account_success_page.dart, reset_password_page.dart, password_success_page.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 09/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Main application router for generating page transitions from route settings.
  */
 
@@ -23,6 +23,7 @@ import 'package:appoynt_mobile_app/features/auth/presentation/pages/account_succ
 import 'package:appoynt_mobile_app/features/auth/presentation/pages/reset_password_page.dart';
 import 'package:appoynt_mobile_app/features/auth/presentation/pages/password_success_page.dart';
 import 'package:appoynt_mobile_app/features/home/presentation/pages/home_page.dart';
+import 'package:appoynt_mobile_app/features/notifications/presentation/pages/notifications_page.dart';
 import 'package:appoynt_mobile_app/core/logic/global_cubit.dart';
 
 /// Router class responsible for parsing route settings and building views.
@@ -37,6 +38,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const SplashScreen());
       case Routes.home:
         return MaterialPageRoute(builder: (_) => const HomePage());
+      case Routes.notifications:
+        return MaterialPageRoute(builder: (_) => const NotificationsPage());
       case Routes.login:
         return PageRouteBuilder(
           pageBuilder: (context, anim, secAnim) {
@@ -47,7 +50,7 @@ class AppRouter {
                     MaterialPageRoute(builder: (_) => const HomePage()),
                   );
                 } else {
-                  // Empty block to satisfy compiler
+                  // No action needed
                 }
               },
               on_go_to_register: () {
@@ -72,6 +75,8 @@ class AppRouter {
                                           ),
                                         ),
                                       );
+                                    } else {
+                                      // No action needed
                                     }
                                   },
                                   on_back: () {
@@ -83,6 +88,8 @@ class AppRouter {
                                 ),
                               ),
                             );
+                          } else {
+                            // No action needed
                           }
                         },
                         on_go_to_login: () {
@@ -95,7 +102,7 @@ class AppRouter {
                     ),
                   );
                 } else {
-                  // Empty block to satisfy compiler
+                  // No action needed
                 }
               },
               on_forgot_password: () {
@@ -140,11 +147,15 @@ class AppRouter {
                                                     ),
                                                   ),
                                                 );
+                                              } else {
+                                                // No action needed
                                               }
                                             },
                                           ),
                                         ),
                                       );
+                                    } else {
+                                      // No action needed
                                     }
                                   },
                                   on_back: () {
@@ -156,13 +167,15 @@ class AppRouter {
                                 ),
                               ),
                             );
+                          } else {
+                            // No action needed
                           }
                         },
                       ),
                     ),
                   );
                 } else {
-                  // Empty block to satisfy compiler
+                  // No action needed
                 }
               },
               on_toggle_language: () {

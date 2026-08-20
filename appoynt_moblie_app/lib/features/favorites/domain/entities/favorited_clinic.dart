@@ -1,11 +1,11 @@
-﻿/*
+/*
  * File Name: favorited_clinic.dart
  * Author: Kholoud Khaled
  * Date of Creation: 14/08/2026
  * Version Information: V1.0.0
  * Dependencies: package:equatable/equatable.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 14/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Domain entity model representing a favorited clinic record.
  */
 

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * File Name: favorites_repository_impl.dart
  * Author: Kholoud Khaled
  * Date of Creation: 14/08/2026
@@ -6,7 +6,7 @@
  * Dependencies: favorites_repository.dart, favorites_remote_data_source.dart,
  *   favorites_local_data_source.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 14/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Implements the FavoritesRepository interface coordinating remote
  *   data source queries with local cache isolation and session cleanup.
  */

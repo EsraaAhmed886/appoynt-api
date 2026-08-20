@@ -5,7 +5,7 @@
  * Version Information: V1.1.0
  * Dependencies: package:equatable/equatable.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 18/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Defines the DoctorSuggestion entity representing search autocomplete and results items.
  */
 

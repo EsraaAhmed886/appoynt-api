@@ -6,7 +6,7 @@
  * Dependencies: package:equatable/equatable.dart, package:flutter/material.dart,
  *   package:flutter_bloc/flutter_bloc.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Manages global configuration changes and notifies listening widgets.
  */
 

@@ -6,7 +6,7 @@
  * Dependencies: package:flutter_bloc/flutter_bloc.dart, dart:async,
  *   search_state.dart, search_history_item.dart, doctor_suggestion.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 17/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Manages the search input query processing, filter sets, history storage, and suggestion states.
  */
 
@@ -98,6 +98,67 @@ class SearchCubit extends Cubit<SearchState> {
       gender: "Male",
       created_at: 1784253200000,
     ),
+    DoctorSuggestion(
+      doctor_id: "doc_6",
+      name: "Dr. Salma Nour",
+      avatar_url: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=150&auto=format&fit=crop",
+      specialty: "Dentistry",
+      location: "Cairo",
+      rating: 4.5,
+      reviews_count: 85,
+      fee: 200,
+      is_available_today: true,
+      is_favorite: false,
+      gender: "Female",
+      created_at: 1784252200000,
+    ),
+    DoctorSuggestion(
+      doctor_id: "doc_7",
+      name: "Dr. Sherif Zaki",
+      avatar_url: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?q=80&w=150&auto=format&fit=crop",
+      specialty: "Ophthalmology",
+      location: "Alexandria",
+      rating: 4.7,
+      reviews_count: 110,
+      fee: 400,
+      is_available_today: false,
+      is_favorite: false,
+      gender: "Male",
+      created_at: 1784251200000,
+    ),
+    DoctorSuggestion(
+      doctor_id: "doc_8",
+      name: "Dr. Sandra Bullock",
+      avatar_url: "https://images.unsplash.com/photo-1594824813573-246434de83fb?q=80&w=150&auto=format&fit=crop",
+      specialty: "Psychiatry",
+      location: "Nasr City : abbas el akad",
+      rating: 5.0,
+      reviews_count: 310,
+      fee: 900,
+      is_available_today: true,
+      is_favorite: false,
+      gender: "Female",
+      created_at: 1784250200000,
+    ),
+  ];
+
+  // Static mock locations data records list for filter selection
+  static const List<Map<String, String>> mock_locations = [
+    {"id": "loc_1", "name": "Nasr City : abbas el akad"},
+    {"id": "loc_2", "name": "Cairo"},
+    {"id": "loc_3", "name": "Alexandria"},
+    {"id": "loc_4", "name": "Giza"},
+  ];
+
+  // Static mock specialties data records list for filter selection
+  static const List<Map<String, String>> mock_specialties = [
+    {"id": "spec_1", "name": "Dermatologist"},
+    {"id": "spec_2", "name": "Cardiology"},
+    {"id": "spec_3", "name": "Neurology"},
+    {"id": "spec_4", "name": "Pediatrics"},
+    {"id": "spec_5", "name": "Dentistry"},
+    {"id": "spec_6", "name": "Ophthalmology"},
+    {"id": "spec_7", "name": "Psychiatry"},
   ];
 
   // Constructor initializing starting parameters values representation
@@ -150,6 +211,20 @@ class SearchCubit extends Cubit<SearchState> {
     ));
   }
 
+  // Activates search mode and prepares state
+  void start_search() {
+    // Determine whether history exists or should display pure initial state
+    final SearchStatus next_status = true == state.recent_searches.isEmpty
+        ? SearchStatus.initial
+        : SearchStatus.historyLoaded;
+
+    // Emit updated status preserving other state parameters
+    emit(state.copyWith(
+      status: next_status,
+      show_filtered_results_explicitly: false,
+    ));
+  }
+
   // Helper method compiling results matching all search and filter criteria
   void _perform_search_and_filter() {
     // Check if query is active using Yoda comparison
@@ -170,6 +245,8 @@ class SearchCubit extends Cubit<SearchState> {
             : SearchStatus.historyLoaded,
       ));
       return;
+    } else {
+      // No action needed
     }
 
     // Check if query is empty and filters are set, but user hasn't explicitly clicked to show results (State C)
@@ -179,6 +256,8 @@ class SearchCubit extends Cubit<SearchState> {
         status: SearchStatus.filtersOnly,
       ));
       return;
+    } else {
+      // No action needed
     }
 
     // Start filtering from mock database list
@@ -190,6 +269,8 @@ class SearchCubit extends Cubit<SearchState> {
         return doc.name.toLowerCase().contains(state.query.toLowerCase()) ||
             doc.specialty.toLowerCase().contains(state.query.toLowerCase());
       }).toList();
+    } else {
+      // No action needed
     }
 
     // 2. Filter by location matches
@@ -197,6 +278,8 @@ class SearchCubit extends Cubit<SearchState> {
       results = results.where((doc) {
         return doc.location.toLowerCase().contains(state.selected_location_id.toLowerCase());
       }).toList();
+    } else {
+      // No action needed
     }
 
     // 3. Filter by specialty matches
@@ -204,6 +287,8 @@ class SearchCubit extends Cubit<SearchState> {
       results = results.where((doc) {
         return doc.specialty.toLowerCase().contains(state.selected_specialty_id.toLowerCase());
       }).toList();
+    } else {
+      // No action needed
     }
 
     // 4. Filter by gender matches
@@ -211,6 +296,8 @@ class SearchCubit extends Cubit<SearchState> {
       results = results.where((doc) {
         return doc.gender.toLowerCase() == state.selected_gender.toLowerCase();
       }).toList();
+    } else {
+      // No action needed
     }
 
     // 5. Filter by price range matches
@@ -224,9 +311,12 @@ class SearchCubit extends Cubit<SearchState> {
           return doc.fee >= 200 && doc.fee <= 500;
         } else if ("Above 500" == state.selected_price_range) {
           return doc.fee > 500;
+        } else {
+          return true;
         }
-        return true;
       }).toList();
+    } else {
+      // No action needed
     }
 
     // 6. Filter by rating matches
@@ -238,9 +328,12 @@ class SearchCubit extends Cubit<SearchState> {
           return doc.rating >= 4.0;
         } else if ("3+ Stars" == state.selected_rating) {
           return doc.rating >= 3.0;
+        } else {
+          return true;
         }
-        return true;
       }).toList();
+    } else {
+      // No action needed
     }
 
     // 7. Apply selected sorting option logic
@@ -268,6 +361,8 @@ class SearchCubit extends Cubit<SearchState> {
       case SearchSortOption.feeHighToLow:
         // Sort by consultation fee descending
         results.sort((a, b) => b.fee.compareTo(a.fee));
+        break;
+      default:
         break;
     }
 
@@ -302,6 +397,8 @@ class SearchCubit extends Cubit<SearchState> {
       _perform_search_and_filter();
       // Return early to skip debouncing executions
       return;
+    } else {
+      // No action needed
     }
 
     // Abort search requests if character count is below minimum length threshold
@@ -310,6 +407,8 @@ class SearchCubit extends Cubit<SearchState> {
       _perform_search_and_filter();
       // Terminate execution flow
       return;
+    } else {
+      // No action needed
     }
 
     // Capture query instance locally to compare after async delay completes
@@ -327,6 +426,8 @@ class SearchCubit extends Cubit<SearchState> {
         if (state.query != searched_query) {
           // Terminate stale request execution
           return;
+        } else {
+          // No action needed
         }
 
         // Emit loading status to trigger skeleton loader visual feedback
@@ -345,6 +446,8 @@ class SearchCubit extends Cubit<SearchState> {
         if (state.query != searched_query) {
           // Abort stale response emission
           return;
+        } else {
+          // No action needed
         }
 
         // Simulate offline connection failure if query matches trigger words
@@ -358,6 +461,8 @@ class SearchCubit extends Cubit<SearchState> {
           ));
           // Stop execution
           return;
+        } else {
+          // No action needed
         }
 
         // Execute search filtering and sorting logic
@@ -460,8 +565,9 @@ class SearchCubit extends Cubit<SearchState> {
           gender: doc.gender,
           created_at: doc.created_at,
         );
+      } else {
+        return doc;
       }
-      return doc;
     }).toList();
 
     emit(state.copyWith(suggestions: updated_suggestions));
@@ -475,6 +581,8 @@ class SearchCubit extends Cubit<SearchState> {
     if (true == trimmed.isEmpty) {
       // Terminate action
       return;
+    } else {
+      // No action needed
     }
 
     // Copy current history searches array
@@ -492,6 +600,8 @@ class SearchCubit extends Cubit<SearchState> {
     if (-1 != existing_index) {
       // Delete existing item index
       updated_list.removeAt(existing_index);
+    } else {
+      // No action needed
     }
 
     // Insert new history item at index 0 (top-most priority recent search)
@@ -516,6 +626,8 @@ class SearchCubit extends Cubit<SearchState> {
     if (updated_list.length > 10) {
       // Evict oldest history entry from end of array
       updated_list.removeLast();
+    } else {
+      // No action needed
     }
 
     // Emit updated searches array list

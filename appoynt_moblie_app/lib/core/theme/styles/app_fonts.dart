@@ -5,7 +5,7 @@
  * Version Information: V1.0.0
  * Dependencies: None
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Defines font family name constants and handles dynamic
  *   locale resolution for Cairo and Inter.
  */

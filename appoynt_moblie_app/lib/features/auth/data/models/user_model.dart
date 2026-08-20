@@ -5,7 +5,7 @@
  * Version Information: V1.0.0
  * Dependencies: user_entity.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Data Transfer Object (DTO) for the User entity. Handles JSON mapping.
  */
 
@@ -75,7 +75,11 @@ class UserModel extends UserEntity {
   static Map<String, dynamic> _decode_jwt(String token) {
     try {
       final parts = token.split('.');
-      if (parts.length < 2) return {};
+      if (parts.length < 2) {
+        return {};
+      } else {
+        // No action needed
+      }
       final String payload = parts[1];
       final String normalized = base64.normalize(payload);
       final String decoded = utf8.decode(base64.decode(normalized));

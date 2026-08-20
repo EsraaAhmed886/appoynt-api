@@ -6,7 +6,7 @@
  * Dependencies: flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
  *   search_cubit.dart, search_state.dart, app_spacing.dart, app_colors.dart, app_network_image.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 19/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Renders the dedicated Search Screen with dynamic states (A, B, C), inputs, and filters.
  */
 
@@ -1283,6 +1283,8 @@ class _SearchPageState extends State<SearchPage> {
             ),
           ],
         );
+      default:
+        return const SizedBox.shrink();
     }
   }
 
@@ -1596,6 +1598,8 @@ class _SearchPageState extends State<SearchPage> {
         return localizations.search_sort_fee_low_to_high;
       case SearchSortOption.feeHighToLow:
         return localizations.search_sort_fee_high_to_low;
+      default:
+        return localizations.search_sort_recently_added;
     }
   }
 }

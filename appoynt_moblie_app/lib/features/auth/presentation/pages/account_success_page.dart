@@ -5,7 +5,7 @@
  * Version Information: V1.0.0
  * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart, dart:async
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: A celebratory screen displayed after successful account creation or password
  *   reset. Features entrance animations and an automatic redirection timer.
  */
@@ -77,6 +77,8 @@ class _AccountSuccessPageState extends State<AccountSuccessPage>
         /// Executing the redirection if the widget is still in the tree.
         if (mounted) {
           widget.on_go_home();
+        } else {
+          // No action needed
         }
       } else {
         /// Updating the countdown value in the UI.

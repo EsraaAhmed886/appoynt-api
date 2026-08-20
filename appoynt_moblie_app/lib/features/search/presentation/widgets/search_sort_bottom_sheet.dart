@@ -6,7 +6,7 @@
  * Dependencies: package:flutter/material.dart, app_spacing.dart,
  *   app_colors.dart, app_localizations.dart, search_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 14/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Defines the unified Search sort bottom sheet modal matching
  *   the exact visual design, radio option cards, icon badges, and apply interaction
  *   established in FavoriteSortBottomSheet.
@@ -113,6 +113,8 @@ class _SearchSortBottomSheetState extends State<SearchSortBottomSheet> {
         return Icons.arrow_downward_rounded;
       case SearchSortOption.feeHighToLow:
         return Icons.arrow_upward_rounded;
+      default:
+        return Icons.access_time_rounded;
     }
   }
 
@@ -134,6 +136,8 @@ class _SearchSortBottomSheetState extends State<SearchSortBottomSheet> {
         return localizations.search_sort_fee_low_to_high;
       case SearchSortOption.feeHighToLow:
         return localizations.search_sort_fee_high_to_low;
+      default:
+        return localizations.search_sort_recently_added;
     }
   }
 
@@ -155,6 +159,8 @@ class _SearchSortBottomSheetState extends State<SearchSortBottomSheet> {
         return localizations.search_sort_fee_low_to_high_desc;
       case SearchSortOption.feeHighToLow:
         return localizations.search_sort_fee_high_to_low_desc;
+      default:
+        return localizations.search_sort_recently_added_desc;
     }
   }
 

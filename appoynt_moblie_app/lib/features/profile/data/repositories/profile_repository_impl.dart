@@ -7,7 +7,7 @@
  *   profile_local_data_source.dart, user_profile_model.dart,
  *   update_profile_request_model.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 13/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Implements the ProfileRepository interface coordinating
  *   remote API calls with local SharedPreferences caching. Implements the
  *   Stale-While-Revalidate strategy: cache writes occur automatically after
@@ -125,6 +125,8 @@ class ProfileRepositoryImpl implements ProfileRepository {
           gender: requestModel.gender ?? cached.gender,
         );
         await local_data_source.saveProfileToCache(fallback_updated);
+      } else {
+        // No action needed
       }
       debugPrint(
         '[ProfileRepositoryImpl] Post-update cache refresh notice: $refresh_error',

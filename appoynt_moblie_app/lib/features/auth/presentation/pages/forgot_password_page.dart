@@ -9,7 +9,7 @@
  *   package:appoynt_mobile_app/core/di/service_locator.dart,
  *   package:flutter_bloc/flutter_bloc.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 23/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: The Forgot Password screen allows users to request a reset code via
  *   their phone number. It follows the centralized design system and
  *   supports full bilingual localization.

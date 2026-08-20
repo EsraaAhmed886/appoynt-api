@@ -8,7 +8,7 @@
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 08/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: App Settings screen containing user notification preferences, language, display themes, and calendar sync configuration.
  */
 
@@ -107,6 +107,8 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
                   onTap: () {
                     if (is_arabic) {
                       context.read<GlobalCubit>().toggle_language();
+                    } else {
+                      // Already English
                     }
                     Navigator.pop(modal_context);
                   },
@@ -118,6 +120,8 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
                   onTap: () {
                     if (!is_arabic) {
                       context.read<GlobalCubit>().toggle_language();
+                    } else {
+                      // Already Arabic
                     }
                     Navigator.pop(modal_context);
                   },
@@ -309,15 +313,15 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
           child: rowContent,
         ),
       );
+    } else {
+      return Padding(
+        padding: const EdgeInsets.symmetric(
+          vertical: _LocalDimensions.input_padding_v,
+          horizontal: _LocalDimensions.input_padding_h,
+        ),
+        child: rowContent,
+      );
     }
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: _LocalDimensions.input_padding_v,
-        horizontal: _LocalDimensions.input_padding_h,
-      ),
-      child: rowContent,
-    );
   }
 
   @override

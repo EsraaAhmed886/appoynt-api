@@ -7,7 +7,7 @@
  *   package:connectivity_plus/connectivity_plus.dart,
  *   package:appoynt_mobile_app/core/widgets/no_internet_page.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: A wrapper widget that listens to global connectivity changes
  *   and displays NoInternetPage when the application goes offline.
  */

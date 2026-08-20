@@ -9,7 +9,7 @@
  *   package:appoynt_mobile_app/core/theme/colors/app_colors.dart,
  *   package:appoynt_mobile_app/core/widgets/app_network_image.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 04/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Defines a reusable, highly polished Doctor Card component
  *   displaying details, rating, fee, ecg-heart icon, and booking CTA.
  */

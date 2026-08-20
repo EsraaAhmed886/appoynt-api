@@ -6,7 +6,7 @@
  * Dependencies: package:dio/dio.dart, token_storage.dart, error_handler.dart,
  *   failures.dart, session_manager.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 10/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Network interceptor to append authorization token headers,
  *   map all HTTP/DioExceptions through ErrorHandler to typed Failure objects,
  *   and delegate session expiry handling to SessionManager on HTTP 401.

@@ -7,7 +7,7 @@
  *   user_profile_model.dart, update_profile_request_model.dart,
  *   api_constants.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 13/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Remote data source for profile feature operations. V1.2.0
  *   fixes getUserProfile to call the correct GET /api/patients/profile endpoint
  *   (which returns PatientProfileResponse with hasProfilePhoto), and adds the
@@ -112,6 +112,8 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
             'lastName': requestModel.last_name,
           },
         );
+      } else {
+        // No action needed
       }
     } catch (identity_error) {
       // Log identity update error notice without failing the primary patient update flow

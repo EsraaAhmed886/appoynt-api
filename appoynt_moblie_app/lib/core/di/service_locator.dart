@@ -7,7 +7,7 @@
  *   auth_remote_datasource.dart, auth_repository_impl.dart, login_usecase.dart,
  *   register_usecase.dart, auth_cubit.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Initializes and manages the singleton instances of services,
  *   repositories, use cases, and cubits using the GetIt service locator.
  */
@@ -62,6 +62,14 @@ import 'package:appoynt_mobile_app/features/favorites/domain/repositories/favori
 import 'package:appoynt_mobile_app/features/favorites/data/repositories/favorites_repository_impl.dart';
 // Favorites Cubit
 import 'package:appoynt_mobile_app/features/favorites/presentation/cubit/favorites_cubit.dart';
+// Notifications Remote Data Source
+import 'package:appoynt_mobile_app/features/notifications/data/datasources/notifications_remote_data_source.dart';
+// Notifications Repository Interface
+import 'package:appoynt_mobile_app/features/notifications/domain/repositories/notifications_repository.dart';
+// Notifications Repository Implementation
+import 'package:appoynt_mobile_app/features/notifications/data/repositories/notifications_repository_impl.dart';
+// Notifications Cubit
+import 'package:appoynt_mobile_app/features/notifications/presentation/cubit/notifications_cubit.dart';
 
 /// Global instance of the service locator.
 final GetIt get_it = GetIt.instance;
@@ -192,6 +200,27 @@ Future<void> setup_service_locator() async {
   get_it.registerFactory<FavoritesCubit>(() {
     return FavoritesCubit(
       repository: get_it<FavoritesRepository>(),
+    );
+  });
+
+  // ── Notifications Feature ───────────────────────────────
+
+  /// Registering the Notifications Remote Data Source implementation.
+  get_it.registerLazySingleton<NotificationsRemoteDataSource>(() {
+    return NotificationsRemoteDataSourceImpl();
+  });
+
+  /// Registering the Notifications Repository implementation.
+  get_it.registerLazySingleton<NotificationsRepository>(() {
+    return NotificationsRepositoryImpl(
+      remote_data_source: get_it<NotificationsRemoteDataSource>(),
+    );
+  });
+
+  /// Registering the Notifications Cubit factory instance.
+  get_it.registerFactory<NotificationsCubit>(() {
+    return NotificationsCubit(
+      repository: get_it<NotificationsRepository>(),
     );
   });
 }

@@ -5,7 +5,7 @@
  * Version Information: V1.2.0
  * Dependencies: None
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 13/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Data Transfer Object (DTO) for the User Profile. Handles
  *   JSON serialization and mapping. V1.2.0 adds the has_profile_photo boolean
  *   field sourced from the PatientProfileResponse schema.
@@ -63,8 +63,16 @@ class UserProfileModel {
 
   /// Converts a blood group string (e.g. 'A+', 'B-') or int to a standard enum int (0..7)
   static int? bloodGroupToInt(dynamic val) {
-    if (null == val) return null;
-    if (val is int) return val;
+    if (null == val) {
+      return null;
+    } else {
+      // No action needed
+    }
+    if (val is int) {
+      return val;
+    } else {
+      // No action needed
+    }
     final String str = val.toString().trim().replaceAll(' ', '').toUpperCase();
     switch (str) {
       case 'A+':
@@ -106,7 +114,11 @@ class UserProfileModel {
 
   /// Converts a backend blood group representation (int 0..7 or String) into 'A+', 'B-', etc.
   static String intToBloodGroup(dynamic val) {
-    if (null == val) return '';
+    if (null == val) {
+      return '';
+    } else {
+      // No action needed
+    }
     if (val is int) {
       switch (val) {
         case 0: return 'A+';
@@ -119,6 +131,8 @@ class UserProfileModel {
         case 7: return 'O-';
         default: return '';
       }
+    } else {
+      // No action needed
     }
     final String s = val.toString().trim();
     final int? parsed = int.tryParse(s);

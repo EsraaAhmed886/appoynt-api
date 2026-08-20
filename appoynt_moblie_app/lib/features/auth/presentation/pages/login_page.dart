@@ -10,7 +10,7 @@
  *   package:appoynt_mobile_app/features/auth/presentation/widgets/smart_password_field.dart,
  *   package:flutter_bloc/flutter_bloc.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 19/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Renders the user login gateway presentation page under BLoC configurations.
  */
 
@@ -108,12 +108,16 @@ class _LoginPageState extends State<LoginPage> {
         setState(() {
           _version_text = 'v${package_info.version} (${package_info.buildNumber})';
         });
+      } else {
+        // No action needed
       }
     } catch (_) {
       if (mounted) {
         setState(() {
           _version_text = 'v1.2.0 (8421)';
         });
+      } else {
+        // No action needed
       }
     }
   }

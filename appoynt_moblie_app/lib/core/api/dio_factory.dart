@@ -5,7 +5,7 @@
  * Version Information: V1.0.0
  * Dependencies: package:dio/dio.dart, package:flutter/foundation.dart, api_constants.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: A factory class that configures and provides a singleton instance of the Dio client.
  */
 

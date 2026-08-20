@@ -7,7 +7,7 @@
  *   app_colors.dart, app_localizations.dart, app_network_image.dart,
  *   favorited_offer.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 14/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Defines a reusable, highly polished Offer Card component
  *   displaying discount pill, original and discounted price, provider, expiry date,
  *   backend removal loading guard, and expired CTA guard.

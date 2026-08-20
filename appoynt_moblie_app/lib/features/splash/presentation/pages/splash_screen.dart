@@ -10,7 +10,7 @@
  *   - package:appoynt_mobile_app/main.dart
  *   - package:appoynt_mobile_app/features/auth/presentation/pages/register_page.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 12/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Presentation page for the splash screen displaying animated Appoynt brand logo with a shiny sweep.
  */
 
@@ -343,7 +343,9 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                                               transitionDuration: const Duration(milliseconds: AppSpacing.duration_fade_ms),
                                             ),
                                           );
-                                        }
+                                         } else {
+                                           // Context unmounted
+                                         }
                                       },
                                       // Callback to pop OTP screen
                                       on_back: () {
@@ -490,6 +492,8 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                                                           transitionDuration: const Duration(milliseconds: AppSpacing.duration_fade_ms),
                                                         ),
                                                       );
+                                                    } else {
+                                                      // No action needed
                                                     }
                                                   },
                                                 );
@@ -504,7 +508,9 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                                               transitionDuration: const Duration(milliseconds: AppSpacing.duration_fade_ms),
                                             ),
                                           );
-                                        }
+                                         } else {
+                                           // Context unmounted
+                                         }
                                       },
                                       // Callback to pop OTP screen
                                       on_back: () {
@@ -818,7 +824,11 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                     child: FutureBuilder<String>(
                       future: _getAppVersion(),
                       builder: (context, snapshot) {
-                        if (!snapshot.hasData) return const SizedBox.shrink();
+                        if (!snapshot.hasData) {
+                          return const SizedBox.shrink();
+                        } else {
+                          // No action needed
+                        }
                         return Text(
                           'Appoynt ${snapshot.data}',
                           style: const TextStyle(

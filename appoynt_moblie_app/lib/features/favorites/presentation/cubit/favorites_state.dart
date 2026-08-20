@@ -1,4 +1,4 @@
-﻿/*
+/*
  * File Name: favorites_state.dart
  * Author: Kholoud Khaled
  * Date of Creation: 14/08/2026
@@ -6,7 +6,7 @@
  * Dependencies: package:equatable/equatable.dart, favorited_doctor.dart,
  *   favorited_offer.dart, favorited_clinic.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 14/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Defines the multi-category states, sorting option enumeration,
  *   category status enums, and pagination trackers for the Favorites feature.
  */

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * File Name: doctor_favorite_tab.dart
  * Author: Kholoud Khaled
  * Date of Creation: 14/08/2026
@@ -7,7 +7,7 @@
  *   app_colors.dart, app_localizations.dart, doctor_card.dart,
  *   empty_favorites_widget.dart, favorites_cubit.dart, favorites_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 14/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Renders the Doctors category tab content with pull-to-refresh,
  *   infinite scroll pagination at 80% scroll depth, and empty state fallbacks.
  */

@@ -6,7 +6,7 @@
  * Dependencies: package:flutter/material.dart,
  *   package:appoynt_mobile_app/core/routing/route_export.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 23/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Centralized back navigation header with centered title and
  * automatically mirrored back arrow. Supports an optional show_back_button flag
  * to suppress the back button on root tab screens (ProfilePage, HomePage, etc.)

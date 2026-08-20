@@ -9,7 +9,7 @@
  *   - package:appoynt_mobile_app/features/onboarding/presentation/widgets/dot_indicator.dart
  *   - package:flutter_bloc/flutter_bloc.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 10/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Renders the onboarding page screen flow, handling transitions and multilingual layouts.
  */
 

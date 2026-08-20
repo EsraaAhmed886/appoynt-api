@@ -9,7 +9,7 @@
  *   package:appoynt_mobile_app/core/localization/app_localizations_en.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations_ar.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Delegate factory that registers and loads custom
  *   translation dictionaries based on system locale.
  */

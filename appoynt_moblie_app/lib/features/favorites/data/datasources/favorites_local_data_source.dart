@@ -1,11 +1,11 @@
-﻿/*
+/*
  * File Name: favorites_local_data_source.dart
  * Author: Kholoud Khaled
  * Date of Creation: 14/08/2026
  * Version Information: V1.0.0
  * Dependencies: package:shared_preferences/shared_preferences.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 14/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Local data source handling cache persistence and session-isolated
  *   purging for favorited records using SharedPreferences.
  */

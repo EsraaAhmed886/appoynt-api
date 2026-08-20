@@ -5,7 +5,7 @@
  * Version Information: V1.0.0
  * Dependencies: flutter/material.dart, app_colors.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 19/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Memory-optimized network image widget with fade transitions, shimmers, and fallbacks.
  */
 

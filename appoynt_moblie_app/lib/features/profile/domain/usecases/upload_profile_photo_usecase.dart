@@ -1,11 +1,11 @@
-﻿/*
+/*
  * File Name: upload_profile_photo_usecase.dart
  * Author: Kholoud Khaled
  * Date of Creation: 13/08/2026
  * Version Information: V1.0.0
  * Dependencies: profile_repository.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 13/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Domain use case responsible for uploading the patient''s
  *   profile photo to the remote server via the ProfileRepository contract.
  *   Accepts a local file path string, delegates the multipart upload to the

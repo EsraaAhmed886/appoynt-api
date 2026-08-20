@@ -1,11 +1,11 @@
-﻿/*
+/*
  * File Name: favorites_repository.dart
  * Author: Kholoud Khaled
  * Date of Creation: 14/08/2026
  * Version Information: V1.0.0
  * Dependencies: favorited_doctor.dart, favorited_offer.dart, favorited_clinic.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 14/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Domain repository interface declaring the contract for
  *   fetching, paginating, removing, and clearing favorited items across all categories.
  */

@@ -6,7 +6,7 @@
  * Dependencies: package:dartz/dartz.dart, package:dio/dio.dart, failures.dart,
  *   auth_repository.dart, user_entity.dart, auth_remote_datasource.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Concrete implementation of the AuthRepository. It coordinates
  *   between remote data sources and maps results to domain entities or failures.
  */

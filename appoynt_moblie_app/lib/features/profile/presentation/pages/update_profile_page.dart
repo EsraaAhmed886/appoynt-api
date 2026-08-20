@@ -9,7 +9,7 @@
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart,
  *   package:appoynt_mobile_app/features/profile/data/models/update_profile_request_model.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 09/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Defines the Update Profile layout form fields, validators, and backend save handlers.
  */
 
@@ -668,7 +668,11 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         final List<String> date_parts = _dob_controller.text.split('/');
         if (date_parts.length == 3) {
           dob_api = "${date_parts[2]}-${date_parts[1]}-${date_parts[0]}";
+        } else {
+          // No action needed
         }
+      } else {
+        // No action needed
       }
       // Create UpdateProfileRequestModel mapping the form parameters
       final request_model = UpdateProfileRequestModel(
@@ -704,7 +708,11 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         // Disallow popping if there are unsaved changes
         canPop: false,
         onPopInvokedWithResult: (bool didPop, dynamic result) async {
-          if (didPop) return;
+          if (didPop) {
+            return;
+          } else {
+            // No action needed
+          }
           final bool allow = await _on_will_pop();
           // Pop the screen if allowed and widget is still mounted
           if (true == allow && context.mounted) {
@@ -741,11 +749,19 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                   final List<String> date_parts = state.user.date_of_birth!.split('-');
                   if (date_parts.length == 3) {
                     _dob_controller.text = "${date_parts[2]}/${date_parts[1]}/${date_parts[0]}";
+                  } else {
+                    // No action needed
                   }
-                } catch (_) {}
+                } catch (_) {
+                  // No action needed
+                }
+              } else {
+                // No action needed
               }
               // Set initial email
               _initial_email = state.user.email.trim().toLowerCase();
+            } else {
+              // No action needed
             }
             // Show a success snackbar when profile update succeeds
             if (state is ProfileUpdateSuccess) {
@@ -757,15 +773,15 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                 ),
               );
               Navigator.of(context).pop();
-            }
-            // Show an error snackbar when update fails
-            if (state is ProfileUpdateError) {
+            } else if (state is ProfileUpdateError) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(state.message),
                   backgroundColor: AppColors.red,
                 ),
               );
+            } else {
+              // No action needed
             }
           },
           builder: (context, state) {
@@ -778,13 +794,13 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                   ),
                 ),
               );
-            }
-            // Scaffold provides the page layout structure
-            return Scaffold(
-              body: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: AppSpacing.space_xl),
-                child: Form(
+            } else {
+              // Scaffold provides the page layout structure
+              return Scaffold(
+                body: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: AppSpacing.space_xl),
+                  child: Form(
                   key: _form_key,
                   autovalidateMode: _form_submitted
                       ? AutovalidateMode.onUserInteraction
@@ -1264,7 +1280,8 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                 ),
               ),
             );
-          },
+          }
+        },
         ),
       ),
     );

@@ -6,7 +6,7 @@
  * Dependencies: package:flutter/material.dart,
  *   package:appoynt_mobile_app/core/routing/route_export.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/07/2026]
+ * Last Modified Date: [Kholoud Khaled - 16/08/2026]
  * File Description: Dedicated page to input new credit card details with strict Luhn and CVV validations.
  */
 
@@ -98,6 +98,8 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
     if (16 != cleaned.length) {
       // Failed
       return false;
+    } else {
+      // Valid length
     }
     // Track cumulative sum
     int sum = 0;
@@ -111,6 +113,8 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
       if (-1 == digit) {
         // Failed
         return false;
+      } else {
+        // Digit is valid
       }
       // Alternate digits double multiplication
       if (alternate) {
@@ -120,7 +124,11 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
         if (digit > 9) {
           // Subtract nine
           digit -= 9;
+        } else {
+          // Single digit
         }
+      } else {
+        // No multiplication needed
       }
       // Add digit value to total
       sum += digit;
@@ -139,6 +147,8 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
     if (false == regex.hasMatch(value)) {
       // Invalid format
       return false;
+    } else {
+      // Regex matches
     }
     // Split date components
     final parts = value.split('/');
@@ -156,11 +166,11 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
     if (year < current_year) {
       // Card has expired
       return false;
-    }
-    // Validate current year month limits
-    if (year == current_year && month < current_month) {
+    } else if (year == current_year && month < current_month) {
       // Card has expired
       return false;
+    } else {
+      // Valid date range
     }
     // Valid expiration parameters
     return true;
@@ -176,6 +186,8 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
     if (false == name_regex.hasMatch(trimmed)) {
       // Contains invalid characters
       return false;
+    } else {
+      // Matches alphabetical regex
     }
     // Split spacing segments
     final List<String> parts = trimmed.split(RegExp(r'\s+'));
@@ -183,6 +195,8 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
     if (parts.length < 2) {
       // Too short
       return false;
+    } else {
+      // Has multiple parts
     }
     // Check characters boundaries for each name segment
     for (final part in parts) {
@@ -190,6 +204,8 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
       if (part.length < 2) {
         // Segment invalid
         return false;
+      } else {
+        // Segment is valid
       }
     }
     // Valid cardholder name parameters
@@ -288,9 +304,10 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
                                 false == _validate_cardholder(val)) {
                               // Return strict validation error
                               return 'Please enter the full name as written on the card.';
+                            } else {
+                              // Valid status
+                              return null;
                             }
-                            // Valid status
-                            return null;
                           },
                         ),
                         // Height spacer gap
@@ -326,9 +343,10 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
                             if (null == val || false == _luhn_check(val)) {
                               // Return strict error
                               return 'Please enter a valid 16-digit card number.';
+                            } else {
+                              // Valid status
+                              return null;
                             }
-                            // Valid status
-                            return null;
                           },
                         ),
                         // Height spacer gap
@@ -377,9 +395,10 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
                                           false == _validate_expiry(val)) {
                                         // Return strict error
                                         return 'Card has expired or date format is invalid.';
+                                      } else {
+                                        // Valid status
+                                        return null;
                                       }
-                                      // Valid status
-                                      return null;
                                     },
                                   ),
                                 ],
@@ -428,9 +447,10 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
                                           false == _validate_cvv(val)) {
                                         // Return strict error
                                         return 'Invalid CVV code.';
+                                      } else {
+                                        // Valid status
+                                        return null;
                                       }
-                                      // Valid status
-                                      return null;
                                     },
                                   ),
                                 ],
@@ -480,6 +500,8 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
                       for (int i = 0; i < formatted_num.length; i++) {
                         if (i > 0 && i % 4 == 0) {
                           sb.write(' ');
+                        } else {
+                          // No spacing needed
                         }
                         sb.write(formatted_num[i]);
                       }
@@ -506,6 +528,8 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
                           content: Text('New card saved securely to profile.'),
                         ),
                       );
+                    } else {
+                      // Form validation failed
                     }
                   }
                 : null,
