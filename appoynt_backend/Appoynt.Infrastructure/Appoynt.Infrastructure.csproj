@@ -16,6 +16,9 @@
     <Folder Include="Authentication\" />
     <Folder Include="Persistence\Migrations\" />
     <Folder Include="Repositories\" />
+    <None Update="Persistence\Seeding\Data\egypt_governorates_cities.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
