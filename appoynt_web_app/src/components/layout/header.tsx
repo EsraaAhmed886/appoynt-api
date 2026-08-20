@@ -53,6 +53,8 @@ export default function LayoutHeader({
         return translations.nav_dashboard;
       } else if ("clinics" === main_segment) {
         return translations.nav_clinics;
+      } else if ("appointments" === main_segment) {
+        return translations.appointments_page_title || translations.nav_appointments || "Appointments";
       } else {
         return main_segment
           .split("-")
