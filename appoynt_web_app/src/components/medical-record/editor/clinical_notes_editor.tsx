@@ -111,7 +111,7 @@ export default function ClinicalNotesEditor({
     updateValueWithHistory(newValue);
 
     setTimeout(() => {
-      el.focus();
+      el.focus({ preventScroll: true });
       el.setSelectionRange(
         start + before.length,
         start + before.length + (selectedText ? selectedText.length : 4)

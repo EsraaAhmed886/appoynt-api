@@ -76,10 +76,10 @@ export default function FinalizedRecordDetailsView({
           <button
             type="button"
             onClick={backHandler}
-            className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1.5 cursor-pointer"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-[#131E35] text-slate-700 dark:text-slate-200 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600 shadow-2xs transition-all cursor-pointer group"
           >
-            <ArrowLeft className="w-4 h-4 rtl:rotate-180" />
-            <span>{translations.btn_back || "← Back"}</span>
+            <ArrowLeft className="w-4 h-4 text-slate-500 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white group-hover:-translate-x-0.5 transition-transform rtl:rotate-180 rtl:group-hover:translate-x-0.5" />
+            <span>{translations.back_to_summary || translations.btn_back || "Back to Patient Summary"}</span>
           </button>
         ) : (
           <div />

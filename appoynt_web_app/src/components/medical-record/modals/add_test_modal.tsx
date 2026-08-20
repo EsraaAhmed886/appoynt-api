@@ -124,7 +124,7 @@ export default function AddTestModal({
         aria-modal="true"
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b-2 border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-[#131E35]">
+        <div className="flex items-center justify-between px-6 py-4 border-b-2 border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-[#131E35] shrink-0">
           <div className="flex items-center gap-3">
             <div className="p-2.5 bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 rounded-xl">
               <FlaskConical className="w-5 h-5" />
@@ -149,7 +149,7 @@ export default function AddTestModal({
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-5 text-start">
+        <form id="add-test-form" onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-5 text-start pb-28">
           {formError && (
             <div className="p-3 bg-rose-50 dark:bg-rose-950/40 border-2 border-rose-300 dark:border-rose-800 rounded-xl text-xs font-semibold text-rose-700 dark:text-rose-300">
               {formError}
@@ -308,24 +308,25 @@ export default function AddTestModal({
               className="w-full bg-slate-50 dark:bg-[#131E35] border-2 border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs md:text-sm font-medium text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
             />
           </div>
-
-          {/* Footer Buttons */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t-2 border-slate-200 dark:border-slate-800">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-5 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition cursor-pointer"
-            >
-              {translations.cancel || "Cancel"}
-            </button>
-            <button
-              type="submit"
-              className="px-6 py-2.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-md transition cursor-pointer"
-            >
-              {translations.order_test || "Order Test"}
-            </button>
-          </div>
         </form>
+
+        {/* Pinned Footer */}
+        <div className="flex items-center justify-end gap-3 px-6 py-4 border-t-2 border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-[#131E35] shrink-0">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-5 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition cursor-pointer"
+          >
+            {translations.cancel || "Cancel"}
+          </button>
+          <button
+            type="submit"
+            form="add-test-form"
+            className="px-6 py-2.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-md transition cursor-pointer"
+          >
+            {translations.order_test || "Order Test"}
+          </button>
+        </div>
       </div>
     </div>
   );

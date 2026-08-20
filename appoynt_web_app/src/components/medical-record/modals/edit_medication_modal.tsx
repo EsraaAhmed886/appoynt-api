@@ -118,6 +118,18 @@ export default function EditMedicationModal({
     { value: "At Bedtime", label: "At Bedtime (QHS)" },
   ];
 
+  const dosageUnitOptions: DropdownOption[] = [
+    { value: "mg", label: "mg" },
+    { value: "mcg", label: "mcg" },
+    { value: "g", label: "g" },
+    { value: "mL", label: "mL" },
+    { value: "tablets", label: "tablets" },
+    { value: "capsules", label: "capsules" },
+    { value: "puffs", label: "puffs" },
+    { value: "drops", label: "drops" },
+    { value: "IU", label: "IU" },
+  ];
+
   const durationUnitOptions: DropdownOption[] = [
     { value: "Days", label: "Days" },
     { value: "Weeks", label: "Weeks" },
@@ -141,7 +153,7 @@ export default function EditMedicationModal({
         role="dialog"
         aria-modal="true"
       >
-        <div className="flex items-center justify-between px-6 py-4 border-b-2 border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-[#131E35]">
+        <div className="flex items-center justify-between px-6 py-4 border-b-2 border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-[#131E35] shrink-0">
           <div className="flex items-center gap-3">
             <div className="p-2.5 bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 rounded-xl">
               <Edit3 className="w-5 h-5" />
@@ -165,7 +177,7 @@ export default function EditMedicationModal({
           </button>
         </div>
 
-        <form onSubmit={handleUpdate} className="flex-1 overflow-y-auto p-6 space-y-5 text-start">
+        <form id="edit-medication-form" onSubmit={handleUpdate} className="flex-1 overflow-y-auto p-6 space-y-5 text-start pb-28">
           {medication.allergyConflict && (
             <div className="flex items-start gap-3 p-3.5 bg-amber-50 dark:bg-amber-950/40 border-2 border-amber-300 dark:border-amber-700/60 rounded-xl text-amber-900 dark:text-amber-200 text-xs">
               <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
@@ -203,24 +215,13 @@ export default function EditMedicationModal({
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                {translations.unit || "Unit"}
-              </label>
-              <select
+              <CustomSelectDropdown
+                label={translations.unit || "Unit"}
+                options={dosageUnitOptions}
                 value={dosageUnit}
-                onChange={(e) => setDosageUnit(e.target.value as MedicationItem["dosageUnit"])}
-                className="w-full bg-slate-50 dark:bg-[#131E35] border-2 border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 h-11 text-xs md:text-sm font-medium text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer"
-              >
-                <option value="mg">mg</option>
-                <option value="mcg">mcg</option>
-                <option value="g">g</option>
-                <option value="mL">mL</option>
-                <option value="tablets">tablets</option>
-                <option value="capsules">capsules</option>
-                <option value="puffs">puffs</option>
-                <option value="drops">drops</option>
-                <option value="IU">IU</option>
-              </select>
+                onChange={(val) => setDosageUnit(val as MedicationItem["dosageUnit"])}
+                searchable={false}
+              />
             </div>
           </div>
 
@@ -289,23 +290,25 @@ export default function EditMedicationModal({
               className="w-full bg-slate-50 dark:bg-[#131E35] border-2 border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs md:text-sm font-medium text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
             />
           </div>
-
-          <div className="flex items-center justify-end gap-3 pt-4 border-t-2 border-slate-200 dark:border-slate-800">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-5 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition cursor-pointer"
-            >
-              {translations.cancel || "Cancel"}
-            </button>
-            <button
-              type="submit"
-              className="px-6 py-2.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-md transition cursor-pointer"
-            >
-              {translations.update_medication || "Update Medication"}
-            </button>
-          </div>
         </form>
+
+        {/* Pinned Footer */}
+        <div className="flex items-center justify-end gap-3 px-6 py-4 border-t-2 border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-[#131E35] shrink-0">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-5 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition cursor-pointer"
+          >
+            {translations.cancel || "Cancel"}
+          </button>
+          <button
+            type="submit"
+            form="edit-medication-form"
+            className="px-6 py-2.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-md transition cursor-pointer"
+          >
+            {translations.update_medication || "Update Medication"}
+          </button>
+        </div>
       </div>
     </div>
   );
