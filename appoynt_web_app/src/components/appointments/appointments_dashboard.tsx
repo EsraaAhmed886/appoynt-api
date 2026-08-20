@@ -2,11 +2,11 @@
  * File Name: appointments_dashboard.tsx
  * Author: shimaa salah
  * Created Date: 18/08/2026
- * Version: v1.4.0
+ * Version: v1.5.0
  * Dependencies: react, @/context/language_context, @/services/appointment.service, @/types/appointment, @/hooks/use_consultation_timer, @/components/common/loading_state, @/components/common/error_state
  * Contributors: [shimaa salah]
  * Last Modified: [shimaa salah - 19/08/2026]
- * Description: Interactive client dashboard container orchestrating appointments state, service calls, 10-min min / 5-min warning / auto-max consultation time rules, and end consultation workflow.
+ * Description: Interactive client dashboard container orchestrating appointments state, service calls, 10-min min duration & 5-min warning rules, and manual end consultation workflow.
  */
 
 "use client";
@@ -75,7 +75,7 @@ export default function AppointmentsDashboard() {
     }
   }, [toast_message]);
 
-  // Monitor consultation time rules (5-min warning notification & automatic max-duration completion)
+  // Monitor consultation 5-minute warning threshold notification
   useEffect(() => {
     if (null === active_consultation || undefined === active_consultation) {
       return;
@@ -84,7 +84,7 @@ export default function AppointmentsDashboard() {
       const max_duration_seconds = slot_duration_mins * 60;
       const warning_threshold_seconds = Math.max(0, max_duration_seconds - 300);
 
-      // 1. Trigger 5-minute warning notification ONCE per active consultation session
+      // Trigger 5-minute warning notification ONCE per active consultation session
       if (
         timer_data.elapsed_seconds >= warning_threshold_seconds &&
         timer_data.elapsed_seconds < max_duration_seconds &&
@@ -95,35 +95,15 @@ export default function AppointmentsDashboard() {
       } else {
         // Warning threshold not reached or already notified
       }
-
-      // 2. Automatically end consultation when reaching maximum time slot duration limit
-      if (timer_data.elapsed_seconds >= max_duration_seconds && false === is_submitting_end) {
-        set_is_submitting_end(true);
-        appointment_service.end_consultation(active_consultation.consultation_id).then((result) => {
-          if (true === result.success) {
-            set_appointments_data(result.data);
-            set_toast_message(translations.toast_auto_ended);
-          } else {
-            set_toast_message(translations.toast_consultation_end_failed);
-          }
-          set_is_submitting_end(false);
-        }).catch((auto_end_err) => {
-          console.error("Auto end consultation error:", auto_end_err);
-          set_is_submitting_end(false);
-        });
-      } else {
-        // Consultation remains within time limits
-      }
     }
   }, [
     timer_data.elapsed_seconds,
     active_consultation,
     warning_consultation_id,
-    is_submitting_end,
     translations,
   ]);
 
-  // Submit consultation completion request manually
+  // Submit consultation completion request manually by doctor action
   const handle_confirm_end_consultation = async () => {
     if (null === appointments_data || null === appointments_data.active_consultation) {
       set_is_end_modal_open(false);
