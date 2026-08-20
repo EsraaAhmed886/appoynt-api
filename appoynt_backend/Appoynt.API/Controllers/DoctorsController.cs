@@ -18,6 +18,8 @@ using Appoynt.Application.Common.Models;
 using Appoynt.Domain.Common.Constants;
 using Appoynt.Domain.Entities;
 using Appoynt.Infrastructure.Persistence;
+using System.Collections.Generic;
+using Appoynt.Application.Features.Clinics.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -26,13 +28,14 @@ using Microsoft.EntityFrameworkCore;
 namespace Appoynt.API.Controllers;
 
 /// <summary>
-/// Handles doctor operations including profile picture upload, public retrieval, and deletion.
+/// Handles doctor operations including profile picture upload, public retrieval, deletion, and clinic listing.
 /// </summary>
 [ApiController]
 [Route("api/doctors")]
 public sealed class DoctorsController : ControllerBase
 {
     private readonly IProfileImageService _profileImageService;
+    private readonly IClinicService _clinicService;
     private readonly ICurrentUserService _currentUserService;
     private readonly ApplicationDbContext _dbContext;
 
@@ -40,15 +43,20 @@ public sealed class DoctorsController : ControllerBase
     /// Initializes a new instance of the <see cref="DoctorsController"/> class.
     /// </summary>
     /// <param name="profileImageService">The centralized profile image service.</param>
+    /// <param name="clinicService">The clinic service.</param>
     /// <param name="currentUserService">The current authenticated user accessor.</param>
     /// <param name="dbContext">The application database context.</param>
     public DoctorsController(
         IProfileImageService profileImageService,
+        IClinicService clinicService,
         ICurrentUserService currentUserService,
         ApplicationDbContext dbContext)
     {
         // Store profile image service dependency
         _profileImageService = profileImageService;
+
+        // Store clinic service dependency
+        _clinicService = clinicService;
 
         // Store current user service dependency
         _currentUserService = currentUserService;
@@ -205,6 +213,31 @@ public sealed class DoctorsController : ControllerBase
                 return Ok(result);
             }
         }
+    }
+
+    #endregion
+
+    #region Clinic Operations
+
+    /// <summary>
+    /// Retrieves all active clinics for a specific doctor. Open to all authenticated users.
+    /// </summary>
+    /// <param name="doctorId">The unique identifier of the doctor.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An HTTP 200 OK response with the list of active clinics.</returns>
+    [HttpGet("{doctorId:guid}/clinics")]
+    [Authorize]
+    [ProducesResponseType(typeof(List<ClinicResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> GetDoctorClinics(
+        [FromRoute] Guid doctorId,
+        CancellationToken cancellationToken)
+    {
+        // Retrieve active clinics for the requested doctor.
+        var clinics = await _clinicService.GetDoctorClinicsAsync(doctorId, cancellationToken);
+
+        // Return HTTP 200 OK with the retrieved clinics list.
+        return Ok(clinics);
     }
 
     #endregion
