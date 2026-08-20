@@ -6,7 +6,7 @@
  * Dependencies   : BaseEntity, ApplicationUser, Receptionist,
  *                  DoctorPhoneNumber, DoctorSpecialization
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-14
+ * Last Modified  : Mustafa Mahmoud - 2026-08-20
  * Description    : Represents a doctor within the application, including
  *                  profile display names, biography, education, contact
  *                  phone numbers, and medical specializations.
@@ -72,6 +72,11 @@ public class Doctor : BaseEntity
     /// Gets or sets the collection of specializations linked to this doctor.
     /// </summary>
     public ICollection<DoctorSpecialization> DoctorSpecializations { get; set; } = [];
+
+    /// <summary>
+    /// Gets or sets the collection of clinics managed by this doctor.
+    /// </summary>
+    public ICollection<Clinic> Clinics { get; set; } = [];
 
     #endregion
 }
