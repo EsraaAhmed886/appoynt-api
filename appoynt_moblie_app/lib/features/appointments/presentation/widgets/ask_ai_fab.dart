@@ -3,60 +3,82 @@
  * Author: Kholoud Khaled
  * Date of Creation: 22/08/2026
  * Version Information: v1.0.0
- * Dependencies: flutter/material.dart, ../../../../core/localization/appointments_strings.dart
+ * Dependencies: flutter/material.dart, flutter_svg/flutter_svg.dart
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 22/08/2026]
- * File Description: Floating AI assistant action button providing quick conversational health guidance.
+ * File Description: Prominent circular floating action button with scaled-up AI Chatbot icon (42.0px) filling ~75-80% of the circle diameter with brand glow.
  */
 
 import 'package:flutter/material.dart';
-import '../../../../core/localization/appointments_strings.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
-/// Floating AI action button with branded gradient and glow effect.
+/// Large circular floating action button displaying prominent AI icon.
 class AskAiFab extends StatelessWidget {
   final VoidCallback? onTap;
+  final String customIconAsset;
 
-  const AskAiFab({super.key, this.onTap});
+  const AskAiFab({
+    super.key,
+    this.onTap,
+    this.customIconAsset = 'assets/icons/ChatbotFAB.svg',
+  });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 11.0),
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFF0284C7), Color(0xFF6366F1)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(28.0),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF0284C7).withValues(alpha: 0.35),
-              blurRadius: 14.0,
-              offset: const Offset(0, 5),
-            ),
+    const double buttonSize = 68.0;
+    const double iconSize = 68.0;
+
+    return Container(
+      width: buttonSize,
+      height: buttonSize,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: const LinearGradient(
+          colors: [
+            Color(0xFF2563EB), // Medical Primary Blue
+            Color(0xFF4338CA), // Deep Indigo
           ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(
-              Icons.auto_awesome_rounded,
-              color: Colors.white,
-              size: 18.0,
-            ),
-            const SizedBox(width: 8.0),
-            Text(
-              AppointmentsStrings.of(context, 'ask_ai'),
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 13.5,
-              ),
-            ),
-          ],
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF2563EB).withValues(alpha: 0.4),
+            blurRadius: 14.0,
+            spreadRadius: 1.0,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          customBorder: const CircleBorder(),
+          splashColor: Colors.white.withValues(alpha: 0.25),
+          highlightColor: Colors.white.withValues(alpha: 0.12),
+          child: Center(
+            child: customIconAsset.endsWith('.svg')
+                ? SvgPicture.asset(
+                    customIconAsset,
+                    width: iconSize,
+                    height: iconSize,
+                    fit: BoxFit.contain,
+                  )
+                : customIconAsset.endsWith('.png')
+                    ? Image.asset(
+                        customIconAsset,
+                        width: iconSize,
+                        height: iconSize,
+                        fit: BoxFit.contain,
+                        color: Colors.white,
+                      )
+                    : const Icon(
+                        Icons.smart_toy_rounded,
+                        size: iconSize,
+                        color: Colors.white,
+                      ),
+          ),
         ),
       ),
     );
