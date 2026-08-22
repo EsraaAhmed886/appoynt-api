@@ -25,7 +25,6 @@ import '../widgets/appointments_empty_state.dart';
 import '../widgets/appointments_header.dart';
 import '../widgets/appointments_search_bar.dart';
 import '../widgets/appointments_tab_bar.dart';
-import '../widgets/ask_ai_fab.dart';
 import '../widgets/quick_actions_strip.dart';
 import '../widgets/recommendation_banner.dart';
 
@@ -126,17 +125,6 @@ class _AppointmentsViewState extends State<_AppointmentsView> {
 
     return Scaffold(
       backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
-      floatingActionButton: AskAiFab(
-        onTap: () {
-          // Open AI Assistant modal / sheet
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(AppointmentsStrings.of(context, 'ask_ai')),
-              duration: const Duration(seconds: 1),
-            ),
-          );
-        },
-      ),
       body: SafeArea(
         child: BlocConsumer<AppointmentsBloc, AppointmentsState>(
           listener: (context, state) {

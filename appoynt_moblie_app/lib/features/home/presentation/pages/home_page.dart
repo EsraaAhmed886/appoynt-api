@@ -26,6 +26,8 @@ import 'package:appoynt_mobile_app/features/favorites/presentation/pages/favorit
 import 'package:appoynt_mobile_app/features/notifications/presentation/pages/notifications_page.dart';
 // Importing AppointmentsPage widget screen definition
 import 'package:appoynt_mobile_app/features/appointments/presentation/pages/appointments_page.dart';
+// Importing AskAiFab widget definition
+import 'package:appoynt_mobile_app/features/appointments/presentation/widgets/ask_ai_fab.dart';
 
 // Defining the HomePage stateful widget representation
 class HomePage extends StatefulWidget {
@@ -162,6 +164,23 @@ class _HomePageState extends State<HomePage> {
                             label: localizations.dummy_search_tab_label,
                           ),
       ),
+      // Global floating AI assistant action button
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 16.0, right: 8.0),
+        child: AskAiFab(
+          onTap: () {
+            // Open AI Assistant Chat Screen / Modal BottomSheet
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Opening AI Medical Assistant...'),
+                duration: Duration(seconds: 1),
+              ),
+            );
+          },
+        ),
+      ),
+      // Floating button location pinned to the end float
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 
