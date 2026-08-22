@@ -19,6 +19,7 @@ import {
   DashboardStats,
   DateRangePreset,
   DoctorProfileSummary,
+  LiveQueueSummary,
   PatientRatingData,
   RecentActivityItem,
 } from "@/types/dashboard";
@@ -42,6 +43,11 @@ interface DashboardContextType {
   stats_loading: boolean;
   stats_error: string | null;
   refresh_stats: () => Promise<void>;
+
+  // Live Waiting Room Queue
+  live_queue: LiveQueueSummary | null;
+  live_queue_loading: boolean;
+  refresh_live_queue: () => Promise<void>;
 
   // Patients by Clinic Chart
   patients_clinic_id: string;
@@ -95,6 +101,10 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [stats, set_stats] = useState<DashboardStats | null>(null);
   const [stats_loading, set_stats_loading] = useState(true);
   const [stats_error, set_stats_error] = useState<string | null>(null);
+
+  // Live Waiting Room Queue State
+  const [live_queue, set_live_queue] = useState<LiveQueueSummary | null>(null);
+  const [live_queue_loading, set_live_queue_loading] = useState(true);
 
   // Patients Chart State
   const [patients_clinic_id, set_patients_clinic_id_state] = useState<string>("all");
@@ -265,6 +275,23 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     refresh_rating();
   }, [refresh_rating]);
 
+  // 7. Fetch Live Queue Summary
+  const refresh_live_queue = useCallback(async () => {
+    set_live_queue_loading(true);
+    try {
+      const data = await DashboardMockService.getLiveQueueSummary();
+      set_live_queue(data);
+    } catch {
+      set_live_queue(null);
+    } finally {
+      set_live_queue_loading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    refresh_live_queue();
+  }, [refresh_live_queue]);
+
   // Date Range Update Handler
   const set_date_range = (preset: DateRangePreset, custom?: CustomDateRange) => {
     set_date_range_preset(preset);
@@ -293,6 +320,9 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         stats_loading,
         stats_error,
         refresh_stats,
+        live_queue,
+        live_queue_loading,
+        refresh_live_queue,
         patients_clinic_id,
         set_patients_clinic_id,
         patients_chart,

@@ -159,6 +159,19 @@ async function run_dashboard_qa_tests() {
   assert(rating_empty.total_reviews === 0, "Empty rating returns 0 total reviews");
 
   // --------------------------------------------------------------------------
+  // TEST GROUP 7: Live Waiting Room & Next-Up Consultation Queue Summary
+  // --------------------------------------------------------------------------
+  console.log("\n👉 Test Group 7: Live Waiting Room & Consultation Queue Summary");
+  const queue_data = await DashboardMockService.getLiveQueueSummary();
+  assert(queue_data.is_active === true, "Live queue is marked as active");
+  assert(queue_data.total_waiting_count === 4, "Total waiting count matches mock expected 4");
+  assert(queue_data.pending_lab_reviews_count === 2, "Pending lab reviews count matches mock expected 2");
+  assert(queue_data.current_patient !== null, "Current next patient exists");
+  assert(queue_data.current_patient?.token_number === "A-12", "Current next patient token is A-12");
+  assert(queue_data.current_patient?.waiting_minutes === 14, "Current next patient wait time is 14 minutes");
+  assert(queue_data.current_patient?.type === "follow_up", "Current next patient type is follow_up");
+
+  // --------------------------------------------------------------------------
   // SUMMARY
   // --------------------------------------------------------------------------
   console.log("\n================================================================================");

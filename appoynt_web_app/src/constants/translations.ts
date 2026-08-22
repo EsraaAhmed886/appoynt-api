@@ -783,6 +783,13 @@ export const translation_en = {
   error_loading_activity: "Failed to load recent activities",
   error_loading_rating: "Failed to load patient ratings",
   patients_count_label: "{count} Patients",
+  next_in_queue: "Next In Waiting Room",
+  waiting_time: "Waiting: {minutes} mins",
+  in_queue_count: "{count} in queue",
+  labs_pending: "{count} Labs Pending",
+  start_consultation: "Start Consultation",
+  queue_empty: "Waiting room is currently clear",
+  queue_empty_desc: "All scheduled patients for this hour have been seen.",
 };
 
 // Declaring translation database for Arabic language localization
@@ -1559,6 +1566,13 @@ export const translation_ar = {
   error_loading_activity: "تعذر تحميل النشاطات الأخيرة",
   error_loading_rating: "تعذر تحميل تقييمات المرضى",
   patients_count_label: "{count} مريض",
+  next_in_queue: "المريض القادم في صالة الانتظار",
+  waiting_time: "مدة الانتظار: {minutes} دقيقة",
+  in_queue_count: "{count} في قائمة الانتظار",
+  labs_pending: "{count} تحاليل بانتظار المراجعة",
+  start_consultation: "بدء الكشف الطبي",
+  queue_empty: "صالة الانتظار فارغة حالياً",
+  queue_empty_desc: "تم الانتهاء من جميع المواعيد المجدولة لهذه الساعة.",
 };
 
 export const translations = {

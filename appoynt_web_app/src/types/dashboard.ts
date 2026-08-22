@@ -109,3 +109,23 @@ export interface DashboardPermissions {
   can_add_receptionist: boolean;
   can_add_clinic: boolean;
 }
+
+export interface QueuePatient {
+  id: string;
+  token_number: string; // e.g. "Q-08"
+  patient_name: string;
+  patient_avatar?: string;
+  clinic_name: string;
+  appointment_time: string;
+  waiting_minutes: number;
+  type: "new_visit" | "follow_up" | "urgent";
+  status: "in_waiting_room" | "in_consultation" | "ready_for_call";
+}
+
+export interface LiveQueueSummary {
+  is_active: boolean;
+  current_patient: QueuePatient | null;
+  total_waiting_count: number;
+  pending_lab_reviews_count: number;
+}
+

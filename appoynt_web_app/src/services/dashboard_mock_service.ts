@@ -18,6 +18,7 @@ import {
   DashboardStats,
   DateRangePreset,
   DoctorProfileSummary,
+  LiveQueueSummary,
   PatientRatingData,
   RecentActivityItem,
 } from "@/types/dashboard";
@@ -379,6 +380,28 @@ export const DashboardMockService = {
       specialty: "Senior Consultant Cardiologist",
       profile_image_url: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=300",
       unread_notifications_count: 3,
+    };
+  },
+
+  /**
+   * Retrieves real-time waiting room & next up consultation queue summary.
+   */
+  getLiveQueueSummary: async (): Promise<LiveQueueSummary> => {
+    await simulate_latency(120);
+    return {
+      is_active: true,
+      current_patient: {
+        id: "pat_102",
+        token_number: "A-12",
+        patient_name: "Mahmoud Yassin",
+        clinic_name: "Al-Safwa Specialist Clinic",
+        appointment_time: "11:30 AM",
+        waiting_minutes: 14,
+        type: "follow_up",
+        status: "in_waiting_room",
+      },
+      total_waiting_count: 4,
+      pending_lab_reviews_count: 2,
     };
   },
 };

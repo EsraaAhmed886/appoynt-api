@@ -17,6 +17,7 @@
 
 "use client";
 
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import SidebarItem from "./sidebar_item";
 import ThemeToggle from "@/components/theme_toggle";
@@ -48,6 +49,11 @@ export default function Sidebar({
   className = "",
 }: SidebarProps) {
   const { translations } = useTranslation();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <aside
@@ -84,7 +90,7 @@ export default function Sidebar({
       >
         <div
           onClick={isCollapsed ? onToggle : undefined}
-          title={isCollapsed ? translations.app_name : undefined}
+          title={isCollapsed ? (mounted ? translations.app_name : "Appoynt") : undefined}
           className={`flex items-center gap-3 overflow-hidden ${
             isCollapsed ? "justify-center cursor-pointer" : ""
           }`}
@@ -101,8 +107,11 @@ export default function Sidebar({
           </div>
 
           {!isCollapsed ? (
-            <h1 className="overflow-hidden whitespace-nowrap text-xl font-bold text-app-sidebar_text_primary transition-all duration-300">
-              {translations.app_name}
+            <h1
+              suppressHydrationWarning
+              className="overflow-hidden whitespace-nowrap text-xl font-bold text-app-sidebar_text_primary transition-all duration-300"
+            >
+              {mounted ? translations.app_name : "Appoynt"}
             </h1>
           ) : null}
         </div>
