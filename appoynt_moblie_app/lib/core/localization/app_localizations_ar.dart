@@ -830,7 +830,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   // Override getter returning cardiologist practitioner name in Arabic
   @override
-  String get dummy_dr_sarah_johnson {
+  String get dummy_dr_sara_johnson {
     // Return Arabic cardiologist practitioner name
     return 'د. سارة جونسون';
   }
@@ -844,7 +844,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   // Override getter returning cardiology practice length details in Arabic
   @override
-  String get dummy_years_experience_sarah {
+  String get dummy_years_experience_sara {
     // Return Arabic cardiology practice length details
     return '١٢ سنة خبرة';
   }
@@ -2169,33 +2169,28 @@ class AppLocalizationsAr extends AppLocalizations {
   String get error_no_internet =>
       'لا يوجد اتصال بالإنترنت. يرجى التحقق من شبكتك والمحاولة مجدداً.';
   @override
-  String get error_timeout =>
-      'انتهت مهلة الطلب. يرجى المحاولة مجدداً.';
+  String get error_timeout => 'انتهت مهلة الطلب. يرجى المحاولة مجدداً.';
   @override
   String get error_ssl_handshake =>
       'فشل الاتصال الآمن. يرجى التحقق من إعدادات الشبكة.';
   @override
-  String get error_request_cancelled =>
-      'تم إلغاء الطلب.';
+  String get error_request_cancelled => 'تم إلغاء الطلب.';
 
   // Auth and access control error AR string overrides
   @override
   String get error_session_expired =>
       'انتهت صلاحية جلستك. يرجى تسجيل الدخول مجدداً.';
   @override
-  String get error_forbidden =>
-      'ليس لديك صلاحية للقيام بهذا الإجراء.';
+  String get error_forbidden => 'ليس لديك صلاحية للقيام بهذا الإجراء.';
 
   // Client and business logic error AR string overrides
   @override
   String get error_bad_request =>
       'طلب غير صالح. يرجى التحقق من المدخلات والمحاولة مجدداً.';
   @override
-  String get error_not_found =>
-      'لم يتم العثور على المعلومات المطلوبة.';
+  String get error_not_found => 'لم يتم العثور على المعلومات المطلوبة.';
   @override
-  String get error_conflict =>
-      'حدث تعارض. قد يكون هذا السجل موجوداً بالفعل.';
+  String get error_conflict => 'حدث تعارض. قد يكون هذا السجل موجوداً بالفعل.';
   @override
   String get error_payload_too_large =>
       'الملف أو البيانات التي تحاول رفعها كبيرة جداً.';
@@ -2211,8 +2206,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get error_app_update_required =>
       'مطلوب إصدار جديد من التطبيق. يرجى التحديث من المتجر.';
   @override
-  String get error_server =>
-      'حدث خطأ من جانبنا. يرجى المحاولة مجدداً لاحقاً.';
+  String get error_server => 'حدث خطأ من جانبنا. يرجى المحاولة مجدداً لاحقاً.';
   @override
   String get error_maintenance =>
       'الخدمة قيد الصيانة حالياً. يرجى المحاولة بعد قليل.';
@@ -2220,8 +2214,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get error_data_parsing =>
       'حدث خطأ أثناء قراءة بيانات الخادم. يرجى المحاولة مجدداً.';
   @override
-  String get error_unknown =>
-      'حدث خطأ غير متوقع. يرجى المحاولة مجدداً.';
+  String get error_unknown => 'حدث خطأ غير متوقع. يرجى المحاولة مجدداً.';
   @override
   String get error_cache =>
       'حدث خطأ في التخزين المحلي. يرجى إعادة تشغيل التطبيق.';
@@ -2249,8 +2242,7 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get favorites_subtitle => 'أطباؤك وعروضك وعياداتك المحفوظة';
   @override
-  String get favorites_subtitle_universal =>
-      'أطباؤك وعروضك وعياداتك المحفوظة';
+  String get favorites_subtitle_universal => 'أطباؤك وعروضك وعياداتك المحفوظة';
   @override
   String get favorites_subtitle_doctors => 'أطباؤك المفضلون';
   @override
@@ -2282,11 +2274,9 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get favorites_sort_rating_high_low => 'التقييم: من الأعلى للأقل';
   @override
-  String get favorites_sort_price_low_high =>
-      'سعر الكشف: من الأقل للأعلى';
+  String get favorites_sort_price_low_high => 'سعر الكشف: من الأقل للأعلى';
   @override
-  String get favorites_sort_price_high_low =>
-      'سعر الكشف: من الأعلى للأقل';
+  String get favorites_sort_price_high_low => 'سعر الكشف: من الأعلى للأقل';
   @override
   String get favorites_sort_discount_high_low => 'نسبة الخصم: من الأعلى للأقل';
   @override
@@ -2379,8 +2369,7 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get notifications_empty_title => 'لا توجد إشعارات بعد';
   @override
-  String get notifications_empty_subtitle =>
-      'سنخطرك عندما يكون هناك شيء مهم.';
+  String get notifications_empty_subtitle => 'سنخطرك عندما يكون هناك شيء مهم.';
   @override
   String get notifications_empty_cta => 'الذهاب للرئيسية';
   @override
@@ -2538,5 +2527,3 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get select_new_slot => 'اختيار موعد جديد';
 }
-
-

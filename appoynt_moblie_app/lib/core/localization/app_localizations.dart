@@ -373,13 +373,13 @@ abstract class AppLocalizations {
   String get dummy_top_doctors;
 
   // Abstract getter for cardiologist practitioner name
-  String get dummy_dr_sarah_johnson;
+  String get dummy_dr_sara_johnson;
 
   // Abstract getter for cardiologist specialty title
   String get dummy_cardiologist;
 
   // Abstract getter for cardiology practice length details
-  String get dummy_years_experience_sarah;
+  String get dummy_years_experience_sara;
 
   // Abstract getter for neurologist practitioner name
   String get dummy_dr_mohammed_ali;
@@ -1283,4 +1283,3 @@ abstract class AppLocalizations {
 
 // Defining a short alias for clean and simple type references
 typedef AppStrings = AppLocalizations;
-

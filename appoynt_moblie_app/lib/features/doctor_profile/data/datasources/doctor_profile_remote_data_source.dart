@@ -2,13 +2,13 @@
  * File Name: doctor_profile_remote_data_source.dart
  * Author: Kholoud Khaled
  * Date of Creation: 16/08/2026
- * Version Information: V1.3.0
+ * Version Information: V1.4.0
  * Dependencies: package:dio/dio.dart, doctor_profile_model.dart, doctor_profile_entity.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 17/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 21/08/2026]
  * File Description: Remote data source handling HTTP requests for doctor profile
  *   details, booking availability slots, and favorite toggles with a rich multi-doctor
- *   mock dataset featuring stable, high-availability public MP4 video streams.
+ *   mock dataset featuring high-resolution portraits and stable public media.
  */
 
 // Import Dio networking library
@@ -50,8 +50,7 @@ class DoctorProfileRemoteDataSourceImpl
       );
 
       if (response.data is Map<String, dynamic>) {
-        final Map<String, dynamic> data =
-            response.data as Map<String, dynamic>;
+        final Map<String, dynamic> data = response.data as Map<String, dynamic>;
         final Map<String, dynamic> payload =
             data['data'] is Map<String, dynamic>
                 ? data['data'] as Map<String, dynamic>
@@ -84,8 +83,7 @@ class DoctorProfileRemoteDataSourceImpl
             .map((item) => AppointmentSlotModel.fromJson(item))
             .toList();
       } else if (response.data is Map<String, dynamic>) {
-        final Map<String, dynamic> map =
-            response.data as Map<String, dynamic>;
+        final Map<String, dynamic> map = response.data as Map<String, dynamic>;
         final List<dynamic> list = map['slots'] as List<dynamic>? ??
             map['data'] as List<dynamic>? ??
             [];
@@ -108,8 +106,7 @@ class DoctorProfileRemoteDataSourceImpl
         'doctors/$doctor_id/favorite',
       );
       if (response.data is Map<String, dynamic>) {
-        final Map<String, dynamic> map =
-            response.data as Map<String, dynamic>;
+        final Map<String, dynamic> map = response.data as Map<String, dynamic>;
         return map['isFavorited'] as bool? ??
             map['isFavorite'] as bool? ??
             true;
@@ -179,8 +176,7 @@ class DoctorProfileRemoteDataSourceImpl
         doctor_id: id.isNotEmpty ? id : 'doc_2',
         full_name: 'Dr. Youssef Nabil, M.D.',
         specialty: 'Consultant Dermatologist & Laser Specialist',
-        profile_photo_url:
-            'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=600',
+        profile_photo_url: 'assets/images/doctors/youssef.png',
         is_verified: true,
         average_rating: 4.8,
         reviews_count: 1420,
@@ -306,8 +302,7 @@ class DoctorProfileRemoteDataSourceImpl
         doctor_id: id.isNotEmpty ? id : 'doc_3',
         full_name: 'Dr. Layla Mahmoud, M.D.',
         specialty: 'Pediatric Specialist & Neonatologist',
-        profile_photo_url:
-            'https://images.unsplash.com/photo-1594824813629-79a6176378db?auto=format&fit=crop&q=80&w=600',
+        profile_photo_url: 'assets/images/doctors/layla.png',
         is_verified: true,
         average_rating: 4.9,
         reviews_count: 2150,
@@ -431,10 +426,9 @@ class DoctorProfileRemoteDataSourceImpl
         clean_id.contains('ortho')) {
       return DoctorProfileModel(
         doctor_id: id.isNotEmpty ? id : 'doc_4',
-        full_name: 'Dr. Mohamed Khaled, M.D.',
+        full_name: 'Dr. Mohamed Alaa, M.D.',
         specialty: 'Consultant Orthopedic & Joint Replacement Surgeon',
-        profile_photo_url:
-            'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=600',
+        profile_photo_url: 'assets/images/doctors/mohamed.png',
         is_verified: true,
         average_rating: 4.9,
         reviews_count: 1980,
@@ -443,7 +437,7 @@ class DoctorProfileRemoteDataSourceImpl
         consultation_fee: 600.0,
         currency: 'EGP',
         bio:
-            'Dr. Mohamed Khaled is a premier Consultant Orthopedic Surgeon with 18+ years of high-volume surgical mastery in minimally invasive arthroscopy, sports medicine, knee and hip total arthroplasty, and complex ligament reconstruction. He has served as medical consultant for top athletic clubs across the Middle East.',
+            'Dr. Mohamed Alaa is a premier Consultant Orthopedic Surgeon with 18+ years of high-volume surgical mastery in minimally invasive arthroscopy, sports medicine, knee and hip total arthroplasty, and complex ligament reconstruction. He has served as medical consultant for top athletic clubs across the Middle East.',
         is_favorited: false,
         is_available_today: false,
         education_list: const [
@@ -473,7 +467,8 @@ class DoctorProfileRemoteDataSourceImpl
         certificates_list: const [
           CertificateModel(
             id: 'cert_o_1',
-            title: 'International Society of Arthroscopy, Knee Surgery (ISAKOS)',
+            title:
+                'International Society of Arthroscopy, Knee Surgery (ISAKOS)',
             image_url:
                 'https://images.unsplash.com/photo-1589330694653-ded6df03f754?auto=format&fit=crop&q=80&w=600',
             issue_date: '2015',
@@ -551,13 +546,12 @@ class DoctorProfileRemoteDataSourceImpl
       );
     }
 
-    // 4. Default / Doctor 1: Dr. Sarah Jenkins (Cardiologist)
+    // 4. Default / Doctor 1: Dr. Sara Hassan (Cardiologist)
     return DoctorProfileModel(
       doctor_id: id.isNotEmpty ? id : 'doc_1',
-      full_name: 'Dr. Sarah Jenkins, M.D.',
+      full_name: 'Dr. Sara Hassan, M.D.',
       specialty: 'Senior Consultant Cardiologist',
-      profile_photo_url:
-          'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=600',
+      profile_photo_url: 'assets/images/doctors/sara.png',
       is_verified: true,
       average_rating: 4.9,
       reviews_count: 1840,
@@ -566,7 +560,7 @@ class DoctorProfileRemoteDataSourceImpl
       consultation_fee: 550.0,
       currency: 'EGP',
       bio:
-          'Dr. Sarah Jenkins is an internationally recognized Senior Consultant Cardiologist with over 15 years of distinguished clinical experience in interventional cardiology, heart rhythm disorders, and non-invasive coronary diagnostics. Having trained at Johns Hopkins and Kasr Al Ainy, she is committed to patient-first preventive healthcare, state-of-the-art diagnostic testing, and tailored cardiovascular longevity programs.',
+          'Dr. Sara Hassan is an internationally recognized Senior Consultant Cardiologist with over 15 years of distinguished clinical experience in interventional cardiology, heart rhythm disorders, and non-invasive coronary diagnostics. Having trained at Johns Hopkins and Kasr Al Ainy, she is committed to patient-first preventive healthcare, state-of-the-art diagnostic testing, and tailored cardiovascular longevity programs.',
       is_favorited: false,
       is_available_today: true,
       education_list: const [
@@ -688,7 +682,7 @@ class DoctorProfileRemoteDataSourceImpl
           patient_name: 'Karim Mansour',
           rating: 5.0,
           comment:
-              'Dr. Sarah Jenkins is exceptionally thorough and empathetic. She accurately diagnosed my arrhythmia and explained every step with total clarity.',
+              'Dr. Sara Hassan is exceptionally thorough and empathetic. She accurately diagnosed my arrhythmia and explained every step with total clarity.',
           date: '10 Aug 2026',
         ),
         DoctorReviewModel(

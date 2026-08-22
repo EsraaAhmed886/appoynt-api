@@ -830,9 +830,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   // Override getter returning cardiologist practitioner name in English
   @override
-  String get dummy_dr_sarah_johnson {
+  String get dummy_dr_sara_johnson {
     // Return English cardiologist practitioner name
-    return 'Dr. Sarah Johnson';
+    return 'Dr. Sara Johnson';
   }
 
   // Override getter returning cardiologist specialty title in English
@@ -844,7 +844,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   // Override getter returning cardiology practice length details in English
   @override
-  String get dummy_years_experience_sarah {
+  String get dummy_years_experience_sara {
     // Return English cardiology practice length details
     return '12 years';
   }

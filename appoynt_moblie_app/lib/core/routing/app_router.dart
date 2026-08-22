@@ -56,7 +56,7 @@ class AppRouter {
             ? args
             : ChooseSlotsArgs(
                 doctor_id: args is String ? args : 'doc_101',
-                doctor_name: 'Dr. Sarah Jenkins',
+                doctor_name: 'Dr. Sara Hassan',
                 specialty: 'Senior Consultant Cardiologist',
                 consultation_fee: 550.0,
               );

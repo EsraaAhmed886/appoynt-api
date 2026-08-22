@@ -99,6 +99,8 @@ flutter:
   assets:
     # Add path to the local assets/images directory
     - assets/images/
+    # Add path to the local assets/images/doctors directory
+    - assets/images/doctors/
     # Add path to the local assets/icons directory
     - assets/icons/
     # Add path to the local assets/svgs directory
