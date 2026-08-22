@@ -7,7 +7,7 @@
  *   app_localizations.dart, doctor_profile_entity.dart, doctor_review_card.dart,
  *   all_doctor_reviews_bottom_sheet.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 17/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 22/08/2026]
  * File Description: Dedicated Patient Reviews profile section displaying rating stats,
  *   clickable "See All" bottom sheet trigger, and modern patient review cards.
  */
@@ -40,9 +40,8 @@ class DoctorReviewsSection extends StatelessWidget {
 
     if (profile.reviews_list.isEmpty) {
       return const SizedBox.shrink();
-    }
-
-    return Container(
+    } else {
+      return Container(
       margin: const EdgeInsets.symmetric(
         horizontal: AppSpacing.space_xl,
         vertical: AppSpacing.space_s,
@@ -130,5 +129,6 @@ class DoctorReviewsSection extends StatelessWidget {
         ],
       ),
     );
+    }
   }
 }

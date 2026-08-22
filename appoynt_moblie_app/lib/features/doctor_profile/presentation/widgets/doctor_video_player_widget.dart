@@ -6,7 +6,7 @@
  * Dependencies: package:flutter/material.dart, package:video_player/video_player.dart,
  *   app_colors.dart, app_spacing.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 17/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 22/08/2026]
  * File Description: Clean standalone video player widget supporting network video
  *   streaming from official CDN sources, auto-looping, aspect ratio preservation,
  *   animated controls, progress scrubbing, and graceful error recovery.
@@ -24,9 +24,9 @@ import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 class DoctorVideoPlayerWidget extends StatefulWidget {
   // Network video URL endpoint
   final String video_url;
-  // Optional thumbnail preview image while loading
+  // Optional thumbnail preview image URL
   final String? thumbnail_url;
-  // Auto play upon initialization flag
+  // Auto play boolean flag
   final bool auto_play;
 
   // Constant constructor
@@ -38,13 +38,12 @@ class DoctorVideoPlayerWidget extends StatefulWidget {
   });
 
   @override
-  State<DoctorVideoPlayerWidget> createState() {
-    return _DoctorVideoPlayerWidgetState();
-  }
+  State<DoctorVideoPlayerWidget> createState() =>
+      _DoctorVideoPlayerWidgetState();
 }
 
 class _DoctorVideoPlayerWidgetState extends State<DoctorVideoPlayerWidget> {
-  // Underlying video player controller
+  // Video player controller
   VideoPlayerController? _controller;
   // Initialization state flag
   bool _is_initializing = true;
@@ -65,12 +64,18 @@ class _DoctorVideoPlayerWidgetState extends State<DoctorVideoPlayerWidget> {
     if (oldWidget.video_url != widget.video_url) {
       _dispose_controller();
       _initialize_video_player();
+    } else {
+      // No action needed
     }
   }
 
   /// Initializes the video controller cleanly using official networkUrl loader.
   Future<void> _initialize_video_player() async {
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    } else {
+      // No action needed
+    }
 
     _dispose_controller();
 
@@ -96,12 +101,16 @@ class _DoctorVideoPlayerWidgetState extends State<DoctorVideoPlayerWidget> {
       if (!mounted) {
         await controller.dispose();
         return;
+      } else {
+        // No action needed
       }
 
       await controller.setLooping(true);
 
       if (widget.auto_play) {
         await controller.play();
+      } else {
+        // No action needed
       }
 
       if (mounted) {
@@ -109,6 +118,8 @@ class _DoctorVideoPlayerWidgetState extends State<DoctorVideoPlayerWidget> {
           _is_initializing = false;
           _has_error = controller.value.hasError;
         });
+      } else {
+        // No action needed
       }
     } catch (e) {
       debugPrint('Video initialization failed: $e');
@@ -117,12 +128,18 @@ class _DoctorVideoPlayerWidgetState extends State<DoctorVideoPlayerWidget> {
           _is_initializing = false;
           _has_error = true;
         });
+      } else {
+        // No action needed
       }
     }
   }
 
   void _video_listener() {
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    } else {
+      // No action needed
+    }
 
     final VideoPlayerController? controller = _controller;
     if (controller != null && controller.value.hasError) {
@@ -151,7 +168,11 @@ class _DoctorVideoPlayerWidgetState extends State<DoctorVideoPlayerWidget> {
 
   void _toggle_play_pause() {
     final VideoPlayerController? controller = _controller;
-    if (controller == null || !controller.value.isInitialized) return;
+    if (controller == null || !controller.value.isInitialized) {
+      return;
+    } else {
+      // No action needed
+    }
 
     setState(() {
       if (controller.value.isPlaying) {
@@ -215,10 +236,8 @@ class _DoctorVideoPlayerWidgetState extends State<DoctorVideoPlayerWidget> {
           ),
         ),
       );
-    }
-
-    // 2. Loading State with Sleek Pulse
-    if (_is_initializing || !controller.value.isInitialized) {
+    } else if (_is_initializing || !controller.value.isInitialized) {
+      // 2. Loading State with Sleek Pulse
       return Container(
         color: AppColors.black,
         child: const Center(
@@ -228,131 +247,123 @@ class _DoctorVideoPlayerWidgetState extends State<DoctorVideoPlayerWidget> {
           ),
         ),
       );
-    }
+    } else {
+      final double aspect_ratio = controller.value.aspectRatio > 0
+          ? controller.value.aspectRatio
+          : 16 / 9;
 
-    final double aspect_ratio = controller.value.aspectRatio > 0
-        ? controller.value.aspectRatio
-        : 16 / 9;
+      final Duration position = controller.value.position;
+      final Duration total_duration = controller.value.duration;
+      final bool is_playing = controller.value.isPlaying;
 
-    final Duration position = controller.value.position;
-    final Duration total_duration = controller.value.duration;
-    final bool is_playing = controller.value.isPlaying;
-
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _show_controls = !_show_controls;
-        });
-      },
-      child: Container(
-        color: AppColors.black,
-        child: Center(
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(AppSpacing.radius_xl),
+        child: Container(
+          color: AppColors.black,
           child: AspectRatio(
             aspectRatio: aspect_ratio,
-            child: Stack(
-              alignment: Alignment.center,
-              fit: StackFit.expand,
-              children: [
-                // Video Stream Render Surface
-                VideoPlayer(controller),
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  _show_controls = !_show_controls;
+                });
+              },
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  // Video Surface
+                  VideoPlayer(controller),
 
-                // Animated Center Play/Pause Indicator
-                if (_show_controls || !is_playing)
-                  AnimatedOpacity(
-                    opacity: _show_controls || !is_playing ? 1.0 : 0.0,
-                    duration: const Duration(milliseconds: 250),
-                    child: Center(
-                      child: GestureDetector(
-                        onTap: _toggle_play_pause,
-                        child: Container(
-                          padding: const EdgeInsets.all(16.0),
-                          decoration: BoxDecoration(
-                            color: AppColors.black.withValues(alpha: 0.65),
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: AppColors.white.withValues(alpha: 0.8),
-                              width: 1.5,
-                            ),
-                          ),
-                          child: Icon(
-                            is_playing
-                                ? Icons.pause_rounded
-                                : Icons.play_arrow_rounded,
-                            color: AppColors.white,
-                            size: 40.0,
-                          ),
+                  // Center Play/Pause Overlay Button
+                  if (_show_controls || !is_playing)
+                    GestureDetector(
+                      onTap: _toggle_play_pause,
+                      child: Container(
+                        padding: const EdgeInsets.all(AppSpacing.space_l),
+                        decoration: BoxDecoration(
+                          color: AppColors.black.withValues(alpha: 0.55),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          is_playing
+                              ? Icons.pause_rounded
+                              : Icons.play_arrow_rounded,
+                          color: AppColors.white,
+                          size: 38.0,
                         ),
                       ),
                     ),
-                  ),
 
-                // Bottom Controls Bar with Time and Scrubber
-                if (_show_controls || !is_playing)
-                  Positioned(
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    child: Container(
-                      padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 10.0),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.bottomCenter,
-                          end: Alignment.topCenter,
-                          colors: [
-                            AppColors.black.withValues(alpha: 0.85),
-                            AppColors.transparent,
+                  // Bottom Controls Bar with Progress and Duration
+                  if (_show_controls)
+                    Positioned(
+                      left: 0.0,
+                      right: 0.0,
+                      bottom: 0.0,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.space_l,
+                          vertical: AppSpacing.space_s,
+                        ),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              AppColors.transparent,
+                              AppColors.black.withValues(alpha: 0.8),
+                            ],
+                          ),
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // Progress bar
+                            VideoProgressIndicator(
+                              controller,
+                              allowScrubbing: true,
+                              colors: VideoProgressColors(
+                                playedColor: AppColors.primary_color,
+                                bufferedColor:
+                                    AppColors.white.withValues(alpha: 0.4),
+                                backgroundColor:
+                                    AppColors.white.withValues(alpha: 0.15),
+                              ),
+                            ),
+                            const SizedBox(height: 4.0),
+
+                            // Time Labels
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  _format_duration(position),
+                                  style: const TextStyle(
+                                    color: AppColors.white,
+                                    fontSize: AppSpacing.font_size_label,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                Text(
+                                  _format_duration(total_duration),
+                                  style: TextStyle(
+                                    color: AppColors.white.withValues(alpha: 0.7),
+                                    fontSize: AppSpacing.font_size_label,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ],
                         ),
                       ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // Interactive Progress Indicator
-                          VideoProgressIndicator(
-                            controller,
-                            allowScrubbing: true,
-                            padding: const EdgeInsets.symmetric(vertical: 4.0),
-                            colors: VideoProgressColors(
-                              playedColor: AppColors.primary_color,
-                              bufferedColor:
-                                  AppColors.white.withValues(alpha: 0.35),
-                              backgroundColor:
-                                  AppColors.white.withValues(alpha: 0.15),
-                            ),
-                          ),
-                          const SizedBox(height: 4.0),
-
-                          // Time Labels
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                _format_duration(position),
-                                style: const TextStyle(
-                                  color: AppColors.white,
-                                  fontSize: AppSpacing.font_size_label,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              Text(
-                                _format_duration(total_duration),
-                                style: TextStyle(
-                                  color: AppColors.white.withValues(alpha: 0.7),
-                                  fontSize: AppSpacing.font_size_label,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    }
   }
 }

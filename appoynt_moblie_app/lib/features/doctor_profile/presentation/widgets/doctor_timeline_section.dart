@@ -6,7 +6,7 @@
  * Dependencies: package:flutter/material.dart, app_colors.dart, app_spacing.dart,
  *   app_localizations.dart, doctor_profile_entity.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 22/08/2026]
  * File Description: Modern medical timeline widget rendering clinical career
  *   experience and academic education history with connected nodes and localized tabs.
  */
@@ -48,9 +48,8 @@ class _DoctorTimelineSectionState extends State<DoctorTimelineSection> {
 
     if (widget.experience_list.isEmpty && widget.education_list.isEmpty) {
       return const SizedBox.shrink();
-    }
-
-    return Container(
+    } else {
+      return Container(
       margin: const EdgeInsets.symmetric(
         horizontal: AppSpacing.space_xl,
         vertical: AppSpacing.space_s,
@@ -139,6 +138,7 @@ class _DoctorTimelineSectionState extends State<DoctorTimelineSection> {
         ],
       ),
     );
+    }
   }
 
   Widget _build_tab_pill({
@@ -204,24 +204,24 @@ class _DoctorTimelineSectionState extends State<DoctorTimelineSection> {
           ),
         ),
       );
+    } else {
+      return Column(
+        children: List.generate(widget.experience_list.length, (index) {
+          final exp = widget.experience_list[index];
+          final bool is_last = index == widget.experience_list.length - 1;
+
+          return _build_timeline_node(
+            title: exp.position,
+            subtitle: exp.hospital_or_clinic,
+            badge: exp.duration,
+            badge_color: AppColors.primary_color,
+            icon: Icons.work_outline_rounded,
+            is_last: is_last,
+            is_dark: is_dark,
+          );
+        }),
+      );
     }
-
-    return Column(
-      children: List.generate(widget.experience_list.length, (index) {
-        final exp = widget.experience_list[index];
-        final bool is_last = index == widget.experience_list.length - 1;
-
-        return _build_timeline_node(
-          title: exp.position,
-          subtitle: exp.hospital_or_clinic,
-          badge: exp.duration,
-          badge_color: AppColors.primary_color,
-          icon: Icons.work_outline_rounded,
-          is_last: is_last,
-          is_dark: is_dark,
-        );
-      }),
-    );
   }
 
   Widget _build_education_timeline(bool is_dark) {
@@ -237,24 +237,24 @@ class _DoctorTimelineSectionState extends State<DoctorTimelineSection> {
           ),
         ),
       );
+    } else {
+      return Column(
+        children: List.generate(widget.education_list.length, (index) {
+          final edu = widget.education_list[index];
+          final bool is_last = index == widget.education_list.length - 1;
+
+          return _build_timeline_node(
+            title: edu.degree,
+            subtitle: edu.institution,
+            badge: edu.year,
+            badge_color: AppColors.teal,
+            icon: Icons.school_outlined,
+            is_last: is_last,
+            is_dark: is_dark,
+          );
+        }),
+      );
     }
-
-    return Column(
-      children: List.generate(widget.education_list.length, (index) {
-        final edu = widget.education_list[index];
-        final bool is_last = index == widget.education_list.length - 1;
-
-        return _build_timeline_node(
-          title: edu.degree,
-          subtitle: edu.institution,
-          badge: edu.year,
-          badge_color: AppColors.teal,
-          icon: Icons.school_outlined,
-          is_last: is_last,
-          is_dark: is_dark,
-        );
-      }),
-    );
   }
 
   Widget _build_timeline_node({

@@ -6,7 +6,7 @@
  * Dependencies: package:flutter/material.dart, app_colors.dart, app_spacing.dart,
  *   app_localizations.dart, doctor_profile_entity.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 17/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 22/08/2026]
  * File Description: Modern aesthetic patient review card component featuring patient
  *   avatar/initials, verified patient badge, relative date, star rating, and expandable review text.
  */
@@ -42,9 +42,13 @@ class _DoctorReviewCardState extends State<DoctorReviewCard> {
 
   String _get_initials(String name) {
     final List<String> parts = name.trim().split(RegExp(r'\s+'));
-    if (parts.isEmpty) return 'P';
-    if (parts.length == 1) return parts.first.substring(0, 1).toUpperCase();
-    return (parts[0].substring(0, 1) + parts[1].substring(0, 1)).toUpperCase();
+    if (parts.isEmpty) {
+      return 'P';
+    } else if (parts.length == 1) {
+      return parts.first.substring(0, 1).toUpperCase();
+    } else {
+      return (parts[0].substring(0, 1) + parts[1].substring(0, 1)).toUpperCase();
+    }
   }
 
   @override
