@@ -37,15 +37,19 @@ jobs:
 
       - name: Deploy to MonsterASP via MSDeploy
         shell: pwsh
+        env:
+          WEBSITE_NAME: ${{ secrets.WEBSITE_NAME }}
+          SERVER_COMPUTER_NAME: ${{ secrets.SERVER_COMPUTER_NAME }}
+          SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
+          SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
         run: |
           $msdeploy = "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe"
           if (-not (Test-Path $msdeploy)) {
             $msdeploy = "C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe"
           }
-          
+
+          $sourcePath = "$PWD\publish"
+          $dest = "iisApp='$env:WEBSITE_NAME',ComputerName='$env:SERVER_COMPUTER_NAME',UserName='$env:SERVER_USERNAME',Password='$env:SERVER_PASSWORD',AuthType='Basic'"
+
           Write-Host "Deploying to MonsterASP.NET..."
-          & $msdeploy -verb:sync `
-            -source:iisApp="$PWD/publish" `
-            -dest:iisApp='${{ secrets.WEBSITE_NAME }}',ComputerName='${{ secrets.SERVER_COMPUTER_NAME }}',UserName='${{ secrets.SERVER_USERNAME }}',Password='${{ secrets.SERVER_PASSWORD }}',AuthType='Basic' `
-            -allowUntrusted `
-            -enableRule:DoNotDeleteRule
+          & $msdeploy -verb:sync "-source:iisApp=$sourcePath" "-dest:$dest" -allowUntrusted -enableRule:DoNotDeleteRule
