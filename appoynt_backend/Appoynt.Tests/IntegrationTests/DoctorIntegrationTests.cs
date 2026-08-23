@@ -441,5 +441,29 @@ public class DoctorIntegrationTests : IClassFixture<WebApplicationFactory<Appoyn
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
     }
 
+    [Fact]
+    public async Task DefaultSeededDoctor_ShouldBeAbleToLogin_WithDefaultCredentials()
+    {
+        // Act: Login with default seeded doctor credentials
+        var loginRequest = new LoginRequest
+        {
+            Identifier = "doctor@appoynt.com",
+            Password = "Password123!"
+        };
+
+        var response = await _client.PostAsJsonAsync("/api/auth/login", loginRequest);
+
+        // Assert: Login should succeed and return access token
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
+        result.Should().NotBeNull();
+        result!.AccessToken.Should().NotBeNullOrWhiteSpace();
+
+        // Verify that the token allows accessing Doctor-authorized endpoints
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", result.AccessToken);
+        var myClinicsResponse = await _client.GetAsync("/api/clinics/my");
+        myClinicsResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+
     #endregion
 }

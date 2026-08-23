@@ -191,7 +191,7 @@ namespace Appoynt.Infrastructure.Persistence.Migrations
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+                        .HasFilter("[DeletedAt] IS NULL");
 
                     b.HasIndex("PhoneNumber")
                         .IsUnique()
