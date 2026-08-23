@@ -7,7 +7,7 @@
  *                  LoginService, ISmsSender,
  *                  JWT Bearer Authentication
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 24/07/2026
+ * Last Modified  : Mustafa Mahmoud - 23/08/2026
  * Description    : Registers authentication services used by the
  *                  application.
  * Description    : Registers authentication services used by the
@@ -128,3 +128,4 @@ internal static class AuthenticationDependencyInjection
         return services;
     }
 }
+
