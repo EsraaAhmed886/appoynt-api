@@ -70,12 +70,12 @@ dependencies:
   fl_chart: ^0.68.0
 
   # Custom Typography
-  google_fonts: ^6.3.0
+  google_fonts: ^8.1.0
 
   # JSON Serialization
   json_annotation: ^4.9.0
-  lucide_icons: ^0.257.0
-  image_picker: ^1.1.2
+  lucide_icons_flutter: ^3.1.17
+  image_picker: ^1.2.3
   flutter_svg: ^2.0.10+1
 
 dev_dependencies:
@@ -110,4 +110,5 @@ flutter_launcher_icons:
   ios: true
   # Path to the source image logo asset
   image_path: "assets/images/appoynt_icon_cropped.png"
+
 

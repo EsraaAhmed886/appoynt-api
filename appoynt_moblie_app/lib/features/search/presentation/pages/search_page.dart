@@ -15,7 +15,7 @@
 // Import standard UI framework
 import 'package:flutter/material.dart';
 // Import lucide icons library
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 // Import BLoC state provider
 import 'package:flutter_bloc/flutter_bloc.dart';
 // Import layout design tokens
@@ -1737,3 +1737,4 @@ class _FilterChip extends StatelessWidget {
 }
 
 // TODO: END OF DUMMY HOME SCREEN IMPLEMENTATION
+
