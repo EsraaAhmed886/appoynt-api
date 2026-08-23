@@ -6,7 +6,7 @@
  * Dependencies: package:flutter/material.dart, app_colors.dart, app_spacing.dart,
  *   app_localizations.dart, app_network_image.dart, doctor_profile_entity.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 22/08/2026]
  * File Description: Displays official medical board certifications and accredited
  *   diplomas in a horizontal gallery with tap-to-zoom full screen modal preview and localization.
  */
@@ -38,9 +38,8 @@ class DoctorCertificatesGallery extends StatelessWidget {
 
     if (certificates_list.isEmpty) {
       return const SizedBox.shrink();
-    }
-
-    return Container(
+    } else {
+      return Container(
       margin: const EdgeInsets.symmetric(
         horizontal: AppSpacing.space_xl,
         vertical: AppSpacing.space_s,
@@ -104,6 +103,7 @@ class DoctorCertificatesGallery extends StatelessWidget {
         ],
       ),
     );
+    }
   }
 
   Widget _build_certificate_card(

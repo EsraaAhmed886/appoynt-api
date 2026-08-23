@@ -7,7 +7,7 @@
  *   app_localizations.dart, app_network_image.dart, custom_profile_app_bar.dart,
  *   doctor_profile_entity.dart, favorite_heart_button.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 21/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 23/08/2026]
  * File Description: Modern edge-to-edge Hero Banner featuring 44x44 action buttons,
  *   decoupled 2-tier metadata badges, borderless portrait with gradient ShaderMask,
  *   local asset and network image support, and verified credentials.
@@ -193,14 +193,7 @@ class DoctorHeroHeader extends StatelessWidget {
                         ),
                       ),
                     ),
-                    if (profile.is_verified) ...[
-                      const SizedBox(width: 6.0),
-                      const Icon(
-                        Icons.verified_rounded,
-                        color: AppColors.primary_color,
-                        size: 22.0,
-                      ),
-                    ],
+                    ..._build_verified_badge(),
                   ],
                 ),
                 const SizedBox(height: AppSpacing.space_s + 2.0),
@@ -426,12 +419,15 @@ class DoctorHeroHeader extends StatelessWidget {
                     fit: BoxFit.cover,
                     alignment: Alignment.topCenter,
                     loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Container(
-                        width: size,
-                        height: size,
-                        color: Colors.grey.shade200,
-                      );
+                      if (loadingProgress == null) {
+                        return child;
+                      } else {
+                        return Container(
+                          width: size,
+                          height: size,
+                          color: Colors.grey.shade200,
+                        );
+                      }
                     },
                     errorBuilder: (context, error, stackTrace) => Container(
                       width: size,
@@ -450,5 +446,21 @@ class DoctorHeroHeader extends StatelessWidget {
                   )),
       ),
     );
+  }
+
+  /// Builds the verified badge icon when the doctor profile is verified.
+  List<Widget> _build_verified_badge() {
+    if (profile.is_verified) {
+      return [
+        const SizedBox(width: 6.0),
+        const Icon(
+          Icons.verified_rounded,
+          color: AppColors.primary_color,
+          size: 22.0,
+        ),
+      ];
+    } else {
+      return const [];
+    }
   }
 }

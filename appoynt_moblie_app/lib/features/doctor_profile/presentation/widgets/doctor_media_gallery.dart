@@ -7,7 +7,7 @@
  *   app_localizations.dart, app_network_image.dart, doctor_profile_entity.dart,
  *   doctor_media_preview_dialog.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 17/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 22/08/2026]
  * File Description: Horizontal media gallery displaying clinic photos and procedure
  *   videos with Hero animations and full-screen glassmorphic preview modal integration.
  */
@@ -40,9 +40,8 @@ class DoctorMediaGallery extends StatelessWidget {
 
     if (media_list.isEmpty) {
       return const SizedBox.shrink();
-    }
-
-    return Container(
+    } else {
+      return Container(
       margin: const EdgeInsets.symmetric(
         horizontal: AppSpacing.space_xl,
         vertical: AppSpacing.space_s,
@@ -106,6 +105,7 @@ class DoctorMediaGallery extends StatelessWidget {
         ],
       ),
     );
+    }
   }
 
   Widget _build_media_thumbnail(

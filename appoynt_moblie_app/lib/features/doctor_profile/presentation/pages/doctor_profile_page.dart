@@ -10,7 +10,7 @@
  *   doctor_certificates_gallery.dart, doctor_media_gallery.dart,
  *   doctor_sticky_booking_bar.dart, favorite_heart_button.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 17/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 23/08/2026]
  * File Description: Comprehensive Doctor Profile page implementing a fluid
  *   CustomScrollView with collapsible SliverAppBar, interactive medical sections,
  *   credentials galleries, and sticky confirmation bar with safe bottom padding.

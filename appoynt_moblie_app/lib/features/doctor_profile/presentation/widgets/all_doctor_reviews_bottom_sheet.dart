@@ -270,9 +270,8 @@ class AllDoctorReviewsBottomSheet extends StatelessWidget {
             child: LinearProgressIndicator(
               value: factor,
               minHeight: 5.0,
-              backgroundColor: is_dark
-                  ? AppColors.surface_dark
-                  : AppColors.slate_200,
+              backgroundColor:
+                  is_dark ? AppColors.surface_dark : AppColors.slate_200,
               valueColor: const AlwaysStoppedAnimation<Color>(AppColors.amber),
             ),
           ),

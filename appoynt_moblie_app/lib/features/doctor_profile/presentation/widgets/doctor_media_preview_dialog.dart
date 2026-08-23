@@ -305,23 +305,23 @@ class _DoctorMediaPreviewDialogState extends State<DoctorMediaPreviewDialog> {
         video_url: media.url,
         thumbnail_url: media.thumbnail_url,
       );
-    }
-
-    return Center(
-      child: InteractiveViewer(
-        minScale: 1.0,
-        maxScale: 3.5,
-        child: Hero(
-          tag: 'media_${media.id}',
-          child: AppNetworkImage(
-            image_url: media.url,
-            width: double.infinity,
-            height: double.infinity,
-            border_radius: 0.0,
-            fallback_icon: Icons.image_rounded,
+    } else {
+      return Center(
+        child: InteractiveViewer(
+          minScale: 1.0,
+          maxScale: 3.5,
+          child: Hero(
+            tag: 'media_${media.id}',
+            child: AppNetworkImage(
+              image_url: media.url,
+              width: double.infinity,
+              height: double.infinity,
+              border_radius: 0.0,
+              fallback_icon: Icons.image_rounded,
+            ),
           ),
         ),
-      ),
-    );
+      );
+    }
   }
 }
