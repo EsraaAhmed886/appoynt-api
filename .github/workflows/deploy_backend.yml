@@ -8,6 +8,7 @@ on:
       - master
     paths:
       - 'appoynt_backend/**'
+  workflow_dispatch:
 
 jobs:
   build_and_deploy:
@@ -34,11 +35,17 @@ jobs:
       - name: Publish project
         run: dotnet publish appoynt_backend/Appoynt.API/Appoynt.API.csproj --configuration Release --output ./publish --runtime win-x86
 
-      - name: Deploy to MonsterASP via WebDeploy
-        uses: rasmusbuchholdt/simply-web-deploy@2.1.0
-        with:
-          website-name: ${{ secrets.WEBSITE_NAME }}
-          server-computer-name: ${{ secrets.SERVER_COMPUTER_NAME }}
-          server-username: ${{ secrets.SERVER_USERNAME }}
-          server-password: ${{ secrets.SERVER_PASSWORD }}
-          source-path: './publish'
+      - name: Deploy to MonsterASP via MSDeploy
+        shell: pwsh
+        run: |
+          $msdeploy = "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe"
+          if (-not (Test-Path $msdeploy)) {
+            $msdeploy = "C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe"
+          }
+          
+          Write-Host "Deploying to MonsterASP.NET..."
+          & $msdeploy -verb:sync `
+            -source:iisApp="$PWD/publish" `
+            -dest:iisApp='${{ secrets.WEBSITE_NAME }}',ComputerName='${{ secrets.SERVER_COMPUTER_NAME }}',UserName='${{ secrets.SERVER_USERNAME }}',Password='${{ secrets.SERVER_PASSWORD }}',AuthType='Basic' `
+            -allowUntrusted `
+            -enableRule:DoNotDeleteRule
