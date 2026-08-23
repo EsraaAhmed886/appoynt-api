@@ -2,11 +2,11 @@
  * File Name      : PatientService.cs
  * Author         : Mustafa Mahmoud
  * Created Date   : 2026-08-10
- * Version        : v1.0.0
- * Dependencies   : ApplicationDbContext, ICurrentUserService, IFileStorageService, IValidator
+ * Version        : v1.1.0
+ * Dependencies   : ApplicationDbContext, ICurrentUserService, IFileStorageService, IValidator, Appoynt.Application.Common.Models
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-10
- * Description    : Full implementation of IPatientService.
+ * Last Modified  : Mustafa Mahmoud - 2026-08-23
+ * Description    : Full implementation of IPatientService including profile, family members, and favorites management.
  */
 
 using System;
@@ -17,6 +17,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Appoynt.Application.Common.Constants;
 using Appoynt.Application.Common.Interfaces;
+using Appoynt.Application.Common.Models;
 using Appoynt.Application.Features.Patient;
 using Appoynt.Application.Features.Patient.Contracts;
 using Appoynt.Application.Features.Patient.Validation;
@@ -764,4 +765,695 @@ public class PatientService : IPatientService
         // Return success
         return PatientResult.Success(member.Id);
     }
+
+    #region Doctor Favorites
+
+    /// <inheritdoc />
+    public async Task<PatientResult> AddDoctorToFavoritesAsync(Guid doctorId, CancellationToken cancellationToken = default)
+    {
+        // Retrieve the current authenticated user's ID
+        Guid? userId = _currentUserService.UserId;
+
+        // Verify that the user is authenticated
+        if (userId == null)
+        {
+            // Return 403 Forbidden failure when user is unauthenticated
+            return PatientResult.Failure(PatientErrorCodes.Forbidden, "User is not authenticated.");
+        }
+        else
+        {
+            // No action required.
+        }
+
+        // Retrieve the patient profile associated with the authenticated user
+        var patient = await _dbContext.Patients
+            .FirstOrDefaultAsync(p => p.UserId == userId.Value, cancellationToken);
+
+        // Verify that the patient profile exists
+        if (patient == null)
+        {
+            // Return not found failure when patient profile does not exist
+            return PatientResult.Failure(PatientErrorCodes.NotFound, "Patient profile not found.");
+        }
+        else
+        {
+            // No action required.
+        }
+
+        // Verify that the target doctor exists and is active
+        var doctorExists = await _dbContext.Doctors
+            .AnyAsync(d => d.Id == doctorId, cancellationToken);
+
+        // Check if the doctor exists in the database
+        if (!doctorExists)
+        {
+            // Return doctor not found error
+            return PatientResult.Failure(PatientErrorCodes.FavoriteDoctorNotFound, "Doctor not found.");
+        }
+        else
+        {
+            // No action required.
+        }
+
+        // Perform initial check to prevent duplicate favorites
+        var alreadyFavorited = await _dbContext.PatientFavoriteDoctors
+            .AnyAsync(pfd => pfd.PatientId == patient.Id && pfd.DoctorId == doctorId, cancellationToken);
+
+        // Check if the doctor is already favorited by this patient
+        if (alreadyFavorited)
+        {
+            // Return already added error code
+            return PatientResult.Failure(PatientErrorCodes.FavoriteAlreadyAdded, "Doctor is already in favorites.");
+        }
+        else
+        {
+            // No action required.
+        }
+
+        // Create new patient favorite doctor join entity
+        var favorite = new PatientFavoriteDoctor
+        {
+            PatientId = patient.Id,
+            Patient = patient,
+            DoctorId = doctorId,
+            Doctor = null!,
+            AddedAt = DateTime.UtcNow
+        };
+
+        // Add the favorite record to the database context
+        _dbContext.PatientFavoriteDoctors.Add(favorite);
+
+        // Wrap save changes in try-catch to safely handle race conditions and concurrency collisions
+        try
+        {
+            // Persist the new favorite record to the database
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateException)
+        {
+            // Return already added error when unique composite key constraint is violated
+            return PatientResult.Failure(PatientErrorCodes.FavoriteAlreadyAdded, "Doctor is already in favorites.");
+        }
+
+        // Log successful addition of favorite doctor
+        _logger.LogInformation("Patient {PatientId} added doctor {DoctorId} to favorites.", patient.Id, doctorId);
+
+        // Return successful patient result
+        return PatientResult.Success(patient.Id);
+    }
+
+    /// <inheritdoc />
+    public async Task<PatientResult> RemoveDoctorFromFavoritesAsync(Guid doctorId, CancellationToken cancellationToken = default)
+    {
+        // Retrieve the current authenticated user's ID
+        Guid? userId = _currentUserService.UserId;
+
+        // Verify that the user is authenticated
+        if (userId == null)
+        {
+            // Return forbidden failure when unauthenticated
+            return PatientResult.Failure(PatientErrorCodes.Forbidden, "User is not authenticated.");
+        }
+        else
+        {
+            // No action required.
+        }
+
+        // Retrieve the patient profile for the current user
+        var patient = await _dbContext.Patients
+            .FirstOrDefaultAsync(p => p.UserId == userId.Value, cancellationToken);
+
+        // Verify that the patient profile exists
+        if (patient == null)
+        {
+            // Return patient not found error
+            return PatientResult.Failure(PatientErrorCodes.NotFound, "Patient profile not found.");
+        }
+        else
+        {
+            // No action required.
+        }
+
+        // Query the favorite entry to be removed
+        var favorite = await _dbContext.PatientFavoriteDoctors
+            .FirstOrDefaultAsync(pfd => pfd.PatientId == patient.Id && pfd.DoctorId == doctorId, cancellationToken);
+
+        // Verify that the favorite entry exists
+        if (favorite == null)
+        {
+            // Return error indicating doctor is not in patient's favorites
+            return PatientResult.Failure(PatientErrorCodes.FavoriteNotInFavorites, "Doctor is not in favorites.");
+        }
+        else
+        {
+            // No action required.
+        }
+
+        // Remove the favorite entry from the context
+        _dbContext.PatientFavoriteDoctors.Remove(favorite);
+
+        // Persist the removal to the database
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        // Log removal of favorite doctor
+        _logger.LogInformation("Patient {PatientId} removed doctor {DoctorId} from favorites.", patient.Id, doctorId);
+
+        // Return success result
+        return PatientResult.Success(patient.Id);
+    }
+
+    /// <inheritdoc />
+    public async Task<PatientResult> RemoveAllFavoriteDoctorsAsync(CancellationToken cancellationToken = default)
+    {
+        // Retrieve current authenticated user ID
+        Guid? userId = _currentUserService.UserId;
+
+        // Verify user authentication
+        if (userId == null)
+        {
+            // Return forbidden failure
+            return PatientResult.Failure(PatientErrorCodes.Forbidden, "User is not authenticated.");
+        }
+        else
+        {
+            // No action required.
+        }
+
+        // Retrieve the patient profile
+        var patient = await _dbContext.Patients
+            .FirstOrDefaultAsync(p => p.UserId == userId.Value, cancellationToken);
+
+        // Verify patient profile existence
+        if (patient == null)
+        {
+            // Return not found failure
+            return PatientResult.Failure(PatientErrorCodes.NotFound, "Patient profile not found.");
+        }
+        else
+        {
+            // No action required.
+        }
+
+        // Query all favorite doctor records for this patient
+        var favorites = await _dbContext.PatientFavoriteDoctors
+            .Where(pfd => pfd.PatientId == patient.Id)
+            .ToListAsync(cancellationToken);
+
+        // Check if there are any favorites to remove
+        if (favorites.Count > 0)
+        {
+            // Remove the range of favorite records
+            _dbContext.PatientFavoriteDoctors.RemoveRange(favorites);
+
+            // Persist the deletions to the database
+            await _dbContext.SaveChangesAsync(cancellationToken);
+
+            // Log bulk removal
+            _logger.LogInformation("Patient {PatientId} cleared all favorite doctors ({Count} items).", patient.Id, favorites.Count);
+        }
+        else
+        {
+            // No action required when list is already empty.
+        }
+
+        // Return success result
+        return PatientResult.Success(patient.Id);
+    }
+
+    /// <inheritdoc />
+    public async Task<PagedResponse<FavoriteDoctorResponse>> GetFavoriteDoctorsAsync(
+        int pageNumber,
+        int pageSize,
+        string? search = null,
+        CancellationToken cancellationToken = default)
+    {
+        // Retrieve the current user identifier
+        Guid? userId = _currentUserService.UserId;
+
+        // Check if the user is unauthenticated
+        if (userId == null)
+        {
+            // Return empty paged response for unauthenticated caller
+            return new PagedResponse<FavoriteDoctorResponse>
+            {
+                Items = [],
+                TotalCount = 0,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+        }
+        else
+        {
+            // No action required.
+        }
+
+        // Retrieve the patient record for the current user
+        var patient = await _dbContext.Patients
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p => p.UserId == userId.Value, cancellationToken);
+
+        // Check if the patient profile exists
+        if (patient == null)
+        {
+            // Return empty paged response if patient does not exist
+            return new PagedResponse<FavoriteDoctorResponse>
+            {
+                Items = [],
+                TotalCount = 0,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+        }
+        else
+        {
+            // No action required.
+        }
+
+        // Enforce safe page boundary defaults (clamp page size between 1 and 50)
+        int validPageNumber = pageNumber < 1 ? 1 : pageNumber;
+        int validPageSize = Math.Clamp(pageSize, 1, 50);
+
+        // Build the base query for the patient's favorite doctors
+        var query = _dbContext.PatientFavoriteDoctors
+            .AsNoTracking()
+            .Where(pfd => pfd.PatientId == patient.Id);
+
+        // Apply optional search filter across doctor names if specified
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            // Trim search term for accurate matching
+            string trimmedSearch = search.Trim();
+
+            // Filter by English or Arabic display names or User first/last names
+            query = query.Where(pfd =>
+                (pfd.Doctor.NameEn != null && pfd.Doctor.NameEn.Contains(trimmedSearch)) ||
+                (pfd.Doctor.NameAr != null && pfd.Doctor.NameAr.Contains(trimmedSearch)) ||
+                pfd.Doctor.User.FirstName.Contains(trimmedSearch) ||
+                pfd.Doctor.User.LastName.Contains(trimmedSearch));
+        }
+        else
+        {
+            // No search filtering applied.
+        }
+
+        // Calculate total count of matching favorite items
+        int totalCount = await query.CountAsync(cancellationToken);
+
+        // Retrieve the paginated slice with eager loading
+        var pagedEntries = await query
+            .OrderByDescending(pfd => pfd.AddedAt)
+            .Skip((validPageNumber - 1) * validPageSize)
+            .Take(validPageSize)
+            .Include(pfd => pfd.Doctor)
+                .ThenInclude(d => d.User)
+            .Include(pfd => pfd.Doctor)
+                .ThenInclude(d => d.DoctorSpecializations)
+                    .ThenInclude(ds => ds.Specialization)
+            .Include(pfd => pfd.Doctor)
+                .ThenInclude(d => d.Clinics)
+                    .ThenInclude(c => c.Governorate)
+            .ToListAsync(cancellationToken);
+
+        // Map retrieved database entities to response DTOs
+        var items = pagedEntries.Select(pfd =>
+        {
+            var doctor = pfd.Doctor;
+            var user = doctor.User;
+            var spec = doctor.DoctorSpecializations.FirstOrDefault()?.Specialization?.NameEn;
+            var primaryClinic = doctor.Clinics
+                .Where(c => c.Status == ClinicStatus.Active && c.DeletedAt == null)
+                .OrderBy(c => c.CreatedAt)
+                .FirstOrDefault();
+
+            string? location = primaryClinic?.DetailedAddress ?? primaryClinic?.Governorate?.NameEn;
+            decimal price = primaryClinic?.ConsultationFee ?? 0m;
+            bool isActive = (user?.IsActive ?? true) && doctor.DeletedAt == null;
+
+            return new FavoriteDoctorResponse
+            {
+                Id = pfd.DoctorId,
+                NameAr = doctor.NameAr ?? $"{user?.FirstName} {user?.LastName}".Trim(),
+                NameEn = doctor.NameEn ?? $"{user?.FirstName} {user?.LastName}".Trim(),
+                PhotoUrl = user?.ProfilePicturePath,
+                Specialty = spec,
+                Location = location,
+                Rating = 0m,
+                Price = price,
+                IsAvailableToday = isActive,
+                IsActive = isActive,
+                AddedAt = pfd.AddedAt
+            };
+        }).ToList();
+
+        // Return wrapped paginated response
+        return new PagedResponse<FavoriteDoctorResponse>
+        {
+            Items = items,
+            TotalCount = totalCount,
+            PageNumber = validPageNumber,
+            PageSize = validPageSize
+        };
+    }
+
+    #endregion
+
+    #region Clinic Favorites
+
+    /// <inheritdoc />
+    public async Task<PatientResult> AddClinicToFavoritesAsync(Guid clinicId, CancellationToken cancellationToken = default)
+    {
+        // Retrieve the current authenticated user ID
+        Guid? userId = _currentUserService.UserId;
+
+        // Verify that the user is authenticated
+        if (userId == null)
+        {
+            // Return forbidden failure when unauthenticated
+            return PatientResult.Failure(PatientErrorCodes.Forbidden, "User is not authenticated.");
+        }
+        else
+        {
+            // No action required.
+        }
+
+        // Retrieve the patient profile
+        var patient = await _dbContext.Patients
+            .FirstOrDefaultAsync(p => p.UserId == userId.Value, cancellationToken);
+
+        // Verify that the patient profile exists
+        if (patient == null)
+        {
+            // Return not found failure when patient profile does not exist
+            return PatientResult.Failure(PatientErrorCodes.NotFound, "Patient profile not found.");
+        }
+        else
+        {
+            // No action required.
+        }
+
+        // Verify that the target clinic exists and is active
+        var clinicExists = await _dbContext.Clinics
+            .AnyAsync(c => c.Id == clinicId, cancellationToken);
+
+        // Check if the clinic exists
+        if (!clinicExists)
+        {
+            // Return clinic not found error
+            return PatientResult.Failure(PatientErrorCodes.FavoriteClinicNotFound, "Clinic not found.");
+        }
+        else
+        {
+            // No action required.
+        }
+
+        // Perform initial check to prevent duplicate favorites
+        var alreadyFavorited = await _dbContext.PatientFavoriteClinics
+            .AnyAsync(pfc => pfc.PatientId == patient.Id && pfc.ClinicId == clinicId, cancellationToken);
+
+        // Check if the clinic is already favorited
+        if (alreadyFavorited)
+        {
+            // Return already added error code
+            return PatientResult.Failure(PatientErrorCodes.FavoriteAlreadyAdded, "Clinic is already in favorites.");
+        }
+        else
+        {
+            // No action required.
+        }
+
+        // Create new patient favorite clinic join entity
+        var favorite = new PatientFavoriteClinic
+        {
+            PatientId = patient.Id,
+            Patient = patient,
+            ClinicId = clinicId,
+            Clinic = null!,
+            AddedAt = DateTime.UtcNow
+        };
+
+        // Add the favorite record to the context
+        _dbContext.PatientFavoriteClinics.Add(favorite);
+
+        // Wrap save changes in try-catch to safely handle race conditions and concurrency collisions
+        try
+        {
+            // Persist the new favorite record to the database
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateException)
+        {
+            // Return already added error when unique composite key constraint is violated
+            return PatientResult.Failure(PatientErrorCodes.FavoriteAlreadyAdded, "Clinic is already in favorites.");
+        }
+
+        // Log successful addition of favorite clinic
+        _logger.LogInformation("Patient {PatientId} added clinic {ClinicId} to favorites.", patient.Id, clinicId);
+
+        // Return successful patient result
+        return PatientResult.Success(patient.Id);
+    }
+
+    /// <inheritdoc />
+    public async Task<PatientResult> RemoveClinicFromFavoritesAsync(Guid clinicId, CancellationToken cancellationToken = default)
+    {
+        // Retrieve current authenticated user ID
+        Guid? userId = _currentUserService.UserId;
+
+        // Verify user authentication
+        if (userId == null)
+        {
+            // Return forbidden failure when unauthenticated
+            return PatientResult.Failure(PatientErrorCodes.Forbidden, "User is not authenticated.");
+        }
+        else
+        {
+            // No action required.
+        }
+
+        // Retrieve patient profile
+        var patient = await _dbContext.Patients
+            .FirstOrDefaultAsync(p => p.UserId == userId.Value, cancellationToken);
+
+        // Verify patient profile existence
+        if (patient == null)
+        {
+            // Return patient not found error
+            return PatientResult.Failure(PatientErrorCodes.NotFound, "Patient profile not found.");
+        }
+        else
+        {
+            // No action required.
+        }
+
+        // Query the favorite entry to be removed
+        var favorite = await _dbContext.PatientFavoriteClinics
+            .FirstOrDefaultAsync(pfc => pfc.PatientId == patient.Id && pfc.ClinicId == clinicId, cancellationToken);
+
+        // Verify that the favorite entry exists
+        if (favorite == null)
+        {
+            // Return error indicating clinic is not in favorites
+            return PatientResult.Failure(PatientErrorCodes.FavoriteNotInFavorites, "Clinic is not in favorites.");
+        }
+        else
+        {
+            // No action required.
+        }
+
+        // Remove the favorite entry from the context
+        _dbContext.PatientFavoriteClinics.Remove(favorite);
+
+        // Persist the removal to the database
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        // Log removal of favorite clinic
+        _logger.LogInformation("Patient {PatientId} removed clinic {ClinicId} from favorites.", patient.Id, clinicId);
+
+        // Return success result
+        return PatientResult.Success(patient.Id);
+    }
+
+    /// <inheritdoc />
+    public async Task<PatientResult> RemoveAllFavoriteClinicsAsync(CancellationToken cancellationToken = default)
+    {
+        // Retrieve current authenticated user ID
+        Guid? userId = _currentUserService.UserId;
+
+        // Verify user authentication
+        if (userId == null)
+        {
+            // Return forbidden failure
+            return PatientResult.Failure(PatientErrorCodes.Forbidden, "User is not authenticated.");
+        }
+        else
+        {
+            // No action required.
+        }
+
+        // Retrieve patient profile
+        var patient = await _dbContext.Patients
+            .FirstOrDefaultAsync(p => p.UserId == userId.Value, cancellationToken);
+
+        // Verify patient profile existence
+        if (patient == null)
+        {
+            // Return not found failure
+            return PatientResult.Failure(PatientErrorCodes.NotFound, "Patient profile not found.");
+        }
+        else
+        {
+            // No action required.
+        }
+
+        // Query all favorite clinic records for this patient
+        var favorites = await _dbContext.PatientFavoriteClinics
+            .Where(pfc => pfc.PatientId == patient.Id)
+            .ToListAsync(cancellationToken);
+
+        // Check if there are any favorites to remove
+        if (favorites.Count > 0)
+        {
+            // Remove the range of favorite records
+            _dbContext.PatientFavoriteClinics.RemoveRange(favorites);
+
+            // Persist the deletions to the database
+            await _dbContext.SaveChangesAsync(cancellationToken);
+
+            // Log bulk removal
+            _logger.LogInformation("Patient {PatientId} cleared all favorite clinics ({Count} items).", patient.Id, favorites.Count);
+        }
+        else
+        {
+            // No action required when list is already empty.
+        }
+
+        // Return success result
+        return PatientResult.Success(patient.Id);
+    }
+
+    /// <inheritdoc />
+    public async Task<PagedResponse<FavoriteClinicResponse>> GetFavoriteClinicsAsync(
+        int pageNumber,
+        int pageSize,
+        string? search = null,
+        CancellationToken cancellationToken = default)
+    {
+        // Retrieve current user identifier
+        Guid? userId = _currentUserService.UserId;
+
+        // Check if user is unauthenticated
+        if (userId == null)
+        {
+            // Return empty paged response for unauthenticated caller
+            return new PagedResponse<FavoriteClinicResponse>
+            {
+                Items = [],
+                TotalCount = 0,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+        }
+        else
+        {
+            // No action required.
+        }
+
+        // Retrieve the patient record
+        var patient = await _dbContext.Patients
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p => p.UserId == userId.Value, cancellationToken);
+
+        // Check if patient profile exists
+        if (patient == null)
+        {
+            // Return empty paged response if patient does not exist
+            return new PagedResponse<FavoriteClinicResponse>
+            {
+                Items = [],
+                TotalCount = 0,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+        }
+        else
+        {
+            // No action required.
+        }
+
+        // Enforce safe page boundary defaults (clamp page size between 1 and 50)
+        int validPageNumber = pageNumber < 1 ? 1 : pageNumber;
+        int validPageSize = Math.Clamp(pageSize, 1, 50);
+
+        // Build the base query for the patient's favorite clinics
+        var query = _dbContext.PatientFavoriteClinics
+            .AsNoTracking()
+            .Where(pfc => pfc.PatientId == patient.Id);
+
+        // Apply optional search filter across clinic name or location if specified
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            // Trim search term for accurate matching
+            string trimmedSearch = search.Trim();
+
+            // Filter by clinic name or detailed address
+            query = query.Where(pfc =>
+                pfc.Clinic.Name.Contains(trimmedSearch) ||
+                (pfc.Clinic.DetailedAddress != null && pfc.Clinic.DetailedAddress.Contains(trimmedSearch)));
+        }
+        else
+        {
+            // No search filtering applied.
+        }
+
+        // Calculate total count of matching favorite items
+        int totalCount = await query.CountAsync(cancellationToken);
+
+        // Retrieve the paginated slice with eager loading
+        var pagedEntries = await query
+            .OrderByDescending(pfc => pfc.AddedAt)
+            .Skip((validPageNumber - 1) * validPageSize)
+            .Take(validPageSize)
+            .Include(pfc => pfc.Clinic)
+                .ThenInclude(c => c.City)
+            .Include(pfc => pfc.Clinic)
+                .ThenInclude(c => c.Governorate)
+            .Include(pfc => pfc.Clinic)
+                .ThenInclude(c => c.Doctor)
+                    .ThenInclude(d => d.User)
+            .ToListAsync(cancellationToken);
+
+        // Map retrieved database entities to response DTOs
+        var items = pagedEntries.Select(pfc =>
+        {
+            var clinic = pfc.Clinic;
+            var doctor = clinic.Doctor;
+            var docUser = doctor?.User;
+            string? location = clinic.DetailedAddress ?? (clinic.City != null && clinic.Governorate != null ? $"{clinic.City.NameEn}, {clinic.Governorate.NameEn}" : clinic.Governorate?.NameEn);
+            string? doctorName = doctor?.NameEn ?? (docUser != null ? $"{docUser.FirstName} {docUser.LastName}".Trim() : null);
+            bool isActive = clinic.Status == ClinicStatus.Active && clinic.DeletedAt == null;
+
+            return new FavoriteClinicResponse
+            {
+                Id = pfc.ClinicId,
+                Name = clinic.Name,
+                Location = location,
+                ConsultationFee = clinic.ConsultationFee,
+                Status = clinic.Status,
+                IsActive = isActive,
+                DoctorName = doctorName,
+                AddedAt = pfc.AddedAt
+            };
+        }).ToList();
+
+        // Return wrapped paginated response
+        return new PagedResponse<FavoriteClinicResponse>
+        {
+            Items = items,
+            TotalCount = totalCount,
+            PageNumber = validPageNumber,
+            PageSize = validPageSize
+        };
+    }
+
+    #endregion
 }

@@ -169,6 +169,16 @@ public class ApplicationDbContext
     /// </summary>
     public DbSet<ClinicReceptionist> ClinicReceptionists => Set<ClinicReceptionist>();
 
+    /// <summary>
+    /// Gets the patient-doctor favorite entries.
+    /// </summary>
+    public DbSet<PatientFavoriteDoctor> PatientFavoriteDoctors => Set<PatientFavoriteDoctor>();
+
+    /// <summary>
+    /// Gets the patient-clinic favorite entries.
+    /// </summary>
+    public DbSet<PatientFavoriteClinic> PatientFavoriteClinics => Set<PatientFavoriteClinic>();
+
     #endregion
 
     #region Model Configuration

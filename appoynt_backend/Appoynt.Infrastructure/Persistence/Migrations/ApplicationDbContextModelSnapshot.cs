@@ -992,6 +992,44 @@ namespace Appoynt.Infrastructure.Persistence.Migrations
                     b.ToTable("Patients", (string)null);
                 });
 
+            modelBuilder.Entity("Appoynt.Domain.Entities.PatientFavoriteClinic", b =>
+                {
+                    b.Property<Guid>("PatientId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ClinicId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("AddedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("PatientId", "ClinicId");
+
+                    b.HasIndex("ClinicId")
+                        .HasDatabaseName("IX_PatientFavoriteClinics_ClinicId");
+
+                    b.ToTable("PatientFavoriteClinics", (string)null);
+                });
+
+            modelBuilder.Entity("Appoynt.Domain.Entities.PatientFavoriteDoctor", b =>
+                {
+                    b.Property<Guid>("PatientId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("DoctorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("AddedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("PatientId", "DoctorId");
+
+                    b.HasIndex("DoctorId")
+                        .HasDatabaseName("IX_PatientFavoriteDoctors_DoctorId");
+
+                    b.ToTable("PatientFavoriteDoctors", (string)null);
+                });
+
             modelBuilder.Entity("Appoynt.Domain.Entities.Receptionist", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1790,6 +1828,44 @@ namespace Appoynt.Infrastructure.Persistence.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Appoynt.Domain.Entities.PatientFavoriteClinic", b =>
+                {
+                    b.HasOne("Appoynt.Domain.Entities.Clinic", "Clinic")
+                        .WithMany("FavoritedByPatients")
+                        .HasForeignKey("ClinicId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Appoynt.Domain.Entities.Patient", "Patient")
+                        .WithMany("FavoriteClinics")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Clinic");
+
+                    b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("Appoynt.Domain.Entities.PatientFavoriteDoctor", b =>
+                {
+                    b.HasOne("Appoynt.Domain.Entities.Doctor", "Doctor")
+                        .WithMany("FavoritedByPatients")
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Appoynt.Domain.Entities.Patient", "Patient")
+                        .WithMany("FavoriteDoctors")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Patient");
+                });
+
             modelBuilder.Entity("Appoynt.Domain.Entities.Receptionist", b =>
                 {
                     b.HasOne("Appoynt.Domain.Entities.ApplicationUser", "CreatedBy")
@@ -1954,6 +2030,8 @@ namespace Appoynt.Infrastructure.Persistence.Migrations
                 {
                     b.Navigation("ClinicReceptionists");
 
+                    b.Navigation("FavoritedByPatients");
+
                     b.Navigation("PhoneNumbers");
 
                     b.Navigation("Slots");
@@ -1972,6 +2050,8 @@ namespace Appoynt.Infrastructure.Persistence.Migrations
 
                     b.Navigation("DoctorSpecializations");
 
+                    b.Navigation("FavoritedByPatients");
+
                     b.Navigation("PhoneNumbers");
 
                     b.Navigation("Receptionists");
@@ -1985,6 +2065,10 @@ namespace Appoynt.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Appoynt.Domain.Entities.Patient", b =>
                 {
                     b.Navigation("FamilyMembers");
+
+                    b.Navigation("FavoriteClinics");
+
+                    b.Navigation("FavoriteDoctors");
                 });
 
             modelBuilder.Entity("Appoynt.Domain.Entities.Receptionist", b =>

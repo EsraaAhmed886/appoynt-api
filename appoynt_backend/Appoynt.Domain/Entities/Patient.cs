@@ -2,15 +2,14 @@
  * File Name      : Patient.cs
  * Author         : Mustafa Mahmoud
  * Created Date   : 21/07/2026
- * Version        : v2.1.0
+ * Version        : v2.2.0
  * Dependencies   : BaseEntity, ApplicationUser, FamilyMember,
- *                  BloodGroup, SmokingStatus
+ *                  BloodGroup, SmokingStatus, PatientFavoriteDoctor, PatientFavoriteClinic
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-14
+ * Last Modified  : Mustafa Mahmoud - 2026-08-23
  * Description    : Represents a patient within the application, including
  *                  the Patient Identifier (PID), family association,
- *                  medical information, and National ID. Profile photo is
- *                  now centrally managed via ApplicationUser.
+ *                  medical information, National ID, and favorites navigation.
  */
 
 using Appoynt.Domain.Common;
@@ -89,6 +88,16 @@ public class Patient : BaseEntity
     /// Gets or sets the collection of family members linked to this patient.
     /// </summary>
     public ICollection<FamilyMember> FamilyMembers { get; set; } = [];
+
+    /// <summary>
+    /// Gets or sets the collection of favorite doctors linked to this patient.
+    /// </summary>
+    public ICollection<PatientFavoriteDoctor> FavoriteDoctors { get; set; } = [];
+
+    /// <summary>
+    /// Gets or sets the collection of favorite clinics linked to this patient.
+    /// </summary>
+    public ICollection<PatientFavoriteClinic> FavoriteClinics { get; set; } = [];
 
     #endregion
 }

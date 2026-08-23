@@ -2,11 +2,11 @@
  * File Name      : IPatientService.cs
  * Author         : Mustafa Mahmoud
  * Created Date   : 2026-08-10
- * Version        : v1.0.0
- * Dependencies   : Appoynt.Application.Features.Patient.Contracts
+ * Version        : v1.1.0
+ * Dependencies   : Appoynt.Application.Features.Patient.Contracts, Appoynt.Application.Common.Models
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-10
- * Description    : Defines the contract for the patient service.
+ * Last Modified  : Mustafa Mahmoud - 2026-08-23
+ * Description    : Defines the contract for the patient service, including favorites management.
  */
 
 using System;
@@ -14,12 +14,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Appoynt.Application.Common.Models;
 using Appoynt.Application.Features.Patient.Contracts;
 
 namespace Appoynt.Application.Features.Patient;
 
 /// <summary>
-/// Service interface for managing patient profiles and family members.
+/// Service interface for managing patient profiles, family members, and favorites.
 /// </summary>
 public interface IPatientService
 {
@@ -102,4 +103,78 @@ public interface IPatientService
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A patient result indicating success or failure.</returns>
     Task<PatientResult> DeleteFamilyMemberAsync(Guid id, CancellationToken cancellationToken = default);
+
+    #region Doctor Favorites
+
+    /// <summary>
+    /// Adds a doctor to the current patient's favorite doctors list.
+    /// </summary>
+    /// <param name="doctorId">The unique identifier of the doctor to add.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A patient result indicating success or failure.</returns>
+    Task<PatientResult> AddDoctorToFavoritesAsync(Guid doctorId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Removes a doctor from the current patient's favorite doctors list.
+    /// </summary>
+    /// <param name="doctorId">The unique identifier of the doctor to remove.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A patient result indicating success or failure.</returns>
+    Task<PatientResult> RemoveDoctorFromFavoritesAsync(Guid doctorId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Removes all favorite doctors for the current patient.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A patient result indicating success.</returns>
+    Task<PatientResult> RemoveAllFavoriteDoctorsAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Retrieves a paginated list of the current patient's favorite doctors.
+    /// </summary>
+    /// <param name="pageNumber">The 1-based page number.</param>
+    /// <param name="pageSize">The number of items per page.</param>
+    /// <param name="search">Optional search term to filter doctors by name.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A paginated response containing doctor summary cards.</returns>
+    Task<PagedResponse<FavoriteDoctorResponse>> GetFavoriteDoctorsAsync(int pageNumber, int pageSize, string? search = null, CancellationToken cancellationToken = default);
+
+    #endregion
+
+    #region Clinic Favorites
+
+    /// <summary>
+    /// Adds a clinic to the current patient's favorite clinics list.
+    /// </summary>
+    /// <param name="clinicId">The unique identifier of the clinic to add.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A patient result indicating success or failure.</returns>
+    Task<PatientResult> AddClinicToFavoritesAsync(Guid clinicId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Removes a clinic from the current patient's favorite clinics list.
+    /// </summary>
+    /// <param name="clinicId">The unique identifier of the clinic to remove.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A patient result indicating success or failure.</returns>
+    Task<PatientResult> RemoveClinicFromFavoritesAsync(Guid clinicId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Removes all favorite clinics for the current patient.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A patient result indicating success.</returns>
+    Task<PatientResult> RemoveAllFavoriteClinicsAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Retrieves a paginated list of the current patient's favorite clinics.
+    /// </summary>
+    /// <param name="pageNumber">The 1-based page number.</param>
+    /// <param name="pageSize">The number of items per page.</param>
+    /// <param name="search">Optional search term to filter clinics by name or address.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A paginated response containing clinic summary cards.</returns>
+    Task<PagedResponse<FavoriteClinicResponse>> GetFavoriteClinicsAsync(int pageNumber, int pageSize, string? search = null, CancellationToken cancellationToken = default);
+
+    #endregion
 }
