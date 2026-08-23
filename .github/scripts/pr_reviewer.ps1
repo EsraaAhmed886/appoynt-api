@@ -114,7 +114,7 @@ foreach ($file in $files) {
                     path = $filename
                     line = $item.LineNum
                     type = "Outdated Date"
-                    body = "**[Warning]** `Last Modified` date is outdated ($lastModVal). Please synchronize it with the current commit / PR date."
+                    body = "**[Warning]** ``Last Modified`` date is outdated ($lastModVal). Please synchronize it with the current commit / PR date."
                 }
             }
         }
@@ -145,7 +145,7 @@ foreach ($file in $files) {
                 path = $filename
                 line = $lNum
                 type = "Missing Braces"
-                body = "**[Warning]** Conditional statement must use curly braces `{ }`."
+                body = "**[Warning]** Conditional statement must use curly braces ``{ }``."
             }
             continue
         }
@@ -199,7 +199,7 @@ foreach ($file in $files) {
                     path = $filename
                     line = $lNum
                     type = "Missing Else"
-                    body = "**[Warning]** Missing explicit `else` block (use `else { // No action needed }` if empty)."
+                    body = "**[Warning]** Missing explicit ``else`` block (use ``else { // No action needed }`` if empty)."
                 }
             }
         }
@@ -219,7 +219,7 @@ foreach ($file in $files) {
                     path = $filename
                     line = $lNum
                     type = "Missing Switch Default"
-                    body = "**[Warning]** `switch` statement must include an explicit `default:` case."
+                    body = "**[Warning]** ``switch`` statement must include an explicit ``default:`` case."
                 }
             }
         }
@@ -310,3 +310,5 @@ if ($allIssues.Count -gt 0 -or $invalidCommits.Count -gt 0) {
     Write-Host "PR Review passed successfully. No rule violations found."
     exit 0
 }
+
+
