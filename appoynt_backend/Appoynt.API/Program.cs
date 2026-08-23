@@ -5,7 +5,7 @@
  * Version        : v1.0.0
  * Dependencies   : Application, Infrastructure
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 21/07/2026
+ * Last Modified  : Mustafa Mahmoud - 2026-08-23
  * Description    : Configures the application's services, middleware,
  *                  and HTTP request pipeline.
  */
@@ -50,6 +50,7 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(options =>
         {
+            options.CustomSchemaIds(type => type.FullName);
             options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
             {
                 Title = "Appoynt API",
