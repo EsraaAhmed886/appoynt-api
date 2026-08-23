@@ -15,7 +15,7 @@
 // Import standard UI framework
 import 'package:flutter/material.dart';
 // Import lucide icons library
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 // Import BLoC state provider
 import 'package:flutter_bloc/flutter_bloc.dart';
 // Import layout design tokens
@@ -36,6 +36,8 @@ import 'package:appoynt_mobile_app/core/widgets/app_bottom_nav_bar.dart';
 import 'package:appoynt_mobile_app/features/shared/widgets/doctor_card.dart';
 // Import unified search sort bottom sheet modal
 import 'package:appoynt_mobile_app/features/search/presentation/widgets/search_sort_bottom_sheet.dart';
+import 'package:appoynt_mobile_app/core/routing/routes.dart';
+import 'package:appoynt_mobile_app/features/doctor_profile/presentation/pages/doctor_profile_page.dart';
 
 
 // Local layout dimensions class to strictly eliminate hardcoded numbers
@@ -916,14 +918,16 @@ class _SearchPageState extends State<SearchPage> {
                     is_available: doc.is_available_today,
                     is_favorite: doc.is_favorite,
                     avatar_url: doc.avatar_url,
+                    on_tap: () {
+                      Navigator.of(context).pushNamed(
+                        Routes.doctor_profile,
+                        arguments: DoctorProfileArgs(doctor_id: doc.doctor_id),
+                      );
+                    },
                     on_book_tap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            "Booking appointment with ${doc.name}...",
-                          ),
-                          duration: const Duration(seconds: 2),
-                        ),
+                      Navigator.of(context).pushNamed(
+                        Routes.doctor_profile,
+                        arguments: DoctorProfileArgs(doctor_id: doc.doctor_id),
                       );
                     },
                     on_favorite_tap: () {
@@ -1737,3 +1741,4 @@ class _FilterChip extends StatelessWidget {
 }
 
 // TODO: END OF DUMMY HOME SCREEN IMPLEMENTATION
+

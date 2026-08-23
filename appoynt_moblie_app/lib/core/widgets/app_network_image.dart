@@ -2,11 +2,11 @@
  * File Name: app_network_image.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/07/2026
- * Version Information: V1.0.0
+ * Version Information: V1.2.0
  * Dependencies: flutter/material.dart, app_colors.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
- * File Description: Memory-optimized network image widget with fade transitions, shimmers, and fallbacks.
+ * Last Modified Date: [Kholoud Khaled - 21/08/2026]
+ * File Description: Memory-optimized image widget supporting local assets and network images with fade transitions, shimmers, and fallbacks.
  */
 
 // Import standard UI framework
@@ -70,80 +70,106 @@ class AppNetworkImage extends StatelessWidget {
           width: width,
           // Set layout height
           height: height,
-          // Render network image loader
-          child: Image.network(
-            // Load image endpoint URL
-            image_url,
-            // Crop and fill boundary coordinates
-            fit: BoxFit.cover,
-            // Fade-in frame builder preventing layout shift spikes
-            frameBuilder: (context, child, frame, was_synchronously_loaded) {
-              // Check if image is already loaded synchronously (Yoda comparison)
-              if (true == was_synchronously_loaded) {
-                // Return image widget immediately without animation
-                return child;
-              } else {
-                // Return AnimatedOpacity transition fading in the image
-                return AnimatedOpacity(
-                  // Set visible opacity if frame decodes (Yoda comparison)
-                  opacity: null == frame ? 0.0 : 1.0,
-                  // Transition speed duration (300ms)
-                  duration: const Duration(milliseconds: 300),
-                  // Smooth ease out curve layout
-                  curve: Curves.easeOut,
-                  // Enclose child layout
-                  child: child,
-                );
-              }
-            },
-            // Loading progress indicator callback returning animated pulse placeholders
-            loadingBuilder: (context, child, loading_progress) {
-              // Check if image bytes download completes (Yoda comparison)
-              if (null == loading_progress) {
-                // Display successfully loaded child image
-                return child;
-              } else {
-                // Display custom pulsing shimmer placeholder
-                return _PulsePlaceholder(
-                  // Match widget width
-                  width: width,
-                  // Match widget height
-                  height: height,
-                  // Match widget border radius subtracting border thickness
-                  border_radius: border_radius,
-                );
-              }
-            },
-            // Recover gracefully from loading failures (network offline or broken URL)
-            errorBuilder: (context, error, stack_trace) {
-              // Return container representing fallback layout
-              return Container(
-                // Match width layout boundary
-                width: width,
-                // Match height layout boundary
-                height: height,
-                // Card decorations style mappings
-                decoration: BoxDecoration(
-                  // Pulsing color matching background skeletons
-                  color: is_dark ? AppColors.surface_dark : AppColors.search_chip_bg,
-                  // Rounded corners borders representation
-                  borderRadius: BorderRadius.circular(border_radius),
+          // Render local asset or network image loader
+          child: image_url.trim().startsWith('assets/')
+              ? Image.asset(
+                  image_url.trim(),
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stack_trace) {
+                    return Container(
+                      width: width,
+                      height: height,
+                      decoration: BoxDecoration(
+                        color: is_dark ? AppColors.surface_dark : AppColors.search_chip_bg,
+                        borderRadius: BorderRadius.circular(border_radius),
+                      ),
+                      child: Center(
+                        child: Icon(
+                          fallback_icon,
+                          size: height / 2.0,
+                          color: is_dark
+                              ? AppColors.text_dark_secondary
+                              : AppColors.text_light_secondary,
+                        ),
+                      ),
+                    );
+                  },
+                )
+              : Image.network(
+                  // Load image endpoint URL
+                  image_url.trim(),
+                  // Crop and fill boundary coordinates
+                  fit: BoxFit.cover,
+                  // Fade-in frame builder preventing layout shift spikes
+                  frameBuilder: (context, child, frame, was_synchronously_loaded) {
+                    // Check if image is already loaded synchronously (Yoda comparison)
+                    if (true == was_synchronously_loaded) {
+                      // Return image widget immediately without animation
+                      return child;
+                    } else {
+                      // Return AnimatedOpacity transition fading in the image
+                      return AnimatedOpacity(
+                        // Set visible opacity if frame decodes (Yoda comparison)
+                        opacity: null == frame ? 0.0 : 1.0,
+                        // Transition speed duration (300ms)
+                        duration: const Duration(milliseconds: 300),
+                        // Smooth ease out curve layout
+                        curve: Curves.easeOut,
+                        // Enclose child layout
+                        child: child,
+                      );
+                    }
+                  },
+                  // Loading progress indicator callback returning animated pulse placeholders
+                  loadingBuilder: (context, child, loading_progress) {
+                    // Check if image bytes download completes (Yoda comparison)
+                    if (null == loading_progress) {
+                      // Display successfully loaded child image
+                      return child;
+                    } else {
+                      // Display custom pulsing shimmer placeholder
+                      return _PulsePlaceholder(
+                        // Match widget width
+                        width: width,
+                        // Match widget height
+                        height: height,
+                        // Match widget border radius subtracting border thickness
+                        border_radius: border_radius,
+                      );
+                    }
+                  },
+                  // Recover gracefully from loading failures (network offline or broken URL)
+                  errorBuilder: (context, error, stack_trace) {
+                    // Return container representing fallback layout
+                    return Container(
+                      // Match width layout boundary
+                      width: width,
+                      // Match height layout boundary
+                      height: height,
+                      // Card decorations style mappings
+                      decoration: BoxDecoration(
+                        // Pulsing color matching background skeletons
+                        color: is_dark ? AppColors.surface_dark : AppColors.search_chip_bg,
+                        // Rounded corners borders representation
+                        borderRadius: BorderRadius.circular(border_radius),
+                      ),
+                      // Draw fallback vector icon inside center coordinates
+                      child: Center(
+                        // Default fallback profile icon
+                        child: Icon(
+                          // Set fallback icon
+                          fallback_icon,
+                          // Scale icon size relative to box height
+                          size: height / 2.0,
+                          // Muted color matching secondary labels text
+                          color: is_dark
+                              ? AppColors.text_dark_secondary
+                              : AppColors.text_light_secondary,
+                        ),
+                      ),
+                    );
+                  },
                 ),
-                // Draw fallback vector icon inside center coordinates
-                child: Center(
-                  // Default fallback profile icon
-                  child: Icon(
-                    // Set fallback icon
-                    fallback_icon,
-                    // Scale icon size relative to box height
-                    size: height / 2.0,
-                    // Muted color matching secondary labels text
-                    color: AppColors.text_light_secondary,
-                  ),
-                ),
-              );
-            },
-          ),
         ),
       ),
     );
