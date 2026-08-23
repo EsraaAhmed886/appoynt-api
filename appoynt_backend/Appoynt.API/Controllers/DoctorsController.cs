@@ -5,8 +5,8 @@
  * Version        : v1.0.0
  * Dependencies   : ASP.NET Core MVC, IProfileImageService, ICurrentUserService, ApplicationDbContext, RoleConstants, ProfileImageErrorCodes
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-14
- * Description    : Exposes REST API endpoints for doctor profile photo upload, retrieval, and deletion operations.
+ * Last Modified  : Mustafa Mahmoud - 2026-08-23
+ * Description    : Exposes REST API endpoints for doctor profile management, photo operations, and phone numbers.
  */
 
 using System;
@@ -64,6 +64,128 @@ public sealed class DoctorsController : ControllerBase
         // Store database context dependency
         _dbContext = dbContext;
     }
+
+    #region Profile Operations
+
+    /// <summary>
+    /// Retrieves the profile details of the currently authenticated doctor.
+    /// </summary>
+    /// <param name="doctorProfileService">The doctor profile service injected from request services.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The doctor profile details if found.</returns>
+    [HttpGet("profile")]
+    [Authorize(Roles = RoleConstants.Doctor)]
+    [ProducesResponseType(typeof(Appoynt.Application.Features.Doctor.Contracts.DoctorProfileResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetProfile(
+        [FromServices] Appoynt.Application.Features.Doctor.IDoctorProfileService doctorProfileService,
+        CancellationToken cancellationToken)
+    {
+        var profile = await doctorProfileService.GetProfileAsync(cancellationToken);
+
+        if (profile == null)
+        {
+            return NotFound();
+        }
+        else
+        {
+            return Ok(profile);
+        }
+    }
+
+    /// <summary>
+    /// Updates the profile information of the currently authenticated doctor.
+    /// </summary>
+    /// <param name="doctorProfileService">The doctor profile service injected from request services.</param>
+    /// <param name="request">The update payload.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An HTTP 200 OK response if successful, or validation errors.</returns>
+    [HttpPut("profile")]
+    [Authorize(Roles = RoleConstants.Doctor)]
+    [ProducesResponseType(typeof(Appoynt.Application.Features.Doctor.Contracts.DoctorResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> UpdateProfile(
+        [FromServices] Appoynt.Application.Features.Doctor.IDoctorProfileService doctorProfileService,
+        [FromBody] Appoynt.Application.Features.Doctor.Contracts.UpdateDoctorProfileRequest request,
+        CancellationToken cancellationToken)
+    {
+        var result = await doctorProfileService.UpdateProfileAsync(request, cancellationToken);
+
+        if (!result.Succeeded)
+        {
+            return BadRequest(result.Errors);
+        }
+        else
+        {
+            return Ok(result);
+        }
+    }
+
+    /// <summary>
+    /// Adds a new phone number to the currently authenticated doctor's profile.
+    /// </summary>
+    /// <param name="doctorProfileService">The doctor profile service injected from request services.</param>
+    /// <param name="request">The payload containing the new phone number.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An HTTP 200 OK response if successful.</returns>
+    [HttpPost("profile/phone-numbers")]
+    [Authorize(Roles = RoleConstants.Doctor)]
+    [ProducesResponseType(typeof(Appoynt.Application.Features.Doctor.Contracts.DoctorResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> AddPhoneNumber(
+        [FromServices] Appoynt.Application.Features.Doctor.IDoctorProfileService doctorProfileService,
+        [FromBody] Appoynt.Application.Features.Doctor.Contracts.AddDoctorPhoneNumberRequest request,
+        CancellationToken cancellationToken)
+    {
+        var result = await doctorProfileService.AddPhoneNumberAsync(request, cancellationToken);
+
+        if (!result.Succeeded)
+        {
+            return BadRequest(result.Errors);
+        }
+        else
+        {
+            return Ok(result);
+        }
+    }
+
+    /// <summary>
+    /// Removes a phone number from the currently authenticated doctor's profile.
+    /// </summary>
+    /// <param name="doctorProfileService">The doctor profile service injected from request services.</param>
+    /// <param name="id">The unique identifier of the phone number to remove.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An HTTP 200 OK response if successful.</returns>
+    [HttpDelete("profile/phone-numbers/{id:guid}")]
+    [Authorize(Roles = RoleConstants.Doctor)]
+    [ProducesResponseType(typeof(Appoynt.Application.Features.Doctor.Contracts.DoctorResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> RemovePhoneNumber(
+        [FromServices] Appoynt.Application.Features.Doctor.IDoctorProfileService doctorProfileService,
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        var result = await doctorProfileService.RemovePhoneNumberAsync(id, cancellationToken);
+
+        if (!result.Succeeded)
+        {
+            return BadRequest(result.Errors);
+        }
+        else
+        {
+            return Ok(result);
+        }
+    }
+
+    #endregion
 
     #region Profile Photo Operations
 

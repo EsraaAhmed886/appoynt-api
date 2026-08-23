@@ -105,6 +105,38 @@ public sealed class PatientsController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Replaces the primary phone number of the currently authenticated patient.
+    /// This will require OTP verification.
+    /// </summary>
+    /// <param name="request">The update payload containing the new phone number.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An HTTP 200 OK response if successful, or validation errors.</returns>
+    [HttpPut("profile/phone-number")]
+    [ProducesResponseType(typeof(PatientResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> UpdatePhoneNumber(
+        [FromBody] UpdatePatientPhoneNumberRequest request,
+        CancellationToken cancellationToken)
+    {
+        // Execute phone number update via application service
+        var result = await _patientService.UpdatePhoneNumberAsync(request, cancellationToken);
+
+        // Evaluate whether the update operation succeeded
+        if (!result.Succeeded)
+        {
+            // Return 400 Bad Request with validation and business rule errors
+            return BadRequest(result.Errors);
+        }
+        else
+        {
+            // Note: In a complete flow, we would trigger the OTP send here.
+            // Return 200 OK
+            return Ok(result);
+        }
+    }
+
     #endregion
 
     #region Profile Photo

@@ -94,7 +94,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Fetch the patient from DB
@@ -111,7 +111,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Map and return
@@ -151,7 +151,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Get user ID
@@ -165,11 +165,12 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Fetch patient
         Appoynt.Domain.Entities.Patient? patient = await _dbContext.Set<Appoynt.Domain.Entities.Patient>()
+            .Include(p => p.User)
             .FirstOrDefaultAsync(p => p.UserId == userId.Value, cancellationToken);
 
         // Check if patient exists
@@ -180,61 +181,202 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
-        // If National ID is provided
-        if (!string.IsNullOrEmpty(request.NationalId))
+        // Begin transaction
+        await using var transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
+
+        try
         {
-            // Validate National ID
-            var natIdResult = EgyptianNationalIdValidator.Validate(request.NationalId);
-            
-            // Check result
-            if (!natIdResult.IsValid)
+            // Update Base ApplicationUser fields
+            if (!string.IsNullOrWhiteSpace(request.FirstName))
             {
-                // Return failure
-                return PatientResult.Failure(PatientErrorCodes.NationalIdInvalidFormat, "Invalid National ID.");
+                patient.User.FirstName = request.FirstName;
             }
             else
             {
-                // No action required.
+                // No action needed.
             }
 
-            // Check for uniqueness
-            bool exists = await _dbContext.Set<Appoynt.Domain.Entities.Patient>()
-                .AnyAsync(p => p.NationalId == request.NationalId && p.Id != patient.Id, cancellationToken);
+            if (!string.IsNullOrWhiteSpace(request.LastName))
+            {
+                patient.User.LastName = request.LastName;
+            }
+            else
+            {
+                // No action needed.
+            }
+
+            if (request.Gender.HasValue)
+            {
+                patient.User.Gender = request.Gender.Value;
+            }
+            else
+            {
+                // No action needed.
+            }
+
+            if (request.BirthDate.HasValue)
+            {
+                patient.User.DateOfBirth = request.BirthDate.Value;
+            }
+            else
+            {
+                // No action needed.
+            }
+
+            if (request.Address != null)
+            {
+                patient.User.Address = request.Address;
+            }
+            else
+            {
+                // No action needed.
+            }
+
+            // If National ID is provided
+            if (!string.IsNullOrEmpty(request.NationalId))
+            {
+                // Validate National ID
+                var natIdResult = EgyptianNationalIdValidator.Validate(request.NationalId);
                 
-            // If exists, fail
-            if (exists)
-            {
-                // Return failure
-                return PatientResult.Failure(PatientErrorCodes.NationalIdDuplicate, "National ID already in use.");
+                // Check result
+                if (!natIdResult.IsValid)
+                {
+                    // Return failure
+                    return PatientResult.Failure(PatientErrorCodes.NationalIdInvalidFormat, "Invalid National ID.");
+                }
+                else
+                {
+                    // No action needed.
+                }
+
+                // Check for uniqueness
+                bool exists = await _dbContext.Set<Appoynt.Domain.Entities.Patient>()
+                    .AnyAsync(p => p.NationalId == request.NationalId && p.Id != patient.Id, cancellationToken);
+                    
+                // If exists, fail
+                if (exists)
+                {
+                    // Return failure
+                    return PatientResult.Failure(PatientErrorCodes.NationalIdDuplicate, "National ID already in use.");
+                }
+                else
+                {
+                    // No action needed.
+                }
+
+                // Set National ID
+                patient.NationalId = request.NationalId;
+                // Set birth date extracted
+                patient.BirthDate = natIdResult.BirthDate;
             }
             else
             {
-                // No action required.
+                // No action needed.
             }
 
-            // Set National ID
-            patient.NationalId = request.NationalId;
-            // Set birth date extracted
-            patient.BirthDate = natIdResult.BirthDate;
+            // Update Patient fields
+            if (request.WeightKg.HasValue)
+            {
+                patient.WeightKg = request.WeightKg.Value;
+            }
+            else
+            {
+                // No action needed.
+            }
+
+            if (request.HeightCm.HasValue)
+            {
+                patient.HeightCm = request.HeightCm.Value;
+            }
+            else
+            {
+                // No action needed.
+            }
+
+            if (request.BloodGroup.HasValue)
+            {
+                patient.BloodGroup = request.BloodGroup.Value;
+            }
+            else
+            {
+                // No action needed.
+            }
+
+            if (request.SmokingStatus.HasValue)
+            {
+                patient.SmokingStatus = request.SmokingStatus.Value;
+            }
+            else
+            {
+                // No action needed.
+            }
+
+            // Save changes
+            await _dbContext.SaveChangesAsync(cancellationToken);
+            
+            // Commit transaction
+            await transaction.CommitAsync(cancellationToken);
+
+            // Return success
+            return PatientResult.Success(patient.Id);
+        }
+        catch (Exception ex)
+        {
+            // Rollback on error
+            await transaction.RollbackAsync(cancellationToken);
+            _logger.LogError(ex, "Failed to update patient profile.");
+            return PatientResult.Failure("server.error", "Failed to update profile.");
+        }
+    }
+
+    /// <summary>
+    /// Replaces the primary phone number of the current patient.
+    /// </summary>
+    public async Task<PatientResult> UpdatePhoneNumberAsync(UpdatePatientPhoneNumberRequest request, CancellationToken cancellationToken)
+    {
+        Guid? userId = _currentUserService.UserId;
+        if (userId == null)
+        {
+            return PatientResult.Failure(PatientErrorCodes.Forbidden, "User not authenticated.");
         }
         else
         {
-            // No action required.
+            // User authenticated.
         }
 
-        // Update other fields
-        if (request.WeightKg.HasValue) patient.WeightKg = request.WeightKg.Value;
-        if (request.HeightCm.HasValue) patient.HeightCm = request.HeightCm.Value;
-        if (request.BloodGroup.HasValue) patient.BloodGroup = request.BloodGroup.Value;
-        if (request.SmokingStatus.HasValue) patient.SmokingStatus = request.SmokingStatus.Value;
+        var patient = await _dbContext.Set<Appoynt.Domain.Entities.Patient>()
+            .Include(p => p.User)
+            .FirstOrDefaultAsync(p => p.UserId == userId.Value, cancellationToken);
 
-        // Save changes
+        if (patient == null)
+        {
+            return PatientResult.Failure(PatientErrorCodes.NotFound, "Patient not found.");
+        }
+        else
+        {
+            // Patient found.
+        }
+
+        bool isPhoneTaken = await _dbContext.Users
+            .AnyAsync(u => u.PhoneNumber == request.PhoneNumber && u.Id != userId.Value, cancellationToken);
+
+        if (isPhoneTaken)
+        {
+            return PatientResult.Failure(AuthenticationErrorCodes.PhoneAlreadyRegistered, "Phone number is already in use.");
+        }
+        else
+        {
+            // Phone number is available.
+        }
+
+        patient.User.PhoneNumber = request.PhoneNumber;
+        patient.User.PhoneNumberConfirmed = false;
+
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        // Return success
         return PatientResult.Success(patient.Id);
     }
 
@@ -254,7 +396,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Fetch patient
@@ -269,7 +411,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Delegate upload and compression to centralized profile image service
@@ -314,7 +456,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Check if user owns patient or is admin
@@ -329,7 +471,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Delegate image retrieval to centralized profile image service
@@ -352,7 +494,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Fetch patient
@@ -367,7 +509,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Delegate photo deletion to centralized profile image service
@@ -405,7 +547,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Check relationship consistency
@@ -416,7 +558,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Get user ID
@@ -430,7 +572,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Fetch patient and family members
@@ -446,7 +588,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Collect used sequence numbers
@@ -466,7 +608,7 @@ public class PatientService : IPatientService
             }
             else
             {
-                // No action required.
+                // No action needed.
             }
         }
         
@@ -502,7 +644,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Create new family member
@@ -544,7 +686,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Fetch family members
@@ -581,7 +723,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Fetch family member
@@ -597,7 +739,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Return mapped object
@@ -628,7 +770,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Get user ID
@@ -642,7 +784,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Fetch member
@@ -658,7 +800,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Get effective gender and relationship
@@ -676,12 +818,12 @@ public class PatientService : IPatientService
             }
             else
             {
-                // No action required.
+                // No action needed.
             }
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Check if relationship changed
@@ -701,19 +843,50 @@ public class PatientService : IPatientService
             }
             else
             {
-                // No action required.
+                // No action needed.
             }
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Update other fields
-        if (!string.IsNullOrEmpty(request.FullName)) member.FullName = request.FullName;
-        if (request.Gender.HasValue) member.Gender = request.Gender.Value;
-        if (request.Relationship.HasValue) member.Relationship = request.Relationship.Value;
-        if (request.BirthDate.HasValue) member.BirthDate = request.BirthDate.Value;
+        if (!string.IsNullOrEmpty(request.FullName))
+        {
+            member.FullName = request.FullName;
+        }
+        else
+        {
+            // No action needed.
+        }
+
+        if (request.Gender.HasValue)
+        {
+            member.Gender = request.Gender.Value;
+        }
+        else
+        {
+            // No action needed.
+        }
+
+        if (request.Relationship.HasValue)
+        {
+            member.Relationship = request.Relationship.Value;
+        }
+        else
+        {
+            // No action needed.
+        }
+
+        if (request.BirthDate.HasValue)
+        {
+            member.BirthDate = request.BirthDate.Value;
+        }
+        else
+        {
+            // No action needed.
+        }
 
         // Save changes
         await _dbContext.SaveChangesAsync(cancellationToken);
@@ -738,7 +911,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Fetch member
@@ -753,7 +926,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Remove member (soft delete via interceptor)
@@ -782,7 +955,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Retrieve the patient profile associated with the authenticated user
@@ -797,7 +970,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Verify that the target doctor exists and is active
@@ -812,7 +985,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Perform initial check to prevent duplicate favorites
@@ -827,7 +1000,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Create new patient favorite doctor join entity
@@ -876,7 +1049,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Retrieve the patient profile for the current user
@@ -891,7 +1064,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Query the favorite entry to be removed
@@ -906,7 +1079,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Remove the favorite entry from the context
@@ -936,7 +1109,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Retrieve the patient profile
@@ -951,7 +1124,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Query all favorite doctor records for this patient
@@ -1004,7 +1177,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Retrieve the patient record for the current user
@@ -1026,7 +1199,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Enforce safe page boundary defaults (clamp page size between 1 and 50)
@@ -1133,7 +1306,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Retrieve the patient profile
@@ -1148,7 +1321,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Verify that the target clinic exists and is active
@@ -1163,7 +1336,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Perform initial check to prevent duplicate favorites
@@ -1178,7 +1351,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Create new patient favorite clinic join entity
@@ -1227,7 +1400,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Retrieve patient profile
@@ -1242,7 +1415,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Query the favorite entry to be removed
@@ -1257,7 +1430,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Remove the favorite entry from the context
@@ -1287,7 +1460,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Retrieve patient profile
@@ -1302,7 +1475,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Query all favorite clinic records for this patient
@@ -1355,7 +1528,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Retrieve the patient record
@@ -1377,7 +1550,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Enforce safe page boundary defaults (clamp page size between 1 and 50)
