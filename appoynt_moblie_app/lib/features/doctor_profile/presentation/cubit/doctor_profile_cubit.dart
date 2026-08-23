@@ -7,7 +7,7 @@
  *   get_doctor_available_slots_use_case.dart, toggle_favorite_doctor_use_case.dart,
  *   doctor_profile_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 22/08/2026]
  * File Description: BLoC Cubit managing the presentation business logic for the
  *   Doctor Profile screen, including profile retrieval, slot picking, optimistic
  *   favorite toggling, and appointment scheduling interactions.
@@ -101,7 +101,7 @@ class DoctorProfileCubit extends Cubit<DoctorProfileState> {
     );
   }
 
-  /// Selects a date from the calendar horizontal strip.
+  /// Selects an appointment date and clears currently picked time.
   void select_date(String date) {
     final current_state = state;
     if (current_state is DoctorProfileLoaded) {
@@ -111,10 +111,12 @@ class DoctorProfileCubit extends Cubit<DoctorProfileState> {
           clear_time_slot: true,
         ),
       );
+    } else {
+      // No action needed
     }
   }
 
-  /// Selects an appointment time slot.
+  /// Selects a specific time slot string.
   void select_time_slot(String time_slot) {
     final current_state = state;
     if (current_state is DoctorProfileLoaded) {
@@ -125,29 +127,28 @@ class DoctorProfileCubit extends Cubit<DoctorProfileState> {
           selected_date: current_state.selected_date,
           selected_time_slot: time_slot,
           is_favorited: current_state.is_favorited,
-          is_booking_in_progress: current_state.is_booking_in_progress,
         ),
       );
+    } else {
+      // No action needed
     }
   }
 
-  /// Toggles favorite status with optimistic update and syncs with backend.
+  /// Optimistically toggles favorite status and synchronizes with the server.
   Future<void> toggle_favorite() async {
     final current_state = state;
     if (current_state is DoctorProfileLoaded) {
-      final bool new_favorite_status = !current_state.is_favorited;
+      final bool previous_status = current_state.is_favorited;
+      final bool new_status = !previous_status;
 
-      // Optimistic update
+      // Optimistic emit
       emit(
         current_state.copyWith(
-          is_favorited: new_favorite_status,
-          profile: current_state.profile.copyWith(
-            is_favorited: new_favorite_status,
-          ),
+          is_favorited: new_status,
+          profile: current_state.profile.copyWith(is_favorited: new_status),
         ),
       );
 
-      // Backend sync
       final result = await toggle_favorite_doctor_use_case(
         ToggleFavoriteDoctorParams(
           doctor_id: current_state.profile.doctor_id,
@@ -156,23 +157,25 @@ class DoctorProfileCubit extends Cubit<DoctorProfileState> {
 
       result.fold(
         (failure) {
-          // Revert on failure
+          // Revert optimistic update on failure
           if (state is DoctorProfileLoaded) {
-            final reverted_state = state as DoctorProfileLoaded;
+            final loaded = state as DoctorProfileLoaded;
             emit(
-              reverted_state.copyWith(
-                is_favorited: !new_favorite_status,
-                profile: reverted_state.profile.copyWith(
-                  is_favorited: !new_favorite_status,
-                ),
+              loaded.copyWith(
+                is_favorited: previous_status,
+                profile: loaded.profile.copyWith(is_favorited: previous_status),
               ),
             );
+          } else {
+            // No action needed
           }
         },
-        (confirmed_status) {
-          // Keep confirmed status
+        (is_favorited) {
+          // Keep server-confirmed favorite state
         },
       );
+    } else {
+      // No action needed
     }
   }
 }

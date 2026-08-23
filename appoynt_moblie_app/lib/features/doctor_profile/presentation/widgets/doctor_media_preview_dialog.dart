@@ -7,7 +7,7 @@
  *   app_localizations.dart, app_network_image.dart, doctor_profile_entity.dart,
  *   doctor_video_player_widget.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 17/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 22/08/2026]
  * File Description: Modern glassmorphic full-screen media viewer dialog supporting
  *   horizontal PageView navigation, swipe-down to dismiss, pinch-to-zoom for photos,
  *   Hero transitions, and embedded custom video streaming.
@@ -94,6 +94,8 @@ class _DoctorMediaPreviewDialogState extends State<DoctorMediaPreviewDialog> {
       setState(() {
         _drag_offset_y += details.delta.dy;
       });
+    } else {
+      // No action needed
     }
   }
 
@@ -303,23 +305,23 @@ class _DoctorMediaPreviewDialogState extends State<DoctorMediaPreviewDialog> {
         video_url: media.url,
         thumbnail_url: media.thumbnail_url,
       );
-    }
-
-    return Center(
-      child: InteractiveViewer(
-        minScale: 1.0,
-        maxScale: 3.5,
-        child: Hero(
-          tag: 'media_${media.id}',
-          child: AppNetworkImage(
-            image_url: media.url,
-            width: double.infinity,
-            height: double.infinity,
-            border_radius: 0.0,
-            fallback_icon: Icons.image_rounded,
+    } else {
+      return Center(
+        child: InteractiveViewer(
+          minScale: 1.0,
+          maxScale: 3.5,
+          child: Hero(
+            tag: 'media_${media.id}',
+            child: AppNetworkImage(
+              image_url: media.url,
+              width: double.infinity,
+              height: double.infinity,
+              border_radius: 0.0,
+              fallback_icon: Icons.image_rounded,
+            ),
           ),
         ),
-      ),
-    );
+      );
+    }
   }
 }

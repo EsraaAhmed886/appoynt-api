@@ -6,7 +6,7 @@
  * Dependencies: package:flutter/material.dart, package:video_player/video_player.dart,
  *   app_colors.dart, app_spacing.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 17/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 23/08/2026]
  * File Description: Clean standalone video player widget supporting network video
  *   streaming from official CDN sources, auto-looping, aspect ratio preservation,
  *   animated controls, progress scrubbing, and graceful error recovery.
@@ -24,9 +24,9 @@ import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 class DoctorVideoPlayerWidget extends StatefulWidget {
   // Network video URL endpoint
   final String video_url;
-  // Optional thumbnail preview image while loading
+  // Optional thumbnail preview image URL
   final String? thumbnail_url;
-  // Auto play upon initialization flag
+  // Auto play boolean flag
   final bool auto_play;
 
   // Constant constructor
@@ -38,13 +38,12 @@ class DoctorVideoPlayerWidget extends StatefulWidget {
   });
 
   @override
-  State<DoctorVideoPlayerWidget> createState() {
-    return _DoctorVideoPlayerWidgetState();
-  }
+  State<DoctorVideoPlayerWidget> createState() =>
+      _DoctorVideoPlayerWidgetState();
 }
 
 class _DoctorVideoPlayerWidgetState extends State<DoctorVideoPlayerWidget> {
-  // Underlying video player controller
+  // Video player controller
   VideoPlayerController? _controller;
   // Initialization state flag
   bool _is_initializing = true;
@@ -230,10 +229,8 @@ class _DoctorVideoPlayerWidgetState extends State<DoctorVideoPlayerWidget> {
           ),
         ),
       );
-    }
-
-    // 2. Loading State with Sleek Pulse
-    if (_is_initializing || !controller.value.isInitialized) {
+    } else if (_is_initializing || !controller.value.isInitialized) {
+      // 2. Loading State with Sleek Pulse
       return Container(
         color: AppColors.black,
         child: const Center(
@@ -243,138 +240,149 @@ class _DoctorVideoPlayerWidgetState extends State<DoctorVideoPlayerWidget> {
           ),
         ),
       );
-    }
+    } else {
+      final double aspect_ratio = controller.value.aspectRatio > 0
+          ? controller.value.aspectRatio
+          : 16 / 9;
 
-    final double aspect_ratio = controller.value.aspectRatio > 0
-        ? controller.value.aspectRatio
-        : 16 / 9;
+      final Duration position = controller.value.position;
+      final Duration total_duration = controller.value.duration;
+      final bool is_playing = controller.value.isPlaying;
 
-    final Duration position = controller.value.position;
-    final Duration total_duration = controller.value.duration;
-    final bool is_playing = controller.value.isPlaying;
-
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _show_controls = !_show_controls;
-        });
-      },
-      child: Container(
-        color: AppColors.black,
-        child: Center(
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(AppSpacing.radius_xl),
+        child: Container(
+          color: AppColors.black,
           child: AspectRatio(
             aspectRatio: aspect_ratio,
-            child: Stack(
-              alignment: Alignment.center,
-              fit: StackFit.expand,
-              children: [
-                // Video Stream Render Surface
-                VideoPlayer(controller),
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  _show_controls = !_show_controls;
+                });
+              },
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  // Video Surface
+                  VideoPlayer(controller),
 
-                // Animated Center Play/Pause Indicator
-                if (_show_controls || !is_playing) ...[
-                  AnimatedOpacity(
-                    opacity: _show_controls || !is_playing ? 1.0 : 0.0,
-                    duration: const Duration(milliseconds: 250),
-                    child: Center(
-                      child: GestureDetector(
-                        onTap: _toggle_play_pause,
-                        child: Container(
-                          padding: const EdgeInsets.all(16.0),
-                          decoration: BoxDecoration(
-                            color: AppColors.black.withValues(alpha: 0.65),
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: AppColors.white.withValues(alpha: 0.8),
-                              width: 1.5,
-                            ),
-                          ),
-                          child: Icon(
-                            is_playing
-                                ? Icons.pause_rounded
-                                : Icons.play_arrow_rounded,
-                            color: AppColors.white,
-                            size: 40.0,
-                          ),
-                        ),
-                      ),
-                    ),
+                  // Center Play/Pause Overlay Button
+                  _build_center_play_button(is_playing),
+
+                  // Bottom Controls Bar with Time and Scrubber
+                  _build_bottom_controls_bar(
+                    controller,
+                    position,
+                    total_duration,
+                    is_playing,
                   ),
-                ] else ...[
-                  const SizedBox.shrink(),
                 ],
-
-                // Bottom Controls Bar with Time and Scrubber
-                if (_show_controls || !is_playing) ...[
-                  Positioned(
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    child: Container(
-                      padding:
-                          const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 10.0),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.bottomCenter,
-                          end: Alignment.topCenter,
-                          colors: [
-                            AppColors.black.withValues(alpha: 0.85),
-                            AppColors.transparent,
-                          ],
-                        ),
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // Interactive Progress Indicator
-                          VideoProgressIndicator(
-                            controller,
-                            allowScrubbing: true,
-                            padding: const EdgeInsets.symmetric(vertical: 4.0),
-                            colors: VideoProgressColors(
-                              playedColor: AppColors.primary_color,
-                              bufferedColor:
-                                  AppColors.white.withValues(alpha: 0.35),
-                              backgroundColor:
-                                  AppColors.white.withValues(alpha: 0.15),
-                            ),
-                          ),
-                          const SizedBox(height: 4.0),
-
-                          // Time Labels
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                _format_duration(position),
-                                style: const TextStyle(
-                                  color: AppColors.white,
-                                  fontSize: AppSpacing.font_size_label,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              Text(
-                                _format_duration(total_duration),
-                                style: TextStyle(
-                                  color: AppColors.white.withValues(alpha: 0.7),
-                                  fontSize: AppSpacing.font_size_label,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ] else ...[
-                  const SizedBox.shrink(),
-                ],
-              ],
+              ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    }
+  }
+
+  /// Builds the center play / pause overlay button.
+  Widget _build_center_play_button(bool is_playing) {
+    if (_show_controls || !is_playing) {
+      return Center(
+        child: GestureDetector(
+          onTap: _toggle_play_pause,
+          child: Container(
+            padding: const EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              color: AppColors.black.withValues(alpha: 0.65),
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: AppColors.white.withValues(alpha: 0.8),
+                width: 1.5,
+              ),
+            ),
+            child: Icon(
+              is_playing ? Icons.pause_rounded : Icons.play_arrow_rounded,
+              color: AppColors.white,
+              size: 40.0,
+            ),
+          ),
+        ),
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+
+  /// Builds the bottom gradient controls bar with duration and scrubber.
+  Widget _build_bottom_controls_bar(
+    VideoPlayerController controller,
+    Duration position,
+    Duration total_duration,
+    bool is_playing,
+  ) {
+    if (_show_controls || !is_playing) {
+      return Positioned(
+        bottom: 0,
+        left: 0,
+        right: 0,
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 10.0),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+              colors: [
+                AppColors.black.withValues(alpha: 0.85),
+                AppColors.transparent,
+              ],
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Interactive Progress Indicator
+              VideoProgressIndicator(
+                controller,
+                allowScrubbing: true,
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                colors: VideoProgressColors(
+                  playedColor: AppColors.primary_color,
+                  bufferedColor: AppColors.white.withValues(alpha: 0.35),
+                  backgroundColor: AppColors.white.withValues(alpha: 0.15),
+                ),
+              ),
+              const SizedBox(height: 4.0),
+
+              // Time Labels
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    _format_duration(position),
+                    style: const TextStyle(
+                      color: AppColors.white,
+                      fontSize: AppSpacing.font_size_label,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Text(
+                    _format_duration(total_duration),
+                    style: TextStyle(
+                      color: AppColors.white.withValues(alpha: 0.7),
+                      fontSize: AppSpacing.font_size_label,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
   }
 }

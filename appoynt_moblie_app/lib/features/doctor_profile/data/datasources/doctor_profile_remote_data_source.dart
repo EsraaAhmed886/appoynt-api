@@ -5,7 +5,7 @@
  * Version Information: V1.4.0
  * Dependencies: package:dio/dio.dart, doctor_profile_model.dart, doctor_profile_entity.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 21/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 23/08/2026]
  * File Description: Remote data source handling HTTP requests for doctor profile
  *   details, booking availability slots, and favorite toggles with a rich multi-doctor
  *   mock dataset featuring high-resolution portraits and stable public media.
@@ -110,8 +110,9 @@ class DoctorProfileRemoteDataSourceImpl
         return map['isFavorited'] as bool? ??
             map['isFavorite'] as bool? ??
             true;
+      } else {
+        return true;
       }
-      return true;
     } catch (_) {
       return true;
     }
@@ -291,10 +292,7 @@ class DoctorProfileRemoteDataSourceImpl
           ),
         ],
       );
-    }
-
-    // 2. Doctor 3: Dr. Layla Mahmoud (Pediatric Specialist)
-    if (clean_id == 'doc_3' ||
+    } else if (clean_id == 'doc_3' ||
         clean_id == 'doc_103' ||
         clean_id.contains('layla') ||
         clean_id.contains('pedia')) {
@@ -417,10 +415,7 @@ class DoctorProfileRemoteDataSourceImpl
           ),
         ],
       );
-    }
-
-    // 3. Doctor 4: Dr. Mohamed Khaled (Orthopedic Surgeon)
-    if (clean_id == 'doc_4' ||
+    } else if (clean_id == 'doc_4' ||
         clean_id == 'doc_104' ||
         clean_id.contains('mohamed') ||
         clean_id.contains('ortho')) {
@@ -544,10 +539,9 @@ class DoctorProfileRemoteDataSourceImpl
           ),
         ],
       );
-    }
-
-    // 4. Default / Doctor 1: Dr. Sara Hassan (Cardiologist)
-    return DoctorProfileModel(
+    } else {
+      // 4. Default / Doctor 1: Dr. Sara Hassan (Cardiologist)
+      return DoctorProfileModel(
       doctor_id: id.isNotEmpty ? id : 'doc_1',
       full_name: 'Dr. Sara Hassan, M.D.',
       specialty: 'Senior Consultant Cardiologist',
@@ -703,5 +697,6 @@ class DoctorProfileRemoteDataSourceImpl
         ),
       ],
     );
+    }
   }
 }

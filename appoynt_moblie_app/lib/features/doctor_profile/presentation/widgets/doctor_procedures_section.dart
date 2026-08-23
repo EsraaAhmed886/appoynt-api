@@ -6,7 +6,7 @@
  * Dependencies: package:flutter/material.dart, app_colors.dart, app_spacing.dart,
  *   app_localizations.dart, doctor_profile_entity.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 22/08/2026]
  * File Description: Renders the clinical procedures, diagnostics, and treatments
  *   offered by the doctor in a clean, modern wrap of localized tag chips.
  */
@@ -37,9 +37,8 @@ class DoctorProceduresSection extends StatelessWidget {
 
     if (procedures_list.isEmpty) {
       return const SizedBox.shrink();
-    }
-
-    return Container(
+    } else {
+      return Container(
       margin: const EdgeInsets.symmetric(
         horizontal: AppSpacing.space_xl,
         vertical: AppSpacing.space_s,
@@ -137,5 +136,6 @@ class DoctorProceduresSection extends StatelessWidget {
         ],
       ),
     );
+    }
   }
 }
