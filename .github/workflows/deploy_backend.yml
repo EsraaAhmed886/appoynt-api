@@ -24,7 +24,6 @@ jobs:
             8.0.x
             9.0.x
             10.0.x
-          include-prerelease: true
 
       - name: Restore dependencies
         run: dotnet restore appoynt_backend/Appoynt.API/Appoynt.API.csproj
@@ -48,8 +47,15 @@ jobs:
             $msdeploy = "C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe"
           }
 
+          # Trim to remove any accidental newlines from secrets
+          $site     = $env:WEBSITE_NAME.Trim()
+          $computer = $env:SERVER_COMPUTER_NAME.Trim()
+          $user     = $env:SERVER_USERNAME.Trim()
+          $pass     = $env:SERVER_PASSWORD.Trim()
+
           $sourcePath = "$PWD\publish"
-          $dest = "iisApp='$env:WEBSITE_NAME',ComputerName='$env:SERVER_COMPUTER_NAME',UserName='$env:SERVER_USERNAME',Password='$env:SERVER_PASSWORD',AuthType='Basic'"
+          $destArg    = "-dest:iisApp=`"$site`",ComputerName=`"$computer`",UserName=`"$user`",Password=`"$pass`",AuthType=`"Basic`""
+          $sourceArg  = "-source:iisApp=`"$sourcePath`""
 
           Write-Host "Deploying to MonsterASP.NET..."
-          & $msdeploy -verb:sync "-source:iisApp=$sourcePath" "-dest:$dest" -allowUntrusted -enableRule:DoNotDeleteRule
+          & $msdeploy -verb:sync $sourceArg $destArg -allowUntrusted -enableRule:DoNotDeleteRule
