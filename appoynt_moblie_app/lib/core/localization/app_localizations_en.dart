@@ -830,9 +830,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   // Override getter returning cardiologist practitioner name in English
   @override
-  String get dummy_dr_sarah_johnson {
+  String get dummy_dr_sara_johnson {
     // Return English cardiologist practitioner name
-    return 'Dr. Sarah Johnson';
+    return 'Dr. Sara Johnson';
   }
 
   // Override getter returning cardiologist specialty title in English
@@ -844,7 +844,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   // Override getter returning cardiology practice length details in English
   @override
-  String get dummy_years_experience_sarah {
+  String get dummy_years_experience_sara {
     // Return English cardiology practice length details
     return '12 years';
   }
@@ -2451,6 +2451,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rating_summary => 'Rating Summary';
   @override
   String get all_reviews => 'All Reviews';
+  @override
+  String get select_appointment_slot => 'Select Appointment Slot';
+  @override
+  String get select_clinic_location => 'Select Clinic Location';
+  @override
+  String get change_clinic => 'Change';
+  @override
+  String get select_date => 'Select Date';
+  @override
+  String get available_time_slots => 'Available Time Slots';
+  @override
+  String get all_slots => 'All Slots';
+  @override
+  String get morning_period => 'Morning';
+  @override
+  String get evening_period => 'Afternoon & Evening';
+  @override
+  String get continue_to_confirmation => 'Continue to Confirmation';
+  @override
+  String get no_available_slots => 'No Available Slots';
+  @override
+  String get check_next_date => 'Check Next Date';
+  @override
+  String get release_slot_hold_title => 'Release Slot Hold?';
+  @override
+  String get release_slot_hold_msg =>
+      'Leaving this screen will release your reserved appointment slot so other patients can book it.';
+  @override
+  String get stay_action => 'Stay';
+  @override
+  String get leave_and_release_action => 'Leave & Release';
+  @override
+  String get view_on_map => 'View on Map';
+  @override
+  String get reservation_expired => 'Reservation Expired';
+  @override
+  String get reservation_expired_msg =>
+      "Your temporary slot hold has expired. We've refreshed the schedule for you.";
+  @override
+  String get select_new_slot => 'Select New Slot';
 }
 
 

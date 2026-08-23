@@ -184,7 +184,7 @@ class AppointmentSlotEntity extends Equatable {
 class DoctorProfileEntity extends Equatable {
   // Unique doctor identifier
   final String doctor_id;
-  // Full professional display name (e.g., "Dr. Sarah Jenkins, M.D.")
+  // Full professional display name (e.g., "Dr. Sara Hassan, M.D.")
   final String full_name;
   // Medical specialization (e.g., "Cardiologist", "Neurologist")
   final String specialty;

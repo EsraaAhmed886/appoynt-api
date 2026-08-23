@@ -373,13 +373,13 @@ abstract class AppLocalizations {
   String get dummy_top_doctors;
 
   // Abstract getter for cardiologist practitioner name
-  String get dummy_dr_sarah_johnson;
+  String get dummy_dr_sara_johnson;
 
   // Abstract getter for cardiologist specialty title
   String get dummy_cardiologist;
 
   // Abstract getter for cardiology practice length details
-  String get dummy_years_experience_sarah;
+  String get dummy_years_experience_sara;
 
   // Abstract getter for neurologist practitioner name
   String get dummy_dr_mohammed_ali;
@@ -1258,8 +1258,28 @@ abstract class AppLocalizations {
   String get verified_patient;
   String get rating_summary;
   String get all_reviews;
+
+  // Booking & Time Slot Selection getters
+  String get select_appointment_slot;
+  String get select_clinic_location;
+  String get change_clinic;
+  String get select_date;
+  String get available_time_slots;
+  String get all_slots;
+  String get morning_period;
+  String get evening_period;
+  String get continue_to_confirmation;
+  String get no_available_slots;
+  String get check_next_date;
+  String get release_slot_hold_title;
+  String get release_slot_hold_msg;
+  String get stay_action;
+  String get leave_and_release_action;
+  String get view_on_map;
+  String get reservation_expired;
+  String get reservation_expired_msg;
+  String get select_new_slot;
 }
 
 // Defining a short alias for clean and simple type references
 typedef AppStrings = AppLocalizations;
-

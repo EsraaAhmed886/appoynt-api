@@ -100,3 +100,10 @@ flutter {
     // Setting parent project source directory path
     source = "../.."
 }
+
+// Enforcing resolution strategy to resolve AAR metadata compatibility
+configurations.all {
+    resolutionStrategy {
+        force 'androidx.browser:browser:1.8.0'
+    }
+}

@@ -2,15 +2,15 @@
  * File Name: doctor_hero_header.dart
  * Author: Kholoud Khaled
  * Date of Creation: 16/08/2026
- * Version Information: V1.5.0
+ * Version Information: V1.6.0
  * Dependencies: package:flutter/material.dart, app_colors.dart, app_spacing.dart,
  *   app_localizations.dart, app_network_image.dart, custom_profile_app_bar.dart,
  *   doctor_profile_entity.dart, favorite_heart_button.dart
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 23/08/2026]
  * File Description: Modern edge-to-edge Hero Banner featuring 44x44 action buttons,
- *   decoupled 2-tier metadata badges (standalone specialty chip + dedicated
- *   availability/fee row), borderless portrait with gradient ShaderMask, and verified credentials.
+ *   decoupled 2-tier metadata badges, borderless portrait with gradient ShaderMask,
+ *   local asset and network image support, and verified credentials.
  */
 
 // Import Flutter material library
@@ -63,7 +63,8 @@ class DoctorHeroHeader extends StatelessWidget {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                AppColors.primary_color.withValues(alpha: is_dark ? 0.25 : 0.15),
+                AppColors.primary_color
+                    .withValues(alpha: is_dark ? 0.25 : 0.15),
                 is_dark ? AppColors.background_dark : AppColors.scaffold_light,
               ],
             ),
@@ -118,7 +119,8 @@ class DoctorHeroHeader extends StatelessWidget {
                   children: [
                     _build_action_button(
                       is_dark: is_dark,
-                      on_tap: on_back_tap ?? () => Navigator.of(context).maybePop(),
+                      on_tap:
+                          on_back_tap ?? () => Navigator.of(context).maybePop(),
                       child: Icon(
                         Icons.arrow_back_ios_new_rounded,
                         size: 20.0,
@@ -251,9 +253,11 @@ class DoctorHeroHeader extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         color: profile.is_available_today
-                            ? AppColors.dummy_custom_green.withValues(alpha: 0.12)
+                            ? AppColors.dummy_custom_green
+                                .withValues(alpha: 0.12)
                             : AppColors.amber.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(AppSpacing.radius_l),
+                        borderRadius:
+                            BorderRadius.circular(AppSpacing.radius_l),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -296,7 +300,8 @@ class DoctorHeroHeader extends StatelessWidget {
                         color: is_dark
                             ? AppColors.inner_container_dark
                             : AppColors.slate_100,
-                        borderRadius: BorderRadius.circular(AppSpacing.radius_l),
+                        borderRadius:
+                            BorderRadius.circular(AppSpacing.radius_l),
                         border: Border.all(
                           color: is_dark
                               ? AppColors.border_dark
@@ -364,6 +369,81 @@ class DoctorHeroHeader extends StatelessWidget {
           ],
         ),
         child: Center(child: child),
+      ),
+    );
+  }
+
+  /// Builds a circular profile avatar with local asset and network fallback support
+  static Widget buildProfileAvatar(String imagePath, {double size = 120.0}) {
+    final String path = imagePath.trim();
+    final bool isAsset = path.startsWith('assets/');
+
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: const Color(0xFF2563EB).withValues(alpha: 0.15),
+          width: 3.0,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 16.0,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ClipOval(
+        child: isAsset
+            ? Image.asset(
+                path,
+                width: size,
+                height: size,
+                fit: BoxFit.cover,
+                alignment: Alignment.topCenter,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  width: size,
+                  height: size,
+                  color: const Color(0xFFEFF6FF),
+                  child: const Icon(Icons.person,
+                      color: Color(0xFF2563EB), size: 48),
+                ),
+              )
+            : (path.isNotEmpty
+                ? Image.network(
+                    path,
+                    width: size,
+                    height: size,
+                    fit: BoxFit.cover,
+                    alignment: Alignment.topCenter,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) {
+                        return child;
+                      } else {
+                        return Container(
+                          width: size,
+                          height: size,
+                          color: Colors.grey.shade200,
+                        );
+                      }
+                    },
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      width: size,
+                      height: size,
+                      color: const Color(0xFFEFF6FF),
+                      child: const Icon(Icons.person,
+                          color: Color(0xFF2563EB), size: 48),
+                    ),
+                  )
+                : Container(
+                    width: size,
+                    height: size,
+                    color: const Color(0xFFEFF6FF),
+                    child: const Icon(Icons.person,
+                        color: Color(0xFF2563EB), size: 48),
+                  )),
       ),
     );
   }

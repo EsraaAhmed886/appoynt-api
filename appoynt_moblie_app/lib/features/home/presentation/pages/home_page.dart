@@ -822,16 +822,16 @@ class _HomeTab extends StatelessWidget {
             // Height spacer value
             height: AppSpacing.dummy_search_bar_padding_left,
           ),
-          // Doctor card displaying Dr. Sarah Johnson details
+          // Doctor card displaying Dr. Sara Johnson details
           _DoctorCard(
             // Doctor name label
-            name: localizations.dummy_dr_sarah_johnson,
+            name: localizations.dummy_dr_sara_johnson,
             // Specialty label description
             specialty: localizations.dummy_cardiologist,
             // Rating score value string
             rating: '4.9',
             // Practice experience length details
-            experience: localizations.dummy_years_experience_sarah,
+            experience: localizations.dummy_years_experience_sara,
             // Accent color matching category chip
             color: AppColors.dummy_custom_red,
           ),

@@ -2,7 +2,7 @@
  * File Name: doctor_profile_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 16/08/2026
- * Version Information: V1.1.0
+ * Version Information: V1.2.0
  * Dependencies: package:flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
  *   app_colors.dart, app_spacing.dart, service_locator.dart, doctor_profile_cubit.dart,
  *   doctor_profile_state.dart, doctor_hero_header.dart, doctor_quick_stats_row.dart,
@@ -10,7 +10,7 @@
  *   doctor_certificates_gallery.dart, doctor_media_gallery.dart,
  *   doctor_sticky_booking_bar.dart, favorite_heart_button.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 23/08/2026]
  * File Description: Comprehensive Doctor Profile page implementing a fluid
  *   CustomScrollView with collapsible SliverAppBar, interactive medical sections,
  *   credentials galleries, and sticky confirmation bar with safe bottom padding.
@@ -23,6 +23,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:appoynt_mobile_app/constants/app_spacing.dart';
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 import 'package:appoynt_mobile_app/core/di/service_locator.dart';
+import 'package:appoynt_mobile_app/core/routing/routes.dart';
+import 'package:appoynt_mobile_app/features/booking/presentation/pages/choose_slots_page.dart';
 // Import Cubit and State
 import 'package:appoynt_mobile_app/features/doctor_profile/presentation/cubit/doctor_profile_cubit.dart';
 import 'package:appoynt_mobile_app/features/doctor_profile/presentation/cubit/doctor_profile_state.dart';
@@ -171,7 +173,17 @@ class _DoctorProfileView extends StatelessWidget {
           child: DoctorStickyBookingBar(
             profile: profile,
             on_book_pressed: () {
-              // Placeholder preparing for upcoming ChooseSlotsPage navigation
+              Navigator.of(context).pushNamed(
+                Routes.choose_slots,
+                arguments: ChooseSlotsArgs(
+                  doctor_id: profile.doctor_id,
+                  doctor_name: profile.full_name,
+                  specialty: profile.specialty,
+                  consultation_fee: profile.consultation_fee,
+                  currency: profile.currency,
+                  profile_photo_url: profile.profile_photo_url,
+                ),
+              );
             },
           ),
         ),

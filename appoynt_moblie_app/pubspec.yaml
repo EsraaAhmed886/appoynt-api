@@ -50,6 +50,7 @@ dependencies:
   # Maps and Geolocation
   google_maps_flutter: ^2.7.0
   geolocator: ^12.0.0
+  url_launcher: ^6.3.0
 
   # Video Consultations
   agora_rtc_engine: ^6.3.2
@@ -98,6 +99,8 @@ flutter:
   assets:
     # Add path to the local assets/images directory
     - assets/images/
+    # Add path to the local assets/images/doctors directory
+    - assets/images/doctors/
     # Add path to the local assets/icons directory
     - assets/icons/
     # Add path to the local assets/svgs directory
