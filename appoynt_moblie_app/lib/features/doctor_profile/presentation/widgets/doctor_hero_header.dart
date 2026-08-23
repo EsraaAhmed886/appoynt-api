@@ -7,7 +7,7 @@
  *   app_localizations.dart, app_network_image.dart, custom_profile_app_bar.dart,
  *   doctor_profile_entity.dart, favorite_heart_button.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 17/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 23/08/2026]
  * File Description: Modern edge-to-edge Hero Banner featuring 44x44 action buttons,
  *   decoupled 2-tier metadata badges (standalone specialty chip + dedicated
  *   availability/fee row), borderless portrait with gradient ShaderMask, and verified credentials.
@@ -198,6 +198,8 @@ class DoctorHeroHeader extends StatelessWidget {
                         color: AppColors.primary_color,
                         size: 22.0,
                       ),
+                    ] else ...[
+                      // No action needed: Unverified profile does not display verification badge
                     ],
                   ],
                 ),

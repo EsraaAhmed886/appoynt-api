@@ -6,7 +6,7 @@
  * Dependencies: package:flutter/material.dart, app_colors.dart, app_spacing.dart,
  *   app_localizations.dart, doctor_profile_entity.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 23/08/2026]
  * File Description: Modern aesthetic patient review card component featuring patient
  *   avatar/initials, verified patient badge, relative date, star rating, and expandable review text.
  */
@@ -217,6 +217,8 @@ class _DoctorReviewCardState extends State<DoctorReviewCard> {
                 ),
               ),
             ),
+          ] else ...[
+            // No action needed: Comment is short enough without toggle
           ],
         ],
       ),
