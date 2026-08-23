@@ -302,3 +302,11 @@ $reviewUri = "https://api.github.com/repos/$repo/pulls/$prNumber/reviews"
 $response = Invoke-RestMethod -Uri $reviewUri -Headers $headers -Method Post -Body $utf8Bytes -ContentType "application/json; charset=utf-8"
 
 Write-Host "SUCCESS: Automated Review posted successfully! Review ID: $($response.id)"
+
+if ($allIssues.Count -gt 0 -or $invalidCommits.Count -gt 0) {
+    Write-Host "::error::PR Review failed due to rule violations. Please fix them to pass the check."
+    exit 1
+} else {
+    Write-Host "PR Review passed successfully. No rule violations found."
+    exit 0
+}
