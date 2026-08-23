@@ -1,4 +1,4 @@
-﻿/**
+/**
  * File Name      : SeedingDependencyInjection.cs
  * Author         : Mustafa Mahmoud
  * Created Date   : 22/07/2026
@@ -34,7 +34,11 @@ internal static class SeedingDependencyInjection
     {
         services.AddScoped<IRoleSeeder, RoleSeeder>();
 
+        services.AddScoped<ISpecializationSeeder, SpecializationSeeder>();
+
         services.AddScoped<IAdminSeeder, AdminSeeder>();
+
+        services.AddScoped<IDoctorSeeder, DoctorSeeder>();
 
         services.AddScoped<IDatabaseSeeder, DatabaseSeeder>();
 
