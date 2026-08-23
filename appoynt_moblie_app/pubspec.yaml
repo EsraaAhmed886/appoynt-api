@@ -75,7 +75,7 @@ dependencies:
   # JSON Serialization
   json_annotation: ^4.9.0
   lucide_icons: ^0.257.0
-  image_picker: ^1.2.3
+  image_picker: ^1.1.2
   flutter_svg: ^2.0.10+1
 
 dev_dependencies:
