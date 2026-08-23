@@ -53,6 +53,7 @@ dependencies:
 
   # Video Consultations
   agora_rtc_engine: ^6.3.2
+  video_player: ^2.9.2
 
   # Push Notifications
   firebase_messaging: ^15.0.3

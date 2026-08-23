@@ -18,4 +18,5 @@ class Routes {
   static const String login = '/login';
   static const String home = '/home';
   static const String notifications = '/notifications';
+  static const String doctor_profile = '/doctor-profile';
 }

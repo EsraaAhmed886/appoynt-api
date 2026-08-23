@@ -2443,6 +2443,60 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get notification_details_calendar_added =>
       'تمت إضافة الموعد إلى التقويم';
+
+  // Doctor Profile Screen Strings Arabic Overrides
+  @override
+  String get about_doctor => 'عن الطبيب';
+  @override
+  String get experience_label => 'الخبرة';
+  @override
+  String get patients_label => 'المرضى';
+  @override
+  String get reviews_label => 'التقييمات';
+  @override
+  String get rating_label => 'التقييم';
+  @override
+  String get career_and_education => 'المسيرة المهنية والتعليم';
+  @override
+  String get education_tab => 'التعليم';
+  @override
+  String get experience_tab => 'الخبرة';
+  @override
+  String get procedures_and_services => 'الإجراءات والخدمات';
+  @override
+  String get certificates_label => 'الشهادات المعتمدة';
+  @override
+  String get media_gallery_label => 'معرض الصور والفيديوهات';
+  @override
+  String get book_appointment => 'احجز موعد';
+  @override
+  String get available_today => 'متاح اليوم';
+  @override
+  String get unavailable_today => 'غير متاح اليوم';
+  @override
+  String get read_more => 'المزيد';
+  @override
+  String get read_less => 'أقل';
+  @override
+  String get currency_egp => 'ج.م';
+  @override
+  String get years_exp => 'سنوات';
+  @override
+  String get patient_reviews => 'تقييمات المرضى';
+  @override
+  String get clinic_tour => 'جولة في العيادة';
+  @override
+  String get clinic_photo => 'صورة العيادة';
+  @override
+  String get consultation_fee_label => 'سعر الكشف';
+  @override
+  String get see_all => 'عرض الكل';
+  @override
+  String get verified_patient => 'مريض مؤكد';
+  @override
+  String get rating_summary => 'ملخص التقييمات';
+  @override
+  String get all_reviews => 'جميع التقييمات';
 }
 
 

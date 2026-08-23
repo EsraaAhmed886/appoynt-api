@@ -1230,6 +1230,34 @@ abstract class AppLocalizations {
   String get notification_details_view_prescription;
   String get notification_details_add_to_calendar;
   String get notification_details_calendar_added;
+
+  // Doctor Profile Screen Strings
+  String get about_doctor;
+  String get experience_label;
+  String get patients_label;
+  String get reviews_label;
+  String get rating_label;
+  String get career_and_education;
+  String get education_tab;
+  String get experience_tab;
+  String get procedures_and_services;
+  String get certificates_label;
+  String get media_gallery_label;
+  String get book_appointment;
+  String get available_today;
+  String get unavailable_today;
+  String get read_more;
+  String get read_less;
+  String get currency_egp;
+  String get years_exp;
+  String get patient_reviews;
+  String get clinic_tour;
+  String get clinic_photo;
+  String get consultation_fee_label;
+  String get see_all;
+  String get verified_patient;
+  String get rating_summary;
+  String get all_reviews;
 }
 
 // Defining a short alias for clean and simple type references
