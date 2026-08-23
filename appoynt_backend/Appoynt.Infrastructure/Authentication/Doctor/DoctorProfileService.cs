@@ -62,6 +62,10 @@ public class DoctorProfileService : IDoctorProfileService
         {
             return null;
         }
+        else
+        {
+            // Authenticated user ID is available.
+        }
 
         var doctor = await _dbContext.Doctors
             .AsNoTracking()
@@ -74,6 +78,10 @@ public class DoctorProfileService : IDoctorProfileService
         if (doctor == null)
         {
             return null;
+        }
+        else
+        {
+            // Doctor entity found.
         }
 
         return new DoctorProfileResponse
@@ -114,11 +122,19 @@ public class DoctorProfileService : IDoctorProfileService
         {
             return DoctorResult.Failure(validationResult.Errors.Select(e => new AuthenticationError(e.ErrorCode, e.PropertyName)).ToList());
         }
+        else
+        {
+            // Request payload is valid.
+        }
 
         Guid? userId = _currentUserService.UserId;
         if (userId == null)
         {
             return DoctorResult.Failure(AuthenticationErrorCodes.Forbidden, "User not authenticated.");
+        }
+        else
+        {
+            // Authenticated user ID is available.
         }
 
         var doctor = await _dbContext.Doctors
@@ -129,6 +145,10 @@ public class DoctorProfileService : IDoctorProfileService
         if (doctor == null)
         {
             return DoctorResult.Failure(AuthenticationErrorCodes.UserNotFound, "Doctor not found.");
+        }
+        else
+        {
+            // Doctor found.
         }
 
         // Validate Specializations exist
@@ -143,6 +163,14 @@ public class DoctorProfileService : IDoctorProfileService
             {
                 return DoctorResult.Failure("doctor.specialization.not_found", "One or more specializations do not exist.");
             }
+            else
+            {
+                // All specializations exist in database.
+            }
+        }
+        else
+        {
+            // No specialization IDs to validate.
         }
 
         await using var transaction = await _dbContext.Database.BeginTransactionAsync(ct);
@@ -150,17 +178,87 @@ public class DoctorProfileService : IDoctorProfileService
         try
         {
             // Update Base ApplicationUser fields
-            if (!string.IsNullOrWhiteSpace(request.FirstName)) doctor.User.FirstName = request.FirstName;
-            if (!string.IsNullOrWhiteSpace(request.LastName)) doctor.User.LastName = request.LastName;
-            if (request.Gender.HasValue) doctor.User.Gender = request.Gender.Value;
-            if (request.BirthDate.HasValue) doctor.User.DateOfBirth = request.BirthDate.Value;
-            if (request.Address != null) doctor.User.Address = request.Address;
+            if (!string.IsNullOrWhiteSpace(request.FirstName))
+            {
+                doctor.User.FirstName = request.FirstName;
+            }
+            else
+            {
+                // No update needed.
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.LastName))
+            {
+                doctor.User.LastName = request.LastName;
+            }
+            else
+            {
+                // No update needed.
+            }
+
+            if (request.Gender.HasValue)
+            {
+                doctor.User.Gender = request.Gender.Value;
+            }
+            else
+            {
+                // No update needed.
+            }
+
+            if (request.BirthDate.HasValue)
+            {
+                doctor.User.DateOfBirth = request.BirthDate.Value;
+            }
+            else
+            {
+                // No update needed.
+            }
+
+            if (request.Address != null)
+            {
+                doctor.User.Address = request.Address;
+            }
+            else
+            {
+                // No update needed.
+            }
 
             // Update Doctor fields
-            if (!string.IsNullOrWhiteSpace(request.NameAr)) doctor.NameAr = request.NameAr;
-            if (!string.IsNullOrWhiteSpace(request.NameEn)) doctor.NameEn = request.NameEn;
-            if (request.Bio != null) doctor.Bio = request.Bio;
-            if (request.Education != null) doctor.Education = request.Education;
+            if (!string.IsNullOrWhiteSpace(request.NameAr))
+            {
+                doctor.NameAr = request.NameAr;
+            }
+            else
+            {
+                // No update needed.
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.NameEn))
+            {
+                doctor.NameEn = request.NameEn;
+            }
+            else
+            {
+                // No update needed.
+            }
+
+            if (request.Bio != null)
+            {
+                doctor.Bio = request.Bio;
+            }
+            else
+            {
+                // No update needed.
+            }
+
+            if (request.Education != null)
+            {
+                doctor.Education = request.Education;
+            }
+            else
+            {
+                // No update needed.
+            }
 
             // Update Specializations (Full Replace)
             if (request.SpecializationIds != null)
@@ -177,6 +275,10 @@ public class DoctorProfileService : IDoctorProfileService
                         Specialization = null!
                     });
                 }
+            }
+            else
+            {
+                // No specializations update requested.
             }
 
             await _dbContext.SaveChangesAsync(ct);
@@ -200,11 +302,19 @@ public class DoctorProfileService : IDoctorProfileService
         {
             return DoctorResult.Failure(validationResult.Errors.Select(e => new AuthenticationError(e.ErrorCode, e.PropertyName)).ToList());
         }
+        else
+        {
+            // Validation passed.
+        }
 
         Guid? userId = _currentUserService.UserId;
         if (userId == null)
         {
             return DoctorResult.Failure(AuthenticationErrorCodes.Forbidden, "User not authenticated.");
+        }
+        else
+        {
+            // User authenticated.
         }
 
         var doctor = await _dbContext.Doctors
@@ -214,6 +324,10 @@ public class DoctorProfileService : IDoctorProfileService
         {
             return DoctorResult.Failure(AuthenticationErrorCodes.UserNotFound, "Doctor not found.");
         }
+        else
+        {
+            // Doctor found.
+        }
 
         // Check globally across Users and DoctorPhoneNumbers
         bool existsInUsers = await _dbContext.Users.AnyAsync(u => u.PhoneNumber == request.PhoneNumber, ct);
@@ -222,6 +336,10 @@ public class DoctorProfileService : IDoctorProfileService
         if (existsInUsers || existsInDoctors)
         {
             return DoctorResult.Failure(AuthenticationErrorCodes.PhoneAlreadyRegistered, "Phone number is already registered.");
+        }
+        else
+        {
+            // Phone number is unique.
         }
 
         var newPhone = new DoctorPhoneNumber
@@ -247,6 +365,10 @@ public class DoctorProfileService : IDoctorProfileService
         {
             return DoctorResult.Failure(AuthenticationErrorCodes.Forbidden, "User not authenticated.");
         }
+        else
+        {
+            // User authenticated.
+        }
 
         var doctor = await _dbContext.Doctors
             .Include(d => d.PhoneNumbers)
@@ -256,17 +378,29 @@ public class DoctorProfileService : IDoctorProfileService
         {
             return DoctorResult.Failure(AuthenticationErrorCodes.UserNotFound, "Doctor not found.");
         }
+        else
+        {
+            // Doctor found.
+        }
 
         var phoneToRemove = doctor.PhoneNumbers.FirstOrDefault(p => p.Id == phoneNumberId);
         if (phoneToRemove == null)
         {
             return DoctorResult.Failure("doctor.phone.not_found", "Phone number not found.");
         }
+        else
+        {
+            // Phone number found.
+        }
 
         // Check if it's the last phone number
         if (doctor.PhoneNumbers.Count <= 1)
         {
             return DoctorResult.Failure("doctor.phone.last_number", "Cannot delete the last phone number.");
+        }
+        else
+        {
+            // Doctor has more than one phone number.
         }
 
         _dbContext.Set<DoctorPhoneNumber>().Remove(phoneToRemove);

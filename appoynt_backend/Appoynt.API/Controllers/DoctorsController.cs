@@ -5,8 +5,8 @@
  * Version        : v1.0.0
  * Dependencies   : ASP.NET Core MVC, IProfileImageService, ICurrentUserService, ApplicationDbContext, RoleConstants, ProfileImageErrorCodes
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-14
- * Description    : Exposes REST API endpoints for doctor profile photo upload, retrieval, and deletion operations.
+ * Last Modified  : Mustafa Mahmoud - 2026-08-23
+ * Description    : Exposes REST API endpoints for doctor profile management, photo operations, and phone numbers.
  */
 
 using System;
@@ -89,8 +89,10 @@ public sealed class DoctorsController : ControllerBase
         {
             return NotFound();
         }
-
-        return Ok(profile);
+        else
+        {
+            return Ok(profile);
+        }
     }
 
     /// <summary>
@@ -117,8 +119,10 @@ public sealed class DoctorsController : ControllerBase
         {
             return BadRequest(result.Errors);
         }
-
-        return Ok(result);
+        else
+        {
+            return Ok(result);
+        }
     }
 
     /// <summary>
@@ -145,8 +149,10 @@ public sealed class DoctorsController : ControllerBase
         {
             return BadRequest(result.Errors);
         }
-
-        return Ok(result);
+        else
+        {
+            return Ok(result);
+        }
     }
 
     /// <summary>
@@ -173,8 +179,10 @@ public sealed class DoctorsController : ControllerBase
         {
             return BadRequest(result.Errors);
         }
-
-        return Ok(result);
+        else
+        {
+            return Ok(result);
+        }
     }
 
     #endregion

@@ -190,11 +190,50 @@ public class PatientService : IPatientService
         try
         {
             // Update Base ApplicationUser fields
-            if (!string.IsNullOrWhiteSpace(request.FirstName)) patient.User.FirstName = request.FirstName;
-            if (!string.IsNullOrWhiteSpace(request.LastName)) patient.User.LastName = request.LastName;
-            if (request.Gender.HasValue) patient.User.Gender = request.Gender.Value;
-            if (request.BirthDate.HasValue) patient.User.DateOfBirth = request.BirthDate.Value;
-            if (request.Address != null) patient.User.Address = request.Address;
+            if (!string.IsNullOrWhiteSpace(request.FirstName))
+            {
+                patient.User.FirstName = request.FirstName;
+            }
+            else
+            {
+                // No update needed.
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.LastName))
+            {
+                patient.User.LastName = request.LastName;
+            }
+            else
+            {
+                // No update needed.
+            }
+
+            if (request.Gender.HasValue)
+            {
+                patient.User.Gender = request.Gender.Value;
+            }
+            else
+            {
+                // No update needed.
+            }
+
+            if (request.BirthDate.HasValue)
+            {
+                patient.User.DateOfBirth = request.BirthDate.Value;
+            }
+            else
+            {
+                // No update needed.
+            }
+
+            if (request.Address != null)
+            {
+                patient.User.Address = request.Address;
+            }
+            else
+            {
+                // No update needed.
+            }
 
             // If National ID is provided
             if (!string.IsNullOrEmpty(request.NationalId))
@@ -239,10 +278,41 @@ public class PatientService : IPatientService
             }
 
             // Update Patient fields
-            if (request.WeightKg.HasValue) patient.WeightKg = request.WeightKg.Value;
-            if (request.HeightCm.HasValue) patient.HeightCm = request.HeightCm.Value;
-            if (request.BloodGroup.HasValue) patient.BloodGroup = request.BloodGroup.Value;
-            if (request.SmokingStatus.HasValue) patient.SmokingStatus = request.SmokingStatus.Value;
+            if (request.WeightKg.HasValue)
+            {
+                patient.WeightKg = request.WeightKg.Value;
+            }
+            else
+            {
+                // No update needed.
+            }
+
+            if (request.HeightCm.HasValue)
+            {
+                patient.HeightCm = request.HeightCm.Value;
+            }
+            else
+            {
+                // No update needed.
+            }
+
+            if (request.BloodGroup.HasValue)
+            {
+                patient.BloodGroup = request.BloodGroup.Value;
+            }
+            else
+            {
+                // No update needed.
+            }
+
+            if (request.SmokingStatus.HasValue)
+            {
+                patient.SmokingStatus = request.SmokingStatus.Value;
+            }
+            else
+            {
+                // No update needed.
+            }
 
             // Save changes
             await _dbContext.SaveChangesAsync(cancellationToken);
@@ -272,6 +342,10 @@ public class PatientService : IPatientService
         {
             return PatientResult.Failure(PatientErrorCodes.Forbidden, "User not authenticated.");
         }
+        else
+        {
+            // User authenticated.
+        }
 
         var patient = await _dbContext.Set<Appoynt.Domain.Entities.Patient>()
             .Include(p => p.User)
@@ -281,6 +355,10 @@ public class PatientService : IPatientService
         {
             return PatientResult.Failure(PatientErrorCodes.NotFound, "Patient not found.");
         }
+        else
+        {
+            // Patient found.
+        }
 
         bool isPhoneTaken = await _dbContext.Users
             .AnyAsync(u => u.PhoneNumber == request.PhoneNumber && u.Id != userId.Value, cancellationToken);
@@ -288,6 +366,10 @@ public class PatientService : IPatientService
         if (isPhoneTaken)
         {
             return PatientResult.Failure(AuthenticationErrorCodes.PhoneAlreadyRegistered, "Phone number is already in use.");
+        }
+        else
+        {
+            // Phone number is available.
         }
 
         patient.User.PhoneNumber = request.PhoneNumber;
