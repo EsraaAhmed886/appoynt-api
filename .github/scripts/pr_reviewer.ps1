@@ -37,6 +37,8 @@ if ($pr.title -notmatch $commitPattern) {
 
 foreach ($c in $commits) {
     $firstLine = ($c.commit.message -split "\r?\n")[0].Trim()
+    if ($firstLine -match "^Merge\s+" -or ($c.parents -and $c.parents.Count -gt 1)) { continue }
+    $firstLine = ($c.commit.message -split "\r?\n")[0].Trim()
     if ($firstLine -notmatch $commitPattern) {
         $sha7 = $c.sha.Substring(0,7)
         $invalidCommits += "Commit $sha7 : '$firstLine'"
@@ -310,3 +312,4 @@ if ($allIssues.Count -gt 0 -or $invalidCommits.Count -gt 0) {
     Write-Host "PR Review passed successfully. No rule violations found."
     exit 0
 }
+
