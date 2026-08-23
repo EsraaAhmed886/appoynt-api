@@ -47,80 +47,152 @@ internal static class RateLimitingDependencyInjection
 
         services.AddRateLimiter(options =>
         {
-            // Global configuration
+            // Global rejection status code
             options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 
             // Login Policy
             options.AddPolicy("Login", httpContext =>
-                RateLimitPartition.GetFixedWindowLimiter(
-                    partitionKey: GetClientIpAddress(httpContext),
-                    factory: _ => new FixedWindowRateLimiterOptions
-                    {
-                        PermitLimit = rateLimitingOptions.Login.PermitLimit,
-                        Window = TimeSpan.FromMinutes(rateLimitingOptions.Login.WindowInMinutes),
-                        QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
-                        QueueLimit = 0
-                    }));
+            {
+                var opt = httpContext.RequestServices
+                    .GetRequiredService<Microsoft.Extensions.Options.IOptions<RateLimitingOptions>>().Value;
+
+                if (!opt.Enabled)
+                {
+                    return RateLimitPartition.GetNoLimiter(GetClientIpAddress(httpContext));
+                }
+                else
+                {
+                    return RateLimitPartition.GetFixedWindowLimiter(
+                        partitionKey: GetClientIpAddress(httpContext),
+                        factory: _ => new FixedWindowRateLimiterOptions
+                        {
+                            PermitLimit = opt.Login.PermitLimit,
+                            Window = TimeSpan.FromMinutes(opt.Login.WindowInMinutes),
+                            QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                            QueueLimit = 0
+                        });
+                }
+            });
 
             // Register Policy
             options.AddPolicy("Register", httpContext =>
-                RateLimitPartition.GetFixedWindowLimiter(
-                    partitionKey: GetClientIpAddress(httpContext),
-                    factory: _ => new FixedWindowRateLimiterOptions
-                    {
-                        PermitLimit = rateLimitingOptions.Register.PermitLimit,
-                        Window = TimeSpan.FromMinutes(rateLimitingOptions.Register.WindowInMinutes),
-                        QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
-                        QueueLimit = 0
-                    }));
+            {
+                var opt = httpContext.RequestServices
+                    .GetRequiredService<Microsoft.Extensions.Options.IOptions<RateLimitingOptions>>().Value;
+
+                if (!opt.Enabled)
+                {
+                    return RateLimitPartition.GetNoLimiter(GetClientIpAddress(httpContext));
+                }
+                else
+                {
+                    return RateLimitPartition.GetFixedWindowLimiter(
+                        partitionKey: GetClientIpAddress(httpContext),
+                        factory: _ => new FixedWindowRateLimiterOptions
+                        {
+                            PermitLimit = opt.Register.PermitLimit,
+                            Window = TimeSpan.FromMinutes(opt.Register.WindowInMinutes),
+                            QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                            QueueLimit = 0
+                        });
+                }
+            });
 
             // OTP Verify Policy
             options.AddPolicy("OtpVerify", httpContext =>
-                RateLimitPartition.GetFixedWindowLimiter(
-                    partitionKey: GetClientIpAddress(httpContext),
-                    factory: _ => new FixedWindowRateLimiterOptions
-                    {
-                        PermitLimit = rateLimitingOptions.OtpVerify.PermitLimit,
-                        Window = TimeSpan.FromMinutes(rateLimitingOptions.OtpVerify.WindowInMinutes),
-                        QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
-                        QueueLimit = 0
-                    }));
+            {
+                var opt = httpContext.RequestServices
+                    .GetRequiredService<Microsoft.Extensions.Options.IOptions<RateLimitingOptions>>().Value;
+
+                if (!opt.Enabled)
+                {
+                    return RateLimitPartition.GetNoLimiter(GetClientIpAddress(httpContext));
+                }
+                else
+                {
+                    return RateLimitPartition.GetFixedWindowLimiter(
+                        partitionKey: GetClientIpAddress(httpContext),
+                        factory: _ => new FixedWindowRateLimiterOptions
+                        {
+                            PermitLimit = opt.OtpVerify.PermitLimit,
+                            Window = TimeSpan.FromMinutes(opt.OtpVerify.WindowInMinutes),
+                            QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                            QueueLimit = 0
+                        });
+                }
+            });
 
             // OTP Resend Policy
             options.AddPolicy("OtpResend", httpContext =>
-                RateLimitPartition.GetFixedWindowLimiter(
-                    partitionKey: GetClientIpAddress(httpContext),
-                    factory: _ => new FixedWindowRateLimiterOptions
-                    {
-                        PermitLimit = rateLimitingOptions.OtpResend.PermitLimit,
-                        Window = TimeSpan.FromMinutes(rateLimitingOptions.OtpResend.WindowInMinutes),
-                        QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
-                        QueueLimit = 0
-                    }));
+            {
+                var opt = httpContext.RequestServices
+                    .GetRequiredService<Microsoft.Extensions.Options.IOptions<RateLimitingOptions>>().Value;
+
+                if (!opt.Enabled)
+                {
+                    return RateLimitPartition.GetNoLimiter(GetClientIpAddress(httpContext));
+                }
+                else
+                {
+                    return RateLimitPartition.GetFixedWindowLimiter(
+                        partitionKey: GetClientIpAddress(httpContext),
+                        factory: _ => new FixedWindowRateLimiterOptions
+                        {
+                            PermitLimit = opt.OtpResend.PermitLimit,
+                            Window = TimeSpan.FromMinutes(opt.OtpResend.WindowInMinutes),
+                            QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                            QueueLimit = 0
+                        });
+                }
+            });
 
             // Forgot Password Policy
             options.AddPolicy("ForgotPassword", httpContext =>
-                RateLimitPartition.GetFixedWindowLimiter(
-                    partitionKey: GetClientIpAddress(httpContext),
-                    factory: _ => new FixedWindowRateLimiterOptions
-                    {
-                        PermitLimit = rateLimitingOptions.ForgotPassword.PermitLimit,
-                        Window = TimeSpan.FromMinutes(rateLimitingOptions.ForgotPassword.WindowInMinutes),
-                        QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
-                        QueueLimit = 0
-                    }));
+            {
+                var opt = httpContext.RequestServices
+                    .GetRequiredService<Microsoft.Extensions.Options.IOptions<RateLimitingOptions>>().Value;
+
+                if (!opt.Enabled)
+                {
+                    return RateLimitPartition.GetNoLimiter(GetClientIpAddress(httpContext));
+                }
+                else
+                {
+                    return RateLimitPartition.GetFixedWindowLimiter(
+                        partitionKey: GetClientIpAddress(httpContext),
+                        factory: _ => new FixedWindowRateLimiterOptions
+                        {
+                            PermitLimit = opt.ForgotPassword.PermitLimit,
+                            Window = TimeSpan.FromMinutes(opt.ForgotPassword.WindowInMinutes),
+                            QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                            QueueLimit = 0
+                        });
+                }
+            });
 
             // Reset Password Policy
             options.AddPolicy("ResetPassword", httpContext =>
-                RateLimitPartition.GetFixedWindowLimiter(
-                    partitionKey: GetClientIpAddress(httpContext),
-                    factory: _ => new FixedWindowRateLimiterOptions
-                    {
-                        PermitLimit = rateLimitingOptions.ResetPassword.PermitLimit,
-                        Window = TimeSpan.FromMinutes(rateLimitingOptions.ResetPassword.WindowInMinutes),
-                        QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
-                        QueueLimit = 0
-                    }));
+            {
+                var opt = httpContext.RequestServices
+                    .GetRequiredService<Microsoft.Extensions.Options.IOptions<RateLimitingOptions>>().Value;
+
+                if (!opt.Enabled)
+                {
+                    return RateLimitPartition.GetNoLimiter(GetClientIpAddress(httpContext));
+                }
+                else
+                {
+                    return RateLimitPartition.GetFixedWindowLimiter(
+                        partitionKey: GetClientIpAddress(httpContext),
+                        factory: _ => new FixedWindowRateLimiterOptions
+                        {
+                            PermitLimit = opt.ResetPassword.PermitLimit,
+                            Window = TimeSpan.FromMinutes(opt.ResetPassword.WindowInMinutes),
+                            QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                            QueueLimit = 0
+                        });
+                }
+            });
         });
 
         return services;

@@ -2,11 +2,11 @@
  * File Name      : Clinic.cs
  * Author         : Mustafa Mahmoud
  * Created Date   : 2026-08-20
- * Version        : v1.0.0
- * Dependencies   : BaseEntity, Doctor, Governorate, City, ClinicPhoneNumber, ClinicWorkingPeriod, AppointmentSlot, ClinicReceptionist, ClinicStatus
+ * Version        : v1.1.0
+ * Dependencies   : BaseEntity, Doctor, Governorate, City, ClinicPhoneNumber, ClinicWorkingPeriod, AppointmentSlot, ClinicReceptionist, ClinicStatus, PatientFavoriteClinic
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : 2026-08-20
- * Description    : Represents a doctor's clinic with its operational details and associated relationships.
+ * Last Modified  : Mustafa Mahmoud - 2026-08-23
+ * Description    : Represents a doctor's clinic with its operational details, patient favorites, and associated relationships.
  */
 
 using System;
@@ -106,6 +106,11 @@ public class Clinic : BaseEntity
     /// Gets or sets the collection of clinic receptionists assigned to this clinic.
     /// </summary>
     public ICollection<ClinicReceptionist> ClinicReceptionists { get; set; } = [];
+
+    /// <summary>
+    /// Gets or sets the collection of patient favorite entries for this clinic.
+    /// </summary>
+    public ICollection<PatientFavoriteClinic> FavoritedByPatients { get; set; } = [];
 
     #endregion
 }

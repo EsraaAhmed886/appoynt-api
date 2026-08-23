@@ -24,6 +24,12 @@ public sealed class RateLimitingOptions
     public const string SectionName = "RateLimiting";
 
     /// <summary>
+    /// Gets or sets a value indicating whether rate limiting is enabled.
+    /// Default is true.
+    /// </summary>
+    public bool Enabled { get; set; } = true;
+
+    /// <summary>
     /// Gets or sets the policy for the Login endpoint.
     /// </summary>
     [Required]
