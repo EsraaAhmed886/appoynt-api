@@ -196,7 +196,7 @@ public class PatientService : IPatientService
             }
             else
             {
-                // No update needed.
+                // No action needed.
             }
 
             if (!string.IsNullOrWhiteSpace(request.LastName))
@@ -205,7 +205,7 @@ public class PatientService : IPatientService
             }
             else
             {
-                // No update needed.
+                // No action needed.
             }
 
             if (request.Gender.HasValue)
@@ -214,7 +214,7 @@ public class PatientService : IPatientService
             }
             else
             {
-                // No update needed.
+                // No action needed.
             }
 
             if (request.BirthDate.HasValue)
@@ -223,7 +223,7 @@ public class PatientService : IPatientService
             }
             else
             {
-                // No update needed.
+                // No action needed.
             }
 
             if (request.Address != null)
@@ -232,7 +232,7 @@ public class PatientService : IPatientService
             }
             else
             {
-                // No update needed.
+                // No action needed.
             }
 
             // If National ID is provided
@@ -284,7 +284,7 @@ public class PatientService : IPatientService
             }
             else
             {
-                // No update needed.
+                // No action needed.
             }
 
             if (request.HeightCm.HasValue)
@@ -293,7 +293,7 @@ public class PatientService : IPatientService
             }
             else
             {
-                // No update needed.
+                // No action needed.
             }
 
             if (request.BloodGroup.HasValue)
@@ -302,7 +302,7 @@ public class PatientService : IPatientService
             }
             else
             {
-                // No update needed.
+                // No action needed.
             }
 
             if (request.SmokingStatus.HasValue)
@@ -311,7 +311,7 @@ public class PatientService : IPatientService
             }
             else
             {
-                // No update needed.
+                // No action needed.
             }
 
             // Save changes
@@ -858,7 +858,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No update needed.
+            // No action needed.
         }
 
         if (request.Gender.HasValue)
@@ -867,7 +867,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No update needed.
+            // No action needed.
         }
 
         if (request.Relationship.HasValue)
@@ -876,7 +876,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No update needed.
+            // No action needed.
         }
 
         if (request.BirthDate.HasValue)
@@ -885,7 +885,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No update needed.
+            // No action needed.
         }
 
         // Save changes

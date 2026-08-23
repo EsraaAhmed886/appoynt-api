@@ -184,7 +184,7 @@ public class DoctorProfileService : IDoctorProfileService
             }
             else
             {
-                // No update needed.
+                // No action needed.
             }
 
             if (!string.IsNullOrWhiteSpace(request.LastName))
@@ -193,7 +193,7 @@ public class DoctorProfileService : IDoctorProfileService
             }
             else
             {
-                // No update needed.
+                // No action needed.
             }
 
             if (request.Gender.HasValue)
@@ -202,7 +202,7 @@ public class DoctorProfileService : IDoctorProfileService
             }
             else
             {
-                // No update needed.
+                // No action needed.
             }
 
             if (request.BirthDate.HasValue)
@@ -211,7 +211,7 @@ public class DoctorProfileService : IDoctorProfileService
             }
             else
             {
-                // No update needed.
+                // No action needed.
             }
 
             if (request.Address != null)
@@ -220,7 +220,7 @@ public class DoctorProfileService : IDoctorProfileService
             }
             else
             {
-                // No update needed.
+                // No action needed.
             }
 
             // Update Doctor fields
@@ -230,7 +230,7 @@ public class DoctorProfileService : IDoctorProfileService
             }
             else
             {
-                // No update needed.
+                // No action needed.
             }
 
             if (!string.IsNullOrWhiteSpace(request.NameEn))
@@ -239,7 +239,7 @@ public class DoctorProfileService : IDoctorProfileService
             }
             else
             {
-                // No update needed.
+                // No action needed.
             }
 
             if (request.Bio != null)
@@ -248,7 +248,7 @@ public class DoctorProfileService : IDoctorProfileService
             }
             else
             {
-                // No update needed.
+                // No action needed.
             }
 
             if (request.Education != null)
@@ -257,7 +257,7 @@ public class DoctorProfileService : IDoctorProfileService
             }
             else
             {
-                // No update needed.
+                // No action needed.
             }
 
             // Update Specializations (Full Replace)
