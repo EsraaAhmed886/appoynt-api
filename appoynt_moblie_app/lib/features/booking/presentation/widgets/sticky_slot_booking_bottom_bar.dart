@@ -6,7 +6,7 @@
  * Dependencies: package:flutter/material.dart, app_colors.dart, app_spacing.dart,
  *   doctor_slot_entity.dart, clinic_location_entity.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 17/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 23/08/2026]
  * File Description: Sticky bottom confirmation bar displaying formatted date & time summary,
  *   consultation fee, and Continue button guarded by active hold validation.
  */
@@ -92,73 +92,7 @@ class StickySlotBookingBottomBar extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           // Slot Summary & Fee Row
-          if (selected_slot != null) ...[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Date & Time Summary
-                Row(
-                  children: [
-                    Icon(
-                      Icons.calendar_today_rounded,
-                      size: 15.0,
-                      color: is_dark
-                          ? AppColors.text_dark_secondary
-                          : AppColors.text_light_secondary,
-                    ),
-                    const SizedBox(width: 4.0),
-                    Text(
-                      _format_date(selected_date),
-                      style: TextStyle(
-                        fontSize: AppSpacing.font_size_body_medium,
-                        fontWeight: FontWeight.w700,
-                        color: is_dark
-                            ? AppColors.text_dark_primary
-                            : AppColors.text_light_primary,
-                      ),
-                    ),
-                    const SizedBox(width: 6.0),
-                    Text(
-                      '•',
-                      style: TextStyle(
-                        fontSize: AppSpacing.font_size_body_medium,
-                        fontWeight: FontWeight.w800,
-                        color: is_dark
-                            ? AppColors.text_dark_secondary
-                            : AppColors.text_light_secondary,
-                      ),
-                    ),
-                    const SizedBox(width: 6.0),
-                    const Icon(
-                      Icons.schedule_rounded,
-                      size: 15.0,
-                      color: AppColors.primary_color,
-                    ),
-                    const SizedBox(width: 4.0),
-                    Text(
-                      selected_slot!.start_time,
-                      style: const TextStyle(
-                        fontSize: AppSpacing.font_size_body_medium,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.primary_color,
-                      ),
-                    ),
-                  ],
-                ),
-
-                // Fee Display
-                Text(
-                  "${clinic.consultation_fee.toStringAsFixed(0)} ${clinic.currency}",
-                  style: const TextStyle(
-                    fontSize: AppSpacing.font_size_title_medium,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.primary_color,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.space_m + 2.0),
-          ],
+          _build_slot_summary_row(is_dark),
 
           // Full Width Continue CTA
           SizedBox(
@@ -199,5 +133,83 @@ class StickySlotBookingBottomBar extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  /// Builds the formatted date, time, and fee summary row when a slot is selected.
+  Widget _build_slot_summary_row(bool is_dark) {
+    if (selected_slot != null) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // Date & Time Summary
+              Row(
+                children: [
+                  Icon(
+                    Icons.calendar_today_rounded,
+                    size: 15.0,
+                    color: is_dark
+                        ? AppColors.text_dark_secondary
+                        : AppColors.text_light_secondary,
+                  ),
+                  const SizedBox(width: 4.0),
+                  Text(
+                    _format_date(selected_date),
+                    style: TextStyle(
+                      fontSize: AppSpacing.font_size_body_medium,
+                      fontWeight: FontWeight.w700,
+                      color: is_dark
+                          ? AppColors.text_dark_primary
+                          : AppColors.text_light_primary,
+                    ),
+                  ),
+                  const SizedBox(width: 6.0),
+                  Text(
+                    '•',
+                    style: TextStyle(
+                      fontSize: AppSpacing.font_size_body_medium,
+                      fontWeight: FontWeight.w800,
+                      color: is_dark
+                          ? AppColors.text_dark_secondary
+                          : AppColors.text_light_secondary,
+                    ),
+                  ),
+                  const SizedBox(width: 6.0),
+                  const Icon(
+                    Icons.schedule_rounded,
+                    size: 15.0,
+                    color: AppColors.primary_color,
+                  ),
+                  const SizedBox(width: 4.0),
+                  Text(
+                    selected_slot!.start_time,
+                    style: const TextStyle(
+                      fontSize: AppSpacing.font_size_body_medium,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.primary_color,
+                    ),
+                  ),
+                ],
+              ),
+
+              // Fee Display
+              Text(
+                "${clinic.consultation_fee.toStringAsFixed(0)} ${clinic.currency}",
+                style: const TextStyle(
+                  fontSize: AppSpacing.font_size_title_medium,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.primary_color,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.space_m + 2.0),
+        ],
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
   }
 }

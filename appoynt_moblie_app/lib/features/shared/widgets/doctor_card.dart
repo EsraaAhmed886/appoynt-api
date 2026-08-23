@@ -9,7 +9,7 @@
  *   package:appoynt_mobile_app/core/theme/colors/app_colors.dart,
  *   package:appoynt_mobile_app/features/shared/widgets/favorite_heart_button.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 21/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 23/08/2026]
  * File Description: Defines a reusable, highly polished Doctor Card component
  *   displaying details, rating, fee, framed 110x130dp rounded-rectangle doctor portrait
  *   with subtle border and soft shadow, ecg-heart icon, and booking CTA.
@@ -428,12 +428,15 @@ class DoctorCard extends StatelessWidget {
                       cacheWidth: (width * 2).toInt(),
                       cacheHeight: (height * 2).toInt(),
                       loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return Container(
-                          width: width,
-                          height: height,
-                          color: is_dark ? AppColors.surface_dark : Colors.grey.shade100,
-                        );
+                        if (loadingProgress == null) {
+                          return child;
+                        } else {
+                          return Container(
+                            width: width,
+                            height: height,
+                            color: is_dark ? AppColors.surface_dark : Colors.grey.shade100,
+                          );
+                        }
                       },
                       errorBuilder: (context, error, stackTrace) => Container(
                         width: width,

@@ -11,7 +11,7 @@
  *   empty_slots_widget.dart, sticky_slot_booking_bottom_bar.dart,
  *   hold_release_confirmation_dialog.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 17/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 23/08/2026]
  * File Description: Comprehensive Doctor Multi-Clinic & Time Slot Booking screen featuring
  *   generous 68px toolbar with AppBackButton, doctor verification badge, equal-width segmented
  *   filters, docked hold indicator, and animated hold expiration dialogs.
@@ -436,18 +436,7 @@ class _ChooseSlotsView extends StatelessWidget {
                                 : AppColors.text_light_primary,
                           ),
                         ),
-                        if (state.is_refreshing_slots) ...[
-                          const SizedBox(
-                            width: 16.0,
-                            height: 16.0,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2.0,
-                              color: AppColors.primary_color,
-                            ),
-                          ),
-                        ] else ...[
-                          const SizedBox.shrink(),
-                        ],
+                        _build_refreshing_indicator(state),
                       ],
                     ),
                   ),
@@ -461,22 +450,7 @@ class _ChooseSlotsView extends StatelessWidget {
                   const SizedBox(height: 16.0),
 
                   // 4. Responsive Slots Grid or Empty State
-                  if (state.filtered_slots.isNotEmpty) ...[
-                    DoctorSlotGrid(
-                      slots: state.filtered_slots,
-                      selected_slot: state.selected_slot,
-                      is_holding_slot: state.is_holding_slot,
-                      on_slot_selected: (slot) => cubit.selectSlot(slot),
-                    ),
-                  ] else ...[
-                    EmptySlotsWidget(
-                      on_next_date_tap: () {
-                        cubit.selectDate(
-                          state.selected_date.add(const Duration(days: 1)),
-                        );
-                      },
-                    ),
-                  ],
+                  _build_slots_content(state, cubit),
 
                   // Bottom padding spacer to clear sticky confirmation bar and banner
                   const SizedBox(height: 170.0),
@@ -493,14 +467,7 @@ class _ChooseSlotsView extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (state.has_active_hold) ...[
-                  ActiveHoldCountdownBanner(
-                    remaining_seconds: state.remaining_seconds,
-                    is_visible: state.has_active_hold,
-                  ),
-                ] else ...[
-                  const SizedBox.shrink(),
-                ],
+                _build_active_hold_banner(state),
                 StickySlotBookingBottomBar(
                   clinic: state.selected_clinic,
                   selected_date: state.selected_date,
@@ -606,5 +573,56 @@ class _ChooseSlotsView extends StatelessWidget {
         );
       },
     );
+  }
+
+  /// Builds the refreshing progress indicator when slots are reloading.
+  Widget _build_refreshing_indicator(SlotBookingLoadedState state) {
+    if (state.is_refreshing_slots) {
+      return const SizedBox(
+        width: 16.0,
+        height: 16.0,
+        child: CircularProgressIndicator(
+          strokeWidth: 2.0,
+          color: AppColors.primary_color,
+        ),
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+
+  /// Builds the slots grid or the empty state view.
+  Widget _build_slots_content(
+    SlotBookingLoadedState state,
+    SlotBookingCubit cubit,
+  ) {
+    if (state.filtered_slots.isNotEmpty) {
+      return DoctorSlotGrid(
+        slots: state.filtered_slots,
+        selected_slot: state.selected_slot,
+        is_holding_slot: state.is_holding_slot,
+        on_slot_selected: (slot) => cubit.selectSlot(slot),
+      );
+    } else {
+      return EmptySlotsWidget(
+        on_next_date_tap: () {
+          cubit.selectDate(
+            state.selected_date.add(const Duration(days: 1)),
+          );
+        },
+      );
+    }
+  }
+
+  /// Builds the active hold countdown banner when a slot is reserved.
+  Widget _build_active_hold_banner(SlotBookingLoadedState state) {
+    if (state.has_active_hold) {
+      return ActiveHoldCountdownBanner(
+        remaining_seconds: state.remaining_seconds,
+        is_visible: state.has_active_hold,
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
   }
 }
