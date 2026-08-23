@@ -70,7 +70,7 @@ dependencies:
   fl_chart: ^0.68.0
 
   # Custom Typography
-  google_fonts: ^8.1.0
+  google_fonts: ^6.3.0
 
   # JSON Serialization
   json_annotation: ^4.9.0
