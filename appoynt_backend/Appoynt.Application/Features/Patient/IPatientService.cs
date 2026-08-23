@@ -40,6 +40,14 @@ public interface IPatientService
     Task<PatientResult> UpdateProfileAsync(UpdatePatientProfileRequest request, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Replaces the primary phone number of the current patient.
+    /// </summary>
+    /// <param name="request">The update phone number request.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A patient result indicating success or failure.</returns>
+    Task<PatientResult> UpdatePhoneNumberAsync(UpdatePatientPhoneNumberRequest request, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Uploads a profile photo for the current patient.
     /// </summary>
     /// <param name="fileStream">The stream containing the photo data.</param>

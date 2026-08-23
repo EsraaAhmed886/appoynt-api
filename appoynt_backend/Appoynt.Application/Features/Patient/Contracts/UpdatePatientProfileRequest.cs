@@ -19,6 +19,31 @@ namespace Appoynt.Application.Features.Patient.Contracts;
 public record UpdatePatientProfileRequest
 {
     /// <summary>
+    /// Gets the first name.
+    /// </summary>
+    public string? FirstName { get; init; }
+
+    /// <summary>
+    /// Gets the last name.
+    /// </summary>
+    public string? LastName { get; init; }
+
+    /// <summary>
+    /// Gets the gender.
+    /// </summary>
+    public Gender? Gender { get; init; }
+
+    /// <summary>
+    /// Gets the birth date.
+    /// </summary>
+    public DateOnly? BirthDate { get; init; }
+
+    /// <summary>
+    /// Gets the address.
+    /// </summary>
+    public string? Address { get; init; }
+
+    /// <summary>
     /// Gets the national ID.
     /// </summary>
     public string? NationalId { get; init; }

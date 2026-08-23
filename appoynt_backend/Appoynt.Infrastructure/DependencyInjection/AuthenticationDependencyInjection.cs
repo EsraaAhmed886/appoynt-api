@@ -119,6 +119,12 @@ internal static class AuthenticationDependencyInjection
         services.AddScoped<FluentValidation.IValidator<Appoynt.Application.Features.Patient.Contracts.AddFamilyMemberRequest>, Appoynt.Application.Features.Patient.Validation.AddFamilyMemberValidator>();
         services.AddScoped<FluentValidation.IValidator<Appoynt.Application.Features.Patient.Contracts.UpdateFamilyMemberRequest>, Appoynt.Application.Features.Patient.Validation.UpdateFamilyMemberValidator>();
 
+        // Doctor Profile Services
+        services.AddScoped<Appoynt.Application.Features.Doctor.IDoctorProfileService, Appoynt.Infrastructure.Authentication.Doctor.DoctorProfileService>();
+        services.AddScoped<FluentValidation.IValidator<Appoynt.Application.Features.Doctor.Contracts.UpdateDoctorProfileRequest>, Appoynt.Application.Features.Doctor.Validation.UpdateDoctorProfileValidator>();
+        services.AddScoped<FluentValidation.IValidator<Appoynt.Application.Features.Doctor.Contracts.AddDoctorPhoneNumberRequest>, Appoynt.Application.Features.Doctor.Validation.AddDoctorPhoneNumberValidator>();
+        services.AddScoped<FluentValidation.IValidator<Appoynt.Application.Features.Patient.Contracts.UpdatePatientPhoneNumberRequest>, Appoynt.Application.Features.Patient.Validation.UpdatePatientPhoneNumberValidator>();
+
         return services;
     }
 }

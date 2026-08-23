@@ -209,7 +209,7 @@ public sealed class UserManagementService : IUserManagementService
                 : $"{request.FirstName?.Trim()} {request.LastName?.Trim()}";
 
             // Instantiate and add the Doctor domain entity with profile properties.
-            var doctor = new Doctor
+            var doctor = new Appoynt.Domain.Entities.Doctor
             {
                 Id = Guid.NewGuid(),
                 UserId = user.Id,
@@ -329,7 +329,7 @@ public sealed class UserManagementService : IUserManagementService
         CreateStaffRequest request,
         string role,
         CancellationToken cancellationToken,
-        Doctor? assignedDoctor = null)
+        Appoynt.Domain.Entities.Doctor? assignedDoctor = null)
     {
         ArgumentNullException.ThrowIfNull(request);
 
@@ -433,7 +433,7 @@ public sealed class UserManagementService : IUserManagementService
                     });
                     break;
                 case RoleConstants.Doctor:
-                    _dbContext.Doctors.Add(new Doctor
+                    _dbContext.Doctors.Add(new Appoynt.Domain.Entities.Doctor
                     {
                         Id = Guid.NewGuid(),
                         UserId = user.Id,
@@ -679,43 +679,11 @@ public sealed class UserManagementService : IUserManagementService
         }
 
         // Retrieve the current user's identity and role for authorization decisions.
-        var currentUserId = _currentUserService.UserId;
         var currentRole = _currentUserService.Role;
+        var currentUserId = _currentUserService.UserId;
 
-        // Apply authorization checks based on the caller's role.
-        if (currentRole == RoleConstants.Doctor)
-        {
-            // Resolve the Doctor entity ID linked to the current user.
-            var doctorId = await _dbContext.Doctors
-                .Where(d => d.UserId == currentUserId)
-                .Select(d => d.Id)
-                .FirstOrDefaultAsync(cancellationToken);
-
-            // Check if the doctor is updating their own profile or their receptionist's.
-            bool isSelf = id == currentUserId;
-            bool isOwnReceptionist = user.Receptionist != null && user.Receptionist.DoctorId == doctorId;
-
-            // Deny access if the doctor is not updating themselves or their own receptionist.
-            if (!isSelf && !isOwnReceptionist)
-            {
-                return UserManagementResult.Failure(AuthenticationErrorCodes.Forbidden, nameof(id));
-            }
-            else
-            {
-            }
-        }
-        else if (currentRole == RoleConstants.Patient || currentRole == RoleConstants.Receptionist)
-        {
-            // Patients and Receptionists can only update their own profile.
-            if (id != currentUserId)
-            {
-                return UserManagementResult.Failure(AuthenticationErrorCodes.Forbidden, nameof(id));
-            }
-            else
-            {
-            }
-        }
-        else if (currentRole != RoleConstants.Admin)
+        // Apply defensive authorization checks based on the caller's role.
+        if (currentRole != RoleConstants.Admin)
         {
             // Deny access for any unrecognized role.
             return UserManagementResult.Failure(AuthenticationErrorCodes.Forbidden, nameof(id));

@@ -170,6 +170,7 @@ public class PatientService : IPatientService
 
         // Fetch patient
         Appoynt.Domain.Entities.Patient? patient = await _dbContext.Set<Appoynt.Domain.Entities.Patient>()
+            .Include(p => p.User)
             .FirstOrDefaultAsync(p => p.UserId == userId.Value, cancellationToken);
 
         // Check if patient exists
@@ -183,58 +184,117 @@ public class PatientService : IPatientService
             // No action required.
         }
 
-        // If National ID is provided
-        if (!string.IsNullOrEmpty(request.NationalId))
-        {
-            // Validate National ID
-            var natIdResult = EgyptianNationalIdValidator.Validate(request.NationalId);
-            
-            // Check result
-            if (!natIdResult.IsValid)
-            {
-                // Return failure
-                return PatientResult.Failure(PatientErrorCodes.NationalIdInvalidFormat, "Invalid National ID.");
-            }
-            else
-            {
-                // No action required.
-            }
+        // Begin transaction
+        await using var transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
 
-            // Check for uniqueness
-            bool exists = await _dbContext.Set<Appoynt.Domain.Entities.Patient>()
-                .AnyAsync(p => p.NationalId == request.NationalId && p.Id != patient.Id, cancellationToken);
+        try
+        {
+            // Update Base ApplicationUser fields
+            if (!string.IsNullOrWhiteSpace(request.FirstName)) patient.User.FirstName = request.FirstName;
+            if (!string.IsNullOrWhiteSpace(request.LastName)) patient.User.LastName = request.LastName;
+            if (request.Gender.HasValue) patient.User.Gender = request.Gender.Value;
+            if (request.BirthDate.HasValue) patient.User.DateOfBirth = request.BirthDate.Value;
+            if (request.Address != null) patient.User.Address = request.Address;
+
+            // If National ID is provided
+            if (!string.IsNullOrEmpty(request.NationalId))
+            {
+                // Validate National ID
+                var natIdResult = EgyptianNationalIdValidator.Validate(request.NationalId);
                 
-            // If exists, fail
-            if (exists)
-            {
-                // Return failure
-                return PatientResult.Failure(PatientErrorCodes.NationalIdDuplicate, "National ID already in use.");
+                // Check result
+                if (!natIdResult.IsValid)
+                {
+                    // Return failure
+                    return PatientResult.Failure(PatientErrorCodes.NationalIdInvalidFormat, "Invalid National ID.");
+                }
+                else
+                {
+                    // No action required.
+                }
+
+                // Check for uniqueness
+                bool exists = await _dbContext.Set<Appoynt.Domain.Entities.Patient>()
+                    .AnyAsync(p => p.NationalId == request.NationalId && p.Id != patient.Id, cancellationToken);
+                    
+                // If exists, fail
+                if (exists)
+                {
+                    // Return failure
+                    return PatientResult.Failure(PatientErrorCodes.NationalIdDuplicate, "National ID already in use.");
+                }
+                else
+                {
+                    // No action required.
+                }
+
+                // Set National ID
+                patient.NationalId = request.NationalId;
+                // Set birth date extracted
+                patient.BirthDate = natIdResult.BirthDate;
             }
             else
             {
                 // No action required.
             }
 
-            // Set National ID
-            patient.NationalId = request.NationalId;
-            // Set birth date extracted
-            patient.BirthDate = natIdResult.BirthDate;
+            // Update Patient fields
+            if (request.WeightKg.HasValue) patient.WeightKg = request.WeightKg.Value;
+            if (request.HeightCm.HasValue) patient.HeightCm = request.HeightCm.Value;
+            if (request.BloodGroup.HasValue) patient.BloodGroup = request.BloodGroup.Value;
+            if (request.SmokingStatus.HasValue) patient.SmokingStatus = request.SmokingStatus.Value;
+
+            // Save changes
+            await _dbContext.SaveChangesAsync(cancellationToken);
+            
+            // Commit transaction
+            await transaction.CommitAsync(cancellationToken);
+
+            // Return success
+            return PatientResult.Success(patient.Id);
         }
-        else
+        catch (Exception ex)
         {
-            // No action required.
+            // Rollback on error
+            await transaction.RollbackAsync(cancellationToken);
+            _logger.LogError(ex, "Failed to update patient profile.");
+            return PatientResult.Failure("server.error", "Failed to update profile.");
+        }
+    }
+
+    /// <summary>
+    /// Replaces the primary phone number of the current patient.
+    /// </summary>
+    public async Task<PatientResult> UpdatePhoneNumberAsync(UpdatePatientPhoneNumberRequest request, CancellationToken cancellationToken)
+    {
+        Guid? userId = _currentUserService.UserId;
+        if (userId == null)
+        {
+            return PatientResult.Failure(PatientErrorCodes.Forbidden, "User not authenticated.");
         }
 
-        // Update other fields
-        if (request.WeightKg.HasValue) patient.WeightKg = request.WeightKg.Value;
-        if (request.HeightCm.HasValue) patient.HeightCm = request.HeightCm.Value;
-        if (request.BloodGroup.HasValue) patient.BloodGroup = request.BloodGroup.Value;
-        if (request.SmokingStatus.HasValue) patient.SmokingStatus = request.SmokingStatus.Value;
+        var patient = await _dbContext.Set<Appoynt.Domain.Entities.Patient>()
+            .Include(p => p.User)
+            .FirstOrDefaultAsync(p => p.UserId == userId.Value, cancellationToken);
 
-        // Save changes
+        if (patient == null)
+        {
+            return PatientResult.Failure(PatientErrorCodes.NotFound, "Patient not found.");
+        }
+
+        bool isPhoneTaken = await _dbContext.Users
+            .AnyAsync(u => u.PhoneNumber == request.PhoneNumber && u.Id != userId.Value, cancellationToken);
+
+        if (isPhoneTaken)
+        {
+            return PatientResult.Failure(AuthenticationErrorCodes.PhoneAlreadyRegistered, "Phone number is already in use.");
+        }
+
+        patient.User.PhoneNumber = request.PhoneNumber;
+        patient.User.PhoneNumberConfirmed = false;
+
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        // Return success
         return PatientResult.Success(patient.Id);
     }
 
