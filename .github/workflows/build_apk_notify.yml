@@ -28,7 +28,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.x'
+          flutter-version: '3.24.x'
           channel: 'stable'
 
       - name: Get Flutter Dependencies
@@ -37,7 +37,7 @@ jobs:
 
       - name: Build Release APK
         working-directory: appoynt_moblie_app
-        run: flutter build apk --release
+        run: flutter build apk --release --android-skip-build-dependency-validation
 
       - name: Get Build Info
         id: info
