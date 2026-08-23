@@ -47,15 +47,27 @@ jobs:
             $msdeploy = "C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe"
           }
 
-          # Trim to remove any accidental newlines from secrets
           $site     = $env:WEBSITE_NAME.Trim()
           $computer = $env:SERVER_COMPUTER_NAME.Trim()
           $user     = $env:SERVER_USERNAME.Trim()
           $pass     = $env:SERVER_PASSWORD.Trim()
+          $src      = (Resolve-Path "./publish").Path
 
-          $sourcePath = "$PWD\publish"
-          $destArg    = "-dest:iisApp=`"$site`",ComputerName=`"$computer`",UserName=`"$user`",Password=`"$pass`",AuthType=`"Basic`""
-          $sourceArg  = "-source:iisApp=`"$sourcePath`""
+          Write-Host "Source path: $src"
+          Write-Host "Deploying to: $computer"
+
+          $msdeployArgs = @(
+            '-verb:sync',
+            "-source:contentPath=$src",
+            "-dest:contentPath=$site,ComputerName=$computer,UserName=$user,Password=$pass,AuthType=Basic",
+            '-allowUntrusted',
+            '-enableRule:DoNotDeleteRule'
+          )
 
           Write-Host "Deploying to MonsterASP.NET..."
-          & $msdeploy -verb:sync $sourceArg $destArg -allowUntrusted -enableRule:DoNotDeleteRule
+          & $msdeploy @msdeployArgs
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "MSDeploy failed with exit code $LASTEXITCODE"
+            exit $LASTEXITCODE
+          }
+          Write-Host "Deployment successful!"
