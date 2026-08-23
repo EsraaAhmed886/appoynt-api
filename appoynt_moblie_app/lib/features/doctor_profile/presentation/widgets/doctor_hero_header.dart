@@ -191,16 +191,7 @@ class DoctorHeroHeader extends StatelessWidget {
                         ),
                       ),
                     ),
-                    if (profile.is_verified) ...[
-                      const SizedBox(width: 6.0),
-                      const Icon(
-                        Icons.verified_rounded,
-                        color: AppColors.primary_color,
-                        size: 22.0,
-                      ),
-                    ] else ...[
-                      // No action needed: Unverified profile does not display verification badge
-                    ],
+                    ..._build_verified_badge(),
                   ],
                 ),
                 const SizedBox(height: AppSpacing.space_s + 2.0),
@@ -375,5 +366,21 @@ class DoctorHeroHeader extends StatelessWidget {
         child: Center(child: child),
       ),
     );
+  }
+
+  /// Builds the verified badge icon when the doctor profile is verified.
+  List<Widget> _build_verified_badge() {
+    if (profile.is_verified) {
+      return [
+        const SizedBox(width: 6.0),
+        const Icon(
+          Icons.verified_rounded,
+          color: AppColors.primary_color,
+          size: 22.0,
+        ),
+      ];
+    } else {
+      return const [];
+    }
   }
 }
