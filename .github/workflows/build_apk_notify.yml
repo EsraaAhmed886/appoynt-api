@@ -5,7 +5,7 @@ on:
     branches:
       - master_integration
     paths:
-      - 'appoynt_mobile_app/**'
+      - 'appoynt_moblie_app/**'
   workflow_dispatch:
 
 permissions:
@@ -32,11 +32,11 @@ jobs:
           channel: 'stable'
 
       - name: Get Flutter Dependencies
-        working-directory: appoynt_mobile_app
+        working-directory: appoynt_moblie_app
         run: flutter pub get
 
       - name: Build Release APK
-        working-directory: appoynt_mobile_app
+        working-directory: appoynt_moblie_app
         run: flutter build apk --release
 
       - name: Get Build Info
@@ -60,7 +60,7 @@ jobs:
             - **Date:** ${{ steps.info.outputs.date }}
             - **Commit:** ${{ steps.info.outputs.short_sha }} - ${{ steps.info.outputs.commit_msg }}
             - **Branch:** master_integration
-          files: appoynt_mobile_app/build/app/outputs/flutter-apk/app-release.apk
+          files: appoynt_moblie_app/build/app/outputs/flutter-apk/app-release.apk
           draft: false
           prerelease: false
 
