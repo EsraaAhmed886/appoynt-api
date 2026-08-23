@@ -34,40 +34,13 @@ jobs:
       - name: Publish project
         run: dotnet publish appoynt_backend/Appoynt.API/Appoynt.API.csproj --configuration Release --output ./publish --runtime win-x86
 
-      - name: Deploy to MonsterASP via MSDeploy
-        shell: pwsh
-        env:
-          WEBSITE_NAME: ${{ secrets.WEBSITE_NAME }}
-          SERVER_COMPUTER_NAME: ${{ secrets.SERVER_COMPUTER_NAME }}
-          SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
-          SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
-        run: |
-          $msdeploy = "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe"
-          if (-not (Test-Path $msdeploy)) {
-            $msdeploy = "C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe"
-          }
-
-          $site     = $env:WEBSITE_NAME.Trim()
-          $computer = $env:SERVER_COMPUTER_NAME.Trim()
-          $user     = $env:SERVER_USERNAME.Trim()
-          $pass     = $env:SERVER_PASSWORD.Trim()
-          $src      = (Resolve-Path "./publish").Path
-
-          Write-Host "Source path: $src"
-          Write-Host "Deploying to: $computer"
-
-          $msdeployArgs = @(
-            '-verb:sync',
-            "-source:contentPath=$src",
-            "-dest:contentPath=$site,ComputerName=$computer,UserName=$user,Password=$pass,AuthType=Basic",
-            '-allowUntrusted',
-            '-enableRule:DoNotDeleteRule'
-          )
-
-          Write-Host "Deploying to MonsterASP.NET..."
-          & $msdeploy @msdeployArgs
-          if ($LASTEXITCODE -ne 0) {
-            Write-Error "MSDeploy failed with exit code $LASTEXITCODE"
-            exit $LASTEXITCODE
-          }
-          Write-Host "Deployment successful!"
+      - name: Deploy via FTP to MonsterASP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./publish/
+          server-dir: ${{ secrets.FTP_REMOTE_PATH }}/
+          protocol: ftp
+          port: 21
