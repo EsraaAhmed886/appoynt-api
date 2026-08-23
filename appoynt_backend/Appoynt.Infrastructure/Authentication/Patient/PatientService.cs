@@ -94,7 +94,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Fetch the patient from DB
@@ -111,7 +111,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Map and return
@@ -151,7 +151,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Get user ID
@@ -165,7 +165,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Fetch patient
@@ -181,7 +181,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Begin transaction
@@ -249,7 +249,7 @@ public class PatientService : IPatientService
                 }
                 else
                 {
-                    // No action required.
+                    // No action needed.
                 }
 
                 // Check for uniqueness
@@ -264,7 +264,7 @@ public class PatientService : IPatientService
                 }
                 else
                 {
-                    // No action required.
+                    // No action needed.
                 }
 
                 // Set National ID
@@ -274,7 +274,7 @@ public class PatientService : IPatientService
             }
             else
             {
-                // No action required.
+                // No action needed.
             }
 
             // Update Patient fields
@@ -396,7 +396,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Fetch patient
@@ -411,7 +411,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Delegate upload and compression to centralized profile image service
@@ -456,7 +456,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Check if user owns patient or is admin
@@ -471,7 +471,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Delegate image retrieval to centralized profile image service
@@ -494,7 +494,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Fetch patient
@@ -509,7 +509,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Delegate photo deletion to centralized profile image service
@@ -547,7 +547,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Check relationship consistency
@@ -558,7 +558,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Get user ID
@@ -572,7 +572,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Fetch patient and family members
@@ -588,7 +588,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Collect used sequence numbers
@@ -608,7 +608,7 @@ public class PatientService : IPatientService
             }
             else
             {
-                // No action required.
+                // No action needed.
             }
         }
         
@@ -644,7 +644,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Create new family member
@@ -686,7 +686,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Fetch family members
@@ -723,7 +723,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Fetch family member
@@ -739,7 +739,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Return mapped object
@@ -770,7 +770,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Get user ID
@@ -784,7 +784,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Fetch member
@@ -800,7 +800,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Get effective gender and relationship
@@ -818,12 +818,12 @@ public class PatientService : IPatientService
             }
             else
             {
-                // No action required.
+                // No action needed.
             }
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Check if relationship changed
@@ -843,12 +843,12 @@ public class PatientService : IPatientService
             }
             else
             {
-                // No action required.
+                // No action needed.
             }
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Update other fields
@@ -911,7 +911,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Fetch member
@@ -926,7 +926,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Remove member (soft delete via interceptor)
@@ -955,7 +955,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Retrieve the patient profile associated with the authenticated user
@@ -970,7 +970,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Verify that the target doctor exists and is active
@@ -985,7 +985,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Perform initial check to prevent duplicate favorites
@@ -1000,7 +1000,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Create new patient favorite doctor join entity
@@ -1049,7 +1049,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Retrieve the patient profile for the current user
@@ -1064,7 +1064,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Query the favorite entry to be removed
@@ -1079,7 +1079,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Remove the favorite entry from the context
@@ -1109,7 +1109,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Retrieve the patient profile
@@ -1124,7 +1124,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Query all favorite doctor records for this patient
@@ -1177,7 +1177,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Retrieve the patient record for the current user
@@ -1199,7 +1199,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Enforce safe page boundary defaults (clamp page size between 1 and 50)
@@ -1306,7 +1306,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Retrieve the patient profile
@@ -1321,7 +1321,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Verify that the target clinic exists and is active
@@ -1336,7 +1336,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Perform initial check to prevent duplicate favorites
@@ -1351,7 +1351,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Create new patient favorite clinic join entity
@@ -1400,7 +1400,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Retrieve patient profile
@@ -1415,7 +1415,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Query the favorite entry to be removed
@@ -1430,7 +1430,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Remove the favorite entry from the context
@@ -1460,7 +1460,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Retrieve patient profile
@@ -1475,7 +1475,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Query all favorite clinic records for this patient
@@ -1528,7 +1528,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Retrieve the patient record
@@ -1550,7 +1550,7 @@ public class PatientService : IPatientService
         }
         else
         {
-            // No action required.
+            // No action needed.
         }
 
         // Enforce safe page boundary defaults (clamp page size between 1 and 50)
