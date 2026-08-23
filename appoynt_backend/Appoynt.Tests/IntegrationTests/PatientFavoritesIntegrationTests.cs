@@ -273,6 +273,10 @@ public class PatientFavoritesIntegrationTests : IClassFixture<WebApplicationFact
             db.Governorates.Add(gov);
             await db.SaveChangesAsync();
         }
+        else
+        {
+            // Governorate already exists.
+        }
 
         var city = await db.Cities.FirstOrDefaultAsync(c => c.GovernorateId == gov.Id);
         if (city == null)
@@ -287,6 +291,10 @@ public class PatientFavoritesIntegrationTests : IClassFixture<WebApplicationFact
             };
             db.Cities.Add(city);
             await db.SaveChangesAsync();
+        }
+        else
+        {
+            // City already exists.
         }
 
         var clinic = new Clinic
