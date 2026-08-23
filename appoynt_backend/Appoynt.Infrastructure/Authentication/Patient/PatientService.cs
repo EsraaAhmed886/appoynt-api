@@ -852,10 +852,41 @@ public class PatientService : IPatientService
         }
 
         // Update other fields
-        if (!string.IsNullOrEmpty(request.FullName)) member.FullName = request.FullName;
-        if (request.Gender.HasValue) member.Gender = request.Gender.Value;
-        if (request.Relationship.HasValue) member.Relationship = request.Relationship.Value;
-        if (request.BirthDate.HasValue) member.BirthDate = request.BirthDate.Value;
+        if (!string.IsNullOrEmpty(request.FullName))
+        {
+            member.FullName = request.FullName;
+        }
+        else
+        {
+            // No update needed.
+        }
+
+        if (request.Gender.HasValue)
+        {
+            member.Gender = request.Gender.Value;
+        }
+        else
+        {
+            // No update needed.
+        }
+
+        if (request.Relationship.HasValue)
+        {
+            member.Relationship = request.Relationship.Value;
+        }
+        else
+        {
+            // No update needed.
+        }
+
+        if (request.BirthDate.HasValue)
+        {
+            member.BirthDate = request.BirthDate.Value;
+        }
+        else
+        {
+            // No update needed.
+        }
 
         // Save changes
         await _dbContext.SaveChangesAsync(cancellationToken);
