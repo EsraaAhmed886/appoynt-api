@@ -61,7 +61,7 @@ try {
     }
 } catch { }
 
-# --- 4. Analyze Source Files with Accurate Bracket Matching (ADDED lines ONLY) ---
+# --- 4. Analyze Source Files with Accurate Bracket Matching (Using Full File Context) ---
 $sourceExtensions = @(".dart", ".ts", ".tsx", ".js", ".jsx", ".cs")
 $allIssues = @()
 
@@ -71,11 +71,14 @@ foreach ($file in $files) {
     $ext = [System.IO.Path]::GetExtension($filename).ToLower()
 
     if (-not $patch -or $ext -notin $sourceExtensions) { continue }
-    if ($filename -match "package-lock\.json" -or $filename -match "\.d\.ts$" -or $filename -match "\.g\.dart$" -or $filename -match "app_localizations.*\.dart$") { continue }
+    if ($filename -match "package-lock\.json" -or $filename -match "\.d\.ts$" -or $filename -match "\.g\.dart$" -or $filename -match "app_localizations.*\.dart$" -or $filename -match "Migrations") { continue }
+
+    $fullFileLines = if (Test-Path $filename) { Get-Content $filename } else { @() }
+    if ($fullFileLines.Count -eq 0) { continue }
 
     $lines = $patch -split "\r?\n"
     $currentLineNum = 0
-    $addedLines = @()
+    $addedLineNumbers = @()
 
     foreach ($line in $lines) {
         if ($line -match "^@@ -\d+(?:,\d+)? \+(\d+)(?:,\d+)? @@") {
@@ -85,18 +88,14 @@ foreach ($file in $files) {
         if ($line.StartsWith("-")) { continue }
         $currentLineNum++
         if ($line.StartsWith("+") -and -not $line.StartsWith("+++")) {
-            $addedLines += @{
-                LineNum = $currentLineNum
-                Code = $line.Substring(1)
-            }
+            $addedLineNumbers += $currentLineNum
         }
     }
 
     # Rule 1: Header check on added/new files
-    $fullAddedCode = ($addedLines | ForEach-Object { $_.Code }) -join "`n"
-    $hasHeader = $fullAddedCode -match "File Name\s*:" -or $fullAddedCode -match "Date of Creation\s*:"
+    $hasHeader = ($fullFileLines[0..[Math]::Min(30, $fullFileLines.Count - 1)] -join "`n") -match "File Name\s*:" -or ($fullFileLines[0..[Math]::Min(30, $fullFileLines.Count - 1)] -join "`n") -match "Date of Creation\s*:"
     if (-not $hasHeader -and $file.status -eq "added") {
-        $firstLine = if ($addedLines.Count -gt 0) { $addedLines[0].LineNum } else { 1 }
+        $firstLine = if ($addedLineNumbers.Count -gt 0) { $addedLineNumbers[0] } else { 1 }
         $allIssues += [PSCustomObject]@{
             path = $filename
             line = $firstLine
@@ -105,14 +104,15 @@ foreach ($file in $files) {
         }
     }
 
-    # Rule 2: Last Modified Date Synchronization check (on ADDED lines only)
-    foreach ($item in $addedLines) {
-        if ($item.Code -match "Last Modified\s*(?:Date)?\s*:\s*([^\]\r\n]+)") {
+    # Rule 2: Header Last Modified sync
+    if ($hasHeader) {
+        $headerSnippet = $fullFileLines[0..[Math]::Min(30, $fullFileLines.Count - 1)] -join "`n"
+        if ($headerSnippet -match "(?:Last Modified\s*:\s*|Last Modified Date\s*:\s*)([^\r\n]+)") {
             $lastModVal = $matches[1].Trim()
             if ($lastModVal -match "202[0-5]" -or $lastModVal -match "2026-0[1-7]" -or $lastModVal -match "/0[1-7]/2026") {
                 $allIssues += [PSCustomObject]@{
                     path = $filename
-                    line = $item.LineNum
+                    line = 1
                     type = "Outdated Date"
                     body = "**[Warning]** ``Last Modified`` date is outdated ($lastModVal). Please synchronize it with the current commit / PR date."
                 }
@@ -120,10 +120,10 @@ foreach ($file in $files) {
         }
     }
 
-    # Rule 3: Inspect code lines with character-level bracket matching
-    for ($i = 0; $i -lt $addedLines.Count; $i++) {
-        $lNum = $addedLines[$i].LineNum
-        $code = $addedLines[$i].Code.Trim()
+    # Rule 3: Inspect modified lines with FULL FILE context for accurate bracket & else tracking
+    foreach ($lNum in $addedLineNumbers) {
+        if ($lNum -gt $fullFileLines.Count) { continue }
+        $code = $fullFileLines[$lNum - 1].Trim()
 
         if ([string]::IsNullOrWhiteSpace($code) -or $code.StartsWith("/*") -or $code.StartsWith("*") -or $code.StartsWith("//") -or $code.StartsWith("///") -or $code.StartsWith("using ") -or $code.StartsWith("import ") -or $code.StartsWith("@")) {
             continue
@@ -150,15 +150,15 @@ foreach ($file in $files) {
             continue
         }
 
-        # Check: If statement with braces (Accurate Bracket Depth Tracking)
+        # Check: If statement with braces (Accurate Bracket Depth Tracking using Full File Context)
         if ($code -match "^\s*if\s*\(" -or $code -match "^\s*\}\s*else\s+if\s*\(" -or $code -match "^\s*else\s+if\s*\(") {
             $depth = 0
             $started = $false
             $hasElseAtEnd = $false
             $endFound = $false
 
-            for ($j = $i; $j -lt $addedLines.Count; $j++) {
-                $lineChars = $addedLines[$j].Code.ToCharArray()
+            for ($j = $lNum - 1; $j -lt $fullFileLines.Count; $j++) {
+                $lineChars = $fullFileLines[$j].ToCharArray()
                 for ($k = 0; $k -lt $lineChars.Length; $k++) {
                     $ch = $lineChars[$k]
                     if ($ch -eq '{') {
@@ -177,8 +177,8 @@ foreach ($file in $files) {
                                 $endFound = $true
                                 break
                             } else {
-                                for ($nextIdx = $j + 1; $nextIdx -lt [Math]::Min($j + 5, $addedLines.Count); $nextIdx++) {
-                                    $nextL = $addedLines[$nextIdx].Code.Trim()
+                                for ($nextIdx = $j + 1; $nextIdx -lt [Math]::Min($j + 5, $fullFileLines.Count); $nextIdx++) {
+                                    $nextL = $fullFileLines[$nextIdx].Trim()
                                     if ([string]::IsNullOrWhiteSpace($nextL) -or $nextL.StartsWith("//")) { continue }
                                     if ($nextL.StartsWith("else") -or $nextL.StartsWith("} else")) {
                                         $hasElseAtEnd = $true
@@ -207,8 +207,8 @@ foreach ($file in $files) {
         # Check: Switch statement without default
         if ($code -match "^\s*switch\s*\([^\)]+\)\s*\{") {
             $hasDefault = $false
-            for ($j = $i + 1; $j -lt [Math]::Min($i + 100, $addedLines.Count); $j++) {
-                $nextCode = $addedLines[$j].Code.Trim()
+            for ($j = $lNum; $j -lt [Math]::Min($lNum + 100, $fullFileLines.Count); $j++) {
+                $nextCode = $fullFileLines[$j].Trim()
                 if ($nextCode -match "default\s*:") {
                     $hasDefault = $true
                     break
@@ -310,5 +310,3 @@ if ($allIssues.Count -gt 0 -or $invalidCommits.Count -gt 0) {
     Write-Host "PR Review passed successfully. No rule violations found."
     exit 0
 }
-
-
