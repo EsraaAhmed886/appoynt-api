@@ -156,6 +156,11 @@ public static class AuthenticationErrorCodes
     /// </summary>
     public const string UserNotFound = "auth.user.not_found";
 
+    /// <summary>
+    /// Indicates a generic server-side failure that is safe to expose to clients.
+    /// </summary>
+    public const string ServerError = "server.error";
+
     #endregion
 
     #region Login

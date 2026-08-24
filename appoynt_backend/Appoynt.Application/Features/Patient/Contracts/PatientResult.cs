@@ -2,11 +2,12 @@
  * File Name      : PatientResult.cs
  * Author         : Mustafa Mahmoud
  * Created Date   : 2026-08-10
- * Version        : v1.0.0
+ * Version        : v1.1.0
  * Dependencies   : Appoynt.Application.Common.Models
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-10
- * Description    : Result object for patient operations.
+ * Last Modified  : Mustafa Mahmoud - 2026-08-24
+ * Description    : Result object for patient operations, reusing the shared
+ *                  success/error foundation while exposing the patient identifier.
  */
 
 using System;
@@ -18,22 +19,12 @@ namespace Appoynt.Application.Features.Patient.Contracts;
 /// <summary>
 /// Represents the result of a patient operation.
 /// </summary>
-public class PatientResult
+public class PatientResult : ResultBase
 {
-    /// <summary>
-    /// Gets a value indicating whether the operation succeeded.
-    /// </summary>
-    public bool Succeeded { get; init; }
-
     /// <summary>
     /// Gets the patient identifier if the operation was successful.
     /// </summary>
     public Guid? PatientId { get; init; }
-
-    /// <summary>
-    /// Gets the list of errors if the operation failed.
-    /// </summary>
-    public IReadOnlyList<AuthenticationError> Errors { get; init; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PatientResult"/> class.
@@ -43,10 +34,9 @@ public class PatientResult
     /// <param name="errors">The errors.</param>
     [System.Text.Json.Serialization.JsonConstructor]
     public PatientResult(bool succeeded, Guid? patientId, IReadOnlyList<AuthenticationError>? errors)
+        : base(succeeded, errors)
     {
-        Succeeded = succeeded;
         PatientId = patientId;
-        Errors = errors ?? Array.Empty<AuthenticationError>();
     }
 
     /// <summary>
@@ -73,7 +63,7 @@ public class PatientResult
     /// <summary>
     /// Creates a failure result with multiple errors.
     /// </summary>
-    /// <param name="errors">The collection of errors.</param>
+    /// <param name="errors">The errors.</param>
     /// <returns>A failed patient result.</returns>
     public static PatientResult Failure(IReadOnlyList<AuthenticationError> errors)
     {

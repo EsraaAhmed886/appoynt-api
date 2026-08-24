@@ -15,6 +15,8 @@
 
 using System;
 using System.Collections.Generic;
+using Appoynt.Application.Common.Constants;
+using Appoynt.Domain.Common.Constants;
 using Appoynt.Application.Features.Doctor.Contracts;
 using Appoynt.Application.Features.Doctor.Validation;
 using FluentAssertions;
@@ -134,7 +136,7 @@ public class DoctorValidationTests
 
         // Assert.
         result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.ErrorMessage == "First name must not exceed 100 characters.");
+        result.Errors.Should().Contain(e => e.ErrorMessage == AuthenticationErrorCodes.FirstNameLengthInvalid);
     }
 
     /// <summary>
@@ -180,7 +182,7 @@ public class DoctorValidationTests
 
         // Assert.
         result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.ErrorMessage == "Last name must not exceed 100 characters.");
+        result.Errors.Should().Contain(e => e.ErrorMessage == AuthenticationErrorCodes.LastNameLengthInvalid);
     }
 
     #endregion
@@ -207,7 +209,7 @@ public class DoctorValidationTests
 
         // Assert.
         result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.ErrorMessage == "Arabic name must not exceed 100 characters.");
+        result.Errors.Should().Contain(e => e.ErrorMessage == DoctorErrorCodes.NameArLengthInvalid);
     }
 
     /// <summary>
@@ -230,7 +232,7 @@ public class DoctorValidationTests
 
         // Assert.
         result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.ErrorMessage == "English name must not exceed 100 characters.");
+        result.Errors.Should().Contain(e => e.ErrorMessage == DoctorErrorCodes.NameEnLengthInvalid);
     }
 
     /// <summary>
@@ -253,7 +255,7 @@ public class DoctorValidationTests
 
         // Assert.
         result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.ErrorMessage == "Bio must not exceed 2000 characters.");
+        result.Errors.Should().Contain(e => e.ErrorMessage == DoctorErrorCodes.BioLengthInvalid);
     }
 
     /// <summary>
@@ -276,7 +278,7 @@ public class DoctorValidationTests
 
         // Assert.
         result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.ErrorMessage == "Education must not exceed 1000 characters.");
+        result.Errors.Should().Contain(e => e.ErrorMessage == DoctorErrorCodes.EducationLengthInvalid);
     }
 
     #endregion
@@ -305,7 +307,7 @@ public class DoctorValidationTests
 
         // Assert the past-only rule fails.
         result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.ErrorMessage == "Birth date must be in the past.");
+        result.Errors.Should().Contain(e => e.ErrorMessage == DoctorErrorCodes.BirthDateInvalid);
     }
 
     /// <summary>
@@ -353,7 +355,7 @@ public class DoctorValidationTests
 
         // Assert at least one failure mentions the missing specialization requirement.
         result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.ErrorMessage == "At least one specialization is required.");
+        result.Errors.Should().Contain(e => e.ErrorMessage == DoctorErrorCodes.SpecializationRequired);
     }
 
     /// <summary>
@@ -376,7 +378,7 @@ public class DoctorValidationTests
 
         // Assert the duplicate rule produces a failure.
         result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.ErrorMessage == "Duplicate specializations are not allowed.");
+        result.Errors.Should().Contain(e => e.ErrorMessage == DoctorErrorCodes.SpecializationDuplicate);
     }
 
     #endregion
@@ -435,7 +437,7 @@ public class DoctorValidationTests
 
         // Assert.
         result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.ErrorMessage == "Phone number is required.");
+        result.Errors.Should().Contain(e => e.ErrorMessage == DoctorErrorCodes.PhoneNumberRequired);
     }
 
     /// <summary>
@@ -454,7 +456,7 @@ public class DoctorValidationTests
 
         // Assert.
         result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.ErrorMessage == "Invalid Egyptian phone number format.");
+        result.Errors.Should().Contain(e => e.ErrorMessage == DoctorErrorCodes.PhoneNumberFormatInvalid);
     }
 
     /// <summary>
@@ -557,8 +559,9 @@ public class DoctorValidationTests
 
         // Assert the maximum length rule fails.
         result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.ErrorMessage == "Label must not exceed 50 characters.");
+        result.Errors.Should().Contain(e => e.ErrorMessage == DoctorErrorCodes.PhoneLabelLengthInvalid);
     }
 
     #endregion
 }
+

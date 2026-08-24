@@ -109,6 +109,11 @@ public static class PatientConstants
     public const long ProfilePhotoMaxSizeBytes = 5 * 1024 * 1024;
 
     /// <summary>
+    /// The maximum page size accepted when listing favorite doctors or clinics.
+    /// </summary>
+    public const int MaxFavoritesPageSize = 50;
+
+    /// <summary>
     /// The allowed file extensions for profile photos.
     /// </summary>
     public static readonly IReadOnlyList<string> AllowedPhotoExtensions =

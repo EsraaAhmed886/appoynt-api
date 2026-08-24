@@ -15,6 +15,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Appoynt.Application.Common.Constants;
 using Appoynt.Application.Common.Interfaces;
+using Appoynt.Application.Common.Validation;
 using Appoynt.Application.Features.Doctor;
 using Appoynt.Application.Features.Doctor.Contracts;
 using Appoynt.Domain.Entities;
@@ -120,7 +121,7 @@ public class DoctorProfileService : IDoctorProfileService
         var validationResult = await _updateValidator.ValidateAsync(request, ct);
         if (!validationResult.IsValid)
         {
-            return DoctorResult.Failure(validationResult.Errors.Select(e => new AuthenticationError(e.ErrorCode, e.PropertyName)).ToList());
+            return DoctorResult.Failure(validationResult.ToAuthenticationErrors());
         }
         else
         {
@@ -290,7 +291,7 @@ public class DoctorProfileService : IDoctorProfileService
         {
             await transaction.RollbackAsync(ct);
             _logger.LogError(ex, "Failed to update doctor profile.");
-            return DoctorResult.Failure("server.error", "Failed to update profile.");
+            return DoctorResult.Failure(AuthenticationErrorCodes.ServerError, "Failed to update profile.");
         }
     }
 
@@ -300,7 +301,7 @@ public class DoctorProfileService : IDoctorProfileService
         var validationResult = await _addPhoneValidator.ValidateAsync(request, ct);
         if (!validationResult.IsValid)
         {
-            return DoctorResult.Failure(validationResult.Errors.Select(e => new AuthenticationError(e.ErrorCode, e.PropertyName)).ToList());
+            return DoctorResult.Failure(validationResult.ToAuthenticationErrors());
         }
         else
         {
@@ -409,3 +410,4 @@ public class DoctorProfileService : IDoctorProfileService
         return DoctorResult.Success();
     }
 }
+

@@ -12,6 +12,8 @@
 
 using System;
 using System.Linq;
+using Appoynt.Application.Common.Constants;
+using Appoynt.Domain.Common.Constants;
 using FluentValidation;
 using Appoynt.Application.Features.Doctor.Contracts;
 
@@ -28,11 +30,11 @@ public class AddDoctorPhoneNumberValidator : AbstractValidator<AddDoctorPhoneNum
     public AddDoctorPhoneNumberValidator()
     {
         RuleFor(x => x.PhoneNumber)
-            .NotEmpty().WithMessage("Phone number is required.")
-            .Must(IsValidEgyptianPhoneNumber).WithMessage("Invalid Egyptian phone number format.");
+            .NotEmpty().WithMessage(DoctorErrorCodes.PhoneNumberRequired)
+            .Must(IsValidEgyptianPhoneNumber).WithMessage(DoctorErrorCodes.PhoneNumberFormatInvalid);
 
         RuleFor(x => x.Label)
-            .MaximumLength(50).WithMessage("Label must not exceed 50 characters.")
+            .MaximumLength(50).WithMessage(DoctorErrorCodes.PhoneLabelLengthInvalid)
             .When(x => !string.IsNullOrEmpty(x.Label));
     }
 
@@ -94,3 +96,4 @@ public class AddDoctorPhoneNumberValidator : AbstractValidator<AddDoctorPhoneNum
         return true;
     }
 }
+

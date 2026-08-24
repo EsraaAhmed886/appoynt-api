@@ -96,5 +96,20 @@ public static class DoctorErrorCodes
     /// </summary>
     public const string SpecializationNotFound = "doctor.specialization.not_found";
 
+    /// <summary>
+    /// Indicates that no specializations were supplied when at least one is required.
+    /// </summary>
+    public const string SpecializationRequired = "doctor.specialization.required";
+
+    /// <summary>
+    /// Indicates that duplicate specialization identifiers were supplied.
+    /// </summary>
+    public const string SpecializationDuplicate = "doctor.specialization.duplicate";
+
+    /// <summary>
+    /// Indicates that the supplied birth date is not in the past.
+    /// </summary>
+    public const string BirthDateInvalid = "doctor.birth_date.invalid";
+
     #endregion
 }

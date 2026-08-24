@@ -299,10 +299,11 @@ public class UserManagementServiceTests
         // Act
         var result = await service.CreateAdminAsync(request, CancellationToken.None);
 
-        // Assert the validator failure targets the password rule without identity interaction.
+        // Assert the validator failure carries the stable code and password field without identity interaction.
         result.Succeeded.Should().BeFalse();
         result.Errors.Should().Contain(error =>
-            error.Field == AuthenticationErrorCodes.PasswordComplexityInvalid);
+            error.Code == AuthenticationErrorCodes.PasswordComplexityInvalid &&
+            error.Field == nameof(CreateStaffRequest.Password));
         userManagerMock.Verify(
             manager => manager.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()),
             Times.Never);
