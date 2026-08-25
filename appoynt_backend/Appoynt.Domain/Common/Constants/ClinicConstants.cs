@@ -9,6 +9,9 @@
  * Description    : Contains constant values and validation limits related to Clinics.
  */
 
+using System;
+using System.Collections.Generic;
+
 namespace Appoynt.Domain.Common.Constants;
 
 /// <summary>
@@ -16,6 +19,11 @@ namespace Appoynt.Domain.Common.Constants;
 /// </summary>
 public static class ClinicConstants
 {
+    /// <summary>
+    /// The local-time cutoff separating morning from afternoon slots.
+    /// Slots starting strictly before this time are considered morning slots.
+    /// </summary>
+    public static readonly TimeOnly MorningCutoff = new(12, 0);
     /// <summary>
     /// The maximum number of clinics a doctor can manage.
     /// </summary>

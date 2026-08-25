@@ -68,6 +68,15 @@ public sealed class AppointmentSlotConfiguration
             .HasDefaultValue(Appoynt.Domain.Enums.SlotStatus.Available)
             .IsRequired();
 
+        // Configure the optional pending-lock holder column.
+        builder.Property(slot => slot.HeldByUserId)
+            .IsRequired(false);
+
+        // Configure the optional pending-lock expiry column (UTC-only DateTime
+        // so expiry comparisons translate on every supported provider).
+        builder.Property(slot => slot.ExpiresAtUtc)
+            .IsRequired(false);
+
         #endregion
 
         #region Index Configuration
@@ -80,6 +89,12 @@ public sealed class AppointmentSlotConfiguration
         builder.HasIndex(slot => new { slot.Status, slot.UpdatedAt })
             .HasDatabaseName("IX_AppointmentSlots_Status_UpdatedAt");
 
+        // Index for the "does this patient already hold a pending lock" query
+        // executed on every lock attempt.
+        builder.HasIndex(slot => new { slot.HeldByUserId, slot.Status })
+            .HasDatabaseName("IX_AppointmentSlots_HeldByUserId_Status")
+            .HasFilter("[HeldByUserId] IS NOT NULL");
+
         #endregion
 
         #region Relationship Configuration
@@ -90,6 +105,16 @@ public sealed class AppointmentSlotConfiguration
             .HasForeignKey(slot => slot.ClinicId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        // Configure the optional many-to-one relationship with the user account
+        // holding a pending lock. Locks are keyed by USER identity so they can be
+        // resolved directly from token claims without an extra profile lookup.
+        builder.HasOne<Appoynt.Domain.Entities.ApplicationUser>()
+            .WithMany()
+            .HasForeignKey(slot => slot.HeldByUserId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.SetNull);
+
         #endregion
     }
 }
+

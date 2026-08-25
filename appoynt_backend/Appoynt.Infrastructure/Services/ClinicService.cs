@@ -45,6 +45,7 @@ public sealed class ClinicService : IClinicService
     private readonly IValidator<BreakRequest> _breakValidator;
     private readonly ILogger<ClinicService> _logger;
     private readonly IDateTimeProvider _dateTimeProvider;
+    private readonly ICacheService _cacheService;
 
     #endregion
 
@@ -62,6 +63,7 @@ public sealed class ClinicService : IClinicService
     /// <param name="breakValidator">The break request validator.</param>
     /// <param name="logger">The logger instance.</param>
     /// <param name="dateTimeProvider">The abstraction for deterministic UTC timestamps.</param>
+    /// <param name="cacheService">The application cache abstraction.</param>
     public ClinicService(
         ApplicationDbContext dbContext,
         ICurrentUserService currentUserService,
@@ -71,7 +73,8 @@ public sealed class ClinicService : IClinicService
         IValidator<WorkingPeriodRequest> periodValidator,
         IValidator<BreakRequest> breakValidator,
         ILogger<ClinicService> logger,
-        IDateTimeProvider dateTimeProvider)
+        IDateTimeProvider dateTimeProvider,
+        ICacheService cacheService)
     {
         _dbContext = dbContext;
         _currentUserService = currentUserService;
@@ -82,6 +85,7 @@ public sealed class ClinicService : IClinicService
         _breakValidator = breakValidator;
         _logger = logger;
         _dateTimeProvider = dateTimeProvider;
+        _cacheService = cacheService;
     }
 
     #endregion
@@ -312,7 +316,12 @@ public sealed class ClinicService : IClinicService
             ConsultationFee = request.ConsultationFee!.Value,
             Status = ClinicStatus.Active,
             AppointmentDurationMinutes = request.AppointmentDurationMinutes!.Value,
-            MaxAdvanceBookingDays = request.MaxAdvanceBookingDays!.Value
+            MaxAdvanceBookingDays = request.MaxAdvanceBookingDays!.Value,
+
+            // The first clinic a doctor creates automatically becomes the default
+            // so the booking screen always has a primary clinic to show first.
+            IsDefault = !await _dbContext.Clinics
+                .AnyAsync(c => c.DoctorId == doctor.Id && c.DeletedAt == null, cancellationToken)
         };
 
         // Attach phone numbers if provided.
@@ -383,6 +392,9 @@ public sealed class ClinicService : IClinicService
 
         // Persist the new clinic and generate its initial slots atomically.
         await SaveAndRegenerateSlotsAsync(clinic.Id, cancellationToken);
+
+        // The doctor's booking summary changed; drop the cached payload.
+        await _cacheService.RemoveAsync(CacheKeys.DoctorBookingSummary(doctor.Id), cancellationToken);
 
         _logger.LogInformation("Clinic '{ClinicName}' ({ClinicId}) created successfully for doctor {DoctorId}.", clinic.Name, clinic.Id, doctor.Id);
 
@@ -541,11 +553,67 @@ public sealed class ClinicService : IClinicService
             // Active status retained.
         }
 
-        // Persist changes and regenerate slots atomically when the duration changed.
-        await SaveAndRegenerateSlotsAsync(
-            clinic.Id,
-            cancellationToken,
-            regenerateSlots: durationChanged && clinic.Status == ClinicStatus.Active);
+        // Apply default-clinic flag changes. Promotion runs in TWO phases because
+        // unique indexes are validated per statement: demote-and-flush first,
+        // then claim the flag. The filtered index remains the concurrent-race guard.
+        bool defaultFlagChanged = false;
+        if (request.IsDefault.HasValue && request.IsDefault.Value != clinic.IsDefault)
+        {
+            defaultFlagChanged = true;
+
+            if (request.IsDefault.Value)
+            {
+                // PHASE 1 - demote every other active clinic and persist immediately.
+                var otherDefaults = await _dbContext.Clinics
+                    .Where(c => c.DoctorId == doctor.Id
+                             && c.Id != clinic.Id
+                             && c.IsDefault
+                             && c.DeletedAt == null)
+                    .ToListAsync(cancellationToken);
+
+                foreach (var other in otherDefaults)
+                {
+                    other.IsDefault = false;
+                }
+
+                await _dbContext.SaveChangesAsync(cancellationToken);
+
+                // PHASE 2 - claim the flag on the target clinic.
+                clinic.IsDefault = true;
+            }
+            else
+            {
+                // Simple demotion never violates the single-default rule.
+                clinic.IsDefault = false;
+            }
+        }
+        else
+        {
+            // Default flag unchanged.
+        }
+
+        try
+        {
+            // Persist changes and regenerate slots atomically when the duration changed.
+            await SaveAndRegenerateSlotsAsync(
+                clinic.Id,
+                cancellationToken,
+                regenerateSlots: durationChanged && clinic.Status == ClinicStatus.Active);
+        }
+        catch (DbUpdateException ex)
+        {
+            // A concurrent writer claimed the default flag first; translate the
+            // unique-index violation into a friendly, stable client error.
+            _logger.LogWarning(ex, "Concurrent default-clinic conflict for doctor {DoctorId}.", doctor.Id);
+            return ClinicResult.Failure(ClinicErrorCodes.DefaultClinicConflict, nameof(request.IsDefault));
+        }
+
+        // Booking-relevant data changed; refresh cached payloads.
+        await _cacheService.RemoveAsync(CacheKeys.DoctorBookingSummary(doctor.Id), cancellationToken);
+        if (defaultFlagChanged || statusChangedToInactive)
+        {
+            await _cacheService.RemoveAsync(CacheKeys.AvailableDates(clinic.Id), cancellationToken);
+        }
 
         return ClinicResult.Success(clinic.Id);
     }
@@ -564,7 +632,7 @@ public sealed class ClinicService : IClinicService
             // Doctor resolved.
         }
 
-// Load and verify ownership of the target clinic.
+        // Load and verify ownership of the target clinic.
         var (clinic, ownedClinicFailure) = await GetOwnedClinicAsync(clinicId, doctor, cancellationToken);
         if (ownedClinicFailure != null)
         {
@@ -575,7 +643,10 @@ public sealed class ClinicService : IClinicService
             // Clinic resolved.
         }
 
-        // Soft delete the clinic.
+        // Soft delete the clinic and free its default flag in a first flush so
+        // the successor promotion below cannot collide with the unique index.
+        bool wasDefault = clinic.IsDefault;
+        clinic.IsDefault = false;
         _dbContext.Clinics.Remove(clinic);
 
         // Mark future Available slots as Unavailable.
@@ -589,8 +660,45 @@ public sealed class ClinicService : IClinicService
             slot.Status = SlotStatus.Unavailable;
         }
 
-        // Save changes.
+        // Flush phase one: deletion plus flag release become visible together.
+        await using var promotionTransaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
+
+        // If the deleted clinic was the default, promote the oldest remaining
+        // active clinic so the booking screen always has a primary entry.
+        if (wasDefault)
+        {
+            var successor = await _dbContext.Clinics
+                .Where(c => c.DoctorId == doctor.Id
+                         && c.Id != clinic.Id
+                         && c.Status == ClinicStatus.Active
+                         && c.DeletedAt == null)
+                .OrderBy(c => c.CreatedAt)
+                .ThenBy(c => c.Id)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            if (successor != null)
+            {
+                // Hand the default flag to the oldest surviving sibling.
+                successor.IsDefault = true;
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+            else
+            {
+                // The doctor simply has no clinics left; no default to promote.
+            }
+        }
+        else
+        {
+            // A non-default clinic was removed; no promotion required.
+        }
+
+        // Both phases are durable only together.
+        await promotionTransaction.CommitAsync(cancellationToken);
+
+        // The doctor's booking surface changed; refresh cached payloads.
+        await _cacheService.RemoveAsync(CacheKeys.DoctorBookingSummary(doctor.Id), cancellationToken);
+        await _cacheService.RemoveAsync(CacheKeys.AvailableDates(clinicId), cancellationToken);
 
         _logger.LogInformation("Clinic '{ClinicName}' ({ClinicId}) soft-deleted successfully.", clinic.Name, clinicId);
 

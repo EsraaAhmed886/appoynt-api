@@ -44,6 +44,23 @@ public class AppointmentSlot : BaseEntity
 
     #endregion
 
+    #region Booking Lock Properties
+
+    /// <summary>
+    /// Gets or sets the identifier of the patient currently holding a pending
+    /// lock on this slot, or null when the slot is not locked.
+    /// </summary>
+    public Guid? HeldByUserId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the UTC instant at which a pending lock expires and the
+    /// slot becomes available again, or null when the slot is not locked.
+    /// Stored as UTC-only DateTime for cross-provider comparison support.
+    /// </summary>
+    public DateTime? ExpiresAtUtc { get; set; }
+
+    #endregion
+
     #region Relationship Properties
 
     /// <summary>
@@ -58,3 +75,4 @@ public class AppointmentSlot : BaseEntity
 
     #endregion
 }
+

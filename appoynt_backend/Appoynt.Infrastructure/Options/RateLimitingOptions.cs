@@ -64,6 +64,18 @@ public sealed class RateLimitingOptions
     /// </summary>
     [Required]
     public RateLimitPolicyOptions ResetPassword { get; set; } = null!;
+
+    /// <summary>
+    /// Gets or sets the policy for patient booking mutation endpoints
+    /// (slot lock and release). Ships disabled via configuration so tests run
+    /// freely; enabling it later is a configuration change only.
+    /// </summary>
+    public RateLimitPolicyOptions Booking { get; set; } = new()
+    {
+        Enabled = false,
+        PermitLimit = 10,
+        WindowInMinutes = 1
+    };
 }
 
 /// <summary>
@@ -71,6 +83,12 @@ public sealed class RateLimitingOptions
 /// </summary>
 public sealed class RateLimitPolicyOptions
 {
+    /// <summary>
+    /// Gets or sets a value indicating whether this individual policy is
+    /// enabled. Defaults to true so legacy sections remain unchanged.
+    /// </summary>
+    public bool Enabled { get; set; } = true;
+
     /// <summary>
     /// Gets or sets the maximum number of permitted requests.
     /// </summary>

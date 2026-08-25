@@ -79,6 +79,18 @@ public sealed class ClinicConfiguration
         builder.Property(clinic => clinic.MaxAdvanceBookingDays)
             .IsRequired();
 
+        // Configure default flag column with a false default for existing rows.
+        builder.Property(clinic => clinic.IsDefault)
+            .HasDefaultValue(false)
+            .IsRequired();
+
+        // Configure optional geographic coordinates columns.
+        builder.Property(clinic => clinic.Latitude)
+            .IsRequired(false);
+
+        builder.Property(clinic => clinic.Longitude)
+            .IsRequired(false);
+
         #endregion
 
         #region Index Configuration
@@ -86,6 +98,14 @@ public sealed class ClinicConfiguration
         // Add index on DoctorId for faster lookups.
         builder.HasIndex(clinic => clinic.DoctorId)
             .HasDatabaseName("IX_Clinics_DoctorId");
+
+        // Database-level guarantee that only ONE clinic per doctor can be the
+        // default at any moment. The partial (filtered) index is supported by
+        // both SQL Server and SQLite, so integration tests exercise it too.
+        builder.HasIndex(clinic => new { clinic.DoctorId, clinic.IsDefault })
+            .HasDatabaseName("IX_Clinics_DoctorId_IsDefault_Unique")
+            .IsUnique()
+            .HasFilter("[IsDefault] = 1");
 
         #endregion
 
