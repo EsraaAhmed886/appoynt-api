@@ -12,7 +12,7 @@
  *   - @/components/medical-record/modals/confirm_deletion_modal
  *   - @/context/language_context
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Step 3 Diagnostic Tests & Clinical Attachments workspace with test orders table, status triage pills, empty states, PDF/image file upload drag-and-drop zone (Max 10 MB), and final consultation locking execution.
  */
 
@@ -79,7 +79,11 @@ export default function Step3Tests() {
   const tests = record.testsOrdered || [];
 
   const handleFiles = (fileList: FileList | null) => {
-    if (!fileList || fileList.length === 0) return;
+    if (!fileList || fileList.length === 0) {
+      return;
+    } else {
+      // Process uploaded files
+    }
     const maxSizeBytes = 10 * 1024 * 1024; // 10 MB
 
     const newItems: UploadedFileItem[] = [];
@@ -88,6 +92,8 @@ export default function Step3Tests() {
       if (file.size > maxSizeBytes) {
         alert(`File "${file.name}" exceeds the 10 MB size limit.`);
         continue;
+      } else {
+        // Valid file size
       }
       newItems.push({
         id: `att-${Date.now()}-${i}`,
@@ -114,8 +120,9 @@ export default function Step3Tests() {
   const formatFileSize = (bytes: number) => {
     if (bytes >= 1048576) {
       return (bytes / 1048576).toFixed(1) + " MB";
+    } else {
+      return (bytes / 1024).toFixed(0) + " KB";
     }
-    return (bytes / 1024).toFixed(0) + " KB";
   };
 
   return (
@@ -389,7 +396,11 @@ export default function Step3Tests() {
         isOpen={!!deletingTestId}
         onClose={() => setDeletingTestId(null)}
         onConfirm={() => {
-          if (deletingTestId) removeTestOrder(deletingTestId);
+          if (deletingTestId) {
+            removeTestOrder(deletingTestId);
+          } else {
+            // No action needed
+          }
         }}
         title={translations.confirm_deletion || "Remove Diagnostic Test"}
         description={translations.delete_confirmation_desc || "Are you sure you want to cancel this diagnostic test order from the consultation record?"}

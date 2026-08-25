@@ -373,13 +373,13 @@ abstract class AppLocalizations {
   String get dummy_top_doctors;
 
   // Abstract getter for cardiologist practitioner name
-  String get dummy_dr_sarah_johnson;
+  String get dummy_dr_sara_johnson;
 
   // Abstract getter for cardiologist specialty title
   String get dummy_cardiologist;
 
   // Abstract getter for cardiology practice length details
-  String get dummy_years_experience_sarah;
+  String get dummy_years_experience_sara;
 
   // Abstract getter for neurologist practitioner name
   String get dummy_dr_mohammed_ali;
@@ -1230,8 +1230,56 @@ abstract class AppLocalizations {
   String get notification_details_view_prescription;
   String get notification_details_add_to_calendar;
   String get notification_details_calendar_added;
+
+  // Doctor Profile Screen Strings
+  String get about_doctor;
+  String get experience_label;
+  String get patients_label;
+  String get reviews_label;
+  String get rating_label;
+  String get career_and_education;
+  String get education_tab;
+  String get experience_tab;
+  String get procedures_and_services;
+  String get certificates_label;
+  String get media_gallery_label;
+  String get book_appointment;
+  String get available_today;
+  String get unavailable_today;
+  String get read_more;
+  String get read_less;
+  String get currency_egp;
+  String get years_exp;
+  String get patient_reviews;
+  String get clinic_tour;
+  String get clinic_photo;
+  String get consultation_fee_label;
+  String get see_all;
+  String get verified_patient;
+  String get rating_summary;
+  String get all_reviews;
+
+  // Booking & Time Slot Selection getters
+  String get select_appointment_slot;
+  String get select_clinic_location;
+  String get change_clinic;
+  String get select_date;
+  String get available_time_slots;
+  String get all_slots;
+  String get morning_period;
+  String get evening_period;
+  String get continue_to_confirmation;
+  String get no_available_slots;
+  String get check_next_date;
+  String get release_slot_hold_title;
+  String get release_slot_hold_msg;
+  String get stay_action;
+  String get leave_and_release_action;
+  String get view_on_map;
+  String get reservation_expired;
+  String get reservation_expired_msg;
+  String get select_new_slot;
 }
 
 // Defining a short alias for clean and simple type references
 typedef AppStrings = AppLocalizations;
-

@@ -5,7 +5,7 @@
  * Version        : v1.0.0
  * Dependencies   : None
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-10
+ * Last Modified  : Mustafa Mahmoud - 2026-08-25
  * Description    : Defines constant values used for patient validation,
  *                  PID generation, family member management, National ID
  *                  validation, and profile photo storage rules.
@@ -107,6 +107,11 @@ public static class PatientConstants
     /// The maximum allowed profile photo file size in bytes (5 MB).
     /// </summary>
     public const long ProfilePhotoMaxSizeBytes = 5 * 1024 * 1024;
+
+    /// <summary>
+    /// The maximum page size accepted when listing favorite doctors or clinics.
+    /// </summary>
+    public const int MaxFavoritesPageSize = 50;
 
     /// <summary>
     /// The allowed file extensions for profile photos.

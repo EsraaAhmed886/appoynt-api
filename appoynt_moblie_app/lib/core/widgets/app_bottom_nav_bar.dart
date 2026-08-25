@@ -16,7 +16,7 @@
 // Import routing and tokens barrel export file
 import 'package:appoynt_mobile_app/core/routing/route_export.dart';
 // Import lucide icons package
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 // NavItem definition schema class mapping tab properties
 class AppNavItem {
@@ -244,3 +244,4 @@ class AppBottomNavBar extends StatelessWidget {
 }
 
 // TODO: END OF DUMMY NAV BAR COMPONENT
+

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * File Name      : AdminOptions.cs
  * Author         : Mustafa Mahmoud
  * Created Date   : 22/07/2026

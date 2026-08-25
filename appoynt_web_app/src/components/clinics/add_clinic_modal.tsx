@@ -1,19 +1,12 @@
-/*
- * File Name: add_clinic_modal.tsx
- * Author: shimaa salah
- * Date of Creation: 04/07/2026
- * Version Information: V1.0.0
- * Dependencies:
- *   - react
- *   - lucide-react
- *   - @/context/language_context
- *   - @/types/clinic
- *   - @/services/clinic.service
- *   - @/lib/validators/clinic_validator
- *   - @/components/clinics/*
- * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 15/08/2026]
- * File Description: Multi-step modal component for adding a new clinic record with step navigation locks and centralized validation.
+/**
+ * File Name : add_clinic_modal.tsx
+ * Author : shimaa salah
+ * Created Date : 2026-07-04
+ * Version : v1.1.0
+ * Dependencies : react, lucide-react, @/context/language_context, @/types/clinic, @/services/clinic.service, @/lib/validators/clinic_validator
+ * Contributors : [shimaa salah]
+ * Last Modified : shimaa salah - 2026-08-25
+ * Description : Multi-step modal component for adding a new clinic record with step navigation locks and centralized validation.
  */
 
 "use client";
@@ -78,8 +71,8 @@ const initial_form_state: ClinicFormState = {
   schedule_list: [],
   break_list: [],
   assigned_receptionists: [],
-  appointment_duration: "30 Minutes",
-  max_advance_booking: "30 Days",
+  appointment_duration: "",
+  max_advance_booking: "",
   is_dirty: false,
   is_success_open: false,
   is_unsaved_modal_open: false,

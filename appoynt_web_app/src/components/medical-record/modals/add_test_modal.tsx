@@ -12,7 +12,7 @@
  *   - @/context/language_context
  *   - @/components/ui/custom_select_dropdown
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Accessible modal dialog for ordering diagnostic laboratory and radiology tests with test catalog search, category filter, priority radio triage pills (Routine, Urgent, STAT), and instructions.
  */
 
@@ -80,7 +80,11 @@ export default function AddTestModal({
         searchQuery,
         selectedCategory
       );
-      if (active) setTestResults(results);
+      if (active) {
+        setTestResults(results);
+      } else {
+        // No action needed
+      }
     };
     fetchTests();
     return () => {
@@ -96,6 +100,8 @@ export default function AddTestModal({
       setPriority("Routine");
       setClinicalNotes("");
       setFormError("");
+    } else {
+      // No action needed
     }
   }, [isOpen]);
 
@@ -104,6 +110,8 @@ export default function AddTestModal({
     if (!selectedTest) {
       setFormError(translations.no_tests_ordered || "Please select a diagnostic test from the catalog");
       return;
+    } else {
+      // Valid test selected
     }
 
     const newTest: TestOrderItem = {
@@ -122,7 +130,11 @@ export default function AddTestModal({
     onClose();
   };
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  } else {
+    // Render modal
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200 text-slate-900 dark:text-slate-100">

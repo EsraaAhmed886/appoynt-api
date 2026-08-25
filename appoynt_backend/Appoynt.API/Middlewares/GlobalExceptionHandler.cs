@@ -5,9 +5,10 @@
  * Version        : v1.0.0
  * Dependencies   : Microsoft.AspNetCore.Diagnostics, ProblemDetails, IHostEnvironment
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 27/07/2026
+ * Last Modified  : Mustafa Mahmoud - 2026-08-25
  * Description    : Provides centralized, structured RFC 7807 ProblemDetails
  *                  exception handling across the HTTP request pipeline.
+ *                  Raw exception details are disclosed only in Development.
  */
 
 using System.Diagnostics;
@@ -84,32 +85,47 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
 
     /// <summary>
     /// Maps an unhandled exception to an HTTP status code, title, and detailed message.
+    /// Raw exception messages are exposed only in Development; all other environments
+    /// receive a generic, non-revealing detail to avoid information disclosure.
     /// </summary>
     private (int StatusCode, string Title, string Detail) MapException(Exception exception)
     {
+        // Determine whether raw exception details may be disclosed to the caller.
+        bool isDevelopment = _environment.IsDevelopment();
+
         return exception switch
         {
             UnauthorizedAccessException => (
                 StatusCodes.Status401Unauthorized,
                 "Unauthorized",
-                exception.Message),
+                isDevelopment ? exception.Message : GenericClientErrorDetail),
 
             KeyNotFoundException => (
                 StatusCodes.Status404NotFound,
                 "Resource Not Found",
-                exception.Message),
+                isDevelopment ? exception.Message : GenericNotFoundErrorDetail),
 
             ArgumentException or InvalidOperationException => (
                 StatusCodes.Status400BadRequest,
                 "Bad Request",
-                exception.Message),
+                isDevelopment ? exception.Message : GenericClientErrorDetail),
 
             _ => (
                 StatusCodes.Status500InternalServerError,
                 "An unexpected error occurred",
-                _environment.IsDevelopment()
+                isDevelopment
                     ? exception.Message
                     : "An unexpected internal server error occurred while processing your request.")
         };
     }
+
+    /// <summary>
+    /// Generic detail used for client-error classes outside Development.
+    /// </summary>
+    private const string GenericClientErrorDetail = "The request could not be processed.";
+
+    /// <summary>
+    /// Generic detail used for not-found error classes outside Development.
+    /// </summary>
+    private const string GenericNotFoundErrorDetail = "The requested resource was not found.";
 }

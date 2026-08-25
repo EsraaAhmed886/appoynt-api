@@ -11,7 +11,7 @@
  *   - @/context/language_context
  *   - @/components/ui/custom_select_dropdown
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Accessible modal dialog for editing existing prescription medications with quick clinical reference bar, pre-filled form fields, dosage/duration adjustments, and update dispatch.
  */
 
@@ -61,31 +61,47 @@ export default function EditMedicationModal({
       setRoute(medication.route);
       setInstructions(medication.instructions || "");
       setFormErrors({});
+    } else {
+      // No action needed
     }
   }, [medication, isOpen]);
 
   const handleUpdate = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!medication) return;
+    if (!medication) {
+      return;
+    } else {
+      // Proceed with update
+    }
 
     const errors: Record<string, string> = {};
     if (!medName.trim()) {
       errors.medName = translations.medication_name || "Medication name is required";
+    } else {
+      // No action needed
     }
     const numDosage = Number(dosageAmount);
     if (isNaN(numDosage) || numDosage <= 0) {
       errors.dosageAmount = translations.dosage || "Valid dosage is required";
+    } else {
+      // No action needed
     }
     if (!isOngoing) {
       const numDur = Number(durationValue);
       if (isNaN(numDur) || numDur <= 0) {
         errors.durationValue = translations.duration || "Valid duration is required";
+      } else {
+        // No action needed
       }
+    } else {
+      // No action needed
     }
 
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
       return;
+    } else {
+      // Validation passed
     }
 
     const updated: MedicationItem = {
@@ -106,7 +122,11 @@ export default function EditMedicationModal({
     onClose();
   };
 
-  if (!isOpen || !medication) return null;
+  if (!isOpen || !medication) {
+    return null;
+  } else {
+    // Render modal
+  }
 
   const frequencyOptions: DropdownOption[] = [
     { value: "Once daily", label: translations.freq_once_daily || "Once daily" },

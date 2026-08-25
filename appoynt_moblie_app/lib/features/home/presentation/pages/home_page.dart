@@ -24,6 +24,10 @@ import 'package:appoynt_mobile_app/features/profile/presentation/pages/profile_p
 import 'package:appoynt_mobile_app/features/favorites/presentation/pages/favorites_page.dart';
 // Importing NotificationsPage widget screen definition
 import 'package:appoynt_mobile_app/features/notifications/presentation/pages/notifications_page.dart';
+// Importing AppointmentsPage widget screen definition
+import 'package:appoynt_mobile_app/features/appointments/presentation/pages/appointments_page.dart';
+// Importing AskAiFab widget definition
+import 'package:appoynt_mobile_app/features/appointments/presentation/widgets/ask_ai_fab.dart';
 
 // Defining the HomePage stateful widget representation
 class HomePage extends StatefulWidget {
@@ -137,28 +141,46 @@ class _HomePageState extends State<HomePage> {
                   }
                 },
               )
-            : 3 == _selected_index
-                // Instantiate the Favorites tab widget
-                ? const FavoritesPage()
-                : 4 == _selected_index
-                    // Instantiate the Profile tab wrapped in its Cubit state controller
-                    ? BlocProvider<ProfileCubit>(
-                        // Create Cubit state controller instance
-                        create: (context) {
-                          // Return new ProfileCubit
-                          return ProfileCubit();
-                        },
-                        // Renders the ProfilePage main screen widget
-                        child: const ProfilePage(),
-                      )
-                    // Construction/Coming soon tab representation for other items
-                    : _ComingSoonTab(
-                        // Localized category label mapping active selection
-                        label: 1 == _selected_index
-                            ? localizations.dummy_appointments_tab_label
-                            : localizations.dummy_search_tab_label,
-                      ),
+            : 1 == _selected_index
+                // Instantiate the Appointments tab widget
+                ? const AppointmentsPage()
+                : 3 == _selected_index
+                    // Instantiate the Favorites tab widget
+                    ? const FavoritesPage()
+                    : 4 == _selected_index
+                        // Instantiate the Profile tab wrapped in its Cubit state controller
+                        ? BlocProvider<ProfileCubit>(
+                            // Create Cubit state controller instance
+                            create: (context) {
+                              // Return new ProfileCubit
+                              return ProfileCubit();
+                            },
+                            // Renders the ProfilePage main screen widget
+                            child: const ProfilePage(),
+                          )
+                        // Construction/Coming soon tab representation for other items
+                        : _ComingSoonTab(
+                            // Localized category label mapping active selection
+                            label: localizations.dummy_search_tab_label,
+                          ),
       ),
+      // Global floating AI assistant action button
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 16.0, right: 8.0),
+        child: AskAiFab(
+          onTap: () {
+            // Open AI Assistant Chat Screen / Modal BottomSheet
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Opening AI Medical Assistant...'),
+                duration: Duration(seconds: 1),
+              ),
+            );
+          },
+        ),
+      ),
+      // Floating button location pinned to the end float
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 
@@ -822,16 +844,16 @@ class _HomeTab extends StatelessWidget {
             // Height spacer value
             height: AppSpacing.dummy_search_bar_padding_left,
           ),
-          // Doctor card displaying Dr. Sarah Johnson details
+          // Doctor card displaying Dr. Sara Johnson details
           _DoctorCard(
             // Doctor name label
-            name: localizations.dummy_dr_sarah_johnson,
+            name: localizations.dummy_dr_sara_johnson,
             // Specialty label description
             specialty: localizations.dummy_cardiologist,
             // Rating score value string
             rating: '4.9',
             // Practice experience length details
-            experience: localizations.dummy_years_experience_sarah,
+            experience: localizations.dummy_years_experience_sara,
             // Accent color matching category chip
             color: AppColors.dummy_custom_red,
           ),
@@ -1190,26 +1212,33 @@ class _DoctorCard extends StatelessWidget {
     // Resolve localized strings dictionary reference
     final AppLocalizations localizations = AppLocalizations.of(context);
 
-    // Return container applying border and backgrounds styling details
-    return Container(
-      // Padding inside card boundary lines
-      padding: const EdgeInsets.all(
-        // Padding value using dummy constants token
-        AppSpacing.dummy_doctor_card_padding,
-      ),
-      // Card decorations style mappings
-      decoration: BoxDecoration(
-        // Dynamic background surface color
-        color: is_dark
-            ? AppColors.surface_dark
-            : AppColors.background_light,
-        // Rounded container corners configurations
-        borderRadius: BorderRadius.circular(
-          // Radius token value
-          AppSpacing.dummy_doctor_card_radius,
+    // Return gesture detector wrapping container applying border and backgrounds styling details
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).pushNamed(
+          Routes.doctor_profile,
+          arguments: 'doc_101',
+        );
+      },
+      child: Container(
+        // Padding inside card boundary lines
+        padding: const EdgeInsets.all(
+          // Padding value using dummy constants token
+          AppSpacing.dummy_doctor_card_padding,
         ),
-        // Border line boundary decoration options
-        border: Border.all(
+        // Card decorations style mappings
+        decoration: BoxDecoration(
+          // Dynamic background surface color
+          color: is_dark
+              ? AppColors.surface_dark
+              : AppColors.background_light,
+          // Rounded container corners configurations
+          borderRadius: BorderRadius.circular(
+            // Radius token value
+            AppSpacing.dummy_doctor_card_radius,
+          ),
+          // Border line boundary decoration options
+          border: Border.all(
           // Border outline colors matching dividers
           color:
               is_dark ? AppColors.border_dark : AppColors.border_light,
@@ -1367,41 +1396,50 @@ class _DoctorCard extends StatelessWidget {
             ),
           ),
           // Book trigger button container mimicking click interaction
-          Container(
-            // Padding offset inside button boundary lines
-            padding: const EdgeInsets.symmetric(
-              // Horizontal padding value
-              horizontal: AppSpacing.dummy_doctor_card_btn_padding_horizontal,
-              // Vertical padding value
-              vertical: AppSpacing.dummy_doctor_card_btn_padding_vertical,
-            ),
-            // Background decorations config parameters
-            decoration: BoxDecoration(
-              // Solid brand primary color fill
-              color: AppColors.primary_color,
-              // Rounded card corners shape values
-              borderRadius: BorderRadius.circular(
-                // Radius token value
-                AppSpacing.dummy_doctor_card_btn_radius,
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).pushNamed(
+                Routes.doctor_profile,
+                arguments: 'doc_101',
+              );
+            },
+            child: Container(
+              // Padding offset inside button boundary lines
+              padding: const EdgeInsets.symmetric(
+                // Horizontal padding value
+                horizontal: AppSpacing.dummy_doctor_card_btn_padding_horizontal,
+                // Vertical padding value
+                vertical: AppSpacing.dummy_doctor_card_btn_padding_vertical,
               ),
-            ),
-            // Action label text representation
-            child: Text(
-              // Localized action button label string
-              localizations.dummy_book,
-              // Label text styling parameters options
-              style: const TextStyle(
-                // White text color for contrast representation
-                color: AppColors.white,
-                // Small font size
-                fontSize: AppSpacing.font_size_label,
-                // Bold text weight representation
-                fontWeight: FontWeight.w700,
+              // Background decorations config parameters
+              decoration: BoxDecoration(
+                // Solid brand primary color fill
+                color: AppColors.primary_color,
+                // Rounded card corners shape values
+                borderRadius: BorderRadius.circular(
+                  // Radius token value
+                  AppSpacing.dummy_doctor_card_btn_radius,
+                ),
+              ),
+              // Action label text representation
+              child: Text(
+                // Localized action button label string
+                localizations.dummy_book,
+                // Label text styling parameters options
+                style: const TextStyle(
+                  // White text color for contrast representation
+                  color: AppColors.white,
+                  // Small font size
+                  fontSize: AppSpacing.font_size_label,
+                  // Bold text weight representation
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
           ),
         ],
       ),
+    ),
     );
   }
 }

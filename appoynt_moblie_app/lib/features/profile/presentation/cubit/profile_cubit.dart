@@ -10,7 +10,7 @@
  *   package:appoynt_mobile_app/features/profile/domain/entities/test_result.dart,
  *   package:image_picker/image_picker.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 22/08/2026]
  * File Description: Implements the Patient Profile Cubit orchestrating UI updates,
  *   validations, and saves. V1.1.0 adds pick_and_upload_avatar() for camera/gallery
  *   image selection and upload via POST /api/patients/profile-photo.
@@ -1021,6 +1021,8 @@ class ProfileCubit extends Cubit<ProfileState> {
       updated_profile = state.profile.copyWith(medication_allergies: values);
     } else if ('chronic_conditions' == field) {
       updated_profile = state.profile.copyWith(chronic_conditions: values);
+    } else {
+      // No action needed
     }
     emit(
       state.copyWith(

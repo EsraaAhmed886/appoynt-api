@@ -19,7 +19,7 @@
  *   - @/components/medical_record/views/finalized_record_details_view
  *   - @/context/language_context
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Master Next.js dynamic App Router entry point (/appointments/[appointmentId]/medical-record) orchestrating layout shells, scaled clinical workflow steppers, patient summaries, and history tabs driven naturally by doctor actions with zero mock UI bars.
  */
 
@@ -72,6 +72,8 @@ function ClinicalConsultationContent({
   if ("FINALIZED" === record.status) {
     onViewFinalized();
     return null;
+  } else {
+    // No action needed
   }
 
   if ("NOT_STARTED" === record.status) {
@@ -98,6 +100,8 @@ function ClinicalConsultationContent({
         </button>
       </div>
     );
+  } else {
+    // No action needed
   }
 
   return (
@@ -150,6 +154,8 @@ export default function MedicalRecordPage({ params }: PageProps) {
         </div>
       </div>
     );
+  } else {
+    // No action needed
   }
 
   if (isError || !initialRecord) {
@@ -173,6 +179,8 @@ export default function MedicalRecordPage({ params }: PageProps) {
         </div>
       </div>
     );
+  } else {
+    // No action needed
   }
 
   return (

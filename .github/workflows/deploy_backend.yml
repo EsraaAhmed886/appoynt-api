@@ -1,0 +1,62 @@
+name: Deploy Backend to MonsterASP.NET
+
+on:
+  push:
+    branches:
+      - master_integration
+      - main
+      - master
+    paths:
+      - 'appoynt_backend/**'
+  workflow_dispatch:
+
+jobs:
+  build_and_deploy:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            9.0.x
+            10.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore appoynt_backend/Appoynt.API/Appoynt.API.csproj
+
+      - name: Build project
+        run: dotnet build appoynt_backend/Appoynt.API/Appoynt.API.csproj --configuration Release --no-restore
+
+      - name: Publish project
+        run: dotnet publish appoynt_backend/Appoynt.API/Appoynt.API.csproj --configuration Release --output ./publish --runtime win-x86
+
+      # خطوة جديدة: وضع السيرفر في وضع الصيانة لفك الـ Lock عن ملفات الـ DLL
+      - name: Take App Offline
+        shell: bash
+        run: |
+          echo "<html><body style='text-align:center; margin-top:50px; font-family:sans-serif;'><h1>System is updating... Please wait a moment.</h1></body></html>" > app_offline.htm
+          curl -T app_offline.htm ftp://${{ secrets.FTP_SERVER }}/${{ secrets.FTP_REMOTE_PATH }}/app_offline.htm --user "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}"
+          sleep 8
+
+      # خطوة الرفع الأساسية بتاعتك (هتشتغل بنجاح دلوقتي لأن الملفات متحررة)
+      - name: Deploy via FTP to MonsterASP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./publish/
+          server-dir: ${{ secrets.FTP_REMOTE_PATH }}/
+          protocol: ftp
+          port: 21
+
+      # خطوة جديدة: مسح ملف الصيانة عشان السيرفر يرجع يشتغل (هتتنفذ حتى لو حصل إيرور في الخطوات اللي قبلها بفضل if: always)
+      - name: Bring App Online
+        if: always()
+        shell: bash
+        run: |
+          curl -Q "CWD ${{ secrets.FTP_REMOTE_PATH }}" -Q "DELE app_offline.htm" ftp://${{ secrets.FTP_SERVER }}/ --user "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}" || true

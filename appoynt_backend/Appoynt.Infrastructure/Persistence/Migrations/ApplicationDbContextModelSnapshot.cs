@@ -191,7 +191,7 @@ namespace Appoynt.Infrastructure.Persistence.Migrations
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+                        .HasFilter("[DeletedAt] IS NULL");
 
                     b.HasIndex("PhoneNumber")
                         .IsUnique()
@@ -201,6 +201,74 @@ namespace Appoynt.Infrastructure.Persistence.Migrations
                     b.HasIndex("UpdatedById");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Appoynt.Domain.Entities.AppointmentSlot", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ClinicId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("DeletedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<TimeOnly>("EndTime")
+                        .HasColumnType("time");
+
+                    b.Property<DateTime?>("ExpiresAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("HeldByUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<TimeOnly>("StartTime")
+                        .HasColumnType("time");
+
+                    b.Property<int>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("DeletedById");
+
+                    b.HasIndex("UpdatedById");
+
+                    b.HasIndex("HeldByUserId", "Status")
+                        .HasDatabaseName("IX_AppointmentSlots_HeldByUserId_Status")
+                        .HasFilter("[HeldByUserId] IS NOT NULL");
+
+                    b.HasIndex("Status", "UpdatedAt")
+                        .HasDatabaseName("IX_AppointmentSlots_Status_UpdatedAt");
+
+                    b.HasIndex("ClinicId", "Date", "Status")
+                        .HasDatabaseName("IX_AppointmentSlots_ClinicId_Date_Status");
+
+                    b.ToTable("AppointmentSlots", (string)null);
                 });
 
             modelBuilder.Entity("Appoynt.Domain.Entities.AuditLog", b =>
@@ -246,6 +314,316 @@ namespace Appoynt.Infrastructure.Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("AuditLogs", (string)null);
+                });
+
+            modelBuilder.Entity("Appoynt.Domain.Entities.City", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("DeletedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("GovernorateId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("NameAr")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("NameEn")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("DeletedById");
+
+                    b.HasIndex("UpdatedById");
+
+                    b.HasIndex("GovernorateId", "NameAr")
+                        .IsUnique()
+                        .HasDatabaseName("UX_Cities_GovernorateId_NameAr")
+                        .HasFilter("DeletedAt IS NULL");
+
+                    b.ToTable("Cities", (string)null);
+                });
+
+            modelBuilder.Entity("Appoynt.Domain.Entities.Clinic", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("AppointmentDurationMinutes")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("CityId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("ConsultationFee")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("DeletedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("DetailedAddress")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<Guid>("DoctorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("GovernorateId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDefault")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<double?>("Latitude")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Longitude")
+                        .HasColumnType("float");
+
+                    b.Property<int>("MaxAdvanceBookingDays")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CityId");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("DeletedById");
+
+                    b.HasIndex("DoctorId")
+                        .HasDatabaseName("IX_Clinics_DoctorId");
+
+                    b.HasIndex("GovernorateId");
+
+                    b.HasIndex("UpdatedById");
+
+                    b.HasIndex("DoctorId", "IsDefault")
+                        .IsUnique()
+                        .HasDatabaseName("IX_Clinics_DoctorId_IsDefault_Unique")
+                        .HasFilter("[IsDefault] = 1");
+
+                    b.ToTable("Clinics", (string)null);
+                });
+
+            modelBuilder.Entity("Appoynt.Domain.Entities.ClinicBreak", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("DeletedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<TimeOnly>("EndTime")
+                        .HasColumnType("time");
+
+                    b.Property<TimeOnly>("StartTime")
+                        .HasColumnType("time");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("WorkingPeriodId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("DeletedById");
+
+                    b.HasIndex("UpdatedById");
+
+                    b.HasIndex("WorkingPeriodId");
+
+                    b.ToTable("ClinicBreaks", (string)null);
+                });
+
+            modelBuilder.Entity("Appoynt.Domain.Entities.ClinicPhoneNumber", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ClinicId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("DeletedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Label")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("DeletedById");
+
+                    b.HasIndex("UpdatedById");
+
+                    b.HasIndex("ClinicId", "PhoneNumber")
+                        .IsUnique()
+                        .HasDatabaseName("UX_ClinicPhoneNumbers_ClinicId_PhoneNumber")
+                        .HasFilter("DeletedAt IS NULL");
+
+                    b.ToTable("ClinicPhoneNumbers", (string)null);
+                });
+
+            modelBuilder.Entity("Appoynt.Domain.Entities.ClinicReceptionist", b =>
+                {
+                    b.Property<Guid>("ClinicId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ReceptionistId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ClinicId", "ReceptionistId");
+
+                    b.HasIndex("ReceptionistId");
+
+                    b.ToTable("ClinicReceptionists", (string)null);
+                });
+
+            modelBuilder.Entity("Appoynt.Domain.Entities.ClinicWorkingPeriod", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ClinicId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("DayOfWeek")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("DeletedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<TimeOnly>("EndTime")
+                        .HasColumnType("time");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<TimeOnly>("StartTime")
+                        .HasColumnType("time");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("DeletedById");
+
+                    b.HasIndex("UpdatedById");
+
+                    b.HasIndex("ClinicId", "DayOfWeek")
+                        .HasDatabaseName("IX_ClinicWorkingPeriods_ClinicId_DayOfWeek");
+
+                    b.ToTable("ClinicWorkingPeriods", (string)null);
                 });
 
             modelBuilder.Entity("Appoynt.Domain.Entities.Doctor", b =>
@@ -326,6 +704,9 @@ namespace Appoynt.Infrastructure.Persistence.Migrations
 
                     b.Property<Guid>("DoctorId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsVerified")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Label")
                         .IsRequired()
@@ -436,6 +817,61 @@ namespace Appoynt.Infrastructure.Persistence.Migrations
                     b.HasIndex("UpdatedById");
 
                     b.ToTable("FamilyMembers", (string)null);
+                });
+
+            modelBuilder.Entity("Appoynt.Domain.Entities.Governorate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("DeletedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("NameAr")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("NameEn")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("DeletedById");
+
+                    b.HasIndex("NameAr")
+                        .IsUnique()
+                        .HasDatabaseName("UX_Governorates_NameAr")
+                        .HasFilter("DeletedAt IS NULL");
+
+                    b.HasIndex("NameEn")
+                        .IsUnique()
+                        .HasDatabaseName("UX_Governorates_NameEn")
+                        .HasFilter("DeletedAt IS NULL");
+
+                    b.HasIndex("UpdatedById");
+
+                    b.ToTable("Governorates", (string)null);
                 });
 
             modelBuilder.Entity("Appoynt.Domain.Entities.OtpChallenge", b =>
@@ -583,6 +1019,44 @@ namespace Appoynt.Infrastructure.Persistence.Migrations
                         .HasDatabaseName("UX_Patients_UserId");
 
                     b.ToTable("Patients", (string)null);
+                });
+
+            modelBuilder.Entity("Appoynt.Domain.Entities.PatientFavoriteClinic", b =>
+                {
+                    b.Property<Guid>("PatientId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ClinicId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("AddedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("PatientId", "ClinicId");
+
+                    b.HasIndex("ClinicId")
+                        .HasDatabaseName("IX_PatientFavoriteClinics_ClinicId");
+
+                    b.ToTable("PatientFavoriteClinics", (string)null);
+                });
+
+            modelBuilder.Entity("Appoynt.Domain.Entities.PatientFavoriteDoctor", b =>
+                {
+                    b.Property<Guid>("PatientId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("DoctorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("AddedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("PatientId", "DoctorId");
+
+                    b.HasIndex("DoctorId")
+                        .HasDatabaseName("IX_PatientFavoriteDoctors_DoctorId");
+
+                    b.ToTable("PatientFavoriteDoctors", (string)null);
                 });
 
             modelBuilder.Entity("Appoynt.Domain.Entities.Receptionist", b =>
@@ -953,6 +1427,238 @@ namespace Appoynt.Infrastructure.Persistence.Migrations
                     b.Navigation("UpdatedBy");
                 });
 
+            modelBuilder.Entity("Appoynt.Domain.Entities.AppointmentSlot", b =>
+                {
+                    b.HasOne("Appoynt.Domain.Entities.Clinic", "Clinic")
+                        .WithMany("Slots")
+                        .HasForeignKey("ClinicId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Appoynt.Domain.Entities.ApplicationUser", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Appoynt.Domain.Entities.ApplicationUser", "DeletedBy")
+                        .WithMany()
+                        .HasForeignKey("DeletedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Appoynt.Domain.Entities.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("HeldByUserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Appoynt.Domain.Entities.ApplicationUser", "UpdatedBy")
+                        .WithMany()
+                        .HasForeignKey("UpdatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Clinic");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("DeletedBy");
+
+                    b.Navigation("UpdatedBy");
+                });
+
+            modelBuilder.Entity("Appoynt.Domain.Entities.City", b =>
+                {
+                    b.HasOne("Appoynt.Domain.Entities.ApplicationUser", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Appoynt.Domain.Entities.ApplicationUser", "DeletedBy")
+                        .WithMany()
+                        .HasForeignKey("DeletedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Appoynt.Domain.Entities.Governorate", "Governorate")
+                        .WithMany("Cities")
+                        .HasForeignKey("GovernorateId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Appoynt.Domain.Entities.ApplicationUser", "UpdatedBy")
+                        .WithMany()
+                        .HasForeignKey("UpdatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("DeletedBy");
+
+                    b.Navigation("Governorate");
+
+                    b.Navigation("UpdatedBy");
+                });
+
+            modelBuilder.Entity("Appoynt.Domain.Entities.Clinic", b =>
+                {
+                    b.HasOne("Appoynt.Domain.Entities.City", "City")
+                        .WithMany()
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Appoynt.Domain.Entities.ApplicationUser", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Appoynt.Domain.Entities.ApplicationUser", "DeletedBy")
+                        .WithMany()
+                        .HasForeignKey("DeletedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Appoynt.Domain.Entities.Doctor", "Doctor")
+                        .WithMany("Clinics")
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Appoynt.Domain.Entities.Governorate", "Governorate")
+                        .WithMany()
+                        .HasForeignKey("GovernorateId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Appoynt.Domain.Entities.ApplicationUser", "UpdatedBy")
+                        .WithMany()
+                        .HasForeignKey("UpdatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("City");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("DeletedBy");
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Governorate");
+
+                    b.Navigation("UpdatedBy");
+                });
+
+            modelBuilder.Entity("Appoynt.Domain.Entities.ClinicBreak", b =>
+                {
+                    b.HasOne("Appoynt.Domain.Entities.ApplicationUser", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Appoynt.Domain.Entities.ApplicationUser", "DeletedBy")
+                        .WithMany()
+                        .HasForeignKey("DeletedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Appoynt.Domain.Entities.ApplicationUser", "UpdatedBy")
+                        .WithMany()
+                        .HasForeignKey("UpdatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Appoynt.Domain.Entities.ClinicWorkingPeriod", "WorkingPeriod")
+                        .WithMany("Breaks")
+                        .HasForeignKey("WorkingPeriodId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("DeletedBy");
+
+                    b.Navigation("UpdatedBy");
+
+                    b.Navigation("WorkingPeriod");
+                });
+
+            modelBuilder.Entity("Appoynt.Domain.Entities.ClinicPhoneNumber", b =>
+                {
+                    b.HasOne("Appoynt.Domain.Entities.Clinic", "Clinic")
+                        .WithMany("PhoneNumbers")
+                        .HasForeignKey("ClinicId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Appoynt.Domain.Entities.ApplicationUser", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Appoynt.Domain.Entities.ApplicationUser", "DeletedBy")
+                        .WithMany()
+                        .HasForeignKey("DeletedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Appoynt.Domain.Entities.ApplicationUser", "UpdatedBy")
+                        .WithMany()
+                        .HasForeignKey("UpdatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Clinic");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("DeletedBy");
+
+                    b.Navigation("UpdatedBy");
+                });
+
+            modelBuilder.Entity("Appoynt.Domain.Entities.ClinicReceptionist", b =>
+                {
+                    b.HasOne("Appoynt.Domain.Entities.Clinic", "Clinic")
+                        .WithMany("ClinicReceptionists")
+                        .HasForeignKey("ClinicId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Appoynt.Domain.Entities.Receptionist", "Receptionist")
+                        .WithMany("ClinicReceptionists")
+                        .HasForeignKey("ReceptionistId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Clinic");
+
+                    b.Navigation("Receptionist");
+                });
+
+            modelBuilder.Entity("Appoynt.Domain.Entities.ClinicWorkingPeriod", b =>
+                {
+                    b.HasOne("Appoynt.Domain.Entities.Clinic", "Clinic")
+                        .WithMany("WorkingPeriods")
+                        .HasForeignKey("ClinicId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Appoynt.Domain.Entities.ApplicationUser", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Appoynt.Domain.Entities.ApplicationUser", "DeletedBy")
+                        .WithMany()
+                        .HasForeignKey("DeletedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Appoynt.Domain.Entities.ApplicationUser", "UpdatedBy")
+                        .WithMany()
+                        .HasForeignKey("UpdatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Clinic");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("DeletedBy");
+
+                    b.Navigation("UpdatedBy");
+                });
+
             modelBuilder.Entity("Appoynt.Domain.Entities.Doctor", b =>
                 {
                     b.HasOne("Appoynt.Domain.Entities.ApplicationUser", "CreatedBy")
@@ -1068,6 +1774,30 @@ namespace Appoynt.Infrastructure.Persistence.Migrations
                     b.Navigation("UpdatedBy");
                 });
 
+            modelBuilder.Entity("Appoynt.Domain.Entities.Governorate", b =>
+                {
+                    b.HasOne("Appoynt.Domain.Entities.ApplicationUser", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Appoynt.Domain.Entities.ApplicationUser", "DeletedBy")
+                        .WithMany()
+                        .HasForeignKey("DeletedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Appoynt.Domain.Entities.ApplicationUser", "UpdatedBy")
+                        .WithMany()
+                        .HasForeignKey("UpdatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("DeletedBy");
+
+                    b.Navigation("UpdatedBy");
+                });
+
             modelBuilder.Entity("Appoynt.Domain.Entities.OtpChallenge", b =>
                 {
                     b.HasOne("Appoynt.Domain.Entities.ApplicationUser", "CreatedBy")
@@ -1130,6 +1860,44 @@ namespace Appoynt.Infrastructure.Persistence.Migrations
                     b.Navigation("UpdatedBy");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Appoynt.Domain.Entities.PatientFavoriteClinic", b =>
+                {
+                    b.HasOne("Appoynt.Domain.Entities.Clinic", "Clinic")
+                        .WithMany("FavoritedByPatients")
+                        .HasForeignKey("ClinicId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Appoynt.Domain.Entities.Patient", "Patient")
+                        .WithMany("FavoriteClinics")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Clinic");
+
+                    b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("Appoynt.Domain.Entities.PatientFavoriteDoctor", b =>
+                {
+                    b.HasOne("Appoynt.Domain.Entities.Doctor", "Doctor")
+                        .WithMany("FavoritedByPatients")
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Appoynt.Domain.Entities.Patient", "Patient")
+                        .WithMany("FavoriteDoctors")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Patient");
                 });
 
             modelBuilder.Entity("Appoynt.Domain.Entities.Receptionist", b =>
@@ -1292,18 +2060,54 @@ namespace Appoynt.Infrastructure.Persistence.Migrations
                     b.Navigation("RefreshTokens");
                 });
 
+            modelBuilder.Entity("Appoynt.Domain.Entities.Clinic", b =>
+                {
+                    b.Navigation("ClinicReceptionists");
+
+                    b.Navigation("FavoritedByPatients");
+
+                    b.Navigation("PhoneNumbers");
+
+                    b.Navigation("Slots");
+
+                    b.Navigation("WorkingPeriods");
+                });
+
+            modelBuilder.Entity("Appoynt.Domain.Entities.ClinicWorkingPeriod", b =>
+                {
+                    b.Navigation("Breaks");
+                });
+
             modelBuilder.Entity("Appoynt.Domain.Entities.Doctor", b =>
                 {
+                    b.Navigation("Clinics");
+
                     b.Navigation("DoctorSpecializations");
+
+                    b.Navigation("FavoritedByPatients");
 
                     b.Navigation("PhoneNumbers");
 
                     b.Navigation("Receptionists");
                 });
 
+            modelBuilder.Entity("Appoynt.Domain.Entities.Governorate", b =>
+                {
+                    b.Navigation("Cities");
+                });
+
             modelBuilder.Entity("Appoynt.Domain.Entities.Patient", b =>
                 {
                     b.Navigation("FamilyMembers");
+
+                    b.Navigation("FavoriteClinics");
+
+                    b.Navigation("FavoriteDoctors");
+                });
+
+            modelBuilder.Entity("Appoynt.Domain.Entities.Receptionist", b =>
+                {
+                    b.Navigation("ClinicReceptionists");
                 });
 
             modelBuilder.Entity("Appoynt.Domain.Entities.Specialization", b =>

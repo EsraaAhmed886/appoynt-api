@@ -154,4 +154,62 @@ public sealed class AuthenticationControllerTests : IClassFixture<WebApplication
         // Should return BadRequest because OTP is active (cooldown not expired)
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
+
+    [Fact]
+    public async Task Register_ShouldSucceed_WhenEmailAndPhoneReusedAfterSoftDelete()
+    {
+        HttpClient client = _factory.CreateClient();
+
+        // 1. Register a patient
+        var regRequest = new RegisterRequest
+        {
+            FirstName = "Deleted",
+            LastName = "Patient",
+            Email = "reusable.patient@example.com",
+            PhoneNumber = "01088887777",
+            Password = "P@ssword123",
+            ConfirmPassword = "P@ssword123"
+        };
+
+        HttpResponseMessage regResponse = await client.PostAsJsonAsync("/api/auth/register", regRequest);
+        regResponse.StatusCode.Should().Be(HttpStatusCode.Created);
+        var regBody = await regResponse.Content.ReadFromJsonAsync<RegisterResponse>();
+        regBody.Should().NotBeNull();
+        regBody!.UserId.Should().NotBeEmpty();
+
+        // 2. Admin logs in
+        var loginAdmin = new LoginRequest
+        {
+            Identifier = "admin@appoynt.com",
+            Password = "P@ssword123!"
+        };
+        var loginResponse = await client.PostAsJsonAsync("/api/auth/login", loginAdmin);
+        var loginBody = await loginResponse.Content.ReadFromJsonAsync<LoginResponse>();
+
+        // 3. Admin soft-deletes the patient
+        var deleteRequest = new HttpRequestMessage(HttpMethod.Delete, $"/api/users/{regBody.UserId}");
+        deleteRequest.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", loginBody!.AccessToken);
+        var deleteResponse = await client.SendAsync(deleteRequest);
+        deleteResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
+
+        // 4. Re-register with the EXACT SAME email and phone number
+        var secondRegRequest = new RegisterRequest
+        {
+            FirstName = "Recreated",
+            LastName = "Patient",
+            Email = "reusable.patient@example.com",
+            PhoneNumber = "01088887777",
+            Password = "P@ssword123",
+            ConfirmPassword = "P@ssword123"
+        };
+
+        HttpResponseMessage secondRegResponse = await client.PostAsJsonAsync("/api/auth/register", secondRegRequest);
+
+        // Assert
+        secondRegResponse.StatusCode.Should().Be(HttpStatusCode.Created);
+        var secondRegBody = await secondRegResponse.Content.ReadFromJsonAsync<RegisterResponse>();
+        secondRegBody.Should().NotBeNull();
+        secondRegBody!.UserId.Should().NotBe(regBody.UserId);
+        secondRegBody.ChallengeId.Should().NotBeEmpty();
+    }
 }

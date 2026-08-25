@@ -5,8 +5,8 @@
  * Version        : v1.0.0
  * Dependencies   : ASP.NET Core MVC, IProfileImageService, ICurrentUserService, ApplicationDbContext, RoleConstants, ProfileImageErrorCodes
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-14
- * Description    : Exposes REST API endpoints for doctor profile photo upload, retrieval, and deletion operations.
+ * Last Modified  : Mustafa Mahmoud - 2026-08-23
+ * Description    : Exposes REST API endpoints for doctor profile management, photo operations, and phone numbers.
  */
 
 using System;
@@ -18,6 +18,8 @@ using Appoynt.Application.Common.Models;
 using Appoynt.Domain.Common.Constants;
 using Appoynt.Domain.Entities;
 using Appoynt.Infrastructure.Persistence;
+using System.Collections.Generic;
+using Appoynt.Application.Features.Clinics.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -26,13 +28,14 @@ using Microsoft.EntityFrameworkCore;
 namespace Appoynt.API.Controllers;
 
 /// <summary>
-/// Handles doctor operations including profile picture upload, public retrieval, and deletion.
+/// Handles doctor operations including profile picture upload, public retrieval, deletion, and clinic listing.
 /// </summary>
 [ApiController]
 [Route("api/doctors")]
 public sealed class DoctorsController : ControllerBase
 {
     private readonly IProfileImageService _profileImageService;
+    private readonly IClinicService _clinicService;
     private readonly ICurrentUserService _currentUserService;
     private readonly ApplicationDbContext _dbContext;
 
@@ -40,15 +43,20 @@ public sealed class DoctorsController : ControllerBase
     /// Initializes a new instance of the <see cref="DoctorsController"/> class.
     /// </summary>
     /// <param name="profileImageService">The centralized profile image service.</param>
+    /// <param name="clinicService">The clinic service.</param>
     /// <param name="currentUserService">The current authenticated user accessor.</param>
     /// <param name="dbContext">The application database context.</param>
     public DoctorsController(
         IProfileImageService profileImageService,
+        IClinicService clinicService,
         ICurrentUserService currentUserService,
         ApplicationDbContext dbContext)
     {
         // Store profile image service dependency
         _profileImageService = profileImageService;
+
+        // Store clinic service dependency
+        _clinicService = clinicService;
 
         // Store current user service dependency
         _currentUserService = currentUserService;
@@ -56,6 +64,128 @@ public sealed class DoctorsController : ControllerBase
         // Store database context dependency
         _dbContext = dbContext;
     }
+
+    #region Profile Operations
+
+    /// <summary>
+    /// Retrieves the profile details of the currently authenticated doctor.
+    /// </summary>
+    /// <param name="doctorProfileService">The doctor profile service injected from request services.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The doctor profile details if found.</returns>
+    [HttpGet("profile")]
+    [Authorize(Roles = RoleConstants.Doctor)]
+    [ProducesResponseType(typeof(Appoynt.Application.Features.Doctor.Contracts.DoctorProfileResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetProfile(
+        [FromServices] Appoynt.Application.Features.Doctor.IDoctorProfileService doctorProfileService,
+        CancellationToken cancellationToken)
+    {
+        var profile = await doctorProfileService.GetProfileAsync(cancellationToken);
+
+        if (profile == null)
+        {
+            return NotFound();
+        }
+        else
+        {
+            return Ok(profile);
+        }
+    }
+
+    /// <summary>
+    /// Updates the profile information of the currently authenticated doctor.
+    /// </summary>
+    /// <param name="doctorProfileService">The doctor profile service injected from request services.</param>
+    /// <param name="request">The update payload.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An HTTP 200 OK response if successful, or validation errors.</returns>
+    [HttpPut("profile")]
+    [Authorize(Roles = RoleConstants.Doctor)]
+    [ProducesResponseType(typeof(Appoynt.Application.Features.Doctor.Contracts.DoctorResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> UpdateProfile(
+        [FromServices] Appoynt.Application.Features.Doctor.IDoctorProfileService doctorProfileService,
+        [FromBody] Appoynt.Application.Features.Doctor.Contracts.UpdateDoctorProfileRequest request,
+        CancellationToken cancellationToken)
+    {
+        var result = await doctorProfileService.UpdateProfileAsync(request, cancellationToken);
+
+        if (!result.Succeeded)
+        {
+            return BadRequest(result.Errors);
+        }
+        else
+        {
+            return Ok(result);
+        }
+    }
+
+    /// <summary>
+    /// Adds a new phone number to the currently authenticated doctor's profile.
+    /// </summary>
+    /// <param name="doctorProfileService">The doctor profile service injected from request services.</param>
+    /// <param name="request">The payload containing the new phone number.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An HTTP 200 OK response if successful.</returns>
+    [HttpPost("profile/phone-numbers")]
+    [Authorize(Roles = RoleConstants.Doctor)]
+    [ProducesResponseType(typeof(Appoynt.Application.Features.Doctor.Contracts.DoctorResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> AddPhoneNumber(
+        [FromServices] Appoynt.Application.Features.Doctor.IDoctorProfileService doctorProfileService,
+        [FromBody] Appoynt.Application.Features.Doctor.Contracts.AddDoctorPhoneNumberRequest request,
+        CancellationToken cancellationToken)
+    {
+        var result = await doctorProfileService.AddPhoneNumberAsync(request, cancellationToken);
+
+        if (!result.Succeeded)
+        {
+            return BadRequest(result.Errors);
+        }
+        else
+        {
+            return Ok(result);
+        }
+    }
+
+    /// <summary>
+    /// Removes a phone number from the currently authenticated doctor's profile.
+    /// </summary>
+    /// <param name="doctorProfileService">The doctor profile service injected from request services.</param>
+    /// <param name="id">The unique identifier of the phone number to remove.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An HTTP 200 OK response if successful.</returns>
+    [HttpDelete("profile/phone-numbers/{id:guid}")]
+    [Authorize(Roles = RoleConstants.Doctor)]
+    [ProducesResponseType(typeof(Appoynt.Application.Features.Doctor.Contracts.DoctorResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> RemovePhoneNumber(
+        [FromServices] Appoynt.Application.Features.Doctor.IDoctorProfileService doctorProfileService,
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        var result = await doctorProfileService.RemovePhoneNumberAsync(id, cancellationToken);
+
+        if (!result.Succeeded)
+        {
+            return BadRequest(result.Errors);
+        }
+        else
+        {
+            return Ok(result);
+        }
+    }
+
+    #endregion
 
     #region Profile Photo Operations
 
@@ -204,6 +334,63 @@ public sealed class DoctorsController : ControllerBase
                 // Return 200 OK upon successful photo deletion
                 return Ok(result);
             }
+        }
+    }
+
+    #endregion
+
+    #region Clinic Operations
+
+    /// <summary>
+    /// Retrieves all active clinics for a specific doctor. Open to all authenticated users.
+    /// </summary>
+    /// <param name="doctorId">The unique identifier of the doctor.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An HTTP 200 OK response with the list of active clinics.</returns>
+    [HttpGet("{doctorId:guid}/clinics")]
+    [Authorize]
+    [ProducesResponseType(typeof(List<ClinicResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> GetDoctorClinics(
+        [FromRoute] Guid doctorId,
+        CancellationToken cancellationToken)
+    {
+        // Retrieve active clinics for the requested doctor.
+        var clinics = await _clinicService.GetDoctorClinicsAsync(doctorId, cancellationToken);
+
+        // Return HTTP 200 OK with the retrieved clinics list.
+        return Ok(clinics);
+    }
+
+    /// <summary>
+    /// Retrieves the public booking summary for a doctor: display names, photo,
+    /// and their active bookable clinics ordered default-first. Open to guests
+    /// because patients browse doctors before signing in.
+    /// </summary>
+    /// <param name="doctorId">The unique identifier of the doctor.</param>
+    /// <param name="bookingService">The booking application service injected per request.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The booking summary, or 404 when the doctor does not exist.</returns>
+    [HttpGet("{doctorId:guid}/clinics/booking-summary")]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(Appoynt.Application.Features.Booking.Contracts.DoctorBookingSummaryDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetDoctorBookingSummary(
+        [FromRoute] Guid doctorId,
+        [FromServices] Appoynt.Application.Features.Booking.IPatientBookingService bookingService,
+        CancellationToken cancellationToken)
+    {
+        // Delegate to the cached read path inside the booking service.
+        var summary = await bookingService.GetDoctorBookingSummaryAsync(doctorId, cancellationToken);
+
+        // Unknown or soft-deleted doctors yield a not-found response.
+        if (summary == null)
+        {
+            return NotFound();
+        }
+        else
+        {
+            return Ok(summary);
         }
     }
 

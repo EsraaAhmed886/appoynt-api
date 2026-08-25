@@ -2,14 +2,14 @@
  * File Name      : Doctor.cs
  * Author         : Mustafa Mahmoud
  * Created Date   : 21/07/2026
- * Version        : v2.0.0
+ * Version        : v2.1.0
  * Dependencies   : BaseEntity, ApplicationUser, Receptionist,
- *                  DoctorPhoneNumber, DoctorSpecialization
+ *                  DoctorPhoneNumber, DoctorSpecialization, PatientFavoriteDoctor
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-14
+ * Last Modified  : Mustafa Mahmoud - 2026-08-23
  * Description    : Represents a doctor within the application, including
  *                  profile display names, biography, education, contact
- *                  phone numbers, and medical specializations.
+ *                  phone numbers, medical specializations, and patient favorites.
  */
 
 using System.Collections.Generic;
@@ -72,6 +72,16 @@ public class Doctor : BaseEntity
     /// Gets or sets the collection of specializations linked to this doctor.
     /// </summary>
     public ICollection<DoctorSpecialization> DoctorSpecializations { get; set; } = [];
+
+    /// <summary>
+    /// Gets or sets the collection of clinics managed by this doctor.
+    /// </summary>
+    public ICollection<Clinic> Clinics { get; set; } = [];
+
+    /// <summary>
+    /// Gets or sets the collection of patient favorite entries for this doctor.
+    /// </summary>
+    public ICollection<PatientFavoriteDoctor> FavoritedByPatients { get; set; } = [];
 
     #endregion
 }

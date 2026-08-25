@@ -10,7 +10,7 @@
  *   - @/components/medical_record/badges/record_status_badge
  *   - @/context/language_context
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Production historical medical consultation table component with strict whitespace-nowrap date/status constraints, interactive view triggers, and pagination navigation.
  */
 

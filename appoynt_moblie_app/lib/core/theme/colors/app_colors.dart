@@ -186,6 +186,7 @@ class AppColors {
 
   // Additional slate color design tokens for form inputs and widgets
   static const Color slate_50 = Color(0xFFF8FAFC);
+  static const Color slate_100 = Color(0xFFF1F5F9);
   static const Color slate_300 = Color(0xFFCBD5E1);
   static const Color slate_400 = Color(0xFF94A3B8);
   static const Color slate_500 = Color(0xFF64748B);
