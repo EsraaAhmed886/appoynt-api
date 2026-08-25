@@ -1,14 +1,12 @@
-/*
- * File Name: clinic.service.ts
- * Author: shimaa salah
- * Date of Creation: 20/07/2026
- * Version Information: V1.0.0
- * Dependencies:
- *   - @/data/clinics
- *   - @/types/clinic
- * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 13/08/2026]
- * File Description: LocalStorage state persistence and data access service for managing clinic entities.
+/**
+ * File Name : clinic.service.ts
+ * Author : shimaa salah
+ * Created Date : 2026-07-20
+ * Version : v1.0.0
+ * Dependencies : @/data/clinics, @/types/clinic
+ * Contributors : [shimaa salah]
+ * Last Modified : shimaa salah - 2026-08-25
+ * Description : LocalStorage state persistence and data access service for managing clinic entities.
  */
 
 import { clinics as initial_clinics } from "@/data/clinics";
@@ -37,7 +35,13 @@ export function get_clinics(): Clinic[] {
   }
 }
 
-// 2. Save complete list of clinics to LocalStorage
+// 2. Read single clinic entity by numerical ID
+export function get_clinic_by_id(clinic_id: number): Clinic | undefined {
+  const current_clinics = get_clinics();
+  return current_clinics.find((clinic) => Number(clinic.id) === Number(clinic_id));
+}
+
+// 3. Save complete list of clinics to LocalStorage
 export function save_clinics(clinics: Clinic[]): void {
   if ("undefined" === typeof window) {
     return;
@@ -50,7 +54,7 @@ export function save_clinics(clinics: Clinic[]): void {
   }
 }
 
-// 3. Initialize seed data into LocalStorage if empty
+// 4. Initialize seed data into LocalStorage if empty
 export function initialize_clinics(): void {
   if ("undefined" === typeof window) {
     return;
@@ -64,7 +68,7 @@ export function initialize_clinics(): void {
   }
 }
 
-// 4. Add a new clinic to LocalStorage persistent store and return updated list
+// 5. Add a new clinic to LocalStorage persistent store and return updated list
 export function add_clinic(new_clinic: Clinic): Clinic[] {
   const current_clinics = get_clinics();
   const updated_clinics = [...current_clinics, new_clinic];
@@ -72,17 +76,31 @@ export function add_clinic(new_clinic: Clinic): Clinic[] {
   return updated_clinics;
 }
 
-// 5. Delete a clinic from LocalStorage persistent store by ID and return updated list
+// 6. Update existing clinic record in LocalStorage persistent store
+export function update_clinic(updated_clinic: Clinic): Clinic[] {
+  const current_clinics = get_clinics();
+  const updated_clinics = current_clinics.map((clinic) => {
+    if (Number(clinic.id) === Number(updated_clinic.id)) {
+      return { ...clinic, ...updated_clinic };
+    } else {
+      return clinic;
+    }
+  });
+  save_clinics(updated_clinics);
+  return updated_clinics;
+}
+
+// 7. Delete a clinic from LocalStorage persistent store by ID and return updated list
 export function delete_clinic(clinic_id: number): Clinic[] {
   const current_clinics = get_clinics();
   const updated_clinics = current_clinics.filter(
-    (clinic) => clinic.id !== clinic_id,
+    (clinic) => Number(clinic.id) !== Number(clinic_id),
   );
   save_clinics(updated_clinics);
   return updated_clinics;
 }
 
-// 6. Calculate all occupied working days for a specific doctor across all existing clinics
+// 8. Calculate all occupied working days for a specific doctor across all existing clinics
 export function get_doctor_occupied_working_days(
   doctor_id: string | number,
   exclude_clinic_id?: number | null,
