@@ -9,7 +9,7 @@
  *   - @/types/medical_record
  *   - @/context/language_context
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Read-only finalized consultation details view for signed EHR records featuring top navigation, PDF export trigger, metadata strip, formatted diagnoses/regimens/tests, and compliance locking banner.
  */
 
@@ -58,6 +58,8 @@ export default function FinalizedRecordDetailsView({
     if (onDownloadPdf) {
       onDownloadPdf();
       return;
+    } else {
+      // Use fallback PDF generation simulation
     }
     setIsGeneratingPdf(true);
     setTimeout(() => {

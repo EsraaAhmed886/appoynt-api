@@ -19,7 +19,7 @@
  *   - @/components/medical-record/views/finalized_record_details_view
  *   - @/context/language_context
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Canonical production Medical Record Dashboard (/medical-record) managing top-level 2-tab navigation (Patient Summary, Medical History), dedicated 3-step full-width consultation workflow, and read-only finalized views.
  */
 
@@ -64,6 +64,8 @@ function ConsultationWorkflowContainer({
   if ("FINALIZED" === record.status) {
     onViewFinalized();
     return null;
+  } else {
+    // No action needed
   }
 
   if ("NOT_STARTED" === record.status) {
@@ -100,6 +102,8 @@ function ConsultationWorkflowContainer({
         </div>
       </div>
     );
+  } else {
+    // No action needed
   }
 
   return (
@@ -163,6 +167,8 @@ function MedicalRecordSinglePageInner() {
         </div>
       </div>
     );
+  } else {
+    // No action needed
   }
 
   if (isError || !initialRecord) {
@@ -179,6 +185,8 @@ function MedicalRecordSinglePageInner() {
         </div>
       </div>
     );
+  } else {
+    // No action needed
   }
 
   return (

@@ -8,7 +8,7 @@
  *   - lucide-react
  *   - @/hooks/use_click_outside
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Highly polished custom searchable select dropdown with clinical status indicator dots, trailing SVG chevron, blue checkmark active item indicator, keyword search filtering, and bottom action link triggers.
  */
 
@@ -23,25 +23,25 @@ export interface DropdownOption {
   value: string;
   label: string;
   subLabel?: string;
-  icon?: LucideIcon;
   dotColor?: string;
+  badge?: string;
 }
 
 export interface CustomSelectDropdownProps {
   label?: string;
-  required?: boolean;
-  options: DropdownOption[];
-  value: string;
-  onChange: (value: string) => void;
   placeholder?: string;
   searchPlaceholder?: string;
-  error?: string;
-  helperText?: string;
+  options: DropdownOption[];
+  value?: string;
+  onChange: (value: string) => void;
+  required?: boolean;
   disabled?: boolean;
   searchable?: boolean;
+  error?: string;
+  helperText?: string;
+  icon?: LucideIcon;
   bottomActionText?: string;
   onBottomAction?: () => void;
-  icon?: LucideIcon;
   className?: string;
   triggerClassName?: string;
   menuClassName?: string;
@@ -49,19 +49,19 @@ export interface CustomSelectDropdownProps {
 
 export default function CustomSelectDropdown({
   label,
-  required = false,
+  placeholder,
+  searchPlaceholder,
   options,
   value,
   onChange,
-  placeholder,
-  searchPlaceholder,
-  error,
-  helperText,
+  required = false,
   disabled = false,
   searchable = true,
+  error,
+  helperText,
+  icon: Icon,
   bottomActionText,
   onBottomAction,
-  icon: Icon,
   className = "",
   triggerClassName = "",
   menuClassName = "",
@@ -83,7 +83,11 @@ export default function CustomSelectDropdown({
   );
 
   const filteredOptions = useMemo(() => {
-    if (!searchQuery.trim()) return options;
+    if (!searchQuery.trim()) {
+      return options;
+    } else {
+      // Filter options by search query
+    }
     const query = searchQuery.toLowerCase();
     return options.filter(
       (opt) =>

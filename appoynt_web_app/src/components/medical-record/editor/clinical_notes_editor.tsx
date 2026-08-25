@@ -8,7 +8,7 @@
  *   - lucide-react
  *   - @/context/language_context
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Clinical notes rich text area editor with comprehensive formatting toolbar (Undo, Redo, Bold, Italic, Underline, Lists, Alignments, Link, Attachment), templates, character counter (max 5000), and live 10-character validation strip.
  */
 
@@ -89,6 +89,8 @@ export default function ClinicalNotesEditor({
       const prev = history[historyIndex - 1];
       setHistoryIndex(historyIndex - 1);
       onChange(prev);
+    } else {
+      // No action needed
     }
   };
 
@@ -97,11 +99,17 @@ export default function ClinicalNotesEditor({
       const next = history[historyIndex + 1];
       setHistoryIndex(historyIndex + 1);
       onChange(next);
+    } else {
+      // No action needed
     }
   };
 
   const insertFormatting = (before: string, after: string = "") => {
-    if (disabled || !textareaRef.current) return;
+    if (disabled || !textareaRef.current) {
+      return;
+    } else {
+      // Proceed with formatting insertion
+    }
     const el = textareaRef.current;
     const start = el.selectionStart;
     const end = el.selectionEnd;
@@ -123,11 +131,17 @@ export default function ClinicalNotesEditor({
     const url = prompt("Enter URL link:", "https://");
     if (url) {
       insertFormatting(`[`, `](${url})`);
+    } else {
+      // No action needed
     }
   };
 
   const applyTemplate = (templateText: string) => {
-    if (disabled) return;
+    if (disabled) {
+      return;
+    } else {
+      // Apply selected template
+    }
     const newText = value ? `${value.trim()}\n\n${templateText}` : templateText;
     updateValueWithHistory(newText);
     setShowTemplates(false);

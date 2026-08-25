@@ -7,7 +7,7 @@
  *   - zod
  *   - @/types/medical_record
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Pure clinical validator engine enforcing business constraints: Primary diagnosis presence, duplicate secondary diagnosis prevention, clinical notes boundary limits (10 to 5000 chars), and drug allergy contraindication intersection analysis.
  */
 
@@ -44,6 +44,8 @@ export class ClinicalRecordValidator {
     // 1. Primary Diagnosis is mandatory
     if (!primaryDiagnosis || !primaryDiagnosis.code || !primaryDiagnosis.code.trim()) {
       errors.primaryDiagnosis = "Primary diagnosis is required";
+    } else {
+      // Primary diagnosis provided
     }
 
     // 2. Secondary Diagnoses must not duplicate Primary
@@ -53,7 +55,11 @@ export class ClinicalRecordValidator {
       );
       if (isDuplicate) {
         errors.secondaryDiagnosis = "Secondary diagnosis must be different from primary";
+      } else {
+        // No duplicate secondary diagnosis
       }
+    } else {
+      // No primary diagnosis to compare
     }
 
     // 3. Clinical notes must satisfy 10-character minimum (ignoring whitespace) and max 5000 chars
@@ -62,6 +68,8 @@ export class ClinicalRecordValidator {
       errors.clinicalNotes = "Please enter detailed notes (at least 10 characters)";
     } else if (clinicalNotes.length > 5000) {
       errors.clinicalNotes = "Clinical notes cannot exceed 5000 characters";
+    } else {
+      // Notes length is valid
     }
 
     return {
@@ -80,6 +88,8 @@ export class ClinicalRecordValidator {
     const alerts: ContraindicationAlert[] = [];
     if (!allergies || allergies.length === 0 || !medications || medications.length === 0) {
       return alerts;
+    } else {
+      // Proceed with contraindication check
     }
 
     medications.forEach((med) => {
@@ -107,6 +117,8 @@ export class ClinicalRecordValidator {
             allergen: alg.name,
             severity: alg.severity,
           });
+        } else {
+          // No conflict for this allergen
         }
       });
     });
@@ -132,6 +144,8 @@ export class ClinicalRecordValidator {
 
     if (!step1Result.isValid) {
       Object.assign(errors, step1Result.errors);
+    } else {
+      // Step 1 valid
     }
 
     const contraindications = this.evaluateContraindications(
@@ -142,6 +156,8 @@ export class ClinicalRecordValidator {
     if (contraindications.length > 0 && !contraindicationAcknowledged) {
       errors.contraindications =
         "Active drug allergy contraindication must be clinically acknowledged before finalization.";
+    } else {
+      // No unacknowledged contraindications
     }
 
     return {

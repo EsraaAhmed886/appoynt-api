@@ -1,4 +1,4 @@
-﻿/*
+/*
  * File Name: custom_select.tsx
  * Author: Kholoud Khaled
  * Date of Creation: 18/08/2026
@@ -7,7 +7,7 @@
  *   - react
  *   - lucide-react
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Reusable Custom Select component providing polished OS-independent dropdown styling with custom Lucide ChevronDown, RTL alignment support, and accessible form integration.
  */
 

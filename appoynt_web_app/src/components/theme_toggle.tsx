@@ -8,7 +8,7 @@
  *   - next-themes
  *   - lucide-react
  * Contributors: shimaa salah, Kholoud Khaled
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Theme toggle button component switching between light and dark visual themes using next-themes resolvedTheme.
  */
 
@@ -30,6 +30,8 @@ export default function ThemeToggle() {
     return (
       <div className="w-9 h-9 rounded-xl p-2" />
     );
+  } else {
+    // Component mounted
   }
 
   const is_dark = "dark" === resolvedTheme;

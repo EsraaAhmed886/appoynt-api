@@ -7,7 +7,7 @@
  *   - @/services/medical_record_validator
  *   - @/types/medical_record
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Automated clinical quality assurance test suite validating form constraints, duplicate ICD-10 diagnosis checks, clinical notes boundaries, drug allergy contraindication triggers, and finalization safety gates.
  */
 
@@ -148,6 +148,8 @@ function runClinicalQATests() {
 
   if (failedCount > 0) {
     throw new Error(`${failedCount} QA tests failed.`);
+  } else {
+    // All QA tests passed
   }
 }
 

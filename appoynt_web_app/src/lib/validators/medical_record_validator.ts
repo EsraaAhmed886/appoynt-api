@@ -7,7 +7,7 @@
  *   - zod
  *   - @/types/medical_record
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Zod schema validators enforcing clinical consultation business constraints across Step 1 ICD-10 diagnostics, Step 2 prescriptions, Step 3 test orders, and final clinical locking.
  */
 
@@ -120,8 +120,9 @@ export const Step1DiagnosisSchema = z
     (data) => {
       if ("CONFIRMED_DIAGNOSIS" === data.clinicalOutcome) {
         return Boolean(data.primaryDiagnosis && data.primaryDiagnosis.code);
+      } else {
+        return true;
       }
-      return true;
     },
     {
       message: "Primary diagnosis is required when Clinical Outcome is 'Confirmed Diagnosis'",
@@ -145,8 +146,9 @@ export const FinalizeMedicalRecordSchema = z
     (data) => {
       if ("CONFIRMED_DIAGNOSIS" === data.clinicalOutcome) {
         return Boolean(data.primaryDiagnosis);
+      } else {
+        return true;
       }
-      return true;
     },
     {
       message: "Cannot finalize without a primary diagnosis for Confirmed Diagnosis outcome",
