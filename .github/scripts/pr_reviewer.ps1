@@ -101,6 +101,7 @@ foreach ($file in $files) {
         $allIssues += [PSCustomObject]@{
             path = $filename
             line = $firstLine
+            isAdded = ($addedLineNumbers -contains $firstLine)
             type = "Missing Header"
             body = "**[Warning]** Missing required File Header Documentation (File Name, Author, Created Date, Version, etc.)."
         }
@@ -115,6 +116,7 @@ foreach ($file in $files) {
                 $allIssues += [PSCustomObject]@{
                     path = $filename
                     line = 1
+                    isAdded = ($addedLineNumbers -contains 1)
                     type = "Outdated Date"
                     body = "**[Warning]** ``Last Modified`` date is outdated ($lastModVal). Please synchronize it with the current commit / PR date."
                 }
@@ -136,6 +138,7 @@ foreach ($file in $files) {
             $allIssues += [PSCustomObject]@{
                 path = $filename
                 line = $lNum
+                isAdded = $true
                 type = "Uninitialized Variable"
                 body = "**[Warning]** Variables must be initialized upon declaration (Declaration & Initialization together)."
             }
@@ -146,6 +149,7 @@ foreach ($file in $files) {
             $allIssues += [PSCustomObject]@{
                 path = $filename
                 line = $lNum
+                isAdded = $true
                 type = "Missing Braces"
                 body = "**[Warning]** Conditional statement must use curly braces ``{ }``."
             }
@@ -200,6 +204,7 @@ foreach ($file in $files) {
                 $allIssues += [PSCustomObject]@{
                     path = $filename
                     line = $lNum
+                    isAdded = $true
                     type = "Missing Else"
                     body = "**[Warning]** Missing explicit ``else`` block (use ``else { // No action needed }`` if empty)."
                 }
@@ -220,6 +225,7 @@ foreach ($file in $files) {
                 $allIssues += [PSCustomObject]@{
                     path = $filename
                     line = $lNum
+                    isAdded = $true
                     type = "Missing Switch Default"
                     body = "**[Warning]** ``switch`` statement must include an explicit ``default:`` case."
                 }
@@ -286,6 +292,9 @@ $reviewRequest = @{
 if ($allIssues.Count -le 35) {
     $commentsArray = @()
     foreach ($c in $allIssues) {
+        # This condition guarantees we only post inline comments for lines in the diff
+        if (-not $c.isAdded) { continue }
+        
         $commentsArray += @{
             path = [string]$c.path
             line = [int]$c.line
@@ -312,4 +321,3 @@ if ($allIssues.Count -gt 0 -or $invalidCommits.Count -gt 0) {
     Write-Host "PR Review passed successfully. No rule violations found."
     exit 0
 }
-
