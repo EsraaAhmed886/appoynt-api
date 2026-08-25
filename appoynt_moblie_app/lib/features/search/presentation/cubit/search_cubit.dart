@@ -2,11 +2,11 @@
  * File Name: search_cubit.dart
  * Author: Kholoud Khaled
  * Date of Creation: 17/07/2026
- * Version Information: V1.0.0
+ * Version Information: V1.2.0
  * Dependencies: package:flutter_bloc/flutter_bloc.dart, dart:async,
  *   search_state.dart, search_history_item.dart, doctor_suggestion.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 21/08/2026]
  * File Description: Manages the search input query processing, filter sets, history storage, and suggestion states.
  */
 
@@ -20,127 +20,17 @@ import 'package:appoynt_mobile_app/features/search/domain/entities/search_histor
 import 'package:appoynt_mobile_app/features/search/domain/entities/doctor_suggestion.dart';
 // Import search state definitions class
 import 'package:appoynt_mobile_app/features/search/presentation/cubit/search_state.dart';
+// Import centralized doctor mock dataset
+import 'package:appoynt_mobile_app/data/mock/doctor_mock_data.dart';
 
 // Cubit executing search operations business logic rules
 class SearchCubit extends Cubit<SearchState> {
   // Active debounce timer reference for api input throttle
   Timer? _debounce_timer;
 
-  // Static mock doctor database records driven by design schemas
-  static const List<DoctorSuggestion> _mock_doctors_database = [
-    DoctorSuggestion(
-      doctor_id: "doc_1",
-      name: "Dr Sara Hassan",
-      avatar_url: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=150&auto=format&fit=crop",
-      specialty: "Dermatologist",
-      location: "Nasr City : abbas el akad",
-      rating: 4.6,
-      reviews_count: 180,
-      fee: 500,
-      is_available_today: true,
-      is_favorite: false,
-      gender: "Female",
-      created_at: 1784257200000,
-    ),
-    DoctorSuggestion(
-      doctor_id: "doc_2",
-      name: "Dr. Samer Youssef",
-      avatar_url: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?q=80&w=150&auto=format&fit=crop",
-      specialty: "Dermatologist",
-      location: "Nasr City : abbas el akad",
-      rating: 4.6,
-      reviews_count: 180,
-      fee: 500,
-      is_available_today: false,
-      is_favorite: false,
-      gender: "Male",
-      created_at: 1784256200000,
-    ),
-    DoctorSuggestion(
-      doctor_id: "doc_3",
-      name: "Dr. Sarah Chen",
-      avatar_url: "https://images.unsplash.com/photo-1594824813573-246434de83fb?q=80&w=150&auto=format&fit=crop",
-      specialty: "Cardiology",
-      location: "Cairo",
-      rating: 4.9,
-      reviews_count: 220,
-      fee: 800,
-      is_available_today: true,
-      is_favorite: true,
-      gender: "Female",
-      created_at: 1784255200000,
-    ),
-    DoctorSuggestion(
-      doctor_id: "doc_4",
-      name: "Dr. Samuel Lee",
-      avatar_url: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=150&auto=format&fit=crop",
-      specialty: "Neurology",
-      location: "Alexandria",
-      rating: 4.2,
-      reviews_count: 95,
-      fee: 350,
-      is_available_today: false,
-      is_favorite: false,
-      gender: "Male",
-      created_at: 1784254200000,
-    ),
-    DoctorSuggestion(
-      doctor_id: "doc_5",
-      name: "Dr. Sebastian Keller",
-      avatar_url: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?q=80&w=150&auto=format&fit=crop",
-      specialty: "Pediatrics",
-      location: "Giza",
-      rating: 4.8,
-      reviews_count: 140,
-      fee: 150,
-      is_available_today: true,
-      is_favorite: false,
-      gender: "Male",
-      created_at: 1784253200000,
-    ),
-    DoctorSuggestion(
-      doctor_id: "doc_6",
-      name: "Dr. Salma Nour",
-      avatar_url: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=150&auto=format&fit=crop",
-      specialty: "Dentistry",
-      location: "Cairo",
-      rating: 4.5,
-      reviews_count: 85,
-      fee: 200,
-      is_available_today: true,
-      is_favorite: false,
-      gender: "Female",
-      created_at: 1784252200000,
-    ),
-    DoctorSuggestion(
-      doctor_id: "doc_7",
-      name: "Dr. Sherif Zaki",
-      avatar_url: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?q=80&w=150&auto=format&fit=crop",
-      specialty: "Ophthalmology",
-      location: "Alexandria",
-      rating: 4.7,
-      reviews_count: 110,
-      fee: 400,
-      is_available_today: false,
-      is_favorite: false,
-      gender: "Male",
-      created_at: 1784251200000,
-    ),
-    DoctorSuggestion(
-      doctor_id: "doc_8",
-      name: "Dr. Sandra Bullock",
-      avatar_url: "https://images.unsplash.com/photo-1594824813573-246434de83fb?q=80&w=150&auto=format&fit=crop",
-      specialty: "Psychiatry",
-      location: "Nasr City : abbas el akad",
-      rating: 5.0,
-      reviews_count: 310,
-      fee: 900,
-      is_available_today: true,
-      is_favorite: false,
-      gender: "Female",
-      created_at: 1784250200000,
-    ),
-  ];
+  // Static mock doctor database records referenced from single source of truth
+  static const List<DoctorSuggestion> _mock_doctors_database =
+      DoctorMockData.mockDoctors;
 
   // Static mock locations data records list for filter selection
   static const List<Map<String, String>> mock_locations = [
@@ -250,7 +140,9 @@ class SearchCubit extends Cubit<SearchState> {
     }
 
     // Check if query is empty and filters are set, but user hasn't explicitly clicked to show results (State C)
-    if (false == has_query && true == has_filters && false == state.show_filtered_results_explicitly) {
+    if (false == has_query &&
+        true == has_filters &&
+        false == state.show_filtered_results_explicitly) {
       emit(state.copyWith(
         suggestions: const [],
         status: SearchStatus.filtersOnly,
@@ -276,7 +168,9 @@ class SearchCubit extends Cubit<SearchState> {
     // 2. Filter by location matches
     if (true == state.selected_location_id.isNotEmpty) {
       results = results.where((doc) {
-        return doc.location.toLowerCase().contains(state.selected_location_id.toLowerCase());
+        return doc.location
+            .toLowerCase()
+            .contains(state.selected_location_id.toLowerCase());
       }).toList();
     } else {
       // No action needed
@@ -285,7 +179,9 @@ class SearchCubit extends Cubit<SearchState> {
     // 3. Filter by specialty matches
     if (true == state.selected_specialty_id.isNotEmpty) {
       results = results.where((doc) {
-        return doc.specialty.toLowerCase().contains(state.selected_specialty_id.toLowerCase());
+        return doc.specialty
+            .toLowerCase()
+            .contains(state.selected_specialty_id.toLowerCase());
       }).toList();
     } else {
       // No action needed
@@ -344,11 +240,13 @@ class SearchCubit extends Cubit<SearchState> {
         break;
       case SearchSortOption.nameAToZ:
         // Sort by name alphabetically ascending
-        results.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+        results.sort(
+            (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
         break;
       case SearchSortOption.nameZToA:
         // Sort by name alphabetically descending
-        results.sort((a, b) => b.name.toLowerCase().compareTo(a.name.toLowerCase()));
+        results.sort(
+            (a, b) => b.name.toLowerCase().compareTo(a.name.toLowerCase()));
         break;
       case SearchSortOption.ratingHighToLow:
         // Sort by rating score descending
@@ -451,7 +349,8 @@ class SearchCubit extends Cubit<SearchState> {
         }
 
         // Simulate offline connection failure if query matches trigger words
-        if ("offline" == searched_query.toLowerCase() || "error" == searched_query.toLowerCase()) {
+        if ("offline" == searched_query.toLowerCase() ||
+            "error" == searched_query.toLowerCase()) {
           // Emit network connection error state details
           emit(state.copyWith(
             // Set offline error status
@@ -549,7 +448,8 @@ class SearchCubit extends Cubit<SearchState> {
   // Toggles the favorite flag of a mock doctor in the database and updates state results
   void toggle_favorite(String doctor_id) {
     // We can update the status of the doctor in our mock suggestions results list
-    final List<DoctorSuggestion> updated_suggestions = state.suggestions.map((doc) {
+    final List<DoctorSuggestion> updated_suggestions =
+        state.suggestions.map((doc) {
       if (doc.doctor_id == doctor_id) {
         return DoctorSuggestion(
           doctor_id: doc.doctor_id,
@@ -586,7 +486,8 @@ class SearchCubit extends Cubit<SearchState> {
     }
 
     // Copy current history searches array
-    final List<SearchHistoryItem> updated_list = List.from(state.recent_searches);
+    final List<SearchHistoryItem> updated_list =
+        List.from(state.recent_searches);
 
     // Look up matching query indexes having same query text and filters
     final int existing_index = updated_list.indexWhere((item) {
@@ -649,7 +550,9 @@ class SearchCubit extends Cubit<SearchState> {
       // Hide modal dialogue overlay
       is_confirm_modal_visible: false,
       // If search query is currently empty, return to initial page state
-      status: true == state.query.isEmpty && true == state.selected_location_id.isEmpty && true == state.selected_specialty_id.isEmpty
+      status: true == state.query.isEmpty &&
+              true == state.selected_location_id.isEmpty &&
+              true == state.selected_specialty_id.isEmpty
           ? SearchStatus.initial
           : state.status,
     ));
@@ -664,7 +567,8 @@ class SearchCubit extends Cubit<SearchState> {
   // Deletes an individual history item row selection (BR-21)
   void delete_history_item(String item_id) {
     // Copy current history searches array
-    final List<SearchHistoryItem> updated_list = List.from(state.recent_searches);
+    final List<SearchHistoryItem> updated_list =
+        List.from(state.recent_searches);
     // Remove item matching unique ID token
     updated_list.removeWhere((item) {
       // Evaluate ID matching
@@ -676,7 +580,10 @@ class SearchCubit extends Cubit<SearchState> {
       // Bind modified list
       recent_searches: updated_list,
       // Fallback to initial status if list becomes empty and query is blank
-      status: true == updated_list.isEmpty && true == state.query.isEmpty && true == state.selected_location_id.isEmpty && true == state.selected_specialty_id.isEmpty
+      status: true == updated_list.isEmpty &&
+              true == state.query.isEmpty &&
+              true == state.selected_location_id.isEmpty &&
+              true == state.selected_specialty_id.isEmpty
           ? SearchStatus.initial
           : state.status,
     ));
@@ -712,7 +619,9 @@ class SearchCubit extends Cubit<SearchState> {
     // Strip emojis and unsupported graphics characters to prevent rendering crashes
     cleaned = cleaned.replaceAll(
       // Regex grouping target emoji character unicode ranges
-      RegExp(r'[\u{1F600}-\u{1F64F}|\u{1F300}-\u{1F5FF}|\u{1F680}-\u{1F6FF}|\u{2600}-\u{26FF}|\u{2700}-\u{27BF}]', unicode: true),
+      RegExp(
+          r'[\u{1F600}-\u{1F64F}|\u{1F300}-\u{1F5FF}|\u{1F680}-\u{1F6FF}|\u{2600}-\u{26FF}|\u{2700}-\u{27BF}]',
+          unicode: true),
       // Replace target matches with empty strings
       "",
     );

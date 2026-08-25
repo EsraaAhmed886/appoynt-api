@@ -15,7 +15,7 @@
 // Import standard UI framework
 import 'package:flutter/material.dart';
 // Import lucide icons library
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 // Import BLoC state provider
 import 'package:flutter_bloc/flutter_bloc.dart';
 // Import layout design tokens
@@ -36,6 +36,9 @@ import 'package:appoynt_mobile_app/core/widgets/app_bottom_nav_bar.dart';
 import 'package:appoynt_mobile_app/features/shared/widgets/doctor_card.dart';
 // Import unified search sort bottom sheet modal
 import 'package:appoynt_mobile_app/features/search/presentation/widgets/search_sort_bottom_sheet.dart';
+import 'package:appoynt_mobile_app/core/routing/routes.dart';
+import 'package:appoynt_mobile_app/features/doctor_profile/presentation/pages/doctor_profile_page.dart';
+import 'package:appoynt_mobile_app/features/appointments/presentation/widgets/ask_ai_fab.dart';
 
 
 // Local layout dimensions class to strictly eliminate hardcoded numbers
@@ -430,27 +433,6 @@ class _SearchPageState extends State<SearchPage> {
                           // Switch widget representing different search statuses (dynamic body states)
                           child: _build_dynamic_body(context, state, cubit, localizations, is_dark),
                         ),
-                        // Fixed Bottom Navigation Bar component shown only when soft keyboard is closed
-                        if (0 == MediaQuery.of(context).viewInsets.bottom)
-                          AppBottomNavBar(
-                            // Highlight Search tab as active index 2
-                            selected_index: 2,
-                          // Handle tap on navigation items
-                          on_tap: (index) {
-                            // Check if page remains mounted using Yoda style check
-                            if (true == context.mounted) {
-                              // If search tab is tapped, do nothing since we are already on search page
-                              if (2 == index) {
-                                // Do nothing
-                              } else {
-                                // Dismiss dedicated search screen returning the selected index to the home screen
-                                Navigator.of(context).pop(index);
-                              }
-                            } else {
-                              // Empty block
-                            }
-                          },
-                        ),
                       ],
                     ),
                   ),
@@ -582,6 +564,38 @@ class _SearchPageState extends State<SearchPage> {
                   const SizedBox.shrink(),
               ],
             ),
+            // Fixed Bottom Navigation Bar component shown only when soft keyboard is closed
+            bottomNavigationBar: 0 == MediaQuery.of(context).viewInsets.bottom
+                ? AppBottomNavBar(
+                    selected_index: 2,
+                    on_tap: (index) {
+                      if (true == context.mounted) {
+                        if (2 == index) {
+                          // Do nothing
+                        } else {
+                          Navigator.of(context).pop(index);
+                        }
+                      }
+                    },
+                  )
+                : null,
+            // Global floating AI assistant action button
+            floatingActionButton: Padding(
+              padding: const EdgeInsets.only(bottom: 16.0, right: 8.0),
+              child: AskAiFab(
+                onTap: () {
+                  // Open AI Assistant Chat / BottomSheet
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Opening AI Medical Assistant...'),
+                      duration: Duration(seconds: 1),
+                    ),
+                  );
+                },
+              ),
+            ),
+            // Floating button location pinned to the end float
+            floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
           );
         },
       ),
@@ -916,14 +930,16 @@ class _SearchPageState extends State<SearchPage> {
                     is_available: doc.is_available_today,
                     is_favorite: doc.is_favorite,
                     avatar_url: doc.avatar_url,
+                    on_tap: () {
+                      Navigator.of(context).pushNamed(
+                        Routes.doctor_profile,
+                        arguments: DoctorProfileArgs(doctor_id: doc.doctor_id),
+                      );
+                    },
                     on_book_tap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            "Booking appointment with ${doc.name}...",
-                          ),
-                          duration: const Duration(seconds: 2),
-                        ),
+                      Navigator.of(context).pushNamed(
+                        Routes.doctor_profile,
+                        arguments: DoctorProfileArgs(doctor_id: doc.doctor_id),
                       );
                     },
                     on_favorite_tap: () {
@@ -1737,3 +1753,4 @@ class _FilterChip extends StatelessWidget {
 }
 
 // TODO: END OF DUMMY HOME SCREEN IMPLEMENTATION
+

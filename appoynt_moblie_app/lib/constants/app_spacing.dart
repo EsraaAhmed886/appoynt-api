@@ -53,6 +53,9 @@ class AppSpacing {
   // Extra large border radius constant value equivalent to sixteen units
   static const double radius_xl = 16.0;
 
+  // Extra extra large border radius constant value equivalent to twenty-four units
+  static const double radius_xxl = 24.0;
+
   // Fully rounded/circular border radius representation
   static const double radius_circular = 999.0;
 
@@ -156,6 +159,15 @@ class AppSpacing {
 
   // Typographic font size for standard dialog/bottom sheet titles
   static const double font_size_dialog_title = 18.0;
+
+  // Typographic font size for medium section titles
+  static const double font_size_title_medium = 18.0;
+
+  // Typographic font size for large section titles
+  static const double font_size_title_large = 22.0;
+
+  // Typographic font size for small headline typography
+  static const double font_size_headline_small = 24.0;
 
   // Standard line thickness definition for default borders
   static const double border_width_thin = 1.0;

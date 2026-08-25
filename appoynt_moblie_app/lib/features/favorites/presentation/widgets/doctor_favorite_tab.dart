@@ -29,6 +29,8 @@ import 'package:appoynt_mobile_app/features/favorites/presentation/widgets/empty
 // Import cubit and state
 import 'package:appoynt_mobile_app/features/favorites/presentation/cubit/favorites_cubit.dart';
 import 'package:appoynt_mobile_app/features/favorites/presentation/cubit/favorites_state.dart';
+import 'package:appoynt_mobile_app/core/routing/routes.dart';
+import 'package:appoynt_mobile_app/features/doctor_profile/presentation/pages/doctor_profile_page.dart';
 
 // DoctorFavoriteTab stateful widget
 class DoctorFavoriteTab extends StatefulWidget {
@@ -173,15 +175,17 @@ class _DoctorFavoriteTabState extends State<DoctorFavoriteTab> {
                       is_available: doc.is_available_today && doc.is_active,
                       is_favorite: doc.is_favorite,
                       avatar_url: doc.avatar_url,
+                      on_tap: () {
+                        Navigator.of(context).pushNamed(
+                          Routes.doctor_profile,
+                          arguments: DoctorProfileArgs(doctor_id: doc.id),
+                        );
+                      },
                       on_book_tap: (doc.is_available_today && doc.is_active)
                           ? () {
-                              ScaffoldMessenger.of(list_context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'Booking appointment with ${doc.name}...',
-                                  ),
-                                  duration: const Duration(seconds: 2),
-                                ),
+                              Navigator.of(context).pushNamed(
+                                Routes.doctor_profile,
+                                arguments: DoctorProfileArgs(doctor_id: doc.id),
                               );
                             }
                           : null,

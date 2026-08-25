@@ -34,14 +34,16 @@ abstract class NotificationsRemoteDataSource {
 }
 
 // Concrete mock implementation of NotificationsRemoteDataSource
-class NotificationsRemoteDataSourceImpl implements NotificationsRemoteDataSource {
+class NotificationsRemoteDataSourceImpl
+    implements NotificationsRemoteDataSource {
   // In-memory mock database of notifications initialized with realistic test data
   static final List<NotificationModel> _mock_db = [
     // ── TODAY'S NOTIFICATIONS ─────────────────────────────────
     NotificationModel(
       id: 'notif_001',
       title: 'Appointment Confirmed',
-      description: 'Your consultation with Dr. Sarah Jenkins is confirmed for today at 4:30 PM.',
+      description:
+          'Your consultation with Dr. Sara Hassan is confirmed for today at 4:30 PM.',
       type: NotificationType.appointment_confirmed,
       created_at: DateTime.now().subtract(const Duration(hours: 2)),
       is_read: false,
@@ -52,9 +54,11 @@ class NotificationsRemoteDataSourceImpl implements NotificationsRemoteDataSource
     NotificationModel(
       id: 'notif_002',
       title: 'New Prescription Available',
-      description: 'Dr. Youssef Nabil has issued a digital prescription for your recent visit.',
+      description:
+          'Dr. Youssef Nabil has issued a digital prescription for your recent visit.',
       type: NotificationType.prescription_available,
-      created_at: DateTime.now().subtract(const Duration(hours: 4, minutes: 15)),
+      created_at:
+          DateTime.now().subtract(const Duration(hours: 4, minutes: 15)),
       is_read: false,
       entity_id: 'rx_201',
       entity_type: 'prescription',
@@ -63,7 +67,8 @@ class NotificationsRemoteDataSourceImpl implements NotificationsRemoteDataSource
     NotificationModel(
       id: 'notif_003',
       title: 'Payment Successful',
-      description: 'Payment of EGP 450.00 for Consultation #AP-8842 was completed successfully.',
+      description:
+          'Payment of EGP 450.00 for Consultation #AP-8842 was completed successfully.',
       type: NotificationType.payment_success,
       created_at: DateTime.now().subtract(const Duration(hours: 6)),
       is_read: false,
@@ -76,7 +81,8 @@ class NotificationsRemoteDataSourceImpl implements NotificationsRemoteDataSource
     NotificationModel(
       id: 'notif_004',
       title: 'Upcoming Appointment Reminder',
-      description: 'Reminder: You have an appointment tomorrow with Dr. Mona El-Sayed at 11:00 AM.',
+      description:
+          'Reminder: You have an appointment tomorrow with Dr. Mona El-Sayed at 11:00 AM.',
       type: NotificationType.appointment_reminder,
       created_at: DateTime.now().subtract(const Duration(days: 1, hours: 3)),
       is_read: false,
@@ -87,7 +93,8 @@ class NotificationsRemoteDataSourceImpl implements NotificationsRemoteDataSource
     NotificationModel(
       id: 'notif_005',
       title: 'Appointment Rescheduled',
-      description: 'Your appointment with Dr. Tarek Mansour has been moved to Thursday at 2:00 PM.',
+      description:
+          'Your appointment with Dr. Tarek Mansour has been moved to Thursday at 2:00 PM.',
       type: NotificationType.appointment_rescheduled,
       created_at: DateTime.now().subtract(const Duration(days: 1, hours: 8)),
       is_read: true,
@@ -100,7 +107,8 @@ class NotificationsRemoteDataSourceImpl implements NotificationsRemoteDataSource
     NotificationModel(
       id: 'notif_006',
       title: 'Payment Failed',
-      description: 'Transaction #PAY-9921 for EGP 600.00 was declined. Please check your card.',
+      description:
+          'Transaction #PAY-9921 for EGP 600.00 was declined. Please check your card.',
       type: NotificationType.payment_failed,
       created_at: DateTime.now().subtract(const Duration(days: 3, hours: 2)),
       is_read: true,
@@ -111,7 +119,8 @@ class NotificationsRemoteDataSourceImpl implements NotificationsRemoteDataSource
     NotificationModel(
       id: 'notif_007',
       title: 'Prescription Refill Expired',
-      description: 'Prescription #RX-102 has expired. Please contact your doctor for a refill.',
+      description:
+          'Prescription #RX-102 has expired. Please contact your doctor for a refill.',
       type: NotificationType.prescription_available,
       created_at: DateTime.now().subtract(const Duration(days: 5, hours: 6)),
       is_read: true,
@@ -122,7 +131,8 @@ class NotificationsRemoteDataSourceImpl implements NotificationsRemoteDataSource
     NotificationModel(
       id: 'notif_008',
       title: 'Appointment Completed',
-      description: 'Thank you for visiting Dr. Hany Farid. Check your test results in profile.',
+      description:
+          'Thank you for visiting Dr. Hany Farid. Check your test results in profile.',
       type: NotificationType.appointment_confirmed,
       created_at: DateTime.now().subtract(const Duration(days: 7, hours: 1)),
       is_read: true,
@@ -133,7 +143,8 @@ class NotificationsRemoteDataSourceImpl implements NotificationsRemoteDataSource
     NotificationModel(
       id: 'notif_009',
       title: 'Lab Results Ready',
-      description: 'Your blood test results from Cairo Scan Lab are now ready for viewing.',
+      description:
+          'Your blood test results from Cairo Scan Lab are now ready for viewing.',
       type: NotificationType.prescription_available,
       created_at: DateTime.now().subtract(const Duration(days: 10, hours: 4)),
       is_read: true,
@@ -144,7 +155,8 @@ class NotificationsRemoteDataSourceImpl implements NotificationsRemoteDataSource
     NotificationModel(
       id: 'notif_010',
       title: 'Welcome to Appoynt',
-      description: 'Explore verified doctors, instant clinic booking, and medical records.',
+      description:
+          'Explore verified doctors, instant clinic booking, and medical records.',
       type: NotificationType.appointment_reminder,
       created_at: DateTime.now().subtract(const Duration(days: 14)),
       is_read: true,

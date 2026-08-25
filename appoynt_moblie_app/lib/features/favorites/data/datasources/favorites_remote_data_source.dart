@@ -2,18 +2,20 @@
  * File Name: favorites_remote_data_source.dart
  * Author: Kholoud Khaled
  * Date of Creation: 14/08/2026
- * Version Information: V1.0.0
+ * Version Information: V1.2.0
  * Dependencies: favorited_doctor.dart, favorited_offer.dart, favorited_clinic.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 21/08/2026]
  * File Description: Remote data source contract and mock API implementation
- *   serving paginated favorites data and backend removal endpoints.
+ *   serving paginated favorites data with high-res doctor portraits and backend removal endpoints.
  */
 
 // Import domain entities
 import 'package:appoynt_mobile_app/features/favorites/domain/entities/favorited_doctor.dart';
 import 'package:appoynt_mobile_app/features/favorites/domain/entities/favorited_offer.dart';
 import 'package:appoynt_mobile_app/features/favorites/domain/entities/favorited_clinic.dart';
+// Import centralized doctor mock dataset
+import 'package:appoynt_mobile_app/data/mock/doctor_mock_data.dart';
 
 // Abstract contract for remote favorites operations
 abstract class FavoritesRemoteDataSource {
@@ -47,84 +49,10 @@ abstract class FavoritesRemoteDataSource {
 
 // Concrete mock implementation of FavoritesRemoteDataSource
 class FavoritesRemoteDataSourceImpl implements FavoritesRemoteDataSource {
-  // Master mock dataset for doctors
-  static final List<FavoritedDoctor> _mock_doctors = [
-    FavoritedDoctor(
-      id: 'doc_101',
-      name: 'Dr. Sarah Jenkins',
-      specialty: 'Cardiologist',
-      location: 'New Cairo Medical Center',
-      rating: 4.9,
-      reviews_count: 124,
-      fee: 450.0,
-      is_available_today: true,
-      is_active: true,
-      is_favorite: true,
-      avatar_url:
-          'https://img.freepik.com/free-photo/woman-doctor-wearing-lab-coat-with-stethoscope-isolated_1303-29791.jpg',
-      added_timestamp: DateTime.now().subtract(const Duration(hours: 2)),
-    ),
-    FavoritedDoctor(
-      id: 'doc_102',
-      name: 'Dr. Ahmed Hassan',
-      specialty: 'Dermatologist',
-      location: 'Maadi Health Specialist Clinic',
-      rating: 4.8,
-      reviews_count: 98,
-      fee: 350.0,
-      is_available_today: false,
-      is_active: true,
-      is_favorite: true,
-      avatar_url:
-          'https://img.freepik.com/free-photo/doctor-offering-medical-advice_23-2148816172.jpg',
-      added_timestamp: DateTime.now().subtract(const Duration(days: 1)),
-    ),
-    FavoritedDoctor(
-      id: 'doc_103',
-      name: 'Dr. Mona El-Sayed',
-      specialty: 'Neurologist',
-      location: 'Heliopolis Specialist Hospital',
-      rating: 4.95,
-      reviews_count: 156,
-      fee: 600.0,
-      is_available_today: true,
-      is_active: true,
-      is_favorite: true,
-      avatar_url:
-          'https://img.freepik.com/free-photo/female-doctor-hospital-with-stethoscope_23-2148827763.jpg',
-      added_timestamp: DateTime.now().subtract(const Duration(days: 3)),
-    ),
-    FavoritedDoctor(
-      id: 'doc_104',
-      name: 'Dr. Michael Chang',
-      specialty: 'Orthopedic Surgeon',
-      location: 'Zayed Bone & Joint Center',
-      rating: 4.7,
-      reviews_count: 84,
-      fee: 500.0,
-      is_available_today: true,
-      is_active: true,
-      is_favorite: true,
-      avatar_url:
-          'https://img.freepik.com/free-photo/pleased-young-female-doctor-wearing-medical-robe-stethoscope-around-neck-standing-with-closed-arms_409827-254.jpg',
-      added_timestamp: DateTime.now().subtract(const Duration(days: 5)),
-    ),
-    FavoritedDoctor(
-      id: 'doc_105',
-      name: 'Dr. Layla Mahmoud',
-      specialty: 'Pediatrician',
-      location: 'Dokki Children Hospital',
-      rating: 4.85,
-      reviews_count: 110,
-      fee: 300.0,
-      is_available_today: false,
-      is_active: false,
-      is_favorite: true,
-      avatar_url:
-          'https://img.freepik.com/free-photo/front-view-female-doctor-with-medical-mask-stethoscope_23-2148847628.jpg',
-      added_timestamp: DateTime.now().subtract(const Duration(hours: 12)),
-    ),
-  ];
+  // Master mock dataset for doctors initialized from centralized dataset
+  static final List<FavoritedDoctor> _mock_doctors = List<FavoritedDoctor>.from(
+    DoctorMockData.mockFavoriteDoctors,
+  );
 
   // Master mock dataset for promotional medical offers
   static final List<FavoritedOffer> _mock_offers = [
@@ -245,7 +173,6 @@ class FavoritesRemoteDataSourceImpl implements FavoritesRemoteDataSource {
       added_timestamp: DateTime.now().subtract(const Duration(days: 8)),
     ),
   ];
-
 
   @override
   // Fetch paginated favorited doctors with network simulation
