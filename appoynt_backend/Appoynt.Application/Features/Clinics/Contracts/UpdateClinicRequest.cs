@@ -57,4 +57,10 @@ public sealed class UpdateClinicRequest
     /// Gets the status of the clinic (maps to ClinicStatus enum).
     /// </summary>
     public int? Status { get; init; }
+
+    /// <summary>
+    /// Gets the desired default-clinic flag. When true, every other active
+    /// clinic of the same doctor is demoted within the same unit of work.
+    /// </summary>
+    public bool? IsDefault { get; init; }
 }

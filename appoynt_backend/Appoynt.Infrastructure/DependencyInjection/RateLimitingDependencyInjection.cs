@@ -5,7 +5,7 @@
  * Version        : v1.0.0
  * Dependencies   : Microsoft.AspNetCore.RateLimiting, Microsoft.AspNetCore.Http
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 27/07/2026
+ * Last Modified  : Mustafa Mahmoud - 2026-08-25
  * Description    : Registers rate limiting services and configures policies.
  */
 
@@ -188,6 +188,32 @@ internal static class RateLimitingDependencyInjection
                         {
                             PermitLimit = opt.ResetPassword.PermitLimit,
                             Window = TimeSpan.FromMinutes(opt.ResetPassword.WindowInMinutes),
+                            QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                            QueueLimit = 0
+                        });
+                }
+            });
+
+            // Booking Policy - guards patient slot lock/release mutations. This
+            // policy carries its own Enabled flag so it can ship switched off
+            // and be activated later purely through configuration.
+            options.AddPolicy("Booking", httpContext =>
+            {
+                var opt = httpContext.RequestServices
+                    .GetRequiredService<Microsoft.Extensions.Options.IOptions<RateLimitingOptions>>().Value;
+
+                if (!opt.Enabled || !opt.Booking.Enabled)
+                {
+                    return RateLimitPartition.GetNoLimiter(GetClientIpAddress(httpContext));
+                }
+                else
+                {
+                    return RateLimitPartition.GetFixedWindowLimiter(
+                        partitionKey: GetClientIpAddress(httpContext),
+                        factory: _ => new FixedWindowRateLimiterOptions
+                        {
+                            PermitLimit = opt.Booking.PermitLimit,
+                            Window = TimeSpan.FromMinutes(opt.Booking.WindowInMinutes),
                             QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
                             QueueLimit = 0
                         });

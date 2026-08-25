@@ -53,6 +53,23 @@ public class Clinic : BaseEntity
     /// </summary>
     public int MaxAdvanceBookingDays { get; set; }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether this clinic is the doctor's primary clinic.
+    /// Only one clinic per doctor may be marked as default; this invariant is enforced
+    /// by a database-level filtered unique index.
+    /// </summary>
+    public bool IsDefault { get; set; }
+
+    /// <summary>
+    /// Gets or sets the geographic latitude of the clinic location, if pinned.
+    /// </summary>
+    public double? Latitude { get; set; }
+
+    /// <summary>
+    /// Gets or sets the geographic longitude of the clinic location, if pinned.
+    /// </summary>
+    public double? Longitude { get; set; }
+
     #endregion
 
     #region Relationship Properties

@@ -362,5 +362,37 @@ public sealed class DoctorsController : ControllerBase
         return Ok(clinics);
     }
 
+    /// <summary>
+    /// Retrieves the public booking summary for a doctor: display names, photo,
+    /// and their active bookable clinics ordered default-first. Open to guests
+    /// because patients browse doctors before signing in.
+    /// </summary>
+    /// <param name="doctorId">The unique identifier of the doctor.</param>
+    /// <param name="bookingService">The booking application service injected per request.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The booking summary, or 404 when the doctor does not exist.</returns>
+    [HttpGet("{doctorId:guid}/clinics/booking-summary")]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(Appoynt.Application.Features.Booking.Contracts.DoctorBookingSummaryDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetDoctorBookingSummary(
+        [FromRoute] Guid doctorId,
+        [FromServices] Appoynt.Application.Features.Booking.IPatientBookingService bookingService,
+        CancellationToken cancellationToken)
+    {
+        // Delegate to the cached read path inside the booking service.
+        var summary = await bookingService.GetDoctorBookingSummaryAsync(doctorId, cancellationToken);
+
+        // Unknown or soft-deleted doctors yield a not-found response.
+        if (summary == null)
+        {
+            return NotFound();
+        }
+        else
+        {
+            return Ok(summary);
+        }
+    }
+
     #endregion
 }

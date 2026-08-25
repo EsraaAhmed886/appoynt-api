@@ -185,4 +185,10 @@ public static class ClinicErrorCodes
     /// City not found error code.
     /// </summary>
     public const string CityNotFound = "clinic.city.not_found";
+
+    /// <summary>
+    /// Indicates the request to mark a clinic as default was rejected because
+    /// another clinic of the same doctor currently holds the default flag.
+    /// </summary>
+    public const string DefaultClinicConflict = "clinic.default.conflict";
 }

@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Appoynt.Application.Common.Constants;
 using Appoynt.Application.Common.Interfaces;
 using Appoynt.Domain.Common.Constants;
 using Appoynt.Domain.Entities;
@@ -31,6 +32,7 @@ public class SlotGenerationService : ISlotGenerationService
 {
     private readonly ApplicationDbContext _dbContext;
     private readonly IDateTimeProvider _dateTimeProvider;
+    private readonly ICacheService _cacheService;
     private readonly ILogger<SlotGenerationService> _logger;
 
     /// <summary>
@@ -38,14 +40,17 @@ public class SlotGenerationService : ISlotGenerationService
     /// </summary>
     /// <param name="dbContext">The application database context.</param>
     /// <param name="dateTimeProvider">The date time provider.</param>
+    /// <param name="cacheService">The application cache abstraction.</param>
     /// <param name="logger">The logger instance.</param>
     public SlotGenerationService(
         ApplicationDbContext dbContext,
         IDateTimeProvider dateTimeProvider,
+        ICacheService cacheService,
         ILogger<SlotGenerationService> logger)
     {
         _dbContext = dbContext;
         _dateTimeProvider = dateTimeProvider;
+        _cacheService = cacheService;
         _logger = logger;
     }
 
@@ -175,6 +180,16 @@ public class SlotGenerationService : ISlotGenerationService
 
         // Save all changes to the database.
         await _dbContext.SaveChangesAsync(cancellationToken);
+
+        // New slots can light up calendar dates; drop the stale window entry.
+        if (newSlots.Any())
+        {
+            await _cacheService.RemoveAsync(CacheKeys.AvailableDates(clinicId), cancellationToken);
+        }
+        else
+        {
+            // No cache maintenance required without new capacity.
+        }
     }
 
     /// <summary>
@@ -193,6 +208,9 @@ public class SlotGenerationService : ISlotGenerationService
 
         // Get the current date in UTC to use as the starting point.
         var today = DateOnly.FromDateTime(_dateTimeProvider.UtcNow);
+
+        // Track which clinics gained capacity so their calendar caches refresh.
+        var clinicIdsWithNewSlots = new List<Guid>();
 
         // Iterate over each active clinic to extend its slots.
         foreach (var clinic in clinics)
@@ -272,6 +290,9 @@ public class SlotGenerationService : ISlotGenerationService
                 if (clinicSlots.Any())
                 {
                     await _dbContext.AppointmentSlots.AddRangeAsync(clinicSlots, cancellationToken);
+
+                    // Remember the clinic so its calendar cache refreshes after save.
+                    clinicIdsWithNewSlots.Add(clinic.Id);
                 }
                 else
                 {
@@ -286,38 +307,59 @@ public class SlotGenerationService : ISlotGenerationService
 
         // Save all changes to the database.
         await _dbContext.SaveChangesAsync(cancellationToken);
+
+        // Newly extended capacity can light up calendar dates; refresh caches.
+        foreach (var clinicId in clinicIdsWithNewSlots)
+        {
+            await _cacheService.RemoveAsync(CacheKeys.AvailableDates(clinicId), cancellationToken);
+        }
     }
 
     /// <summary>
-    /// Resets pending slots that have expired back to available status.
+    /// Resets pending slot locks whose expiry has passed back to available status.
+    /// Runs as a safety net behind the read-time effective-status projection.
     /// </summary>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task ResetExpiredPendingSlotsAsync(CancellationToken cancellationToken = default)
     {
-        // Calculate the cutoff time for pending slots.
-        var cutoff = _dateTimeProvider.UtcNow.AddMinutes(-ClinicConstants.PendingTimeoutMinutes);
+        // Capture the current instant for the expiry comparison.
+        var now = _dateTimeProvider.UtcNow;
 
-        // Query pending slots that have expired.
-        var expiredSlots = await _dbContext.AppointmentSlots
-            .Where(s => s.Status == SlotStatus.Pending && s.UpdatedAt < cutoff)
+        // Identify the clinics owning expired locks BEFORE the set-based update,
+        // because ExecuteUpdateAsync does not return the affected rows.
+        var affectedClinicIds = await _dbContext.AppointmentSlots
+            .Where(s => s.Status == SlotStatus.Pending && s.ExpiresAtUtc < now)
+            .Select(s => s.ClinicId)
+            .Distinct()
             .ToListAsync(cancellationToken);
 
-        // Reset the status of each expired slot to Available.
-        if (expiredSlots.Any())
+        if (affectedClinicIds.Count == 0)
         {
-            foreach (var slot in expiredSlots)
-            {
-                // Update the slot status to Available.
-                slot.Status = SlotStatus.Available;
-            }
-
-            // Save all changes to the database.
-            await _dbContext.SaveChangesAsync(cancellationToken);
+            // Nothing expired; no work or cache maintenance required.
+            return;
         }
         else
         {
-            // No expired pending slots found.
+            // Expired locks exist; release them in one atomic statement below.
         }
+
+        // Release every expired pending lock in a single set-based update.
+        await _dbContext.AppointmentSlots
+            .Where(s => s.Status == SlotStatus.Pending && s.ExpiresAtUtc < now)
+            .ExecuteUpdateAsync(update => update
+                .SetProperty(s => s.Status, SlotStatus.Available)
+                .SetProperty(s => s.HeldByUserId, (Guid?)null)
+                .SetProperty(s => s.ExpiresAtUtc, (DateTime?)null),
+                cancellationToken);
+
+        // Refresh each affected clinic's calendar window immediately.
+        foreach (var clinicId in affectedClinicIds)
+        {
+            await _cacheService.RemoveAsync(CacheKeys.AvailableDates(clinicId), cancellationToken);
+        }
+
+        _logger.LogInformation("Released expired pending slot locks across {AffectedClinics} clinic(s).", affectedClinicIds.Count);
     }
 }
+

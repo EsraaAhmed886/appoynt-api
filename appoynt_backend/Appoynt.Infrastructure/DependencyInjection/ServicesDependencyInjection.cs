@@ -53,6 +53,11 @@ internal static class ServicesDependencyInjection
         // Register clinic management and slot services
         services.AddScoped<Appoynt.Application.Common.Interfaces.IClinicService, Appoynt.Infrastructure.Services.ClinicService>();
         services.AddScoped<Appoynt.Application.Common.Interfaces.ISlotGenerationService, Appoynt.Infrastructure.Services.SlotGenerationService>();
+
+        // Register the patient booking screen service and its cache backing.
+        services.AddMemoryCache();
+        services.AddSingleton<Appoynt.Application.Common.Interfaces.ICacheService, Appoynt.Infrastructure.Services.MemoryCacheService>();
+        services.AddScoped<Appoynt.Application.Features.Booking.IPatientBookingService, Appoynt.Infrastructure.Services.PatientBookingService>();
         services.AddScoped<Appoynt.Application.Common.Interfaces.Seeding.IGovernorateSeeder, Appoynt.Infrastructure.Persistence.Seed.GovernorateSeeder>();
         services.AddHostedService<Appoynt.Infrastructure.BackgroundServices.SlotMaintenanceService>();
 
