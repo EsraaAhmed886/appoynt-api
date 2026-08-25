@@ -5,7 +5,7 @@
  * Version Information: v1.0.0
  * Dependencies: ../../data/models/appointment_model.dart, ../../data/models/appointment_filter_model.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Defines the complete set of BLoC event triggers for the Appointments mobile screen.
  */
 

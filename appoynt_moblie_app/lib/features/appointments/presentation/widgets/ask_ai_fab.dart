@@ -5,7 +5,7 @@
  * Version Information: v1.0.0
  * Dependencies: flutter/material.dart, flutter_svg/flutter_svg.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Prominent circular floating action button with scaled-up AI Chatbot icon (42.0px) filling ~75-80% of the circle diameter with brand glow.
  */
 

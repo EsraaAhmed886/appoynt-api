@@ -5,7 +5,7 @@
  * Version Information: v1.0.0
  * Dependencies: flutter/material.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Rectangular portrait container for doctor headshot rendering with fallback initials and soft elevation.
  */
 
@@ -29,9 +29,13 @@ class AppointmentDoctorAvatar extends StatelessWidget {
   String _getInitials(String name) {
     final clean = name.replaceAll('Dr.', '').trim();
     final parts = clean.split(' ').where((p) => p.isNotEmpty).toList();
-    if (parts.isEmpty) return 'DR';
-    if (parts.length == 1) return parts[0].substring(0, 1).toUpperCase();
-    return (parts[0][0] + parts[1][0]).toUpperCase();
+    if (parts.isEmpty) {
+      return 'DR';
+    } else if (parts.length == 1) {
+      return parts[0].substring(0, 1).toUpperCase();
+    } else {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
   }
 
   @override

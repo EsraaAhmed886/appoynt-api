@@ -5,7 +5,7 @@
  * Version Information: v1.0.0
  * Dependencies: flutter/material.dart, ../../../../core/localization/appointments_strings.dart, ../../data/models/appointment_model.dart, ./appointment_doctor_avatar.dart, ./appointment_status_badge.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Smart appointment card widget rendering doctor info, date/time, facility location, and contextual action buttons based on status and timing.
  */
 
@@ -112,14 +112,7 @@ class AppointmentCard extends StatelessWidget {
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-                                if (appointment.isDoctorVerified) ...[
-                                  const SizedBox(width: 4.0),
-                                  const Icon(
-                                    Icons.verified_rounded,
-                                    size: 16.0,
-                                    color: Color(0xFF0284C7),
-                                  ),
-                                ],
+                                _build_verified_badge(),
                               ],
                             ),
                           ),
@@ -143,31 +136,7 @@ class AppointmentCard extends StatelessWidget {
                       const SizedBox(height: 6.0),
 
                       // Rating & Reviews Count
-                      if (appointment.doctorRating != null)
-                        Row(
-                          children: [
-                            const Icon(Icons.star_rounded, size: 16.0, color: Color(0xFFF59E0B)),
-                            const SizedBox(width: 3.0),
-                            Text(
-                              appointment.doctorRating!.toStringAsFixed(1),
-                              style: TextStyle(
-                                fontSize: 12.0,
-                                fontWeight: FontWeight.bold,
-                                color: isDark ? Colors.white : const Color(0xFF0F172A),
-                              ),
-                            ),
-                            if (appointment.doctorReviewsCount != null) ...[
-                              const SizedBox(width: 4.0),
-                              Text(
-                                '(${appointment.doctorReviewsCount} ${AppointmentsStrings.of(context, 'reviews')})',
-                                style: TextStyle(
-                                  fontSize: 11.5,
-                                  color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
-                                ),
-                              ),
-                            ],
-                          ],
-                        ),
+                      _build_rating_row(isDark, context),
                     ],
                   ),
                 ),
@@ -209,29 +178,7 @@ class AppointmentCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (appointment.type == AppointmentType.onlineVideo)
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 3.0),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF8B5CF6).withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(6.0),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.videocam_rounded, size: 13.0, color: Color(0xFF8B5CF6)),
-                        const SizedBox(width: 4.0),
-                        Text(
-                          AppointmentsStrings.of(context, 'online_video'),
-                          style: const TextStyle(
-                            fontSize: 10.5,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF8B5CF6),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                _build_online_video_tag(context),
               ],
             ),
             const SizedBox(height: 8.0),
@@ -265,16 +212,7 @@ class AppointmentCard extends StatelessWidget {
                           color: isDark ? const Color(0xFFCBD5E1) : const Color(0xFF475569),
                         ),
                       ),
-                      if (appointment.clinicAddress != null)
-                        Text(
-                          appointment.clinicAddress!,
-                          style: TextStyle(
-                            fontSize: 11.0,
-                            color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                      _build_clinic_address(isDark),
                     ],
                   ),
                 ),
@@ -312,26 +250,7 @@ class AppointmentCard extends StatelessWidget {
               // Action Buttons Row: [Cancel] + [Reschedule] + [View Details]
               Row(
                 children: [
-                  if (appointment.canCancel)
-                    Expanded(
-                      flex: 2,
-                      child: OutlinedButton(
-                        onPressed: onCancel,
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: const Color(0xFFEF4444),
-                          side: const BorderSide(color: Color(0xFFFECACA)),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 10.0),
-                        ),
-                        child: Text(
-                          AppointmentsStrings.of(context, 'cancel_appointment'),
-                          style: const TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                  if (appointment.canCancel) const SizedBox(width: 8.0),
+                  _build_cancel_button(context),
 
                   Expanded(
                     flex: 3,
@@ -421,5 +340,144 @@ class AppointmentCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /// Builds verified badge icon with explicit control flow.
+  Widget _build_verified_badge() {
+    if (appointment.isDoctorVerified) {
+      return const Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(width: 4.0),
+          Icon(
+            Icons.verified_rounded,
+            size: 16.0,
+            color: Color(0xFF0284C7),
+          ),
+        ],
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+
+  /// Builds doctor rating and review counts row with explicit control flow.
+  Widget _build_rating_row(bool isDark, BuildContext context) {
+    if (appointment.doctorRating != null) {
+      return Row(
+        children: [
+          const Icon(Icons.star_rounded, size: 16.0, color: Color(0xFFF59E0B)),
+          const SizedBox(width: 3.0),
+          Text(
+            appointment.doctorRating!.toStringAsFixed(1),
+            style: TextStyle(
+              fontSize: 12.0,
+              fontWeight: FontWeight.bold,
+              color: isDark ? Colors.white : const Color(0xFF0F172A),
+            ),
+          ),
+          _build_reviews_count_text(isDark, context),
+        ],
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+
+  /// Builds reviews count text if available.
+  Widget _build_reviews_count_text(bool isDark, BuildContext context) {
+    if (appointment.doctorReviewsCount != null) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(width: 4.0),
+          Text(
+            '(${appointment.doctorReviewsCount} ${AppointmentsStrings.of(context, 'reviews')})',
+            style: TextStyle(
+              fontSize: 11.5,
+              color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
+            ),
+          ),
+        ],
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+
+  /// Builds online video consultation tag.
+  Widget _build_online_video_tag(BuildContext context) {
+    if (appointment.type == AppointmentType.onlineVideo) {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 3.0),
+        decoration: BoxDecoration(
+          color: const Color(0xFF8B5CF6).withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(6.0),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.videocam_rounded, size: 13.0, color: Color(0xFF8B5CF6)),
+            const SizedBox(width: 4.0),
+            Text(
+              AppointmentsStrings.of(context, 'online_video'),
+              style: const TextStyle(
+                fontSize: 10.5,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF8B5CF6),
+              ),
+            ),
+          ],
+        ),
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+
+  /// Builds cancel appointment button if allowed.
+  Widget _build_cancel_button(BuildContext context) {
+    if (appointment.canCancel) {
+      return Expanded(
+        flex: 2,
+        child: Padding(
+          padding: const EdgeInsets.only(right: 8.0),
+          child: OutlinedButton(
+            onPressed: onCancel,
+            style: OutlinedButton.styleFrom(
+              foregroundColor: const Color(0xFFEF4444),
+              side: const BorderSide(color: Color(0xFFFECACA)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
+            ),
+            child: Text(
+              AppointmentsStrings.of(context, 'cancel_appointment'),
+              style: const TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+
+  /// Builds optional clinic address text.
+  Widget _build_clinic_address(bool isDark) {
+    if (appointment.clinicAddress != null) {
+      return Text(
+        appointment.clinicAddress!,
+        style: TextStyle(
+          fontSize: 11.0,
+          color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
+        ),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
   }
 }

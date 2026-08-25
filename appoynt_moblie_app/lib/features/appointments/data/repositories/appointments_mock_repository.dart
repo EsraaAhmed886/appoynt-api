@@ -5,7 +5,7 @@
  * Version Information: v1.0.0
  * Dependencies: ../models/appointment_model.dart, ../models/appointment_filter_model.dart, ../models/quick_action_item_model.dart, ../models/doctor_recommendation_model.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Mock repository providing realistic patient appointments, quick action counts, doctor recommendations, cancellation refunds, and rescheduling time slots.
  */
 
@@ -249,6 +249,8 @@ class AppointmentsMockRepository implements AppointmentsRepository {
           return appt.status == AppointmentStatus.cancelled;
         case AppointmentTabType.all:
           return true;
+        default:
+          return true;
       }
     }).toList();
 
@@ -261,11 +263,15 @@ class AppointmentsMockRepository implements AppointmentsRepository {
         final clinicMatches = appt.clinicName.toLowerCase().contains(query);
         return doctorMatches || specialtyMatches || clinicMatches;
       }).toList();
+    } else {
+      // No action needed
     }
 
     // 3. Filter by Active Modal Criteria
     if (filter != null && filter.isActive) {
       filtered = filtered.where((appt) => filter.matches(appt)).toList();
+    } else {
+      // No action needed
     }
 
     // 4. Sort based on Tab Rules (BR-27, BR-28, VR-45)
@@ -273,11 +279,19 @@ class AppointmentsMockRepository implements AppointmentsRepository {
       if (tab == AppointmentTabType.upcoming) {
         // Upcoming: NEAREST date/time first (Ascending)
         final dateComparison = a.scheduledDateTime.compareTo(b.scheduledDateTime);
-        if (dateComparison != 0) return dateComparison;
+        if (dateComparison != 0) {
+          return dateComparison;
+        } else {
+          // No action needed
+        }
       } else {
         // Completed, Cancelled, All: LATEST date/time first (Descending)
         final dateComparison = b.scheduledDateTime.compareTo(a.scheduledDateTime);
-        if (dateComparison != 0) return dateComparison;
+        if (dateComparison != 0) {
+          return dateComparison;
+        } else {
+          // No action needed
+        }
       }
 
       // Tie-breaker for same timestamps: Upcoming -> Confirmed -> Completed -> Missed -> Cancelled
@@ -288,9 +302,10 @@ class AppointmentsMockRepository implements AppointmentsRepository {
     final startIndex = (page - 1) * pageSize;
     if (startIndex >= filtered.length) {
       return [];
+    } else {
+      final endIndex = (startIndex + pageSize).clamp(0, filtered.length);
+      return filtered.sublist(startIndex, endIndex);
     }
-    final endIndex = (startIndex + pageSize).clamp(0, filtered.length);
-    return filtered.sublist(startIndex, endIndex);
   }
 
   @override
@@ -312,21 +327,21 @@ class AppointmentsMockRepository implements AppointmentsRepository {
     final index = _mockAppointments.indexWhere((a) => a.id == id);
     if (index == -1) {
       throw Exception('Appointment not found');
+    } else {
+      final target = _mockAppointments[index];
+      if (!target.canCancel) {
+        throw Exception('Appointments cannot be cancelled within 15 minutes of scheduled time.');
+      } else {
+        final updated = target.copyWith(
+          status: AppointmentStatus.cancelled,
+          cancellationReason: reason ?? 'Patient requested cancellation',
+          cancelledAt: DateTime.now(),
+        );
+
+        _mockAppointments[index] = updated;
+        return updated;
+      }
     }
-
-    final target = _mockAppointments[index];
-    if (!target.canCancel) {
-      throw Exception('Appointments cannot be cancelled within 15 minutes of scheduled time.');
-    }
-
-    final updated = target.copyWith(
-      status: AppointmentStatus.cancelled,
-      cancellationReason: reason ?? 'Patient requested cancellation',
-      cancelledAt: DateTime.now(),
-    );
-
-    _mockAppointments[index] = updated;
-    return updated;
   }
 
   @override
@@ -352,16 +367,16 @@ class AppointmentsMockRepository implements AppointmentsRepository {
     final index = _mockAppointments.indexWhere((a) => a.id == id);
     if (index == -1) {
       throw Exception('Appointment not found');
+    } else {
+      final target = _mockAppointments[index];
+      final updated = target.copyWith(
+        scheduledDateTime: newDateTime,
+        endDateTime: newDateTime.add(const Duration(minutes: 30)),
+        status: AppointmentStatus.confirmed,
+      );
+
+      _mockAppointments[index] = updated;
+      return updated;
     }
-
-    final target = _mockAppointments[index];
-    final updated = target.copyWith(
-      scheduledDateTime: newDateTime,
-      endDateTime: newDateTime.add(const Duration(minutes: 30)),
-      status: AppointmentStatus.confirmed,
-    );
-
-    _mockAppointments[index] = updated;
-    return updated;
   }
 }

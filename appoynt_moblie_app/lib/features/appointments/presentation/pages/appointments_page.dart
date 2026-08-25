@@ -4,7 +4,7 @@
  * Date of Creation: 22/08/2026
  * Dependencies: flutter/material.dart, flutter_bloc, appointments_strings.dart, routes.dart, appointment_model.dart, appointments_mock_repository.dart, appointments_bloc.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Master Appointments screen composing tabs, debounced search, active filters, cards, cancellation & rescheduling flows, recommendations, and AI assistant FAB.
  */
 
@@ -65,6 +65,8 @@ class _AppointmentsViewState extends State<_AppointmentsView> {
   void _onScroll() {
     if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
       context.read<AppointmentsBloc>().add(const LoadMoreAppointments());
+    } else {
+      // No action needed
     }
   }
 
@@ -136,6 +138,8 @@ class _AppointmentsViewState extends State<_AppointmentsView> {
                   behavior: SnackBarBehavior.floating,
                 ),
               );
+            } else {
+              // No action needed
             }
             if (state.errorMessage != null) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -145,6 +149,8 @@ class _AppointmentsViewState extends State<_AppointmentsView> {
                   behavior: SnackBarBehavior.floating,
                 ),
               );
+            } else {
+              // No action needed
             }
           },
           builder: (context, state) {
@@ -191,106 +197,13 @@ class _AppointmentsViewState extends State<_AppointmentsView> {
                   ),
 
                   // 4. Quick Actions Strip (Prescriptions, Labs, Radiology - Guarded)
-                  if (state.shouldShowQuickActions)
-                    SliverToBoxAdapter(
-                      child: QuickActionsStrip(
-                        summary: state.quickActionsSummary,
-                      ),
-                    ),
+                  _build_quick_actions_sliver(state),
 
                   // 5. Appointments List / Empty State / Loader
-                  if (state.isLoading)
-                    const SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2.5,
-                          color: Color(0xFF0284C7),
-                        ),
-                      ),
-                    )
-                  else if (appointments.isEmpty)
-                    SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: AppointmentsEmptyState(
-                        tab: state.activeTab,
-                        isSearching: state.searchQuery.trim().isNotEmpty,
-                        isFiltering: state.activeFilter.isActive,
-                        onActionTap: () {
-                          // Navigate to Search to book appointment
-                        },
-                      ),
-                    )
-                  else ...[
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          final appt = appointments[index];
-                          return AppointmentCard(
-                            appointment: appt,
-                            onViewDetails: () {
-                              Navigator.pushNamed(
-                                context,
-                                Routes.doctor_profile,
-                                arguments: appt.doctorId,
-                              );
-                            },
-                            onCancel: () => _openCancelDialog(appt),
-                            onReschedule: () => _openRescheduleSheet(appt),
-                            onJoinCall: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Joining video call with ${appt.doctorName}...'),
-                                  backgroundColor: const Color(0xFF10B981),
-                                ),
-                              );
-                            },
-                            onBookAgain: () {
-                              Navigator.pushNamed(
-                                context,
-                                Routes.choose_slots,
-                                arguments: appt.doctorId,
-                              );
-                            },
-                          );
-                        },
-                        childCount: appointments.length,
-                      ),
-                    ),
-
-                    // Loading indicator for pagination
-                    if (state.isLoadMoreLoading)
-                      const SliverToBoxAdapter(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 16.0),
-                          child: Center(
-                            child: SizedBox(
-                              width: 24.0,
-                              height: 24.0,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2.0,
-                                color: Color(0xFF0284C7),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                  ],
+                  ..._build_main_appointments_slivers(context, state, appointments),
 
                   // 6. Recommendation Banner (Conditional on query being empty)
-                  if (state.shouldShowRecommendations)
-                    SliverToBoxAdapter(
-                      child: RecommendationBanner(
-                        recommendations: state.recommendations,
-                        onBookTap: (doc) {
-                          Navigator.pushNamed(
-                            context,
-                            Routes.choose_slots,
-                            arguments: doc.id,
-                          );
-                        },
-                      ),
-                    ),
+                  _build_recommendations_sliver(state),
 
                   const SliverToBoxAdapter(
                     child: SizedBox(height: 80.0), // Padding for bottom nav / FAB
@@ -302,5 +215,135 @@ class _AppointmentsViewState extends State<_AppointmentsView> {
         ),
       ),
     );
+  }
+
+  /// Builds the quick actions sliver if summary resources exist.
+  Widget _build_quick_actions_sliver(AppointmentsState state) {
+    if (state.shouldShowQuickActions) {
+      return SliverToBoxAdapter(
+        child: QuickActionsStrip(
+          summary: state.quickActionsSummary,
+        ),
+      );
+    } else {
+      return const SliverToBoxAdapter(child: SizedBox.shrink());
+    }
+  }
+
+  /// Builds the main appointments list, empty state, or loading indicator.
+  List<Widget> _build_main_appointments_slivers(
+    BuildContext context,
+    AppointmentsState state,
+    List<AppointmentModel> appointments,
+  ) {
+    if (state.isLoading) {
+      return [
+        const SliverFillRemaining(
+          hasScrollBody: false,
+          child: Center(
+            child: CircularProgressIndicator(
+              strokeWidth: 2.5,
+              color: Color(0xFF0284C7),
+            ),
+          ),
+        ),
+      ];
+    } else if (appointments.isEmpty) {
+      return [
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: AppointmentsEmptyState(
+            tab: state.activeTab,
+            isSearching: state.searchQuery.trim().isNotEmpty,
+            isFiltering: state.activeFilter.isActive,
+            onActionTap: () {
+              // Navigate to Search to book appointment
+            },
+          ),
+        ),
+      ];
+    } else {
+      final List<Widget> slivers = [
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              final appt = appointments[index];
+              return AppointmentCard(
+                appointment: appt,
+                onViewDetails: () {
+                  Navigator.pushNamed(
+                    context,
+                    Routes.doctor_profile,
+                    arguments: appt.doctorId,
+                  );
+                },
+                onCancel: () => _openCancelDialog(appt),
+                onReschedule: () => _openRescheduleSheet(appt),
+                onJoinCall: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Joining video call with ${appt.doctorName}...'),
+                      backgroundColor: const Color(0xFF10B981),
+                    ),
+                  );
+                },
+                onBookAgain: () {
+                  Navigator.pushNamed(
+                    context,
+                    Routes.choose_slots,
+                    arguments: appt.doctorId,
+                  );
+                },
+              );
+            },
+            childCount: appointments.length,
+          ),
+        ),
+      ];
+
+      if (state.isLoadMoreLoading) {
+        slivers.add(
+          const SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 16.0),
+              child: Center(
+                child: SizedBox(
+                  width: 24.0,
+                  height: 24.0,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.0,
+                    color: Color(0xFF0284C7),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      } else {
+        // No action needed
+      }
+
+      return slivers;
+    }
+  }
+
+  /// Builds the recommendation banner sliver if recommendations exist.
+  Widget _build_recommendations_sliver(AppointmentsState state) {
+    if (state.shouldShowRecommendations) {
+      return SliverToBoxAdapter(
+        child: RecommendationBanner(
+          recommendations: state.recommendations,
+          onBookTap: (doc) {
+            Navigator.pushNamed(
+              context,
+              Routes.choose_slots,
+              arguments: doc.id,
+            );
+          },
+        ),
+      );
+    } else {
+      return const SliverToBoxAdapter(child: SizedBox.shrink());
+    }
   }
 }

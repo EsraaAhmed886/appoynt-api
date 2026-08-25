@@ -5,7 +5,7 @@
  * Version Information: v1.0.0
  * Dependencies: ./appointment_model.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Defines the filter options criteria for filtering appointments by date range, specialty, clinic, and consultation type.
  */
 
@@ -38,10 +38,26 @@ class AppointmentFilter {
   /// Counts the number of active filter parameters for the UI badge counter.
   int get activeFiltersCount {
     int count = 0;
-    if (startDate != null || endDate != null) count++;
-    if (specialty != null && specialty!.isNotEmpty) count++;
-    if (clinicName != null && clinicName!.isNotEmpty) count++;
-    if (type != null) count++;
+    if (startDate != null || endDate != null) {
+      count++;
+    } else {
+      // No action needed
+    }
+    if (specialty != null && specialty!.isNotEmpty) {
+      count++;
+    } else {
+      // No action needed
+    }
+    if (clinicName != null && clinicName!.isNotEmpty) {
+      count++;
+    } else {
+      // No action needed
+    }
+    if (type != null) {
+      count++;
+    } else {
+      // No action needed
+    }
     return count;
   }
 
@@ -72,28 +88,48 @@ class AppointmentFilter {
       final startOfDay = DateTime(startDate!.year, startDate!.month, startDate!.day);
       if (appointment.scheduledDateTime.isBefore(startOfDay)) {
         return false;
+      } else {
+        // No action needed
       }
+    } else {
+      // No action needed
     }
     if (endDate != null) {
       final endOfDay = DateTime(endDate!.year, endDate!.month, endDate!.day, 23, 59, 59);
       if (appointment.scheduledDateTime.isAfter(endOfDay)) {
         return false;
+      } else {
+        // No action needed
       }
+    } else {
+      // No action needed
     }
     if (specialty != null && specialty!.isNotEmpty) {
       if (appointment.doctorSpecialty?.toLowerCase() != specialty!.toLowerCase()) {
         return false;
+      } else {
+        // No action needed
       }
+    } else {
+      // No action needed
     }
     if (clinicName != null && clinicName!.isNotEmpty) {
       if (!appointment.clinicName.toLowerCase().contains(clinicName!.toLowerCase())) {
         return false;
+      } else {
+        // No action needed
       }
+    } else {
+      // No action needed
     }
     if (type != null) {
       if (appointment.type != type) {
         return false;
+      } else {
+        // No action needed
       }
+    } else {
+      // No action needed
     }
     return true;
   }

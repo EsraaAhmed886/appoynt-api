@@ -5,7 +5,7 @@
  * Version Information: v1.0.0
  * Dependencies: ../../data/models/appointment_model.dart, ../../data/models/appointment_filter_model.dart, ../../data/models/quick_action_item_model.dart, ../../data/models/doctor_recommendation_model.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Defines the immutable state container for the Appointments module with tab-isolated cached datasets and pagination cursors.
  */
 
@@ -91,6 +91,8 @@ class AppointmentsState extends Equatable {
         return cancelledAppointments;
       case AppointmentTabType.all:
         return allAppointments;
+      default:
+        return upcomingAppointments;
     }
   }
 
@@ -105,6 +107,8 @@ class AppointmentsState extends Equatable {
         return cancelledHasReachedMax;
       case AppointmentTabType.all:
         return allHasReachedMax;
+      default:
+        return upcomingHasReachedMax;
     }
   }
 

@@ -5,7 +5,7 @@
  * Version Information: v1.0.0
  * Dependencies: none
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Defines the core data models, status enums, consultation types, and refund eligibility rules for patient appointments.
  */
 
@@ -109,11 +109,12 @@ class AppointmentModel {
   bool canJoinCall([DateTime? referenceTime]) {
     if (type != AppointmentType.onlineVideo || status == AppointmentStatus.cancelled) {
       return false;
+    } else {
+      final now = referenceTime ?? DateTime.now();
+      final joinWindowStart = scheduledDateTime.subtract(const Duration(minutes: 10));
+      return (now.isAfter(joinWindowStart) || now.isAtSameMomentAs(joinWindowStart)) &&
+          now.isBefore(endDateTime);
     }
-    final now = referenceTime ?? DateTime.now();
-    final joinWindowStart = scheduledDateTime.subtract(const Duration(minutes: 10));
-    return (now.isAfter(joinWindowStart) || now.isAtSameMomentAs(joinWindowStart)) &&
-        now.isBefore(endDateTime);
   }
 
   /// Creates a modified clone of this appointment.

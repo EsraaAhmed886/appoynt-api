@@ -5,7 +5,7 @@
  * Version Information: v1.0.0
  * Dependencies: flutter/material.dart, ../../../../core/localization/appointments_strings.dart, ../../data/models/appointment_model.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Pill badge displaying appointment lifecycle status with contextual color palettes and localized label.
  */
 
@@ -57,12 +57,20 @@ class AppointmentStatusBadge extends StatelessWidget {
         border = const Color(0xFFFDE68A);
         textKey = 'status_missed';
         break;
+      default:
+        bg = const Color(0xFFF0F9FF);
+        fg = const Color(0xFF0284C7);
+        border = const Color(0xFFBAE6FD);
+        textKey = 'status_upcoming';
+        break;
     }
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     if (isDark) {
       bg = bg.withValues(alpha: 0.15);
       border = border.withValues(alpha: 0.3);
+    } else {
+      // No action needed
     }
 
     return Container(

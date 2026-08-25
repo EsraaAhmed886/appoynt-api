@@ -5,7 +5,7 @@
  * Version Information: v1.0.0
  * Dependencies: flutter/material.dart, ../../../../core/localization/appointments_strings.dart, ../../../../core/routing/routes.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Top navigation header for the Appointments screen displaying screen title and notification bell with unread count badge.
  */
 
@@ -66,38 +66,45 @@ class AppointmentsHeader extends StatelessWidget {
                   padding: EdgeInsets.zero,
                 ),
               ),
-              if (unreadNotificationsCount > 0)
-                Positioned(
-                  top: -2,
-                  right: -2,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 2.0),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFEF4444),
-                      borderRadius: BorderRadius.circular(10.0),
-                      border: Border.all(
-                        color: isDark ? const Color(0xFF0F172A) : Colors.white,
-                        width: 1.5,
-                      ),
-                    ),
-                    constraints: const BoxConstraints(minWidth: 18.0, minHeight: 18.0),
-                    child: Center(
-                      child: Text(
-                        unreadNotificationsCount > 99 ? '99+' : unreadNotificationsCount.toString(),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 10.0,
-                          fontWeight: FontWeight.bold,
-                          height: 1.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+              _build_notification_badge(isDark),
             ],
           ),
         ],
       ),
     );
+  }
+
+  Widget _build_notification_badge(bool isDark) {
+    if (unreadNotificationsCount > 0) {
+      return Positioned(
+        top: -2,
+        right: -2,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 2.0),
+          decoration: BoxDecoration(
+            color: const Color(0xFFEF4444),
+            borderRadius: BorderRadius.circular(10.0),
+            border: Border.all(
+              color: isDark ? const Color(0xFF0F172A) : Colors.white,
+              width: 1.5,
+            ),
+          ),
+          constraints: const BoxConstraints(minWidth: 18.0, minHeight: 18.0),
+          child: Center(
+            child: Text(
+              unreadNotificationsCount > 99 ? '99+' : unreadNotificationsCount.toString(),
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 10.0,
+                fontWeight: FontWeight.bold,
+                height: 1.0,
+              ),
+            ),
+          ),
+        ),
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
   }
 }

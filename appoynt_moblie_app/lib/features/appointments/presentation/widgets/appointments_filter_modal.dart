@@ -5,7 +5,7 @@
  * Version Information: v1.0.0
  * Dependencies: flutter/material.dart, ../../../../core/localization/appointments_strings.dart, ../../data/models/appointment_model.dart, ../../data/models/appointment_filter_model.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Bottom sheet modal for filtering appointments by date range, specialty, facility, and consultation medium.
  */
 
@@ -112,6 +112,8 @@ class _AppointmentsFilterModalState extends State<AppointmentsFilterModal> {
     );
     if (picked != null) {
       setState(() => _startDate = picked);
+    } else {
+      // No action needed
     }
   }
 
@@ -125,6 +127,8 @@ class _AppointmentsFilterModalState extends State<AppointmentsFilterModal> {
     );
     if (picked != null) {
       setState(() => _endDate = picked);
+    } else {
+      // No action needed
     }
   }
 

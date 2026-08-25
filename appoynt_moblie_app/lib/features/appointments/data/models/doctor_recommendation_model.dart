@@ -5,7 +5,7 @@
  * Version Information: v1.0.0
  * Dependencies: none
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Defines the data model for recommended doctors shown conditionally on the appointments screen.
  */
 

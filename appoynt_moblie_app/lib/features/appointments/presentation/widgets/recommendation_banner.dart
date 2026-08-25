@@ -5,7 +5,7 @@
  * Version Information: v1.0.0
  * Dependencies: flutter/material.dart, ../../../../core/localization/appointments_strings.dart, ../../data/models/doctor_recommendation_model.dart, ./appointment_doctor_avatar.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Recommendation banner card recommending top-rated specialists and health checkups with search-suppression guard (BR-63).
  */
 
@@ -29,43 +29,43 @@ class RecommendationBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     if (recommendations.isEmpty) {
       return const SizedBox.shrink();
+    } else {
+      final isDark = Theme.of(context).brightness == Brightness.dark;
+
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Section Title
+            Text(
+              AppointmentsStrings.of(context, 'recommended_doctors'),
+              style: TextStyle(
+                fontSize: 14.0,
+                fontWeight: FontWeight.bold,
+                color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF475569),
+              ),
+            ),
+            const SizedBox(height: 10.0),
+
+            // Horizontal Recommendations List
+            SizedBox(
+              height: 140.0,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                itemCount: recommendations.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 12.0),
+                itemBuilder: (context, index) {
+                  final doc = recommendations[index];
+                  return _buildDoctorCard(context, doc, isDark);
+                },
+              ),
+            ),
+          ],
+        ),
+      );
     }
-
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Section Title
-          Text(
-            AppointmentsStrings.of(context, 'recommended_doctors'),
-            style: TextStyle(
-              fontSize: 14.0,
-              fontWeight: FontWeight.bold,
-              color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF475569),
-            ),
-          ),
-          const SizedBox(height: 10.0),
-
-          // Horizontal Recommendations List
-          SizedBox(
-            height: 140.0,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              physics: const BouncingScrollPhysics(),
-              itemCount: recommendations.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 12.0),
-              itemBuilder: (context, index) {
-                final doc = recommendations[index];
-                return _buildDoctorCard(context, doc, isDark);
-              },
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   Widget _buildDoctorCard(

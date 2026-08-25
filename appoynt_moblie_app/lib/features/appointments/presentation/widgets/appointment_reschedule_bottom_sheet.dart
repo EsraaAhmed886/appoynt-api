@@ -5,7 +5,7 @@
  * Version Information: v1.0.0
  * Dependencies: flutter/material.dart, ../../../../core/localization/appointments_strings.dart, ../../data/models/appointment_model.dart, ../../data/repositories/appointments_mock_repository.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Rescheduling workflow modal with date strip picker, dynamic time slots grid, and schedule confirmation.
  */
 
@@ -83,6 +83,8 @@ class _AppointmentRescheduleBottomSheetState extends State<AppointmentReschedule
           _availableSlots = slots;
           _isLoadingSlots = false;
         });
+      } else {
+        // No action needed
       }
     } catch (_) {
       if (mounted) {
@@ -90,6 +92,8 @@ class _AppointmentRescheduleBottomSheetState extends State<AppointmentReschedule
           _availableSlots = [];
           _isLoadingSlots = false;
         });
+      } else {
+        // No action needed
       }
     }
   }
@@ -250,79 +254,7 @@ class _AppointmentRescheduleBottomSheetState extends State<AppointmentReschedule
             ),
             const SizedBox(height: 10.0),
 
-            if (_isLoadingSlots)
-              const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(24.0),
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2.5,
-                    color: Color(0xFF0284C7),
-                  ),
-                ),
-              )
-            else if (_availableSlots.isEmpty)
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
-                child: Text(
-                  AppointmentsStrings.of(context, 'no_slots_available'),
-                  style: TextStyle(
-                    fontSize: 12.5,
-                    color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              )
-            else
-              GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 10.0,
-                  mainAxisSpacing: 10.0,
-                  childAspectRatio: 2.4,
-                ),
-                itemCount: _availableSlots.length,
-                itemBuilder: (context, index) {
-                  final slot = _availableSlots[index];
-                  final isSelected = _selectedSlot != null &&
-                      _selectedSlot!.isAtSameMomentAs(slot);
-
-                  return GestureDetector(
-                    onTap: () => setState(() => _selectedSlot = slot),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: isSelected
-                            ? const Color(0xFF0284C7)
-                            : (isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC)),
-                        borderRadius: BorderRadius.circular(12.0),
-                        border: Border.all(
-                          color: isSelected
-                              ? const Color(0xFF0284C7)
-                              : (isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
-                          width: 1.0,
-                        ),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        _formatSlotTime(slot),
-                        style: TextStyle(
-                          fontSize: 12.5,
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
-                          color: isSelected
-                              ? Colors.white
-                              : (isDark ? Colors.white70 : const Color(0xFF334155)),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
+            _build_time_slots_section(isDark, context),
             const SizedBox(height: 24.0),
 
             // Confirmation CTA
@@ -353,5 +285,83 @@ class _AppointmentRescheduleBottomSheetState extends State<AppointmentReschedule
         ),
       ),
     );
+  }
+
+  /// Builds the time slots grid, loading spinner, or empty state.
+  Widget _build_time_slots_section(bool isDark, BuildContext context) {
+    if (_isLoadingSlots) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(24.0),
+          child: CircularProgressIndicator(
+            strokeWidth: 2.5,
+            color: Color(0xFF0284C7),
+          ),
+        ),
+      );
+    } else if (_availableSlots.isEmpty) {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        child: Text(
+          AppointmentsStrings.of(context, 'no_slots_available'),
+          style: TextStyle(
+            fontSize: 12.5,
+            color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+          ),
+          textAlign: TextAlign.center,
+        ),
+      );
+    } else {
+      return GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          crossAxisSpacing: 10.0,
+          mainAxisSpacing: 10.0,
+          childAspectRatio: 2.4,
+        ),
+        itemCount: _availableSlots.length,
+        itemBuilder: (context, index) {
+          final slot = _availableSlots[index];
+          final isSelected = _selectedSlot != null &&
+              _selectedSlot!.isAtSameMomentAs(slot);
+
+          return GestureDetector(
+            onTap: () => setState(() => _selectedSlot = slot),
+            child: Container(
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? const Color(0xFF0284C7)
+                    : (isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC)),
+                borderRadius: BorderRadius.circular(12.0),
+                border: Border.all(
+                  color: isSelected
+                      ? const Color(0xFF0284C7)
+                      : (isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
+                  width: 1.0,
+                ),
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                _formatSlotTime(slot),
+                style: TextStyle(
+                  fontSize: 12.5,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                  color: isSelected
+                      ? Colors.white
+                      : (isDark ? Colors.white70 : const Color(0xFF334155)),
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    }
   }
 }

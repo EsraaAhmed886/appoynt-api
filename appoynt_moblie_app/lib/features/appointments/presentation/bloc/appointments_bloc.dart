@@ -5,7 +5,7 @@
  * Version Information: v1.0.0
  * Dependencies: flutter_bloc, dartz, ../../data/models/appointment_model.dart, ../../data/models/appointment_filter_model.dart, ../../data/repositories/appointments_mock_repository.dart, ./appointments_event.dart, ./appointments_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Main business logic component managing appointment tabs, debounced search, filtering, pagination, cancellation, and rescheduling workflows.
  */
 
@@ -39,6 +39,8 @@ class _DebounceStreamTransformer<E> extends StreamTransformerBase<E, E> {
             timer = Timer(duration, () {
               if (!controller.isClosed) {
                 controller.add(data);
+              } else {
+                // No action needed
               }
             });
           },
@@ -129,6 +131,14 @@ class AppointmentsBloc extends Bloc<AppointmentsEvent, AppointmentsState> {
           ));
           break;
         case AppointmentTabType.all:
+          emit(state.copyWith(
+            isLoading: false,
+            allAppointments: items,
+            allPage: 1,
+            allHasReachedMax: hasReachedMax,
+          ));
+          break;
+        default:
           emit(state.copyWith(
             isLoading: false,
             allAppointments: items,
@@ -238,30 +248,30 @@ class AppointmentsBloc extends Bloc<AppointmentsEvent, AppointmentsState> {
   ) async {
     if (state.isLoadMoreLoading || state.currentTabHasReachedMax) {
       return;
-    }
+    } else {
+      emit(state.copyWith(isLoadMoreLoading: true));
 
-    emit(state.copyWith(isLoadMoreLoading: true));
+      final nextPage = _getCurrentPage(state.activeTab) + 1;
 
-    final nextPage = _getCurrentPage(state.activeTab) + 1;
+      try {
+        final newItems = await repository.getAppointments(
+          tab: state.activeTab,
+          searchQuery: state.searchQuery,
+          filter: state.activeFilter,
+          page: nextPage,
+          pageSize: 20,
+        );
 
-    try {
-      final newItems = await repository.getAppointments(
-        tab: state.activeTab,
-        searchQuery: state.searchQuery,
-        filter: state.activeFilter,
-        page: nextPage,
-        pageSize: 20,
-      );
+        final currentList = state.currentTabAppointments;
+        final existingIds = currentList.map((a) => a.id).toSet();
+        final deduplicatedNewItems = newItems.where((a) => !existingIds.contains(a.id)).toList();
+        final merged = [...currentList, ...deduplicatedNewItems];
+        final hasReachedMax = newItems.length < 20;
 
-      final currentList = state.currentTabAppointments;
-      final existingIds = currentList.map((a) => a.id).toSet();
-      final deduplicatedNewItems = newItems.where((a) => !existingIds.contains(a.id)).toList();
-      final merged = [...currentList, ...deduplicatedNewItems];
-      final hasReachedMax = newItems.length < 20;
-
-      _updateTabAppointments(emit, state.activeTab, merged, nextPage, hasReachedMax, isLoadMore: true);
-    } catch (e) {
-      emit(state.copyWith(isLoadMoreLoading: false));
+        _updateTabAppointments(emit, state.activeTab, merged, nextPage, hasReachedMax, isLoadMore: true);
+      } catch (e) {
+        emit(state.copyWith(isLoadMoreLoading: false));
+      }
     }
   }
 
@@ -367,6 +377,8 @@ class AppointmentsBloc extends Bloc<AppointmentsEvent, AppointmentsState> {
         return state.cancelledPage;
       case AppointmentTabType.all:
         return state.allPage;
+      default:
+        return 1;
     }
   }
 
@@ -407,6 +419,15 @@ class AppointmentsBloc extends Bloc<AppointmentsEvent, AppointmentsState> {
         ));
         break;
       case AppointmentTabType.all:
+        emit(state.copyWith(
+          isLoading: false,
+          isLoadMoreLoading: false,
+          allAppointments: items,
+          allPage: page,
+          allHasReachedMax: hasReachedMax,
+        ));
+        break;
+      default:
         emit(state.copyWith(
           isLoading: false,
           isLoadMoreLoading: false,

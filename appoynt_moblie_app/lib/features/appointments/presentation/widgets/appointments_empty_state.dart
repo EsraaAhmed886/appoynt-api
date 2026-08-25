@@ -5,7 +5,7 @@
  * Version Information: v1.0.0
  * Dependencies: flutter/material.dart, ../../../../core/localization/appointments_strings.dart, ../../data/models/appointment_model.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Contextual empty state placeholder widget adapting to active tab category, search queries, or active filter states.
  */
 
@@ -69,6 +69,12 @@ class AppointmentsEmptyState extends StatelessWidget {
           subtitleKey = 'no_all_sub';
           showCta = true;
           break;
+        default:
+          icon = Icons.event_available_rounded;
+          titleKey = 'no_upcoming';
+          subtitleKey = 'no_upcoming_sub';
+          showCta = true;
+          break;
       }
     }
 
@@ -117,27 +123,39 @@ class AppointmentsEmptyState extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
 
-            if (showCta) ...[
-              const SizedBox(height: 20.0),
-              ElevatedButton.icon(
-                onPressed: onActionTap,
-                icon: const Icon(Icons.add_rounded, size: 18.0),
-                label: Text(
-                  AppointmentsStrings.of(context, 'book_now'),
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13.5),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF0284C7),
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.0)),
-                  elevation: 0,
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
-                ),
-              ),
-            ],
+            _build_cta_button(showCta, context),
           ],
         ),
       ),
     );
+  }
+
+  /// Builds call-to-action button if applicable.
+  Widget _build_cta_button(bool showCta, BuildContext context) {
+    if (showCta) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 20.0),
+          ElevatedButton.icon(
+            onPressed: onActionTap,
+            icon: const Icon(Icons.add_rounded, size: 18.0),
+            label: Text(
+              AppointmentsStrings.of(context, 'book_now'),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13.5),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF0284C7),
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.0)),
+              elevation: 0,
+              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+            ),
+          ),
+        ],
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
   }
 }

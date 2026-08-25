@@ -5,7 +5,7 @@
  * Version Information: v1.0.0
  * Dependencies: flutter/material.dart, ../../../../core/localization/appointments_strings.dart, ../../data/models/appointment_model.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Custom segmented pill tab bar for switching between Upcoming, Completed, Cancelled, and All Appointments categories.
  */
 
@@ -70,6 +70,9 @@ class AppointmentsTabBar extends StatelessWidget {
         break;
       case AppointmentTabType.all:
         labelKey = 'tab_all';
+        break;
+      default:
+        labelKey = 'tab_upcoming';
         break;
     }
 

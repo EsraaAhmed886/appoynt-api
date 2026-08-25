@@ -5,7 +5,7 @@
  * Version Information: v1.0.0
  * Dependencies: flutter/material.dart, ../../../../core/localization/appointments_strings.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Reusable search input field with debounced query controller and filter modal trigger with active badge count.
  */
 
@@ -45,6 +45,8 @@ class _AppointmentsSearchBarState extends State<AppointmentsSearchBar> {
     super.didUpdateWidget(oldWidget);
     if (widget.initialQuery != oldWidget.initialQuery && widget.initialQuery != _controller.text) {
       _controller.text = widget.initialQuery;
+    } else {
+      // No action needed
     }
   }
 
@@ -141,34 +143,42 @@ class _AppointmentsSearchBarState extends State<AppointmentsSearchBar> {
                   padding: EdgeInsets.zero,
                 ),
               ),
-              if (widget.activeFiltersCount > 0)
-                Positioned(
-                  top: -3,
-                  right: -3,
-                  child: Container(
-                    padding: const EdgeInsets.all(4.0),
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFEF4444),
-                      shape: BoxShape.circle,
-                    ),
-                    constraints: const BoxConstraints(minWidth: 16.0, minHeight: 16.0),
-                    child: Center(
-                      child: Text(
-                        widget.activeFiltersCount.toString(),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 9.0,
-                          fontWeight: FontWeight.bold,
-                          height: 1.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+              _build_filter_badge(),
             ],
           ),
         ],
       ),
     );
+  }
+
+  /// Builds the badge counter on top of the filter icon.
+  Widget _build_filter_badge() {
+    if (widget.activeFiltersCount > 0) {
+      return Positioned(
+        top: -3,
+        right: -3,
+        child: Container(
+          padding: const EdgeInsets.all(4.0),
+          decoration: const BoxDecoration(
+            color: Color(0xFFEF4444),
+            shape: BoxShape.circle,
+          ),
+          constraints: const BoxConstraints(minWidth: 16.0, minHeight: 16.0),
+          child: Center(
+            child: Text(
+              widget.activeFiltersCount.toString(),
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 9.0,
+                fontWeight: FontWeight.bold,
+                height: 1.0,
+              ),
+            ),
+          ),
+        ),
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
   }
 }

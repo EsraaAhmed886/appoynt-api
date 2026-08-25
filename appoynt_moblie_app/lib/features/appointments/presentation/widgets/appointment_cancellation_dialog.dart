@@ -5,7 +5,7 @@
  * Version Information: v1.0.0
  * Dependencies: flutter/material.dart, ../../../../core/localization/appointments_strings.dart, ../../data/models/appointment_model.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Cancellation confirmation dialog calculating refund tiers, displaying cutoff warnings, and capturing optional cancellation reasons.
  */
 
@@ -110,108 +110,11 @@ class _AppointmentCancellationDialogState extends State<AppointmentCancellationD
             const SizedBox(height: 14.0),
 
             // Refund Policy Banner
-            if (canCancel) ...[
-              Container(
-                padding: const EdgeInsets.all(12.0),
-                decoration: BoxDecoration(
-                  color: refundTier == RefundEligibility.full
-                      ? const Color(0xFFECFDF5)
-                      : const Color(0xFFFFFBEB),
-                  borderRadius: BorderRadius.circular(12.0),
-                  border: Border.all(
-                    color: refundTier == RefundEligibility.full
-                        ? const Color(0xFFA7F3D0)
-                        : const Color(0xFFFDE68A),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      refundTier == RefundEligibility.full
-                          ? Icons.check_circle_outline_rounded
-                          : Icons.info_outline_rounded,
-                      size: 18.0,
-                      color: refundTier == RefundEligibility.full
-                          ? const Color(0xFF059669)
-                          : const Color(0xFFD97706),
-                    ),
-                    const SizedBox(width: 8.0),
-                    Expanded(
-                      child: Text(
-                        refundTier == RefundEligibility.full
-                            ? AppointmentsStrings.of(context, 'cancel_full_refund')
-                            : AppointmentsStrings.of(context, 'cancel_partial_refund'),
-                        style: TextStyle(
-                          fontSize: 12.5,
-                          fontWeight: FontWeight.w600,
-                          color: refundTier == RefundEligibility.full
-                              ? const Color(0xFF065F46)
-                              : const Color(0xFF92400E),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ] else ...[
-              // Cutoff Warning (< 15 mins)
-              Container(
-                padding: const EdgeInsets.all(12.0),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFEF2F2),
-                  borderRadius: BorderRadius.circular(12.0),
-                  border: Border.all(color: const Color(0xFFFECACA)),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(Icons.error_outline_rounded, size: 18.0, color: Color(0xFFDC2626)),
-                    const SizedBox(width: 8.0),
-                    Expanded(
-                      child: Text(
-                        AppointmentsStrings.of(context, 'cancel_cutoff_warning'),
-                        style: const TextStyle(
-                          fontSize: 12.0,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF991B1B),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+            _build_refund_banner(canCancel, refundTier, context),
             const SizedBox(height: 14.0),
 
             // Optional Reason Input Field
-            if (canCancel) ...[
-              Container(
-                decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
-                  borderRadius: BorderRadius.circular(12.0),
-                  border: Border.all(
-                    color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
-                  ),
-                ),
-                child: TextField(
-                  controller: _reasonController,
-                  maxLines: 2,
-                  style: TextStyle(
-                    fontSize: 13.0,
-                    color: isDark ? Colors.white : const Color(0xFF0F172A),
-                  ),
-                  decoration: InputDecoration(
-                    hintText: AppointmentsStrings.of(context, 'cancel_reason_hint'),
-                    hintStyle: TextStyle(
-                      fontSize: 12.5,
-                      color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
-                    ),
-                    contentPadding: const EdgeInsets.all(12.0),
-                    border: InputBorder.none,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20.0),
-            ],
+            _build_reason_input(canCancel, isDark, context),
 
             // Action Buttons: [Keep] & [Confirm]
             Row(
@@ -263,5 +166,118 @@ class _AppointmentCancellationDialogState extends State<AppointmentCancellationD
         ),
       ),
     );
+  }
+
+  /// Builds refund eligibility banner or cutoff warning.
+  Widget _build_refund_banner(bool canCancel, RefundEligibility refundTier, BuildContext context) {
+    if (canCancel) {
+      return Container(
+        padding: const EdgeInsets.all(12.0),
+        decoration: BoxDecoration(
+          color: refundTier == RefundEligibility.full
+              ? const Color(0xFFECFDF5)
+              : const Color(0xFFFFFBEB),
+          borderRadius: BorderRadius.circular(12.0),
+          border: Border.all(
+            color: refundTier == RefundEligibility.full
+                ? const Color(0xFFA7F3D0)
+                : const Color(0xFFFDE68A),
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              refundTier == RefundEligibility.full
+                  ? Icons.check_circle_outline_rounded
+                  : Icons.info_outline_rounded,
+              size: 18.0,
+              color: refundTier == RefundEligibility.full
+                  ? const Color(0xFF059669)
+                  : const Color(0xFFD97706),
+            ),
+            const SizedBox(width: 8.0),
+            Expanded(
+              child: Text(
+                refundTier == RefundEligibility.full
+                    ? AppointmentsStrings.of(context, 'cancel_full_refund')
+                    : AppointmentsStrings.of(context, 'cancel_partial_refund'),
+                style: TextStyle(
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.w600,
+                  color: refundTier == RefundEligibility.full
+                      ? const Color(0xFF065F46)
+                      : const Color(0xFF92400E),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    } else {
+      return Container(
+        padding: const EdgeInsets.all(12.0),
+        decoration: BoxDecoration(
+          color: const Color(0xFFFEF2F2),
+          borderRadius: BorderRadius.circular(12.0),
+          border: Border.all(color: const Color(0xFFFECACA)),
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.error_outline_rounded, size: 18.0, color: Color(0xFFDC2626)),
+            const SizedBox(width: 8.0),
+            Expanded(
+              child: Text(
+                AppointmentsStrings.of(context, 'cancel_cutoff_warning'),
+                style: const TextStyle(
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF991B1B),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+  /// Builds optional reason input field when cancellation is permitted.
+  Widget _build_reason_input(bool canCancel, bool isDark, BuildContext context) {
+    if (canCancel) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
+              borderRadius: BorderRadius.circular(12.0),
+              border: Border.all(
+                color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+              ),
+            ),
+            child: TextField(
+              controller: _reasonController,
+              maxLines: 2,
+              style: TextStyle(
+                fontSize: 13.0,
+                color: isDark ? Colors.white : const Color(0xFF0F172A),
+              ),
+              decoration: InputDecoration(
+                hintText: AppointmentsStrings.of(context, 'cancel_reason_hint'),
+                hintStyle: TextStyle(
+                  fontSize: 12.5,
+                  color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
+                ),
+                contentPadding: const EdgeInsets.all(12.0),
+                border: InputBorder.none,
+              ),
+            ),
+          ),
+          const SizedBox(height: 20.0),
+        ],
+      );
+    } else {
+      return const SizedBox(height: 20.0);
+    }
   }
 }
