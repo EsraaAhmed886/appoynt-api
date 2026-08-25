@@ -165,10 +165,14 @@ export function use_clinic_form(clinic_id: number) {
       if (is_dirty || is_any_card_editing) {
         e.preventDefault();
         e.returnValue = "";
+      } else {
+        // No action needed
       }
     };
     if (is_dirty || is_any_card_editing) {
       window.addEventListener("beforeunload", handle_before_unload);
+    } else {
+      // No action needed
     }
     return () => {
       window.removeEventListener("beforeunload", handle_before_unload);
@@ -178,6 +182,8 @@ export function use_clinic_form(clinic_id: number) {
   const mark_as_dirty = useCallback(() => {
     if (!is_dirty) {
       set_is_dirty(true);
+    } else {
+      // No action needed
     }
   }, [is_dirty]);
 
@@ -236,6 +242,8 @@ export function use_clinic_form(clinic_id: number) {
       ).replace(/\D/g, "");
       set_consultation_fee(fee_val);
       set_status(original_clinic.status || "Active");
+    } else {
+      // No action needed
     }
     set_clinic_name_error("");
     set_phone_error("");
@@ -249,6 +257,8 @@ export function use_clinic_form(clinic_id: number) {
   const cancel_schedule = useCallback(() => {
     if (original_clinic) {
       set_schedule_list(original_clinic.schedule_list || []);
+    } else {
+      // No action needed
     }
     set_is_editing_schedule(false);
   }, [original_clinic]);
@@ -256,6 +266,8 @@ export function use_clinic_form(clinic_id: number) {
   const cancel_breaks = useCallback(() => {
     if (original_clinic) {
       set_break_list(original_clinic.break_list || []);
+    } else {
+      // No action needed
     }
     set_is_editing_breaks(false);
   }, [original_clinic]);
@@ -263,6 +275,8 @@ export function use_clinic_form(clinic_id: number) {
   const cancel_receptionists = useCallback(() => {
     if (original_clinic) {
       set_assigned_receptionists(original_clinic.assigned_receptionists || []);
+    } else {
+      // No action needed
     }
     set_is_editing_receptionists(false);
   }, [original_clinic]);
@@ -271,6 +285,8 @@ export function use_clinic_form(clinic_id: number) {
     if (original_clinic) {
       set_appointment_duration(original_clinic.appointment_duration || "");
       set_max_advance_booking(original_clinic.max_advance_booking || "");
+    } else {
+      // No action needed
     }
     set_is_editing_booking(false);
   }, [original_clinic]);
@@ -286,6 +302,8 @@ export function use_clinic_form(clinic_id: number) {
   const confirm_discard_changes = useCallback(() => {
     if (original_clinic) {
       populate_from_entity(original_clinic);
+    } else {
+      // No action needed
     }
     set_is_dirty(false);
     set_is_edit_mode(false);
@@ -366,6 +384,8 @@ export function use_clinic_form(clinic_id: number) {
     const is_valid = validate_info_fields();
     if (!is_valid) {
       return false;
+    } else {
+      // No action needed
     }
     const updated_entity = build_current_clinic_entity();
     update_clinic(updated_entity);
@@ -447,6 +467,8 @@ export function use_clinic_form(clinic_id: number) {
     const is_valid = validate_info_fields();
     if (!is_valid) {
       return;
+    } else {
+      // No action needed
     }
 
     // Check if schedule changes impact existing appointments (trigger conflict dialog)
@@ -635,6 +657,8 @@ export function use_clinic_form(clinic_id: number) {
         // Auto-cleanup orphan break times
         if (deleted_day) {
           set_break_list((prev) => prev.filter((b) => b.day !== deleted_day));
+        } else {
+          // No action needed
         }
         mark_as_dirty();
       },

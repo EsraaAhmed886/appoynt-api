@@ -58,6 +58,8 @@ export default function ClinicViewEditPage({
         </div>
       </div>
     );
+  } else {
+    // No action needed
   }
 
   const clinic_code = `CLN-${String(clinic_id).padStart(3, "0")}`;

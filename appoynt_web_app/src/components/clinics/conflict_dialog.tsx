@@ -31,6 +31,8 @@ export default function ConflictDialog({
 
   if (!is_open) {
     return null;
+  } else {
+    // No action needed
   }
 
   return (

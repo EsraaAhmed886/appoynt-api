@@ -31,6 +31,8 @@ export default function StickyActionBar({
 
   if (!is_visible) {
     return null;
+  } else {
+    // No action needed
   }
 
   return (
