@@ -19,12 +19,14 @@ type ClinicDetailsHeaderProps = {
   clinic_name: string;
   status: string;
   clinic_code?: string;
+  on_back_click?: (e: React.MouseEvent) => void;
 };
 
 export default function ClinicDetailsHeader({
   clinic_name,
   status,
   clinic_code = "CLN-001",
+  on_back_click,
 }: ClinicDetailsHeaderProps) {
   const { translations } = useTranslation();
   const is_active = "Active" === status;
@@ -35,6 +37,13 @@ export default function ClinicDetailsHeader({
       <div>
         <Link
           href="/clinics"
+          onClick={(e) => {
+            if (on_back_click) {
+              on_back_click(e);
+            } else {
+              // No action needed
+            }
+          }}
           className="inline-flex items-center gap-2 text-sm font-semibold text-app-primary hover:underline transition-all"
         >
           <ArrowLeft size={16} className="rtl:rotate-180" />

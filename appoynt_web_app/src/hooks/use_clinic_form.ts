@@ -678,6 +678,7 @@ export function use_clinic_form(clinic_id: number) {
       handleCancel: handle_cancel,
       confirmDiscardChanges: confirm_discard_changes,
       executeSave: execute_save,
+      openUnsavedModal: () => set_is_unsaved_modal_open(true),
       closeUnsavedModal: () => set_is_unsaved_modal_open(false),
       closeConflictModal: () => set_is_conflict_modal_open(false),
       closeSuccessModal: () => set_is_success_modal_open(false),
