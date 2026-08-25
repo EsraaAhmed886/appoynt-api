@@ -310,4 +310,50 @@ public class UserManagementIntegrationTests : IClassFixture<WebApplicationFactor
         var content = await response.Content.ReadAsStringAsync();
         content.Should().Contain("auth.registration.phone.already_registered");
     }
+
+    [Fact]
+    public async Task CreateDoctor_ShouldSucceed_WhenSameEmailAndPhoneReusedAfterSoftDelete()
+    {
+        // Arrange
+        string adminToken = await GetAdminTokenAsync();
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", adminToken);
+
+        var firstDoctor = new CreateDoctorRequest
+        {
+            FirstName = "Deleted",
+            LastName = "Doctor",
+            NameAr = "د. محذوف",
+            NameEn = "Dr. Deleted",
+            Email = "reusable.doctor@appoynt.com",
+            PhoneNumber = "15559998888",
+            Password = "Password123!"
+        };
+
+        var createResponse = await _client.PostAsJsonAsync("/api/users/doctors", firstDoctor);
+        createResponse.StatusCode.Should().Be(HttpStatusCode.Created);
+        var createdResult = await createResponse.Content.ReadFromJsonAsync<UserManagementResult>();
+        createdResult.Should().NotBeNull();
+        createdResult!.UserId.Should().NotBeNull();
+
+        // Act - Soft Delete the Doctor
+        var deleteResponse = await _client.DeleteAsync($"/api/users/{createdResult.UserId}");
+        deleteResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
+
+        // Act - Re-create the doctor with the EXACT SAME email and phone number
+        var secondDoctor = new CreateDoctorRequest
+        {
+            FirstName = "Recreated",
+            LastName = "Doctor",
+            NameAr = "د. معاد إنشاؤه",
+            NameEn = "Dr. Recreated",
+            Email = "reusable.doctor@appoynt.com",
+            PhoneNumber = "15559998888",
+            Password = "Password123!"
+        };
+
+        var reCreateResponse = await _client.PostAsJsonAsync("/api/users/doctors", secondDoctor);
+
+        // Assert - Should succeed
+        reCreateResponse.StatusCode.Should().Be(HttpStatusCode.Created);
+    }
 }

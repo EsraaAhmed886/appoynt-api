@@ -5,7 +5,7 @@
  * Version        : v1.0.0
  * Dependencies   : System.ComponentModel.DataAnnotations
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 27/07/2026
+ * Last Modified  : Mustafa Mahmoud - 2026-08-25
  * Description    : Configuration options for rate limiting policies.
  */
 
@@ -22,6 +22,12 @@ public sealed class RateLimitingOptions
     /// The name of the configuration section.
     /// </summary>
     public const string SectionName = "RateLimiting";
+
+    /// <summary>
+    /// Gets or sets a value indicating whether rate limiting is enabled.
+    /// Default is true.
+    /// </summary>
+    public bool Enabled { get; set; } = true;
 
     /// <summary>
     /// Gets or sets the policy for the Login endpoint.
@@ -58,6 +64,18 @@ public sealed class RateLimitingOptions
     /// </summary>
     [Required]
     public RateLimitPolicyOptions ResetPassword { get; set; } = null!;
+
+    /// <summary>
+    /// Gets or sets the policy for patient booking mutation endpoints
+    /// (slot lock and release). Ships disabled via configuration so tests run
+    /// freely; enabling it later is a configuration change only.
+    /// </summary>
+    public RateLimitPolicyOptions Booking { get; set; } = new()
+    {
+        Enabled = false,
+        PermitLimit = 10,
+        WindowInMinutes = 1
+    };
 }
 
 /// <summary>
@@ -65,6 +83,12 @@ public sealed class RateLimitingOptions
 /// </summary>
 public sealed class RateLimitPolicyOptions
 {
+    /// <summary>
+    /// Gets or sets a value indicating whether this individual policy is
+    /// enabled. Defaults to true so legacy sections remain unchanged.
+    /// </summary>
+    public bool Enabled { get; set; } = true;
+
     /// <summary>
     /// Gets or sets the maximum number of permitted requests.
     /// </summary>

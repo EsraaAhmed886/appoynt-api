@@ -5,7 +5,7 @@
  * Version        : v1.0.0
  * Dependencies   : None
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-07-31
+ * Last Modified  : Mustafa Mahmoud - 2026-08-25
  * Description    : Defines stable error codes for authentication features,
  *                  including registration, login, password recovery, OTP,
  *                  refresh tokens, and account verification.
@@ -155,6 +155,11 @@ public static class AuthenticationErrorCodes
     /// Indicates that the requested user was not found.
     /// </summary>
     public const string UserNotFound = "auth.user.not_found";
+
+    /// <summary>
+    /// Indicates a generic server-side failure that is safe to expose to clients.
+    /// </summary>
+    public const string ServerError = "server.error";
 
     #endregion
 

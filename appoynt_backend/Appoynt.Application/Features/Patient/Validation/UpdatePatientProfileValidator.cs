@@ -26,6 +26,38 @@ public class UpdatePatientProfileValidator : AbstractValidator<UpdatePatientProf
     /// </summary>
     public UpdatePatientProfileValidator()
     {
+        // First Name Validation
+        RuleFor(x => x.FirstName)
+            .NotEmpty()
+            .WithMessage(AuthenticationErrorCodes.FirstNameRequired)
+            .MaximumLength(UserConstants.NameMaxLength)
+            .WithMessage(AuthenticationErrorCodes.FirstNameLengthInvalid)
+            .When(x => x.FirstName != null);
+
+        // Last Name Validation
+        RuleFor(x => x.LastName)
+            .NotEmpty()
+            .WithMessage(AuthenticationErrorCodes.LastNameRequired)
+            .MaximumLength(UserConstants.NameMaxLength)
+            .WithMessage(AuthenticationErrorCodes.LastNameLengthInvalid)
+            .When(x => x.LastName != null);
+
+        // Gender Validation
+        RuleFor(x => x.Gender)
+            .IsInEnum()
+            .When(x => x.Gender.HasValue);
+
+        // BirthDate Validation
+        RuleFor(x => x.BirthDate)
+            .Must(date => date < DateOnly.FromDateTime(DateTime.UtcNow))
+            .When(x => x.BirthDate.HasValue);
+
+        // Address Validation
+        RuleFor(x => x.Address)
+            .MaximumLength(250)
+            .WithMessage(AuthenticationErrorCodes.AddressLengthInvalid)
+            .When(x => x.Address != null);
+
         // National ID Validation
         RuleFor(x => x.NationalId)
             .Length(PatientConstants.NationalIdLength)

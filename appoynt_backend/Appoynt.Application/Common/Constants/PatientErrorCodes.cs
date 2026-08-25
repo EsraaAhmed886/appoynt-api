@@ -2,11 +2,11 @@
  * File Name      : PatientErrorCodes.cs
  * Author         : Mustafa Mahmoud
  * Created Date   : 2026-08-10
- * Version        : v1.0.0
+ * Version        : v1.1.0
  * Dependencies   : None
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-10
- * Description    : Contains constant error codes for patient and family member operations.
+ * Last Modified  : Mustafa Mahmoud - 2026-08-23
+ * Description    : Contains constant error codes for patient, family member, and favorite operations.
  */
 
 namespace Appoynt.Application.Common.Constants;
@@ -58,4 +58,10 @@ public static class PatientErrorCodes
     public const string FamilyMemberBirthDateInvalid = "family_member.birth_date.invalid";
     public const string FamilyMemberNotFound = "family_member.not_found";
     public const string FamilyMemberSequenceLimitReached = "family_member.sequence_limit_reached";
+
+    // Patient Favorites Errors
+    public const string FavoriteDoctorNotFound = "favorite.doctor_not_found";
+    public const string FavoriteClinicNotFound = "favorite.clinic_not_found";
+    public const string FavoriteAlreadyAdded = "favorite.already_added";
+    public const string FavoriteNotInFavorites = "favorite.not_in_favorites";
 }
