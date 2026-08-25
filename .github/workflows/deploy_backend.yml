@@ -34,6 +34,15 @@ jobs:
       - name: Publish project
         run: dotnet publish appoynt_backend/Appoynt.API/Appoynt.API.csproj --configuration Release --output ./publish --runtime win-x86
 
+      # خطوة جديدة: وضع السيرفر في وضع الصيانة لفك الـ Lock عن ملفات الـ DLL
+      - name: Take App Offline
+        shell: bash
+        run: |
+          echo "<html><body style='text-align:center; margin-top:50px; font-family:sans-serif;'><h1>System is updating... Please wait a moment.</h1></body></html>" > app_offline.htm
+          curl -T app_offline.htm ftp://${{ secrets.FTP_SERVER }}/${{ secrets.FTP_REMOTE_PATH }}/app_offline.htm --user "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}"
+          sleep 8
+
+      # خطوة الرفع الأساسية بتاعتك (هتشتغل بنجاح دلوقتي لأن الملفات متحررة)
       - name: Deploy via FTP to MonsterASP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -44,3 +53,10 @@ jobs:
           server-dir: ${{ secrets.FTP_REMOTE_PATH }}/
           protocol: ftp
           port: 21
+
+      # خطوة جديدة: مسح ملف الصيانة عشان السيرفر يرجع يشتغل (هتتنفذ حتى لو حصل إيرور في الخطوات اللي قبلها بفضل if: always)
+      - name: Bring App Online
+        if: always()
+        shell: bash
+        run: |
+          curl -Q "CWD ${{ secrets.FTP_REMOTE_PATH }}" -Q "DELE app_offline.htm" ftp://${{ secrets.FTP_SERVER }}/ --user "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}" || true
