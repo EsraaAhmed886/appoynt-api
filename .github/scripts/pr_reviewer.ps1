@@ -101,6 +101,7 @@ foreach ($file in $files) {
         $allIssues += [PSCustomObject]@{
             path = $filename
             line = $firstLine
+            isAdded = ($addedLineNumbers -contains $firstLine)
             type = "Missing Header"
             body = "**[Warning]** Missing required File Header Documentation (File Name, Author, Created Date, Version, etc.)."
         }
@@ -115,6 +116,7 @@ foreach ($file in $files) {
                 $allIssues += [PSCustomObject]@{
                     path = $filename
                     line = 1
+                    isAdded = ($addedLineNumbers -contains 1)
                     type = "Outdated Date"
                     body = "**[Warning]** ``Last Modified`` date is outdated ($lastModVal). Please synchronize it with the current commit / PR date."
                 }

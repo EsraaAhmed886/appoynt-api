@@ -133,6 +133,10 @@ public sealed class UserPaginationIntegrationTests : IClassFixture<WebApplicatio
         {
             return;
         }
+        else
+        {
+            // No action needed.
+        }
 
         // Alphabetic-only names: the first three share a searchable prefix.
         string[] firstNames =

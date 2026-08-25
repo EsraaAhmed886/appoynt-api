@@ -565,6 +565,10 @@ public class ClinicValidationTests
             // Verify the dedicated status error is present on failure.
             result.Errors.Should().Contain(e => e.ErrorMessage == "clinic.status.invalid");
         }
+        else
+        {
+            // No action needed.
+        }
     }
 
     /// <summary>
