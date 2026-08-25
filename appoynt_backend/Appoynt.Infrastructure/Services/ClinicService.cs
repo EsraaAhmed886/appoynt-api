@@ -614,6 +614,10 @@ public sealed class ClinicService : IClinicService
         {
             await _cacheService.RemoveAsync(CacheKeys.AvailableDates(clinic.Id), cancellationToken);
         }
+        else
+        {
+            // No action needed.
+        }
 
         return ClinicResult.Success(clinic.Id);
     }

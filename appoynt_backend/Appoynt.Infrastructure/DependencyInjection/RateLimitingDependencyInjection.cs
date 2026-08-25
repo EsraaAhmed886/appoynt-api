@@ -5,7 +5,7 @@
  * Version        : v1.0.0
  * Dependencies   : Microsoft.AspNetCore.RateLimiting, Microsoft.AspNetCore.Http
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 27/07/2026
+ * Last Modified  : Mustafa Mahmoud - 2026-08-25
  * Description    : Registers rate limiting services and configures policies.
  */
 

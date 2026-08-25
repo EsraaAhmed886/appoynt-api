@@ -5,7 +5,7 @@
  * Version        : v1.0.0
  * Dependencies   : System.ComponentModel.DataAnnotations
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 27/07/2026
+ * Last Modified  : Mustafa Mahmoud - 2026-08-25
  * Description    : Configuration options for rate limiting policies.
  */
 
