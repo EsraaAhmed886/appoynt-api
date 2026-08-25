@@ -1,12 +1,12 @@
-/*
- * File Name: translations.ts
- * Author: Kholoud Khaled
- * Date of Creation: 28/06/2026
- * Version Information: V1.0.0
- * Dependencies: None
- * Contributors: [Kholoud Khaled , shimaa salah]
- * Last Modified Date: [shimaa salah - 13/08/2026]
- * File Description: Defines English and Arabic localized dictionary collections.
+/**
+ * File Name : translations.ts
+ * Author : Kholoud Khaled
+ * Created Date : 2026-06-28
+ * Version : v1.0.0
+ * Dependencies : None
+ * Contributors : [Kholoud Khaled, shimaa salah]
+ * Last Modified : shimaa salah - 2026-08-25
+ * Description : Defines English and Arabic localized dictionary collections.
  */
 
 // Declaring translation database for English language localization
@@ -304,6 +304,21 @@ export const translation_en = {
   day_thu: "Thu",
   day_fri: "Fri",
   msg_no_available_days_for_doctor: "No available working days for this doctor.",
+  lbl_back_to_clinics: "Back to Clinics",
+  lbl_clinic_code: "Clinic Code",
+  lbl_edit_clinic: "Edit Clinic",
+  lbl_total_working_days: "Total Working Days",
+  lbl_days_count: "Days",
+  lbl_duration: "Duration",
+  msg_unsaved_warning_title: "You have unsaved changes",
+  msg_unsaved_warning_desc: "Your changes will be lost if you leave this page.",
+  lbl_edit_section: "Edit",
+  lbl_section_info: "1. Clinic Information",
+  lbl_section_schedule: "2. Working Schedule",
+  lbl_section_breaks: "3. Break Times",
+  lbl_section_receptionists: "4. Receptionists",
+  lbl_section_booking: "5. Booking Settings",
+  lbl_no_working_schedule: "No Working Schedule",
 };
 
 // Declaring translation database for Arabic language localization
@@ -601,5 +616,20 @@ export const translation_ar = {
   day_thu: "الخميس",
   day_fri: "الجمعة",
   msg_no_available_days_for_doctor: "لا توجد أيام عمل متاحة لهذا الطبيب.",
+  lbl_back_to_clinics: "العودة إلى العيادات",
+  lbl_clinic_code: "كود العيادة",
+  lbl_edit_clinic: "تعديل العيادة",
+  lbl_total_working_days: "إجمالي أيام العمل",
+  lbl_days_count: "أيام",
+  lbl_duration: "المدة",
+  msg_unsaved_warning_title: "لديك تغييرات غير محفوظة",
+  msg_unsaved_warning_desc: "ستفقد التغييرات إذا غادرت هذه الصفحة.",
+  lbl_edit_section: "تعديل",
+  lbl_section_info: "١. معلومات العيادة",
+  lbl_section_schedule: "٢. جدول العمل",
+  lbl_section_breaks: "٣. أوقات الاستراحة",
+  lbl_section_receptionists: "٤. موظفو الاستقبال",
+  lbl_section_booking: "٥. إعدادات الحجز",
+  lbl_no_working_schedule: "لا يوجد جدول عمل",
 };
 
