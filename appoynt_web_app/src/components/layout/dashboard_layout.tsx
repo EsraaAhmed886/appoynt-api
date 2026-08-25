@@ -8,7 +8,7 @@
  *   - @/components/layout/sidebar
  *   - @/components/layout/header
  * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 05/08/2026]
+ * Last Modified Date: [shimaa salah - 24/08/2026]
  * File Description: Top-level layout container providing persistent sidebar navigation and fixed header.
  */
 
@@ -60,7 +60,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Main Content Area */}
       <div className="flex flex-1 min-w-0 w-full flex-col">
         {/* Sticky Fixed Header */}
-        <div className="sticky top-0 z-30 w-full bg-app-bg border-b border-gray-200/60 dark:border-gray-800">
+        <div className="sticky top-0 z-30 w-full">
           <LayoutHeader on_menu_click={() => set_is_mobile_sidebar_open(true)} />
         </div>
 

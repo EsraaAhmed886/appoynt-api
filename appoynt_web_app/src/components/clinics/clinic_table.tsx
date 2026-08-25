@@ -1,23 +1,21 @@
-/*
- * File Name: clinic_table.tsx
- * Author: shimaa salah
- * Date of Creation: 04/07/2026
- * Version Information: V1.0.0
- * Dependencies:
- *   - react
- *   - lucide-react
- *   - @/context/language_context
- *   - @/types/clinic
- * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 15/08/2026]
- * File Description: Reusable localized table component displaying clinic list rows with delete action.
+/**
+ * File Name : clinic_table.tsx
+ * Author : shimaa salah
+ * Created Date : 2026-07-04
+ * Version : v1.1.0
+ * Dependencies : react, lucide-react, next/link, @/context/language_context, @/types/clinic, @/hooks/use_auth
+ * Contributors : [shimaa salah]
+ * Last Modified : shimaa salah - 2026-08-25
+ * Description : Reusable localized table component displaying clinic list rows with edit (doctor-only) and delete actions.
  */
 
 "use client";
 
-import { Trash2 } from "lucide-react";
+import Link from "next/link";
+import { Trash2, Edit2 } from "lucide-react";
 import { useTranslation } from "@/context/language_context";
 import { Clinic } from "@/types/clinic";
+import { use_auth } from "@/hooks/use_auth";
 
 type ClinicTableProps = {
   clinics: Clinic[];
@@ -29,20 +27,24 @@ export default function ClinicTable({
   on_delete_clinic,
 }: ClinicTableProps) {
   const { translations } = useTranslation();
+  const { user_role } = use_auth();
 
- const get_translated_days_string = (raw_days?: string) => {
-  if (!raw_days || "—" === raw_days) {
-    return "—";
-  } else {
-    const days_array = raw_days.split(",").map((d) => d.trim());
-    const translated = days_array.map((day_code) => {
-      const key = `day_${day_code.toLowerCase()}` as keyof typeof translations;
-      return translations[key] || day_code;
-    });
+  // Edit icon is strictly authorized for Doctor profile (or default dev state)
+  const is_doctor_role = !user_role || "Doctor" === user_role;
 
-    return translated.join(", ");
-  }
-};
+  const get_translated_days_string = (raw_days?: string) => {
+    if (!raw_days || "—" === raw_days) {
+      return "—";
+    } else {
+      const days_array = raw_days.split(",").map((d) => d.trim());
+      const translated = days_array.map((day_code) => {
+        const key = `day_${day_code.toLowerCase()}` as keyof typeof translations;
+        return translations[key] || day_code;
+      });
+
+      return translated.join(", ");
+    }
+  };
 
   return (
     <div className="mt-6 overflow-x-auto rounded-xl border border-app-border bg-app-surface shadow-sm">
@@ -120,7 +122,17 @@ export default function ClinicTable({
                 </td>
 
                 <td className="px-4 py-3.5 text-sm lg:px-6 lg:py-4">
-                  <div className="flex items-center justify-center">
+                  <div className="flex items-center justify-center gap-2">
+                    {is_doctor_role ? (
+                      <Link
+                        href={`/clinics/${clinic.id}/edit`}
+                        aria-label="Edit Clinic"
+                        className="rounded-lg p-1.5 text-app-primary transition hover:bg-app-primary/10 hover:scale-105"
+                      >
+                        <Edit2 className="h-4.5 w-4.5" />
+                      </Link>
+                    ) : null}
+
                     <button
                       type="button"
                       onClick={() => on_delete_clinic(clinic.id)}
