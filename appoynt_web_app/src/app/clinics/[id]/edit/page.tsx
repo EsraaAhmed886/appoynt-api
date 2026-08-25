@@ -1,12 +1,12 @@
-/**
- * File Name : page.tsx
- * Author : shimaa salah
- * Created Date : 2026-08-13
- * Version : v1.0.0
- * Dependencies : react, @/components/clinics/clinic_view_edit_page
- * Contributors : [shimaa salah]
- * Last Modified : shimaa salah - 2026-08-25
- * Description : Server component route entry page for Clinic View/Edit Full Page.
+/*
+ * File Name: page.tsx
+ * Author: shimaa salah
+ * Date of Creation: 13/08/2026
+ * Version Information: v1.0.0
+ * Dependencies: react, @/components/clinics/clinic_view_edit_page
+ * Contributors: [shimaa salah]
+ * Last Modified Date: [shimaa salah - 26/08/2026]
+ * File Description: Server component route entry page for Clinic View/Edit Full Page.
  */
 
 import { use } from "react";

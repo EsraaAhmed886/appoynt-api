@@ -2,7 +2,7 @@
  * File Name: sidebar.tsx
  * Author: shimaa salah
  * Date of Creation: 28/07/2026
- * Version Information: V1.0.0
+ * Version Information: V1.1.0
  * Dependencies:
  *   - react
  *   - next/image
@@ -10,8 +10,8 @@
  *   - @/context/language_context
  *   - @/components/layout/sidebar_item
  *   - @/components/theme_toggle
- * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 24/08/2026]
+ * Contributors: [shimaa salah, Kholoud Khaled]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Primary sidebar navigation drawer component with embedded brand logo, collapsibility, and localized navigation targets.
  */
 
@@ -178,7 +178,7 @@ export default function Sidebar({
         <SidebarItem
           icon={FileText}
           title={translations.nav_medical_records}
-          href="/medical-records"
+          href="/medical-record"
           isCollapsed={isCollapsed}
         />
 
