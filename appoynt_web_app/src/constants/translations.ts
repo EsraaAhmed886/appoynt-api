@@ -1,12 +1,12 @@
-/**
- * File Name : translations.ts
- * Author : Kholoud Khaled
- * Created Date : 2026-06-28
- * Version : v1.0.0
- * Dependencies : None
- * Contributors : [Kholoud Khaled, shimaa salah]
- * Last Modified : shimaa salah - 2026-08-25
- * Description : Defines English and Arabic localized dictionary collections.
+/*
+ * File Name: translations.ts
+ * Author: Kholoud Khaled
+ * Date of Creation: 28/06/2026
+ * Version Information: V1.0.0
+ * Dependencies: None
+ * Contributors: [Kholoud Khaled , shimaa salah]
+ * Last Modified Date: [shimaa salah - 19/08/2026]
+ * File Description: Defines English and Arabic localized dictionary collections.
  */
 
 // Declaring translation database for English language localization
@@ -319,6 +319,57 @@ export const translation_en = {
   lbl_section_receptionists: "4. Receptionists",
   lbl_section_booking: "5. Booking Settings",
   lbl_no_working_schedule: "No Working Schedule",
+    // Appointments Page Translations
+  appointments_page_title: "Appointments",
+  current_patient_title: "Current Patient",
+  in_consultation_badge: "In Consultation",
+  checked_in_badge: "Checked-in",
+  waiting_badge: "Waiting",
+  not_arrived_badge: "Not Arrived",
+  available_badge: "Available",
+  booked_badge: "Booked",
+  break_badge: "Break",
+  completed_badge: "Completed",
+  expected_time_label: "Expected Time",
+  actual_time_label: "Actual Time",
+  duration_label: "Duration",
+  quick_snapshot_title: "Quick Snapshot",
+  chronic_disease_label: "Chronic Disease",
+  allergies_label: "Allergies",
+  last_visit_label: "Last Visit",
+  btn_view_full_record: "View Full Record",
+  btn_end_consultation: "End Consultation",
+  btn_add_note: "Add Note",
+  btn_prescription: "Prescription",
+  queue_title: "Queue",
+  patients_count_label: "Patients",
+  col_patient: "PATIENT",
+  col_type: "TYPE",
+  col_status: "STATUS",
+  col_eta: "ETA",
+  col_actions: "ACTIONS",
+  btn_view_all_queue: "View All Queue",
+  time_slots_title: "Time Slots",
+  no_active_consultation_title: "No active consultation.",
+  no_active_consultation_desc: "Select a checked-in patient from the queue below to begin.",
+  no_queue_patients_title: "No patients currently in queue.",
+  no_queue_patients_desc: "All queue actions are disabled.",
+  modal_end_consultation_title: "End Consultation",
+  modal_end_consultation_desc: "Are you sure you want to end the active consultation for this patient?",
+  toast_consultation_ended: "Consultation completed successfully.",
+  toast_consultation_end_failed: "Unable to complete the consultation. Please try again.",
+  toast_5min_warning: "The appointment time will end in 5 minutes.",
+  lbl_min_consultation_time_help: "Minimum consultation time is 10 minutes.",
+  toast_auto_ended: "Consultation time reached maximum limit and completed automatically.",
+  visit_type_follow_up: "Follow-up",
+  visit_type_new: "New",
+  label_visit_type: "VISIT TYPE",
+  label_years: "YRS",
+  label_male: "MALE",
+  label_female: "FEMALE",
+  label_min: "min",
+  label_not_available: "Not Available",
+  btn_retry: "Retry",
 };
 
 // Declaring translation database for Arabic language localization
@@ -631,5 +682,56 @@ export const translation_ar = {
   lbl_section_receptionists: "٤. موظفو الاستقبال",
   lbl_section_booking: "٥. إعدادات الحجز",
   lbl_no_working_schedule: "لا يوجد جدول عمل",
+    // Appointments Page Translations
+  appointments_page_title: "المواعيد",
+  current_patient_title: "المريض الحالي",
+  in_consultation_badge: "قيد الكشف",
+  checked_in_badge: "تم التسجيل",
+  waiting_badge: "في الانتظار",
+  not_arrived_badge: "لم يحضر",
+  available_badge: "متاح",
+  booked_badge: "محجوز",
+  break_badge: "استراحة",
+  completed_badge: "مكتمل",
+  expected_time_label: "الوقت المتوقع",
+  actual_time_label: "الوقت الفعلي",
+  duration_label: "مدة الكشف",
+  quick_snapshot_title: "ملخص سريع",
+  chronic_disease_label: "الأمراض المزمنة",
+  allergies_label: "الحساسية",
+  last_visit_label: "آخر زيارة",
+  btn_view_full_record: "عرض السجل الكامل",
+  btn_end_consultation: "إنهاء الكشف",
+  btn_add_note: "إضافة ملاحظة",
+  btn_prescription: "الروشتة",
+  queue_title: "طابور الانتظار",
+  patients_count_label: "مرضى",
+  col_patient: "المريض",
+  col_type: "النوع",
+  col_status: "الحالة",
+  col_eta: "الوقت المتوقع",
+  col_actions: "الإجراءات",
+  btn_view_all_queue: "عرض كل الطابور",
+  time_slots_title: "الفترات الزمنية",
+  no_active_consultation_title: "لا يوجد كشف نشط حالياً.",
+  no_active_consultation_desc: "اختر مريضاً من طابور الانتظار لبدء الكشف.",
+  no_queue_patients_title: "لا يوجد مرضى في طابور الانتظار.",
+  no_queue_patients_desc: "جميع إجراءات الطابور معطلة حالياً.",
+  modal_end_consultation_title: "إنهاء الكشف",
+  modal_end_consultation_desc: "هل أنت تأكد من رغبتك في إنهاء الكشف النشط لهذا المريض؟",
+  toast_consultation_ended: "تم إنهاء الكشف بنجاح.",
+  toast_consultation_end_failed: "تعذر إنهاء الكشف. يرجى المحاولة مرة أخرى.",
+  toast_5min_warning: "سينتهي وقت الموعد خلال 5 دقائق.",
+  lbl_min_consultation_time_help: "الحد الأدنى لزمن الكشف هو 10 دقائق.",
+  toast_auto_ended: "وصل الكشف للحد الأقصى وتم إنهاؤه تلقائياً.",
+  visit_type_follow_up: "متابعة",
+  visit_type_new: "جديد",
+  label_visit_type: "نوع الزيارة",
+  label_years: "سنة",
+  label_male: "ذكر",
+  label_female: "أنثى",
+  label_min: "دقيقة",
+  label_not_available: "غير متاح",
+  btn_retry: "إعادة المحاولة",
 };
 

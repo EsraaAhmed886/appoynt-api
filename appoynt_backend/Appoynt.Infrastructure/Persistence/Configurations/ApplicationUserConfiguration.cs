@@ -127,6 +127,14 @@ public sealed class ApplicationUserConfiguration
 
         #region Index Configuration
 
+        // Override the Identity default UserNameIndex to include the
+        // soft-delete filter, allowing re-registration with the same
+        // username (email) after an account has been soft-deleted.
+        builder.HasIndex(user => user.NormalizedUserName)
+            .HasDatabaseName("UserNameIndex")
+            .IsUnique()
+            .HasFilter("[DeletedAt] IS NULL");
+
         // Ensure that the normalized email address is unique
         // for all active (non-deleted) users.
         builder.HasIndex(user => user.NormalizedEmail)

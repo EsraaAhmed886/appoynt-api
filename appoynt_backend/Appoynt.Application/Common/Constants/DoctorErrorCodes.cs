@@ -5,7 +5,7 @@
  * Version        : v1.0.0
  * Dependencies   : None
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-14
+ * Last Modified  : Mustafa Mahmoud - 2026-08-25
  * Description    : Contains constant error codes for doctor validation and operations.
  */
 
@@ -95,6 +95,21 @@ public static class DoctorErrorCodes
     /// Indicates that one or more specified specialization IDs do not exist.
     /// </summary>
     public const string SpecializationNotFound = "doctor.specialization.not_found";
+
+    /// <summary>
+    /// Indicates that no specializations were supplied when at least one is required.
+    /// </summary>
+    public const string SpecializationRequired = "doctor.specialization.required";
+
+    /// <summary>
+    /// Indicates that duplicate specialization identifiers were supplied.
+    /// </summary>
+    public const string SpecializationDuplicate = "doctor.specialization.duplicate";
+
+    /// <summary>
+    /// Indicates that the supplied birth date is not in the past.
+    /// </summary>
+    public const string BirthDateInvalid = "doctor.birth_date.invalid";
 
     #endregion
 }

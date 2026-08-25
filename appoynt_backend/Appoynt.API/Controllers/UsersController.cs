@@ -200,7 +200,7 @@ public sealed class UsersController : ControllerBase
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>An HTTP 200 OK response if successful.</returns>
     [HttpPut("{id}")]
-    [Authorize]
+    [Authorize(Roles = RoleConstants.Admin)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

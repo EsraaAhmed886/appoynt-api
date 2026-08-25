@@ -2,12 +2,12 @@
  * File Name      : PatientsController.cs
  * Author         : Mustafa Mahmoud
  * Created Date   : 2026-08-10
- * Version        : v1.0.0
+ * Version        : v1.1.0
  * Dependencies   : ASP.NET Core MVC, IPatientService, RoleConstants, ProfileImageErrorCodes, PatientResult
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-14
+ * Last Modified  : Mustafa Mahmoud - 2026-08-23
  * Description    : Exposes REST API endpoints for patient profile management,
- *                  profile photo upload/retrieval/deletion, and family member CRUD operations.
+ *                  profile photo upload/retrieval/deletion, family member CRUD, and favorites management.
  */
 
 using System;
@@ -27,7 +27,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Appoynt.API.Controllers;
 
 /// <summary>
-/// Handles patient profile and family member management operations.
+/// Handles patient profile, family member, and favorites management operations.
 /// </summary>
 [ApiController]
 [Route("api/patients")]
@@ -101,6 +101,38 @@ public sealed class PatientsController : ControllerBase
         else
         {
             // Return 200 OK on successful profile update
+            return Ok(result);
+        }
+    }
+
+    /// <summary>
+    /// Replaces the primary phone number of the currently authenticated patient.
+    /// This will require OTP verification.
+    /// </summary>
+    /// <param name="request">The update payload containing the new phone number.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An HTTP 200 OK response if successful, or validation errors.</returns>
+    [HttpPut("profile/phone-number")]
+    [ProducesResponseType(typeof(PatientResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> UpdatePhoneNumber(
+        [FromBody] UpdatePatientPhoneNumberRequest request,
+        CancellationToken cancellationToken)
+    {
+        // Execute phone number update via application service
+        var result = await _patientService.UpdatePhoneNumberAsync(request, cancellationToken);
+
+        // Evaluate whether the update operation succeeded
+        if (!result.Succeeded)
+        {
+            // Return 400 Bad Request with validation and business rule errors
+            return BadRequest(result.Errors);
+        }
+        else
+        {
+            // Note: In a complete flow, we would trigger the OTP send here.
+            // Return 200 OK
             return Ok(result);
         }
     }
@@ -357,6 +389,234 @@ public sealed class PatientsController : ControllerBase
             // Return 200 OK on successful deletion
             return Ok(result);
         }
+    }
+
+    #endregion
+
+    #region Favorites - Doctor
+
+    /// <summary>
+    /// Adds a doctor to the currently authenticated patient's favorites list.
+    /// </summary>
+    /// <param name="doctorId">The unique identifier of the doctor.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An HTTP 200 OK response if added successfully, or bad request.</returns>
+    [HttpPost("me/favorites/doctors/{doctorId:guid}")]
+    [ProducesResponseType(typeof(PatientResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> AddDoctorToFavorites(
+        Guid doctorId,
+        CancellationToken cancellationToken)
+    {
+        // Execute favorite addition operation via application service
+        var result = await _patientService.AddDoctorToFavoritesAsync(doctorId, cancellationToken);
+
+        // Check if addition operation succeeded
+        if (!result.Succeeded)
+        {
+            // Return 400 Bad Request with error details
+            return BadRequest(result.Errors);
+        }
+        else
+        {
+            // Return 200 OK upon successful addition
+            return Ok(result);
+        }
+    }
+
+    /// <summary>
+    /// Removes a doctor from the currently authenticated patient's favorites list.
+    /// </summary>
+    /// <param name="doctorId">The unique identifier of the doctor to remove.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An HTTP 200 OK response if removed successfully.</returns>
+    [HttpDelete("me/favorites/doctors/{doctorId:guid}")]
+    [ProducesResponseType(typeof(PatientResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> RemoveDoctorFromFavorites(
+        Guid doctorId,
+        CancellationToken cancellationToken)
+    {
+        // Execute favorite removal operation
+        var result = await _patientService.RemoveDoctorFromFavoritesAsync(doctorId, cancellationToken);
+
+        // Check if removal operation succeeded
+        if (!result.Succeeded)
+        {
+            // Return 400 Bad Request with error details
+            return BadRequest(result.Errors);
+        }
+        else
+        {
+            // Return 200 OK upon successful removal
+            return Ok(result);
+        }
+    }
+
+    /// <summary>
+    /// Removes all favorite doctors for the currently authenticated patient.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An HTTP 200 OK response.</returns>
+    [HttpDelete("me/favorites/doctors")]
+    [ProducesResponseType(typeof(PatientResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> RemoveAllFavoriteDoctors(CancellationToken cancellationToken)
+    {
+        // Execute bulk removal of favorite doctors
+        var result = await _patientService.RemoveAllFavoriteDoctorsAsync(cancellationToken);
+
+        // Check if operation succeeded
+        if (!result.Succeeded)
+        {
+            // Return 400 Bad Request
+            return BadRequest(result.Errors);
+        }
+        else
+        {
+            // Return 200 OK
+            return Ok(result);
+        }
+    }
+
+    /// <summary>
+    /// Retrieves a paginated list of favorite doctors for the currently authenticated patient.
+    /// </summary>
+    /// <param name="pageNumber">The 1-based page number (defaults to 1).</param>
+    /// <param name="pageSize">The page size between 1 and 50 (defaults to 15).</param>
+    /// <param name="search">Optional doctor name search filter.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A paginated response containing favorite doctor cards.</returns>
+    [HttpGet("me/favorites/doctors")]
+    [ProducesResponseType(typeof(PagedResponse<FavoriteDoctorResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> GetFavoriteDoctors(
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 15,
+        [FromQuery] string? search = null,
+        CancellationToken cancellationToken = default)
+    {
+        // Retrieve paginated favorite doctors via application service
+        var response = await _patientService.GetFavoriteDoctorsAsync(pageNumber, pageSize, search, cancellationToken);
+
+        // Return 200 OK with paginated items
+        return Ok(response);
+    }
+
+    #endregion
+
+    #region Favorites - Clinic
+
+    /// <summary>
+    /// Adds a clinic to the currently authenticated patient's favorites list.
+    /// </summary>
+    /// <param name="clinicId">The unique identifier of the clinic.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An HTTP 200 OK response if added successfully, or bad request.</returns>
+    [HttpPost("me/favorites/clinics/{clinicId:guid}")]
+    [ProducesResponseType(typeof(PatientResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> AddClinicToFavorites(
+        Guid clinicId,
+        CancellationToken cancellationToken)
+    {
+        // Execute favorite addition operation via application service
+        var result = await _patientService.AddClinicToFavoritesAsync(clinicId, cancellationToken);
+
+        // Check if addition operation succeeded
+        if (!result.Succeeded)
+        {
+            // Return 400 Bad Request with error details
+            return BadRequest(result.Errors);
+        }
+        else
+        {
+            // Return 200 OK upon successful addition
+            return Ok(result);
+        }
+    }
+
+    /// <summary>
+    /// Removes a clinic from the currently authenticated patient's favorites list.
+    /// </summary>
+    /// <param name="clinicId">The unique identifier of the clinic to remove.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An HTTP 200 OK response if removed successfully.</returns>
+    [HttpDelete("me/favorites/clinics/{clinicId:guid}")]
+    [ProducesResponseType(typeof(PatientResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> RemoveClinicFromFavorites(
+        Guid clinicId,
+        CancellationToken cancellationToken)
+    {
+        // Execute favorite removal operation
+        var result = await _patientService.RemoveClinicFromFavoritesAsync(clinicId, cancellationToken);
+
+        // Check if removal operation succeeded
+        if (!result.Succeeded)
+        {
+            // Return 400 Bad Request with error details
+            return BadRequest(result.Errors);
+        }
+        else
+        {
+            // Return 200 OK upon successful removal
+            return Ok(result);
+        }
+    }
+
+    /// <summary>
+    /// Removes all favorite clinics for the currently authenticated patient.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An HTTP 200 OK response.</returns>
+    [HttpDelete("me/favorites/clinics")]
+    [ProducesResponseType(typeof(PatientResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> RemoveAllFavoriteClinics(CancellationToken cancellationToken)
+    {
+        // Execute bulk removal of favorite clinics
+        var result = await _patientService.RemoveAllFavoriteClinicsAsync(cancellationToken);
+
+        // Check if operation succeeded
+        if (!result.Succeeded)
+        {
+            // Return 400 Bad Request
+            return BadRequest(result.Errors);
+        }
+        else
+        {
+            // Return 200 OK
+            return Ok(result);
+        }
+    }
+
+    /// <summary>
+    /// Retrieves a paginated list of favorite clinics for the currently authenticated patient.
+    /// </summary>
+    /// <param name="pageNumber">The 1-based page number (defaults to 1).</param>
+    /// <param name="pageSize">The page size between 1 and 50 (defaults to 15).</param>
+    /// <param name="search">Optional clinic search filter.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A paginated response containing favorite clinic cards.</returns>
+    [HttpGet("me/favorites/clinics")]
+    [ProducesResponseType(typeof(PagedResponse<FavoriteClinicResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> GetFavoriteClinics(
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 15,
+        [FromQuery] string? search = null,
+        CancellationToken cancellationToken = default)
+    {
+        // Retrieve paginated favorite clinics via application service
+        var response = await _patientService.GetFavoriteClinicsAsync(pageNumber, pageSize, search, cancellationToken);
+
+        // Return 200 OK with paginated items
+        return Ok(response);
     }
 
     #endregion

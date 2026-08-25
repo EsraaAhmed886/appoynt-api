@@ -26,7 +26,8 @@ public sealed class RateLimitingIntegrationTests : IClassFixture<WebApplicationF
                     ["DatabaseProvider"] = "Sqlite",
                     ["ConnectionStrings:DefaultConnection"] = "DataSource=file:appoynt_test_ratelimit.db?mode=memory&cache=shared",
                     ["Jwt:SecretKey"] = "SuperSecretKeyWithMinimum32CharactersLength!",
-                    ["RateLimiting:Login:PermitLimit"] = "2", // Override with low limit for testing
+                    ["RateLimiting:Enabled"] = "true",
+                    ["RateLimiting:Login:PermitLimit"] = "5", // Set permit limit to 5 for testing
                     ["RateLimiting:Login:WindowInMinutes"] = "1"
                 });
             });

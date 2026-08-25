@@ -6,7 +6,7 @@
  * Dependencies: package:dartz/dartz.dart, package:dio/dio.dart, failures.dart,
  *   auth_repository.dart, user_entity.dart, auth_remote_datasource.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 22/08/2026]
  * File Description: Concrete implementation of the AuthRepository. It coordinates
  *   between remote data sources and maps results to domain entities or failures.
  */
@@ -24,7 +24,7 @@ import 'package:dio/dio.dart'; // Network client exceptions
 
 /// Concrete implementation of the authentication data repository.
 class AuthRepositoryImpl implements AuthRepository {
-  /// Reference to the remote data source.
+  /// Remote data source instance.
   final AuthRemoteDataSource remote_data_source;
 
   /// Constructor requiring the remote data source implementation.
@@ -46,6 +46,8 @@ class AuthRepositoryImpl implements AuthRepository {
         rawError = data['detail'] as String? ??
             data['title'] as String? ??
             'An error occurred';
+      } else {
+        // No action needed
       }
     } catch (_) {
       // Ignore parsing errors

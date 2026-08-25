@@ -36,6 +36,11 @@ public class DoctorPhoneNumber : BaseEntity
     /// </summary>
     public string Label { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the phone number has been verified.
+    /// </summary>
+    public bool IsVerified { get; set; }
+
     #endregion
 
     #region Navigation Properties

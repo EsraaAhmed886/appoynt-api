@@ -1,12 +1,12 @@
 /*
  * File Name: language_context.tsx
  * Author: Kholoud Khaled
- * Date of Creation: 28/06/2026
- * Version Information: V1.0.0
+ * Created Date: 28/06/2026
+ * Version: v1.2.0
  * Dependencies: react, @/constants/translations
  * Contributors: [Kholoud Khaled, shimaa salah]
- * Last Modified Date: [Kholoud Khaled - 05/08/2026]
- * File Description: Custom bilingual engine (EN/AR) using React Context with lazy locale state restoration to prevent page refresh flash.
+ * Last Modified: [shimaa salah - 19/08/2026]
+ * Description: Custom bilingual engine (EN/AR) using React Context with pre-paint locale initialization to prevent English flash.
  */
 
 "use client";
@@ -28,7 +28,7 @@ export function LanguageProvider({
 }: {
   children: React.ReactNode;
 }) {
-  // Lazy state initialization to read cached locale synchronously before initial render
+  // Read stored locale synchronously on client initialization to eliminate English -> Arabic flash
   const [current_locale, set_current_locale] = useState<"en" | "ar">(() => {
     if ("undefined" !== typeof window) {
       try {
@@ -39,7 +39,6 @@ export function LanguageProvider({
           return "en";
         }
       } catch (storage_error) {
-        console.warn("Local storage read blocked by browser settings:", storage_error);
         return "en";
       }
     } else {
@@ -47,7 +46,7 @@ export function LanguageProvider({
     }
   });
 
-  // Hook triggered on locale modification to update HTML direction and body typography
+  // Synchronize document direction, html lang, body font-family, and localStorage when current_locale changes
   useEffect(() => {
     try {
       localStorage.setItem("appoynt_locale", current_locale);
@@ -73,7 +72,13 @@ export function LanguageProvider({
   const active_dictionary = "ar" === current_locale ? translation_ar : translation_en;
 
   const t = (key: keyof typeof translation_en): string => {
-    return active_dictionary[key] || translation_en[key] || key;
+    if (active_dictionary[key]) {
+      return active_dictionary[key];
+    } else if (translation_en[key]) {
+      return translation_en[key];
+    } else {
+      return key;
+    }
   };
 
   return (
