@@ -24,6 +24,10 @@ import 'package:appoynt_mobile_app/features/profile/presentation/pages/profile_p
 import 'package:appoynt_mobile_app/features/favorites/presentation/pages/favorites_page.dart';
 // Importing NotificationsPage widget screen definition
 import 'package:appoynt_mobile_app/features/notifications/presentation/pages/notifications_page.dart';
+// Importing AppointmentsPage widget screen definition
+import 'package:appoynt_mobile_app/features/appointments/presentation/pages/appointments_page.dart';
+// Importing AskAiFab widget definition
+import 'package:appoynt_mobile_app/features/appointments/presentation/widgets/ask_ai_fab.dart';
 
 // Defining the HomePage stateful widget representation
 class HomePage extends StatefulWidget {
@@ -137,28 +141,46 @@ class _HomePageState extends State<HomePage> {
                   }
                 },
               )
-            : 3 == _selected_index
-                // Instantiate the Favorites tab widget
-                ? const FavoritesPage()
-                : 4 == _selected_index
-                    // Instantiate the Profile tab wrapped in its Cubit state controller
-                    ? BlocProvider<ProfileCubit>(
-                        // Create Cubit state controller instance
-                        create: (context) {
-                          // Return new ProfileCubit
-                          return ProfileCubit();
-                        },
-                        // Renders the ProfilePage main screen widget
-                        child: const ProfilePage(),
-                      )
-                    // Construction/Coming soon tab representation for other items
-                    : _ComingSoonTab(
-                        // Localized category label mapping active selection
-                        label: 1 == _selected_index
-                            ? localizations.dummy_appointments_tab_label
-                            : localizations.dummy_search_tab_label,
-                      ),
+            : 1 == _selected_index
+                // Instantiate the Appointments tab widget
+                ? const AppointmentsPage()
+                : 3 == _selected_index
+                    // Instantiate the Favorites tab widget
+                    ? const FavoritesPage()
+                    : 4 == _selected_index
+                        // Instantiate the Profile tab wrapped in its Cubit state controller
+                        ? BlocProvider<ProfileCubit>(
+                            // Create Cubit state controller instance
+                            create: (context) {
+                              // Return new ProfileCubit
+                              return ProfileCubit();
+                            },
+                            // Renders the ProfilePage main screen widget
+                            child: const ProfilePage(),
+                          )
+                        // Construction/Coming soon tab representation for other items
+                        : _ComingSoonTab(
+                            // Localized category label mapping active selection
+                            label: localizations.dummy_search_tab_label,
+                          ),
       ),
+      // Global floating AI assistant action button
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 16.0, right: 8.0),
+        child: AskAiFab(
+          onTap: () {
+            // Open AI Assistant Chat Screen / Modal BottomSheet
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Opening AI Medical Assistant...'),
+                duration: Duration(seconds: 1),
+              ),
+            );
+          },
+        ),
+      ),
+      // Floating button location pinned to the end float
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 

@@ -6,7 +6,7 @@
  * Dependencies: package:flutter/material.dart, app_colors.dart, app_spacing.dart,
  *   app_localizations.dart, doctor_profile_entity.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 23/08/2026]
  * File Description: Renders the clinical procedures, diagnostics, and treatments
  *   offered by the doctor in a clean, modern wrap of localized tag chips.
  */
@@ -39,103 +39,103 @@ class DoctorProceduresSection extends StatelessWidget {
       return const SizedBox.shrink();
     } else {
       return Container(
-      margin: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.space_xl,
-        vertical: AppSpacing.space_s,
-      ),
-      padding: const EdgeInsets.all(AppSpacing.space_xl),
-      decoration: BoxDecoration(
-        color: is_dark ? AppColors.surface_dark : AppColors.background_light,
-        borderRadius: BorderRadius.circular(AppSpacing.radius_xl),
-        border: Border.all(
-          color: is_dark ? AppColors.border_dark : AppColors.slate_200,
-          width: 1.0,
+        margin: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.space_xl,
+          vertical: AppSpacing.space_s,
         ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Section Title
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(6.0),
-                decoration: BoxDecoration(
-                  color: AppColors.blue.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: const Icon(
-                  Icons.healing_rounded,
-                  size: 20.0,
-                  color: AppColors.blue,
-                ),
-              ),
-              const SizedBox(width: AppSpacing.space_m),
-              Text(
-                localizations.procedures_and_services,
-                style: TextStyle(
-                  fontSize: AppSpacing.font_size_title_medium,
-                  fontWeight: FontWeight.w700,
-                  color: is_dark
-                      ? AppColors.text_dark_primary
-                      : AppColors.text_light_primary,
-                ),
-              ),
-            ],
+        padding: const EdgeInsets.all(AppSpacing.space_xl),
+        decoration: BoxDecoration(
+          color: is_dark ? AppColors.surface_dark : AppColors.background_light,
+          borderRadius: BorderRadius.circular(AppSpacing.radius_xl),
+          border: Border.all(
+            color: is_dark ? AppColors.border_dark : AppColors.slate_200,
+            width: 1.0,
           ),
-          const SizedBox(height: AppSpacing.space_l),
-
-          // Wrap of procedure chips
-          Wrap(
-            spacing: AppSpacing.space_s,
-            runSpacing: AppSpacing.space_s,
-            children: procedures_list.map((proc) {
-              return Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.space_l,
-                  vertical: AppSpacing.space_m,
-                ),
-                decoration: BoxDecoration(
-                  color: is_dark
-                      ? AppColors.inner_container_dark
-                      : AppColors.slate_100,
-                  borderRadius: BorderRadius.circular(AppSpacing.radius_xl),
-                  border: Border.all(
-                    color: is_dark
-                        ? AppColors.border_dark
-                        : AppColors.slate_200,
-                    width: 1.0,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Section Title
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(6.0),
+                  decoration: BoxDecoration(
+                    color: AppColors.blue.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: const Icon(
+                    Icons.healing_rounded,
+                    size: 20.0,
+                    color: AppColors.blue,
                   ),
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(
-                      Icons.check_circle_outline_rounded,
-                      size: 15.0,
-                      color: AppColors.primary_color,
+                const SizedBox(width: AppSpacing.space_m),
+                Text(
+                  localizations.procedures_and_services,
+                  style: TextStyle(
+                    fontSize: AppSpacing.font_size_title_medium,
+                    fontWeight: FontWeight.w700,
+                    color: is_dark
+                        ? AppColors.text_dark_primary
+                        : AppColors.text_light_primary,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.space_l),
+
+            // Wrap of procedure chips
+            Wrap(
+              spacing: AppSpacing.space_s,
+              runSpacing: AppSpacing.space_s,
+              children: procedures_list.map((proc) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.space_l,
+                    vertical: AppSpacing.space_m,
+                  ),
+                  decoration: BoxDecoration(
+                    color: is_dark
+                        ? AppColors.inner_container_dark
+                        : AppColors.slate_100,
+                    borderRadius: BorderRadius.circular(AppSpacing.radius_xl),
+                    border: Border.all(
+                      color: is_dark
+                          ? AppColors.border_dark
+                          : AppColors.slate_200,
+                      width: 1.0,
                     ),
-                    const SizedBox(width: 6.0),
-                    Flexible(
-                      child: Text(
-                        proc.name,
-                        style: TextStyle(
-                          fontSize: AppSpacing.font_size_body_small,
-                          fontWeight: FontWeight.w600,
-                          color: is_dark
-                              ? AppColors.text_dark_primary
-                              : AppColors.text_light_primary,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.check_circle_outline_rounded,
+                        size: 15.0,
+                        color: AppColors.primary_color,
+                      ),
+                      const SizedBox(width: 6.0),
+                      Flexible(
+                        child: Text(
+                          proc.name,
+                          style: TextStyle(
+                            fontSize: AppSpacing.font_size_body_small,
+                            fontWeight: FontWeight.w600,
+                            color: is_dark
+                                ? AppColors.text_dark_primary
+                                : AppColors.text_light_primary,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              );
-            }).toList(),
-          ),
-        ],
-      ),
-    );
+                    ],
+                  ),
+                );
+              }).toList(),
+            ),
+          ],
+        ),
+      );
     }
   }
 }

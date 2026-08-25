@@ -7,7 +7,7 @@
  *   app_localizations.dart, app_network_image.dart, doctor_profile_entity.dart,
  *   doctor_video_player_widget.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 23/08/2026]
  * File Description: Modern glassmorphic full-screen media viewer dialog supporting
  *   horizontal PageView navigation, swipe-down to dismiss, pinch-to-zoom for photos,
  *   Hero transitions, and embedded custom video streaming.

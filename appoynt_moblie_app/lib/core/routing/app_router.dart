@@ -26,6 +26,7 @@ import 'package:appoynt_mobile_app/features/home/presentation/pages/home_page.da
 import 'package:appoynt_mobile_app/features/notifications/presentation/pages/notifications_page.dart';
 import 'package:appoynt_mobile_app/features/doctor_profile/presentation/pages/doctor_profile_page.dart';
 import 'package:appoynt_mobile_app/features/booking/presentation/pages/choose_slots_page.dart';
+import 'package:appoynt_mobile_app/features/appointments/presentation/pages/appointments_page.dart';
 import 'package:appoynt_mobile_app/core/logic/global_cubit.dart';
 
 /// Router class responsible for parsing route settings and building views.
@@ -42,6 +43,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const HomePage());
       case Routes.notifications:
         return MaterialPageRoute(builder: (_) => const NotificationsPage());
+      case Routes.appointments:
+        return MaterialPageRoute(builder: (_) => const AppointmentsPage());
       case Routes.doctor_profile:
         final args = settings.arguments;
         final String doctor_id = (args is DoctorProfileArgs)

@@ -38,6 +38,7 @@ import 'package:appoynt_mobile_app/features/shared/widgets/doctor_card.dart';
 import 'package:appoynt_mobile_app/features/search/presentation/widgets/search_sort_bottom_sheet.dart';
 import 'package:appoynt_mobile_app/core/routing/routes.dart';
 import 'package:appoynt_mobile_app/features/doctor_profile/presentation/pages/doctor_profile_page.dart';
+import 'package:appoynt_mobile_app/features/appointments/presentation/widgets/ask_ai_fab.dart';
 
 
 // Local layout dimensions class to strictly eliminate hardcoded numbers
@@ -432,27 +433,6 @@ class _SearchPageState extends State<SearchPage> {
                           // Switch widget representing different search statuses (dynamic body states)
                           child: _build_dynamic_body(context, state, cubit, localizations, is_dark),
                         ),
-                        // Fixed Bottom Navigation Bar component shown only when soft keyboard is closed
-                        if (0 == MediaQuery.of(context).viewInsets.bottom)
-                          AppBottomNavBar(
-                            // Highlight Search tab as active index 2
-                            selected_index: 2,
-                          // Handle tap on navigation items
-                          on_tap: (index) {
-                            // Check if page remains mounted using Yoda style check
-                            if (true == context.mounted) {
-                              // If search tab is tapped, do nothing since we are already on search page
-                              if (2 == index) {
-                                // Do nothing
-                              } else {
-                                // Dismiss dedicated search screen returning the selected index to the home screen
-                                Navigator.of(context).pop(index);
-                              }
-                            } else {
-                              // Empty block
-                            }
-                          },
-                        ),
                       ],
                     ),
                   ),
@@ -584,6 +564,38 @@ class _SearchPageState extends State<SearchPage> {
                   const SizedBox.shrink(),
               ],
             ),
+            // Fixed Bottom Navigation Bar component shown only when soft keyboard is closed
+            bottomNavigationBar: 0 == MediaQuery.of(context).viewInsets.bottom
+                ? AppBottomNavBar(
+                    selected_index: 2,
+                    on_tap: (index) {
+                      if (true == context.mounted) {
+                        if (2 == index) {
+                          // Do nothing
+                        } else {
+                          Navigator.of(context).pop(index);
+                        }
+                      }
+                    },
+                  )
+                : null,
+            // Global floating AI assistant action button
+            floatingActionButton: Padding(
+              padding: const EdgeInsets.only(bottom: 16.0, right: 8.0),
+              child: AskAiFab(
+                onTap: () {
+                  // Open AI Assistant Chat / BottomSheet
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Opening AI Medical Assistant...'),
+                      duration: Duration(seconds: 1),
+                    ),
+                  );
+                },
+              ),
+            ),
+            // Floating button location pinned to the end float
+            floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
           );
         },
       ),
