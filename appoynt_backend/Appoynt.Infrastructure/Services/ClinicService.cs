@@ -5,7 +5,7 @@
  * Version        : v1.0.0
  * Dependencies   : IClinicService, ApplicationDbContext, ICurrentUserService, ISlotGenerationService, IValidator, ILogger
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-20
+ * Last Modified  : Mustafa Mahmoud - 2026-08-25
  * Description    : Implements clinic management operations including CRUD, scheduling, breaks, phone numbers, receptionist assignment, and slot generation.
  */
 
@@ -16,6 +16,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Appoynt.Application.Common.Constants;
 using Appoynt.Application.Common.Interfaces;
+using Appoynt.Application.Common.Validation;
 using Appoynt.Application.Features.Clinics.Contracts;
 using Appoynt.Application.Features.Clinics.Validation;
 using Appoynt.Domain.Common.Constants;
@@ -43,6 +44,7 @@ public sealed class ClinicService : IClinicService
     private readonly IValidator<WorkingPeriodRequest> _periodValidator;
     private readonly IValidator<BreakRequest> _breakValidator;
     private readonly ILogger<ClinicService> _logger;
+    private readonly IDateTimeProvider _dateTimeProvider;
 
     #endregion
 
@@ -59,6 +61,7 @@ public sealed class ClinicService : IClinicService
     /// <param name="periodValidator">The working period request validator.</param>
     /// <param name="breakValidator">The break request validator.</param>
     /// <param name="logger">The logger instance.</param>
+    /// <param name="dateTimeProvider">The abstraction for deterministic UTC timestamps.</param>
     public ClinicService(
         ApplicationDbContext dbContext,
         ICurrentUserService currentUserService,
@@ -67,7 +70,8 @@ public sealed class ClinicService : IClinicService
         IValidator<UpdateClinicRequest> updateValidator,
         IValidator<WorkingPeriodRequest> periodValidator,
         IValidator<BreakRequest> breakValidator,
-        ILogger<ClinicService> logger)
+        ILogger<ClinicService> logger,
+        IDateTimeProvider dateTimeProvider)
     {
         _dbContext = dbContext;
         _currentUserService = currentUserService;
@@ -77,6 +81,122 @@ public sealed class ClinicService : IClinicService
         _periodValidator = periodValidator;
         _breakValidator = breakValidator;
         _logger = logger;
+        _dateTimeProvider = dateTimeProvider;
+    }
+
+    #endregion
+
+    #region Private Helpers
+
+    /// <summary>
+    /// Resolves the doctor profile associated with the currently authenticated user.
+    /// When <see cref="Failure"/> is non-null the <c>Doctor</c> element must not be used.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The resolved doctor on success, or a failure result describing why resolution failed.</returns>
+    private async Task<(Doctor Doctor, ClinicResult? Failure)> ResolveCurrentDoctorAsync(CancellationToken cancellationToken)
+    {
+        // Reject anonymous callers up front.
+        Guid? userId = _currentUserService.UserId;
+        if (userId == null)
+        {
+            // The doctor element is undefined on the failure path.
+            return (null!, ClinicResult.Failure(AuthenticationErrorCodes.Forbidden, "UserId"));
+        }
+        else
+        {
+            // User ID present.
+        }
+
+        // Locate the doctor record linked to the authenticated user.
+        Doctor? doctor = await _dbContext.Doctors.FirstOrDefaultAsync(d => d.UserId == userId.Value, cancellationToken);
+        if (doctor == null)
+        {
+            // The doctor element is undefined on the failure path.
+            return (null!, ClinicResult.Failure(AuthenticationErrorCodes.Forbidden, "Doctor"));
+        }
+        else
+        {
+            // Doctor found.
+        }
+
+        return (doctor, null);
+    }
+
+    /// <summary>
+    /// Loads an active clinic by identifier and verifies the supplied doctor owns it.
+    /// When <see cref="Failure"/> is non-null the <c>Clinic</c> element must not be used.
+    /// </summary>
+    /// <param name="clinicId">The clinic identifier.</param>
+    /// <param name="doctor">The authenticated doctor used for the ownership check.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <param name="shape">Optional query shaping delegate for eager loading related collections.</param>
+    /// <returns>The owned clinic on success, or a failure result when missing or foreign-owned.</returns>
+    private async Task<(Clinic Clinic, ClinicResult? Failure)> GetOwnedClinicAsync(
+        Guid clinicId,
+        Doctor doctor,
+        CancellationToken cancellationToken,
+        Func<IQueryable<Clinic>, IQueryable<Clinic>>? shape = null)
+    {
+        // Apply optional eager loading while keeping the shared filter logic.
+        IQueryable<Clinic> query = shape != null ? shape(_dbContext.Clinics) : _dbContext.Clinics;
+
+        // Load the active clinic from database.
+        Clinic? clinic = await query.FirstOrDefaultAsync(c => c.Id == clinicId && c.DeletedAt == null, cancellationToken);
+        if (clinic == null)
+        {
+            // The clinic element is undefined on the failure path.
+            return (null!, ClinicResult.Failure(ClinicErrorCodes.ClinicNotFound, nameof(clinicId)));
+        }
+        else
+        {
+            // Clinic found.
+        }
+
+        // Verify the requesting doctor owns this clinic.
+        if (clinic.DoctorId != doctor.Id)
+        {
+            // The clinic element is undefined on the failure path.
+            return (null!, ClinicResult.Failure(ClinicErrorCodes.NotOwner, "DoctorId"));
+        }
+        else
+        {
+            // Ownership verified.
+        }
+
+        return (clinic, null);
+    }
+
+    /// <summary>
+    /// Persists pending clinic or schedule changes together with appointment slot
+    /// regeneration as one atomic unit. If slot generation fails, both writes are rolled back.
+    /// </summary>
+    /// <param name="clinicId">The clinic whose slots may need regeneration.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <param name="regenerateSlots">When true, slots are regenerated after saving.</param>
+    private async Task SaveAndRegenerateSlotsAsync(
+        Guid clinicId,
+        CancellationToken cancellationToken,
+        bool regenerateSlots = true)
+    {
+        // Group the schedule persistence and slot regeneration into a single transaction.
+        await using var transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
+
+        // Persist the pending clinic or schedule mutations first.
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        // Regenerate appointment slots from the updated schedule when requested.
+        if (regenerateSlots)
+        {
+            await _slotGenerationService.GenerateSlotsForClinicAsync(clinicId, cancellationToken);
+        }
+        else
+        {
+            // No slot regeneration requested.
+        }
+
+        // Commit only after every write in the unit has succeeded.
+        await transaction.CommitAsync(cancellationToken);
     }
 
     #endregion
@@ -90,34 +210,22 @@ public sealed class ClinicService : IClinicService
         var validationResult = await _createValidator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
-            var errors = validationResult.Errors.Select(e => new ClinicError(e.ErrorMessage, e.PropertyName));
-            return ClinicResult.Failure(errors);
+            return ClinicResult.Failure(validationResult.ToAuthenticationErrors().Select(error => new ClinicError(error.Code, error.Field)));
         }
         else
         {
             // Validation passed.
         }
 
-        // Retrieve current authenticated user ID.
-        var userId = _currentUserService.UserId;
-        if (userId == null)
+        // Resolve the authenticated doctor or capture a failure result.
+        var (doctor, doctorResolutionFailure) = await ResolveCurrentDoctorAsync(cancellationToken);
+        if (doctorResolutionFailure != null)
         {
-            return ClinicResult.Failure(AuthenticationErrorCodes.Forbidden, "UserId");
+            return doctorResolutionFailure;
         }
         else
         {
-            // User ID present.
-        }
-
-        // Retrieve the doctor associated with the current user.
-        var doctor = await _dbContext.Doctors.FirstOrDefaultAsync(d => d.UserId == userId.Value, cancellationToken);
-        if (doctor == null)
-        {
-            return ClinicResult.Failure(AuthenticationErrorCodes.Forbidden, "Doctor");
-        }
-        else
-        {
-            // Doctor found.
+            // Doctor resolved.
         }
 
         // Check active clinics count limit for this doctor.
@@ -273,11 +381,8 @@ public sealed class ClinicService : IClinicService
         // Add clinic to DbContext.
         _dbContext.Clinics.Add(clinic);
 
-        // Save changes to database.
-        await _dbContext.SaveChangesAsync(cancellationToken);
-
-        // Generate initial appointment slots.
-        await _slotGenerationService.GenerateSlotsForClinicAsync(clinic.Id, cancellationToken);
+        // Persist the new clinic and generate its initial slots atomically.
+        await SaveAndRegenerateSlotsAsync(clinic.Id, cancellationToken);
 
         _logger.LogInformation("Clinic '{ClinicName}' ({ClinicId}) created successfully for doctor {DoctorId}.", clinic.Name, clinic.Id, doctor.Id);
 
@@ -291,55 +396,33 @@ public sealed class ClinicService : IClinicService
         var validationResult = await _updateValidator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
-            var errors = validationResult.Errors.Select(e => new ClinicError(e.ErrorMessage, e.PropertyName));
-            return ClinicResult.Failure(errors);
+            return ClinicResult.Failure(validationResult.ToAuthenticationErrors().Select(error => new ClinicError(error.Code, error.Field)));
         }
         else
         {
             // Validation passed.
         }
 
-        // Retrieve current user ID.
-        var userId = _currentUserService.UserId;
-        if (userId == null)
+        // Resolve the authenticated doctor or capture a failure result.
+        var (doctor, doctorResolutionFailure) = await ResolveCurrentDoctorAsync(cancellationToken);
+        if (doctorResolutionFailure != null)
         {
-            return ClinicResult.Failure(AuthenticationErrorCodes.Forbidden, "UserId");
+            return doctorResolutionFailure;
         }
         else
         {
-            // User ID present.
+            // Doctor resolved.
         }
 
-        // Retrieve the doctor.
-        var doctor = await _dbContext.Doctors.FirstOrDefaultAsync(d => d.UserId == userId.Value, cancellationToken);
-        if (doctor == null)
+// Load and verify ownership of the target clinic.
+        var (clinic, ownedClinicFailure) = await GetOwnedClinicAsync(clinicId, doctor, cancellationToken);
+        if (ownedClinicFailure != null)
         {
-            return ClinicResult.Failure(AuthenticationErrorCodes.Forbidden, "Doctor");
+            return ownedClinicFailure;
         }
         else
         {
-            // Doctor found.
-        }
-
-        // Load the clinic from database.
-        var clinic = await _dbContext.Clinics.FirstOrDefaultAsync(c => c.Id == clinicId && c.DeletedAt == null, cancellationToken);
-        if (clinic == null)
-        {
-            return ClinicResult.Failure(ClinicErrorCodes.ClinicNotFound, nameof(clinicId));
-        }
-        else
-        {
-            // Clinic found.
-        }
-
-        // Verify doctor ownership.
-        if (clinic.DoctorId != doctor.Id)
-        {
-            return ClinicResult.Failure(ClinicErrorCodes.NotOwner, "DoctorId");
-        }
-        else
-        {
-            // Ownership verified.
+            // Clinic resolved.
         }
 
         // Verify city/governorate if provided.
@@ -443,7 +526,7 @@ public sealed class ClinicService : IClinicService
         // If clinic is marked Inactive, turn future Available slots into Unavailable.
         if (statusChangedToInactive)
         {
-            var today = DateOnly.FromDateTime(DateTime.UtcNow);
+            var today = DateOnly.FromDateTime(_dateTimeProvider.UtcNow);
             var futureSlots = await _dbContext.AppointmentSlots
                 .Where(s => s.ClinicId == clinic.Id && s.Date >= today && s.Status == SlotStatus.Available)
                 .ToListAsync(cancellationToken);
@@ -458,18 +541,11 @@ public sealed class ClinicService : IClinicService
             // Active status retained.
         }
 
-        // Save changes to database.
-        await _dbContext.SaveChangesAsync(cancellationToken);
-
-        // Regenerate slots if appointment duration changed.
-        if (durationChanged && clinic.Status == ClinicStatus.Active)
-        {
-            await _slotGenerationService.GenerateSlotsForClinicAsync(clinic.Id, cancellationToken);
-        }
-        else
-        {
-            // No slot regeneration needed.
-        }
+        // Persist changes and regenerate slots atomically when the duration changed.
+        await SaveAndRegenerateSlotsAsync(
+            clinic.Id,
+            cancellationToken,
+            regenerateSlots: durationChanged && clinic.Status == ClinicStatus.Active);
 
         return ClinicResult.Success(clinic.Id);
     }
@@ -477,54 +553,33 @@ public sealed class ClinicService : IClinicService
     /// <inheritdoc />
     public async Task<ClinicResult> DeleteClinicAsync(Guid clinicId, CancellationToken cancellationToken = default)
     {
-        // Retrieve current user ID.
-        var userId = _currentUserService.UserId;
-        if (userId == null)
+        // Resolve the authenticated doctor or capture a failure result.
+        var (doctor, doctorResolutionFailure) = await ResolveCurrentDoctorAsync(cancellationToken);
+        if (doctorResolutionFailure != null)
         {
-            return ClinicResult.Failure(AuthenticationErrorCodes.Forbidden, "UserId");
+            return doctorResolutionFailure;
         }
         else
         {
-            // User ID present.
+            // Doctor resolved.
         }
 
-        // Retrieve doctor.
-        var doctor = await _dbContext.Doctors.FirstOrDefaultAsync(d => d.UserId == userId.Value, cancellationToken);
-        if (doctor == null)
+// Load and verify ownership of the target clinic.
+        var (clinic, ownedClinicFailure) = await GetOwnedClinicAsync(clinicId, doctor, cancellationToken);
+        if (ownedClinicFailure != null)
         {
-            return ClinicResult.Failure(AuthenticationErrorCodes.Forbidden, "Doctor");
+            return ownedClinicFailure;
         }
         else
         {
-            // Doctor found.
-        }
-
-        // Load clinic.
-        var clinic = await _dbContext.Clinics.FirstOrDefaultAsync(c => c.Id == clinicId && c.DeletedAt == null, cancellationToken);
-        if (clinic == null)
-        {
-            return ClinicResult.Failure(ClinicErrorCodes.ClinicNotFound, nameof(clinicId));
-        }
-        else
-        {
-            // Clinic found.
-        }
-
-        // Verify ownership.
-        if (clinic.DoctorId != doctor.Id)
-        {
-            return ClinicResult.Failure(ClinicErrorCodes.NotOwner, "DoctorId");
-        }
-        else
-        {
-            // Ownership verified.
+            // Clinic resolved.
         }
 
         // Soft delete the clinic.
         _dbContext.Clinics.Remove(clinic);
 
         // Mark future Available slots as Unavailable.
-        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var today = DateOnly.FromDateTime(_dateTimeProvider.UtcNow);
         var futureSlots = await _dbContext.AppointmentSlots
             .Where(s => s.ClinicId == clinicId && s.Date >= today && s.Status == SlotStatus.Available)
             .ToListAsync(cancellationToken);
@@ -624,50 +679,27 @@ public sealed class ClinicService : IClinicService
     /// <inheritdoc />
     public async Task<ClinicResult> AddPhoneNumberAsync(Guid clinicId, ClinicPhoneNumberDto dto, CancellationToken cancellationToken = default)
     {
-        // Retrieve current user ID.
-        var userId = _currentUserService.UserId;
-        if (userId == null)
+        // Resolve the authenticated doctor or capture a failure result.
+        var (doctor, doctorResolutionFailure) = await ResolveCurrentDoctorAsync(cancellationToken);
+        if (doctorResolutionFailure != null)
         {
-            return ClinicResult.Failure(AuthenticationErrorCodes.Forbidden, "UserId");
+            return doctorResolutionFailure;
         }
         else
         {
-            // User ID present.
+            // Doctor resolved.
         }
 
-        // Retrieve doctor.
-        var doctor = await _dbContext.Doctors.FirstOrDefaultAsync(d => d.UserId == userId.Value, cancellationToken);
-        if (doctor == null)
+        // Load and verify ownership of the target clinic including its phone numbers.
+        var (clinic, ownedClinicFailure) = await GetOwnedClinicAsync(
+            clinicId, doctor, cancellationToken, query => query.Include(c => c.PhoneNumbers));
+        if (ownedClinicFailure != null)
         {
-            return ClinicResult.Failure(AuthenticationErrorCodes.Forbidden, "Doctor");
+            return ownedClinicFailure;
         }
         else
         {
-            // Doctor found.
-        }
-
-        // Load clinic.
-        var clinic = await _dbContext.Clinics
-            .Include(c => c.PhoneNumbers)
-            .FirstOrDefaultAsync(c => c.Id == clinicId && c.DeletedAt == null, cancellationToken);
-
-        if (clinic == null)
-        {
-            return ClinicResult.Failure(ClinicErrorCodes.ClinicNotFound, nameof(clinicId));
-        }
-        else
-        {
-            // Clinic found.
-        }
-
-        // Verify ownership.
-        if (clinic.DoctorId != doctor.Id)
-        {
-            return ClinicResult.Failure(ClinicErrorCodes.NotOwner, "DoctorId");
-        }
-        else
-        {
-            // Ownership verified.
+            // Clinic resolved.
         }
 
         // Validate max phone numbers count.
@@ -710,26 +742,15 @@ public sealed class ClinicService : IClinicService
     /// <inheritdoc />
     public async Task<ClinicResult> RemovePhoneNumberAsync(Guid clinicId, Guid phoneNumberId, CancellationToken cancellationToken = default)
     {
-        // Retrieve current user ID.
-        var userId = _currentUserService.UserId;
-        if (userId == null)
+        // Resolve the authenticated doctor or capture a failure result.
+        var (doctor, doctorResolutionFailure) = await ResolveCurrentDoctorAsync(cancellationToken);
+        if (doctorResolutionFailure != null)
         {
-            return ClinicResult.Failure(AuthenticationErrorCodes.Forbidden, "UserId");
+            return doctorResolutionFailure;
         }
         else
         {
-            // User ID present.
-        }
-
-        // Retrieve doctor.
-        var doctor = await _dbContext.Doctors.FirstOrDefaultAsync(d => d.UserId == userId.Value, cancellationToken);
-        if (doctor == null)
-        {
-            return ClinicResult.Failure(AuthenticationErrorCodes.Forbidden, "Doctor");
-        }
-        else
-        {
-            // Doctor found.
+            // Doctor resolved.
         }
 
         // Load phone number entity.
@@ -774,55 +795,33 @@ public sealed class ClinicService : IClinicService
         var validationResult = await _periodValidator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
-            var errors = validationResult.Errors.Select(e => new ClinicError(e.ErrorMessage, e.PropertyName));
-            return ClinicResult.Failure(errors);
+            return ClinicResult.Failure(validationResult.ToAuthenticationErrors().Select(error => new ClinicError(error.Code, error.Field)));
         }
         else
         {
             // Validation passed.
         }
 
-        // Retrieve current user ID.
-        var userId = _currentUserService.UserId;
-        if (userId == null)
+        // Resolve the authenticated doctor or capture a failure result.
+        var (doctor, doctorResolutionFailure) = await ResolveCurrentDoctorAsync(cancellationToken);
+        if (doctorResolutionFailure != null)
         {
-            return ClinicResult.Failure(AuthenticationErrorCodes.Forbidden, "UserId");
+            return doctorResolutionFailure;
         }
         else
         {
-            // User ID present.
+            // Doctor resolved.
         }
 
-        // Retrieve doctor.
-        var doctor = await _dbContext.Doctors.FirstOrDefaultAsync(d => d.UserId == userId.Value, cancellationToken);
-        if (doctor == null)
+// Load and verify ownership of the target clinic.
+        var (clinic, ownedClinicFailure) = await GetOwnedClinicAsync(clinicId, doctor, cancellationToken);
+        if (ownedClinicFailure != null)
         {
-            return ClinicResult.Failure(AuthenticationErrorCodes.Forbidden, "Doctor");
+            return ownedClinicFailure;
         }
         else
         {
-            // Doctor found.
-        }
-
-        // Load clinic.
-        var clinic = await _dbContext.Clinics.FirstOrDefaultAsync(c => c.Id == clinicId && c.DeletedAt == null, cancellationToken);
-        if (clinic == null)
-        {
-            return ClinicResult.Failure(ClinicErrorCodes.ClinicNotFound, nameof(clinicId));
-        }
-        else
-        {
-            // Clinic found.
-        }
-
-        // Verify ownership.
-        if (clinic.DoctorId != doctor.Id)
-        {
-            return ClinicResult.Failure(ClinicErrorCodes.NotOwner, "DoctorId");
-        }
-        else
-        {
-            // Ownership verified.
+            // Clinic resolved.
         }
 
         var dayOfWeek = (DayOfWeek)request.DayOfWeek!.Value;
@@ -889,11 +888,7 @@ public sealed class ClinicService : IClinicService
             // No breaks.
         }
 
-        _dbContext.ClinicWorkingPeriods.Add(period);
-        await _dbContext.SaveChangesAsync(cancellationToken);
-
-        // Regenerate slots.
-        await _slotGenerationService.GenerateSlotsForClinicAsync(clinicId, cancellationToken);
+        await SaveAndRegenerateSlotsAsync(clinicId, cancellationToken);
 
         return ClinicResult.Success(clinicId);
     }
@@ -905,34 +900,22 @@ public sealed class ClinicService : IClinicService
         var validationResult = await _periodValidator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
-            var errors = validationResult.Errors.Select(e => new ClinicError(e.ErrorMessage, e.PropertyName));
-            return ClinicResult.Failure(errors);
+            return ClinicResult.Failure(validationResult.ToAuthenticationErrors().Select(error => new ClinicError(error.Code, error.Field)));
         }
         else
         {
             // Validation passed.
         }
 
-        // Retrieve current user ID.
-        var userId = _currentUserService.UserId;
-        if (userId == null)
+        // Resolve the authenticated doctor or capture a failure result.
+        var (doctor, doctorResolutionFailure) = await ResolveCurrentDoctorAsync(cancellationToken);
+        if (doctorResolutionFailure != null)
         {
-            return ClinicResult.Failure(AuthenticationErrorCodes.Forbidden, "UserId");
+            return doctorResolutionFailure;
         }
         else
         {
-            // User ID present.
-        }
-
-        // Retrieve doctor.
-        var doctor = await _dbContext.Doctors.FirstOrDefaultAsync(d => d.UserId == userId.Value, cancellationToken);
-        if (doctor == null)
-        {
-            return ClinicResult.Failure(AuthenticationErrorCodes.Forbidden, "Doctor");
-        }
-        else
-        {
-            // Doctor found.
+            // Doctor resolved.
         }
 
         // Load working period.
@@ -984,10 +967,8 @@ public sealed class ClinicService : IClinicService
         period.StartTime = wpStartTime;
         period.EndTime = wpEndTime;
 
-        await _dbContext.SaveChangesAsync(cancellationToken);
-
-        // Regenerate slots.
-        await _slotGenerationService.GenerateSlotsForClinicAsync(clinicId, cancellationToken);
+        // Persist the mutation and regenerate slots atomically.
+        await SaveAndRegenerateSlotsAsync(clinicId, cancellationToken);
 
         return ClinicResult.Success(clinicId);
     }
@@ -995,26 +976,15 @@ public sealed class ClinicService : IClinicService
     /// <inheritdoc />
     public async Task<ClinicResult> DeleteWorkingPeriodAsync(Guid clinicId, Guid periodId, CancellationToken cancellationToken = default)
     {
-        // Retrieve current user ID.
-        var userId = _currentUserService.UserId;
-        if (userId == null)
+        // Resolve the authenticated doctor or capture a failure result.
+        var (doctor, doctorResolutionFailure) = await ResolveCurrentDoctorAsync(cancellationToken);
+        if (doctorResolutionFailure != null)
         {
-            return ClinicResult.Failure(AuthenticationErrorCodes.Forbidden, "UserId");
+            return doctorResolutionFailure;
         }
         else
         {
-            // User ID present.
-        }
-
-        // Retrieve doctor.
-        var doctor = await _dbContext.Doctors.FirstOrDefaultAsync(d => d.UserId == userId.Value, cancellationToken);
-        if (doctor == null)
-        {
-            return ClinicResult.Failure(AuthenticationErrorCodes.Forbidden, "Doctor");
-        }
-        else
-        {
-            // Doctor found.
+            // Doctor resolved.
         }
 
         // Load period.
@@ -1042,10 +1012,9 @@ public sealed class ClinicService : IClinicService
         }
 
         _dbContext.ClinicWorkingPeriods.Remove(period);
-        await _dbContext.SaveChangesAsync(cancellationToken);
 
-        // Regenerate slots.
-        await _slotGenerationService.GenerateSlotsForClinicAsync(clinicId, cancellationToken);
+        // Persist the mutation and regenerate slots atomically.
+        await SaveAndRegenerateSlotsAsync(clinicId, cancellationToken);
 
         return ClinicResult.Success(clinicId);
     }
@@ -1061,34 +1030,22 @@ public sealed class ClinicService : IClinicService
         var validationResult = await _breakValidator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
-            var errors = validationResult.Errors.Select(e => new ClinicError(e.ErrorMessage, e.PropertyName));
-            return ClinicResult.Failure(errors);
+            return ClinicResult.Failure(validationResult.ToAuthenticationErrors().Select(error => new ClinicError(error.Code, error.Field)));
         }
         else
         {
             // Validation passed.
         }
 
-        // Retrieve current user ID.
-        var userId = _currentUserService.UserId;
-        if (userId == null)
+        // Resolve the authenticated doctor or capture a failure result.
+        var (doctor, doctorResolutionFailure) = await ResolveCurrentDoctorAsync(cancellationToken);
+        if (doctorResolutionFailure != null)
         {
-            return ClinicResult.Failure(AuthenticationErrorCodes.Forbidden, "UserId");
+            return doctorResolutionFailure;
         }
         else
         {
-            // User ID present.
-        }
-
-        // Retrieve doctor.
-        var doctor = await _dbContext.Doctors.FirstOrDefaultAsync(d => d.UserId == userId.Value, cancellationToken);
-        if (doctor == null)
-        {
-            return ClinicResult.Failure(AuthenticationErrorCodes.Forbidden, "Doctor");
-        }
-        else
-        {
-            // Doctor found.
+            // Doctor resolved.
         }
 
         // Load working period with breaks.
@@ -1160,10 +1117,9 @@ public sealed class ClinicService : IClinicService
         };
 
         _dbContext.ClinicBreaks.Add(clinicBreak);
-        await _dbContext.SaveChangesAsync(cancellationToken);
 
-        // Regenerate slots.
-        await _slotGenerationService.GenerateSlotsForClinicAsync(clinicId, cancellationToken);
+        // Persist the mutation and regenerate slots atomically.
+        await SaveAndRegenerateSlotsAsync(clinicId, cancellationToken);
 
         return ClinicResult.Success(clinicId);
     }
@@ -1171,26 +1127,15 @@ public sealed class ClinicService : IClinicService
     /// <inheritdoc />
     public async Task<ClinicResult> RemoveBreakAsync(Guid clinicId, Guid breakId, CancellationToken cancellationToken = default)
     {
-        // Retrieve current user ID.
-        var userId = _currentUserService.UserId;
-        if (userId == null)
+        // Resolve the authenticated doctor or capture a failure result.
+        var (doctor, doctorResolutionFailure) = await ResolveCurrentDoctorAsync(cancellationToken);
+        if (doctorResolutionFailure != null)
         {
-            return ClinicResult.Failure(AuthenticationErrorCodes.Forbidden, "UserId");
+            return doctorResolutionFailure;
         }
         else
         {
-            // User ID present.
-        }
-
-        // Retrieve doctor.
-        var doctor = await _dbContext.Doctors.FirstOrDefaultAsync(d => d.UserId == userId.Value, cancellationToken);
-        if (doctor == null)
-        {
-            return ClinicResult.Failure(AuthenticationErrorCodes.Forbidden, "Doctor");
-        }
-        else
-        {
-            // Doctor found.
+            // Doctor resolved.
         }
 
         // Load break.
@@ -1219,10 +1164,9 @@ public sealed class ClinicService : IClinicService
         }
 
         _dbContext.ClinicBreaks.Remove(clinicBreak);
-        await _dbContext.SaveChangesAsync(cancellationToken);
 
-        // Regenerate slots.
-        await _slotGenerationService.GenerateSlotsForClinicAsync(clinicId, cancellationToken);
+        // Persist the mutation and regenerate slots atomically.
+        await SaveAndRegenerateSlotsAsync(clinicId, cancellationToken);
 
         return ClinicResult.Success(clinicId);
     }
@@ -1234,47 +1178,26 @@ public sealed class ClinicService : IClinicService
     /// <inheritdoc />
     public async Task<ClinicResult> AssignReceptionistAsync(Guid clinicId, Guid receptionistId, CancellationToken cancellationToken = default)
     {
-        // Retrieve current user ID.
-        var userId = _currentUserService.UserId;
-        if (userId == null)
+        // Resolve the authenticated doctor or capture a failure result.
+        var (doctor, doctorResolutionFailure) = await ResolveCurrentDoctorAsync(cancellationToken);
+        if (doctorResolutionFailure != null)
         {
-            return ClinicResult.Failure(AuthenticationErrorCodes.Forbidden, "UserId");
+            return doctorResolutionFailure;
         }
         else
         {
-            // User ID present.
+            // Doctor resolved.
         }
 
-        // Retrieve doctor.
-        var doctor = await _dbContext.Doctors.FirstOrDefaultAsync(d => d.UserId == userId.Value, cancellationToken);
-        if (doctor == null)
+// Load and verify ownership of the target clinic.
+        var (clinic, ownedClinicFailure) = await GetOwnedClinicAsync(clinicId, doctor, cancellationToken);
+        if (ownedClinicFailure != null)
         {
-            return ClinicResult.Failure(AuthenticationErrorCodes.Forbidden, "Doctor");
+            return ownedClinicFailure;
         }
         else
         {
-            // Doctor found.
-        }
-
-        // Load clinic.
-        var clinic = await _dbContext.Clinics.FirstOrDefaultAsync(c => c.Id == clinicId && c.DeletedAt == null, cancellationToken);
-        if (clinic == null)
-        {
-            return ClinicResult.Failure(ClinicErrorCodes.ClinicNotFound, nameof(clinicId));
-        }
-        else
-        {
-            // Clinic found.
-        }
-
-        // Verify ownership.
-        if (clinic.DoctorId != doctor.Id)
-        {
-            return ClinicResult.Failure(ClinicErrorCodes.NotOwner, "DoctorId");
-        }
-        else
-        {
-            // Ownership verified.
+            // Clinic resolved.
         }
 
         // Load receptionist.
@@ -1328,47 +1251,26 @@ public sealed class ClinicService : IClinicService
     /// <inheritdoc />
     public async Task<ClinicResult> RemoveReceptionistAsync(Guid clinicId, Guid receptionistId, CancellationToken cancellationToken = default)
     {
-        // Retrieve current user ID.
-        var userId = _currentUserService.UserId;
-        if (userId == null)
+        // Resolve the authenticated doctor or capture a failure result.
+        var (doctor, doctorResolutionFailure) = await ResolveCurrentDoctorAsync(cancellationToken);
+        if (doctorResolutionFailure != null)
         {
-            return ClinicResult.Failure(AuthenticationErrorCodes.Forbidden, "UserId");
+            return doctorResolutionFailure;
         }
         else
         {
-            // User ID present.
+            // Doctor resolved.
         }
 
-        // Retrieve doctor.
-        var doctor = await _dbContext.Doctors.FirstOrDefaultAsync(d => d.UserId == userId.Value, cancellationToken);
-        if (doctor == null)
+// Load and verify ownership of the target clinic.
+        var (clinic, ownedClinicFailure) = await GetOwnedClinicAsync(clinicId, doctor, cancellationToken);
+        if (ownedClinicFailure != null)
         {
-            return ClinicResult.Failure(AuthenticationErrorCodes.Forbidden, "Doctor");
+            return ownedClinicFailure;
         }
         else
         {
-            // Doctor found.
-        }
-
-        // Load clinic.
-        var clinic = await _dbContext.Clinics.FirstOrDefaultAsync(c => c.Id == clinicId && c.DeletedAt == null, cancellationToken);
-        if (clinic == null)
-        {
-            return ClinicResult.Failure(ClinicErrorCodes.ClinicNotFound, nameof(clinicId));
-        }
-        else
-        {
-            // Clinic found.
-        }
-
-        // Verify ownership.
-        if (clinic.DoctorId != doctor.Id)
-        {
-            return ClinicResult.Failure(ClinicErrorCodes.NotOwner, "DoctorId");
-        }
-        else
-        {
-            // Ownership verified.
+            // Clinic resolved.
         }
 
         // Find assignment entry.
@@ -1463,3 +1365,11 @@ public sealed class ClinicService : IClinicService
 
     #endregion
 }
+
+
+
+
+
+
+
+

@@ -5,7 +5,7 @@
  * Version        : v1.1.0
  * Dependencies   : ApplicationDbContext, ICurrentUserService, IFileStorageService, IValidator, Appoynt.Application.Common.Models
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-23
+ * Last Modified  : Mustafa Mahmoud - 2026-08-25
  * Description    : Full implementation of IPatientService including profile, family members, and favorites management.
  */
 
@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using Appoynt.Application.Common.Constants;
 using Appoynt.Application.Common.Interfaces;
 using Appoynt.Application.Common.Models;
+using Appoynt.Application.Common.Validation;
 using Appoynt.Application.Features.Patient;
 using Appoynt.Application.Features.Patient.Contracts;
 using Appoynt.Application.Features.Patient.Validation;
@@ -53,6 +54,8 @@ public class PatientService : IPatientService
     private readonly IValidator<UpdateFamilyMemberRequest> _updateFamilyMemberValidator;
     // Holds logger
     private readonly ILogger<PatientService> _logger;
+    // Holds the abstraction for deterministic UTC timestamps
+    private readonly IDateTimeProvider _dateTimeProvider;
 
     /// <summary>
     /// Initializes a new instance of PatientService.
@@ -65,7 +68,8 @@ public class PatientService : IPatientService
         IValidator<UpdatePatientProfileRequest> updateProfileValidator,
         IValidator<AddFamilyMemberRequest> addFamilyMemberValidator,
         IValidator<UpdateFamilyMemberRequest> updateFamilyMemberValidator,
-        ILogger<PatientService> logger)
+        ILogger<PatientService> logger,
+        IDateTimeProvider dateTimeProvider)
     {
         // Set dependencies
         _dbContext = dbContext;
@@ -76,6 +80,7 @@ public class PatientService : IPatientService
         _addFamilyMemberValidator = addFamilyMemberValidator;
         _updateFamilyMemberValidator = updateFamilyMemberValidator;
         _logger = logger;
+        _dateTimeProvider = dateTimeProvider;
     }
 
     /// <summary>
@@ -147,7 +152,7 @@ public class PatientService : IPatientService
         if (!validationResult.IsValid)
         {
             // Return failure
-            return PatientResult.Failure(validationResult.Errors.Select(e => new Appoynt.Application.Common.Models.AuthenticationError(e.ErrorCode, e.PropertyName)).ToList());
+            return PatientResult.Failure(validationResult.ToAuthenticationErrors());
         }
         else
         {
@@ -328,7 +333,7 @@ public class PatientService : IPatientService
             // Rollback on error
             await transaction.RollbackAsync(cancellationToken);
             _logger.LogError(ex, "Failed to update patient profile.");
-            return PatientResult.Failure("server.error", "Failed to update profile.");
+            return PatientResult.Failure(AuthenticationErrorCodes.ServerError, "Failed to update profile.");
         }
     }
 
@@ -461,7 +466,7 @@ public class PatientService : IPatientService
 
         // Check if user owns patient or is admin
         bool isOwner = patient.UserId == _currentUserService.UserId;
-        bool isAdmin = _currentUserService.Role == "Admin";
+        bool isAdmin = _currentUserService.Role == RoleConstants.Admin;
         
         // Authorize
         if (!isOwner && !isAdmin)
@@ -543,7 +548,7 @@ public class PatientService : IPatientService
         if (!validationResult.IsValid)
         {
             // Return failure
-            return PatientResult.Failure(validationResult.Errors.Select(e => new Appoynt.Application.Common.Models.AuthenticationError(e.ErrorCode, e.PropertyName)).ToList());
+            return PatientResult.Failure(validationResult.ToAuthenticationErrors());
         }
         else
         {
@@ -696,15 +701,7 @@ public class PatientService : IPatientService
             .ToListAsync(cancellationToken);
             
         // Return mapped list
-        return members.Select(f => new FamilyMemberResponse
-        {
-            Id = f.Id,
-            PID = f.PID,
-            FullName = f.FullName,
-            Gender = f.Gender,
-            Relationship = f.Relationship,
-            BirthDate = f.BirthDate
-        }).ToList();
+        return members.Select(MapFamilyMemberToResponse).ToList();
     }
 
     /// <summary>
@@ -742,16 +739,7 @@ public class PatientService : IPatientService
             // No action needed.
         }
 
-        // Return mapped object
-        return new FamilyMemberResponse
-        {
-            Id = member.Id,
-            PID = member.PID,
-            FullName = member.FullName,
-            Gender = member.Gender,
-            Relationship = member.Relationship,
-            BirthDate = member.BirthDate
-        };
+        return MapFamilyMemberToResponse(member);
     }
 
     /// <summary>
@@ -766,7 +754,7 @@ public class PatientService : IPatientService
         if (!validationResult.IsValid)
         {
             // Return failure
-            return PatientResult.Failure(validationResult.Errors.Select(e => new Appoynt.Application.Common.Models.AuthenticationError(e.ErrorCode, e.PropertyName)).ToList());
+            return PatientResult.Failure(validationResult.ToAuthenticationErrors());
         }
         else
         {
@@ -939,38 +927,78 @@ public class PatientService : IPatientService
         return PatientResult.Success(member.Id);
     }
 
+    /// <summary>
+    /// Maps a family member entity to its response contract.
+    /// </summary>
+    /// <param name="member">The family member entity.</param>
+    /// <returns>The mapped <see cref="FamilyMemberResponse"/>.</returns>
+    private static FamilyMemberResponse MapFamilyMemberToResponse(FamilyMember member)
+    {
+        // Project the persisted fields into the public response shape.
+        return new FamilyMemberResponse
+        {
+            Id = member.Id,
+            PID = member.PID,
+            FullName = member.FullName,
+            Gender = member.Gender,
+            Relationship = member.Relationship,
+            BirthDate = member.BirthDate
+        };
+    }
+
+    /// <summary>
+    /// Resolves the patient profile for the currently authenticated user within the
+    /// favorites feature scope. When <see cref="Failure"/> is non-null the
+    /// <c>Patient</c> element must not be used.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The resolved patient on success, or a failure result describing why resolution failed.</returns>
+    private async Task<(Appoynt.Domain.Entities.Patient Patient, PatientResult? Failure)> ResolveCurrentPatientForFavoritesAsync(
+        CancellationToken cancellationToken)
+    {
+        // Reject anonymous callers up front.
+        Guid? userId = _currentUserService.UserId;
+        if (userId == null)
+        {
+            // The patient element is undefined on the failure path.
+            return (null!, PatientResult.Failure(PatientErrorCodes.Forbidden, "User is not authenticated."));
+        }
+        else
+        {
+            // No action needed.
+        }
+
+        // Locate the patient record linked to the authenticated user.
+        Appoynt.Domain.Entities.Patient? patient = await _dbContext.Patients
+            .FirstOrDefaultAsync(p => p.UserId == userId.Value, cancellationToken);
+
+        if (patient == null)
+        {
+            // The patient element is undefined on the failure path.
+            return (null!, PatientResult.Failure(PatientErrorCodes.NotFound, "Patient profile not found."));
+        }
+        else
+        {
+            // Patient found.
+        }
+
+        return (patient, null);
+    }
+
     #region Doctor Favorites
 
     /// <inheritdoc />
     public async Task<PatientResult> AddDoctorToFavoritesAsync(Guid doctorId, CancellationToken cancellationToken = default)
     {
-        // Retrieve the current authenticated user's ID
-        Guid? userId = _currentUserService.UserId;
-
-        // Verify that the user is authenticated
-        if (userId == null)
+        // Resolve the current patient or capture a failure result.
+        var (patient, patientResolutionFailure) = await ResolveCurrentPatientForFavoritesAsync(cancellationToken);
+        if (patientResolutionFailure != null)
         {
-            // Return 403 Forbidden failure when user is unauthenticated
-            return PatientResult.Failure(PatientErrorCodes.Forbidden, "User is not authenticated.");
+            return patientResolutionFailure;
         }
         else
         {
-            // No action needed.
-        }
-
-        // Retrieve the patient profile associated with the authenticated user
-        var patient = await _dbContext.Patients
-            .FirstOrDefaultAsync(p => p.UserId == userId.Value, cancellationToken);
-
-        // Verify that the patient profile exists
-        if (patient == null)
-        {
-            // Return not found failure when patient profile does not exist
-            return PatientResult.Failure(PatientErrorCodes.NotFound, "Patient profile not found.");
-        }
-        else
-        {
-            // No action needed.
+            // Patient resolved.
         }
 
         // Verify that the target doctor exists and is active
@@ -1010,7 +1038,7 @@ public class PatientService : IPatientService
             Patient = patient,
             DoctorId = doctorId,
             Doctor = null!,
-            AddedAt = DateTime.UtcNow
+            AddedAt = _dateTimeProvider.UtcNow
         };
 
         // Add the favorite record to the database context
@@ -1038,33 +1066,15 @@ public class PatientService : IPatientService
     /// <inheritdoc />
     public async Task<PatientResult> RemoveDoctorFromFavoritesAsync(Guid doctorId, CancellationToken cancellationToken = default)
     {
-        // Retrieve the current authenticated user's ID
-        Guid? userId = _currentUserService.UserId;
-
-        // Verify that the user is authenticated
-        if (userId == null)
+        // Resolve the current patient or capture a failure result.
+        var (patient, patientResolutionFailure) = await ResolveCurrentPatientForFavoritesAsync(cancellationToken);
+        if (patientResolutionFailure != null)
         {
-            // Return forbidden failure when unauthenticated
-            return PatientResult.Failure(PatientErrorCodes.Forbidden, "User is not authenticated.");
+            return patientResolutionFailure;
         }
         else
         {
-            // No action needed.
-        }
-
-        // Retrieve the patient profile for the current user
-        var patient = await _dbContext.Patients
-            .FirstOrDefaultAsync(p => p.UserId == userId.Value, cancellationToken);
-
-        // Verify that the patient profile exists
-        if (patient == null)
-        {
-            // Return patient not found error
-            return PatientResult.Failure(PatientErrorCodes.NotFound, "Patient profile not found.");
-        }
-        else
-        {
-            // No action needed.
+            // Patient resolved.
         }
 
         // Query the favorite entry to be removed
@@ -1098,33 +1108,15 @@ public class PatientService : IPatientService
     /// <inheritdoc />
     public async Task<PatientResult> RemoveAllFavoriteDoctorsAsync(CancellationToken cancellationToken = default)
     {
-        // Retrieve current authenticated user ID
-        Guid? userId = _currentUserService.UserId;
-
-        // Verify user authentication
-        if (userId == null)
+        // Resolve the current patient or capture a failure result.
+        var (patient, patientResolutionFailure) = await ResolveCurrentPatientForFavoritesAsync(cancellationToken);
+        if (patientResolutionFailure != null)
         {
-            // Return forbidden failure
-            return PatientResult.Failure(PatientErrorCodes.Forbidden, "User is not authenticated.");
+            return patientResolutionFailure;
         }
         else
         {
-            // No action needed.
-        }
-
-        // Retrieve the patient profile
-        var patient = await _dbContext.Patients
-            .FirstOrDefaultAsync(p => p.UserId == userId.Value, cancellationToken);
-
-        // Verify patient profile existence
-        if (patient == null)
-        {
-            // Return not found failure
-            return PatientResult.Failure(PatientErrorCodes.NotFound, "Patient profile not found.");
-        }
-        else
-        {
-            // No action needed.
+            // Patient resolved.
         }
 
         // Query all favorite doctor records for this patient
@@ -1204,7 +1196,7 @@ public class PatientService : IPatientService
 
         // Enforce safe page boundary defaults (clamp page size between 1 and 50)
         int validPageNumber = pageNumber < 1 ? 1 : pageNumber;
-        int validPageSize = Math.Clamp(pageSize, 1, 50);
+        int validPageSize = Math.Clamp(pageSize, 1, PatientConstants.MaxFavoritesPageSize);
 
         // Build the base query for the patient's favorite doctors
         var query = _dbContext.PatientFavoriteDoctors
@@ -1295,33 +1287,15 @@ public class PatientService : IPatientService
     /// <inheritdoc />
     public async Task<PatientResult> AddClinicToFavoritesAsync(Guid clinicId, CancellationToken cancellationToken = default)
     {
-        // Retrieve the current authenticated user ID
-        Guid? userId = _currentUserService.UserId;
-
-        // Verify that the user is authenticated
-        if (userId == null)
+        // Resolve the current patient or capture a failure result.
+        var (patient, patientResolutionFailure) = await ResolveCurrentPatientForFavoritesAsync(cancellationToken);
+        if (patientResolutionFailure != null)
         {
-            // Return forbidden failure when unauthenticated
-            return PatientResult.Failure(PatientErrorCodes.Forbidden, "User is not authenticated.");
+            return patientResolutionFailure;
         }
         else
         {
-            // No action needed.
-        }
-
-        // Retrieve the patient profile
-        var patient = await _dbContext.Patients
-            .FirstOrDefaultAsync(p => p.UserId == userId.Value, cancellationToken);
-
-        // Verify that the patient profile exists
-        if (patient == null)
-        {
-            // Return not found failure when patient profile does not exist
-            return PatientResult.Failure(PatientErrorCodes.NotFound, "Patient profile not found.");
-        }
-        else
-        {
-            // No action needed.
+            // Patient resolved.
         }
 
         // Verify that the target clinic exists and is active
@@ -1361,7 +1335,7 @@ public class PatientService : IPatientService
             Patient = patient,
             ClinicId = clinicId,
             Clinic = null!,
-            AddedAt = DateTime.UtcNow
+            AddedAt = _dateTimeProvider.UtcNow
         };
 
         // Add the favorite record to the context
@@ -1389,33 +1363,15 @@ public class PatientService : IPatientService
     /// <inheritdoc />
     public async Task<PatientResult> RemoveClinicFromFavoritesAsync(Guid clinicId, CancellationToken cancellationToken = default)
     {
-        // Retrieve current authenticated user ID
-        Guid? userId = _currentUserService.UserId;
-
-        // Verify user authentication
-        if (userId == null)
+        // Resolve the current patient or capture a failure result.
+        var (patient, patientResolutionFailure) = await ResolveCurrentPatientForFavoritesAsync(cancellationToken);
+        if (patientResolutionFailure != null)
         {
-            // Return forbidden failure when unauthenticated
-            return PatientResult.Failure(PatientErrorCodes.Forbidden, "User is not authenticated.");
+            return patientResolutionFailure;
         }
         else
         {
-            // No action needed.
-        }
-
-        // Retrieve patient profile
-        var patient = await _dbContext.Patients
-            .FirstOrDefaultAsync(p => p.UserId == userId.Value, cancellationToken);
-
-        // Verify patient profile existence
-        if (patient == null)
-        {
-            // Return patient not found error
-            return PatientResult.Failure(PatientErrorCodes.NotFound, "Patient profile not found.");
-        }
-        else
-        {
-            // No action needed.
+            // Patient resolved.
         }
 
         // Query the favorite entry to be removed
@@ -1449,33 +1405,15 @@ public class PatientService : IPatientService
     /// <inheritdoc />
     public async Task<PatientResult> RemoveAllFavoriteClinicsAsync(CancellationToken cancellationToken = default)
     {
-        // Retrieve current authenticated user ID
-        Guid? userId = _currentUserService.UserId;
-
-        // Verify user authentication
-        if (userId == null)
+        // Resolve the current patient or capture a failure result.
+        var (patient, patientResolutionFailure) = await ResolveCurrentPatientForFavoritesAsync(cancellationToken);
+        if (patientResolutionFailure != null)
         {
-            // Return forbidden failure
-            return PatientResult.Failure(PatientErrorCodes.Forbidden, "User is not authenticated.");
+            return patientResolutionFailure;
         }
         else
         {
-            // No action needed.
-        }
-
-        // Retrieve patient profile
-        var patient = await _dbContext.Patients
-            .FirstOrDefaultAsync(p => p.UserId == userId.Value, cancellationToken);
-
-        // Verify patient profile existence
-        if (patient == null)
-        {
-            // Return not found failure
-            return PatientResult.Failure(PatientErrorCodes.NotFound, "Patient profile not found.");
-        }
-        else
-        {
-            // No action needed.
+            // Patient resolved.
         }
 
         // Query all favorite clinic records for this patient
@@ -1555,7 +1493,7 @@ public class PatientService : IPatientService
 
         // Enforce safe page boundary defaults (clamp page size between 1 and 50)
         int validPageNumber = pageNumber < 1 ? 1 : pageNumber;
-        int validPageSize = Math.Clamp(pageSize, 1, 50);
+        int validPageSize = Math.Clamp(pageSize, 1, PatientConstants.MaxFavoritesPageSize);
 
         // Build the base query for the patient's favorite clinics
         var query = _dbContext.PatientFavoriteClinics
@@ -1630,3 +1568,7 @@ public class PatientService : IPatientService
 
     #endregion
 }
+
+
+
+

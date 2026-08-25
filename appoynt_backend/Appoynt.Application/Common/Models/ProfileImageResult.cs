@@ -2,11 +2,13 @@
  * File Name      : ProfileImageResult.cs
  * Author         : Mustafa Mahmoud
  * Created Date   : 2026-08-14
- * Version        : v1.0.0
- * Dependencies   : AuthenticationError
+ * Version        : v1.1.0
+ * Dependencies   : AuthenticationError, System.Text.Json.Serialization
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-14
- * Description    : Result object for profile image upload, retrieval, and deletion operations.
+ * Last Modified  : Mustafa Mahmoud - 2026-08-25
+ * Description    : Result object for profile image upload, retrieval, and deletion
+ *                  operations, reusing the shared success/error foundation while
+ *                  exposing the stored image path.
  */
 
 using System;
@@ -18,22 +20,12 @@ namespace Appoynt.Application.Common.Models;
 /// <summary>
 /// Represents the result of a profile image management operation.
 /// </summary>
-public sealed class ProfileImageResult
+public sealed class ProfileImageResult : ResultBase
 {
-    /// <summary>
-    /// Gets a value indicating whether the operation succeeded.
-    /// </summary>
-    public bool Succeeded { get; init; }
-
     /// <summary>
     /// Gets the relative storage path of the profile image if the operation was successful.
     /// </summary>
     public string? StoredPath { get; init; }
-
-    /// <summary>
-    /// Gets the collection of errors if the operation failed.
-    /// </summary>
-    public IReadOnlyList<AuthenticationError> Errors { get; init; } = [];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ProfileImageResult"/> class.
@@ -43,16 +35,16 @@ public sealed class ProfileImageResult
     /// <param name="errors">The collection of errors.</param>
     [JsonConstructor]
     public ProfileImageResult(bool succeeded, string? storedPath, IReadOnlyList<AuthenticationError>? errors)
+        : base(succeeded, errors)
     {
-        Succeeded = succeeded;
         StoredPath = storedPath;
-        Errors = errors ?? Array.Empty<AuthenticationError>();
     }
 
     /// <summary>
     /// Parameterless constructor for serialization and property initialization.
     /// </summary>
     public ProfileImageResult()
+        : base(false, null)
     {
     }
 

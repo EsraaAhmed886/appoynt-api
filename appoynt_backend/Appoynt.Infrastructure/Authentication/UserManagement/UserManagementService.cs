@@ -6,13 +6,14 @@
  * Dependencies   : IUserManagementService, UserManager, RoleManager,
  *                  ApplicationDbContext, ICurrentUserService
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 23/08/2026
+ * Last Modified  : Mustafa Mahmoud - 2026-08-25
  * Description    : Implements staff user management.
  */
 
 using Appoynt.Application.Common.Constants;
 using Appoynt.Application.Common.Interfaces;
 using Appoynt.Application.Common.Models;
+using Appoynt.Application.Common.Validation;
 using Appoynt.Application.Features.UserManagement;
 using Appoynt.Application.Features.UserManagement.Contracts;
 using Appoynt.Application.Features.UserManagement.Validation;
@@ -83,10 +84,7 @@ public sealed class UserManagementService : IUserManagementService
 
         if (!validationResult.IsValid)
         {
-            var errors = validationResult.Errors
-                .Select(e => new AuthenticationError(e.ErrorCode, e.PropertyName))
-                .ToList();
-            return new UserManagementResult { Errors = errors };
+            return UserManagementResult.Failure(validationResult.ToAuthenticationErrors());
         }
         else
         {
@@ -180,7 +178,7 @@ public sealed class UserManagementService : IUserManagementService
                 var errors = createUserResult.Errors
                     .Select(e => new AuthenticationError(e.Code, e.Description))
                     .ToList();
-                return new UserManagementResult { Errors = errors };
+                return UserManagementResult.Failure(errors);
             }
             else
             {
@@ -196,7 +194,7 @@ public sealed class UserManagementService : IUserManagementService
                 var errors = addRoleResult.Errors
                     .Select(e => new AuthenticationError(e.Code, e.Description))
                     .ToList();
-                return new UserManagementResult { Errors = errors };
+                return UserManagementResult.Failure(errors);
             }
             else
             {
@@ -337,10 +335,7 @@ public sealed class UserManagementService : IUserManagementService
 
         if (!validationResult.IsValid)
         {
-            var errors = validationResult.Errors
-                .Select(e => new AuthenticationError(e.ErrorCode, e.ErrorMessage))
-                .ToList();
-            return new UserManagementResult { Errors = errors };
+            return UserManagementResult.Failure(validationResult.ToAuthenticationErrors());
         }
         else
         {
@@ -401,7 +396,7 @@ public sealed class UserManagementService : IUserManagementService
                 var errors = createUserResult.Errors
                     .Select(e => new AuthenticationError(e.Code, e.Description))
                     .ToList();
-                return new UserManagementResult { Errors = errors };
+                return UserManagementResult.Failure(errors);
             }
             else
             {
@@ -415,7 +410,7 @@ public sealed class UserManagementService : IUserManagementService
                 var errors = addRoleResult.Errors
                     .Select(e => new AuthenticationError(e.Code, e.Description))
                     .ToList();
-                return new UserManagementResult { Errors = errors };
+                return UserManagementResult.Failure(errors);
             }
             else
             {
@@ -657,8 +652,7 @@ public sealed class UserManagementService : IUserManagementService
         if (!validationResult.IsValid)
         {
             // Map validation failures to structured error responses.
-            var errors = validationResult.Errors.Select(e => new AuthenticationError(e.ErrorCode, e.PropertyName)).ToList();
-            return UserManagementResult.Failure(errors);
+            return UserManagementResult.Failure(validationResult.ToAuthenticationErrors());
         }
         else
         {
@@ -840,4 +834,7 @@ public sealed class UserManagementService : IUserManagementService
         };
     }
 }
+
+
+
 
