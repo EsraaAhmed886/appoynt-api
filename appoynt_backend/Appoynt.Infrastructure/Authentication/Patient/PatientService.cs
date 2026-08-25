@@ -5,7 +5,7 @@
  * Version        : v1.1.0
  * Dependencies   : ApplicationDbContext, ICurrentUserService, IFileStorageService, IValidator, Appoynt.Application.Common.Models
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-23
+ * Last Modified  : Mustafa Mahmoud - 2026-08-25
  * Description    : Full implementation of IPatientService including profile, family members, and favorites management.
  */
 

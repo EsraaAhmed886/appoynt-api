@@ -5,7 +5,7 @@
  * Version        : v1.0.0
  * Dependencies   : None
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-07-31
+ * Last Modified  : Mustafa Mahmoud - 2026-08-25
  * Description    : Defines stable error codes for authentication features,
  *                  including registration, login, password recovery, OTP,
  *                  refresh tokens, and account verification.

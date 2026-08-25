@@ -5,7 +5,7 @@
  * Version        : v1.0.0
  * Dependencies   : None
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-10
+ * Last Modified  : Mustafa Mahmoud - 2026-08-25
  * Description    : Defines constant values used for patient validation,
  *                  PID generation, family member management, National ID
  *                  validation, and profile photo storage rules.

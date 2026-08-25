@@ -5,7 +5,7 @@
  * Version        : v1.0.0
  * Dependencies   : IClinicService, ApplicationDbContext, ICurrentUserService, ISlotGenerationService, IValidator, ILogger
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-20
+ * Last Modified  : Mustafa Mahmoud - 2026-08-25
  * Description    : Implements clinic management operations including CRUD, scheduling, breaks, phone numbers, receptionist assignment, and slot generation.
  */
 

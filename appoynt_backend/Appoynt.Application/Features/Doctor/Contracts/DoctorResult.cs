@@ -5,7 +5,7 @@
  * Version        : v1.1.0
  * Dependencies   : Appoynt.Application.Common.Models
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-24
+ * Last Modified  : Mustafa Mahmoud - 2026-08-25
  * Description    : Result object for doctor operations, reusing the shared
  *                  success/error foundation while exposing the doctor identifier.
  */

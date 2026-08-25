@@ -5,7 +5,7 @@
  * Version        : v1.1.0
  * Dependencies   : AuthenticationError
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-24
+ * Last Modified  : Mustafa Mahmoud - 2026-08-25
  * Description    : Represents the outcome of a user management operation,
  *                  reusing the shared success/error foundation while exposing
  *                  the managed user identifier.

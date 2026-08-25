@@ -5,7 +5,7 @@
  * Version        : v1.0.0
  * Dependencies   : Microsoft.AspNetCore.Diagnostics, ProblemDetails, IHostEnvironment
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-24
+ * Last Modified  : Mustafa Mahmoud - 2026-08-25
  * Description    : Provides centralized, structured RFC 7807 ProblemDetails
  *                  exception handling across the HTTP request pipeline.
  *                  Raw exception details are disclosed only in Development.

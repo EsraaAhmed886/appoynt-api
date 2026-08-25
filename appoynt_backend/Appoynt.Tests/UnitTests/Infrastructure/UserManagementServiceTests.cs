@@ -6,7 +6,7 @@
  * Dependencies   : UserManagementService, UserManager, RoleManager,
  *                  ApplicationDbContext, FluentValidation validators, Moq, FluentAssertions
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-24
+ * Last Modified  : Mustafa Mahmoud - 2026-08-25
  * Description    : Unit tests for UserManagementService covering staff account
  *                  creation guards (duplicate email/phone, missing roles, failed
  *                  identity operations), doctor profile persistence with

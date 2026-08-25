@@ -5,7 +5,7 @@
  * Version        : v1.0.0
  * Dependencies   : FluentValidation.Results, AuthenticationError
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-24
+ * Last Modified  : Mustafa Mahmoud - 2026-08-25
  * Description    : Provides the single canonical mapping from FluentValidation
  *                  failures to stable authentication errors, ensuring every
  *                  feature emits identical machine-readable error contracts.

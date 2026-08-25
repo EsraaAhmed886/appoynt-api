@@ -6,7 +6,7 @@
  * Dependencies   : IUserManagementService, UserManager, RoleManager,
  *                  ApplicationDbContext, ICurrentUserService
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 23/08/2026
+ * Last Modified  : Mustafa Mahmoud - 2026-08-25
  * Description    : Implements staff user management.
  */
 

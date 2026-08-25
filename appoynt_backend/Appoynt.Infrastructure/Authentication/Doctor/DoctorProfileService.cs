@@ -5,7 +5,7 @@
  * Version        : v1.0.0
  * Dependencies   : ApplicationDbContext, ICurrentUserService, IDoctorProfileService
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : 2026-08-23
+ * Last Modified  : Mustafa Mahmoud - 2026-08-25
  * Description    : Implementation of IDoctorProfileService for Doctor profile operations.
  */
 

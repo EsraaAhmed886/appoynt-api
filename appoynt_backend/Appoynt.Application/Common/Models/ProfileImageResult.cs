@@ -5,7 +5,7 @@
  * Version        : v1.1.0
  * Dependencies   : AuthenticationError, System.Text.Json.Serialization
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-24
+ * Last Modified  : Mustafa Mahmoud - 2026-08-25
  * Description    : Result object for profile image upload, retrieval, and deletion
  *                  operations, reusing the shared success/error foundation while
  *                  exposing the stored image path.

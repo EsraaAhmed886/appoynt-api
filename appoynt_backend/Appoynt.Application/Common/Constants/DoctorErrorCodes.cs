@@ -5,7 +5,7 @@
  * Version        : v1.0.0
  * Dependencies   : None
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-14
+ * Last Modified  : Mustafa Mahmoud - 2026-08-25
  * Description    : Contains constant error codes for doctor validation and operations.
  */
 
