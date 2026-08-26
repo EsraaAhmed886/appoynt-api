@@ -1,4 +1,4 @@
-﻿/*
+/*
  * File Name: medical_record_stepper.tsx
  * Author: Kholoud Khaled
  * Date of Creation: 18/08/2026
@@ -9,7 +9,7 @@
  *   - @/context/medical_record_context
  *   - @/context/language_context
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Scaled 3-step workflow Stepper component for the Medical Record consultation tabs, providing prominent pill dimensions, badge circles, typography, and responsive horizontal dividers.
  */
 

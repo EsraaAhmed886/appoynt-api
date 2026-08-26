@@ -9,7 +9,7 @@
  *   - @/types/medical_record
  *   - @/context/language_context
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Clinical Chronic Conditions Banner rendering active chronic morbidities with ICD-10 coding, status badges (Active, Managed, Controlled), diagnosis dates, and safe empty state watermark.
  */
 
@@ -58,6 +58,8 @@ export default function ChronicConditionsBanner({
         </div>
       </div>
     );
+  } else {
+    // No action needed
   }
 
   if (isError) {
@@ -86,6 +88,8 @@ export default function ChronicConditionsBanner({
         )}
       </div>
     );
+  } else {
+    // No action needed
   }
 
   const hasConditions = conditions && conditions.length > 0;
@@ -116,6 +120,8 @@ export default function ChronicConditionsBanner({
         </span>
       </div>
     );
+  } else {
+    // No action needed
   }
 
   const getStatusBadge = (status?: string) => {
@@ -126,20 +132,20 @@ export default function ChronicConditionsBanner({
         classes: "bg-amber-100 dark:bg-amber-900/80 text-amber-800 dark:text-amber-200 border-amber-300 dark:border-amber-700",
         dot: "bg-amber-500 animate-ping",
       };
-    }
-    if ("managed" === s) {
+    } else if ("managed" === s) {
       return {
         label: translations.managed || "Managed",
         classes: "bg-sky-100 dark:bg-sky-900/80 text-sky-800 dark:text-sky-200 border-sky-300 dark:border-sky-700",
         dot: "bg-sky-500",
       };
+    } else {
+      // Default / controlled
+      return {
+        label: translations.controlled || "Controlled",
+        classes: "bg-emerald-100 dark:bg-emerald-900/80 text-emerald-800 dark:text-emerald-200 border-emerald-300 dark:border-emerald-700",
+        dot: "bg-emerald-500",
+      };
     }
-    // Default / controlled
-    return {
-      label: translations.controlled || "Controlled",
-      classes: "bg-emerald-100 dark:bg-emerald-900/80 text-emerald-800 dark:text-emerald-200 border-emerald-300 dark:border-emerald-700",
-      dot: "bg-emerald-500",
-    };
   };
 
   return (

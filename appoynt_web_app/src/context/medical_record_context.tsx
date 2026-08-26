@@ -8,7 +8,7 @@
  *   - @/types/medical_record
  *   - @/services/medical_record_service
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Context and state management orchestrator for medical record clinical consultation workflows, handling step transitions, background debounce autosaving, and finalizing mutations.
  */
 
@@ -99,6 +99,8 @@ export function MedicalRecordWorkflowProvider({
 
     if (autoSaveTimerRef.current) {
       clearTimeout(autoSaveTimerRef.current);
+    } else {
+      // No timer to clear
     }
 
     if ("FINALIZED" !== recordRef.current.status) {
@@ -115,6 +117,8 @@ export function MedicalRecordWorkflowProvider({
           setSaveStatus("ERROR");
         }
       }, 5000);
+    } else {
+      // Finalized records not autosaved
     }
   };
 
@@ -122,6 +126,8 @@ export function MedicalRecordWorkflowProvider({
     return () => {
       if (autoSaveTimerRef.current) {
         clearTimeout(autoSaveTimerRef.current);
+      } else {
+        // No timer to clear
       }
     };
   }, []);
@@ -174,8 +180,14 @@ export function MedicalRecordWorkflowProvider({
     setRecord((prev) => {
       if (prev.secondaryDiagnoses.some((d) => d.code === diagnosis.code)) {
         return prev;
+      } else {
+        // Not duplicate
       }
-      if (prev.secondaryDiagnoses.length >= 10) return prev;
+      if (prev.secondaryDiagnoses.length >= 10) {
+        return prev;
+      } else {
+        // Under maximum limit
+      }
       return {
         ...prev,
         secondaryDiagnoses: [...prev.secondaryDiagnoses, diagnosis],
@@ -276,7 +288,11 @@ export function MedicalRecordWorkflowProvider({
     setIsSaving(true);
     setSaveStatus("SAVING");
     try {
-      if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+      if (autoSaveTimerRef.current) {
+        clearTimeout(autoSaveTimerRef.current);
+      } else {
+        // No timer
+      }
       const updated = await MedicalRecordService.saveDraft(
         recordRef.current.appointmentId,
         {
@@ -287,7 +303,11 @@ export function MedicalRecordWorkflowProvider({
       setRecord(updated);
       setSaveStatus("SAVED");
       setHasUnsavedChanges(false);
-      if (onRecordUpdated) onRecordUpdated(updated);
+      if (onRecordUpdated) {
+        onRecordUpdated(updated);
+      } else {
+        // No callback
+      }
       return updated;
     } catch {
       setSaveStatus("ERROR");
@@ -300,7 +320,11 @@ export function MedicalRecordWorkflowProvider({
   const finalizeRecordNow = useCallback(async (): Promise<MedicalRecord | null> => {
     setIsSaving(true);
     try {
-      if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+      if (autoSaveTimerRef.current) {
+        clearTimeout(autoSaveTimerRef.current);
+      } else {
+        // No timer
+      }
       const finalized = await MedicalRecordService.finalizeRecord(
         recordRef.current.appointmentId,
         {
@@ -313,7 +337,11 @@ export function MedicalRecordWorkflowProvider({
       setRecord(finalized);
       setHasUnsavedChanges(false);
       setActiveTab("summary");
-      if (onRecordUpdated) onRecordUpdated(finalized);
+      if (onRecordUpdated) {
+        onRecordUpdated(finalized);
+      } else {
+        // No callback
+      }
       return finalized;
     } catch {
       return null;
@@ -370,6 +398,8 @@ export function useMedicalRecordWorkflow() {
     throw new Error(
       "useMedicalRecordWorkflow must be used within a MedicalRecordWorkflowProvider"
     );
+  } else {
+    // Valid context
   }
   return context;
 }

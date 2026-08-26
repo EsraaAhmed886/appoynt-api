@@ -6,7 +6,7 @@
  * Dependencies:
  *   - @/types/receptionist
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Simulated asynchronous mock API service for clinic receptionists management with realistic Egyptian accounts, multi-clinic assignments, search/filter/sort algorithms, uniqueness validation, and pagination.
  */
 
@@ -101,117 +101,107 @@ const INITIAL_RECEPTIONISTS: Receptionist[] = [
   },
   {
     id: "rec-005",
-    full_name: "Mariam Tarek Fouad",
-    username: "mariam_t",
+    full_name: "Mona Adel Fahmy",
+    username: "mona_adel",
     phone_number: "01099887766",
     assigned_clinics: [
-      { id: "clinic-cairo-heart", name: "Cairo Heart & Vascular Center", is_active: true },
-      { id: "clinic-zamalek-spec", name: "Zamalek Specialized Polyclinic", is_active: true },
       { id: "clinic-heliopolis-branch", name: "Heliopolis Diagnostic Clinic", is_active: true },
+      { id: "clinic-cairo-heart", name: "Cairo Heart & Vascular Center", is_active: true },
     ],
     status: "active",
-    created_at: "2026-08-08T16:20:00.000Z",
+    created_at: "2026-08-07T08:20:00.000Z",
   },
   {
     id: "rec-006",
-    full_name: "Karim Samy Abdelrahman",
-    username: "karim_samy",
-    phone_number: "01122334455",
+    full_name: "Karim Wael Mansour",
+    username: "karim_w",
+    phone_number: "01288776655",
     assigned_clinics: [
       { id: "clinic-nasr-city-hub", name: "Nasr City Medical Hub", is_active: true },
     ],
     status: "active",
-    created_at: "2026-08-10T12:00:00.000Z",
+    created_at: "2026-08-09T13:10:00.000Z",
   },
   {
     id: "rec-007",
-    full_name: "Fatma Ezzat Mansour",
-    username: "fatma_e",
-    phone_number: "01288776655",
+    full_name: "Dina Khaled Mostafa",
+    username: "dina_k",
+    phone_number: "01155443322",
     assigned_clinics: [
       { id: "clinic-zamalek-spec", name: "Zamalek Specialized Polyclinic", is_active: true },
     ],
-    status: "inactive",
-    created_at: "2026-08-12T08:30:00.000Z",
+    status: "active",
+    created_at: "2026-08-11T16:00:00.000Z",
   },
   {
     id: "rec-008",
-    full_name: "Ahmed Mostafa Kamel",
-    username: "ahmed_m",
-    phone_number: "01055443322",
+    full_name: "Omar Sherif Zaki",
+    username: "omar_sherif",
+    phone_number: "01033221100",
     assigned_clinics: [
       { id: "clinic-cairo-heart", name: "Cairo Heart & Vascular Center", is_active: true },
       { id: "clinic-heliopolis-branch", name: "Heliopolis Diagnostic Clinic", is_active: true },
     ],
-    status: "active",
-    created_at: "2026-08-14T13:10:00.000Z",
+    status: "inactive",
+    created_at: "2026-08-12T12:00:00.000Z",
   },
   {
     id: "rec-009",
-    full_name: "Dina Khaled El-Shamy",
-    username: "dina_khaled",
-    phone_number: "01599887711",
+    full_name: "Heba Tarek Radwan",
+    username: "heba_tarek",
+    phone_number: "01244332211",
     assigned_clinics: [
+      { id: "clinic-nasr-city-hub", name: "Nasr City Medical Hub", is_active: true },
       { id: "clinic-zamalek-spec", name: "Zamalek Specialized Polyclinic", is_active: true },
     ],
     status: "active",
-    created_at: "2026-08-15T09:40:00.000Z",
+    created_at: "2026-08-14T09:40:00.000Z",
   },
   {
     id: "rec-010",
-    full_name: "Omar Sherif Zaki",
-    username: "omar_sherif",
-    phone_number: "01166778899",
+    full_name: "Amr Nader Soliman",
+    username: "amr_nader",
+    phone_number: "01588774411",
     assigned_clinics: [
-      { id: "clinic-nasr-city-hub", name: "Nasr City Medical Hub", is_active: true },
+      { id: "clinic-heliopolis-branch", name: "Heliopolis Diagnostic Clinic", is_active: true },
     ],
     status: "active",
-    created_at: "2026-08-16T15:00:00.000Z",
+    created_at: "2026-08-15T15:30:00.000Z",
   },
   {
     id: "rec-011",
-    full_name: "Hoda Nabil Radwan",
-    username: "hoda_nabil",
-    phone_number: "01211223344",
+    full_name: "Rania Hany Kamal",
+    username: "rania_hany",
+    phone_number: "01122334455",
     assigned_clinics: [
       { id: "clinic-cairo-heart", name: "Cairo Heart & Vascular Center", is_active: true },
-      { id: "clinic-nasr-city-hub", name: "Nasr City Medical Hub", is_active: true },
     ],
     status: "active",
-    created_at: "2026-08-17T11:25:00.000Z",
+    created_at: "2026-08-17T11:00:00.000Z",
   },
   {
     id: "rec-012",
-    full_name: "Tarek Gamal El-Din",
-    username: "tarek_gamal",
-    phone_number: "01033445566",
+    full_name: "Tarek Essam Gamal",
+    username: "tarek_essam",
+    phone_number: "01066778899",
     assigned_clinics: [
-      { id: "clinic-cairo-heart", name: "Cairo Heart & Vascular Center", is_active: true },
+      { id: "clinic-downtown-archived", name: "Old Downtown Branch (Archived)", is_active: false },
     ],
     status: "inactive",
-    created_at: "2026-08-18T14:10:00.000Z",
+    created_at: "2026-08-18T14:15:00.000Z",
   },
 ];
 
 class ReceptionistMockService {
-  private receptionists: Receptionist[] = JSON.parse(JSON.stringify(INITIAL_RECEPTIONISTS));
-  private clinics: DoctorClinic[] = JSON.parse(JSON.stringify(INITIAL_DOCTOR_CLINICS));
-  private passwords: Record<string, string> = {
-    "rec-001": "P@ssword123",
-    "rec-002": "P@ssword123",
-    "rec-003": "P@ssword123",
-    "rec-004": "P@ssword123",
-    "rec-005": "P@ssword123",
-    "rec-006": "P@ssword123",
-    "rec-007": "P@ssword123",
-    "rec-008": "P@ssword123",
-    "rec-009": "P@ssword123",
-    "rec-010": "P@ssword123",
-    "rec-011": "P@ssword123",
-    "rec-012": "P@ssword123",
-  };
+  private receptionists: Receptionist[] = [];
+  private clinics: DoctorClinic[] = [];
+  private passwords: Record<string, string> = {};
 
-  private delay(ms = 150): Promise<void> {
+  constructor() {
+    this.resetMockData();
+  }
+
+  private delay(ms = 250): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
@@ -238,8 +228,12 @@ class ReceptionistMockService {
         for (const c of rec.assigned_clinics) {
           if (c.is_active) {
             coveredClinicIds.add(c.id);
+          } else {
+            // Clinic inactive
           }
         }
+      } else {
+        // Receptionist inactive
       }
     }
 
@@ -264,6 +258,8 @@ class ReceptionistMockService {
           r.username.toLowerCase().includes(q) ||
           r.phone_number.includes(q)
       );
+    } else {
+      // No search query
     }
 
     // 2. Clinic Filter
@@ -271,11 +267,15 @@ class ReceptionistMockService {
       filtered = filtered.filter((r) =>
         r.assigned_clinics.some((c) => c.id === params.clinic_id)
       );
+    } else {
+      // All clinics
     }
 
     // 3. Status Filter
     if (params.status && params.status !== "ALL") {
       filtered = filtered.filter((r) => r.status === params.status);
+    } else {
+      // All statuses
     }
 
     // 4. Sorting with created_at DESC tie-breaker
@@ -283,21 +283,25 @@ class ReceptionistMockService {
     filtered.sort((a, b) => {
       if (sortOption === "newest") {
         return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-      }
-      if (sortOption === "oldest") {
+      } else if (sortOption === "oldest") {
         return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
-      }
-      if (sortOption === "name_asc") {
+      } else if (sortOption === "name_asc") {
         const nameComp = a.full_name.localeCompare(b.full_name, undefined, { sensitivity: "base" });
-        if (nameComp !== 0) return nameComp;
-        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-      }
-      if (sortOption === "name_desc") {
+        if (nameComp !== 0) {
+          return nameComp;
+        } else {
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        }
+      } else if (sortOption === "name_desc") {
         const nameComp = b.full_name.localeCompare(a.full_name, undefined, { sensitivity: "base" });
-        if (nameComp !== 0) return nameComp;
-        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        if (nameComp !== 0) {
+          return nameComp;
+        } else {
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        }
+      } else {
+        return 0;
       }
-      return 0;
     });
 
     const total = filtered.length;
@@ -336,6 +340,8 @@ class ReceptionistMockService {
       error.code = 409;
       error.status = 409;
       throw error;
+    } else {
+      // Username unique
     }
 
     // 2. Uniqueness Scope - Phone Number
@@ -346,11 +352,15 @@ class ReceptionistMockService {
       error.code = 409;
       error.status = 409;
       throw error;
+    } else {
+      // Phone unique
     }
 
     // 3. Validate at least 1 clinic
     if (!data.clinic_ids || data.clinic_ids.length === 0) {
       throw new Error("Please select at least one clinic.");
+    } else {
+      // Clinics selected
     }
 
     // 4. Resolve assigned clinics
@@ -363,6 +373,8 @@ class ReceptionistMockService {
           name: found.name,
           is_active: found.is_active,
         });
+      } else {
+        // Clinic not found in mock list
       }
     }
 
@@ -379,6 +391,8 @@ class ReceptionistMockService {
 
     if (data.password) {
       this.passwords[newId] = data.password;
+    } else {
+      // No initial password stored
     }
 
     this.receptionists.unshift(newReceptionist);
@@ -391,6 +405,8 @@ class ReceptionistMockService {
     const existingIndex = this.receptionists.findIndex((r) => r.id === id);
     if (existingIndex === -1) {
       throw new Error("Receptionist account not found.");
+    } else {
+      // Found receptionist
     }
 
     // 1. Uniqueness Scope - Username (case-insensitive, excluding self)
@@ -403,6 +419,8 @@ class ReceptionistMockService {
       error.code = 409;
       error.status = 409;
       throw error;
+    } else {
+      // Username unique
     }
 
     // 2. Uniqueness Scope - Phone Number (excluding self)
@@ -415,11 +433,15 @@ class ReceptionistMockService {
       error.code = 409;
       error.status = 409;
       throw error;
+    } else {
+      // Phone unique
     }
 
     // 3. Validate at least 1 clinic
     if (!data.clinic_ids || data.clinic_ids.length === 0) {
       throw new Error("Please select at least one clinic.");
+    } else {
+      // Clinics selected
     }
 
     // 4. Resolve assigned clinics
@@ -432,6 +454,8 @@ class ReceptionistMockService {
           name: found.name,
           is_active: found.is_active,
         });
+      } else {
+        // Clinic not found in mock list
       }
     }
 
@@ -447,6 +471,8 @@ class ReceptionistMockService {
 
     if (data.password && data.password.trim().length > 0) {
       this.passwords[id] = data.password;
+    } else {
+      // Password unchanged
     }
 
     this.receptionists[existingIndex] = updated;

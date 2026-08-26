@@ -6,9 +6,9 @@
  * Dependencies: package:flutter/material.dart, app_spacing.dart,
  *   app_colors.dart, app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
- * File Description: Centered empty state layout displaying a pure Flutter code-rendered
- *   concentric bell illustration, localized titles, and a Go to Home action button.
+ * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * File Description: Centered scrollable empty state layout displaying a pure Flutter code-rendered
+ *   concentric bell illustration, localized titles, and a Go to Home action button with zero overflow.
  */
 
 // Import standard UI framework
@@ -22,37 +22,48 @@ import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
 
 // Local dimension constants strictly eliminating raw numbers
 class _LocalDimensions {
-  static const double outer_ring_size = 140.0;
-  static const double inner_ring_size = 100.0;
-  static const double icon_size = 56.0;
+  static const double outer_ring_size = 110.0;
+  static const double inner_ring_size = 80.0;
+  static const double icon_size = 46.0;
   static const double max_subtitle_width = 300.0;
-  static const double btn_height = 48.0;
+  static const double btn_height = 46.0;
   static const double btn_radius = 12.0;
   static const double btn_max_width = 240.0;
 }
 
-// Reusable EmptyNotificationsWidget displaying pure Flutter code illustration and CTA
+/// Reusable EmptyNotificationsWidget displaying pure Flutter code illustration and CTA without overflow.
 class EmptyNotificationsWidget extends StatelessWidget {
-  // Callback when Go to Home CTA is pressed
-  final VoidCallback on_go_home;
+  final String? message;
+  final String? subtitle;
+  final VoidCallback? on_go_home;
+  final VoidCallback? onRefresh;
 
-  // Constant constructor mapping callback
   const EmptyNotificationsWidget({
     super.key,
-    required this.on_go_home,
+    this.message,
+    this.subtitle,
+    this.on_go_home,
+    this.onRefresh,
   });
 
   @override
-  // Build method drawing the centered empty state hierarchy
   Widget build(BuildContext context) {
     final AppLocalizations localizations = AppLocalizations.of(context);
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+    final VoidCallback? ctaAction = on_go_home ?? onRefresh;
 
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.space_xxl),
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(
+          parent: BouncingScrollPhysics(),
+        ),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.space_xxl,
+          vertical: AppSpacing.space_l,
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // Concentric circle code illustration with bell icon
@@ -85,10 +96,11 @@ class EmptyNotificationsWidget extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: AppSpacing.space_xxl),
-            // Title text: "No notifications yet"
+            const SizedBox(height: AppSpacing.space_xl),
+
+            // Primary Message
             Text(
-              localizations.notifications_empty_title,
+              message ?? localizations.notifications_empty_title,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: AppSpacing.font_size_dialog_title,
@@ -99,13 +111,14 @@ class EmptyNotificationsWidget extends StatelessWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.space_s),
-            // Subtitle text: "We'll notify you when there is something important."
+
+            // Subtitle Description
             ConstrainedBox(
               constraints: const BoxConstraints(
                 maxWidth: _LocalDimensions.max_subtitle_width,
               ),
               child: Text(
-                localizations.notifications_empty_subtitle,
+                subtitle ?? localizations.notifications_empty_subtitle,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: AppSpacing.font_size_body_medium,
@@ -116,37 +129,41 @@ class EmptyNotificationsWidget extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: AppSpacing.space_xxl),
-            // "Go to Home" CTA Button
-            ConstrainedBox(
-              constraints: const BoxConstraints(
-                maxWidth: _LocalDimensions.btn_max_width,
-                minWidth: _LocalDimensions.btn_max_width,
-                minHeight: _LocalDimensions.btn_height,
-              ),
-              child: ElevatedButton(
-                onPressed: on_go_home,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary_color,
-                  foregroundColor: AppColors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(_LocalDimensions.btn_radius),
+
+            if (ctaAction != null) ...[
+              const SizedBox(height: AppSpacing.space_xl),
+              // "Go to Home" / Action CTA Button
+              ConstrainedBox(
+                constraints: const BoxConstraints(
+                  maxWidth: _LocalDimensions.btn_max_width,
+                  minWidth: _LocalDimensions.btn_max_width,
+                  minHeight: _LocalDimensions.btn_height,
+                ),
+                child: ElevatedButton(
+                  onPressed: ctaAction,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary_color,
+                    foregroundColor: AppColors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(_LocalDimensions.btn_radius),
+                    ),
+                    elevation: 0.0,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.space_xl,
+                      vertical: AppSpacing.space_m,
+                    ),
                   ),
-                  elevation: 0.0,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.space_xl,
-                    vertical: AppSpacing.space_m,
+                  child: Text(
+                    localizations.notifications_empty_cta,
+                    style: const TextStyle(
+                      fontSize: AppSpacing.font_size_body_medium,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-                child: Text(
-                  localizations.notifications_empty_cta,
-                  style: const TextStyle(
-                    fontSize: AppSpacing.font_size_body_medium,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
               ),
-            ),
+            ],
           ],
         ),
       ),

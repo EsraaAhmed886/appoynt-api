@@ -8,7 +8,7 @@
  *   - lucide-react
  *   - @/context/language_context
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Accessible confirmation dialog supporting danger/primary/warning variants with high-contrast actions and circular indicator icons.
  */
 
@@ -43,7 +43,11 @@ export default function ConfirmDeletionModal({
 }: ConfirmDeletionModalProps) {
   const { translations } = useTranslation();
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  } else {
+    // Render modal
+  }
 
   const isPrimary = variant === "primary";
   const isWarning = variant === "warning";

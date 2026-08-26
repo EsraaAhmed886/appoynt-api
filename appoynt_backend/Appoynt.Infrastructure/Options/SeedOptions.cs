@@ -1,4 +1,4 @@
-﻿/**
+/**
  * File Name      : SeedOptions.cs
  * Author         : Mustafa Mahmoud
  * Created Date   : 22/07/2026
@@ -26,4 +26,9 @@ public sealed class SeedOptions
     /// Default administrator configuration.
     /// </summary>
     public AdminOptions Admin { get; init; } = new();
+
+    /// <summary>
+    /// Default doctor configuration.
+    /// </summary>
+    public DoctorOptions Doctor { get; init; } = new();
 }

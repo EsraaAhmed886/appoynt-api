@@ -13,6 +13,7 @@
  */
 
 import { Clinic, WorkingScheduleItem, BreakTimeItem } from "@/types/clinic";
+import { get_clinics } from "@/services/clinic.service";
 import {
   parse_time_to_minutes,
   is_start_before_end,
@@ -63,10 +64,14 @@ export function validate_phone(
 
     if (!egyptian_mobile_regex.test(normalized)) {
       return "val_phone_invalid";
-    } else if (is_phone_number_duplicate(trimmed, existing_clinics, current_clinic_id)) {
-      return "val_phone_duplicate";
     } else {
-      return null;
+      const target_clinics =
+        existing_clinics.length > 0 ? existing_clinics : get_clinics();
+      if (is_phone_number_duplicate(trimmed, target_clinics, current_clinic_id)) {
+        return "val_phone_duplicate";
+      } else {
+        return null;
+      }
     }
   }
 }

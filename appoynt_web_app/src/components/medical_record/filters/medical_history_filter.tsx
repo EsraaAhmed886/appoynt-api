@@ -1,4 +1,4 @@
-﻿/*
+/*
  * File Name: medical_history_filter.tsx
  * Author: Kholoud Khaled
  * Date of Creation: 18/08/2026
@@ -9,7 +9,7 @@
  *   - @/context/language_context
  *   - @/components/ui/custom_select
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Modern multi-facet filtering bar component with CustomSelect components, integrated search input, and responsive action controls for medical history records.
  */
 

@@ -441,5 +441,173 @@ public class DoctorIntegrationTests : IClassFixture<WebApplicationFactory<Appoyn
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
     }
 
+    [Fact]
+    public async Task DefaultSeededDoctor_ShouldBeAbleToLogin_WithDefaultCredentials()
+    {
+        // Act: Login with default seeded doctor credentials
+        var loginRequest = new LoginRequest
+        {
+            Identifier = "doctor@appoynt.com",
+            Password = "Password123!"
+        };
+
+        var response = await _client.PostAsJsonAsync("/api/auth/login", loginRequest);
+
+        // Assert: Login should succeed and return access token
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
+        result.Should().NotBeNull();
+        result!.AccessToken.Should().NotBeNullOrWhiteSpace();
+
+        // Verify that the token allows accessing Doctor-authorized endpoints
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", result.AccessToken);
+        var myClinicsResponse = await _client.GetAsync("/api/clinics/my");
+        myClinicsResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+
+    #endregion
+
+    #region Doctor Profile & IDOR Tests
+
+    [Fact]
+    public async Task UpdateDoctorProfile_ShouldUpdateDomainAndBaseUser_InTransaction()
+    {
+        // Arrange
+        string adminToken = await GetAdminTokenAsync();
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", adminToken);
+
+        Guid specId = Guid.NewGuid();
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            db.Specializations.Add(new Specialization
+            {
+                Id = specId,
+                NameEn = "Derma " + Guid.NewGuid().ToString("N")[..6],
+                NameAr = "جلدية " + Guid.NewGuid().ToString("N")[..6]
+            });
+            await db.SaveChangesAsync();
+        }
+
+        var createReq = new CreateDoctorRequest
+        {
+            FirstName = "Skin",
+            LastName = "Doc",
+            NameAr = "دكتور سكين",
+            NameEn = "Dr. Skin",
+            Email = "skin@appoynt.com",
+            PhoneNumber = "+201099995555",
+            Password = "Password123!"
+        };
+        await _client.PostAsJsonAsync("/api/users/doctors", createReq);
+
+        string doctorToken = await GetTokenAsync("skin@appoynt.com", "Password123!");
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", doctorToken);
+
+        var updateReq = new Appoynt.Application.Features.Doctor.Contracts.UpdateDoctorProfileRequest
+        {
+            FirstName = "Super",
+            LastName = "Skin",
+            NameEn = "Dr. Super Skin",
+            Bio = "Best skin doctor",
+            SpecializationIds = [specId]
+        };
+
+        // Act
+        var response = await _client.PutAsJsonAsync("/api/doctors/profile", updateReq);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var getResp = await _client.GetAsync("/api/doctors/profile");
+        var profile = await getResp.Content.ReadFromJsonAsync<Appoynt.Application.Features.Doctor.Contracts.DoctorProfileResponse>();
+        
+        profile.Should().NotBeNull();
+        profile!.FirstName.Should().Be("Super");
+        profile.NameEn.Should().Be("Dr. Super Skin");
+        profile.Bio.Should().Be("Best skin doctor");
+        profile.Specializations.Should().ContainSingle(s => s.Id == specId);
+    }
+
+    [Fact]
+    public async Task UpdateDoctorProfile_IDOR_ShouldNotAllowEditingOtherDoctor()
+    {
+        // 1. Arrange: Seed Doctor A and Doctor B
+        string adminToken = await GetAdminTokenAsync();
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", adminToken);
+
+        Guid specId = Guid.NewGuid();
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            db.Specializations.Add(new Specialization
+            {
+                Id = specId,
+                NameEn = "Derma IDOR " + Guid.NewGuid().ToString("N")[..6],
+                NameAr = "جلدية " + Guid.NewGuid().ToString("N")[..6]
+            });
+            await db.SaveChangesAsync();
+        }
+
+        // Create Doctor A
+        var doctorAReq = new CreateDoctorRequest
+        {
+            FirstName = "Doctor",
+            LastName = "A",
+            NameAr = "دكتور أ",
+            NameEn = "Dr. A",
+            Email = "doctorA@appoynt.com",
+            PhoneNumber = "+201010001000",
+            Password = "Password123!"
+        };
+        await _client.PostAsJsonAsync("/api/users/doctors", doctorAReq);
+
+        // Create Doctor B
+        var doctorBReq = new CreateDoctorRequest
+        {
+            FirstName = "Doctor",
+            LastName = "B",
+            NameAr = "دكتور ب",
+            NameEn = "Dr. B",
+            Email = "doctorB@appoynt.com",
+            PhoneNumber = "+201020002000",
+            Password = "Password123!"
+        };
+        await _client.PostAsJsonAsync("/api/users/doctors", doctorBReq);
+
+        // 2. Act: Login as Doctor A and try to update profile
+        string doctorAToken = await GetTokenAsync("doctorA@appoynt.com", "Password123!");
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", doctorAToken);
+
+        // Note: UpdateDoctorProfileRequest structurally lacks an 'Id' or 'DoctorId' field.
+        // The service resolves identity solely from the token. We update the data to "Hacked".
+        var updateReq = new Appoynt.Application.Features.Doctor.Contracts.UpdateDoctorProfileRequest
+        {
+            FirstName = "Hacked",
+            LastName = "Attempt",
+            NameEn = "Dr. Hacked",
+            SpecializationIds = [specId]
+        };
+
+        var response = await _client.PutAsJsonAsync("/api/doctors/profile", updateReq);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        // 3. Assert: Ensure ONLY Doctor A was updated, and Doctor B remained completely untouched.
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            
+            var targetDoctorA = await db.Doctors.Include(d => d.User).FirstAsync(d => d.User.Email == "doctorA@appoynt.com");
+            targetDoctorA.User.FirstName.Should().Be("Hacked");
+            targetDoctorA.User.LastName.Should().Be("Attempt");
+            targetDoctorA.NameEn.Should().Be("Dr. Hacked");
+
+            var untouchedDoctorB = await db.Doctors.Include(d => d.User).FirstAsync(d => d.User.Email == "doctorB@appoynt.com");
+            untouchedDoctorB.User.FirstName.Should().Be("Doctor");
+            untouchedDoctorB.User.LastName.Should().Be("B");
+            untouchedDoctorB.NameEn.Should().Be("Dr. B");
+        }
+    }
+
     #endregion
 }

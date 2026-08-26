@@ -9,7 +9,7 @@
  *   - @/types/medical_record
  *   - @/context/language_context
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Clinical Allergy Alert Banner rendering safe emerald status watermark or high-alert soft red warning banner with severity pills and error retry capabilities.
  */
 
@@ -51,6 +51,8 @@ export default function AllergyAlertBanner({
         </div>
       </div>
     );
+  } else {
+    // No action needed
   }
 
   if (isError) {
@@ -79,6 +81,8 @@ export default function AllergyAlertBanner({
         )}
       </div>
     );
+  } else {
+    // No action needed
   }
 
   const hasAllergies = allergies && allergies.length > 0;
@@ -108,6 +112,8 @@ export default function AllergyAlertBanner({
         </span>
       </div>
     );
+  } else {
+    // No action needed
   }
 
   return (

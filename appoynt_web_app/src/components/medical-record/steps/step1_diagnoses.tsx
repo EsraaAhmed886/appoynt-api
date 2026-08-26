@@ -14,7 +14,7 @@
  *   - @/components/ui/custom_select_dropdown
  *   - @/context/language_context
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Step 1 Clinical Consultation presentation component providing dual-column ICD-10 diagnosis search, custom styled clinical outcome assessment dropdown, duplicate validation, ICD-10 detail cards, rich text clinical notes editor, autosave footer, and discard/next workflow navigation.
  */
 
@@ -75,9 +75,17 @@ export default function Step1Diagnoses() {
     const search = async () => {
       if (primarySearch.trim().length >= 1) {
         const res = await MedicalRecordService.searchIcd10Catalog(primarySearch);
-        if (active) setPrimaryResults(res);
+        if (active) {
+          setPrimaryResults(res);
+        } else {
+          // No action needed
+        }
       } else {
-        if (active) setPrimaryResults([]);
+        if (active) {
+          setPrimaryResults([]);
+        } else {
+          // No action needed
+        }
       }
     };
     search();
@@ -91,9 +99,17 @@ export default function Step1Diagnoses() {
     const search = async () => {
       if (secondarySearch.trim().length >= 1) {
         const res = await MedicalRecordService.searchIcd10Catalog(secondarySearch);
-        if (active) setSecondaryResults(res);
+        if (active) {
+          setSecondaryResults(res);
+        } else {
+          // No action needed
+        }
       } else {
-        if (active) setSecondaryResults([]);
+        if (active) {
+          setSecondaryResults([]);
+        } else {
+          // No action needed
+        }
       }
     };
     search();
@@ -127,6 +143,8 @@ export default function Step1Diagnoses() {
         secondaryDiagnosis: "Secondary diagnosis must be different from primary",
       }));
       return;
+    } else {
+      // Different from primary diagnosis
     }
 
     if (record.secondaryDiagnoses?.some((d) => d.code === item.code)) {
@@ -135,6 +153,8 @@ export default function Step1Diagnoses() {
         secondaryDiagnosis: "This secondary diagnosis is already added",
       }));
       return;
+    } else {
+      // Not yet added
     }
 
     const diag: DiagnosisItem = {
@@ -159,11 +179,15 @@ export default function Step1Diagnoses() {
 
     if (!record.primaryDiagnosis || !record.primaryDiagnosis.code) {
       errors.primaryDiagnosis = translations.primary_diagnosis_required || "Primary diagnosis is required";
+    } else {
+      // Primary diagnosis valid
     }
 
     const notesLength = (record.clinicalNotes || "").replace(/\s+/g, "").length;
     if (notesLength < 10) {
       errors.clinicalNotes = translations.min_notes_error || "Please enter detailed notes (at least 10 characters)";
+    } else {
+      // Clinical notes valid
     }
 
     setValidationErrors(errors);
@@ -174,6 +198,8 @@ export default function Step1Diagnoses() {
     if (validateStep1()) {
       saveDraftNow();
       setCurrentStep(2);
+    } else {
+      // Validation failed
     }
   };
 
@@ -457,6 +483,8 @@ export default function Step1Diagnoses() {
               delete copy.clinicalNotes;
               return copy;
             });
+          } else {
+            // No action needed
           }
         }}
         error={validationErrors.clinicalNotes}

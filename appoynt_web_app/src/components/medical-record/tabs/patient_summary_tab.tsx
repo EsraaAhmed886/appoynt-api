@@ -12,7 +12,7 @@
  *   - @/components/medical-record/banners/clinical_alerts_banner
  *   - @/context/language_context
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Top-level Patient Summary dashboard tab component orchestrating the top 3-card demographic & status grid, unified symmetrical clinical alerts banner, and continuity of care prior visit table.
  */
 
@@ -72,9 +72,13 @@ export default function PatientSummaryTab({
   const last3Visits = priorVisits ? priorVisits.slice(0, 3) : [];
 
   const formatGender = (g: string) => {
-    if ("Male" === g || "ذكر" === g) return translations.male || "Male";
-    if ("Female" === g || "أنثى" === g) return translations.female || "Female";
-    return g;
+    if ("Male" === g || "ذكر" === g) {
+      return translations.male || "Male";
+    } else if ("Female" === g || "أنثى" === g) {
+      return translations.female || "Female";
+    } else {
+      return g;
+    }
   };
 
   if (isLoading) {
@@ -89,6 +93,8 @@ export default function PatientSummaryTab({
         <div className="h-48 bg-slate-200 dark:bg-slate-800 rounded-2xl" />
       </div>
     );
+  } else {
+    // Render patient summary content
   }
 
   return (

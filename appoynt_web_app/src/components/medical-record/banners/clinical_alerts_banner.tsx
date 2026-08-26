@@ -9,7 +9,7 @@
  *   - @/types/medical_record
  *   - @/context/language_context
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Unified, visually balanced clinical safety alerts banner presenting critical allergy warnings and active chronic conditions side-by-side with equal height grid alignment, compact clinical chips, and dark/light mode tokens.
  */
 
@@ -53,6 +53,8 @@ export default function ClinicalAlertsBanner({
         <div className="rounded-2xl border-2 border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-[#131E35] p-4.5 h-36 flex flex-col justify-between" />
       </div>
     );
+  } else {
+    // No action needed
   }
 
   if (isError) {
@@ -81,6 +83,8 @@ export default function ClinicalAlertsBanner({
         )}
       </div>
     );
+  } else {
+    // No action needed
   }
 
   const hasAllergies = allergies && allergies.length > 0;
@@ -94,19 +98,19 @@ export default function ClinicalAlertsBanner({
         dotColor: "bg-amber-500",
         badgeColor: "text-amber-700 dark:text-amber-400 font-bold",
       };
-    }
-    if ("managed" === s) {
+    } else if ("managed" === s) {
       return {
         label: translations.status_managed || translations.managed || "Managed",
         dotColor: "bg-sky-500",
         badgeColor: "text-sky-700 dark:text-sky-400 font-bold",
       };
+    } else {
+      return {
+        label: translations.status_controlled || translations.controlled || "Controlled",
+        dotColor: "bg-emerald-500",
+        badgeColor: "text-emerald-700 dark:text-emerald-400 font-bold",
+      };
     }
-    return {
-      label: translations.status_controlled || translations.controlled || "Controlled",
-      dotColor: "bg-emerald-500",
-      badgeColor: "text-emerald-700 dark:text-emerald-400 font-bold",
-    };
   };
 
   return (

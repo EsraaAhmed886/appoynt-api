@@ -11,7 +11,7 @@
  *   - @/components/layout/sidebar_item
  *   - @/components/theme_toggle
  * Contributors: [shimaa salah, Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Primary sidebar navigation drawer component with embedded brand logo, collapsibility, and localized navigation targets.
  */
 
@@ -67,8 +67,6 @@ export default function Sidebar({
         overflow-visible
         bg-app-sidebar
         text-app-sidebar-text-primary
-        border-r
-        border-app-sidebar_border
         transition-all
         duration-300
         z-40
@@ -82,8 +80,6 @@ export default function Sidebar({
           flex
           h-16
           items-center
-          border-b
-          border-app-sidebar_border
           px-4
           ${isCollapsed ? "justify-center" : "justify-between"}
         `}
@@ -95,13 +91,13 @@ export default function Sidebar({
             isCollapsed ? "justify-center cursor-pointer" : ""
           }`}
         >
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center">
+          <div className="flex h-[52px] w-[52px] shrink-0 items-center justify-center">
             <Image
               src="/images/APPOYNT ICON-WITHOUT B&T.png"
               alt="Appoynt Logo"
-              width={36}
-              height={36}
-              className="h-9 w-9 object-contain transition-transform duration-200 hover:scale-105"
+              width={52}
+              height={52}
+              className="h-[52px] w-[52px] object-contain transition-transform duration-200 hover:scale-105"
               priority
             />
           </div>
@@ -211,7 +207,7 @@ export default function Sidebar({
       </nav>
 
       {/* Footer Container */}
-      <div className="mt-auto space-y-2 border-t border-app-sidebar_border p-4 overflow-hidden">
+      <div className="mt-auto space-y-2 p-4 overflow-hidden">
         <div
           className={`flex overflow-hidden ${
             isCollapsed ? "justify-center" : "justify-start"

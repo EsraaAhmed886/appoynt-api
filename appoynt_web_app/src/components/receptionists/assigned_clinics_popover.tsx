@@ -9,7 +9,7 @@
  *   - @/types/receptionist
  *   - @/context/language_context
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Popover card and modal popup listing all assigned clinic locations for a receptionist with real-time active/inactive status badges.
  */
 
@@ -41,15 +41,23 @@ export default function AssignedClinicsPopover({
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         onClose();
+      } else {
+        // No action needed
       }
     };
     if (isOpen) {
       window.addEventListener("keydown", handleKeyDown);
+    } else {
+      // Modal closed
     }
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  } else {
+    // Render popover
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150">

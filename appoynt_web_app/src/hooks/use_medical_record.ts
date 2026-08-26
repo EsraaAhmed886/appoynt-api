@@ -8,7 +8,7 @@
  *   - @/services/medical_record_service
  *   - @/types/medical_record
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Custom React query hook managing asynchronous fetching of medical records, patient profiles, and medical history pagination with error resilient fallbacks.
  */
 
@@ -28,7 +28,11 @@ export function useMedicalRecordQuery(appointmentId: string) {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const fetchRecord = useCallback(async () => {
-    if (!appointmentId) return;
+    if (!appointmentId) {
+      return;
+    } else {
+      // Proceed with fetch
+    }
     setIsLoading(true);
     setIsError(false);
     setErrorMessage(null);
@@ -44,6 +48,8 @@ export function useMedicalRecordQuery(appointmentId: string) {
           fetchedRecord.patientId
         );
         setPatient(fetchedPatient);
+      } else {
+        // No patient ID on record
       }
     } catch (err: unknown) {
       setIsError(true);
@@ -86,7 +92,11 @@ export function useMedicalHistoryQuery(
   }>({});
 
   const fetchHistory = useCallback(async () => {
-    if (!patientId) return;
+    if (!patientId) {
+      return;
+    } else {
+      // Proceed with history fetch
+    }
     setIsLoading(true);
     try {
       const res = await MedicalRecordService.getMedicalHistory(

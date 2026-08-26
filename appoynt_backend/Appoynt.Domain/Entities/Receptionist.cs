@@ -1,11 +1,11 @@
-﻿/**
+/**
  * File Name      : Receptionist.cs
  * Author         : Mustafa Mahmoud
  * Created Date   : 21/07/2026
  * Version        : v1.0.0
  * Dependencies   : BaseEntity, ApplicationUser, Doctor
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 21/07/2026
+ * Last Modified  : Mustafa Mahmoud - 2026-08-20
  * Description    : Represents a receptionist within the application.
  */
 
@@ -31,6 +31,11 @@ public class Receptionist : BaseEntity
 
     // Navigation property to the assigned doctor.
     public required Doctor Doctor { get; set; }
+
+    /// <summary>
+    /// Gets or sets the clinic assignments for this receptionist.
+    /// </summary>
+    public ICollection<ClinicReceptionist> ClinicReceptionists { get; set; } = [];
 
     #endregion
 }

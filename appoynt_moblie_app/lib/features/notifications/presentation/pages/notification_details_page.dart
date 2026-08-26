@@ -68,7 +68,8 @@ class NotificationDetailsPage extends StatelessWidget {
         return _DetailTheme(
           icon: Icons.notifications_active_outlined,
           color: AppColors.primary_color,
-          bg_color: AppColors.primary_color.withValues(alpha: is_dark ? 0.20 : 0.12),
+          bg_color:
+              AppColors.primary_color.withValues(alpha: is_dark ? 0.20 : 0.12),
         );
       case NotificationType.appointment_rescheduled:
         return _DetailTheme(
@@ -98,25 +99,36 @@ class NotificationDetailsPage extends StatelessWidget {
         return _DetailTheme(
           icon: Icons.notifications_rounded,
           color: AppColors.primary_color,
-          bg_color: AppColors.primary_color.withValues(alpha: is_dark ? 0.20 : 0.12),
+          bg_color:
+              AppColors.primary_color.withValues(alpha: is_dark ? 0.20 : 0.12),
         );
     }
   }
 
   // Formats the timestamp to clean localized representation
   String _format_timestamp(DateTime date, AppLocalizations localizations) {
-    final String hour = (date.hour > 12 ? date.hour - 12 : (0 == date.hour ? 12 : date.hour))
-        .toString()
-        .padLeft(2, '0');
+    final String hour =
+        (date.hour > 12 ? date.hour - 12 : (0 == date.hour ? 12 : date.hour))
+            .toString()
+            .padLeft(2, '0');
     final String minute = date.minute.toString().padLeft(2, '0');
     final String period = date.hour >= 12 ? 'PM' : 'AM';
     const List<String> months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
-    final String month_str = (date.month >= 1 && date.month <= 12)
-        ? months[date.month - 1]
-        : '';
+    final String month_str =
+        (date.month >= 1 && date.month <= 12) ? months[date.month - 1] : '';
     return '${date.day} $month_str ${date.year}, $hour:$minute $period';
   }
 
@@ -128,9 +140,8 @@ class NotificationDetailsPage extends StatelessWidget {
     final _DetailTheme theme = _get_theme(is_dark);
 
     return Scaffold(
-      backgroundColor: is_dark
-          ? AppColors.background_dark
-          : AppColors.scaffold_light,
+      backgroundColor:
+          is_dark ? AppColors.background_dark : AppColors.scaffold_light,
       body: SafeArea(
         child: Column(
           children: [
@@ -304,7 +315,8 @@ class NotificationDetailsPage extends StatelessWidget {
                     const SizedBox(height: AppSpacing.space_l),
 
                     // Detail Structured Key-Value Info Card
-                    _build_structured_info_card(context, is_dark, localizations),
+                    _build_structured_info_card(
+                        context, is_dark, localizations),
                     const SizedBox(height: AppSpacing.space_xxl),
 
                     // ── Primary Action CTA Button ─────────────────────────
@@ -337,14 +349,16 @@ class NotificationDetailsPage extends StatelessWidget {
 
                     // ── Secondary Action CTA (Add to Calendar for Appointments)
                     if (_is_appointment_event(notification.type)) ...[
-                      const SizedBox(height: _LocalDimensions.space_between_buttons),
+                      const SizedBox(
+                          height: _LocalDimensions.space_between_buttons),
                       TextButton(
                         onPressed: () {
                           ScaffoldMessenger.of(context).hideCurrentSnackBar();
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                localizations.notification_details_calendar_added,
+                                localizations
+                                    .notification_details_calendar_added,
                               ),
                               backgroundColor: AppColors.success,
                               behavior: SnackBarBehavior.floating,
@@ -390,8 +404,10 @@ class NotificationDetailsPage extends StatelessWidget {
   }
 
   // Handles primary action CTA press
-  void _handle_primary_cta(BuildContext context, AppLocalizations localizations) {
-    if (false == notification.is_entity_available || null == notification.entity_id) {
+  void _handle_primary_cta(
+      BuildContext context, AppLocalizations localizations) {
+    if (false == notification.is_entity_available ||
+        null == notification.entity_id) {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -459,15 +475,22 @@ class NotificationDetailsPage extends StatelessWidget {
 
           // Render rows based on notification category
           if (_is_appointment_event(notification.type)) ...[
-            _build_info_row(localizations.notification_details_doctor, 'Dr. Sarah Jenkins', is_dark),
-            _build_info_row(localizations.notification_details_specialty, 'Cardiology', is_dark),
-            _build_info_row(localizations.notification_details_location, 'New Cairo Medical Center', is_dark),
-            _build_info_row(localizations.notification_details_date, 'Today, 15 Aug 2026', is_dark),
-            _build_info_row(localizations.notification_details_time, '04:30 PM', is_dark),
+            _build_info_row(localizations.notification_details_doctor,
+                'Dr. Sara Hassan', is_dark),
+            _build_info_row(localizations.notification_details_specialty,
+                'Cardiology', is_dark),
+            _build_info_row(localizations.notification_details_location,
+                'New Cairo Medical Center', is_dark),
+            _build_info_row(localizations.notification_details_date,
+                'Today, 15 Aug 2026', is_dark),
+            _build_info_row(
+                localizations.notification_details_time, '04:30 PM', is_dark),
           ] else if (NotificationType.payment_success == notification.type ||
               NotificationType.payment_failed == notification.type) ...[
-            _build_info_row(localizations.notification_details_amount, 'EGP 450.00', is_dark),
-            _build_info_row(localizations.notification_details_transaction_id, '#TXN-884210', is_dark),
+            _build_info_row(localizations.notification_details_amount,
+                'EGP 450.00', is_dark),
+            _build_info_row(localizations.notification_details_transaction_id,
+                '#TXN-884210', is_dark),
             _build_status_row(
               localizations.notification_details_status,
               NotificationType.payment_success == notification.type
@@ -479,9 +502,11 @@ class NotificationDetailsPage extends StatelessWidget {
               is_dark,
             ),
           ] else ...[
-            _build_info_row(localizations.notification_details_doctor, 'Dr. Youssef Nabil', is_dark),
+            _build_info_row(localizations.notification_details_doctor,
+                'Dr. Youssef Nabil', is_dark),
             _build_info_row('Medication', 'Amoxicillin 500mg', is_dark),
-            _build_info_row(localizations.notification_details_date, '15 Aug 2026', is_dark),
+            _build_info_row(localizations.notification_details_date,
+                '15 Aug 2026', is_dark),
             _build_status_row(
               localizations.notification_details_status,
               localizations.notification_details_status_completed,
@@ -526,7 +551,8 @@ class NotificationDetailsPage extends StatelessWidget {
   }
 
   // Helper drawing status badge row
-  Widget _build_status_row(String label, String status, Color color, bool is_dark) {
+  Widget _build_status_row(
+      String label, String status, Color color, bool is_dark) {
     return Padding(
       padding: const EdgeInsets.only(bottom: _LocalDimensions.row_spacing),
       child: Row(

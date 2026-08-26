@@ -10,7 +10,7 @@
  *   - @/context/language_context
  *   - @/components/ui/custom_select_dropdown
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Smart filter toolbar featuring debounced search input, sorting options (Newest, Oldest, Name A-Z, Name Z-A), and multi-clinic selector with quick reset controls.
  */
 
@@ -44,6 +44,8 @@ export default function ReceptionistFilterBar() {
     const handler = setTimeout(() => {
       if (localSearch !== search) {
         setSearch(localSearch);
+      } else {
+        // No search update needed
       }
     }, 300);
     return () => clearTimeout(handler);

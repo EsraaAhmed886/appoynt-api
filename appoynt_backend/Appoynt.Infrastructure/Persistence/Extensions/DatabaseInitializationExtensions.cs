@@ -89,6 +89,14 @@ public static class DatabaseInitializationExtensions
             IRoleSeeder roleSeeder = services.GetRequiredService<IRoleSeeder>();
             await roleSeeder.SeedAsync(cancellationToken).ConfigureAwait(false);
 
+            logger.LogInformation("Ensuring Egyptian governorates and cities exist in database.");
+            IGovernorateSeeder governorateSeeder = services.GetRequiredService<IGovernorateSeeder>();
+            await governorateSeeder.SeedAsync(cancellationToken).ConfigureAwait(false);
+
+            logger.LogInformation("Ensuring medical specializations exist in database.");
+            ISpecializationSeeder specializationSeeder = services.GetRequiredService<ISpecializationSeeder>();
+            await specializationSeeder.SeedAsync(cancellationToken).ConfigureAwait(false);
+
             if (!seedOptions.Enabled)
             {
                 logger.LogInformation("Optional demo data seeding is disabled via configuration.");
@@ -102,6 +110,9 @@ public static class DatabaseInitializationExtensions
 
             IAdminSeeder adminSeeder = services.GetRequiredService<IAdminSeeder>();
             await adminSeeder.SeedAsync(cancellationToken).ConfigureAwait(false);
+
+            IDoctorSeeder doctorSeeder = services.GetRequiredService<IDoctorSeeder>();
+            await doctorSeeder.SeedAsync(cancellationToken).ConfigureAwait(false);
 
             logger.LogInformation("Database seeding completed successfully.");
         }

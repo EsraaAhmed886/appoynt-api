@@ -14,7 +14,7 @@
  *   - @/components/medical-record/modals/confirm_deletion_modal
  *   - @/context/language_context
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Step 2 Prescription Management workspace with pinned unified ClinicalAlertsBanner, active medications table, empty states, AI drug-disease interaction verification, contraindicated allergy warning banner with mandatory acknowledgment, and prescription instructions editor.
  */
 
@@ -66,7 +66,11 @@ export default function Step2Medications() {
   // Evaluate potential contraindications between active medications and patient allergies
   const allergyContraindications = useMemo(() => {
     const conflicts: { medName: string; allergen: string; severity: string }[] = [];
-    if (!patient?.activeAllergies || patient.activeAllergies.length === 0) return conflicts;
+    if (!patient?.activeAllergies || patient.activeAllergies.length === 0) {
+      return conflicts;
+    } else {
+      // Proceed with contraindication check
+    }
 
     medications.forEach((med) => {
       const medNameL = med.medicationName.toLowerCase();
@@ -82,6 +86,8 @@ export default function Step2Medications() {
             allergen: alg.name,
             severity: alg.severity,
           });
+        } else {
+          // No action needed
         }
       });
     });
@@ -103,6 +109,8 @@ export default function Step2Medications() {
     if (canProceed) {
       saveDraftNow();
       setCurrentStep(3);
+    } else {
+      // Cannot proceed
     }
   };
 
@@ -394,7 +402,11 @@ export default function Step2Medications() {
         isOpen={!!deletingMedId}
         onClose={() => setDeletingMedId(null)}
         onConfirm={() => {
-          if (deletingMedId) removeMedication(deletingMedId);
+          if (deletingMedId) {
+            removeMedication(deletingMedId);
+          } else {
+            // No action needed
+          }
         }}
         title={translations.confirm_deletion || "Remove Medication"}
         description={translations.delete_confirmation_desc || "Are you sure you want to delete this medication from the active prescription list?"}

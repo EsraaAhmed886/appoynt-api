@@ -2,13 +2,16 @@
  * File Name      : UserManagementResult.cs
  * Author         : Mustafa Mahmoud
  * Created Date   : 28/07/2026
- * Version        : v1.0.0
+ * Version        : v1.1.0
  * Dependencies   : AuthenticationError
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-07-31
- * Description    : Represents the outcome of a user management operation.
+ * Last Modified  : Mustafa Mahmoud - 2026-08-25
+ * Description    : Represents the outcome of a user management operation,
+ *                  reusing the shared success/error foundation while exposing
+ *                  the managed user identifier.
  */
 
+using System;
 using Appoynt.Application.Common.Models;
 
 namespace Appoynt.Application.Features.UserManagement.Contracts;
@@ -16,22 +19,25 @@ namespace Appoynt.Application.Features.UserManagement.Contracts;
 /// <summary>
 /// Represents either a successful user creation or its errors.
 /// </summary>
-public sealed class UserManagementResult
+public sealed class UserManagementResult : ResultBase
 {
-    /// <summary>
-    /// Gets a value indicating whether the creation succeeded.
-    /// </summary>
-    public bool Succeeded { get; init; }
-
     /// <summary>
     /// Gets the unique identifier of the newly created user when successful.
     /// </summary>
     public Guid? UserId { get; init; }
 
     /// <summary>
-    /// Gets the validation or business-rule errors when creation failed.
+    /// Initializes a new instance of the <see cref="UserManagementResult"/> class.
     /// </summary>
-    public IReadOnlyList<AuthenticationError> Errors { get; init; } = [];
+    /// <param name="succeeded">Indicates whether creation succeeded.</param>
+    /// <param name="userId">The identifier of the affected user.</param>
+    /// <param name="errors">The validation or business-rule errors.</param>
+    [System.Text.Json.Serialization.JsonConstructor]
+    public UserManagementResult(bool succeeded, Guid? userId, IReadOnlyList<AuthenticationError>? errors)
+        : base(succeeded, errors)
+    {
+        UserId = userId;
+    }
 
     /// <summary>
     /// Creates a successful user management result.
@@ -40,7 +46,7 @@ public sealed class UserManagementResult
     /// <returns>A successful <see cref="UserManagementResult"/>.</returns>
     public static UserManagementResult Success(Guid userId)
     {
-        return new UserManagementResult { Succeeded = true, UserId = userId };
+        return new UserManagementResult(true, userId, null);
     }
 
     /// <summary>
@@ -51,7 +57,7 @@ public sealed class UserManagementResult
     /// <returns>A failed <see cref="UserManagementResult"/>.</returns>
     public static UserManagementResult Failure(string errorCode, string propertyName = "")
     {
-        return new UserManagementResult { Errors = [new AuthenticationError(errorCode, propertyName)] };
+        return new UserManagementResult(false, null, new[] { new AuthenticationError(errorCode, propertyName) });
     }
 
     /// <summary>
@@ -61,6 +67,6 @@ public sealed class UserManagementResult
     /// <returns>A failed <see cref="UserManagementResult"/>.</returns>
     public static UserManagementResult Failure(IReadOnlyList<AuthenticationError> errors)
     {
-        return new UserManagementResult { Errors = errors };
+        return new UserManagementResult(false, null, errors);
     }
 }

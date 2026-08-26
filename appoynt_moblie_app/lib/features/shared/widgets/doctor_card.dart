@@ -2,16 +2,17 @@
  * File Name: doctor_card.dart
  * Author: Kholoud Khaled
  * Date of Creation: 04/08/2026
- * Version Information: v1.1.0
+ * Version Information: v1.5.0
  * Dependencies: package:flutter/material.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart,
  *   package:appoynt_mobile_app/constants/app_spacing.dart,
  *   package:appoynt_mobile_app/core/theme/colors/app_colors.dart,
- *   package:appoynt_mobile_app/core/widgets/app_network_image.dart
+ *   package:appoynt_mobile_app/features/shared/widgets/favorite_heart_button.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 23/08/2026]
  * File Description: Defines a reusable, highly polished Doctor Card component
- *   displaying details, rating, fee, ecg-heart icon, and booking CTA.
+ *   displaying details, rating, fee, framed 110x130dp rounded-rectangle doctor portrait
+ *   with subtle border and soft shadow, ecg-heart icon, and booking CTA.
  */
 
 // Import standard UI framework
@@ -22,16 +23,8 @@ import 'package:appoynt_mobile_app/constants/app_spacing.dart';
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 // Import localization dictionary
 import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
-// Import reusable performance-optimized network image widget
-import 'package:appoynt_mobile_app/core/widgets/app_network_image.dart';
 // Import unified ECG pulse heart button
 import 'package:appoynt_mobile_app/features/shared/widgets/favorite_heart_button.dart';
-
-
-// Local layout dimensions class to strictly eliminate hardcoded numbers
-class _LocalDimensions {
-  static const double avatar_border_width = 1.5;
-}
 
 
 // Reusable DoctorCard widget definition
@@ -54,6 +47,8 @@ class DoctorCard extends StatelessWidget {
   final bool is_favorite;
   // Doctor photo avatar URL
   final String avatar_url;
+  // Main card tap callback
+  final VoidCallback? on_tap;
   // Booking button callback
   final VoidCallback? on_book_tap;
   // Favorite toggling callback
@@ -71,6 +66,7 @@ class DoctorCard extends StatelessWidget {
     required this.is_available,
     required this.is_favorite,
     required this.avatar_url,
+    this.on_tap,
     this.on_book_tap,
     this.on_favorite_tap,
   });
@@ -83,31 +79,33 @@ class DoctorCard extends StatelessWidget {
     // Check if system brightness matches dark theme mode
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
 
-    // Return container displaying card contents
-    return Container(
-      // Apply margin at the bottom of the card using design tokens
-      margin: const EdgeInsets.only(bottom: AppSpacing.space_xl),
-      // Apply internal padding inside the card using design tokens
-      padding: const EdgeInsets.all(AppSpacing.space_xl),
-      // Visual styling decoration configurations
-      decoration: BoxDecoration(
-        // Set background color matching active theme
-        color: is_dark
-            ? AppColors.surface_dark
-            : AppColors.background_light,
-        // Set corner rounded curves using spacing constants
-        borderRadius:
-            BorderRadius.circular(AppSpacing.dummy_doctor_card_radius),
-        // Draw outline border stroke
-        border: Border.all(
-          // Resolve border color based on theme
-          color: is_dark ? AppColors.border_dark : AppColors.slate_200,
-          // Set thin border width
-          width: AppSpacing.border_width_thin,
+    // Return gesture detector wrapping container displaying card contents
+    return GestureDetector(
+      onTap: on_tap,
+      child: Container(
+        // Apply margin at the bottom of the card using design tokens
+        margin: const EdgeInsets.only(bottom: AppSpacing.space_xl),
+        // Apply internal padding inside the card using design tokens
+        padding: const EdgeInsets.all(AppSpacing.space_xl),
+        // Visual styling decoration configurations
+        decoration: BoxDecoration(
+          // Set background color matching active theme
+          color: is_dark
+              ? AppColors.surface_dark
+              : AppColors.background_light,
+          // Set corner rounded curves using spacing constants
+          borderRadius:
+              BorderRadius.circular(AppSpacing.dummy_doctor_card_radius),
+          // Draw outline border stroke
+          border: Border.all(
+            // Resolve border color based on theme
+            color: is_dark ? AppColors.border_dark : AppColors.slate_200,
+            // Set thin border width
+            width: AppSpacing.border_width_thin,
+          ),
         ),
-      ),
-      // Arrange items inside card vertically
-      child: Column(
+        // Arrange items inside card vertically
+        child: Column(
         // Align children starting from the horizontal edge
         crossAxisAlignment: CrossAxisAlignment.start,
         // Card children layout list
@@ -118,34 +116,13 @@ class DoctorCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             // Children list
             children: [
-              // Left side: Doctor Avatar Image component wrapped in a border Container
-              Container(
-                // Decoration for the subtle light grey border outline
-                decoration: BoxDecoration(
-                  // Shape mapping perfect circle avatar outline
-                  shape: BoxShape.circle,
-                  // Border layout styling config
-                  border: Border.all(
-                    // Soft light grey color derived dynamically from theme divider with opacity
-                    color:
-                        Theme.of(context).dividerColor.withValues(alpha: 0.3),
-                    // Thin outline stroke width (1.5px)
-                    width: _LocalDimensions.avatar_border_width,
-                  ),
-                ),
-                // Inner network image widget child representation
-                child: AppNetworkImage(
-                  // Set image URL
-                  image_url: avatar_url,
-                  // Layout width derived from design spacing tokens
-                  width: AppSpacing.doctor_card_avatar_size,
-                  // Layout height derived from design spacing tokens
-                  height: AppSpacing.doctor_card_avatar_size,
-                  // Outer corner radius shape derived from spacing tokens
-                  border_radius: AppSpacing.doctor_card_avatar_radius,
-                  // Default fallback icon when loading fails or offline
-                  fallback_icon: Icons.person_rounded,
-                ),
+              // Left side: Vertical rounded-rectangle Doctor Portrait (Asset & Network compatible)
+              _build_doctor_image(
+                image_path: avatar_url,
+                width: 110.0,
+                height: 130.0,
+                border_radius: 16.0,
+                is_dark: is_dark,
               ),
               // Gap spacing between image and content column using spacing tokens
               const SizedBox(width: AppSpacing.space_xl),
@@ -337,6 +314,7 @@ class DoctorCard extends StatelessWidget {
           ),
         ],
       ),
+    ),
     );
   }
 
@@ -376,6 +354,125 @@ class DoctorCard extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  // Robust doctor image builder rendering local assets and network URLs
+  Widget _build_doctor_image({
+    required String image_path,
+    required double width,
+    required double height,
+    required double border_radius,
+    required bool is_dark,
+  }) {
+    final String path = image_path.trim();
+    final bool is_asset = path.startsWith('assets/');
+
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: is_dark ? AppColors.surface_dark : AppColors.white,
+        borderRadius: BorderRadius.circular(border_radius),
+        border: Border.all(
+          color: is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
+          width: 1.0,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: is_dark
+                ? Colors.black.withValues(alpha: 0.20)
+                : Colors.black.withValues(alpha: 0.04),
+            blurRadius: 8.0,
+            spreadRadius: 0,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(border_radius - 1.0),
+        child: SizedBox(
+          width: width,
+          height: height,
+          child: is_asset
+              ? Image.asset(
+                  path,
+                  width: width,
+                  height: height,
+                  fit: BoxFit.cover,
+                  alignment: Alignment.topCenter,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    width: width,
+                    height: height,
+                    decoration: BoxDecoration(
+                      color: is_dark ? const Color(0xFF1E1B4B) : const Color(0xFFEFF6FF),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      doctor_name.isNotEmpty ? doctor_name.substring(0, 1).toUpperCase() : '',
+                      style: TextStyle(
+                        fontSize: 24.0,
+                        fontWeight: FontWeight.bold,
+                        color: is_dark ? const Color(0xFF93C5FD) : const Color(0xFF2563EB),
+                      ),
+                    ),
+                  ),
+                )
+              : (path.isNotEmpty
+                  ? Image.network(
+                      path,
+                      width: width,
+                      height: height,
+                      fit: BoxFit.cover,
+                      alignment: Alignment.topCenter,
+                      cacheWidth: (width * 2).toInt(),
+                      cacheHeight: (height * 2).toInt(),
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) {
+                          return child;
+                        } else {
+                          return Container(
+                            width: width,
+                            height: height,
+                            color: is_dark ? AppColors.surface_dark : Colors.grey.shade100,
+                          );
+                        }
+                      },
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        width: width,
+                        height: height,
+                        decoration: BoxDecoration(
+                          color: is_dark ? const Color(0xFF1E1B4B) : const Color(0xFFEFF6FF),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          doctor_name.isNotEmpty ? doctor_name.substring(0, 1).toUpperCase() : '',
+                          style: TextStyle(
+                            fontSize: 24.0,
+                            fontWeight: FontWeight.bold,
+                            color: is_dark ? const Color(0xFF93C5FD) : const Color(0xFF2563EB),
+                          ),
+                        ),
+                      ),
+                    )
+                  : Container(
+                      width: width,
+                      height: height,
+                      decoration: BoxDecoration(
+                        color: is_dark ? const Color(0xFF1E1B4B) : const Color(0xFFEFF6FF),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        doctor_name.isNotEmpty ? doctor_name.substring(0, 1).toUpperCase() : '',
+                        style: TextStyle(
+                          fontSize: 24.0,
+                          fontWeight: FontWeight.bold,
+                          color: is_dark ? const Color(0xFF93C5FD) : const Color(0xFF2563EB),
+                        ),
+                      ),
+                    )),
+        ),
+      ),
     );
   }
 }

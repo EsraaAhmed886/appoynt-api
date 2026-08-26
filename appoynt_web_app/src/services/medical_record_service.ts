@@ -8,7 +8,7 @@
  *   - @/mocks/medical_record_mock
  *   - @/lib/api
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Clinical data layer service providing unified medical record consultation fetching, autosave debounce syncing, finalizing workflows, ICD-10 searching, and offline mock fallback resilience.
  */
 
@@ -51,9 +51,10 @@ export class MedicalRecordService {
           ...MOCK_PATIENT_SUMMARY,
           patientId: patientId || MOCK_PATIENT_SUMMARY.patientId,
         };
+      } else {
+        const response = await api_client.get<PatientSummary>(`/patients/${patientId}/summary`);
+        return response.data;
       }
-      const response = await api_client.get<PatientSummary>(`/patients/${patientId}/summary`);
-      return response.data;
     } catch {
       return {
         ...MOCK_PATIENT_SUMMARY,
@@ -73,25 +74,25 @@ export class MedicalRecordService {
         await new Promise((r) => setTimeout(r, 150));
         if ("apt-103" === appointmentId) {
           return { ...MOCK_FINALIZED_RECORD, appointmentId };
-        }
-        if ("apt-102" === appointmentId) {
+        } else if ("apt-102" === appointmentId) {
           return { ...MOCK_DRAFT_RECORD, appointmentId };
+        } else {
+          return { ...MOCK_NOT_STARTED_RECORD, appointmentId };
         }
-        return { ...MOCK_NOT_STARTED_RECORD, appointmentId };
+      } else {
+        const response = await api_client.get<MedicalRecord>(
+          `/appointments/${appointmentId}/medical-record`
+        );
+        return response.data;
       }
-
-      const response = await api_client.get<MedicalRecord>(
-        `/appointments/${appointmentId}/medical-record`
-      );
-      return response.data;
     } catch {
       if ("apt-103" === appointmentId) {
         return { ...MOCK_FINALIZED_RECORD, appointmentId };
-      }
-      if ("apt-102" === appointmentId) {
+      } else if ("apt-102" === appointmentId) {
         return { ...MOCK_DRAFT_RECORD, appointmentId };
+      } else {
+        return { ...MOCK_NOT_STARTED_RECORD, appointmentId };
       }
-      return { ...MOCK_NOT_STARTED_RECORD, appointmentId };
     }
   }
 
@@ -125,12 +126,18 @@ export class MedicalRecordService {
               i.primaryDiagnosisCode.toLowerCase().includes(q) ||
               i.doctorName.toLowerCase().includes(q)
           );
+        } else {
+          // No search query filter
         }
         if (filters?.status && "ALL" !== filters.status) {
           list = list.filter((i) => i.status === filters.status);
+        } else {
+          // No status filter
         }
         if (filters?.doctor && "ALL" !== filters.doctor) {
           list = list.filter((i) => i.doctorName === filters.doctor);
+        } else {
+          // No doctor filter
         }
 
         const total = list.length;
@@ -139,17 +146,17 @@ export class MedicalRecordService {
         const items = list.slice(startIndex, startIndex + limit);
 
         return { items, total, page, totalPages };
+      } else {
+        const response = await api_client.get<{
+          items: MedicalHistoryItem[];
+          total: number;
+          page: number;
+          totalPages: number;
+        }>(`/patients/${patientId}/medical-history`, {
+          params: { page, limit, ...filters },
+        });
+        return response.data;
       }
-
-      const response = await api_client.get<{
-        items: MedicalHistoryItem[];
-        total: number;
-        page: number;
-        totalPages: number;
-      }>(`/patients/${patientId}/medical-history`, {
-        params: { page, limit, ...filters },
-      });
-      return response.data;
     } catch {
       return {
         items: MOCK_PRIOR_VISITS,
@@ -178,13 +185,13 @@ export class MedicalRecordService {
           lastSavedAtUtc: new Date().toISOString(),
           version: (payload.version || 1) + 1,
         } as MedicalRecord;
+      } else {
+        const response = await api_client.put<MedicalRecord>(
+          `/appointments/${appointmentId}/medical-record/draft`,
+          payload
+        );
+        return response.data;
       }
-
-      const response = await api_client.put<MedicalRecord>(
-        `/appointments/${appointmentId}/medical-record/draft`,
-        payload
-      );
-      return response.data;
     } catch {
       return {
         ...MOCK_DRAFT_RECORD,
@@ -211,13 +218,13 @@ export class MedicalRecordService {
           success: true,
           lastSavedAtUtc: new Date().toISOString(),
         };
+      } else {
+        const response = await api_client.patch<{ success: boolean; lastSavedAtUtc: string }>(
+          `/appointments/${appointmentId}/medical-record/draft`,
+          payload
+        );
+        return response.data;
       }
-
-      const response = await api_client.patch<{ success: boolean; lastSavedAtUtc: string }>(
-        `/appointments/${appointmentId}/medical-record/draft`,
-        payload
-      );
-      return response.data;
     } catch {
       return {
         success: true,
@@ -261,16 +268,18 @@ export class MedicalRecordService {
 
         if (!MOCK_PRIOR_VISITS.some((v) => v.recordId === historyEntry.recordId)) {
           MOCK_PRIOR_VISITS.unshift(historyEntry);
+        } else {
+          // Entry already in prior visits
         }
 
         return finalizedRecord;
+      } else {
+        const response = await api_client.post<MedicalRecord>(
+          `/appointments/${appointmentId}/medical-record/finalize`,
+          finalPayload
+        );
+        return response.data;
       }
-
-      const response = await api_client.post<MedicalRecord>(
-        `/appointments/${appointmentId}/medical-record/finalize`,
-        finalPayload
-      );
-      return response.data;
     } catch {
       return {
         ...finalPayload,
@@ -288,7 +297,11 @@ export class MedicalRecordService {
    * Search ICD-10 Diagnoses catalogue
    */
   static async searchIcd10(query: string): Promise<Icd10CatalogItem[]> {
-    if (!query || query.trim().length === 0) return [];
+    if (!query || query.trim().length === 0) {
+      return [];
+    } else {
+      // Perform search
+    }
     const q = query.toLowerCase();
     return MOCK_ICD10_CATALOG.filter(
       (item) =>
@@ -302,7 +315,11 @@ export class MedicalRecordService {
    * Search medication catalog formulary
    */
   static async searchMedications(query: string): Promise<MedicationCatalogItem[]> {
-    if (!query || query.trim().length === 0) return [];
+    if (!query || query.trim().length === 0) {
+      return [];
+    } else {
+      // Perform search
+    }
     const q = query.toLowerCase();
     return MOCK_MEDICATION_CATALOG.filter(
       (item) =>
@@ -322,6 +339,8 @@ export class MedicalRecordService {
     let list = [...MOCK_TEST_CATALOG];
     if (category && "All" !== category) {
       list = list.filter((item) => item.category === category);
+    } else {
+      // All categories
     }
     if (query && query.trim().length > 0) {
       const q = query.toLowerCase();
@@ -331,6 +350,8 @@ export class MedicalRecordService {
           (item.commonType && item.commonType.toLowerCase().includes(q)) ||
           (item.category && item.category.toLowerCase().includes(q))
       );
+    } else {
+      // No query filtering
     }
     return list;
   }
@@ -356,6 +377,8 @@ export class MedicalRecordService {
       medications = medicationsOrPatientId;
     } else if (Array.isArray(allergiesOrMeds)) {
       medications = allergiesOrMeds;
+    } else {
+      // Empty medications
     }
 
     if (medications.length < 2) {
@@ -363,6 +386,8 @@ export class MedicalRecordService {
         hasInteraction: false,
         message: "No major drug-drug interactions detected across current prescribed agents.",
       };
+    } else {
+      // Evaluate interactions
     }
 
     const medNames = medications.map((m) => m.medicationName.toLowerCase());
@@ -384,12 +409,12 @@ export class MedicalRecordService {
           },
         ],
       };
+    } else {
+      return {
+        hasInteraction: false,
+        message: "No major drug-drug interactions detected across current prescribed agents.",
+      };
     }
-
-    return {
-      hasInteraction: false,
-      message: "No major drug-drug interactions detected across current prescribed agents.",
-    };
   }
 }
 

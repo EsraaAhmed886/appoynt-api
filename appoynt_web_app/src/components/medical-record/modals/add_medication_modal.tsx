@@ -12,7 +12,7 @@
  *   - @/context/language_context
  *   - @/components/ui/custom_select_dropdown
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Accessible modal dialog for adding prescription medications with CustomSelectDropdown components, catalog search, dosage/frequency/duration controls, contraindication alerts, and semantic light/dark styling.
  */
 
@@ -74,7 +74,11 @@ export default function AddMedicationModal({
     let active = true;
     const fetchCatalog = async () => {
       const res = await MedicalRecordService.searchMedications(searchQuery);
-      if (active) setCatalogItems(res);
+      if (active) {
+        setCatalogItems(res);
+      } else {
+        // No action needed
+      }
     };
     fetchCatalog();
     return () => {
@@ -97,6 +101,8 @@ export default function AddMedicationModal({
       setAllergyWarning(null);
       setConditionWarning(null);
       setFormErrors({});
+    } else {
+      // No action needed
     }
   }, [isOpen]);
 
@@ -107,6 +113,8 @@ export default function AddMedicationModal({
       setDosageUnit(item.defaultUnit);
       if (item.commonDosages.length > 0) {
         setDosageAmount(String(item.commonDosages[0]));
+      } else {
+        // No action needed
       }
 
       if (patient?.activeAllergies) {
@@ -128,6 +136,8 @@ export default function AddMedicationModal({
         } else {
           setAllergyWarning(null);
         }
+      } else {
+        // No action needed
       }
 
       // Chronic Condition Contraindication Evaluation
@@ -153,7 +163,11 @@ export default function AddMedicationModal({
                 conditionName: cond.name,
                 message: `Caution: ${val} may trigger bronchospasm or exacerbate ${cond.name}.`,
               };
+            } else {
+              // No action needed
             }
+          } else {
+            // No action needed
           }
 
           // 2. Hypertension & NSAIDs
@@ -163,7 +177,11 @@ export default function AddMedicationModal({
                 conditionName: cond.name,
                 message: `Caution: NSAIDs like ${val} may elevate blood pressure and reduce antihypertensive efficacy in ${cond.name}.`,
               };
+            } else {
+              // No action needed
             }
+          } else {
+            // No action needed
           }
 
           // 3. Diabetes & Corticosteroids
@@ -173,12 +191,20 @@ export default function AddMedicationModal({
                 conditionName: cond.name,
                 message: `Caution: Systemic corticosteroids like ${val} can significantly elevate blood glucose levels in ${cond.name}.`,
               };
+            } else {
+              // No action needed
             }
+          } else {
+            // No action needed
           }
         });
 
         setConditionWarning(contraindication);
+      } else {
+        // No action needed
       }
+    } else {
+      // No action needed
     }
   };
 
@@ -189,27 +215,39 @@ export default function AddMedicationModal({
     const medName = selectedMedName.trim();
     if (!medName) {
       errors.medicationName = translations.medication_name || "Medication name is required";
+    } else {
+      // No action needed
     }
 
     const numDosage = Number(dosageAmount);
     if (isNaN(numDosage) || numDosage <= 0) {
       errors.dosageAmount = translations.dosage || "Valid dosage is required";
+    } else {
+      // No action needed
     }
 
     if (!isOngoing) {
       const numDur = Number(durationValue);
       if (isNaN(numDur) || numDur <= 0) {
         errors.durationValue = translations.duration || "Valid duration is required";
+      } else {
+        // No action needed
       }
+    } else {
+      // No action needed
     }
 
     if ("As Needed" === frequency && !instructions.trim()) {
       errors.instructions = translations.instructions || "Instructions are required for As Needed medications";
+    } else {
+      // No action needed
     }
 
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
       return;
+    } else {
+      // Form validation passed
     }
 
     const medicationData: MedicationItem = {
@@ -231,7 +269,11 @@ export default function AddMedicationModal({
     onClose();
   };
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  } else {
+    // Render modal
+  }
 
   const medOptions: DropdownOption[] = catalogItems.map((cat) => ({
     value: cat.name,
@@ -411,6 +453,8 @@ export default function AddMedicationModal({
               const customName = prompt("Enter custom medication name:");
               if (customName && customName.trim()) {
                 handleSelectMedication(customName.trim());
+              } else {
+                // No action needed
               }
             }}
           />
