@@ -8,7 +8,7 @@
  *   - @/types/receptionist
  *   - @/services/receptionist_mock_service
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: React context and provider managing global state for clinic receptionists including live pagination, multi-clinic filters, sorting, stats calculation, uniqueness validation, and toast alerts.
  */
 
@@ -137,6 +137,8 @@ export function ReceptionistProvider({ children }: { children: React.ReactNode }
       // Ensure current page is in valid bounds
       if (res.page !== page) {
         setPageState(res.page);
+      } else {
+        // Page in valid bounds
       }
     } catch (err: any) {
       setIsError(true);
@@ -208,6 +210,8 @@ export function ReceptionistProvider({ children }: { children: React.ReactNode }
       // If we are deleting the last item on the current page and page > 1, step back to page - 1
       if (receptionists.length === 1 && page > 1) {
         setPageState((p) => Math.max(1, p - 1));
+      } else {
+        // Current page remains valid
       }
       await receptionistMockService.deleteReceptionist(id);
       await refreshStats();
@@ -258,6 +262,7 @@ export function useReceptionists(): ReceptionistContextType {
   const context = useContext(ReceptionistContext);
   if (!context) {
     throw new Error("useReceptionists must be used within a ReceptionistProvider");
+  } else {
+    return context;
   }
-  return context;
 }

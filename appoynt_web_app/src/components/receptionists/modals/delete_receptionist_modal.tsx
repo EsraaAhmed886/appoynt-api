@@ -10,7 +10,7 @@
  *   - @/context/receptionist_context
  *   - @/context/language_context
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Destructive action modal confirming permanent hard deletion of a clinic receptionist account with loading states and toast notifications.
  */
 
@@ -41,15 +41,23 @@ export default function DeleteReceptionistModal({
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && !isDeleting) {
         onClose();
+      } else {
+        // No action needed
       }
     };
     if (isOpen) {
       window.addEventListener("keydown", handleKeyDown);
+    } else {
+      // Modal closed
     }
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, isDeleting, onClose]);
 
-  if (!isOpen || !receptionist) return null;
+  if (!isOpen || !receptionist) {
+    return null;
+  } else {
+    // Render modal
+  }
 
   const handleDelete = async () => {
     setIsDeleting(true);

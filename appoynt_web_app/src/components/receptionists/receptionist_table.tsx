@@ -12,7 +12,7 @@
  *   - @/components/receptionists/assigned_clinics_popover
  *   - @/components/receptionists/receptionist_pagination
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Main interactive data table displaying clinic receptionists with avatars, monospace usernames, formatted Egyptian phone numbers, multi-clinic popover triggers, status chips, and action handlers.
  */
 
@@ -44,8 +44,9 @@ interface ReceptionistTableProps {
 function formatEgyptianPhone(phone: string): string {
   if (phone.length === 11 && phone.startsWith("01")) {
     return `${phone.slice(0, 3)} ${phone.slice(3, 7)} ${phone.slice(7)}`;
+  } else {
+    return phone;
   }
-  return phone;
 }
 
 // Get user initials for avatar
@@ -53,8 +54,9 @@ function getInitials(name: string): string {
   const parts = name.trim().split(" ");
   if (parts.length >= 2) {
     return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+  } else {
+    return name.slice(0, 2).toUpperCase();
   }
-  return name.slice(0, 2).toUpperCase();
 }
 
 export default function ReceptionistTable({ onEdit, onDelete }: ReceptionistTableProps) {

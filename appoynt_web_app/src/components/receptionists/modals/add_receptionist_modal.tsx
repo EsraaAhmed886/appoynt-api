@@ -12,7 +12,7 @@
  *   - @/components/ui/custom_select_dropdown
  *   - @/components/receptionists/modals/unsaved_changes_modal
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Modal dialog for registering new clinic receptionist accounts with strict Egyptian regex validation, password strength rating, multi-clinic assignments, and dirty state interception.
  */
 
@@ -84,6 +84,8 @@ export default function AddReceptionistModal({ isOpen, onClose }: AddReceptionis
       setShowPassword(false);
       setIsSubmitting(false);
       setShowUnsavedPrompt(false);
+    } else {
+      // Modal closed
     }
   }, [isOpen, clinics]);
 
@@ -100,13 +102,33 @@ export default function AddReceptionistModal({ isOpen, onClose }: AddReceptionis
   // Password strength calculation
   const passwordStrength = useMemo(() => {
     const pwd = formData.password || "";
-    if (!pwd) return { score: 0, label: "", colorClass: "bg-slate-200 dark:bg-slate-700" };
+    if (!pwd) {
+      return { score: 0, label: "", colorClass: "bg-slate-200 dark:bg-slate-700" };
+    } else {
+      // Calculate password score
+    }
 
     let score = 0;
-    if (pwd.length >= 8) score++;
-    if (/[a-z]/.test(pwd) && /[A-Z]/.test(pwd)) score++;
-    if (/\d/.test(pwd)) score++;
-    if (/[@#$%!&*^~_+=\-.,?]/.test(pwd)) score++;
+    if (pwd.length >= 8) {
+      score++;
+    } else {
+      // No length score
+    }
+    if (/[a-z]/.test(pwd) && /[A-Z]/.test(pwd)) {
+      score++;
+    } else {
+      // No case score
+    }
+    if (/\d/.test(pwd)) {
+      score++;
+    } else {
+      // No number score
+    }
+    if (/[@#$%!&*^~_+=\-.,?]/.test(pwd)) {
+      score++;
+    } else {
+      // No special char score
+    }
 
     if (score <= 2) {
       return {
@@ -114,19 +136,19 @@ export default function AddReceptionistModal({ isOpen, onClose }: AddReceptionis
         label: translations.password_strength_weak || "Weak",
         colorClass: "bg-red-500",
       };
-    }
-    if (score === 3) {
+    } else if (score === 3) {
       return {
         score: 2,
         label: translations.password_strength_medium || "Medium",
         colorClass: "bg-amber-500",
       };
+    } else {
+      return {
+        score: 3,
+        label: translations.password_strength_strong || "Strong",
+        colorClass: "bg-emerald-500",
+      };
     }
-    return {
-      score: 3,
-      label: translations.password_strength_strong || "Strong",
-      colorClass: "bg-emerald-500",
-    };
   }, [formData.password, translations]);
 
   // Field validation helper
@@ -138,6 +160,8 @@ export default function AddReceptionistModal({ isOpen, onClose }: AddReceptionis
       newErrors.full_name = translations.val_name_required || "Full name is required (3-100 characters).";
     } else if (!NAME_REGEX.test(formData.full_name.trim())) {
       newErrors.full_name = translations.val_name_invalid || "Name must contain English or Arabic letters only.";
+    } else {
+      // Full name valid
     }
 
     // Phone number
@@ -145,6 +169,8 @@ export default function AddReceptionistModal({ isOpen, onClose }: AddReceptionis
       newErrors.phone_number = translations.val_phone_required || "Phone number is required.";
     } else if (!PHONE_REGEX.test(formData.phone_number.trim())) {
       newErrors.phone_number = translations.val_phone_invalid || "Enter a valid 11-digit Egyptian phone number (01XXXXXXXXX).";
+    } else {
+      // Phone valid
     }
 
     // Username
@@ -152,6 +178,8 @@ export default function AddReceptionistModal({ isOpen, onClose }: AddReceptionis
       newErrors.username = translations.val_username_required || "Username is required (4-30 characters).";
     } else if (!USERNAME_REGEX.test(formData.username.trim())) {
       newErrors.username = translations.val_username_invalid || "Username can only contain English letters, numbers, dot, or underscore.";
+    } else {
+      // Username valid
     }
 
     // Password
@@ -159,11 +187,15 @@ export default function AddReceptionistModal({ isOpen, onClose }: AddReceptionis
       newErrors.password = translations.val_password_required || "Password is required.";
     } else if (!PASSWORD_REGEX.test(formData.password)) {
       newErrors.password = translations.val_password_invalid || "Password must be 8-64 chars with uppercase, lowercase, number, and special character.";
+    } else {
+      // Password valid
     }
 
     // Clinic selection
     if (!formData.clinic_ids || formData.clinic_ids.length === 0) {
       newErrors.clinic_ids = translations.val_clinics_required || "Please select at least one clinic.";
+    } else {
+      // Clinic selection valid
     }
 
     setErrors(newErrors);
@@ -177,7 +209,11 @@ export default function AddReceptionistModal({ isOpen, onClose }: AddReceptionis
 
   const handleClinicToggle = (clinicId: string) => {
     const clinic = clinics.find((c) => c.id === clinicId);
-    if (!clinic || !clinic.is_active) return;
+    if (!clinic || !clinic.is_active) {
+      return;
+    } else {
+      // Clinic is active
+    }
 
     setFormData((prev) => {
       const exists = prev.clinic_ids.includes(clinicId);
@@ -199,7 +235,11 @@ export default function AddReceptionistModal({ isOpen, onClose }: AddReceptionis
       clinic_ids: true,
     });
 
-    if (!validate()) return;
+    if (!validate()) {
+      return;
+    } else {
+      // Validation passed
+    }
 
     setIsSubmitting(true);
     try {
@@ -234,7 +274,11 @@ export default function AddReceptionistModal({ isOpen, onClose }: AddReceptionis
     }
   };
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  } else {
+    // Render modal
+  }
 
   return (
     <>

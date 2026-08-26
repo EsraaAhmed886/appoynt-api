@@ -7,7 +7,7 @@
  *   - @/types/receptionist
  *   - @/services/receptionist_mock_service
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Automated acceptance test suite covering AC-01 through AC-24 for clinic receptionists management including list queries, uniqueness constraints, password policies, and pagination adjustments.
  */
 
@@ -29,6 +29,8 @@ function assert(condition: boolean, testName: string, failureDetail?: string) {
     console.error(`  ❌ FAIL: ${testName}`);
     if (failureDetail) {
       console.error(`     Detail: ${failureDetail}`);
+    } else {
+      // No extra failure detail provided
     }
   }
 }
@@ -85,6 +87,8 @@ async function runReceptionistQASuite() {
     if (comp > 0) {
       isSorted = false;
       break;
+    } else {
+      // Correct sorting order
     }
   }
   assert(isSorted, "AC-04: Name A-Z sorting applies alphabetical order with tie-breakers");
@@ -224,6 +228,8 @@ async function runReceptionistQASuite() {
 
   if (failedTests > 0) {
     process.exit(1);
+  } else {
+    // All tests passed successfully
   }
 }
 

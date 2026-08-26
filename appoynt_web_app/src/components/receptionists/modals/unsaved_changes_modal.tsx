@@ -8,7 +8,7 @@
  *   - lucide-react
  *   - @/context/language_context
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Guard modal intercepting dismiss actions when unpersisted form modifications exist, offering explicit choices to continue editing or discard changes.
  */
 
@@ -35,15 +35,23 @@ export default function UnsavedChangesModal({
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         onStay();
+      } else {
+        // No action needed
       }
     };
     if (isOpen) {
       window.addEventListener("keydown", handleKeyDown);
+    } else {
+      // Modal closed
     }
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onStay]);
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  } else {
+    // Render modal
+  }
 
   return (
     <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs animate-in fade-in duration-150">

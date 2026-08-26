@@ -9,7 +9,7 @@
  *   - @/context/receptionist_context
  *   - @/context/language_context
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 20/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Accessible pagination bar providing record index summary, bidirectional page stepper controls, and customizable page limit sizing (10, 25, 50).
  */
 
@@ -24,7 +24,11 @@ export default function ReceptionistPagination() {
   const { page, totalPages, total, limit, setPage, setLimit } = useReceptionists();
   const { translations } = useTranslation();
 
-  if (total === 0) return null;
+  if (total === 0) {
+    return null;
+  } else {
+    // Render pagination
+  }
 
   const startRecord = (page - 1) * limit + 1;
   const endRecord = Math.min(page * limit, total);
@@ -38,6 +42,8 @@ export default function ReceptionistPagination() {
 
     if (end - start + 1 < maxVisible) {
       start = Math.max(1, end - maxVisible + 1);
+    } else {
+      // Range is maxVisible
     }
 
     for (let i = start; i <= end; i++) {
