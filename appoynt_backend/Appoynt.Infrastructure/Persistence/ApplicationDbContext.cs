@@ -7,7 +7,7 @@
  *                  ICurrentUserService, IDateTimeProvider,
  *                  ApplicationUser, BaseEntity, OtpChallenge
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-20
+ * Last Modified  : Mustafa Mahmoud - 2026-08-26
  * Description    : Represents the application's primary database context.
  *                  Responsible for entity mapping, persistence operations,
  *                  auditing, and soft-delete behavior.
@@ -163,6 +163,11 @@ public class ApplicationDbContext
     /// Gets the appointment slots for clinics.
     /// </summary>
     public DbSet<AppointmentSlot> AppointmentSlots => Set<AppointmentSlot>();
+
+    /// <summary>
+    /// Gets the confirmed patient appointments.
+    /// </summary>
+    public DbSet<Appointment> Appointments => Set<Appointment>();
 
     /// <summary>
     /// Gets the clinic-receptionist join entries.

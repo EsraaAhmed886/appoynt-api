@@ -5,7 +5,7 @@
  * Version        : v1.0.0
  * Dependencies   : BaseEntity, Clinic, SlotStatus
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : 2026-08-20
+ * Last Modified  : Mustafa Mahmoud - 2026-08-26
  * Description    : Represents a specific time slot for an appointment within a clinic.
  */
 
@@ -72,6 +72,12 @@ public class AppointmentSlot : BaseEntity
     /// Gets or sets the navigation property to the associated clinic.
     /// </summary>
     public required Clinic Clinic { get; set; }
+
+    /// <summary>
+    /// Gets or sets the confirmed appointment bound to this slot, if any.
+    /// One slot holds at most one appointment (unique index on the FK side).
+    /// </summary>
+    public Appointment? Appointment { get; set; }
 
     #endregion
 }

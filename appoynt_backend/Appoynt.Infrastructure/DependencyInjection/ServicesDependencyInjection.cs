@@ -5,7 +5,7 @@
  * Version        : v1.1.0
  * Dependencies   : CurrentUserService, DateTimeProvider, LocalFileStorageService, ImageProcessingService, ProfileImageService
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-14
+ * Last Modified  : Mustafa Mahmoud - 2026-08-26
  * Description    : Registers infrastructure services used throughout the application.
  */
 
@@ -58,6 +58,9 @@ internal static class ServicesDependencyInjection
         services.AddMemoryCache();
         services.AddSingleton<Appoynt.Application.Common.Interfaces.ICacheService, Appoynt.Infrastructure.Services.MemoryCacheService>();
         services.AddScoped<Appoynt.Application.Features.Booking.IPatientBookingService, Appoynt.Infrastructure.Services.PatientBookingService>();
+
+        // Register the doctor appointments screen service.
+        services.AddScoped<Appoynt.Application.Features.DoctorAppointments.IDoctorAppointmentsService, Appoynt.Infrastructure.Services.DoctorAppointmentsService>();
         services.AddScoped<Appoynt.Application.Common.Interfaces.Seeding.IGovernorateSeeder, Appoynt.Infrastructure.Persistence.Seed.GovernorateSeeder>();
         services.AddHostedService<Appoynt.Infrastructure.BackgroundServices.SlotMaintenanceService>();
 
