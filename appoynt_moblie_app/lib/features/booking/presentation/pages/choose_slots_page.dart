@@ -576,7 +576,7 @@ class _ChooseSlotsView extends StatelessWidget {
   }
 
   /// Builds the refreshing progress indicator when slots are reloading.
-  Widget _build_refreshing_indicator(SlotBookingLoadedState state) {
+  Widget _build_refreshing_indicator(SlotBookingLoaded state) {
     if (state.is_refreshing_slots) {
       return const SizedBox(
         width: 16.0,
@@ -593,7 +593,7 @@ class _ChooseSlotsView extends StatelessWidget {
 
   /// Builds the slots grid or the empty state view.
   Widget _build_slots_content(
-    SlotBookingLoadedState state,
+    SlotBookingLoaded state,
     SlotBookingCubit cubit,
   ) {
     if (state.filtered_slots.isNotEmpty) {
@@ -615,7 +615,7 @@ class _ChooseSlotsView extends StatelessWidget {
   }
 
   /// Builds the active hold countdown banner when a slot is reserved.
-  Widget _build_active_hold_banner(SlotBookingLoadedState state) {
+  Widget _build_active_hold_banner(SlotBookingLoaded state) {
     if (state.has_active_hold) {
       return ActiveHoldCountdownBanner(
         remaining_seconds: state.remaining_seconds,
