@@ -5,7 +5,7 @@
  * Version Information: v1.0.0
  * Dependencies: react, lucide-react, next/link, @/context/dashboard_context, @/context/language_context, @/components/dashboard/states/dashboard_skeleton, @/components/dashboard/states/component_error_state
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Displays aggregate doctor rating, 5-to-1 star distribution bars, and strict empty-state guard suppressing 0.0/empty stars for new doctors (BR-67, AC-22).
  */
 
@@ -25,9 +25,7 @@ export const PatientRatingWidget: React.FC = () => {
 
   if (rating_loading) {
     return <WidgetSkeleton />;
-  }
-
-  if (rating_error) {
+  } else if (rating_error) {
     return (
       <div className="rounded-2xl border border-gray-200/80 dark:border-gray-800 bg-white/90 dark:bg-gray-900/90 p-5 shadow-xs">
         <ComponentErrorState
@@ -37,6 +35,8 @@ export const PatientRatingWidget: React.FC = () => {
         />
       </div>
     );
+  } else {
+    // Rating data loaded
   }
 
   const has_ratings =

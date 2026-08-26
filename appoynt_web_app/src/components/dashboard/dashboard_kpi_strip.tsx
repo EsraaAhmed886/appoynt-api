@@ -5,7 +5,7 @@
  * Version Information: v1.0.0
  * Dependencies: react, lucide-react, @/context/dashboard_context, @/components/dashboard/kpi_card_item, @/components/dashboard/states/dashboard_skeleton, @/components/dashboard/states/component_error_state
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Top metrics grid rendering 4 core clinical KPI cards with isolated skeleton loading and error fallback states.
  */
 
@@ -30,9 +30,7 @@ export const DashboardKpiStrip: React.FC = () => {
         <KpiCardSkeleton />
       </div>
     );
-  }
-
-  if (stats_error || !stats) {
+  } else if (stats_error || !stats) {
     return (
       <ComponentErrorState
         message_key="error_loading_stats"
@@ -40,6 +38,8 @@ export const DashboardKpiStrip: React.FC = () => {
         height="min-h-[140px]"
       />
     );
+  } else {
+    // Stats loaded
   }
 
   return (

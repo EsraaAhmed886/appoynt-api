@@ -5,7 +5,7 @@
  * Version Information: v1.0.0
  * Dependencies: react, lucide-react, @/types/dashboard, @/context/dashboard_context, @/context/language_context
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Date range filter controller with immediate preset switches and validated custom date range popover strictly enforcing 365-day and future-date guards (VR-01 to VR-08).
  */
 
@@ -50,6 +50,8 @@ export const DashboardDateRangePicker: React.FC = () => {
     const handle_outside_click = (e: MouseEvent) => {
       if (dropdown_ref.current && !dropdown_ref.current.contains(e.target as Node)) {
         set_is_open(false);
+      } else {
+        // Click inside dropdown
       }
     };
     document.addEventListener("mousedown", handle_outside_click);
@@ -60,30 +62,26 @@ export const DashboardDateRangePicker: React.FC = () => {
   const validate_custom_range = (from: string, to: string): string | null => {
     if (!from || !to) {
       return "invalid_date_range";
+    } else {
+      const start = new Date(from);
+      const end = new Date(to);
+      const today = new Date(today_str);
+
+      if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+        return "invalid_date_range";
+      } else if (start > end) {
+        return "date_order_error";
+      } else if (end > today) {
+        return "date_future_error";
+      } else {
+        const diff_days = Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+        if (diff_days > 365) {
+          return "date_max_duration_error";
+        } else {
+          return null;
+        }
+      }
     }
-
-    const start = new Date(from);
-    const end = new Date(to);
-    const today = new Date(today_str);
-
-    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-      return "invalid_date_range";
-    }
-
-    if (start > end) {
-      return "date_order_error";
-    }
-
-    if (end > today) {
-      return "date_future_error";
-    }
-
-    const diff_days = Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
-    if (diff_days > 365) {
-      return "date_max_duration_error";
-    }
-
-    return null;
   };
 
   const handle_preset_select = (preset: DateRangePreset) => {
@@ -101,12 +99,12 @@ export const DashboardDateRangePicker: React.FC = () => {
     if (err) {
       set_validation_error(err);
       return;
+    } else {
+      const custom: CustomDateRange = { from: start_date, to: end_date };
+      set_date_range("custom", custom);
+      set_is_custom_modal_open(false);
+      set_validation_error(null);
     }
-
-    const custom: CustomDateRange = { from: start_date, to: end_date };
-    set_date_range("custom", custom);
-    set_is_custom_modal_open(false);
-    set_validation_error(null);
   };
 
   const handle_start_change = (e: React.ChangeEvent<HTMLInputElement>) => {

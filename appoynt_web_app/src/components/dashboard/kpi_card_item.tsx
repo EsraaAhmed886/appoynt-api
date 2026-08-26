@@ -5,7 +5,7 @@
  * Version Information: v1.0.0
  * Dependencies: react, lucide-react, @/types/dashboard, @/context/language_context
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Individual clinical metric statistics card rendering color-themed icon blocks, large formatted metrics, and previous-day comparison badges (BR-23 to BR-27).
  */
 
@@ -36,44 +36,42 @@ export const KpiCardItem: React.FC<KpiCardItemProps> = ({
 
   // Render Comparison Badge strictly following BR-23 to BR-27
   const render_comparison_badge = () => {
-    if (!comparison) return null;
-
-    if (comparison.is_zero_previous) {
+    if (!comparison) {
+      return null;
+    } else if (comparison.is_zero_previous) {
       return (
         <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-900/40">
           <TrendingUp className="w-3 h-3" />
           <span>{t("increased_from_zero")}</span>
         </span>
       );
-    }
-
-    if (comparison.is_no_change || comparison.change_pct === 0) {
+    } else if (comparison.is_no_change || comparison.change_pct === 0) {
       return (
         <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700">
           <Minus className="w-3 h-3" />
           <span>{t("no_change")}</span>
         </span>
       );
-    }
+    } else {
+      const pct = comparison.change_pct ?? 0;
+      const is_positive = pct > 0;
 
-    const pct = comparison.change_pct ?? 0;
-    const is_positive = pct > 0;
-
-    return (
-      <span
-        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${
-          is_positive
-            ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border-emerald-200/60 dark:border-emerald-900/40"
-            : "bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400 border-red-200/60 dark:border-red-900/40"
-        }`}
-      >
-        {is_positive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-        <span>
-          {is_positive ? `+${pct.toFixed(1)}%` : `${pct.toFixed(1)}%`}{" "}
-          <span className="font-normal opacity-80">{t("from_yesterday")}</span>
+      return (
+        <span
+          className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${
+            is_positive
+              ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border-emerald-200/60 dark:border-emerald-900/40"
+              : "bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400 border-red-200/60 dark:border-red-900/40"
+          }`}
+        >
+          {is_positive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+          <span>
+            {is_positive ? `+${pct.toFixed(1)}%` : `${pct.toFixed(1)}%`}{" "}
+            <span className="font-normal opacity-80">{t("from_yesterday")}</span>
+          </span>
         </span>
-      </span>
-    );
+      );
+    }
   };
 
   return (

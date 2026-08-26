@@ -5,7 +5,7 @@
  * Version Information: v1.0.0
  * Dependencies: react, next/navigation, lucide-react, @/types/dashboard, @/context/language_context
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Live Waiting Room & Next-Up Consultation Queue strip rendering patient queue details, wait timer, live consultation action CTA, and pending lab alerts.
  */
 
@@ -44,6 +44,8 @@ export const LiveQueueBar: React.FC<LiveQueueBarProps> = ({
       } else {
         router.push(`/medical-records?patient_id=${current_patient.id}`);
       }
+    } else {
+      // No active patient in queue
     }
   };
 
@@ -82,6 +84,8 @@ export const LiveQueueBar: React.FC<LiveQueueBarProps> = ({
         </div>
       </div>
     );
+  } else {
+    // Patients present in queue
   }
 
   const waiting_time_text = t("waiting_time").replace(

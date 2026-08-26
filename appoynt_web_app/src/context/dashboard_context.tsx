@@ -5,8 +5,8 @@
  * Version Information: v1.0.0
  * Dependencies: react, @/types/dashboard, @/services/dashboard_mock_service
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
- * File Description: Unified React Context managing isolated metrics streams, progressive chart loaders, independent clinic filters, and race condition token protection.
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
+ * File Description: Unified React Context provider for doctor dashboard state, independent chart filters, race-condition mitigation tokens, and RBAC CTA controls (AC-01 to AC-25).
  */
 
 "use client";
@@ -150,10 +150,14 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           set_doctor_profile(profile);
           set_clinics_list(clinics);
           set_clinics_loading(false);
+        } else {
+          // Component unmounted
         }
       } catch (err) {
         if (mounted) {
           set_clinics_loading(false);
+        } else {
+          // Component unmounted
         }
       }
     };
@@ -194,14 +198,20 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       );
       if (current_token === patients_req_token.current) {
         set_patients_chart(data);
+      } else {
+        // Outdated request response discarded
       }
     } catch (err) {
       if (current_token === patients_req_token.current) {
         set_patients_error("error_loading_chart");
+      } else {
+        // Outdated request response discarded
       }
     } finally {
       if (current_token === patients_req_token.current) {
         set_patients_loading(false);
+      } else {
+        // Outdated request response discarded
       }
     }
   }, [date_range_preset, custom_date_range, patients_clinic_id]);
@@ -223,14 +233,20 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       );
       if (current_token === revenue_req_token.current) {
         set_revenue_chart(data);
+      } else {
+        // Outdated request response discarded
       }
     } catch (err) {
       if (current_token === revenue_req_token.current) {
         set_revenue_error("error_loading_chart");
+      } else {
+        // Outdated request response discarded
       }
     } finally {
       if (current_token === revenue_req_token.current) {
         set_revenue_loading(false);
+      } else {
+        // Outdated request response discarded
       }
     }
   }, [date_range_preset, custom_date_range, revenue_clinic_id]);
@@ -357,6 +373,7 @@ export const useDashboard = (): DashboardContextType => {
   const context = useContext(DashboardContext);
   if (!context) {
     throw new Error("useDashboard must be used within a DashboardProvider");
+  } else {
+    return context;
   }
-  return context;
 };

@@ -5,7 +5,7 @@
  * Version Information: v1.0.0
  * Dependencies: react, lucide-react, @/context/dashboard_context, @/context/language_context, @/components/dashboard/charts/clinic_chart_container, @/components/dashboard/states/dashboard_skeleton, @/components/dashboard/states/component_error_state, @/components/dashboard/states/empty_chart_state
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Renders the Patients by Clinic interactive bar chart with top-10 grouping, tie-breaking, and isolated retry error boundaries (BR-39 to BR-53).
  */
 
@@ -36,9 +36,7 @@ export const PatientsByClinicChart: React.FC = () => {
 
   if (patients_loading) {
     return <ChartSkeleton />;
-  }
-
-  if (patients_error || !patients_chart) {
+  } else if (patients_error || !patients_chart) {
     return (
       <div className="rounded-2xl border border-gray-200/80 dark:border-gray-800 bg-white/90 dark:bg-gray-900/90 p-5 shadow-xs">
         <ComponentErrorState
@@ -48,6 +46,8 @@ export const PatientsByClinicChart: React.FC = () => {
         />
       </div>
     );
+  } else {
+    // Chart data available
   }
 
   const { points, total, top_clinics, tied_count } = patients_chart;
@@ -58,6 +58,8 @@ export const PatientsByClinicChart: React.FC = () => {
         <EmptyChartState />
       </div>
     );
+  } else {
+    // Points non empty
   }
 
   // Calculate max value for relative bar heights

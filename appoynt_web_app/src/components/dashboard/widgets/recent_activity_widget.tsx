@@ -5,7 +5,7 @@
  * Version Information: v1.0.0
  * Dependencies: react, lucide-react, next/link, @/types/dashboard, @/context/dashboard_context, @/context/language_context, @/components/dashboard/states/dashboard_skeleton, @/components/dashboard/states/component_error_state
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Bottom widget rendering exactly 5 recent clinical events in reverse chronological order with categorized badge icons and relative timestamps (VR-23, AC-20).
  */
 
@@ -36,9 +36,7 @@ export const RecentActivityWidget: React.FC = () => {
 
   if (activities_loading) {
     return <WidgetSkeleton />;
-  }
-
-  if (activities_error) {
+  } else if (activities_error) {
     return (
       <div className="rounded-2xl border border-gray-200/80 dark:border-gray-800 bg-white/90 dark:bg-gray-900/90 p-5 shadow-xs">
         <ComponentErrorState
@@ -48,6 +46,8 @@ export const RecentActivityWidget: React.FC = () => {
         />
       </div>
     );
+  } else {
+    // Activity data loaded
   }
 
   // Format relative or concise timestamp

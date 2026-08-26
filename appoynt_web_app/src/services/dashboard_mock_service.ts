@@ -5,7 +5,7 @@
  * Version Information: v1.0.0
  * Dependencies: @/types/dashboard
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Provides asynchronous clinical mock data services with realistic latencies, date range aggregations, top-10 grouping, tie-breaking, and negative revenue calculations.
  */
 
@@ -64,35 +64,31 @@ export function calculate_comparison(today_val: number, yesterday_val: number): 
       is_zero_previous: true,
       is_no_change: false,
     };
-  }
-
-  if (today_val === yesterday_val) {
+  } else if (today_val === yesterday_val) {
     return {
       change_pct: 0.0,
       previous_value: yesterday_val,
       is_zero_previous: false,
       is_no_change: true,
     };
-  }
-
-  if (yesterday_val === 0 && today_val === 0) {
+  } else if (yesterday_val === 0 && today_val === 0) {
     return {
       change_pct: 0.0,
       previous_value: 0,
       is_zero_previous: false,
       is_no_change: true,
     };
+  } else {
+    const raw_pct = ((today_val - yesterday_val) / yesterday_val) * 100;
+    const rounded_pct = Math.round(raw_pct * 10) / 10;
+
+    return {
+      change_pct: rounded_pct,
+      previous_value: yesterday_val,
+      is_zero_previous: false,
+      is_no_change: false,
+    };
   }
-
-  const raw_pct = ((today_val - yesterday_val) / yesterday_val) * 100;
-  const rounded_pct = Math.round(raw_pct * 10) / 10;
-
-  return {
-    change_pct: rounded_pct,
-    previous_value: yesterday_val,
-    is_zero_previous: false,
-    is_no_change: false,
-  };
 }
 
 /**
@@ -111,45 +107,49 @@ export function process_chart_points(
       currency,
       top_clinics: [],
     };
-  }
-
-  const total = raw_points.reduce((acc, pt) => acc + pt.value, 0);
-
-  // Find max value
-  const max_val = Math.max(...raw_points.map((pt) => pt.value));
-  const top_matching = raw_points.filter((pt) => pt.value === max_val && pt.value > 0);
-  const top_clinics = top_matching.map((pt) => pt.clinic_name);
-  const tied_count = top_clinics.length > 1 ? top_clinics.length : undefined;
-
-  let points: ClinicChartPoint[];
-
-  if (raw_points.length > 10) {
-    // Sort descending by value
-    const sorted = [...raw_points].sort((a, b) => b.value - a.value);
-    const top_10 = sorted.slice(0, 10);
-    const others = sorted.slice(10);
-    const others_sum = others.reduce((acc, pt) => acc + pt.value, 0);
-
-    points = [
-      ...top_10,
-      {
-        clinic_id: "others",
-        clinic_name: "Others",
-        value: others_sum,
-        currency,
-      },
-    ];
   } else {
-    points = raw_points;
-  }
+    const total = raw_points.reduce((acc, pt) => acc + pt.value, 0);
 
-  return {
-    points,
-    total,
-    currency,
-    top_clinics,
-    tied_count,
-  };
+    // Find max value
+    const max_val = Math.max(...raw_points.map((pt) => pt.value));
+    const top_matching = raw_points.filter((pt) => pt.value === max_val && pt.value > 0);
+    const top_clinics = top_matching.map((pt) => pt.clinic_name);
+    const tied_count = top_matching.length > 3 ? top_matching.length - 3 : undefined;
+
+    // Check if grouping into "Others" is required (> 10 items)
+    if (raw_points.length <= 10) {
+      return {
+        points: raw_points,
+        total,
+        currency,
+        top_clinics,
+        tied_count,
+      };
+    } else {
+      // Sort points descending
+      const sorted = [...raw_points].sort((a, b) => b.value - a.value);
+      const top_10 = sorted.slice(0, 10);
+      const remaining = sorted.slice(10);
+      const others_value = remaining.reduce((acc, pt) => acc + pt.value, 0);
+
+      const combined_points: ClinicChartPoint[] = [
+        ...top_10,
+        {
+          clinic_id: "others",
+          clinic_name: "Others",
+          value: others_value,
+        },
+      ];
+
+      return {
+        points: combined_points,
+        total,
+        currency,
+        top_clinics,
+        tied_count,
+      };
+    }
+  }
 }
 
 /**
@@ -352,19 +352,19 @@ export const DashboardMockService = {
         total_reviews: 0,
         distribution: [],
       };
+    } else {
+      return {
+        aggregate_rating: 4.8,
+        total_reviews: 128,
+        distribution: [
+          { stars: 5, count: 98, percentage: 76.5 },
+          { stars: 4, count: 20, percentage: 15.6 },
+          { stars: 3, count: 6, percentage: 4.7 },
+          { stars: 2, count: 3, percentage: 2.3 },
+          { stars: 1, count: 1, percentage: 0.9 },
+        ],
+      };
     }
-
-    return {
-      aggregate_rating: 4.8,
-      total_reviews: 128,
-      distribution: [
-        { stars: 5, count: 98, percentage: 76.5 },
-        { stars: 4, count: 20, percentage: 15.6 },
-        { stars: 3, count: 6, percentage: 4.7 },
-        { stars: 2, count: 3, percentage: 2.3 },
-        { stars: 1, count: 1, percentage: 0.9 },
-      ],
-    };
   },
 
   /**

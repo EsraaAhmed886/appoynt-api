@@ -5,7 +5,7 @@
  * Version Information: v1.0.0
  * Dependencies: react, lucide-react, @/types/dashboard, @/context/language_context
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Reusable card container for clinic analytics charts with independent clinic dropdown filter, chart body slot, and metric summary footer (BR-40 to BR-53).
  */
 
@@ -60,18 +60,16 @@ export const ClinicChartContainer: React.FC<ClinicChartContainerProps> = ({
   const render_top_clinic_text = () => {
     if (top_clinics.length === 0) {
       return "—";
-    }
-
-    if (top_clinics.length <= 3) {
+    } else if (top_clinics.length <= 3) {
       const names = top_clinics.join(", ");
       return top_value_formatted ? `${names} (${top_value_formatted})` : names;
+    } else {
+      // If > 3 tied clinics, show up to 3 + "+N tied clinics"
+      const first_three = top_clinics.slice(0, 3).join(", ");
+      const remaining = top_clinics.length - 3;
+      const tied_text = t("tied_clinics").replace("{count}", remaining.toString());
+      return `${first_three}, ${tied_text} ${top_value_formatted ? `(${top_value_formatted})` : ""}`;
     }
-
-    // If > 3 tied clinics, show up to 3 + "+N tied clinics"
-    const first_three = top_clinics.slice(0, 3).join(", ");
-    const remaining = top_clinics.length - 3;
-    const tied_text = t("tied_clinics").replace("{count}", remaining.toString());
-    return `${first_three}, ${tied_text} ${top_value_formatted ? `(${top_value_formatted})` : ""}`;
   };
 
   return (

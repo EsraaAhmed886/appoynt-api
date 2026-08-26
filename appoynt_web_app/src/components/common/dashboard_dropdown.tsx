@@ -5,7 +5,7 @@
  * Version Information: v1.0.0
  * Dependencies: react, lucide-react
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Accessible, responsive custom select dropdown component with floating popover, click-outside dismissal, and bidirectional RTL support.
  */
 
@@ -47,6 +47,8 @@ export const DashboardDropdown: React.FC<DashboardDropdownProps> = ({
     const handle_click_outside = (event: MouseEvent) => {
       if (dropdown_ref.current && !dropdown_ref.current.contains(event.target as Node)) {
         set_is_open(false);
+      } else {
+        // Click was inside dropdown
       }
     };
     document.addEventListener("mousedown", handle_click_outside);

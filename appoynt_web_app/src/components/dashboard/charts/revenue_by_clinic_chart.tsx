@@ -5,7 +5,7 @@
  * Version Information: v1.0.0
  * Dependencies: react, lucide-react, @/context/dashboard_context, @/context/language_context, @/components/dashboard/charts/clinic_chart_container, @/components/dashboard/states/dashboard_skeleton, @/components/dashboard/states/component_error_state, @/components/dashboard/states/empty_chart_state
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Renders the Revenue by Clinic interactive bar chart supporting positive emerald bars, negative red refund bars, and independent clinic selection (BR-54 to BR-57).
  */
 
@@ -36,9 +36,7 @@ export const RevenueByClinicChart: React.FC = () => {
 
   if (revenue_loading) {
     return <ChartSkeleton />;
-  }
-
-  if (revenue_error || !revenue_chart) {
+  } else if (revenue_error || !revenue_chart) {
     return (
       <div className="rounded-2xl border border-gray-200/80 dark:border-gray-800 bg-white/90 dark:bg-gray-900/90 p-5 shadow-xs">
         <ComponentErrorState
@@ -48,6 +46,8 @@ export const RevenueByClinicChart: React.FC = () => {
         />
       </div>
     );
+  } else {
+    // Chart data loaded
   }
 
   const { points, total, top_clinics, tied_count, currency = "EGP" } = revenue_chart;
@@ -58,6 +58,8 @@ export const RevenueByClinicChart: React.FC = () => {
         <EmptyChartState />
       </div>
     );
+  } else {
+    // Points available
   }
 
   // Calculate positive max and negative min for dual-directional baseline
