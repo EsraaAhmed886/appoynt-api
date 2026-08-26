@@ -1,3 +1,4 @@
+import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 /*
  * File Name: session_manager.dart
  * Author: Kholoud Khaled
@@ -117,13 +118,13 @@ class SessionManager {
             // Auto-dismiss after 3 seconds for non-intrusive UX
             duration: const Duration(seconds: 3),
             // Style with error color to signal an important state change
-            backgroundColor: Colors.red.shade700,
+            backgroundColor: AppColors.red700,
             // Action allowing the user to manually dismiss the message
             action: SnackBarAction(
               // Dismiss action label
               label: 'OK',
               // White label color for contrast on the red background
-              textColor: Colors.white,
+              textColor: AppColors.white,
               // Callback to dismiss the SnackBar on tap
               onPressed: () {
                 // Hide the SnackBar when the user taps the action button

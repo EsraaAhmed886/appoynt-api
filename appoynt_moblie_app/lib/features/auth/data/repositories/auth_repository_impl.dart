@@ -2,11 +2,11 @@
  * File Name: auth_repository_impl.dart
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
- * Version Information: V1.0.0
+ * Version Information: V1.1.0
  * Dependencies: package:dartz/dartz.dart, package:dio/dio.dart, failures.dart,
  *   auth_repository.dart, user_entity.dart, auth_remote_datasource.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Concrete implementation of the AuthRepository. It coordinates
  *   between remote data sources and maps results to domain entities or failures.
  */
@@ -138,7 +138,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  /// Contract for requesting reset token.
+  /// Contract for requesting reset token with account enumeration defense.
   Future<Either<Failure, OtpChallengeResponse>> forgotPassword({
     required String identifier,
   }) async {
@@ -148,9 +148,21 @@ class AuthRepositoryImpl implements AuthRepository {
       );
       return Right(challenge_response);
     } on DioException catch (e) {
-      return Left(ServerFailure(_parse_error(e)));
+      // User enumeration defense: treat both registered and unregistered valid numbers identically
+      final int? statusCode = e.response?.statusCode;
+      final String parsedError = _parse_error(e);
+      if (404 == statusCode ||
+          400 == statusCode ||
+          parsedError.contains('user_not_found') ||
+          parsedError.contains('not found')) {
+        // Return synthetic challenge response so client navigates smoothly to OTP screen
+        return const Right(OtpChallengeResponse(challengeId: 'synthetic_forgot_password_challenge'));
+      } else {
+        // Server failure or connection error
+      }
+      return Left(ServerFailure(parsedError));
     } catch (e) {
-      return const Left(ServerFailure());
+      return const Right(OtpChallengeResponse(challengeId: 'synthetic_forgot_password_challenge'));
     }
   }
 

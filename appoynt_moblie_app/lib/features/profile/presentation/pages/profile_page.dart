@@ -143,7 +143,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         localizations.profile_photo_upload_error,
                   ),
                   // Error red-orange tint background for failure state
-                  backgroundColor: Colors.redAccent,
+                  backgroundColor: AppColors.redAccent,
                   // Standard duration for error messages
                   duration: const Duration(seconds: 3),
                   // Rounded pill shape for the SnackBar container
@@ -270,7 +270,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   width: 150,
                                   height: 20,
                                   decoration: BoxDecoration(
-                                    color: is_dark ? Colors.grey[800] : Colors.grey[300],
+                                    color: is_dark ? AppColors.grey800 : AppColors.grey300,
                                     borderRadius: BorderRadius.circular(4),
                                   ),
                                   child: const Center(

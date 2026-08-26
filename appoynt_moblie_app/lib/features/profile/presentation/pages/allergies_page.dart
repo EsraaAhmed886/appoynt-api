@@ -170,7 +170,7 @@ class _AllergiesPageState extends State<AllergiesPage> {
           border: Border.all(
             color: is_dark
                 ? AppColors.border_dark
-                : const Color(0xFFE2E8F0),
+                : AppColors.slate200,
             width: AppSpacing.border_width_thin,
           ),
           boxShadow: [
@@ -279,7 +279,7 @@ class _AllergiesPageState extends State<AllergiesPage> {
                           ? AppColors.primary_color.withValues(alpha: 0.12)
                           : (is_dark
                               ? AppColors.background_dark
-                              : const Color(0xFFF1F5F9)),
+                              : AppColors.slate100),
                       side: BorderSide(
                         color: is_added
                             ? AppColors.primary_color
@@ -337,14 +337,14 @@ class _AllergiesPageState extends State<AllergiesPage> {
                 children: active_list.map((item) {
                   final bool is_severe = 'Severe' == item['severity'];
                   final Color dot_color = is_severe
-                      ? const Color(0xFFEF4444)
-                      : const Color(0xFFF59E0B);
+                      ? AppColors.error
+                      : AppColors.warning;
                   final Color chip_bg = is_severe
-                      ? const Color(0xFFFEF2F2)
-                      : const Color(0xFFFFFBEB);
+                      ? AppColors.errorLight
+                      : AppColors.warningLight;
                   final Color border_color = is_severe
-                      ? const Color(0xFFFCA5A5)
-                      : const Color(0xFFFDE68A);
+                      ? AppColors.red300
+                      : AppColors.amber200;
 
                   return GestureDetector(
                     onTap: is_disabled
@@ -457,7 +457,7 @@ class _AllergiesPageState extends State<AllergiesPage> {
                           ? AppColors.primary_color
                           : (is_dark
                               ? AppColors.border_dark
-                              : const Color(0xFFE2E8F0)),
+                              : AppColors.slate200),
                       width: true == _no_known_allergies ? _LocalDimensions.border_width_thick : _LocalDimensions.border_width_thin,
                     ),
                     boxShadow: [

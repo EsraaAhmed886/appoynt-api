@@ -2,7 +2,7 @@
  * File Name: register_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
- * Version Information: V1.1.0
+ * Version Information: V1.2.0
  * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart,
  *   package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart,
  *   package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart,
@@ -10,7 +10,7 @@
  *   package:flutter/gestures.dart,
  *   package:flutter_bloc/flutter_bloc.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Renders the registration page containing the form fields, terms check box,
  *   and validations adapting fully to light/dark themes and localizations.
  */
@@ -84,6 +84,14 @@ class _RegisterPageState extends State<RegisterPage> {
   void initState() {
     // Invoke parent initialization
     super.initState();
+    // Clear any leftover auth error from previous screens
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        get_it<AuthCubit>().reset();
+      } else {
+        // No action needed
+      }
+    });
     // Instantiate input listener callback
     _input_listener = () {
       // Check active state using Yoda style check
@@ -134,6 +142,8 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   // Clean up controller logic parameters to prevent memory leaks
   void dispose() {
+    // Clear any auth error on exit
+    get_it<AuthCubit>().reset();
     // Remove listeners from all controllers
     _first_name_ctrl.removeListener(_input_listener);
     _last_name_ctrl.removeListener(_input_listener);
@@ -150,6 +160,82 @@ class _RegisterPageState extends State<RegisterPage> {
     _confirm_ctrl.dispose();
     // Invoke base layout disposal configurations
     super.dispose();
+  }
+
+  // Pure validation helper checking password security and personal info rules
+  bool _is_password_valid(
+    String password, {
+    String? firstName,
+    String? lastName,
+    String? email,
+  }) {
+    // Check minimum and maximum character length constraints using Yoda style check
+    if (8 > password.length || 30 < password.length) {
+      return false;
+    } else {
+      // Length requirements met
+    }
+
+    // Allowed characters whitelist validation: letters, digits, and standard symbols
+    if (false == RegExp(r'^[A-Za-z0-9@#$%^&*!_~+=.-]+$').hasMatch(password)) {
+      return false;
+    } else {
+      // Characters within allowed whitelist
+    }
+
+    // Complexity verification: must have uppercase, lowercase, digit, and special symbol
+    final bool has_lower = RegExp(r'[a-z]').hasMatch(password);
+    final bool has_upper = RegExp(r'[A-Z]').hasMatch(password);
+    final bool has_digit = RegExp(r'[0-9]').hasMatch(password);
+    final bool has_special = RegExp(r'[@#$%^&*!_~+=.-]').hasMatch(password);
+    if (false == has_lower ||
+        false == has_upper ||
+        false == has_digit ||
+        false == has_special) {
+      return false;
+    } else {
+      // Complexity constraints met
+    }
+
+    // Personal info defense: reject passwords containing name or email prefix
+    final String lower_pw = password.toLowerCase();
+
+    // Check first name if available and at least 2 characters long
+    if (null != firstName && firstName.trim().length >= 2) {
+      if (true == lower_pw.contains(firstName.trim().toLowerCase())) {
+        return false;
+      } else {
+        // First name not contained in password
+      }
+    } else {
+      // No first name check needed
+    }
+
+    // Check last name if available and at least 2 characters long
+    if (null != lastName && lastName.trim().length >= 2) {
+      if (true == lower_pw.contains(lastName.trim().toLowerCase())) {
+        return false;
+      } else {
+        // Last name not contained in password
+      }
+    } else {
+      // No last name check needed
+    }
+
+    // Check email prefix before '@' symbol
+    if (null != email && email.contains('@')) {
+      final String prefix = email.split('@').first.trim();
+      if (prefix.length >= 3 && true == lower_pw.contains(prefix.toLowerCase())) {
+        return false;
+      } else {
+        // Email prefix not contained in password
+      }
+    } else {
+      // No email prefix check needed
+    }
+
+    // All password safety rules passed
+    return true;
   }
 
   // Helper getter checking if all registration fields contain valid values in real-time (BUG-004)
@@ -218,17 +304,23 @@ class _RegisterPageState extends State<RegisterPage> {
       // Empty action block to satisfy compiler
     }
 
-    // Validate password length is at least 8 characters
+    // Validate password using security rules helper
     final String password = _password_ctrl.text;
-    if (8 > password.length) {
+    if (false ==
+        _is_password_valid(
+          password,
+          firstName: first_name,
+          lastName: last_name,
+          email: email,
+        )) {
       return false;
     } else {
-      // Empty action block to satisfy compiler
+      // Password is valid
     }
 
     // Validate password confirmation match
     final String confirm_password = _confirm_ctrl.text;
-    if (confirm_password != password) {
+    if (confirm_password != password || confirm_password.isEmpty) {
       return false;
     } else {
       // Empty action block to satisfy compiler
@@ -397,6 +489,47 @@ class _RegisterPageState extends State<RegisterPage> {
     if (30 < password_value.length) {
       // Return too long warning message
       return strings_catalog.password_too_long;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+    // Verify allowed characters whitelist
+    if (false == RegExp(r'^[A-Za-z0-9@#$%^&*!_~+=.-]+$').hasMatch(password_value)) {
+      return strings_catalog.auth_registration_password_invalid_characters;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+    // Check personal details (first name, last name, email prefix)
+    final String lower_pw = password_value.toLowerCase();
+    final String first_name = _first_name_ctrl.text.trim();
+    if (first_name.length >= 2 && true == lower_pw.contains(first_name.toLowerCase())) {
+      return strings_catalog.auth_registration_password_contains_user_info;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+    final String last_name = _last_name_ctrl.text.trim();
+    if (last_name.length >= 2 && true == lower_pw.contains(last_name.toLowerCase())) {
+      return strings_catalog.auth_registration_password_contains_user_info;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+    final String email = _email_ctrl.text.trim();
+    if (true == email.contains('@')) {
+      final String email_prefix = email.split('@').first.trim();
+      if (email_prefix.length >= 3 && true == lower_pw.contains(email_prefix.toLowerCase())) {
+        return strings_catalog.auth_registration_password_contains_user_info;
+      } else {
+        // Empty action block to satisfy compiler
+      }
+    } else {
+      // Empty action block to satisfy compiler
+    }
+    // Verify complexity requirements
+    final bool has_lower = RegExp(r'[a-z]').hasMatch(password_value);
+    final bool has_upper = RegExp(r'[A-Z]').hasMatch(password_value);
+    final bool has_digit = RegExp(r'[0-9]').hasMatch(password_value);
+    final bool has_special = RegExp(r'[@#$%^&*!_~+=.-]').hasMatch(password_value);
+    if (!has_lower || !has_upper || !has_digit || !has_special) {
+      return strings_catalog.password_must;
     } else {
       // Empty action block to satisfy compiler
     }

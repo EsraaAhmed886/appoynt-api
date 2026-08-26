@@ -83,10 +83,10 @@ class DoctorHeroHeader extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.black,
-                  Colors.black.withValues(alpha: 0.95),
-                  Colors.black.withValues(alpha: 0.3),
-                  Colors.transparent,
+                  AppColors.black,
+                  AppColors.black.withValues(alpha: 0.95),
+                  AppColors.black.withValues(alpha: 0.3),
+                  AppColors.transparent,
                 ],
                 stops: const [0.0, 0.50, 0.85, 1.0],
               ).createShader(bounds);
@@ -355,7 +355,7 @@ class DoctorHeroHeader extends StatelessWidget {
           color: is_dark ? AppColors.surface_dark : AppColors.white,
           borderRadius: BorderRadius.circular(AppSpacing.radius_l),
           border: Border.all(
-            color: is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
+            color: is_dark ? AppColors.border_dark : AppColors.slate200,
             width: AppSpacing.border_width_thin,
           ),
           boxShadow: [
@@ -384,12 +384,12 @@ class DoctorHeroHeader extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
-          color: const Color(0xFF2563EB).withValues(alpha: 0.15),
+          color: AppColors.primary.withValues(alpha: 0.15),
           width: 3.0,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
+            color: AppColors.black.withValues(alpha: 0.08),
             blurRadius: 16.0,
             offset: const Offset(0, 4),
           ),
@@ -406,9 +406,9 @@ class DoctorHeroHeader extends StatelessWidget {
                 errorBuilder: (context, error, stackTrace) => Container(
                   width: size,
                   height: size,
-                  color: const Color(0xFFEFF6FF),
+                  color: AppColors.blue50,
                   child: const Icon(Icons.person,
-                      color: Color(0xFF2563EB), size: 48),
+                      color: AppColors.primary, size: 48),
                 ),
               )
             : (path.isNotEmpty
@@ -425,24 +425,24 @@ class DoctorHeroHeader extends StatelessWidget {
                         return Container(
                           width: size,
                           height: size,
-                          color: Colors.grey.shade200,
+                          color: AppColors.grey200,
                         );
                       }
                     },
                     errorBuilder: (context, error, stackTrace) => Container(
                       width: size,
                       height: size,
-                      color: const Color(0xFFEFF6FF),
+                      color: AppColors.blue50,
                       child: const Icon(Icons.person,
-                          color: Color(0xFF2563EB), size: 48),
+                          color: AppColors.primary, size: 48),
                     ),
                   )
                 : Container(
                     width: size,
                     height: size,
-                    color: const Color(0xFFEFF6FF),
+                    color: AppColors.blue50,
                     child: const Icon(Icons.person,
-                        color: Color(0xFF2563EB), size: 48),
+                        color: AppColors.primary, size: 48),
                   )),
       ),
     );

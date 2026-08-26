@@ -161,7 +161,7 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
         color: is_dark ? AppColors.surface_dark : AppColors.white,
         borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
         border: Border.all(
-          color: is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
+          color: is_dark ? AppColors.border_dark : AppColors.slate200,
           width: _LocalDimensions.border_width_thin,
         ),
         boxShadow: [
@@ -292,7 +292,7 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
     final String delete_account_title = localizations.delete_account_title;
     final String delete_account_subtitle = localizations.delete_account_subtitle;
 
-    final Color dividerColor = is_dark ? AppColors.border_dark : const Color(0xFFF1F5F9);
+    final Color dividerColor = is_dark ? AppColors.border_dark : AppColors.slate100;
 
     // Return root Scaffold layout container
     return Scaffold(
@@ -322,7 +322,7 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                       style: const TextStyle(
                         fontSize: _LocalDimensions.font_size_tiny,
                         fontWeight: FontWeight.w800,
-                        color: Color(0xFF94A3B8),
+                        color: AppColors.slate400,
                         letterSpacing: _LocalDimensions.letter_spacing,
                       ),
                     ),
@@ -434,7 +434,7 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                       style: const TextStyle(
                         fontSize: _LocalDimensions.font_size_tiny,
                         fontWeight: FontWeight.w800,
-                        color: Color(0xFF94A3B8),
+                        color: AppColors.slate400,
                         letterSpacing: _LocalDimensions.letter_spacing,
                       ),
                     ),
@@ -529,7 +529,7 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                       style: const TextStyle(
                         fontSize: _LocalDimensions.font_size_tiny,
                         fontWeight: FontWeight.w800,
-                        color: Color(0xFF94A3B8),
+                        color: AppColors.slate400,
                         letterSpacing: _LocalDimensions.letter_spacing,
                       ),
                     ),
@@ -538,10 +538,10 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                     Container(
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        color: is_dark ? const Color(0xFF7F1D1D).withValues(alpha: 0.15) : const Color(0xFFFEF2F2),
+                        color: is_dark ? AppColors.red900.withValues(alpha: 0.15) : AppColors.errorLight,
                         borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
                         border: Border.all(
-                          color: is_dark ? const Color(0xFF991B1B) : const Color(0xFFFCA5A5),
+                          color: is_dark ? AppColors.red800 : AppColors.red300,
                           width: _LocalDimensions.border_width_thin,
                         ),
                       ),
@@ -585,7 +585,7 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                                       delete_account_subtitle,
                                       style: TextStyle(
                                         fontSize: _LocalDimensions.font_size_micro,
-                                        color: is_dark ? AppColors.white70 : const Color(0xFF64748B),
+                                        color: is_dark ? AppColors.white70 : AppColors.slate500,
                                         height: _LocalDimensions.line_height,
                                       ),
                                     ),

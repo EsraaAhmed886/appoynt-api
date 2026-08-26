@@ -2,15 +2,17 @@
  * File Name: app_localizations.dart
  * Author: Kholoud Khaled
  * Date of Creation: 20/06/2026
- * Version Information: V1.0.0
- * Dependencies: package:flutter/material.dart
+ * Version Information: V1.1.0
+ * Dependencies: package:flutter/material.dart, auth_strings.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Defines the abstract contract for application-wide custom localizations.
  */
 
 // Importing standard material package for BuildContext and Locale
 import 'package:flutter/material.dart';
+// Importing specialized authentication localization strings
+import 'package:appoynt_mobile_app/core/localization/auth_strings.dart';
 
 // Abstract class defining localization dictionary schema for the app
 abstract class AppLocalizations {
@@ -986,6 +988,12 @@ abstract class AppLocalizations {
   String get error_user_not_found;
   String get error_email_already_exists;
   String get error_auth_general;
+  String get auth_registration_email_already_registered;
+  String get auth_registration_phone_already_registered;
+  String get auth_registration_password_invalid_characters;
+  String get auth_registration_password_contains_user_info;
+  String get auth_otp_attempts_exceeded;
+  String get auth_forgot_password_generic_success;
 
   // Network and security error localized message getters
   String get error_no_internet;
@@ -1019,6 +1027,15 @@ abstract class AppLocalizations {
     // Look up localizations dictionary from widget tree context
     final AppLocalizations s = AppLocalizations.of(context);
     final String cleanMessage = message.trim();
+
+    // ── AuthLocalization Dictionary Direct Lookup ────────────────────────
+    final String currentLangCode = s.is_arabic ? 'ar' : 'en';
+    final String? dictionaryMapped = AuthLocalization.localizedValues[currentLangCode]?[cleanMessage];
+    if (null != dictionaryMapped && dictionaryMapped.isNotEmpty) {
+      return dictionaryMapped;
+    } else {
+      // Continue checking localized getters and failure keys
+    }
 
     // ── Network & Security ────────────────────────────────────────────────
     if ('error_no_internet' == cleanMessage) {
@@ -1066,6 +1083,21 @@ abstract class AppLocalizations {
       return s.error_unknown;
     } else if ('error_cache' == cleanMessage) {
       return s.error_cache;
+    }
+
+    // ── Specific Authentication Error Mappings ────────────────────────────
+    else if ('auth.registration.email.already_registered' == cleanMessage) {
+      return s.auth_registration_email_already_registered;
+    } else if ('auth.registration.phone.already_registered' == cleanMessage) {
+      return s.auth_registration_phone_already_registered;
+    } else if ('auth.registration.password.invalid_characters' == cleanMessage) {
+      return s.auth_registration_password_invalid_characters;
+    } else if ('auth.registration.password.contains_user_info' == cleanMessage) {
+      return s.auth_registration_password_contains_user_info;
+    } else if ('auth.otp.attempts_exceeded' == cleanMessage) {
+      return s.auth_otp_attempts_exceeded;
+    } else if ('auth.forgot_password.generic_success' == cleanMessage) {
+      return s.auth_forgot_password_generic_success;
     }
 
     // ── Legacy Auth String Mappings ───────────────────────────────────────

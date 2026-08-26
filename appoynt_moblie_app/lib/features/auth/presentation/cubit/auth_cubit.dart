@@ -2,11 +2,11 @@
  * File Name: auth_cubit.dart
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
- * Version Information: V1.1.0
+ * Version Information: V1.2.0
  * Dependencies: package:equatable/equatable.dart, package:flutter_bloc/flutter_bloc.dart,
  *   login_usecase.dart, register_usecase.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Manages the authentication states and business logic for the application.
  */
 
@@ -272,5 +272,14 @@ class AuthCubit extends Cubit<AuthState> {
   /// Resets the cubit to its initial state.
   void reset() {
     emit(AuthInitial());
+  }
+
+  /// Clears any active error state without wiping stored challenge data.
+  void clear_error() {
+    if (!isClosed && state is AuthError) {
+      emit(AuthInitial());
+    } else {
+      // No action needed
+    }
   }
 }

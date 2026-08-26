@@ -401,7 +401,7 @@ class _SearchPageState extends State<SearchPage> {
                                         // Light blue background tint matching mock-up
                                         color: is_dark
                                             ? AppColors.surface_dark
-                                            : const Color(0xFFE8F1FF),
+                                            : AppColors.blue100,
                                         // Rounded corner radius matching chips
                                         borderRadius: BorderRadius.circular(
                                           AppSpacing.search_chip_radius,
@@ -1576,12 +1576,12 @@ class _SearchPageState extends State<SearchPage> {
         decoration: BoxDecoration(
           color: is_selected
               ? AppColors.primary_color
-              : (is_dark ? AppColors.surface_dark : const Color(0xFFF2F4F7)),
+              : (is_dark ? AppColors.surface_dark : AppColors.gray100),
           borderRadius: BorderRadius.circular(AppSpacing.radius_l),
           border: Border.all(
             color: is_selected
                 ? AppColors.primary_color
-                : (is_dark ? AppColors.border_dark : const Color(0xFFE4E7EC)),
+                : (is_dark ? AppColors.border_dark : AppColors.gray200),
             width: AppSpacing.border_width_thin,
           ),
         ),

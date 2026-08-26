@@ -144,7 +144,7 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                           // Border colors matching theme mode
                           color: is_dark
                               ? AppColors.border_dark
-                              : const Color(0xFFE2E8F0),
+                              : AppColors.slate200,
                           // Thin thickness
                           width: AppSpacing.border_width_thin,
                         ),
@@ -171,8 +171,8 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                                 gradient: const LinearGradient(
                                   // Gradient colors list
                                   colors: [
-                                    Color(0xFF3E1E68), // Slate Indigo
-                                    Color(0xFF1E0E36), // Midnight Velvet
+                                    AppColors.purple900, // Slate Indigo
+                                    AppColors.purple950, // Midnight Velvet
                                   ],
                                   // Gradient direction start
                                   begin: Alignment.topLeft,

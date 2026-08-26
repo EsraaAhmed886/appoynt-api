@@ -2,7 +2,7 @@
  * File Name: otp_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
- * Version Information: V1.1.0
+ * Version Information: V1.2.0
  * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart,
  *   package:appoynt_mobile_app/features/auth/presentation/widgets/otp_box.dart,
  *   package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart,
@@ -10,7 +10,7 @@
  *   package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart,
  *   package:appoynt_mobile_app/core/di/service_locator.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: The OTP Verification screen. It handles the input of a 6-digit code,
  *   manages a resend timer, and follows the centralized design system.
  */
@@ -74,9 +74,24 @@ class _OtpPageState extends State<OtpPage> {
   /// Reference to the active timer instance.
   Timer? _timer;
 
+  /// Local attempt counter tracking consecutive verification failures.
+  int _attempt_count = 0;
+
+  /// Flag indicating whether OTP input is locked due to max attempts exceeded.
+  bool _is_locked = false;
+
   @override
   void initState() {
     super.initState();
+
+    // Clear any previous error on entry
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        get_it<AuthCubit>().clear_error();
+      } else {
+        // No action needed
+      }
+    });
 
     /// Initializing and starting the resend countdown.
     _start_timer();
@@ -183,6 +198,8 @@ class _OtpPageState extends State<OtpPage> {
 
   @override
   void dispose() {
+    // Clear error on screen exit
+    get_it<AuthCubit>().clear_error();
     /// Cleaning up the timer and all individual controllers/nodes.
     _timer?.cancel();
     // Remove text change listeners from controllers
@@ -212,6 +229,12 @@ class _OtpPageState extends State<OtpPage> {
   /// [index] The position of the box being changed.
   /// [value] The new character value.
   void _on_digit_changed(int index, String value) {
+    if (true == _is_locked) {
+      return;
+    } else {
+      // Proceed with input handling
+    }
+
     // Re-rendering the UI to reflect potential changes in button state and enablement
     setState(() {});
 
@@ -225,18 +248,41 @@ class _OtpPageState extends State<OtpPage> {
     } else {
       // Empty action block to satisfy compiler
     }
-
-    // Shift focus backwards logic was removed here and is handled
-    // by FocusNode.onKeyEvent instead (BUG-009)
   }
 
   /// Orchestrates the verification process.
   void _verify(BuildContext verification_context) {
-    /// Blocking execution if the code is incomplete.
+    /// Blocking execution if locked or code is incomplete.
+    if (true == _is_locked) {
+      return;
+    } else {
+      // Not locked
+    }
     if (false == _is_filled) {
       return;
     } else {
       // Proceed with verification if OTP is complete
+    }
+
+    // Increment attempt count
+    _attempt_count++;
+    if (_attempt_count >= 3) {
+      setState(() {
+        _is_locked = true;
+      });
+      for (final c in _ctrls) {
+        c.clear();
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            AppLocalizations.get_localized_error(context, 'auth.otp.attempts_exceeded'),
+          ),
+        ),
+      );
+      return;
+    } else {
+      // Attempt count within limit
     }
 
     // Dispatch verify otp event to AuthCubit
@@ -276,8 +322,19 @@ class _OtpPageState extends State<OtpPage> {
             // Trigger OTP verification success callback
             widget.on_verified();
           } else if (state is AuthError) {
+            // Handle max attempts reached or attempts exceeded error
+            if (state.message == 'auth.otp.attempts_exceeded' || _attempt_count >= 3) {
+              setState(() {
+                _is_locked = true;
+              });
+              for (final c in _ctrls) {
+                c.clear();
+              }
+            } else {
+              // Empty action block to satisfy compiler
+            }
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
+              SnackBar(content: Text(AppLocalizations.get_localized_error(context, state.message))),
             );
           } else {
             // Empty action block to satisfy compiler
@@ -371,7 +428,9 @@ class _OtpPageState extends State<OtpPage> {
                                     // Bind message or empty string based on state type
                                     true == (state is AuthError)
                                         ? AppLocalizations.get_localized_error(context, (state as AuthError).message)
-                                        : '',
+                                        : (_is_locked
+                                            ? AppLocalizations.get_localized_error(context, 'auth.otp.attempts_exceeded')
+                                            : ''),
                                     // Center align paragraph
                                     textAlign: TextAlign.center,
                                     // Apply styling configurations
@@ -408,8 +467,8 @@ class _OtpPageState extends State<OtpPage> {
                                       focusNode: _nodes[i],
                                       // Mapping change logic
                                       onChanged: (v) => _on_digit_changed(i, v),
-                                      // Enable sequentially based on previous field filled status (BUG-010)
-                                      enabled: 0 == i || _ctrls[i - 1].text.isNotEmpty,
+                                      // Enable sequentially based on previous field filled status and locked state
+                                      enabled: !_is_locked && (0 == i || _ctrls[i - 1].text.isNotEmpty),
                                     ),
                                   ),
                                 ),
@@ -418,51 +477,72 @@ class _OtpPageState extends State<OtpPage> {
                               // Space before timer row using spacing constants instead of magic numbers
                               const SizedBox(height: AppSpacing.space_xxxl),
 
-                              /// Resend action row with active countdown.
-                              Row(
-                                // Center row elements horizontally
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                // Children list
-                                children: [
-                                  GestureDetector(
-                                    // Trigger resend and timer restart on tap if time is up
-                                    onTap: 0 == _seconds_left
-                                        ? () {
-                                            context.read<AuthCubit>().resend_otp();
-                                            _start_timer();
-                                          }
-                                        : null,
-                                    // Text label widget
-                                    child: Text(
-                                      // Localized label string
-                                      s.send_code_again,
-                                      // Styling configurations
-                                      style: TextStyle(
-                                        // Font size
-                                        fontSize: 14,
-                                        // Emphasized bold weight
-                                        fontWeight: FontWeight.w700,
-                                        /// Highlighting color based on availability.
-                                        color: 0 == _seconds_left
-                                            ? AppColors.primary_color
-                                            : text_secondary,
+                              /// Resend action row with active countdown and locked guidance highlight.
+                              Container(
+                                padding: _is_locked
+                                    ? const EdgeInsets.symmetric(horizontal: AppSpacing.space_l, vertical: AppSpacing.space_s)
+                                    : EdgeInsets.zero,
+                                decoration: _is_locked
+                                    ? BoxDecoration(
+                                        color: AppColors.primary_color.withValues(alpha: 0.12),
+                                        borderRadius: BorderRadius.circular(AppSpacing.radius_l),
+                                        border: Border.all(color: AppColors.primary_color, width: 1.5),
+                                      )
+                                    : null,
+                                child: Row(
+                                  // Center row elements horizontally
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: _is_locked ? MainAxisSize.min : MainAxisSize.max,
+                                  // Children list
+                                  children: [
+                                    GestureDetector(
+                                      // Trigger resend and timer restart on tap if time is up or UI locked
+                                      onTap: (_is_locked || 0 == _seconds_left)
+                                          ? () {
+                                              setState(() {
+                                                _is_locked = false;
+                                                _attempt_count = 0;
+                                              });
+                                              for (final c in _ctrls) {
+                                                c.clear();
+                                              }
+                                              context.read<AuthCubit>().resend_otp();
+                                              _start_timer();
+                                              _nodes[0].requestFocus();
+                                            }
+                                          : null,
+                                      // Text label widget
+                                      child: Text(
+                                        // Localized label string
+                                        s.send_code_again,
+                                        // Styling configurations
+                                        style: TextStyle(
+                                          // Font size
+                                          fontSize: 14,
+                                          // Emphasized bold weight
+                                          fontWeight: FontWeight.w700,
+                                          /// Highlighting color based on availability and locked guidance state.
+                                          color: (_is_locked || 0 == _seconds_left)
+                                              ? AppColors.primary_color
+                                              : text_secondary,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  // Conditionally show spacing and timer widget only if countdown
-                                  // remains active (BUG-005)
-                                  if (_seconds_left > 0) ...[
-                                    // Horizontal spacing gap using spacing constants instead of magic numbers
-                                    const SizedBox(width: AppSpacing.space_s),
-                                    // Timer text label widget showing countdown seconds left
-                                    Text(
-                                      // Format remaining seconds as MM:SS
-                                      _format_time(_seconds_left),
-                                      // Localized timer text style passing context
-                                      style: AppTextStyles.get_otp_timer(context, is_arabic),
-                                    ),
+                                    // Conditionally show spacing and timer widget only if countdown
+                                    // remains active and not locked (BUG-005)
+                                    if (_seconds_left > 0 && !_is_locked) ...[
+                                      // Horizontal spacing gap using spacing constants instead of magic numbers
+                                      const SizedBox(width: AppSpacing.space_s),
+                                      // Timer text label widget showing countdown seconds left
+                                      Text(
+                                        // Format remaining seconds as MM:SS
+                                        _format_time(_seconds_left),
+                                        // Localized timer text style passing context
+                                        style: AppTextStyles.get_otp_timer(context, is_arabic),
+                                      ),
+                                    ],
                                   ],
-                                ],
+                                ),
                               ),
 
                               // Margin before info card using spacing constants instead of magic numbers
@@ -509,8 +589,8 @@ class _OtpPageState extends State<OtpPage> {
                               AuthButton(
                                 // Localized action string
                                 label: s.verify,
-                                // Enable only when all 6 boxes are completed using Yoda style check
-                                is_enabled: _is_filled,
+                                // Enable only when all 6 boxes are completed and UI is not locked
+                                is_enabled: !_is_locked && _is_filled,
                                 // Submission callback
                                 on_pressed: () {
                                   // Trigger verification under context

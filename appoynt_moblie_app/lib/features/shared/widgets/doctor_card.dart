@@ -375,14 +375,14 @@ class DoctorCard extends StatelessWidget {
         color: is_dark ? AppColors.surface_dark : AppColors.white,
         borderRadius: BorderRadius.circular(border_radius),
         border: Border.all(
-          color: is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
+          color: is_dark ? AppColors.border_dark : AppColors.slate200,
           width: 1.0,
         ),
         boxShadow: [
           BoxShadow(
             color: is_dark
-                ? Colors.black.withValues(alpha: 0.20)
-                : Colors.black.withValues(alpha: 0.04),
+                ? AppColors.black.withValues(alpha: 0.20)
+                : AppColors.black.withValues(alpha: 0.04),
             blurRadius: 8.0,
             spreadRadius: 0,
             offset: const Offset(0, 2),
@@ -405,7 +405,7 @@ class DoctorCard extends StatelessWidget {
                     width: width,
                     height: height,
                     decoration: BoxDecoration(
-                      color: is_dark ? const Color(0xFF1E1B4B) : const Color(0xFFEFF6FF),
+                      color: is_dark ? AppColors.indigo950 : AppColors.blue50,
                     ),
                     alignment: Alignment.center,
                     child: Text(
@@ -413,7 +413,7 @@ class DoctorCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 24.0,
                         fontWeight: FontWeight.bold,
-                        color: is_dark ? const Color(0xFF93C5FD) : const Color(0xFF2563EB),
+                        color: is_dark ? AppColors.blue300 : AppColors.primary,
                       ),
                     ),
                   ),
@@ -434,7 +434,7 @@ class DoctorCard extends StatelessWidget {
                           return Container(
                             width: width,
                             height: height,
-                            color: is_dark ? AppColors.surface_dark : Colors.grey.shade100,
+                            color: is_dark ? AppColors.surface_dark : AppColors.grey100,
                           );
                         }
                       },
@@ -442,7 +442,7 @@ class DoctorCard extends StatelessWidget {
                         width: width,
                         height: height,
                         decoration: BoxDecoration(
-                          color: is_dark ? const Color(0xFF1E1B4B) : const Color(0xFFEFF6FF),
+                          color: is_dark ? AppColors.indigo950 : AppColors.blue50,
                         ),
                         alignment: Alignment.center,
                         child: Text(
@@ -450,7 +450,7 @@ class DoctorCard extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 24.0,
                             fontWeight: FontWeight.bold,
-                            color: is_dark ? const Color(0xFF93C5FD) : const Color(0xFF2563EB),
+                            color: is_dark ? AppColors.blue300 : AppColors.primary,
                           ),
                         ),
                       ),
@@ -459,7 +459,7 @@ class DoctorCard extends StatelessWidget {
                       width: width,
                       height: height,
                       decoration: BoxDecoration(
-                        color: is_dark ? const Color(0xFF1E1B4B) : const Color(0xFFEFF6FF),
+                        color: is_dark ? AppColors.indigo950 : AppColors.blue50,
                       ),
                       alignment: Alignment.center,
                       child: Text(
@@ -467,7 +467,7 @@ class DoctorCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 24.0,
                           fontWeight: FontWeight.bold,
-                          color: is_dark ? const Color(0xFF93C5FD) : const Color(0xFF2563EB),
+                          color: is_dark ? AppColors.blue300 : AppColors.primary,
                         ),
                       ),
                     )),

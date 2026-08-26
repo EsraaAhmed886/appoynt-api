@@ -2,14 +2,14 @@
  * File Name: reset_password_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
- * Version Information: V1.1.0
+ * Version Information: V1.2.0
  * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart,
  *   package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart,
  *   package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart,
  *   package:appoynt_mobile_app/core/di/service_locator.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: The Reset Password screen allows users to set a new security credential
  *   after successful verification. It features real-time rule tracking and
  *   follows the centralized design system.
@@ -69,6 +69,14 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   void initState() {
     // Invoke parent initialization
     super.initState();
+    // Clear any leftover auth error from previous screens
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        get_it<AuthCubit>().reset();
+      } else {
+        // No action needed
+      }
+    });
     // Register listener mapping text value changes
     _password_ctrl.addListener(_on_fields_changed);
     _confirm_ctrl.addListener(_on_fields_changed);
@@ -102,6 +110,8 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
 
   @override
   void dispose() {
+    // Reset any active auth errors on leave
+    get_it<AuthCubit>().reset();
     // Remove listeners
     _password_ctrl.removeListener(_on_fields_changed);
     _confirm_ctrl.removeListener(_on_fields_changed);

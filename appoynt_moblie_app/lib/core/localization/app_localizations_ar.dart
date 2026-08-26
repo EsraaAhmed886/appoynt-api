@@ -2,11 +2,11 @@
  * File Name: app_localizations_ar.dart
  * Author: Kholoud Khaled
  * Date of Creation: 20/06/2026
- * Version Information: V1.0.0
+ * Version Information: V1.1.0
  * Dependencies: package:flutter/material.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Arabic concrete implementation of localizations
  *   containing onboarding and authentication strings.
  */
@@ -2163,6 +2163,24 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get error_auth_general =>
       'حدث خطأ في تسجيل الدخول، يرجى التأكد من البيانات';
+  @override
+  String get auth_registration_email_already_registered =>
+      'البريد الإلكتروني مسجل بالفعل. يرجى تسجيل الدخول أو استخدام بريد آخر.';
+  @override
+  String get auth_registration_phone_already_registered =>
+      'رقم الهاتف مسجل بالفعل. يرجى تسجيل الدخول أو استخدام رقم هاتف آخر.';
+  @override
+  String get auth_registration_password_invalid_characters =>
+      'كلمة المرور تحتوي على رموز غير مسموحة. يرجى استخدام الحروف والأرقام والرموز المعتمدة فقط.';
+  @override
+  String get auth_registration_password_contains_user_info =>
+      'يجب ألا تحتوي كلمة المرور على اسمك أو بريدك الإلكتروني أو بياناتك الشخصية.';
+  @override
+  String get auth_otp_attempts_exceeded =>
+      'لقد تجاوزت الحد الأقصى للمحاولات. يرجى طلب رمز تحقق جديد والمحاولة مرة أخرى.';
+  @override
+  String get auth_forgot_password_generic_success =>
+      'إذا كان رقم الهاتف مسجلاً لدينا، فسيتم إرسال رمز التحقق إليه.';
 
   // Network and security error AR string overrides
   @override

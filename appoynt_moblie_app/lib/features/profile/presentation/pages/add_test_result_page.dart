@@ -613,14 +613,14 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                               'normal',
                               status_normal,
                               is_dark
-                                  ? const Color(0xFF14532D)
-                                  : const Color(0xFFDCFCE7),
+                                  ? AppColors.green900
+                                  : AppColors.green100,
                               is_dark
-                                  ? const Color(0xFF166534)
-                                  : const Color(0xFF86EFAC),
+                                  ? AppColors.green800
+                                  : AppColors.green300,
                               is_dark
-                                  ? const Color(0xFF4ADE80)
-                                  : const Color(0xFF15803D),
+                                  ? AppColors.green400
+                                  : AppColors.green700,
                               is_dark,
                             ),
                             const SizedBox(width: _LocalDimensions.spacing_small),
@@ -628,14 +628,14 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                               'abnormal',
                               status_abnormal,
                               is_dark
-                                  ? const Color(0xFF7F1D1D)
-                                  : const Color(0xFFFEE2E2),
+                                  ? AppColors.red900
+                                  : AppColors.red100,
                               is_dark
-                                  ? const Color(0xFF991B1B)
-                                  : const Color(0xFFFCA5A5),
+                                  ? AppColors.red800
+                                  : AppColors.red300,
                               is_dark
-                                  ? const Color(0xFFFCA5A5)
-                                  : const Color(0xFFB91C1C),
+                                  ? AppColors.red300
+                                  : AppColors.red700,
                               is_dark,
                             ),
                             const SizedBox(width: _LocalDimensions.spacing_small),
@@ -643,14 +643,14 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                               'pending',
                               status_pending,
                               is_dark
-                                  ? const Color(0xFF7C2D12)
-                                  : const Color(0xFFFFEDD5),
+                                  ? AppColors.orange900
+                                  : AppColors.orange100,
                               is_dark
-                                  ? const Color(0xFF9A3412)
-                                  : const Color(0xFFFDBA74),
+                                  ? AppColors.orange800
+                                  : AppColors.orange300,
                               is_dark
-                                  ? const Color(0xFFFED7AA)
-                                  : const Color(0xFFC2410C),
+                                  ? AppColors.orange200
+                                  : AppColors.orange700,
                               is_dark,
                             ),
                           ],

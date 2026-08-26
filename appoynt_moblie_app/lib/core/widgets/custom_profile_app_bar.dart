@@ -142,7 +142,7 @@ class AppBackButton extends StatelessWidget {
             // Resolve border color adapting to theme mode (Yoda style check)
             color: is_dark
                 ? AppColors.border_dark
-                : const Color(0xFFE2E8F0),
+                : AppColors.slate200,
             // Thin border line width derived from spacing tokens (1px)
             width: AppSpacing.border_width_thin,
           ),

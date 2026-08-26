@@ -1,3 +1,4 @@
+import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 /*
  * File Name: appointments_search_bar.dart
  * Author: Kholoud Khaled
@@ -69,10 +70,10 @@ class _AppointmentsSearchBarState extends State<AppointmentsSearchBar> {
             child: Container(
               height: 46.0,
               decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
+                color: isDark ? AppColors.slate800 : AppColors.slate50,
                 borderRadius: BorderRadius.circular(14.0),
                 border: Border.all(
-                  color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                  color: isDark ? AppColors.slate700 : AppColors.slate200,
                   width: 1.0,
                 ),
               ),
@@ -81,23 +82,23 @@ class _AppointmentsSearchBarState extends State<AppointmentsSearchBar> {
                 onChanged: widget.onQueryChanged,
                 style: TextStyle(
                   fontSize: 14.0,
-                  color: isDark ? Colors.white : const Color(0xFF0F172A),
+                  color: isDark ? AppColors.white : AppColors.slate900,
                 ),
                 decoration: InputDecoration(
                   hintText: AppointmentsStrings.of(context, 'search_placeholder'),
                   hintStyle: TextStyle(
                     fontSize: 13.5,
-                    color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
+                    color: isDark ? AppColors.slate500 : AppColors.slate400,
                   ),
                   prefixIcon: Icon(
                     Icons.search_rounded,
                     size: 20.0,
-                    color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
+                    color: isDark ? AppColors.slate500 : AppColors.slate400,
                   ),
                   suffixIcon: _controller.text.isNotEmpty
                       ? IconButton(
                           icon: const Icon(Icons.clear_rounded, size: 18.0),
-                          color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
+                          color: isDark ? AppColors.slate500 : AppColors.slate400,
                           onPressed: () {
                             _controller.clear();
                             widget.onQueryChanged('');
@@ -121,13 +122,13 @@ class _AppointmentsSearchBarState extends State<AppointmentsSearchBar> {
                 height: 46.0,
                 decoration: BoxDecoration(
                   color: widget.activeFiltersCount > 0
-                      ? const Color(0xFF0284C7)
-                      : (isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC)),
+                      ? AppColors.sky600
+                      : (isDark ? AppColors.slate800 : AppColors.slate50),
                   borderRadius: BorderRadius.circular(14.0),
                   border: Border.all(
                     color: widget.activeFiltersCount > 0
-                        ? const Color(0xFF0284C7)
-                        : (isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
+                        ? AppColors.sky600
+                        : (isDark ? AppColors.slate700 : AppColors.slate200),
                     width: 1.0,
                   ),
                 ),
@@ -136,8 +137,8 @@ class _AppointmentsSearchBarState extends State<AppointmentsSearchBar> {
                     Icons.tune_rounded,
                     size: 20.0,
                     color: widget.activeFiltersCount > 0
-                        ? Colors.white
-                        : (isDark ? const Color(0xFF94A3B8) : const Color(0xFF475569)),
+                        ? AppColors.white
+                        : (isDark ? AppColors.slate400 : AppColors.slate600),
                   ),
                   onPressed: widget.onFilterTap,
                   padding: EdgeInsets.zero,
@@ -160,7 +161,7 @@ class _AppointmentsSearchBarState extends State<AppointmentsSearchBar> {
         child: Container(
           padding: const EdgeInsets.all(4.0),
           decoration: const BoxDecoration(
-            color: Color(0xFFEF4444),
+            color: AppColors.error,
             shape: BoxShape.circle,
           ),
           constraints: const BoxConstraints(minWidth: 16.0, minHeight: 16.0),
@@ -168,7 +169,7 @@ class _AppointmentsSearchBarState extends State<AppointmentsSearchBar> {
             child: Text(
               widget.activeFiltersCount.toString(),
               style: const TextStyle(
-                color: Colors.white,
+                color: AppColors.white,
                 fontSize: 9.0,
                 fontWeight: FontWeight.bold,
                 height: 1.0,

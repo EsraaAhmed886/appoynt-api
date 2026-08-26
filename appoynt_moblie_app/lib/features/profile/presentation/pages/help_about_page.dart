@@ -254,7 +254,7 @@ class _HelpAndAboutPageState extends State<HelpAndAboutPage> {
     final String help_center_title = localizations.profile_help_center;
     final String help_center_sub = localizations.profile_help_center_sub;
 
-    final Color dividerColor = is_dark ? AppColors.border_dark : const Color(0xFFF1F5F9);
+    final Color dividerColor = is_dark ? AppColors.border_dark : AppColors.slate100;
 
     return Scaffold(
       body: SafeArea(
@@ -349,7 +349,7 @@ class _HelpAndAboutPageState extends State<HelpAndAboutPage> {
                   style: const TextStyle(
                     fontSize: 11.0,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF94A3B8),
+                    color: AppColors.slate400,
                     letterSpacing: 1.0,
                   ),
                 ),
@@ -430,7 +430,7 @@ class _HelpAndAboutPageState extends State<HelpAndAboutPage> {
                   style: TextStyle(
                     fontSize: 11.0,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF94A3B8),
+                    color: AppColors.slate400,
                     letterSpacing: 1.0,
                   ),
                 ),

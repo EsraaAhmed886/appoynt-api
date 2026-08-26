@@ -281,7 +281,7 @@ class _SearchSortBottomSheetState extends State<SearchSortBottomSheet> {
           ? (is_dark
               ? AppColors.primary_color.withValues(alpha: 0.18)
               : AppColors.primary_color.withValues(alpha: 0.08))
-          : (is_dark ? const Color(0xFF252536) : const Color(0xFFF8FAFC)),
+          : (is_dark ? AppColors.dark_surface_2 : AppColors.slate50),
       borderRadius: BorderRadius.circular(_LocalDimensions.option_radius),
       child: InkWell(
         onTap: () {
@@ -388,7 +388,7 @@ Future<void> show_search_sort_bottom_sheet({
   await showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
-    backgroundColor: Colors.transparent,
+    backgroundColor: AppColors.transparent,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(
         top: Radius.circular(_LocalDimensions.sheet_top_radius),

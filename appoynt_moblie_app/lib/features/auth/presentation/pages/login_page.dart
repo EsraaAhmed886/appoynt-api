@@ -2,7 +2,7 @@
  * File Name: login_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 28/05/2026
- * Version Information: V1.0.0
+ * Version Information: V1.1.0
  * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart,
  *   package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart,
  *   package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart,
@@ -10,7 +10,7 @@
  *   package:appoynt_mobile_app/features/auth/presentation/widgets/smart_password_field.dart,
  *   package:flutter_bloc/flutter_bloc.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Renders the user login gateway presentation page under BLoC configurations.
  */
 
@@ -92,6 +92,14 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     // Invoke standard base class initialization configurations
     super.initState();
+    // Clear any leftover auth error from previous screens
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        get_it<AuthCubit>().reset();
+      } else {
+        // No action needed
+      }
+    });
     // Register text listener mapping input type changes dynamically
     _identifier_ctrl.addListener(_detect_input_type);
     // Register password listener to refresh submit button state in real-time
@@ -446,6 +454,8 @@ class _LoginPageState extends State<LoginPage> {
   @override
   // Clean up controller logic parameters to prevent memory leaks
   void dispose() {
+    // Reset any auth error on leave
+    get_it<AuthCubit>().reset();
     // Remove input text listener tracking type detections
     _identifier_ctrl.removeListener(_detect_input_type);
     // Remove password input listener

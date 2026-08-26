@@ -11,7 +11,7 @@
  *   empty_slots_widget.dart, sticky_slot_booking_bottom_bar.dart,
  *   hold_release_confirmation_dialog.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 23/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Comprehensive Doctor Multi-Clinic & Time Slot Booking screen featuring
  *   generous 68px toolbar with AppBackButton, doctor verification badge, equal-width segmented
  *   filters, docked hold indicator, and animated hold expiration dialogs.
@@ -108,12 +108,12 @@ class _ChooseSlotsView extends StatelessWidget {
                 width: 64.0,
                 height: 64.0,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFD97706).withValues(alpha: 0.15),
+                  color: AppColors.amber600.withValues(alpha: 0.15),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
                   Icons.alarm_off_rounded,
-                  color: Color(0xFFD97706),
+                  color: AppColors.amber600,
                   size: 32.0,
                 ),
               ),
@@ -576,7 +576,7 @@ class _ChooseSlotsView extends StatelessWidget {
   }
 
   /// Builds the refreshing progress indicator when slots are reloading.
-  Widget _build_refreshing_indicator(SlotBookingLoadedState state) {
+  Widget _build_refreshing_indicator(SlotBookingLoaded state) {
     if (state.is_refreshing_slots) {
       return const SizedBox(
         width: 16.0,
@@ -593,7 +593,7 @@ class _ChooseSlotsView extends StatelessWidget {
 
   /// Builds the slots grid or the empty state view.
   Widget _build_slots_content(
-    SlotBookingLoadedState state,
+    SlotBookingLoaded state,
     SlotBookingCubit cubit,
   ) {
     if (state.filtered_slots.isNotEmpty) {
@@ -615,7 +615,7 @@ class _ChooseSlotsView extends StatelessWidget {
   }
 
   /// Builds the active hold countdown banner when a slot is reserved.
-  Widget _build_active_hold_banner(SlotBookingLoadedState state) {
+  Widget _build_active_hold_banner(SlotBookingLoaded state) {
     if (state.has_active_hold) {
       return ActiveHoldCountdownBanner(
         remaining_seconds: state.remaining_seconds,

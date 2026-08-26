@@ -2,14 +2,14 @@
  * File Name: forgot_password_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
- * Version Information: V1.1.0
+ * Version Information: V1.2.0
  * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart,
  *   package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart,
  *   package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart,
  *   package:appoynt_mobile_app/core/di/service_locator.dart,
  *   package:flutter_bloc/flutter_bloc.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: The Forgot Password screen allows users to request a reset code via
  *   their phone number. It follows the centralized design system and
  *   supports full bilingual localization.
@@ -69,6 +69,14 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   void initState() {
     // Invoke parent initialization
     super.initState();
+    // Clear any leftover auth error from previous screens
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        get_it<AuthCubit>().reset();
+      } else {
+        // No action needed
+      }
+    });
     // Register listener mapping text value changes
     _phone_ctrl.addListener(_on_phone_changed);
   }
@@ -101,6 +109,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   @override
   void dispose() {
+    // Clear any active auth error on leave
+    get_it<AuthCubit>().reset();
     // Remove listener from controller
     _phone_ctrl.removeListener(_on_phone_changed);
     /// Cleaning up the text controller to prevent memory leaks.
@@ -189,11 +199,18 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         listener: (context, state) {
           // Check if request succeeds using Yoda style check
           if (state is ForgotPasswordSuccess) {
+            // Show uniform generic success message to prevent user enumeration
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(s.auth_forgot_password_generic_success),
+                backgroundColor: AppColors.primary_color,
+              ),
+            );
             // Trigger code sent navigation callback
             widget.on_code_sent(_phone_ctrl.text.trim());
           } else if (state is AuthError) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
+              SnackBar(content: Text(AppLocalizations.get_localized_error(context, state.message))),
             );
           } else {
             // Empty action block to satisfy compiler

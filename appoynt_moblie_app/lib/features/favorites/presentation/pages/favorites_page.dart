@@ -386,7 +386,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
           duration: const Duration(milliseconds: 200),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: is_active ? AppColors.primary_color : Colors.transparent,
+            color: is_active ? AppColors.primary_color : AppColors.transparent,
             borderRadius:
                 BorderRadius.circular(_LocalDimensions.tab_item_radius),
           ),

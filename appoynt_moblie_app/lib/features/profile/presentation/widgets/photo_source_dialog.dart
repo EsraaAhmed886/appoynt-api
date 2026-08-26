@@ -162,7 +162,7 @@ class PhotoSourceDialog extends StatelessWidget {
                     icon: Icons.photo_library_rounded,
                     title: localizations.profile_photo_gallery_option,
                     subtitle: gallery_sub,
-                    badge_color: const Color(0xFF6C5CE7),
+                    badge_color: AppColors.purple_badge,
                     source: ImageSource.gallery,
                     is_dark: is_dark,
                   ),
@@ -174,7 +174,7 @@ class PhotoSourceDialog extends StatelessWidget {
             // Footer: Sleek styled Cancel button container
             Material(
               // Subtle gray background container for cancel button
-              color: is_dark ? AppColors.white10 : const Color(0xFFEDF1F7),
+              color: is_dark ? AppColors.white10 : AppColors.gray_light_bg,
               // Rounded corners for cancel button container
               borderRadius: BorderRadius.circular(_DialogDimensions.cancel_radius),
               child: InkWell(
@@ -222,7 +222,7 @@ class PhotoSourceDialog extends StatelessWidget {
     // Return Material card container for ink ripple interaction
     return Material(
       // Card surface color adapting to dark mode
-      color: is_dark ? const Color(0xFF252536) : const Color(0xFFF6F8FB),
+      color: is_dark ? AppColors.dark_surface_2 : AppColors.gray_soft_bg,
       // Rounded card corners (16px)
       borderRadius: BorderRadius.circular(_DialogDimensions.action_card_radius),
       child: InkWell(

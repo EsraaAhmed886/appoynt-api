@@ -1,3 +1,4 @@
+import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 /*
  * File Name: quick_actions_strip.dart
  * Author: Kholoud Khaled
@@ -47,7 +48,7 @@ class QuickActionsStrip extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14.0,
                 fontWeight: FontWeight.bold,
-                color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF475569),
+                color: isDark ? AppColors.slate400 : AppColors.slate600,
               ),
             ),
             const SizedBox(height: 10.0),
@@ -62,7 +63,7 @@ class QuickActionsStrip extends StatelessWidget {
                     title: AppointmentsStrings.of(context, 'prescriptions'),
                     count: summary!.prescriptionsCount,
                     icon: Icons.medication_liquid_outlined,
-                    color: const Color(0xFF0284C7),
+                    color: AppColors.sky600,
                     onTap: onPrescriptionsTap,
                   ),
                 ),
@@ -75,7 +76,7 @@ class QuickActionsStrip extends StatelessWidget {
                     title: AppointmentsStrings.of(context, 'lab_results'),
                     count: summary!.labResultsCount,
                     icon: Icons.science_outlined,
-                    color: const Color(0xFF0D9488),
+                    color: AppColors.teal600,
                     onTap: onLabResultsTap,
                   ),
                 ),
@@ -88,7 +89,7 @@ class QuickActionsStrip extends StatelessWidget {
                     title: AppointmentsStrings.of(context, 'radiology_reports'),
                     count: summary!.radiologyReportsCount,
                     icon: Icons.biotech_outlined,
-                    color: const Color(0xFF6366F1),
+                    color: AppColors.indigo500,
                     onTap: onRadiologyTap,
                   ),
                 ),
@@ -111,7 +112,7 @@ class QuickActionsStrip extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Material(
-      color: Colors.transparent,
+      color: AppColors.transparent,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(16.0),
@@ -141,7 +142,7 @@ class QuickActionsStrip extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 11.5,
                   fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : const Color(0xFF0F172A),
+                  color: isDark ? AppColors.white : AppColors.slate900,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -165,7 +166,7 @@ class QuickActionsStrip extends StatelessWidget {
         child: Text(
           count.toString(),
           style: const TextStyle(
-            color: Colors.white,
+            color: AppColors.white,
             fontSize: 10.0,
             fontWeight: FontWeight.bold,
           ),

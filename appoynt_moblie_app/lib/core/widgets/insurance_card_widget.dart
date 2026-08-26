@@ -53,8 +53,8 @@ class InsuranceCardWidget extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Color(0xFF0F2042), // Premium Dark Navy
-                Color(0xFF0D5E6F), // Deep Teal
+                AppColors.navy_dark, // Premium Dark Navy
+                AppColors.teal_deep, // Deep Teal
               ],
             ),
             // 16px corner radius
@@ -105,7 +105,7 @@ class InsuranceCardWidget extends StatelessWidget {
                           ),
                           child: const Icon(
                             Icons.verified_user_rounded,
-                            color: Color(0xFFFFD700),
+                            color: AppColors.gold,
                             size: 16.0,
                           ),
                         ),
@@ -206,7 +206,7 @@ class InsuranceCardWidget extends StatelessWidget {
           color: is_dark ? AppColors.surface_dark : AppColors.white,
           borderRadius: BorderRadius.circular(16.0),
           border: Border.all(
-            color: is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
+            color: is_dark ? AppColors.border_dark : AppColors.slate200,
             width: AppSpacing.border_width_thin,
           ),
           boxShadow: [
@@ -361,7 +361,7 @@ class NoInsuranceCardWidget extends StatelessWidget {
           ),
         ],
         border: Border.all(
-          color: is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
+          color: is_dark ? AppColors.border_dark : AppColors.slate200,
           width: AppSpacing.border_width_thin,
         ),
       ),

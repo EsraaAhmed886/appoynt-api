@@ -849,7 +849,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                   border: Border.all(
                                     color: is_dark
                                         ? AppColors.border_dark
-                                        : const Color(0xFFE2E8F0),
+                                        : AppColors.slate200,
                                     width: _LocalDimensions.card_border_width,
                                   ),
                                   boxShadow: [
@@ -1299,10 +1299,10 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
       height: _LocalDimensions.segmented_height,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: is_dark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
+        color: is_dark ? AppColors.slate800 : AppColors.slate100,
         borderRadius: BorderRadius.circular(_LocalDimensions.segmented_radius),
         border: Border.all(
-          color: is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
+          color: is_dark ? AppColors.border_dark : AppColors.slate200,
           width: _LocalDimensions.segmented_border_width,
         ),
       ),

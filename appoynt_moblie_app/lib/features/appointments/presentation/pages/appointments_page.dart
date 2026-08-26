@@ -1,3 +1,4 @@
+import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 /*
  * File Name: appointments_page.dart
  * Author: Kholoud Khaled
@@ -126,7 +127,7 @@ class _AppointmentsViewState extends State<_AppointmentsView> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+      backgroundColor: isDark ? AppColors.slate900 : AppColors.slate50,
       body: SafeArea(
         child: BlocConsumer<AppointmentsBloc, AppointmentsState>(
           listener: (context, state) {
@@ -134,7 +135,7 @@ class _AppointmentsViewState extends State<_AppointmentsView> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(AppointmentsStrings.of(context, state.actionSuccessMessage!)),
-                  backgroundColor: const Color(0xFF10B981),
+                  backgroundColor: AppColors.success,
                   behavior: SnackBarBehavior.floating,
                 ),
               );
@@ -145,7 +146,7 @@ class _AppointmentsViewState extends State<_AppointmentsView> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(state.errorMessage!),
-                  backgroundColor: const Color(0xFFEF4444),
+                  backgroundColor: AppColors.error,
                   behavior: SnackBarBehavior.floating,
                 ),
               );
@@ -164,7 +165,7 @@ class _AppointmentsViewState extends State<_AppointmentsView> {
                 context.read<AppointmentsBloc>().add(const RefreshQuickActions());
                 context.read<AppointmentsBloc>().add(const RefreshRecommendations());
               },
-              color: const Color(0xFF0284C7),
+              color: AppColors.sky600,
               child: CustomScrollView(
                 controller: _scrollController,
                 physics: const AlwaysScrollableScrollPhysics(
@@ -243,7 +244,7 @@ class _AppointmentsViewState extends State<_AppointmentsView> {
           child: Center(
             child: CircularProgressIndicator(
               strokeWidth: 2.5,
-              color: Color(0xFF0284C7),
+              color: AppColors.sky600,
             ),
           ),
         ),
@@ -283,7 +284,7 @@ class _AppointmentsViewState extends State<_AppointmentsView> {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('Joining video call with ${appt.doctorName}...'),
-                      backgroundColor: const Color(0xFF10B981),
+                      backgroundColor: AppColors.success,
                     ),
                   );
                 },
@@ -312,7 +313,7 @@ class _AppointmentsViewState extends State<_AppointmentsView> {
                   height: 24.0,
                   child: CircularProgressIndicator(
                     strokeWidth: 2.0,
-                    color: Color(0xFF0284C7),
+                    color: AppColors.sky600,
                   ),
                 ),
               ),

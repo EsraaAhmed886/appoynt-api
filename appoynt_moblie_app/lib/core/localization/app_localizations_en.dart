@@ -2,11 +2,11 @@
  * File Name: app_localizations_en.dart
  * Author: Kholoud Khaled
  * Date of Creation: 20/06/2026
- * Version Information: V1.0.0
+ * Version Information: V1.1.0
  * Dependencies: package:flutter/material.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: English concrete implementation of localizations
  *   containing onboarding and authentication strings.
  */
@@ -2117,6 +2117,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get error_email_already_exists => 'Email is already registered.';
   @override
   String get error_auth_general => 'An error occurred during authentication, please verify your details.';
+  @override
+  String get auth_registration_email_already_registered =>
+      'This email address is already registered. Please log in or use a different email.';
+  @override
+  String get auth_registration_phone_already_registered =>
+      'This phone number is already registered. Please log in or use a different number.';
+  @override
+  String get auth_registration_password_invalid_characters =>
+      'Password contains invalid characters. Please use only letters, numbers, and standard symbols (@, #, \$, %, etc.).';
+  @override
+  String get auth_registration_password_contains_user_info =>
+      'Password must not contain your name, email, or personal details.';
+  @override
+  String get auth_otp_attempts_exceeded =>
+      'You have exceeded the maximum number of verification attempts. Please request a new code and try again.';
+  @override
+  String get auth_forgot_password_generic_success =>
+      'If this phone number is registered, a verification code has been sent.';
 
   // Network and security error EN string overrides
   @override

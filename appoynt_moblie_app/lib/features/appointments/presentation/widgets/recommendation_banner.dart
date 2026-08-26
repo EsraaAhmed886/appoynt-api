@@ -1,3 +1,4 @@
+import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 /*
  * File Name: recommendation_banner.dart
  * Author: Kholoud Khaled
@@ -43,7 +44,7 @@ class RecommendationBanner extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14.0,
                 fontWeight: FontWeight.bold,
-                color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF475569),
+                color: isDark ? AppColors.slate400 : AppColors.slate600,
               ),
             ),
             const SizedBox(height: 10.0),
@@ -77,15 +78,15 @@ class RecommendationBanner extends StatelessWidget {
       width: 280.0,
       padding: const EdgeInsets.all(12.0),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        color: isDark ? AppColors.slate800 : AppColors.white,
         borderRadius: BorderRadius.circular(18.0),
         border: Border.all(
-          color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+          color: isDark ? AppColors.slate700 : AppColors.slate200,
           width: 1.0,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
+            color: AppColors.black.withValues(alpha: 0.03),
             blurRadius: 8.0,
             offset: const Offset(0, 2),
           ),
@@ -113,7 +114,7 @@ class RecommendationBanner extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 13.5,
                     fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : const Color(0xFF0F172A),
+                    color: isDark ? AppColors.white : AppColors.slate900,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -123,7 +124,7 @@ class RecommendationBanner extends StatelessWidget {
                   doc.specialty,
                   style: TextStyle(
                     fontSize: 11.0,
-                    color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                    color: isDark ? AppColors.slate400 : AppColors.slate500,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -131,14 +132,14 @@ class RecommendationBanner extends StatelessWidget {
                 const SizedBox(height: 4.0),
                 Row(
                   children: [
-                    const Icon(Icons.star_rounded, size: 14.0, color: Color(0xFFF59E0B)),
+                    const Icon(Icons.star_rounded, size: 14.0, color: AppColors.warning),
                     const SizedBox(width: 2.0),
                     Text(
                       doc.rating.toStringAsFixed(1),
                       style: TextStyle(
                         fontSize: 11.0,
                         fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : const Color(0xFF0F172A),
+                        color: isDark ? AppColors.white : AppColors.slate900,
                       ),
                     ),
                     const SizedBox(width: 6.0),
@@ -147,7 +148,7 @@ class RecommendationBanner extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 11.0,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF0284C7),
+                        color: AppColors.sky600,
                       ),
                     ),
                   ],
@@ -158,8 +159,8 @@ class RecommendationBanner extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () => onBookTap?.call(doc),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF0284C7),
-                      foregroundColor: Colors.white,
+                      backgroundColor: AppColors.sky600,
+                      foregroundColor: AppColors.white,
                       elevation: 0,
                       padding: const EdgeInsets.symmetric(horizontal: 12.0),
                       shape: RoundedRectangleBorder(

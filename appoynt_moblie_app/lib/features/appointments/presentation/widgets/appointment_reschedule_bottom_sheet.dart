@@ -1,3 +1,4 @@
+import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 /*
  * File Name: appointment_reschedule_bottom_sheet.dart
  * Author: Kholoud Khaled
@@ -36,7 +37,7 @@ class AppointmentRescheduleBottomSheet extends StatefulWidget {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.transparent,
       builder: (_) => AppointmentRescheduleBottomSheet(
         appointment: appointment,
         repository: repository,
@@ -122,7 +123,7 @@ class _AppointmentRescheduleBottomSheetState extends State<AppointmentReschedule
         bottom: MediaQuery.of(context).viewInsets.bottom + 24.0,
       ),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF0F172A) : Colors.white,
+        color: isDark ? AppColors.slate900 : AppColors.white,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24.0)),
       ),
       child: SingleChildScrollView(
@@ -136,7 +137,7 @@ class _AppointmentRescheduleBottomSheetState extends State<AppointmentReschedule
                 width: 40.0,
                 height: 4.0,
                 decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF334155) : const Color(0xFFCBD5E1),
+                  color: isDark ? AppColors.slate700 : AppColors.slate300,
                   borderRadius: BorderRadius.circular(2.0),
                 ),
               ),
@@ -152,12 +153,12 @@ class _AppointmentRescheduleBottomSheetState extends State<AppointmentReschedule
                   style: TextStyle(
                     fontSize: 18.0,
                     fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : const Color(0xFF0F172A),
+                    color: isDark ? AppColors.white : AppColors.slate900,
                   ),
                 ),
                 IconButton(
                   icon: const Icon(Icons.close_rounded),
-                  color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                  color: isDark ? AppColors.slate400 : AppColors.slate500,
                   onPressed: () => Navigator.pop(context),
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
@@ -172,7 +173,7 @@ class _AppointmentRescheduleBottomSheetState extends State<AppointmentReschedule
               style: TextStyle(
                 fontSize: 13.0,
                 fontWeight: FontWeight.bold,
-                color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF475569),
+                color: isDark ? AppColors.slate400 : AppColors.slate600,
               ),
             ),
             const SizedBox(height: 10.0),
@@ -200,13 +201,13 @@ class _AppointmentRescheduleBottomSheetState extends State<AppointmentReschedule
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       decoration: BoxDecoration(
                         color: isSelected
-                            ? const Color(0xFF0284C7)
-                            : (isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC)),
+                            ? AppColors.sky600
+                            : (isDark ? AppColors.slate800 : AppColors.slate50),
                         borderRadius: BorderRadius.circular(14.0),
                         border: Border.all(
                           color: isSelected
-                              ? const Color(0xFF0284C7)
-                              : (isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
+                              ? AppColors.sky600
+                              : (isDark ? AppColors.slate700 : AppColors.slate200),
                           width: 1.0,
                         ),
                       ),
@@ -219,8 +220,8 @@ class _AppointmentRescheduleBottomSheetState extends State<AppointmentReschedule
                               fontSize: 11.5,
                               fontWeight: FontWeight.w600,
                               color: isSelected
-                                  ? Colors.white70
-                                  : (isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B)),
+                                  ? AppColors.white70
+                                  : (isDark ? AppColors.slate400 : AppColors.slate500),
                             ),
                           ),
                           const SizedBox(height: 4.0),
@@ -230,8 +231,8 @@ class _AppointmentRescheduleBottomSheetState extends State<AppointmentReschedule
                               fontSize: 16.0,
                               fontWeight: FontWeight.bold,
                               color: isSelected
-                                  ? Colors.white
-                                  : (isDark ? Colors.white : const Color(0xFF0F172A)),
+                                  ? AppColors.white
+                                  : (isDark ? AppColors.white : AppColors.slate900),
                             ),
                           ),
                         ],
@@ -249,7 +250,7 @@ class _AppointmentRescheduleBottomSheetState extends State<AppointmentReschedule
               style: TextStyle(
                 fontSize: 13.0,
                 fontWeight: FontWeight.bold,
-                color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF475569),
+                color: isDark ? AppColors.slate400 : AppColors.slate600,
               ),
             ),
             const SizedBox(height: 10.0),
@@ -269,9 +270,9 @@ class _AppointmentRescheduleBottomSheetState extends State<AppointmentReschedule
                       }
                     : null,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF0284C7),
-                  foregroundColor: Colors.white,
-                  disabledBackgroundColor: const Color(0xFF0284C7).withValues(alpha: 0.3),
+                  backgroundColor: AppColors.sky600,
+                  foregroundColor: AppColors.white,
+                  disabledBackgroundColor: AppColors.sky600.withValues(alpha: 0.3),
                   elevation: 0,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
                 ),
@@ -295,7 +296,7 @@ class _AppointmentRescheduleBottomSheetState extends State<AppointmentReschedule
           padding: EdgeInsets.all(24.0),
           child: CircularProgressIndicator(
             strokeWidth: 2.5,
-            color: Color(0xFF0284C7),
+            color: AppColors.sky600,
           ),
         ),
       );
@@ -304,14 +305,14 @@ class _AppointmentRescheduleBottomSheetState extends State<AppointmentReschedule
         width: double.infinity,
         padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
+          color: isDark ? AppColors.slate800 : AppColors.slate50,
           borderRadius: BorderRadius.circular(12.0),
         ),
         child: Text(
           AppointmentsStrings.of(context, 'no_slots_available'),
           style: TextStyle(
             fontSize: 12.5,
-            color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+            color: isDark ? AppColors.slate400 : AppColors.slate500,
           ),
           textAlign: TextAlign.center,
         ),
@@ -337,13 +338,13 @@ class _AppointmentRescheduleBottomSheetState extends State<AppointmentReschedule
             child: Container(
               decoration: BoxDecoration(
                 color: isSelected
-                    ? const Color(0xFF0284C7)
-                    : (isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC)),
+                    ? AppColors.sky600
+                    : (isDark ? AppColors.slate800 : AppColors.slate50),
                 borderRadius: BorderRadius.circular(12.0),
                 border: Border.all(
                   color: isSelected
-                      ? const Color(0xFF0284C7)
-                      : (isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
+                      ? AppColors.sky600
+                      : (isDark ? AppColors.slate700 : AppColors.slate200),
                   width: 1.0,
                 ),
               ),
@@ -354,8 +355,8 @@ class _AppointmentRescheduleBottomSheetState extends State<AppointmentReschedule
                   fontSize: 12.5,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
                   color: isSelected
-                      ? Colors.white
-                      : (isDark ? Colors.white70 : const Color(0xFF334155)),
+                      ? AppColors.white
+                      : (isDark ? AppColors.white70 : AppColors.slate700),
                 ),
               ),
             ),

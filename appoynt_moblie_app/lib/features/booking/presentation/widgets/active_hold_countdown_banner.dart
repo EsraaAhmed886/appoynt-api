@@ -79,31 +79,31 @@ class _ActiveHoldCountdownBannerState extends State<ActiveHoldCountdownBanner>
 
     // Amber Palette (Normal)
     final Color bg_amber =
-        is_dark ? const Color(0xFF2E2412) : const Color(0xFFFFFBEB);
+        is_dark ? AppColors.amberDarkBg : AppColors.warningLight;
     final Color border_amber =
-        is_dark ? const Color(0xFF78350F) : const Color(0xFFFDE68A);
+        is_dark ? AppColors.amber900 : AppColors.amber200;
     final Color icon_bg_amber =
-        is_dark ? const Color(0xFF451A03) : const Color(0xFFFEF3C7);
-    const Color icon_color_amber = Color(0xFFD97706);
+        is_dark ? AppColors.amber950 : AppColors.amber100;
+    const Color icon_color_amber = AppColors.amber600;
     final Color title_color_amber =
-        is_dark ? const Color(0xFFFDE68A) : const Color(0xFF92400E);
+        is_dark ? AppColors.amber200 : AppColors.amber800;
     final Color sub_color_amber =
-        is_dark ? const Color(0xFFFBBF24) : const Color(0xFFB45309);
-    const Color badge_bg_amber = Color(0xFFD97706);
+        is_dark ? AppColors.amber400 : AppColors.amber700;
+    const Color badge_bg_amber = AppColors.amber600;
 
     // Red/Rose Palette (Urgent)
     final Color bg_red =
-        is_dark ? const Color(0xFF3B1212) : const Color(0xFFFEF2F2);
+        is_dark ? AppColors.redDarkBg : AppColors.errorLight;
     final Color border_red =
-        is_dark ? const Color(0xFF991B1B) : const Color(0xFFFECACA);
+        is_dark ? AppColors.red800 : AppColors.red200;
     final Color icon_bg_red =
-        is_dark ? const Color(0xFF5F1212) : const Color(0xFFFEE2E2);
-    const Color icon_color_red = Color(0xFFDC2626);
+        is_dark ? AppColors.redDarkBorder : AppColors.red100;
+    const Color icon_color_red = AppColors.red600;
     final Color title_color_red =
-        is_dark ? const Color(0xFFFCA5A5) : const Color(0xFF991B1B);
+        is_dark ? AppColors.red300 : AppColors.red800;
     final Color sub_color_red =
-        is_dark ? const Color(0xFFF87171) : const Color(0xFFB91C1C);
-    const Color badge_bg_red = Color(0xFFDC2626);
+        is_dark ? AppColors.red400 : AppColors.red700;
+    const Color badge_bg_red = AppColors.red600;
 
     // Active colors depending on urgency
     final Color card_bg = is_urgent ? bg_red : bg_amber;
@@ -143,8 +143,8 @@ class _ActiveHoldCountdownBannerState extends State<ActiveHoldCountdownBanner>
                 color: is_dark
                     ? AppColors.black.withValues(alpha: 0.3)
                     : (is_urgent
-                        ? const Color(0xFFDC2626).withValues(alpha: 0.08)
-                        : const Color(0xFFD97706).withValues(alpha: 0.08)),
+                        ? AppColors.red600.withValues(alpha: 0.08)
+                        : AppColors.amber600.withValues(alpha: 0.08)),
                 blurRadius: 10.0,
                 offset: const Offset(0, 3),
               ),

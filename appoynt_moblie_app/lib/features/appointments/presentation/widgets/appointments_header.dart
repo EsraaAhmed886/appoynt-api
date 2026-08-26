@@ -1,3 +1,4 @@
+import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 /*
  * File Name: appointments_header.dart
  * Author: Kholoud Khaled
@@ -40,7 +41,7 @@ class AppointmentsHeader extends StatelessWidget {
               fontSize: 24.0,
               fontWeight: FontWeight.bold,
               letterSpacing: -0.5,
-              color: isDark ? Colors.white : const Color(0xFF0F172A),
+              color: isDark ? AppColors.white : AppColors.slate900,
             ),
           ),
 
@@ -52,14 +53,14 @@ class AppointmentsHeader extends StatelessWidget {
                 width: 42.0,
                 height: 42.0,
                 decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
+                  color: isDark ? AppColors.slate800 : AppColors.slate100,
                   borderRadius: BorderRadius.circular(12.0),
                 ),
                 child: IconButton(
                   icon: Icon(
                     Icons.notifications_outlined,
                     size: 22.0,
-                    color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF475569),
+                    color: isDark ? AppColors.slate400 : AppColors.slate600,
                   ),
                   onPressed: onNotificationTap ??
                       () => Navigator.pushNamed(context, Routes.notifications),
@@ -82,10 +83,10 @@ class AppointmentsHeader extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 2.0),
           decoration: BoxDecoration(
-            color: const Color(0xFFEF4444),
+            color: AppColors.error,
             borderRadius: BorderRadius.circular(10.0),
             border: Border.all(
-              color: isDark ? const Color(0xFF0F172A) : Colors.white,
+              color: isDark ? AppColors.slate900 : AppColors.white,
               width: 1.5,
             ),
           ),
@@ -94,7 +95,7 @@ class AppointmentsHeader extends StatelessWidget {
             child: Text(
               unreadNotificationsCount > 99 ? '99+' : unreadNotificationsCount.toString(),
               style: const TextStyle(
-                color: Colors.white,
+                color: AppColors.white,
                 fontSize: 10.0,
                 fontWeight: FontWeight.bold,
                 height: 1.0,

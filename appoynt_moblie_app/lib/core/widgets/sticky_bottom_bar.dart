@@ -47,7 +47,7 @@ class StickyBottomBar extends StatelessWidget {
             // Slate light border or dark adapter
             color: is_dark
                 ? AppColors.border_dark
-                : const Color(0xFFE2E8F0),
+                : AppColors.slate200,
             // Border thickness thin
             width: 1.0,
           ),

@@ -1,3 +1,4 @@
+import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 /*
  * File Name: ask_ai_fab.dart
  * Author: Kholoud Khaled
@@ -35,15 +36,15 @@ class AskAiFab extends StatelessWidget {
         shape: BoxShape.circle,
         gradient: const LinearGradient(
           colors: [
-            Color(0xFF2563EB), // Medical Primary Blue
-            Color(0xFF4338CA), // Deep Indigo
+            AppColors.primary, // Medical Primary Blue
+            AppColors.indigo600, // Deep Indigo
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF2563EB).withValues(alpha: 0.4),
+            color: AppColors.primary.withValues(alpha: 0.4),
             blurRadius: 14.0,
             spreadRadius: 1.0,
             offset: const Offset(0, 5),
@@ -51,12 +52,12 @@ class AskAiFab extends StatelessWidget {
         ],
       ),
       child: Material(
-        color: Colors.transparent,
+        color: AppColors.transparent,
         child: InkWell(
           onTap: onTap,
           customBorder: const CircleBorder(),
-          splashColor: Colors.white.withValues(alpha: 0.25),
-          highlightColor: Colors.white.withValues(alpha: 0.12),
+          splashColor: AppColors.white.withValues(alpha: 0.25),
+          highlightColor: AppColors.white.withValues(alpha: 0.12),
           child: Center(
             child: customIconAsset.endsWith('.svg')
                 ? SvgPicture.asset(
@@ -71,12 +72,12 @@ class AskAiFab extends StatelessWidget {
                         width: iconSize,
                         height: iconSize,
                         fit: BoxFit.contain,
-                        color: Colors.white,
+                        color: AppColors.white,
                       )
                     : const Icon(
                         Icons.smart_toy_rounded,
                         size: iconSize,
-                        color: Colors.white,
+                        color: AppColors.white,
                       ),
           ),
         ),

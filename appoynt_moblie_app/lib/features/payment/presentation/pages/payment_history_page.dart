@@ -305,7 +305,7 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                               border: Border.all(
                                 color: is_dark
                                     ? AppColors.border_dark
-                                    : const Color(0xFFE2E8F0),
+                                    : AppColors.slate200,
                                 width: AppSpacing.border_width_thin,
                               ),
                               boxShadow: [
@@ -393,9 +393,9 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                                           vertical: _LocalDimensions.badge_padding_v),
                                       decoration: BoxDecoration(
                                         color: is_paid
-                                            ? const Color(0xFF10B981)
+                                            ? AppColors.success
                                                 .withValues(alpha: 0.1)
-                                            : const Color(0xFFF59E0B)
+                                            : AppColors.warning
                                                 .withValues(alpha: 0.1),
                                         borderRadius:
                                             BorderRadius.circular(_LocalDimensions.badge_radius),
@@ -406,8 +406,8 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                                           fontSize: _LocalDimensions.badge_font_size,
                                           fontWeight: FontWeight.bold,
                                           color: is_paid
-                                              ? const Color(0xFF10B981)
-                                              : const Color(0xFFF59E0B),
+                                              ? AppColors.success
+                                              : AppColors.warning,
                                         ),
                                       ),
                                     ),
@@ -458,8 +458,8 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [
-            Color(0xFF1E1B4B), // Indigo Dark
-            Color(0xFF4338CA), // Indigo Bright
+            AppColors.indigo950, // Indigo Dark
+            AppColors.indigo600, // Indigo Bright
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
