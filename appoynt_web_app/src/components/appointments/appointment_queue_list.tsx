@@ -60,7 +60,7 @@ export default function appointment_queue_list({
         <h3 className="text-lg font-bold text-app-text-primary flex items-center gap-2">
           {translations.queue_title}
           <span className="text-sm font-normal text-app-text-secondary">
-            ({queue.length} {translations.patients_count_label})
+            ({translations.patients_count_label.includes("{count}") ? translations.patients_count_label.replace("{count}", String(queue.length)) : `${queue.length} ${translations.patients_count_label}`})
           </span>
         </h3>
       </div>
