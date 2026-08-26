@@ -11,6 +11,7 @@
 
 "use client";
 
+import { useRouter } from "next/navigation";
 import ClinicDetailsHeader from "./clinic_details_header";
 import ClinicInfoSection from "./sections/clinic_info_section";
 import WorkingScheduleSection from "./sections/working_schedule_section";
@@ -29,6 +30,7 @@ type ClinicViewEditPageProps = {
 export default function ClinicViewEditPage({
   clinic_id,
 }: ClinicViewEditPageProps) {
+  const router = useRouter();
   const {
     is_loaded,
     is_unsaved_modal_open,
@@ -48,6 +50,27 @@ export default function ClinicViewEditPage({
     form,
     actions,
   } = use_clinic_form(clinic_id);
+
+  const is_any_dirty =
+    is_info_dirty ||
+    is_schedule_dirty ||
+    is_breaks_dirty ||
+    is_receptionists_dirty ||
+    is_booking_dirty;
+
+  const handle_back_click = (e: React.MouseEvent) => {
+    if (is_any_dirty) {
+      e.preventDefault();
+      actions.openUnsavedModal();
+    } else {
+      // No action needed
+    }
+  };
+
+  const handle_leave_unsaved = () => {
+    actions.confirmDiscardChanges();
+    router.push("/clinics");
+  };
 
   if (!is_loaded) {
     return (
@@ -72,6 +95,7 @@ export default function ClinicViewEditPage({
           clinic_name={form.clinicName}
           status={form.status}
           clinic_code={clinic_code}
+          on_back_click={handle_back_click}
         />
 
         {/* Section 1: Clinic Information */}
@@ -154,7 +178,7 @@ export default function ClinicViewEditPage({
         <UnsavedChangesModal
           is_open={is_unsaved_modal_open}
           on_stay={actions.closeUnsavedModal}
-          on_leave={actions.confirmDiscardChanges}
+          on_leave={handle_leave_unsaved}
         />
 
         {/* Save Success Modal */}

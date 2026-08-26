@@ -46,6 +46,19 @@ export default function ClinicTable({
     }
   };
 
+  const format_short_location = (raw_location?: string): string => {
+    if (!raw_location) {
+      return "—";
+    } else {
+      const parts = raw_location.split(",").map((s) => s.trim());
+      if (parts.length >= 2) {
+        return `${parts[0]}, ${parts[1]}`;
+      } else {
+        return raw_location;
+      }
+    }
+  };
+
   return (
     <div className="mt-6 overflow-x-auto rounded-xl border border-app-border bg-app-surface shadow-sm">
       <table className="min-w-[900px] w-full border-collapse">
@@ -92,7 +105,7 @@ export default function ClinicTable({
                 </td>
 
                 <td className="px-4 py-3.5 text-start text-sm lg:px-6 lg:py-4">
-                  {clinic.location}
+                  {format_short_location(clinic.location)}
                 </td>
 
                 <td className="px-4 py-3.5 text-start text-sm lg:px-6 lg:py-4">

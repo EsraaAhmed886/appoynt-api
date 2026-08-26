@@ -49,12 +49,24 @@ export default function LayoutHeader({
       const segments = path.split("/").filter(Boolean);
       const main_segment = segments[0];
 
-      if (!main_segment) {
+      if (!main_segment || "dashboard" === main_segment) {
         return translations.nav_dashboard;
       } else if ("clinics" === main_segment) {
         return translations.nav_clinics;
       } else if ("appointments" === main_segment) {
         return translations.appointments_page_title || translations.nav_appointments || "Appointments";
+      } else if ("notifications" === main_segment) {
+        return translations.nav_notifications || "Notifications";
+      } else if ("patients" === main_segment) {
+        return translations.nav_patients || "Patients";
+      } else if ("receptionists" === main_segment) {
+        return translations.nav_receptionists || "Receptionists";
+      } else if ("schedule" === main_segment) {
+        return translations.nav_schedule || "Schedule";
+      } else if ("medical-records" === main_segment) {
+        return translations.nav_medical_records || "Medical Records";
+      } else if ("settings" === main_segment) {
+        return translations.nav_settings || "Settings";
       } else {
         return main_segment
           .split("-")
