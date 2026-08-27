@@ -2,12 +2,12 @@
  * File Name: app_colors.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/06/2026
- * Version Information: V2.0.0
+ * Version Information: V2.1.0
  * Dependencies: package:flutter/material.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 26/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/08/2026]
  * File Description: Defines centralized color constants and palettes
- *   for light and dark theme modes.
+ *   for light and dark theme modes including pastel notification banners.
  */
 
 // Importing the flutter material package to utilize the Color class
@@ -189,6 +189,38 @@ class AppColors {
   static const Color teal_deep = Color(0xFF0D5E6F);
   static const Color navy_dark = Color(0xFF0F2042);
   static const Color gold = Color(0xFFFFD700);
+
+  // Soft Pastel Backgrounds, Borders, and Icons for Notification Banners & Toasts
+  static const Color successBg = Color(0xFFE8F8EA);
+  static const Color success_bg = Color(0xFFE8F8EA);
+  static const Color successBorder = Color(0xFFC3EBC7);
+  static const Color success_border = Color(0xFFC3EBC7);
+  static const Color successIcon = Color(0xFF22C55E);
+  static const Color success_icon = Color(0xFF22C55E);
+
+  static const Color errorBg = Color(0xFFFFEBEB);
+  static const Color error_bg = Color(0xFFFFEBEB);
+  static const Color errorBorder = Color(0xFFFFC7C7);
+  static const Color error_border = Color(0xFFFFC7C7);
+  static const Color errorIcon = Color(0xFFEF4444);
+  static const Color error_icon = Color(0xFFEF4444);
+
+  static const Color warningBg = Color(0xFFFFF7DB);
+  static const Color warning_bg = Color(0xFFFFF7DB);
+  static const Color warningBorder = Color(0xFFFDEBB2);
+  static const Color warning_border = Color(0xFFFDEBB2);
+  static const Color warningIcon = Color(0xFFF59E0B);
+  static const Color warning_icon = Color(0xFFF59E0B);
+
+  static const Color infoBg = Color(0xFFE8F4FD);
+  static const Color info_bg = Color(0xFFE8F4FD);
+  static const Color infoBorder = Color(0xFFBCE1FD);
+  static const Color info_border = Color(0xFFBCE1FD);
+  static const Color infoIcon = Color(0xFF3B82F6);
+  static const Color info_icon = Color(0xFF3B82F6);
+
+  static const Color notificationText = Color(0xFF1E293B); // Slate 800
+  static const Color notification_text = Color(0xFF1E293B);
 
   // Background color constant representation for the light theme mode
   static const Color background_light = Color(0xFFFFFFFF);
