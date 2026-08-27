@@ -2,14 +2,14 @@
  * File Name: auth_interceptor.dart
  * Author: Kholoud Khaled
  * Date of Creation: 08/08/2026
- * Version Information: V3.0.0
+ * Version Information: V3.1.0
  * Dependencies: package:dio/dio.dart, token_storage.dart, error_handler.dart,
  *   failures.dart, session_manager.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 27/08/2026]
  * File Description: Network interceptor to append authorization token headers,
  *   map all HTTP/DioExceptions through ErrorHandler to typed Failure objects,
- *   and delegate session expiry handling to SessionManager on HTTP 401.
+ *   and delegate session expiry handling to SessionManager on HTTP 401 or error_session_expired.
  *   SessionManager owns the navigator key and orchestrates the full logout flow.
  */
 
@@ -80,26 +80,34 @@ class AuthInterceptor extends Interceptor {
     // Map the raw DioException to a structured typed ApiFailure instance
     final ApiFailure api_failure = ErrorHandler.handle(err);
 
-    // Check if the resolved failure type represents an HTTP 401 session expiry
-    if (api_failure.failure is UnauthorizedFailure) {
+    final bool is_401 = 401 == err.response?.statusCode;
+    final bool is_session_expired_data = err.response?.data is Map &&
+        (('error_session_expired' == err.response?.data['code']) ||
+         ('session_expired' == err.response?.data['code']) ||
+         ('error_session_expired' == err.response?.data['message']) ||
+         ('session_expired' == err.response?.data['message']));
+
+    // Check if the resolved failure type represents an HTTP 401 session expiry or error_session_expired payload
+    if (api_failure.failure is UnauthorizedFailure || is_401 || is_session_expired_data) {
       // Log the 401 detection for debugging and audit trail purposes
       debugPrint(
-        '[AuthInterceptor] 401 Unauthorized detected — '
+        '[AuthInterceptor] Session expiry (401/error_session_expired) detected — '
         'delegating to SessionManager for full logout flow.',
       );
 
       // Broadcast the session expiry event for any passive stream observers
       _emit_session_expired();
 
+      // Resolve human-readable localized session expired string
+      final String localized_msg = ErrorHandler.mapBackendErrorKey('error_session_expired');
+
       // Delegate the full logout orchestration to the SessionManager singleton.
       // SessionManager will: purge tokens, emit AuthUnauthenticated via AuthCubit,
       // push LoginPage (clearing the back stack), and show the session SnackBar.
-      // The localized message is resolved from the UnauthorizedFailure key.
       unawaited(
         SessionManager.instance.handle_session_expired(
-          // Pass the session expiry localization key as the user-facing message
-          localized_message:
-              api_failure.failure.message_key ?? 'Session expired.',
+          // Pass the translated user-facing message string
+          localized_message: localized_msg,
         ),
       );
 
@@ -132,3 +140,4 @@ class AuthInterceptor extends Interceptor {
     return super.onError(err, handler);
   }
 }
+

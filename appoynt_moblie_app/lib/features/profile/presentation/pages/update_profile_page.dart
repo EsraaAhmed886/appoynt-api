@@ -2,14 +2,14 @@
  * File Name: update_profile_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/07/2026
- * Version Information: V1.1.0
+ * Version Information: V1.2.0
  * Dependencies: package:flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart,
  *   package:appoynt_mobile_app/features/profile/data/models/update_profile_request_model.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 27/08/2026]
  * File Description: Defines the Update Profile layout form fields, validators, and backend save handlers.
  */
 
@@ -777,7 +777,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(state.message),
-                  backgroundColor: AppColors.red,
+                  backgroundColor: AppColors.error,
                 ),
               );
             } else {

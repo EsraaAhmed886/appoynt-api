@@ -1,13 +1,12 @@
-import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 /*
  * File Name: session_manager.dart
  * Author: Kholoud Khaled
  * Date of Creation: 10/08/2026
- * Version Information: V1.0.0
+ * Version Information: V2.0.0
  * Dependencies: package:flutter/material.dart, package:get_it/get_it.dart,
- *   token_storage.dart, auth_cubit.dart, routes.dart
+ *   token_storage.dart, auth_cubit.dart, routes.dart, error_handler.dart, app_colors.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 27/08/2026]
  * File Description: Singleton service that owns the global NavigatorKey and
  *   orchestrates the full HTTP 401 session-expiry flow: token purge, AuthCubit
  *   state reset, navigation to LoginPage, and user-facing SnackBar feedback.
@@ -21,6 +20,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 // Importing GetIt for service-locator access to AuthCubit singleton
 import 'package:get_it/get_it.dart';
+// Importing error handler for mapping error keys to human-readable strings
+import 'package:appoynt_mobile_app/core/error/error_handler.dart';
+// Importing app colors for design system styling
+import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 // Importing secure token storage layer for purging tokens on session expiry
 import 'package:appoynt_mobile_app/core/storage/token_storage.dart';
 // Importing route name constants for navigating to login screen
@@ -60,6 +63,9 @@ class SessionManager {
       // Mark expiry handling as active to block concurrent calls
       _is_handling_expiry = true;
     }
+
+    // Resolve human-readable error text to prevent raw key exposure
+    final String clean_message = ErrorHandler.mapBackendErrorKey(localized_message);
 
     // STEP 1: Purge all locally stored authentication tokens immediately
     await TokenStorage.clear_access_token();
@@ -113,12 +119,12 @@ class SessionManager {
         ScaffoldMessenger.of(overlay_context).showSnackBar(
           // Configure SnackBar with session expiry message and styling
           SnackBar(
-            // Display the localized session expiry message string
-            content: Text(localized_message),
+            // Display the clean localized session expiry message string
+            content: Text(clean_message),
             // Auto-dismiss after 3 seconds for non-intrusive UX
             duration: const Duration(seconds: 3),
             // Style with error color to signal an important state change
-            backgroundColor: AppColors.red700,
+            backgroundColor: AppColors.error,
             // Action allowing the user to manually dismiss the message
             action: SnackBarAction(
               // Dismiss action label
@@ -148,3 +154,4 @@ class SessionManager {
     _is_handling_expiry = false;
   }
 }
+

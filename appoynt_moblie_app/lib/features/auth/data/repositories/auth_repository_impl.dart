@@ -2,15 +2,16 @@
  * File Name: auth_repository_impl.dart
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
- * Version Information: V1.1.0
+ * Version Information: V1.2.0
  * Dependencies: package:dartz/dartz.dart, package:dio/dio.dart, failures.dart,
- *   auth_repository.dart, user_entity.dart, auth_remote_datasource.dart
+ *   auth_repository.dart, user_entity.dart, auth_remote_datasource.dart, error_handler.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 26/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 27/08/2026]
  * File Description: Concrete implementation of the AuthRepository. It coordinates
  *   between remote data sources and maps results to domain entities or failures.
  */
 
+import 'package:appoynt_mobile_app/core/error/error_handler.dart'; // Centralized error handler
 import 'package:appoynt_mobile_app/core/error/failures.dart'; // Failure types
 import 'package:appoynt_mobile_app/features/auth/data/datasources/auth_remote_datasource.dart'; // Remote data source
 import 'package:appoynt_mobile_app/features/auth/domain/entities/user_entity.dart'; // Domain entity
@@ -32,19 +33,29 @@ class AuthRepositoryImpl implements AuthRepository {
 
   /// Utility parsing the dynamic API error payload from DioException.
   String _parse_error(DioException e) {
+    if (DioExceptionType.connectionTimeout == e.type ||
+        DioExceptionType.sendTimeout == e.type ||
+        DioExceptionType.receiveTimeout == e.type ||
+        DioExceptionType.connectionError == e.type) {
+      return ErrorHandler.handleDioError(e);
+    } else {
+      // Proceed to parse response data
+    }
     String rawError = 'An unexpected server error occurred.';
     try {
-      final data = e.response?.data;
+      final dynamic data = e.response?.data;
       if (data is List) {
-        final errors = data.map((item) {
+        final List<String> errors = data.map((item) {
           final Map<String, dynamic> err = item as Map<String, dynamic>;
           final String code = err['code'] as String? ?? '';
           return code;
         }).toList();
         rawError = errors.where((s) => s.isNotEmpty).join(', ');
       } else if (data is Map) {
-        rawError = data['detail'] as String? ??
+        rawError = data['message'] as String? ??
+            data['detail'] as String? ??
             data['title'] as String? ??
+            data['code'] as String? ??
             'An error occurred';
       } else {
         // No action needed
@@ -52,7 +63,7 @@ class AuthRepositoryImpl implements AuthRepository {
     } catch (_) {
       // Ignore parsing errors
     }
-    return rawError;
+    return ErrorHandler.mapBackendErrorKey(rawError);
   }
 
   @override

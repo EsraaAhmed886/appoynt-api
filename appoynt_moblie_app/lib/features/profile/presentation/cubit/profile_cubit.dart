@@ -2,18 +2,18 @@
  * File Name: profile_cubit.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/07/2026
- * Version Information: V1.2.0
+ * Version Information: V1.3.0
  * Dependencies: package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart,
  *   package:appoynt_mobile_app/features/profile/domain/entities/patient_profile.dart,
  *   package:appoynt_mobile_app/features/profile/domain/entities/insurance_card.dart,
  *   package:appoynt_mobile_app/features/profile/domain/entities/test_result.dart,
- *   package:image_picker/image_picker.dart
+ *   package:image_picker/image_picker.dart,
+ *   package:appoynt_mobile_app/core/error/error_handler.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 27/08/2026]
  * File Description: Implements the Patient Profile Cubit orchestrating UI updates,
- *   validations, and saves. V1.1.0 adds pick_and_upload_avatar() for camera/gallery
- *   image selection and upload via POST /api/patients/profile-photo.
+ *   validations, saves, and error handling via ErrorHandler.
  */
 
 // Importing the BLoC library
@@ -27,6 +27,7 @@ import 'package:appoynt_mobile_app/features/profile/domain/entities/insurance_ca
 // Importing the test result model definition
 import 'package:appoynt_mobile_app/features/profile/domain/entities/test_result.dart';
 import 'package:appoynt_mobile_app/core/di/service_locator.dart';
+import 'package:appoynt_mobile_app/core/error/error_handler.dart';
 import 'package:appoynt_mobile_app/features/profile/data/datasources/profile_remote_data_source.dart';
 import 'package:appoynt_mobile_app/features/profile/data/models/change_password_request_model.dart';
 import 'package:appoynt_mobile_app/features/profile/data/models/update_profile_request_model.dart';
@@ -166,10 +167,13 @@ class ProfileCubit extends Cubit<ProfileState> {
       ));
       // Catch all block for network and parsing exceptions
     } catch (e) {
-      // Emit ProfileUpdateError state with the error message
+      final String clean_msg = (e is DioException)
+          ? ErrorHandler.handleDioError(e)
+          : 'Failed to load profile. Please try again.';
+      // Emit ProfileUpdateError state with the clean error message
       emit(ProfileUpdateError(
         // Set error message
-        message: e.toString(),
+        message: clean_msg,
         // Keep existing profile
         profile: state.profile,
         // Keep existing temp profile
@@ -404,34 +408,9 @@ class ProfileCubit extends Cubit<ProfileState> {
         temp_profile: saved_profile,
         is_dirty: false,
       ));
-      // Catch DioException to extract server error message payload cleanly
+      // Catch DioException to extract clean error message via ErrorHandler
     } on DioException catch (dio_error) {
-      String clean_message = 'Failed to update profile. Please try again.';
-      if (dio_error.response?.data is Map) {
-        final Map<String, dynamic> data =
-            dio_error.response!.data as Map<String, dynamic>;
-        if (data.containsKey('title') && data['title'] != null) {
-          clean_message = data['title'].toString();
-        } else if (data.containsKey('message') && data['message'] != null) {
-          clean_message = data['message'].toString();
-        } else if (data.containsKey('errors') && data['errors'] is Map) {
-          final Map errors = data['errors'] as Map;
-          if (errors.isNotEmpty) {
-            final first_val = errors.values.first;
-            if (first_val is List && first_val.isNotEmpty) {
-              clean_message = first_val.first.toString();
-            } else {
-              clean_message = first_val.toString();
-            }
-          } else {
-            // No action needed
-          }
-        } else {
-          // No action needed
-        }
-      } else {
-        // No action needed
-      }
+      final String clean_message = ErrorHandler.handleDioError(dio_error);
       // Emit ProfileUpdateError state with extracted clean error message
       emit(ProfileUpdateError(
         message: clean_message,
@@ -442,7 +421,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     } catch (e) {
       // Emit ProfileUpdateError state with generic failure description
       emit(ProfileUpdateError(
-        message: 'An unexpected error occurred. Please try again.',
+        message: 'Failed to update profile. Please try again.',
         profile: state.profile,
         temp_profile: state.temp_profile,
         is_dirty: state.is_dirty,
@@ -650,9 +629,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         ),
       );
     } on DioException catch (e) {
-      final String errorMsg = e.response?.data is Map
-          ? (e.response?.data['message'] as String? ?? 'Password update failed.')
-          : 'Password update failed.';
+      final String errorMsg = ErrorHandler.handleDioError(e);
       emit(
         state.copyWith(
           status: ProfileStatus.passwordError,
@@ -1201,12 +1178,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         // Cubit was closed before success emit — discard result safely
       }
     } on DioException catch (dio_error) {
-      // Extract DioException error message from response body when available
-      final String error_msg = dio_error.response?.data is Map
-          ? (dio_error.response?.data['title'] as String?
-                  ?? dio_error.response?.data['message'] as String?
-                  ?? 'Photo upload failed.')
-          : 'Photo upload failed.';
+      final String error_msg = ErrorHandler.handleDioError(dio_error);
       // Guard against emitting on a closed cubit
       if (!isClosed) {
         // Emit avatar upload error state with descriptive message
@@ -1317,12 +1289,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         // Cubit closed — discard result
       }
     } on DioException catch (dio_error) {
-      // Extract error message from Dio response body
-      final String error_msg = dio_error.response?.data is Map
-          ? (dio_error.response?.data['title'] as String?
-                  ?? dio_error.response?.data['message'] as String?
-                  ?? 'Photo upload failed.')
-          : 'Photo upload failed.';
+      final String error_msg = ErrorHandler.handleDioError(dio_error);
       if (!isClosed) {
         emit(state.copyWith(
           status: ProfileStatus.avatarUploadError,
