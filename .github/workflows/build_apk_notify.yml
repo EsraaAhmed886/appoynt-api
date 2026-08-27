@@ -98,7 +98,7 @@ jobs:
                 { email: "kholoud.khaled.appoynt@gmail.com" },
                 { email: "menna.ahmed.appoynt@gmail.com" },
                 { email: "shimaa.salah.appoynt@gmail.com" },
-                { email: "mohamed.kotb.appoynt@gmail.com" },
+                { email: "mo.kotb.appoynt@gmail.com" },
                 { email: "esraa.ahmed.appoynt@gmail.com" }
               ],
               subject: $subject,
