@@ -2,11 +2,11 @@
  * File Name: auth_text_field.dart
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
- * Version Information: V1.0.0
+ * Version Information: V1.1.0
  * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart,
  *   package:flutter/services.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 27/08/2026]
  * File Description: Standardized, premium text input component designed for authentication forms.
  *   Provides automatic dark mode adaptation, LTR forcing for credentials, and localized fonts.
  */
@@ -57,6 +57,12 @@ class AuthTextField extends StatefulWidget {
   // Flag indicating if standard shadow decorator should be displayed
   final bool show_shadow;
 
+  // Autovalidate mode for reactive form field validation
+  final AutovalidateMode? autovalidate_mode;
+
+  // Value changed callback for immediate form updates
+  final ValueChanged<String>? on_changed;
+
   // Constructor mapping standard parameters
   const AuthTextField({
     super.key,
@@ -73,6 +79,8 @@ class AuthTextField extends StatefulWidget {
     this.text_input_action,
     this.enabled = true,
     this.show_shadow = true,
+    this.autovalidate_mode,
+    this.on_changed,
   });
 
   @override
@@ -238,10 +246,13 @@ class _AuthTextFieldState extends State<AuthTextField> {
                   obscureText: true == widget.is_password && true == _obscure,
                   // Bind validator
                   validator: widget.validator,
-                  // Enable validation modes onBlur once touched using Yoda style checks
-                  autovalidateMode: true == _touched
-                      ? AutovalidateMode.onUserInteraction
-                      : AutovalidateMode.disabled,
+                  // Enable validation modes onBlur once touched or explicit autovalidateMode
+                  autovalidateMode: widget.autovalidate_mode ??
+                      (true == _touched
+                          ? AutovalidateMode.onUserInteraction
+                          : AutovalidateMode.disabled),
+                  // Callback on value changed
+                  onChanged: widget.on_changed,
                   // Resolve virtual keyboard configuration layout
                   keyboardType: true == widget.is_phone
                       ? TextInputType.phone

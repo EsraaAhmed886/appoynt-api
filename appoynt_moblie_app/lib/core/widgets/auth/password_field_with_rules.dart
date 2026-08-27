@@ -2,11 +2,11 @@
  * File Name: password_field_with_rules.dart
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
- * Version Information: V1.0.0
+ * Version Information: V1.1.0
  * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart,
  *   package:flutter/services.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 27/08/2026]
  * File Description: Premium password input component with real-time strength analysis,
  *   dark mode support, and requirement checkmarks (RTL/LTR compliant).
  */
@@ -33,6 +33,12 @@ class PasswordFieldWithRules extends StatefulWidget {
   // Keyboard return actions configuration
   final TextInputAction? text_input_action;
 
+  // Autovalidate mode for dynamic form validation
+  final AutovalidateMode? autovalidate_mode;
+
+  // Value changed callback for immediate form updates
+  final ValueChanged<String>? on_changed;
+
   // Constructor mapping required variables
   const PasswordFieldWithRules({
     super.key,
@@ -41,6 +47,8 @@ class PasswordFieldWithRules extends StatefulWidget {
     required this.hint,
     this.validator,
     this.text_input_action,
+    this.autovalidate_mode,
+    this.on_changed,
   });
 
   @override
@@ -251,10 +259,13 @@ class _PasswordFieldWithRulesState extends State<PasswordFieldWithRules> {
             obscureText: _obscure,
             // Bind validator
             validator: widget.validator,
-            // Enable validation modes onBlur once touched using Yoda style checks
-            autovalidateMode: true == _touched
-                ? AutovalidateMode.onUserInteraction
-                : AutovalidateMode.disabled,
+            // Enable validation modes onBlur once touched or explicit autovalidateMode
+            autovalidateMode: widget.autovalidate_mode ??
+                (true == _touched
+                    ? AutovalidateMode.onUserInteraction
+                    : AutovalidateMode.disabled),
+            // Callback on text value changes
+            onChanged: widget.on_changed,
             // Keyboard return actions configuration using Yoda style check
             textInputAction: widget.text_input_action ?? TextInputAction.next,
             // Limit password length to maximum 30 characters

@@ -81,6 +81,7 @@ class ErrorHandler {
       case DioExceptionType.badResponse:
         final int? statusCode = error.response?.statusCode;
         final dynamic responseData = error.response?.data;
+        final bool isPasswordEndpoint = error.requestOptions.path.contains('password');
 
         // Extract backend error message or error key if available in response data map
         if (responseData is Map<String, dynamic>) {
@@ -91,7 +92,14 @@ class ErrorHandler {
               responseData['detail'];
 
           if (null != message && message.toString().isNotEmpty) {
-            return mapBackendErrorKey(message.toString(), languageCode: lang);
+            final String rawMsg = message.toString();
+            if (isPasswordEndpoint && (rawMsg == 'Password update failed.' || rawMsg == 'Password update failed' || rawMsg == 'password_update_failed')) {
+              return 'ar' == lang
+                  ? 'كلمة المرور الحالية غير صحيحة.'
+                  : 'Incorrect current password. Please try again.';
+            } else {
+              return mapBackendErrorKey(rawMsg, languageCode: lang);
+            }
           } else if (responseData.containsKey('errors') && responseData['errors'] is Map) {
             final Map errors = responseData['errors'] as Map;
             if (errors.isNotEmpty) {
@@ -111,7 +119,13 @@ class ErrorHandler {
           // Response data is not a map
         }
 
-        if (401 == statusCode || 403 == statusCode) {
+        if (isPasswordEndpoint && (400 == statusCode || 401 == statusCode || 422 == statusCode)) {
+          if ('ar' == lang) {
+            return 'كلمة المرور الحالية غير صحيحة.';
+          } else {
+            return 'Incorrect current password. Please try again.';
+          }
+        } else if (401 == statusCode || 403 == statusCode) {
           if ('ar' == lang) {
             return 'انتهت جلستك. يرجى تسجيل الدخول مرة أخرى.';
           } else {
@@ -170,6 +184,16 @@ class ErrorHandler {
         'error_not_found': 'Requested resource was not found.',
         'error_bad_request': 'Invalid request parameters. Please verify your information.',
         'error_unknown': 'An unexpected error occurred. Please try again.',
+        'invalid_current_password': 'Incorrect current password. Please try again.',
+        'incorrect_password': 'Incorrect current password. Please try again.',
+        'incorrect_current_password': 'Incorrect current password. Please try again.',
+        'wrong_password': 'Incorrect current password. Please try again.',
+        'wrong_current_password': 'Incorrect current password. Please try again.',
+        'invalid_password': 'Incorrect current password. Please try again.',
+        'current_password_incorrect': 'Incorrect current password. Please try again.',
+        'Password update failed.': 'Incorrect current password. Please try again.',
+        'Password update failed': 'Incorrect current password. Please try again.',
+        'password_update_failed': 'Incorrect current password. Please try again.',
       },
       'ar': {
         'error_session_expired': 'انتهت صلاحية الجلسة. يرجى تسجيل الدخول مجدداً.',
@@ -182,6 +206,16 @@ class ErrorHandler {
         'error_not_found': 'العنصر المطلوب غير موجود.',
         'error_bad_request': 'البيانات المدخلة غير صحيحة. يرجى التأكد من صحة البيانات.',
         'error_unknown': 'حدث خطأ غير متوقع. يرجى المحاولة مجدداً.',
+        'invalid_current_password': 'كلمة المرور الحالية غير صحيحة.',
+        'incorrect_password': 'كلمة المرور الحالية غير صحيحة.',
+        'incorrect_current_password': 'كلمة المرور الحالية غير صحيحة.',
+        'wrong_password': 'كلمة المرور الحالية غير صحيحة.',
+        'wrong_current_password': 'كلمة المرور الحالية غير صحيحة.',
+        'invalid_password': 'كلمة المرور الحالية غير صحيحة.',
+        'current_password_incorrect': 'كلمة المرور الحالية غير صحيحة.',
+        'Password update failed.': 'كلمة المرور الحالية غير صحيحة.',
+        'Password update failed': 'كلمة المرور الحالية غير صحيحة.',
+        'password_update_failed': 'كلمة المرور الحالية غير صحيحة.',
       },
     };
 

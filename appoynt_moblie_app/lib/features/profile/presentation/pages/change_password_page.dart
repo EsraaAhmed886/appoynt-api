@@ -2,14 +2,14 @@
  * File Name: change_password_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/07/2026
- * Version Information: V1.1.0
+ * Version Information: V1.2.0
  * Dependencies: package:flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
- * File Description: Defines the Change Password form and constraints check operations.
+ * Last Modified Date: [Kholoud Khaled - 27/08/2026]
+ * File Description: Defines the Change Password form with reactive validation and error handling.
  */
 
 // Importing BLoC libraries
@@ -255,6 +255,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   );
                   // Clear current password input text field following FR-45 specs
                   _current_pw_controller.clear();
+                  // Reset form validation state to prevent stale error messages
+                  _form_key.currentState?.reset();
                   // Reset status back to success
                   context.read<ProfileCubit>().reset_status();
                 } else {
@@ -285,8 +287,16 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                         hint: '••••••••',
                         controller: _current_pw_controller,
                         is_password: true,
+                        autovalidate_mode: AutovalidateMode.onUserInteraction,
+                        on_changed: (value) {
+                          if (value.isNotEmpty) {
+                            _form_key.currentState?.validate();
+                          } else {
+                            // No action needed
+                          }
+                        },
                         validator: (value) {
-                          if (true == (value ?? '').isEmpty) {
+                          if (null == value || value.trim().isEmpty) {
                             return localizations.password_current_empty;
                           } else {
                             return null;
@@ -303,6 +313,14 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                         hint: '••••••••',
                         controller: _new_pw_controller,
                         text_input_action: TextInputAction.next,
+                        autovalidate_mode: AutovalidateMode.onUserInteraction,
+                        on_changed: (value) {
+                          if (_confirm_pw_controller.text.isNotEmpty) {
+                            _form_key.currentState?.validate();
+                          } else {
+                            // No action needed
+                          }
+                        },
                         validator: (value) {
                           return _validate_new_password(
                             value,
@@ -322,6 +340,14 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                         hint: '••••••••',
                         controller: _confirm_pw_controller,
                         is_password: true,
+                        autovalidate_mode: AutovalidateMode.onUserInteraction,
+                        on_changed: (value) {
+                          if (value.isNotEmpty) {
+                            _form_key.currentState?.validate();
+                          } else {
+                            // No action needed
+                          }
+                        },
                         validator: (value) {
                           final String trimmed = value ?? '';
                           if (trimmed.isEmpty) {

@@ -609,6 +609,16 @@ class ProfileCubit extends Cubit<ProfileState> {
     final String currentPwTrimmed = current_pw.trim();
     final String newPwTrimmed = new_pw.trim();
 
+    if (currentPwTrimmed.isEmpty) {
+      emit(state.copyWith(
+        status: ProfileStatus.passwordError,
+        error_message: 'Current password cannot be empty.',
+      ));
+      return;
+    } else {
+      // Input is non-empty
+    }
+
     try {
       final requestModel = ChangePasswordRequestModel(
         currentPassword: currentPwTrimmed,
