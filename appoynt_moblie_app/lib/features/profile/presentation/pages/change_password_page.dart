@@ -230,28 +230,18 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   // Reset cubit state status
                   context.read<ProfileCubit>().reset_status();
                   // Show feedback notification message info
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    // SnackBar settings
-                    SnackBar(
-                      // Localized success message
-                      content: Text(localizations.password_change_success_msg),
-                      // Themed color fill
-                      backgroundColor: AppColors.primary_color,
-                    ),
+                  CustomSnackBar.success(
+                    context,
+                    localizations.password_change_success_msg,
                   );
                   // Revert back to Profile Page screen
                   Navigator.of(context).pop();
                 } else if (ProfileStatus.passwordError == state.status) {
                   // Show password error message info
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    // SnackBar settings
-                    SnackBar(
-                      // Localized error message or fallback
-                      content: Text(state.error_message ??
-                          localizations.password_current_incorrect),
-                      // Error color fill
-                      backgroundColor: AppColors.error,
-                    ),
+                  CustomSnackBar.error(
+                    context,
+                    state.error_message ??
+                        localizations.password_current_incorrect,
                   );
                   // Clear current password input text field following FR-45 specs
                   _current_pw_controller.clear();
@@ -399,11 +389,14 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                           child: ProfileStatus.passwordUpdating == state.status
                               ? const SizedBox(
                                   // layout constraints
-                                  width: _LocalDimensions.progress_indicator_size,
-                                  height: _LocalDimensions.progress_indicator_size,
+                                  width:
+                                      _LocalDimensions.progress_indicator_size,
+                                  height:
+                                      _LocalDimensions.progress_indicator_size,
                                   // Contrast colors white progress circle
                                   child: CircularProgressIndicator(
-                                    strokeWidth: _LocalDimensions.progress_indicator_stroke,
+                                    strokeWidth: _LocalDimensions
+                                        .progress_indicator_stroke,
                                     color: AppColors.white,
                                   ),
                                 )

@@ -20,7 +20,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:appoynt_mobile_app/constants/app_spacing.dart';
 // Import central color palette tokens
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
-// Import localization dictionary
+import 'package:appoynt_mobile_app/core/utils/custom_snackbar.dart';
 import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
 // Import OfferCard component
 import 'package:appoynt_mobile_app/features/favorites/presentation/widgets/offer_card.dart';
@@ -169,13 +169,10 @@ class _OfferFavoriteTabState extends State<OfferFavoriteTab> {
                       on_book_tap: offer.is_expired
                           ? null
                           : () {
-                              ScaffoldMessenger.of(list_context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'Booking offer: ${offer.title}...',
-                                  ),
-                                  duration: const Duration(seconds: 2),
-                                ),
+                              CustomSnackBar.info(
+                                list_context,
+                                'Booking offer: ${offer.title}...',
+                                duration: const Duration(seconds: 2),
                               );
                             },
                       on_favorite_tap: () {

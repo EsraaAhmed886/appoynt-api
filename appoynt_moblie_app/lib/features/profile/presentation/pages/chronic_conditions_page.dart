@@ -880,11 +880,9 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                     conditions_to_save,
                   );
 
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(snackbar_message),
-                  backgroundColor: AppColors.primary_color,
-                ),
+              CustomSnackBar.success(
+                context,
+                snackbar_message,
               );
               Navigator.of(context).pop();
             },

@@ -384,14 +384,13 @@ class _HelpAndAboutPageState extends State<HelpAndAboutPage> {
                                   child: Text(localizations.profile_cancel_button),
                                 ),
                                 TextButton(
-                                  onPressed: () {
-                                    Navigator.of(dialog_context).pop();
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text('Hotline dialer opened.'),
-                                      ),
-                                    );
-                                  },
+                                    onPressed: () {
+                                      Navigator.of(dialog_context).pop();
+                                      CustomSnackBar.info(
+                                        context,
+                                        'Hotline dialer opened.',
+                                      );
+                                    },
                                   child: const Text('Dial'),
                                 ),
                               ],
@@ -412,11 +411,9 @@ class _HelpAndAboutPageState extends State<HelpAndAboutPage> {
                         color: is_dark ? AppColors.white30 : AppColors.text_light_secondary,
                       ),
                       onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(localizations.profile_opening_help_center),
-                            backgroundColor: AppColors.primary_color,
-                          ),
+                        CustomSnackBar.info(
+                          context,
+                          localizations.profile_opening_help_center,
                         );
                       },
                     ),

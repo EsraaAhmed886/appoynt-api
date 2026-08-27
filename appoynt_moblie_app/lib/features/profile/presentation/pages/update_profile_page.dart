@@ -766,19 +766,15 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
             // Show a success snackbar when profile update succeeds
             if (state is ProfileUpdateSuccess) {
               context.read<ProfileCubit>().reset_status();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(localizations.profile_change_success_msg),
-                  backgroundColor: AppColors.primary_color,
-                ),
+              CustomSnackBar.success(
+                context,
+                localizations.profile_change_success_msg,
               );
               Navigator.of(context).pop();
             } else if (state is ProfileUpdateError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message),
-                  backgroundColor: AppColors.error,
-                ),
+              CustomSnackBar.error(
+                context,
+                state.message,
               );
             } else {
               // No action needed

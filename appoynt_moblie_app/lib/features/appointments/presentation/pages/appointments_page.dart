@@ -1,11 +1,15 @@
-import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 /*
  * File Name: appointments_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 22/08/2026
- * Dependencies: flutter/material.dart, flutter_bloc, appointments_strings.dart, routes.dart, appointment_model.dart, appointments_mock_repository.dart, appointments_bloc.dart
+ * Version Information: V1.1.0
+ * Dependencies: flutter/material.dart, flutter_bloc,
+ *   package:appoynt_mobile_app/core/theme/colors/app_colors.dart,
+ *   package:appoynt_mobile_app/core/localization/appointments_strings.dart,
+ *   package:appoynt_mobile_app/core/routing/routes.dart,
+ *   package:appoynt_mobile_app/core/utils/custom_snackbar.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 26/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 27/08/2026]
  * File Description: Master Appointments screen composing tabs, debounced search, active filters, cards, cancellation & rescheduling flows, recommendations, and AI assistant FAB.
  */
 
@@ -13,6 +17,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/localization/appointments_strings.dart';
 import '../../../../core/routing/routes.dart';
+import '../../../../core/theme/colors/app_colors.dart';
+import 'package:appoynt_mobile_app/core/utils/custom_snackbar.dart';
 import '../../data/models/appointment_model.dart';
 import '../../data/repositories/appointments_mock_repository.dart';
 import '../bloc/appointments_bloc.dart';
@@ -132,23 +138,17 @@ class _AppointmentsViewState extends State<_AppointmentsView> {
         child: BlocConsumer<AppointmentsBloc, AppointmentsState>(
           listener: (context, state) {
             if (state.actionSuccessMessage != null) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(AppointmentsStrings.of(context, state.actionSuccessMessage!)),
-                  backgroundColor: AppColors.success,
-                  behavior: SnackBarBehavior.floating,
-                ),
+              CustomSnackBar.success(
+                context,
+                AppointmentsStrings.of(context, state.actionSuccessMessage!),
               );
             } else {
               // No action needed
             }
             if (state.errorMessage != null) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.errorMessage!),
-                  backgroundColor: AppColors.error,
-                  behavior: SnackBarBehavior.floating,
-                ),
+              CustomSnackBar.error(
+                context,
+                state.errorMessage!,
               );
             } else {
               // No action needed
@@ -281,11 +281,9 @@ class _AppointmentsViewState extends State<_AppointmentsView> {
                 onCancel: () => _openCancelDialog(appt),
                 onReschedule: () => _openRescheduleSheet(appt),
                 onJoinCall: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Joining video call with ${appt.doctorName}...'),
-                      backgroundColor: AppColors.success,
-                    ),
+                  CustomSnackBar.success(
+                    context,
+                    'Joining video call with ${appt.doctorName}...',
                   );
                 },
                 onBookAgain: () {

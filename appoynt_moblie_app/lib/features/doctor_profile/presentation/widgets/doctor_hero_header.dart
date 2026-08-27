@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 // Import layout design tokens, colors, widgets, and localization
 import 'package:appoynt_mobile_app/constants/app_spacing.dart';
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
+import 'package:appoynt_mobile_app/core/utils/custom_snackbar.dart';
 import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
 import 'package:appoynt_mobile_app/core/widgets/app_network_image.dart';
 import 'package:appoynt_mobile_app/features/shared/widgets/favorite_heart_button.dart';
@@ -136,13 +137,10 @@ class DoctorHeroHeader extends StatelessWidget {
                           is_dark: is_dark,
                           on_tap: on_share_tap ??
                               () {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      'Sharing profile of ${profile.full_name}...',
-                                    ),
-                                    duration: const Duration(seconds: 2),
-                                  ),
+                                CustomSnackBar.info(
+                                  context,
+                                  'Sharing profile of ${profile.full_name}...',
+                                  duration: const Duration(seconds: 2),
                                 );
                               },
                           child: Icon(

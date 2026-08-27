@@ -521,12 +521,10 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
 
                       // Pop subpage return back
                       Navigator.of(context).pop();
-                      // Show success SnackBar status feedback
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        // SnackBar specs
-                        const SnackBar(
-                          content: Text('New card saved securely to profile.'),
-                        ),
+                      // Show floating success SnackBar status feedback
+                      CustomSnackBar.success(
+                        context,
+                        'New card saved securely to profile.',
                       );
                     } else {
                       // Form validation failed

@@ -1,16 +1,19 @@
-import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 /*
  * File Name: appointment_cancellation_dialog.dart
  * Author: Kholoud Khaled
  * Date of Creation: 22/08/2026
- * Version Information: v1.0.0
- * Dependencies: flutter/material.dart, ../../../../core/localization/appointments_strings.dart, ../../data/models/appointment_model.dart
+ * Version Information: V1.1.0
+ * Dependencies: flutter/material.dart,
+ *   package:appoynt_mobile_app/core/theme/colors/app_colors.dart,
+ *   package:appoynt_mobile_app/core/localization/appointments_strings.dart,
+ *   package:appoynt_mobile_app/features/appointments/data/models/appointment_model.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 26/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 27/08/2026]
  * File Description: Cancellation confirmation dialog calculating refund tiers, displaying cutoff warnings, and capturing optional cancellation reasons.
  */
 
 import 'package:flutter/material.dart';
+import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 import '../../../../core/localization/appointments_strings.dart';
 import '../../data/models/appointment_model.dart';
 

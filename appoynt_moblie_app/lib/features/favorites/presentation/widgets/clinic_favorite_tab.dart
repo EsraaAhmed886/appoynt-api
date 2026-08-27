@@ -20,6 +20,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:appoynt_mobile_app/constants/app_spacing.dart';
 // Import central color palette tokens
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
+import 'package:appoynt_mobile_app/core/utils/custom_snackbar.dart';
 // Import localization dictionary
 import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
 // Import ClinicCard component
@@ -168,13 +169,10 @@ class _ClinicFavoriteTabState extends State<ClinicFavoriteTab> {
                       is_removing: is_removing,
                       on_view_tap: clinic.is_active
                           ? () {
-                              ScaffoldMessenger.of(list_context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'Viewing clinic: ${clinic.name}...',
-                                  ),
-                                  duration: const Duration(seconds: 2),
-                                ),
+                              CustomSnackBar.info(
+                                list_context,
+                                'Viewing clinic: ${clinic.name}...',
+                                duration: const Duration(seconds: 2),
                               );
                             }
                           : null,

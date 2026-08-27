@@ -123,64 +123,67 @@ class _HomePageState extends State<HomePage> {
           }
         },
       ),
-      // Wrap content area within a safe area display container
-      body: SafeArea(
-        // Render the tab content based on the selected index
-        child: 0 == _selected_index
-            // Home tab content representation
-            ? _HomeTab(
-                onSearchReturn: (index) {
-                  // Check if view remains active using Yoda style check
-                  if (true == context.mounted) {
-                    setState(() {
-                      // Update selected index
-                      _selected_index = index;
-                    });
-                  } else {
-                    // Empty block
-                  }
-                },
-              )
-            : 1 == _selected_index
-                // Instantiate the Appointments tab widget
-                ? const AppointmentsPage()
-                : 3 == _selected_index
-                    // Instantiate the Favorites tab widget
-                    ? const FavoritesPage()
-                    : 4 == _selected_index
-                        // Instantiate the Profile tab wrapped in its Cubit state controller
-                        ? BlocProvider<ProfileCubit>(
-                            // Create Cubit state controller instance
-                            create: (context) {
-                              // Return new ProfileCubit
-                              return ProfileCubit();
-                            },
-                            // Renders the ProfilePage main screen widget
-                            child: const ProfilePage(),
-                          )
-                        // Construction/Coming soon tab representation for other items
-                        : _ComingSoonTab(
-                            // Localized category label mapping active selection
-                            label: localizations.dummy_search_tab_label,
-                          ),
+      // Wrap content area within a Stack layout holding tabs and floating AI button
+      body: Stack(
+        children: [
+          // Safe area display container hosting selected tab view
+          SafeArea(
+            // Render the tab content based on the selected index
+            child: 0 == _selected_index
+                // Home tab content representation
+                ? _HomeTab(
+                    onSearchReturn: (index) {
+                      // Check if view remains active using Yoda style check
+                      if (true == context.mounted) {
+                        setState(() {
+                          // Update selected index
+                          _selected_index = index;
+                        });
+                      } else {
+                        // Empty block
+                      }
+                    },
+                  )
+                : 1 == _selected_index
+                    // Instantiate the Appointments tab widget
+                    ? const AppointmentsPage()
+                    : 3 == _selected_index
+                        // Instantiate the Favorites tab widget
+                        ? const FavoritesPage()
+                        : 4 == _selected_index
+                            // Instantiate the Profile tab wrapped in its Cubit state controller
+                            ? BlocProvider<ProfileCubit>(
+                                // Create Cubit state controller instance
+                                create: (context) {
+                                  // Return new ProfileCubit
+                                  return ProfileCubit();
+                                },
+                                // Renders the ProfilePage main screen widget
+                                child: const ProfilePage(),
+                              )
+                            // Construction/Coming soon tab representation for other items
+                            : _ComingSoonTab(
+                                // Localized category label mapping active selection
+                                label: localizations.dummy_search_tab_label,
+                              ),
+          ),
+          // Positioned floating AI assistant action button (decoupled from Scaffold FAB to avoid pushing SnackBars up)
+          PositionedDirectional(
+            bottom: AppSpacing.space_xl,
+            end: AppSpacing.space_xl,
+            child: AskAiFab(
+              onTap: () {
+                // Open AI Assistant Chat Screen / Modal BottomSheet
+                CustomSnackBar.info(
+                  context,
+                  'Opening AI Medical Assistant...',
+                  duration: const Duration(seconds: 1),
+                );
+              },
+            ),
+          ),
+        ],
       ),
-      // Global floating AI assistant action button
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 16.0, right: 8.0),
-        child: AskAiFab(
-          onTap: () {
-            // Open AI Assistant Chat Screen / Modal BottomSheet
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Opening AI Medical Assistant...'),
-                duration: Duration(seconds: 1),
-              ),
-            );
-          },
-        ),
-      ),
-      // Floating button location pinned to the end float
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 

@@ -24,6 +24,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:appoynt_mobile_app/core/di/service_locator.dart';
 import 'package:appoynt_mobile_app/constants/app_spacing.dart';
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
+import 'package:appoynt_mobile_app/core/utils/custom_snackbar.dart';
 import 'package:appoynt_mobile_app/core/widgets/custom_profile_app_bar.dart';
 // Import Cubit and State
 import 'package:appoynt_mobile_app/features/booking/presentation/cubit/slot_booking_cubit.dart';
@@ -182,12 +183,10 @@ class _ChooseSlotsView extends StatelessWidget {
           if (state.feedback_message!.contains('expired')) {
             _show_expired_hold_modal(context, cubit);
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.feedback_message!),
-                backgroundColor: AppColors.amber,
-                duration: const Duration(seconds: 3),
-              ),
+            CustomSnackBar.warning(
+              context,
+              state.feedback_message!,
+              duration: const Duration(seconds: 3),
             );
           }
         } else {

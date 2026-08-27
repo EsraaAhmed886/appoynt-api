@@ -114,48 +114,20 @@ class _ProfilePageState extends State<ProfilePage> {
           listener: (listener_context, upload_state) {
             // Handle avatar upload success feedback notification
             if (ProfileStatus.avatarUploadSuccess == upload_state.status) {
-              // Show success SnackBar confirming photo was updated
-              ScaffoldMessenger.of(listener_context).showSnackBar(
-                SnackBar(
-                  // Success message sourced from localized string dictionary
-                  content: Text(
-                    localizations.profile_photo_upload_success,
-                  ),
-                  // Green tint background for success state
-                  backgroundColor: AppColors.primary_color,
-                  // Short duration to minimize screen real estate usage
-                  duration: const Duration(seconds: 2),
-                  // Rounded pill shape for the SnackBar container
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppSpacing.space_m),
-                  ),
-                  // Float above bottom navigation bar
-                  behavior: SnackBarBehavior.floating,
-                ),
+              // Show floating success SnackBar confirming photo was updated
+              CustomSnackBar.success(
+                listener_context,
+                localizations.profile_photo_upload_success,
               );
             } else if (ProfileStatus.avatarUploadError == upload_state.status) {
-              // Show error SnackBar with the failure message from the cubit
-              ScaffoldMessenger.of(listener_context).showSnackBar(
-                SnackBar(
-                  // Display error from state or a localized generic fallback
-                  content: Text(
-                    upload_state.error_message ??
-                        localizations.profile_photo_upload_error,
-                  ),
-                  // Error red-orange tint background for failure state
-                  backgroundColor: AppColors.redAccent,
-                  // Standard duration for error messages
-                  duration: const Duration(seconds: 3),
-                  // Rounded pill shape for the SnackBar container
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppSpacing.space_m),
-                  ),
-                  // Float above bottom navigation bar
-                  behavior: SnackBarBehavior.floating,
-                ),
+              // Show floating error SnackBar with the failure message from the cubit
+              CustomSnackBar.error(
+                listener_context,
+                upload_state.error_message ??
+                    localizations.profile_photo_upload_error,
               );
             } else {
-              // No matching upload state — no action needed
+              // No action needed
             }
           },
           child: BlocBuilder<ProfileCubit, ProfileState>(
@@ -380,18 +352,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                             Clipboard.setData(
                                               ClipboardData(text: patient_id),
                                             );
-                                            // Show confirmation snackbar overlay
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              // Snackbar configuration
-                                              const SnackBar(
-                                                // Success message content
-                                                content: Text(
-                                                  'Patient ID copied to clipboard!',
-                                                ),
-                                                // Auto-dismiss duration
-                                                duration: Duration(seconds: 2),
-                                              ),
+                                            // Show floating confirmation snackbar overlay
+                                            CustomSnackBar.success(
+                                              context,
+                                              'Patient ID copied to clipboard!',
+                                              duration:
+                                                  const Duration(seconds: 2),
                                             );
                                           },
                                           // Copy icon visual indicator

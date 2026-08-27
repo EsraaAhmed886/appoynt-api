@@ -23,6 +23,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:appoynt_mobile_app/constants/app_spacing.dart';
 // Import central color palette tokens
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
+import 'package:appoynt_mobile_app/core/utils/custom_snackbar.dart';
 // Import localization dictionary
 import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
 // Import service locator to resolve FavoritesCubit
@@ -181,15 +182,19 @@ class _FavoritesPageState extends State<FavoritesPage> {
               } else {
                 msg = state.feedback_message!;
               }
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(msg),
-                  backgroundColor: state.is_feedback_error
-                      ? AppColors.dummy_custom_red
-                      : AppColors.primary_color,
+              if (state.is_feedback_error) {
+                CustomSnackBar.error(
+                  context,
+                  msg,
                   duration: const Duration(seconds: 2),
-                ),
-              );
+                );
+              } else {
+                CustomSnackBar.success(
+                  context,
+                  msg,
+                  duration: const Duration(seconds: 2),
+                );
+              }
               context.read<FavoritesCubit>().clear_feedback();
             } else {
               // No feedback message

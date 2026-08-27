@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:appoynt_mobile_app/constants/app_spacing.dart';
 // Import central color palette tokens
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
+import 'package:appoynt_mobile_app/core/utils/custom_snackbar.dart';
 // Import localization dictionary
 import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
 // Import domain entity
@@ -353,17 +354,11 @@ class NotificationDetailsPage extends StatelessWidget {
                           height: _LocalDimensions.space_between_buttons),
                       TextButton(
                         onPressed: () {
-                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                localizations
-                                    .notification_details_calendar_added,
-                              ),
-                              backgroundColor: AppColors.success,
-                              behavior: SnackBarBehavior.floating,
-                              duration: const Duration(seconds: 2),
-                            ),
+                          CustomSnackBar.success(
+                            context,
+                            localizations
+                                .notification_details_calendar_added,
+                            duration: const Duration(seconds: 2),
                           );
                         },
                         child: Text(
@@ -408,14 +403,10 @@ class NotificationDetailsPage extends StatelessWidget {
       BuildContext context, AppLocalizations localizations) {
     if (false == notification.is_entity_available ||
         null == notification.entity_id) {
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(localizations.notifications_unavailable_entity),
-          backgroundColor: AppColors.error,
-          behavior: SnackBarBehavior.floating,
-          duration: const Duration(seconds: 2),
-        ),
+      CustomSnackBar.error(
+        context,
+        localizations.notifications_unavailable_entity,
+        duration: const Duration(seconds: 2),
       );
       return;
     } else {
@@ -426,14 +417,10 @@ class NotificationDetailsPage extends StatelessWidget {
           ),
         );
       } else {
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${notification.title}: ${notification.description}'),
-            backgroundColor: AppColors.primary_color,
-            behavior: SnackBarBehavior.floating,
-            duration: const Duration(seconds: 2),
-          ),
+        CustomSnackBar.info(
+          context,
+          '${notification.title}: ${notification.description}',
+          duration: const Duration(seconds: 2),
         );
       }
     }

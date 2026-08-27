@@ -1,18 +1,16 @@
 /*
  * File Name: register_page.dart
  * Author: Kholoud Khaled
- * Date of Creation: 02/07/2026
+ * Date of Creation: 28/05/2026
  * Version Information: V1.2.0
  * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart,
  *   package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart,
  *   package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart,
- *   package:appoynt_mobile_app/core/di/service_locator.dart,
- *   package:flutter/gestures.dart,
+ *   package:appoynt_mobile_app/features/auth/presentation/widgets/smart_password_field.dart,
  *   package:flutter_bloc/flutter_bloc.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 26/08/2026]
- * File Description: Renders the registration page containing the form fields, terms check box,
- *   and validations adapting fully to light/dark themes and localizations.
+ * Last Modified Date: [Kholoud Khaled - 27/08/2026]
+ * File Description: Defines the patient registration layout screen form and validation states.
  */
 
 // Importing core theme configurations and layout definitions
@@ -579,8 +577,13 @@ class _RegisterPageState extends State<RegisterPage> {
             // Trigger navigation callback on success, passing the phone number
             widget.on_go_to_otp(_phone_ctrl.text);
           } else if (state is AuthError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
+            // Show floating error SnackBar anchored at bottom
+            CustomSnackBar.error(
+              context,
+              AppLocalizations.get_localized_error(
+                context,
+                state.message,
+              ),
             );
           } else {
             // Empty action block to satisfy compiler
@@ -664,34 +667,6 @@ class _RegisterPageState extends State<RegisterPage> {
                               textAlign: TextAlign.center,
                               // Pull register subtitle styling
                               style: AppTextStyles.get_register_subtitle(context, is_arabic),
-                            ),
-                            // Spacing/Container block for validation error feedback message (FR-15 / Logic Log)
-                            const SizedBox(height: AppSpacing.space_s),
-                            // Fixed-height container to prevent layout shifting
-                            SizedBox(
-                              // Fixed height derived from spacing tokens to satisfy stable UI constraint
-                              height: AppSpacing.error_container_height,
-                              // Draw error feedback text inside center coordinates
-                              child: Center(
-                                // Render error message if state is AuthError (Yoda style check)
-                                child: Text(
-                                  // Bind message or empty string based on state type
-                                  true == (state is AuthError)
-                                      ? AppLocalizations.get_localized_error(context, (state as AuthError).message)
-                                      : '',
-                                  // Center align paragraph
-                                  textAlign: TextAlign.center,
-                                  // Apply styling configurations
-                                  style: const TextStyle(
-                                    // Set brand warning color
-                                    color: AppColors.error,
-                                    // Scale size relative to labels
-                                    fontSize: AppSpacing.font_size_label,
-                                    // Emphasize text weight
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
                             ),
                           ],
                         ),

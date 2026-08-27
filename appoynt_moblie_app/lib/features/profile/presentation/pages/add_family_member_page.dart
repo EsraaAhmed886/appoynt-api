@@ -136,15 +136,10 @@ class _AddFamilyMemberPageState extends State<AddFamilyMemberPage> {
               if (true == _form_key.currentState?.validate()) {
                 // Pop back to Medical History Screen
                 Navigator.of(context).pop();
-                // Show successfully saved toast message
-                ScaffoldMessenger.of(context).showSnackBar(
-                  // SnackBar configs
-                  SnackBar(
-                    // Label text content
-                    content: Text(localizations.add_member_success_toast),
-                    // Primary blue success color tint
-                    backgroundColor: AppColors.primary_color,
-                  ),
+                // Show floating successfully saved snackbar message
+                CustomSnackBar.success(
+                  context,
+                  localizations.add_member_success_toast,
                 );
               } else {
                 // Form validation failed

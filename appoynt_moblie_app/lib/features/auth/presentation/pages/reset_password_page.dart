@@ -195,8 +195,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             // Trigger password updated success callback
             widget.on_password_updated();
           } else if (state is AuthError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
+            CustomSnackBar.error(
+              context,
+              AppLocalizations.get_localized_error(context, state.message),
             );
           } else {
             // Empty action block to satisfy compiler
@@ -286,34 +287,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                                 style: AppTextStyles.get_forgot_password_subtitle(
                                     context,
                                     is_arabic),
-                              ),
-                              // Spacing/Container block for validation error feedback message (FR-15 / Logic Log)
-                              const SizedBox(height: AppSpacing.space_s),
-                              // Fixed-height container to prevent layout shifting
-                              SizedBox(
-                                // Fixed height derived from spacing tokens to satisfy stable UI constraint
-                                height: AppSpacing.error_container_height,
-                                // Draw error feedback text inside center coordinates
-                                child: Center(
-                                  // Render error message if state is AuthError (Yoda style check)
-                                  child: Text(
-                                    // Bind message or empty string based on state type
-                                    true == (state is AuthError)
-                                        ? AppLocalizations.get_localized_error(context, (state as AuthError).message)
-                                        : '',
-                                    // Center align paragraph
-                                    textAlign: TextAlign.center,
-                                    // Apply styling configurations
-                                    style: const TextStyle(
-                                      // Set brand warning color
-                                      color: AppColors.error,
-                                      // Scale size relative to labels
-                                      fontSize: AppSpacing.font_size_label,
-                                      // Emphasize text weight
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
                               ),
                             ],
                           ),

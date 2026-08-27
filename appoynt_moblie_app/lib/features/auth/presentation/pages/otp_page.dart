@@ -273,12 +273,10 @@ class _OtpPageState extends State<OtpPage> {
       for (final c in _ctrls) {
         c.clear();
       }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            AppLocalizations.get_localized_error(context, 'auth.otp.attempts_exceeded'),
-          ),
-        ),
+      CustomSnackBar.error(
+        context,
+        AppLocalizations.get_localized_error(
+            context, 'auth.otp.attempts_exceeded'),
       );
       return;
     } else {
@@ -333,8 +331,9 @@ class _OtpPageState extends State<OtpPage> {
             } else {
               // Empty action block to satisfy compiler
             }
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(AppLocalizations.get_localized_error(context, state.message))),
+            CustomSnackBar.error(
+              context,
+              AppLocalizations.get_localized_error(context, state.message),
             );
           } else {
             // Empty action block to satisfy compiler
@@ -414,36 +413,6 @@ class _OtpPageState extends State<OtpPage> {
                                 textAlign: TextAlign.center,
                                 // Pull OTP subtitle styling passing context
                                 style: AppTextStyles.get_otp_subtitle(context, is_arabic),
-                              ),
-                              // Spacing/Container block for validation error feedback message (FR-15 / Logic Log)
-                              const SizedBox(height: AppSpacing.space_s),
-                              // Fixed-height container to prevent layout shifting
-                              SizedBox(
-                                // Fixed height derived from spacing tokens to satisfy stable UI constraint
-                                height: AppSpacing.error_container_height,
-                                // Draw error feedback text inside center coordinates
-                                child: Center(
-                                  // Render error message if state is AuthError (Yoda style check)
-                                  child: Text(
-                                    // Bind message or empty string based on state type
-                                    true == (state is AuthError)
-                                        ? AppLocalizations.get_localized_error(context, (state as AuthError).message)
-                                        : (_is_locked
-                                            ? AppLocalizations.get_localized_error(context, 'auth.otp.attempts_exceeded')
-                                            : ''),
-                                    // Center align paragraph
-                                    textAlign: TextAlign.center,
-                                    // Apply styling configurations
-                                    style: const TextStyle(
-                                      // Set brand warning color
-                                      color: AppColors.error,
-                                      // Scale size relative to labels
-                                      fontSize: AppSpacing.font_size_label,
-                                      // Emphasize text weight
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
                               ),
 
                               // Space before input grid using spacing constants instead of magic numbers

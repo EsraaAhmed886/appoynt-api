@@ -144,10 +144,9 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
                     // Index is valid
                   }
                 });
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Member profile removed successfully.'),
-                  ),
+                CustomSnackBar.success(
+                  context,
+                  'Member profile removed successfully.',
                 );
               },
               child: const Text(

@@ -17,6 +17,7 @@ import 'package:url_launcher/url_launcher.dart';
 // Import design tokens, colors, and entities
 import 'package:appoynt_mobile_app/constants/app_spacing.dart';
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
+import 'package:appoynt_mobile_app/core/utils/custom_snackbar.dart';
 import 'package:appoynt_mobile_app/features/booking/domain/entities/clinic_location_entity.dart';
 
 /// Context card displaying active clinic branch with map launch and change action.
@@ -52,11 +53,10 @@ class ClinicContextSelectorCard extends StatelessWidget {
       }
     } catch (_) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Unable to open map application.'),
-            duration: Duration(seconds: 2),
-          ),
+        CustomSnackBar.error(
+          context,
+          'Unable to open map application.',
+          duration: const Duration(seconds: 2),
         );
       } else {
         // No action needed

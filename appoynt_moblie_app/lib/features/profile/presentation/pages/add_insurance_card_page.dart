@@ -215,19 +215,15 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
       // Check if provider was chosen using check variables
       if (_selected_provider.isEmpty) {
         // Show feedback warning message info
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Please select an insurance provider.'),
-            backgroundColor: AppColors.error,
-          ),
+        CustomSnackBar.error(
+          context,
+          'Please select an insurance provider.',
         );
       } else if (_uploaded_document_path.isEmpty) {
         // Check if document was uploaded
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Please upload insurance documents.'),
-            backgroundColor: AppColors.error,
-          ),
+        CustomSnackBar.error(
+          context,
+          'Please upload insurance documents.',
         );
       } else {
         // Check if editing or adding using widgets parameters
@@ -242,11 +238,9 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
                 widget.card_to_edit?.expiry_date ?? '26 December 2026',
               );
           // Show success notification message info
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Insurance card updated successfully.'),
-              backgroundColor: AppColors.primary_color,
-            ),
+          CustomSnackBar.success(
+            context,
+            'Insurance card updated successfully.',
           );
         } else {
           // Dispatch insurance policy details to Cubit controller to add new card
@@ -258,11 +252,9 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
                 '26 December 2026',
               );
           // Show success notification message info
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Insurance card added successfully.'),
-              backgroundColor: AppColors.primary_color,
-            ),
+          CustomSnackBar.success(
+            context,
+            'Insurance card added successfully.',
           );
         }
         // Pop addition form screen layout returning back to list screen
@@ -454,12 +446,9 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
                               _uploaded_document_path =
                                   '/mock/device/upload_insurance_card.pdf';
                             });
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                    'Insurance document file attached from device.'),
-                                backgroundColor: AppColors.primary_color,
-                              ),
+                            CustomSnackBar.info(
+                              context,
+                              'Insurance document file attached from device.',
                             );
                           },
                           child: Container(

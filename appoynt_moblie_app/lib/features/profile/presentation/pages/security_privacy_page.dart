@@ -122,11 +122,9 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(dialog_context).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Account deletion process initiated.'),
-                      backgroundColor: AppColors.error,
-                    ),
+                  CustomSnackBar.error(
+                    context,
+                    'Account deletion process initiated.',
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -491,11 +489,9 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                             color: is_dark ? AppColors.white30 : AppColors.text_light_secondary,
                           ),
                           onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(manage_sessions),
-                                backgroundColor: AppColors.primary_color,
-                              ),
+                            CustomSnackBar.info(
+                              context,
+                              manage_sessions,
                             );
                           },
                         ),
@@ -511,12 +507,10 @@ class _SecurityPrivacyPageState extends State<SecurityPrivacyPage> {
                             color: is_dark ? AppColors.white30 : AppColors.text_light_secondary,
                           ),
                           onTap: () {
-                             ScaffoldMessenger.of(context).showSnackBar(
-                               SnackBar(
-                                 content: Text(localizations.preparing_data_export_toast),
-                                 backgroundColor: AppColors.primary_color,
-                               ),
-                             );
+                            CustomSnackBar.info(
+                              context,
+                              localizations.preparing_data_export_toast,
+                            );
                           },
                         ),
                       ],

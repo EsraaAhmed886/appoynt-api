@@ -595,11 +595,9 @@ class _AllergiesPageState extends State<AllergiesPage> {
                   }
                 }
 
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Allergy Profile saved successfully.'),
-                    backgroundColor: AppColors.primary_color,
-                  ),
+                CustomSnackBar.success(
+                  context,
+                  'Allergy Profile saved successfully.',
                 );
                 Navigator.of(context).pop();
               },

@@ -22,6 +22,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:appoynt_mobile_app/constants/app_spacing.dart';
 // Import central color palette tokens
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
+import 'package:appoynt_mobile_app/core/utils/custom_snackbar.dart';
 // Import localization dictionary
 import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
 // Import search history item entity definition
@@ -562,6 +563,21 @@ class _SearchPageState extends State<SearchPage> {
                 else
                   // Empty layout satisfying compiler condition
                   const SizedBox.shrink(),
+                // Positioned floating AI assistant action button (decoupled from Scaffold FAB to avoid pushing SnackBars up)
+                PositionedDirectional(
+                  bottom: AppSpacing.space_xl,
+                  end: AppSpacing.space_xl,
+                  child: AskAiFab(
+                    onTap: () {
+                      // Open AI Assistant Chat / BottomSheet
+                      CustomSnackBar.info(
+                        context,
+                        'Opening AI Medical Assistant...',
+                        duration: const Duration(seconds: 1),
+                      );
+                    },
+                  ),
+                ),
               ],
             ),
             // Fixed Bottom Navigation Bar component shown only when soft keyboard is closed
@@ -579,23 +595,6 @@ class _SearchPageState extends State<SearchPage> {
                     },
                   )
                 : null,
-            // Global floating AI assistant action button
-            floatingActionButton: Padding(
-              padding: const EdgeInsets.only(bottom: 16.0, right: 8.0),
-              child: AskAiFab(
-                onTap: () {
-                  // Open AI Assistant Chat / BottomSheet
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Opening AI Medical Assistant...'),
-                      duration: Duration(seconds: 1),
-                    ),
-                  );
-                },
-              ),
-            ),
-            // Floating button location pinned to the end float
-            floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
           );
         },
       ),

@@ -647,10 +647,9 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
               onPressed: () {
                 Navigator.of(dialog_context).pop();
                 context.read<ProfileCubit>().remove_payment_card(card_id);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(localizations.payment_card_removed_success),
-                  ),
+                CustomSnackBar.success(
+                  context,
+                  localizations.payment_card_removed_success,
                 );
               },
               child: Text(

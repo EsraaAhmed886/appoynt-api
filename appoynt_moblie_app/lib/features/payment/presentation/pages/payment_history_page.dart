@@ -426,12 +426,9 @@ class _PaymentHistoryPageState extends State<PaymentHistoryPage> {
                                       size: _LocalDimensions.icon_size,
                                     ),
                                     onPressed: () {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                              '${localizations.payment_downloading_invoice_snack} (${tx.invoiceNumber ?? ""})'),
-                                        ),
+                                      CustomSnackBar.info(
+                                        context,
+                                        '${localizations.payment_downloading_invoice_snack} (${tx.invoiceNumber ?? ""})',
                                       );
                                     },
                                   ),

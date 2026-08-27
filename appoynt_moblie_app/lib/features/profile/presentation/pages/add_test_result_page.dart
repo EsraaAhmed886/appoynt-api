@@ -156,13 +156,9 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
       // Check if document was uploaded using mock path checks
       if (_uploaded_file_path.isEmpty) {
         // Show feedback warning warning message info
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            // Warning message text
-            content: Text(localizations.tests_error_no_file),
-            // Error background color
-            backgroundColor: AppColors.error,
-          ),
+        CustomSnackBar.error(
+          context,
+          localizations.tests_error_no_file,
         );
       } else {
         // Dispatch test result details to Cubit controller
@@ -186,14 +182,10 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                   ? null
                   : _notes_controller.text,
             );
-        // Show success notification message info
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            // Success label text
-            content: Text(localizations.tests_success_upload),
-            // Primary color
-            backgroundColor: AppColors.primary_color,
-          ),
+        // Show floating success notification message info
+        CustomSnackBar.success(
+          context,
+          localizations.tests_success_upload,
         );
         // Pop upload form screen layout returning back to list screen
         Navigator.of(context).pop();
@@ -688,13 +680,9 @@ class _AddTestResultPageState extends State<AddTestResultPage> {
                                       _uploaded_file_name = 'cbc_report.pdf';
                                       _uploaded_file_size = '1.2 MB';
                                     });
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(localizations
-                                            .tests_file_attached_toast),
-                                        backgroundColor:
-                                            AppColors.primary_color,
-                                      ),
+                                    CustomSnackBar.info(
+                                      context,
+                                      localizations.tests_file_attached_toast,
                                     );
                                   },
                                   child: Container(

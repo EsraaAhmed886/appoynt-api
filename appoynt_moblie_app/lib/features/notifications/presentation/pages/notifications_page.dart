@@ -25,6 +25,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:appoynt_mobile_app/constants/app_spacing.dart';
 // Import central color palette tokens
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
+import 'package:appoynt_mobile_app/core/utils/custom_snackbar.dart';
 // Import localization dictionary
 import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
 // Import service locator to resolve NotificationsCubit
@@ -284,18 +285,11 @@ class _NotificationsViewState extends State<_NotificationsView> {
                                     context
                                         .read<NotificationsCubit>()
                                         .mark_all_as_read();
-                                    ScaffoldMessenger.of(context)
-                                        .hideCurrentSnackBar();
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          localizations
-                                              .notifications_marked_all_read_success,
-                                        ),
-                                        backgroundColor: AppColors.success,
-                                        behavior: SnackBarBehavior.floating,
-                                        duration: const Duration(seconds: 2),
-                                      ),
+                                    CustomSnackBar.success(
+                                      context,
+                                      localizations
+                                          .notifications_marked_all_read_success,
+                                      duration: const Duration(seconds: 2),
                                     );
                                   }
                                 : null,

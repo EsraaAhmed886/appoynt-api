@@ -242,10 +242,9 @@ class _PaymentWalletPageState extends State<PaymentWalletPage> {
                                       // Add Money Button
                                       ElevatedButton.icon(
                                         onPressed: () {
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            SnackBar(
-                                              content: Text(localizations.payment_add_money_coming_soon),
-                                            ),
+                                          CustomSnackBar.info(
+                                            context,
+                                            localizations.payment_add_money_coming_soon,
                                           );
                                         },
                                         icon: const Icon(Icons.add, size: _LocalDimensions.icon_size_add, color: AppColors.primary_color),

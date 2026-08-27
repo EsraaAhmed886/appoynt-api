@@ -1,16 +1,20 @@
-import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 /*
  * File Name: appointment_card.dart
  * Author: Kholoud Khaled
  * Date of Creation: 22/08/2026
- * Version Information: v1.0.0
- * Dependencies: flutter/material.dart, ../../../../core/localization/appointments_strings.dart, ../../data/models/appointment_model.dart, ./appointment_doctor_avatar.dart, ./appointment_status_badge.dart
+ * Version Information: V1.1.0
+ * Dependencies: flutter/material.dart,
+ *   package:appoynt_mobile_app/core/theme/colors/app_colors.dart,
+ *   package:appoynt_mobile_app/core/localization/appointments_strings.dart,
+ *   package:appoynt_mobile_app/features/appointments/data/models/appointment_model.dart,
+ *   ./appointment_doctor_avatar.dart, ./appointment_status_badge.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 26/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 27/08/2026]
  * File Description: Smart appointment card widget rendering doctor info, date/time, facility location, and contextual action buttons based on status and timing.
  */
 
 import 'package:flutter/material.dart';
+import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 import '../../../../core/localization/appointments_strings.dart';
 import '../../data/models/appointment_model.dart';
 import 'appointment_doctor_avatar.dart';
