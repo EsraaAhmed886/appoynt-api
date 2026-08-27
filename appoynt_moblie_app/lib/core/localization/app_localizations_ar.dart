@@ -2,13 +2,13 @@
  * File Name: app_localizations_ar.dart
  * Author: Kholoud Khaled
  * Date of Creation: 20/06/2026
- * Version Information: V1.1.0
+ * Version Information: V1.2.0
  * Dependencies: package:flutter/material.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 26/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 27/08/2026]
  * File Description: Arabic concrete implementation of localizations
- *   containing onboarding and authentication strings.
+ *   containing onboarding, profile, and authentication strings.
  */
 
 // Importing standard material framework libraries
@@ -1272,6 +1272,24 @@ class AppLocalizationsAr extends AppLocalizations {
       'تعديل الاسم والهاتف والبريد الإلكتروني والجنس والطول والوزن';
   @override
   String get profile_medical_history => 'السجل الطبي';
+  @override
+  String get profile_medical_records_subtitle =>
+      'الحساسية، الوصفات الطبية، الفحوصات والخطط العلاجية';
+  @override
+  String get profileMedicalRecordsSubtitle =>
+      'الحساسية، الوصفات الطبية، الفحوصات والخطط العلاجية';
+  @override
+  String get profile_payment_wallet_subtitle =>
+      'رصيد المحفظة، البطاقات المحفوظة والفواتير';
+  @override
+  String get profilePaymentWalletSubtitle =>
+      'رصيد المحفظة، البطاقات المحفوظة والفواتير';
+  @override
+  String get profile_security_privacy_subtitle =>
+      'البصمة الحيوية، مفاتيح المرور وحذف الحساب';
+  @override
+  String get profileSecurityPrivacySubtitle =>
+      'البصمة الحيوية، مفاتيح المرور وحذف الحساب';
   @override
   String get profile_account_settings => 'إعدادات الحساب';
   @override

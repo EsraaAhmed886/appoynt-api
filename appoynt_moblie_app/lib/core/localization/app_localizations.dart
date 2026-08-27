@@ -2,10 +2,10 @@
  * File Name: app_localizations.dart
  * Author: Kholoud Khaled
  * Date of Creation: 20/06/2026
- * Version Information: V1.1.0
+ * Version Information: V1.2.0
  * Dependencies: package:flutter/material.dart, auth_strings.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 26/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 27/08/2026]
  * File Description: Defines the abstract contract for application-wide custom localizations.
  */
 
@@ -580,6 +580,12 @@ abstract class AppLocalizations {
   String get profile_personal_information;
   String get profile_personal_information_subtitle;
   String get profile_medical_history;
+  String get profile_medical_records_subtitle;
+  String get profileMedicalRecordsSubtitle;
+  String get profile_payment_wallet_subtitle;
+  String get profilePaymentWalletSubtitle;
+  String get profile_security_privacy_subtitle;
+  String get profileSecurityPrivacySubtitle;
   String get profile_account_settings;
   String get profile_height;
   String get profile_weight;

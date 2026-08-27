@@ -2,13 +2,13 @@
  * File Name: app_localizations_en.dart
  * Author: Kholoud Khaled
  * Date of Creation: 20/06/2026
- * Version Information: V1.1.0
+ * Version Information: V1.2.0
  * Dependencies: package:flutter/material.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 26/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 27/08/2026]
  * File Description: English concrete implementation of localizations
- *   containing onboarding and authentication strings.
+ *   containing onboarding, profile, and authentication strings.
  */
 
 // Importing standard material framework libraries
@@ -1271,6 +1271,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profile_personal_information_subtitle => 'Edit name, phone, email, gender, height, and weight';
   @override
   String get profile_medical_history => 'Medical History';
+  @override
+  String get profile_medical_records_subtitle =>
+      'Allergies, prescriptions, tests & plans';
+  @override
+  String get profileMedicalRecordsSubtitle =>
+      'Allergies, prescriptions, tests & plans';
+  @override
+  String get profile_payment_wallet_subtitle =>
+      'Wallet balance, saved cards & invoices';
+  @override
+  String get profilePaymentWalletSubtitle =>
+      'Wallet balance, saved cards & invoices';
+  @override
+  String get profile_security_privacy_subtitle =>
+      'Biometrics, passkey & delete account';
+  @override
+  String get profileSecurityPrivacySubtitle =>
+      'Biometrics, passkey & delete account';
   @override
   String get profile_account_settings => 'Account Settings';
   @override

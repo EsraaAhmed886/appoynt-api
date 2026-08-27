@@ -2,13 +2,13 @@
  * File Name: profile_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/07/2026
- * Version Information: V1.0.0
+ * Version Information: V1.1.0
  * Dependencies: package:flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 27/08/2026]
  * File Description: Defines the Patient Profile View Mode screen showing summaries and medical sections.
  */
 
@@ -599,7 +599,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             _ProfileOptionCard(
                               title: localizations.profile_medical_history,
                               subtitle:
-                                  'Allergies, prescriptions, tests & plans',
+                                  localizations.profile_medical_records_subtitle,
                               icon: Icons.medical_services_outlined,
                               on_press: () {
                                 Navigator.of(context).push(
@@ -621,7 +621,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             _ProfileOptionCard(
                               title: localizations.profile_payment_wallet,
                               subtitle:
-                                  'Wallet balance, saved cards & invoices',
+                                  localizations.profile_payment_wallet_subtitle,
                               icon: Icons.wallet_outlined,
                               on_press: () {
                                 Navigator.of(context).push(
@@ -642,7 +642,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             // Option 4: Security & Privacy
                             _ProfileOptionCard(
                               title: localizations.profile_security_privacy,
-                              subtitle: 'Biometrics, passkey & delete account',
+                              subtitle: localizations
+                                  .profile_security_privacy_subtitle,
                               icon: Icons.security_outlined,
                               on_press: () {
                                 Navigator.of(context).push(
