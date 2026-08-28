@@ -2,17 +2,18 @@
  * File Name: favorites_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 14/08/2026
- * Version Information: V2.0.0
+ * Version Information: V2.1.0
  * Dependencies: package:flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
  *   app_localizations.dart, app_spacing.dart, app_colors.dart,
  *   service_locator.dart, favorites_cubit.dart, favorites_state.dart,
  *   doctor_favorite_tab.dart, offer_favorite_tab.dart, clinic_favorite_tab.dart,
- *   guest_favorites_widget.dart, favorite_sort_bottom_sheet.dart
+ *   guest_favorites_widget.dart, favorite_sort_bottom_sheet.dart,
+ *   custom_category_chips_bar.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/08/2026]
  * File Description: Main Favorites Screen featuring 3 category tabs (Doctors,
  *   Offers, Clinics), guest session guard, debounced search bar, category-aware
- *   sorting modal, and tab-specific list rendering.
+ *   sorting modal, and tab-specific list rendering with unified shared category chips.
  */
 
 // Import standard UI framework
@@ -31,6 +32,8 @@ import 'package:appoynt_mobile_app/core/di/service_locator.dart';
 // Import cubit and state
 import 'package:appoynt_mobile_app/features/favorites/presentation/cubit/favorites_cubit.dart';
 import 'package:appoynt_mobile_app/features/favorites/presentation/cubit/favorites_state.dart';
+// Import shared filter chips bar widget
+import 'package:appoynt_mobile_app/core/widgets/custom_category_chips_bar.dart';
 // Import tab content widgets
 import 'package:appoynt_mobile_app/features/favorites/presentation/widgets/doctor_favorite_tab.dart';
 import 'package:appoynt_mobile_app/features/favorites/presentation/widgets/offer_favorite_tab.dart';
@@ -49,9 +52,6 @@ class _LocalDimensions {
   static const double sort_chip_padding_v = 6.0;
   static const double search_icon_size = 20.0;
   static const double clear_icon_size = 18.0;
-  static const double tab_segment_height = 44.0;
-  static const double tab_segment_radius = 12.0;
-  static const double tab_item_radius = 10.0;
 }
 
 // Favorites screen stateful widget
@@ -323,90 +323,56 @@ class _FavoritesPageState extends State<FavoritesPage> {
     }
   }
 
-  // 3-Category Segmented Tabs: Doctors (default), Offers, Clinics
+  // Helper translating FavoriteCategory to index
+  int _get_category_index(FavoriteCategory category) {
+    switch (category) {
+      case FavoriteCategory.doctors:
+        return 0;
+      case FavoriteCategory.offers:
+        return 1;
+      case FavoriteCategory.clinics:
+        return 2;
+      default:
+        return 0;
+    }
+  }
+
+  // Helper resolving FavoriteCategory from index
+  FavoriteCategory _get_category_by_index(int index) {
+    switch (index) {
+      case 0:
+        return FavoriteCategory.doctors;
+      case 1:
+        return FavoriteCategory.offers;
+      case 2:
+        return FavoriteCategory.clinics;
+      default:
+        return FavoriteCategory.doctors;
+    }
+  }
+
+  // 3-Category Shared Filter Chips Bar: Doctors (default), Offers, Clinics
   Widget _build_category_tabs(
     BuildContext context,
     FavoritesState state,
     AppLocalizations localizations,
     bool is_dark,
   ) {
-    return Container(
-      height: _LocalDimensions.tab_segment_height,
-      padding: const EdgeInsets.all(AppSpacing.space_xs),
-      decoration: BoxDecoration(
-        color: is_dark ? AppColors.surface_dark : AppColors.slate_50,
-        borderRadius:
-            BorderRadius.circular(_LocalDimensions.tab_segment_radius),
-        border: Border.all(
-          color: is_dark ? AppColors.border_dark : AppColors.slate_200,
-          width: AppSpacing.border_width_thin,
-        ),
-      ),
-      child: Row(
-        children: [
-          _build_tab_segment_item(
-            context: context,
-            label: localizations.favorites_tab_doctors,
-            category: FavoriteCategory.doctors,
-            is_active: FavoriteCategory.doctors == state.active_category,
-            is_dark: is_dark,
-          ),
-          _build_tab_segment_item(
-            context: context,
-            label: localizations.favorites_tab_offers,
-            category: FavoriteCategory.offers,
-            is_active: FavoriteCategory.offers == state.active_category,
-            is_dark: is_dark,
-          ),
-          _build_tab_segment_item(
-            context: context,
-            label: localizations.favorites_tab_clinics,
-            category: FavoriteCategory.clinics,
-            is_active: FavoriteCategory.clinics == state.active_category,
-            is_dark: is_dark,
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Individual Tab Segment Capsule Item
-  Widget _build_tab_segment_item({
-    required BuildContext context,
-    required String label,
-    required FavoriteCategory category,
-    required bool is_active,
-    required bool is_dark,
-  }) {
-    return Expanded(
-      child: InkWell(
-        onTap: () {
-          _search_controller.clear();
-          context.read<FavoritesCubit>().switch_category(category);
-        },
-        borderRadius: BorderRadius.circular(_LocalDimensions.tab_item_radius),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: is_active ? AppColors.primary_color : AppColors.transparent,
-            borderRadius:
-                BorderRadius.circular(_LocalDimensions.tab_item_radius),
-          ),
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: AppSpacing.font_size_body_medium,
-              fontWeight: is_active ? FontWeight.bold : FontWeight.w500,
-              color: is_active
-                  ? AppColors.white
-                  : (is_dark
-                      ? AppColors.text_dark_secondary
-                      : AppColors.text_light_secondary),
-            ),
-          ),
-        ),
-      ),
+    return CustomCategoryChipsBar(
+      padding: EdgeInsets.zero,
+      isFullWidth: true,
+      categories: [
+        localizations.favorites_tab_doctors,
+        localizations.favorites_tab_offers,
+        localizations.favorites_tab_clinics,
+      ],
+      selectedIndex: _get_category_index(state.active_category),
+      onCategorySelected: (index) {
+        _search_controller.clear();
+        context
+            .read<FavoritesCubit>()
+            .switch_category(_get_category_by_index(index));
+      },
     );
   }
 
