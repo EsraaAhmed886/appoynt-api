@@ -2,14 +2,14 @@
  * File Name: search_input.tsx
  * Author: shimaa salah
  * Date of Creation: 20/06/2026
- * Version Information: V1.0.0
+ * Version Information: V1.1.0
  * Dependencies:
  *   - react
  *   - lucide-react
  *   - @/context/language_context
  * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 05/08/2026]
- * File Description: Reusable search input element with localized placeholder and icon positioning.
+ * Last Modified Date: [Shimaa Salah - 28/08/2026]
+ * File Description: Reusable search input element with configurable localized placeholder and icon positioning.
  */
 
 "use client";
@@ -20,13 +20,18 @@ import { useTranslation } from "@/context/language_context";
 type ClinicSearchProps = {
   search: string;
   on_search_change: (value: string) => void;
+  placeholder?: string;
 };
 
 export default function ClinicSearch({
   search,
   on_search_change,
+  placeholder,
 }: ClinicSearchProps) {
   const { translations } = useTranslation();
+
+  const activePlaceholder: string =
+    placeholder || translations.clinic_search_placeholder;
 
   return (
     <div className="relative w-full sm:w-80">
@@ -38,7 +43,7 @@ export default function ClinicSearch({
       <input
         type="text"
         value={search}
-        placeholder={translations.clinic_search_placeholder}
+        placeholder={activePlaceholder}
         className="
           w-full
           rounded-xl

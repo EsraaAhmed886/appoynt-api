@@ -5,7 +5,7 @@
  * Version Information: v1.0.0
  * Dependencies: react, lucide-react
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 26/08/2026]
+ * Last Modified Date: [shimaa salah - 26/08/2026]
  * File Description: Accessible, responsive custom select dropdown component with floating popover, click-outside dismissal, and bidirectional RTL support.
  */
 
@@ -60,6 +60,7 @@ export const DashboardDropdown: React.FC<DashboardDropdownProps> = ({
       {/* Trigger Button */}
       <button
         type="button"
+        aria-expanded={is_open}
         onClick={() => set_is_open(!is_open)}
         className={`flex items-center justify-between gap-2 px-3.5 py-2 text-xs sm:text-sm font-medium rounded-xl border transition-all duration-150 cursor-pointer ${width} ${
           is_open

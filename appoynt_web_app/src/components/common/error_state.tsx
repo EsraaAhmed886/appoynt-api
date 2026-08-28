@@ -1,15 +1,15 @@
 /*
  * File Name: error_state.tsx
- * Author: Kholoud Khaled
- * Date of Creation: 20/06/2026
- * Version Information: V1.0.0
+ * Author: shimaa salah
+ * Date of Creation: 05/08/2026
+ * Version Information: V1.1.0
  * Dependencies:
  *   - react
  *   - next/image
  *   - @/context/language_context
- * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 05/08/2026]
- * File Description: Error and empty search filter results feedback component.
+ * Contributors: [Shimaa Salah]
+ * Last Modified Date: [Shimaa Salah - 28/08/2026]
+ * File Description: Reusable error and empty search/filter results feedback component supporting configurable title and description strings.
  */
 
 "use client";
@@ -17,8 +17,16 @@
 import Image from "next/image";
 import { useTranslation } from "@/context/language_context";
 
-export default function ErrorState() {
+type ErrorStateProps = {
+  title?: string;
+  description?: string;
+};
+
+export default function ErrorState({ title, description }: ErrorStateProps) {
   const { translations } = useTranslation();
+
+  const displayTitle: string = title || translations.state_error_title;
+  const displayDescription: string = description || translations.state_error_desc;
 
   return (
     <div className="flex flex-col items-center justify-center py-20">
@@ -31,11 +39,11 @@ export default function ErrorState() {
       />
 
       <h2 className="mt-8 text-3xl font-bold text-app-text-primary">
-        {translations.state_error_title}
+        {displayTitle}
       </h2>
 
       <p className="mt-2 text-center text-lg text-app-text-secondary">
-        {translations.state_error_desc}
+        {displayDescription}
       </p>
     </div>
   );
