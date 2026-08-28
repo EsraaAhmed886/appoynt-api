@@ -2,20 +2,22 @@
  * File Name: pagination.tsx
  * Author: shimaa salah
  * Date of Creation: 20/07/2026
- * Version Information: V1.1.0
+ * Version Information: V1.2.0
  * Dependencies:
  *   - react
  *   - lucide-react
+ *   - @/hooks/use_click_outside
  *   - @/context/language_context
  * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 28/08/2026]
- * File Description: Shared accessible pagination bar providing record index summary, bidirectional page stepper controls, maximum 5 visible pages, and customizable page limit sizing (10, 25, 50).
+ * Last Modified Date: [shimaa salah - 29/08/2026]
+ * File Description: Shared accessible pagination bar providing record index summary, bidirectional page stepper controls, maximum 5 visible pages, and customizable page limit sizing (10, 25, 50) with animated dynamic dropdown.
  */
 
 "use client";
 
-import React, { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import React, { useState, useRef } from "react";
+import { ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
+import useClickOutside from "@/hooks/use_click_outside";
 import { useTranslation } from "@/context/language_context";
 
 type PaginationProps = {
@@ -65,6 +67,15 @@ export default function Pagination({
   const initialLimit = limitProp ?? per_page ?? perPage ?? 10;
   const [internalLimit, setInternalLimit] = useState(initialLimit);
   const limit = limitProp ?? per_page ?? perPage ?? internalLimit;
+
+  const [is_limit_open, set_is_limit_open] = useState(false);
+  const limit_dropdown_ref = useRef<HTMLDivElement>(null);
+
+  useClickOutside(limit_dropdown_ref, () => {
+    set_is_limit_open(false);
+  });
+
+  const limit_options = Array.from(new Set([10, 25, 50, limit])).sort((a, b) => a - b);
 
   const total =
     totalProp ?? total_records ?? totalRecords ?? totalPages * limit;
@@ -175,15 +186,52 @@ export default function Pagination({
           {translations.records_per_page || "Records per page"}:
         </span>
 
-        <select
-          value={limit}
-          onChange={(e) => handleLimitChange(Number(e.target.value))}
-          className="h-8 px-2.5 bg-white dark:bg-[#0E1726] border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-300 focus:outline-none focus:border-blue-500 transition cursor-pointer"
-        >
-          <option value={10}>10</option>
-          <option value={25}>25</option>
-          <option value={50}>50</option>
-        </select>
+        <div ref={limit_dropdown_ref} className="relative inline-block text-start">
+          <button
+            type="button"
+            aria-expanded={is_limit_open}
+            onClick={() => set_is_limit_open((prev) => !prev)}
+            className={`flex items-center justify-between gap-2 h-8 px-2.5 min-w-[64px] bg-white dark:bg-[#0E1726] border rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-300 transition-all cursor-pointer ${
+              is_limit_open
+                ? "border-blue-500 ring-2 ring-blue-500/10"
+                : "border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
+            }`}
+          >
+            <span>{limit}</span>
+            <ChevronDown
+              className={`w-3.5 h-3.5 transition-transform duration-200 shrink-0 ${
+                is_limit_open ? "rotate-180 text-blue-600 dark:text-blue-400" : "text-slate-400"
+              }`}
+            />
+          </button>
+
+          {is_limit_open ? (
+            <div className="absolute bottom-full mb-1.5 end-0 z-50 min-w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0E1726] p-1 shadow-lg shadow-slate-200/50 dark:shadow-slate-950/60 ring-1 ring-black/5 animate-in fade-in zoom-in-95 duration-100">
+              <div className="flex flex-col space-y-0.5">
+                {limit_options.map((opt) => {
+                  const is_selected = opt === limit;
+                  return (
+                    <button
+                      key={opt}
+                      type="button"
+                      onClick={() => {
+                        handleLimitChange(opt);
+                        set_is_limit_open(false);
+                      }}
+                      className={`w-full flex items-center justify-center px-2.5 py-1.5 text-xs rounded-lg font-semibold transition-colors cursor-pointer ${
+                        is_selected
+                          ? "bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400"
+                          : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                      }`}
+                    >
+                      {opt}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ) : null}
+        </div>
       </div>
     </div>
   );
