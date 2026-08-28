@@ -2,14 +2,14 @@
  * File Name: appointments_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 22/08/2026
- * Version Information: V1.1.0
+ * Version Information: V1.2.0
  * Dependencies: flutter/material.dart, flutter_bloc,
  *   package:appoynt_mobile_app/core/theme/colors/app_colors.dart,
  *   package:appoynt_mobile_app/core/localization/appointments_strings.dart,
  *   package:appoynt_mobile_app/core/routing/routes.dart,
  *   package:appoynt_mobile_app/core/utils/custom_snackbar.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 27/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/08/2026]
  * File Description: Master Appointments screen composing tabs, debounced search, active filters, cards, cancellation & rescheduling flows, recommendations, and AI assistant FAB.
  */
 
@@ -130,14 +130,14 @@ class _AppointmentsViewState extends State<_AppointmentsView> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.slate900 : AppColors.slate50,
       body: SafeArea(
         child: BlocConsumer<AppointmentsBloc, AppointmentsState>(
           listener: (context, state) {
-            if (state.actionSuccessMessage != null) {
+            if (null != state.actionSuccessMessage) {
               CustomSnackBar.success(
                 context,
                 AppointmentsStrings.of(context, state.actionSuccessMessage!),
@@ -145,7 +145,7 @@ class _AppointmentsViewState extends State<_AppointmentsView> {
             } else {
               // No action needed
             }
-            if (state.errorMessage != null) {
+            if (null != state.errorMessage) {
               CustomSnackBar.error(
                 context,
                 state.errorMessage!,
@@ -157,60 +157,86 @@ class _AppointmentsViewState extends State<_AppointmentsView> {
           builder: (context, state) {
             final appointments = state.currentTabAppointments;
 
-            return RefreshIndicator(
-              onRefresh: () async {
-                context.read<AppointmentsBloc>().add(
-                      LoadAppointmentsTab(state.activeTab, forceRefresh: true),
-                    );
-                context.read<AppointmentsBloc>().add(const RefreshQuickActions());
-                context.read<AppointmentsBloc>().add(const RefreshRecommendations());
-              },
-              color: AppColors.sky600,
-              child: CustomScrollView(
-                controller: _scrollController,
-                physics: const AlwaysScrollableScrollPhysics(
-                  parent: BouncingScrollPhysics(),
+            return Column(
+              children: [
+                // ==========================================
+                // 1. FIXED TOP SECTION (Pinned on Scroll)
+                // ==========================================
+                Container(
+                  color: isDark ? AppColors.slate900 : AppColors.slate50,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // 1.1 Header Title & Notification Icon
+                      const AppointmentsHeader(),
+
+                      // 1.2 Category Filter Chips (Upcoming, Completed, Cancelled, All)
+                      AppointmentsTabBar(
+                        activeTab: state.activeTab,
+                        onTabSelected: _onTabSelected,
+                      ),
+
+                      // 1.3 Search Bar & Filter Button
+                      AppointmentsSearchBar(
+                        initialQuery: state.searchQuery,
+                        onQueryChanged: (query) {
+                          context
+                              .read<AppointmentsBloc>()
+                              .add(SearchQueryChanged(query));
+                        },
+                        onFilterTap: () => _openFilterModal(state),
+                        activeFiltersCount:
+                            state.activeFilter.activeFiltersCount,
+                      ),
+                      const SizedBox(height: 4.0),
+                    ],
+                  ),
                 ),
-                slivers: [
-                  // 1. Header (Title, Notification, Profile)
-                  const SliverToBoxAdapter(
-                    child: AppointmentsHeader(),
-                  ),
 
-                  // 2. Tab Bar (Upcoming, Completed, Cancelled, All)
-                  SliverToBoxAdapter(
-                    child: AppointmentsTabBar(
-                      activeTab: state.activeTab,
-                      onTabSelected: _onTabSelected,
+                // ==========================================
+                // 2. SCROLLABLE BODY CONTENT
+                // ==========================================
+                Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      context.read<AppointmentsBloc>().add(
+                            LoadAppointmentsTab(state.activeTab,
+                                forceRefresh: true),
+                          );
+                      context
+                          .read<AppointmentsBloc>()
+                          .add(const RefreshQuickActions());
+                      context
+                          .read<AppointmentsBloc>()
+                          .add(const RefreshRecommendations());
+                    },
+                    color: AppColors.sky600,
+                    child: CustomScrollView(
+                      controller: _scrollController,
+                      physics: const AlwaysScrollableScrollPhysics(
+                        parent: BouncingScrollPhysics(),
+                      ),
+                      slivers: [
+                        // 2.1 Quick Actions Strip (Prescriptions, Labs, Radiology - Guarded)
+                        _build_quick_actions_sliver(state),
+
+                        // 2.2 Appointments List / Empty State / Loader
+                        ..._build_main_appointments_slivers(
+                            context, state, appointments),
+
+                        // 2.3 Recommendation Banner (Conditional on query being empty)
+                        _build_recommendations_sliver(state),
+
+                        const SliverToBoxAdapter(
+                          child: SizedBox(
+                              height: 80.0), // Padding for bottom nav / FAB
+                        ),
+                      ],
                     ),
                   ),
-
-                  // 3. Search & Filter Bar
-                  SliverToBoxAdapter(
-                    child: AppointmentsSearchBar(
-                      initialQuery: state.searchQuery,
-                      onQueryChanged: (query) {
-                        context.read<AppointmentsBloc>().add(SearchQueryChanged(query));
-                      },
-                      onFilterTap: () => _openFilterModal(state),
-                      activeFiltersCount: state.activeFilter.activeFiltersCount,
-                    ),
-                  ),
-
-                  // 4. Quick Actions Strip (Prescriptions, Labs, Radiology - Guarded)
-                  _build_quick_actions_sliver(state),
-
-                  // 5. Appointments List / Empty State / Loader
-                  ..._build_main_appointments_slivers(context, state, appointments),
-
-                  // 6. Recommendation Banner (Conditional on query being empty)
-                  _build_recommendations_sliver(state),
-
-                  const SliverToBoxAdapter(
-                    child: SizedBox(height: 80.0), // Padding for bottom nav / FAB
-                  ),
-                ],
-              ),
+                ),
+              ],
             );
           },
         ),

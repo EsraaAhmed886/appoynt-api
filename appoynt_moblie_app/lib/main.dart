@@ -28,8 +28,6 @@ import 'package:appoynt_mobile_app/core/services/session_manager.dart';
 import 'package:flutter/services.dart';
 // Importing flutter bloc package for state management provider scopes
 import 'package:flutter_bloc/flutter_bloc.dart';
-// Importing central color tokens
-import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 
 // Global notifier instance for managing application theme mode changes
 final ThemeModeNotifier theme_mode_notifier = ThemeModeNotifier();
