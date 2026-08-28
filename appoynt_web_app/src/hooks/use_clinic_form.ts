@@ -23,6 +23,7 @@ import {
   update_clinic,
   get_clinics,
   get_doctor_occupied_working_days,
+  get_doctor_existing_schedules,
 } from "@/services/clinic.service";
 import {
   validate_clinic_name,
@@ -488,6 +489,11 @@ export function use_clinic_form(clinic_id: number) {
     clinic_id,
   );
 
+  const doctor_existing_schedules = get_doctor_existing_schedules(
+    doctor_id,
+    clinic_id,
+  );
+
   // Card-specific Dirty Checks against original saved values
   const orig_info_location_parts = original_clinic?.location
     ? original_clinic.location.split(",").map((s) => s.trim())
@@ -557,6 +563,7 @@ export function use_clinic_form(clinic_id: number) {
     is_conflict_modal_open,
     is_success_modal_open,
     doctor_occupied_days,
+    doctor_existing_schedules,
     // Independent Card Editing States
     is_editing_info,
     is_editing_schedule,

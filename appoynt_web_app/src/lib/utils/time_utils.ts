@@ -14,20 +14,36 @@
  * Returns -1 if the time format is invalid.
  */
 export function parse_time_to_minutes(time_str: string): number {
-  if ("" === time_str.trim()) {
+  if (!time_str || "" === time_str.trim()) {
     return -1;
   } else {
-    const parts = time_str.split(":");
+    const clean = time_str.trim().toUpperCase();
+    const is_pm = clean.includes("PM");
+    const is_am = clean.includes("AM");
+    const time_part = clean.replace(/[AP]M/, "").trim();
+    const parts = time_part.split(":");
     if (2 !== parts.length) {
       return -1;
     } else {
-      const hours = parseInt(parts[0], 10);
+      let hours = parseInt(parts[0], 10);
       const minutes = parseInt(parts[1], 10);
 
-      if (isNaN(hours) || isNaN(minutes) || hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
+      if (isNaN(hours) || isNaN(minutes) || minutes < 0 || minutes > 59) {
         return -1;
       } else {
-        return hours * 60 + minutes;
+        if (is_pm && hours < 12) {
+          hours += 12;
+        } else if (is_am && 12 === hours) {
+          hours = 0;
+        } else {
+          // No conversion needed
+        }
+
+        if (hours < 0 || hours > 23) {
+          return -1;
+        } else {
+          return hours * 60 + minutes;
+        }
       }
     }
   }

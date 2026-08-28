@@ -134,6 +134,49 @@ export function validate_consultation_fee(fee: string): string | null {
 }
 
 /**
+ * Checks if a proposed schedule item [day, start_time, end_time] overlaps with
+ * any existing schedule of the same doctor in other clinics.
+ *
+ * Conflict rule:
+ * Overlap exists IF on the SAME day:
+ * start_time < other.endTime AND end_time > other.startTime
+ * (Back-to-back schedules e.g. 1-5 and 5-8 are ALLOWED).
+ */
+export function has_schedule_overlap(
+  day: string,
+  start_time: string,
+  end_time: string,
+  other_schedules: WorkingScheduleItem[] = []
+): boolean {
+  if (!day || !start_time || !end_time || !other_schedules || 0 === other_schedules.length) {
+    return false;
+  }
+
+  const start_mins = parse_time_to_minutes(start_time);
+  const end_mins = parse_time_to_minutes(end_time);
+
+  if (start_mins < 0 || end_mins < 0 || start_mins >= end_mins) {
+    return false;
+  }
+
+  return other_schedules.some((other) => {
+    if (other.day !== day) {
+      return false;
+    }
+
+    const other_start = parse_time_to_minutes(other.startTime);
+    const other_end = parse_time_to_minutes(other.endTime);
+
+    if (other_start < 0 || other_end < 0 || other_start >= other_end) {
+      return false;
+    }
+
+    // Overlap occurs strictly if: start_mins < other_end && end_mins > other_start
+    return start_mins < other_end && end_mins > other_start;
+  });
+}
+
+/**
  * Real-time validation for Working Schedule item.
  * Returns object mapping field to translation error key, or null if valid.
  */
@@ -143,16 +186,12 @@ export function validate_working_schedule_item(
   end_time: string,
   existing_schedules: WorkingScheduleItem[],
   editing_index: number | null = null,
-  doctor_occupied_days: string[] = []
+  doctor_other_schedules: (WorkingScheduleItem | string)[] = []
 ): { day_error?: string; start_error?: string; end_error?: string } | null {
   const errors: { day_error?: string; start_error?: string; end_error?: string } = {};
 
   if ("" === day.trim()) {
     errors.day_error = "val_day_req";
-  } else if (doctor_occupied_days.includes(day)) {
-    errors.day_error = "val_day_occupied";
-  } else {
-    // Valid day input
   }
 
   // Duplicate check inside same clinic form
@@ -166,20 +205,14 @@ export function validate_working_schedule_item(
 
   if (duplicate_exists) {
     errors.day_error = "val_day_duplicate";
-  } else {
-    // Unique day
   }
 
   if ("" === start_time.trim()) {
     errors.start_error = "val_start_time_req";
-  } else {
-    // Start time provided
   }
 
   if ("" === end_time.trim()) {
     errors.end_error = "val_end_time_req";
-  } else {
-    // End time provided
   }
 
   if ("" !== start_time.trim() && "" !== end_time.trim()) {
@@ -189,10 +222,17 @@ export function validate_working_schedule_item(
       errors.start_error = "val_start_after_end";
       errors.end_error = "val_end_before_start";
     } else {
-      // Valid range
+      // Filter WorkingScheduleItem objects from doctor_other_schedules
+      const schedule_items = doctor_other_schedules.filter(
+        (item): item is WorkingScheduleItem =>
+          "object" === typeof item && null !== item && "startTime" in item && "endTime" in item
+      );
+
+      if (has_schedule_overlap(day, start_time, end_time, schedule_items)) {
+        errors.start_error = "val_conflict_detected";
+        errors.end_error = "val_conflict_detected";
+      }
     }
-  } else {
-    // Incomplete times
   }
 
   if (Object.keys(errors).length > 0) {
@@ -315,7 +355,7 @@ export function is_step_valid(
   },
   existing_clinics: Clinic[] = [],
   current_clinic_id?: number | null,
-  doctor_occupied_days: string[] = []
+  doctor_other_schedules: (WorkingScheduleItem | string)[] = []
 ): boolean {
   if (1 === step) {
     const err_name = validate_clinic_name(form_state.clinic_name);
@@ -337,8 +377,13 @@ export function is_step_valid(
     if (0 === form_state.schedule_list.length) {
       return false;
     } else {
+      const schedule_items = doctor_other_schedules.filter(
+        (item): item is WorkingScheduleItem =>
+          "object" === typeof item && null !== item && "startTime" in item && "endTime" in item
+      );
+
       return form_state.schedule_list.every(
-        (s) => !doctor_occupied_days.includes(s.day)
+        (s) => !has_schedule_overlap(s.day, s.startTime, s.endTime, schedule_items)
       );
     }
   } else if (3 === step) {
