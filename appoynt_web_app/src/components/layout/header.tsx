@@ -54,6 +54,9 @@ export default function LayoutHeader({
       } else if ("clinics" === main_segment) {
         return translations.nav_clinics;
       } else if ("appointments" === main_segment) {
+        if (segments.includes("medical-record")) {
+          return translations.medical_record || translations.medrec_title || "Medical Record";
+        }
         return translations.appointments_page_title || translations.nav_appointments || "Appointments";
       } else if ("notifications" === main_segment) {
         return translations.nav_notifications || "Notifications";
@@ -63,8 +66,8 @@ export default function LayoutHeader({
         return translations.nav_receptionists || "Receptionists";
       } else if ("schedule" === main_segment) {
         return translations.nav_schedule || "Schedule";
-      } else if ("medical-records" === main_segment) {
-        return translations.nav_medical_records || "Medical Records";
+      } else if ("medical-records" === main_segment || "medical-record" === main_segment) {
+        return translations.medical_record || translations.medrec_title || translations.nav_medical_records || "Medical Record";
       } else if ("settings" === main_segment) {
         return translations.nav_settings || "Settings";
       } else {
