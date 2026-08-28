@@ -167,96 +167,94 @@ class _FavoritesPageState extends State<FavoritesPage> {
 
     return BlocProvider<FavoritesCubit>(
       create: (cubit_context) => get_it<FavoritesCubit>(),
-      child: SafeArea(
-        child: BlocConsumer<FavoritesCubit, FavoritesState>(
-          listener: (context, state) {
-            // Handle feedback SnackBar notifications
-            if (null != state.feedback_message) {
-              String msg = '';
-              if ('remove_success' == state.feedback_message) {
-                msg = localizations.favorites_remove_success;
-              } else if ('remove_error' == state.feedback_message) {
-                msg = localizations.favorites_remove_error;
-              } else if ('refresh_error' == state.feedback_message) {
-                msg = localizations.favorites_refresh_error;
-              } else {
-                msg = state.feedback_message!;
-              }
-              if (state.is_feedback_error) {
-                CustomSnackBar.error(
-                  context,
-                  msg,
-                  duration: const Duration(seconds: 2),
-                );
-              } else {
-                CustomSnackBar.success(
-                  context,
-                  msg,
-                  duration: const Duration(seconds: 2),
-                );
-              }
-              context.read<FavoritesCubit>().clear_feedback();
+      child: BlocConsumer<FavoritesCubit, FavoritesState>(
+        listener: (context, state) {
+          // Handle feedback SnackBar notifications
+          if (null != state.feedback_message) {
+            String msg = '';
+            if ('remove_success' == state.feedback_message) {
+              msg = localizations.favorites_remove_success;
+            } else if ('remove_error' == state.feedback_message) {
+              msg = localizations.favorites_remove_error;
+            } else if ('refresh_error' == state.feedback_message) {
+              msg = localizations.favorites_refresh_error;
             } else {
-              // No feedback message
+              msg = state.feedback_message!;
             }
-          },
-          builder: (context, state) {
-            // Guest mode guard per Phase 2
-            if (false == state.is_authenticated) {
-              return Column(
-                children: [
-                  _build_header(localizations, is_dark),
-                  const Expanded(
-                    child: GuestFavoritesWidget(),
-                  ),
-                ],
+            if (true == state.is_feedback_error) {
+              CustomSnackBar.error(
+                context,
+                msg,
+                duration: const Duration(seconds: 2),
               );
             } else {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Section 1: Header (Title & Subtitle Centered)
-                  _build_header(
-                    localizations,
-                    is_dark,
-                    category: state.active_category,
-                  ),
-                  // Section 2: 3-Category Segmented Tab Selector
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.space_xl,
-                    ),
-                    child: _build_category_tabs(
-                        context, state, localizations, is_dark),
-                  ),
-                  const SizedBox(height: AppSpacing.space_m),
-                  // Section 3: Debounced In-Page Search Field
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.space_xl,
-                    ),
-                    child: _build_search_field(
-                        context, state, localizations, is_dark),
-                  ),
-                  const SizedBox(height: AppSpacing.space_m),
-                  // Section 4: Count & Sort Trigger Row
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.space_xl,
-                    ),
-                    child: _build_count_and_sort_row(
-                        context, state, localizations, is_dark),
-                  ),
-                  const SizedBox(height: AppSpacing.space_m),
-                  // Section 5: Dynamic Category Tab View
-                  Expanded(
-                    child: _build_active_tab_view(state),
-                  ),
-                ],
+              CustomSnackBar.success(
+                context,
+                msg,
+                duration: const Duration(seconds: 2),
               );
             }
-          },
-        ),
+            context.read<FavoritesCubit>().clear_feedback();
+          } else {
+            // No action needed
+          }
+        },
+        builder: (context, state) {
+          // Guest mode guard per Phase 2
+          if (false == state.is_authenticated) {
+            return Column(
+              children: [
+                _build_header(localizations, is_dark),
+                const Expanded(
+                  child: GuestFavoritesWidget(),
+                ),
+              ],
+            );
+          } else {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Section 1: Header (Title & Subtitle Centered)
+                _build_header(
+                  localizations,
+                  is_dark,
+                  category: state.active_category,
+                ),
+                // Section 2: 3-Category Segmented Tab Selector
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.space_xl,
+                  ),
+                  child: _build_category_tabs(
+                      context, state, localizations, is_dark),
+                ),
+                const SizedBox(height: AppSpacing.space_m),
+                // Section 3: Live Instant Search Field
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.space_xl,
+                  ),
+                  child: _build_search_field(
+                      context, state, localizations, is_dark),
+                ),
+                const SizedBox(height: AppSpacing.space_m),
+                // Section 4: Count & Sort Trigger Row
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.space_xl,
+                  ),
+                  child: _build_count_and_sort_row(
+                      context, state, localizations, is_dark),
+                ),
+                const SizedBox(height: AppSpacing.space_m),
+                // Section 5: Dynamic Category Tab View
+                Expanded(
+                  child: _build_active_tab_view(state),
+                ),
+              ],
+            );
+          }
+        },
       ),
     );
   }

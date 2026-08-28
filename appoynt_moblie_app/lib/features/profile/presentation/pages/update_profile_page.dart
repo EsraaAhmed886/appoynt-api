@@ -702,27 +702,26 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     // Attach listeners to controllers safely
     _attach_listeners();
-    // Return a SafeArea wrapping PopScope to handle top margin and safe area
-    return SafeArea(
-      child: PopScope(
-        // Disallow popping if there are unsaved changes
-        canPop: false,
-        onPopInvokedWithResult: (bool didPop, dynamic result) async {
-          if (didPop) {
-            return;
-          } else {
-            // No action needed
-          }
-          final bool allow = await _on_will_pop();
-          // Pop the screen if allowed and widget is still mounted
-          if (true == allow && context.mounted) {
-            Navigator.of(context).pop();
-          } else {
-            // Navigation blocked
-          }
-        },
-        // Main content wrapped in BlocConsumer to react to profile state changes
-        child: BlocConsumer<ProfileCubit, ProfileState>(
+    // Return PopScope directly to handle back navigation confirmation
+    return PopScope(
+      // Disallow popping if there are unsaved changes
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, dynamic result) async {
+        if (didPop) {
+          return;
+        } else {
+          // No action needed
+        }
+        final bool allow = await _on_will_pop();
+        // Pop the screen if allowed and widget is still mounted
+        if (true == allow && context.mounted) {
+          Navigator.of(context).pop();
+        } else {
+          // Navigation blocked
+        }
+      },
+      // Main content wrapped in BlocConsumer to react to profile state changes
+      child: BlocConsumer<ProfileCubit, ProfileState>(
           listener: (context, state) {
             // Auto fill controllers on successful profile fetch
             if (state is ProfileLoaded && !_is_populated) {
@@ -803,10 +802,32 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
             }
           },
           builder: (context, state) {
+            final SystemUiOverlayStyle overlay_style = SystemUiOverlayStyle(
+              statusBarColor: AppColors.transparent,
+              statusBarIconBrightness:
+                  is_dark ? Brightness.light : Brightness.dark,
+              statusBarBrightness:
+                  is_dark ? Brightness.dark : Brightness.light,
+              systemNavigationBarColor:
+                  is_dark ? AppColors.background_dark : AppColors.white,
+              systemNavigationBarIconBrightness:
+                  is_dark ? Brightness.light : Brightness.dark,
+            );
+
             // Show loading spinner if profile fetching is in progress
             if (state is ProfileLoading) {
-              return const Scaffold(
-                body: Center(
+              return Scaffold(
+                backgroundColor: is_dark
+                    ? AppColors.background_dark
+                    : AppColors.scaffold_light,
+                appBar: AppBar(
+                  backgroundColor: AppColors.transparent,
+                  elevation: 0.0,
+                  scrolledUnderElevation: 0.0,
+                  toolbarHeight: 0.0,
+                  systemOverlayStyle: overlay_style,
+                ),
+                body: const Center(
                   child: CircularProgressIndicator(
                     color: AppColors.primary_color,
                   ),
@@ -815,24 +836,37 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
             } else {
               // Scaffold provides the page layout structure
               return Scaffold(
-                body: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: AppSpacing.space_xl),
-                  child: Form(
-                  key: _form_key,
-                  autovalidateMode: _form_submitted
-                      ? AutovalidateMode.onUserInteraction
-                      : AutovalidateMode.disabled,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: AppSpacing.space_xl),
-                      CustomProfileAppBar(
-                        title: localizations.edit_profile_title,
-                      ),
-                      const SizedBox(height: AppSpacing.space_xl),
-                      Expanded(
-                        child: SingleChildScrollView(
+                backgroundColor: is_dark
+                    ? AppColors.background_dark
+                    : AppColors.scaffold_light,
+                appBar: AppBar(
+                  backgroundColor: AppColors.transparent,
+                  elevation: 0.0,
+                  scrolledUnderElevation: 0.0,
+                  toolbarHeight: 0.0,
+                  systemOverlayStyle: overlay_style,
+                ),
+                body: SafeArea(
+                  top: true,
+                  bottom: true,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.space_xl),
+                    child: Form(
+                      key: _form_key,
+                      autovalidateMode: _form_submitted
+                          ? AutovalidateMode.onUserInteraction
+                          : AutovalidateMode.disabled,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: AppSpacing.space_xl),
+                          CustomProfileAppBar(
+                            title: localizations.edit_profile_title,
+                          ),
+                          const SizedBox(height: AppSpacing.space_xl),
+                          Expanded(
+                            child: SingleChildScrollView(
                           padding: EdgeInsets.zero,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1286,25 +1320,25 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                           ),
                         ),
                       ),
-                    ],
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
-              bottomNavigationBar: StickyBottomBar(
-                child: AuthButton(
-                  label: localizations.profile_save_button,
-                  is_enabled: true == state.is_dirty &&
-                      state.status != ProfileStatus.updating,
-                  on_pressed: _submit_form,
-                  is_loading: state.status == ProfileStatus.updating,
+                bottomNavigationBar: StickyBottomBar(
+                  child: AuthButton(
+                    label: localizations.profile_save_button,
+                    is_enabled: true == state.is_dirty &&
+                        state.status != ProfileStatus.updating,
+                    on_pressed: _submit_form,
+                    is_loading: state.status == ProfileStatus.updating,
+                  ),
                 ),
-              ),
-            );
-          }
-        },
+              );
+            }
+          },
         ),
-      ),
-    );
+      );
   }
 
   // Private helper to render modern responsive segmented toggle chips with 48px height

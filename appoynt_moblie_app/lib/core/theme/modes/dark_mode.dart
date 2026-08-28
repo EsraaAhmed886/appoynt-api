@@ -6,12 +6,12 @@
  * Dependencies: package:flutter/material.dart,
  *   package:appoynt_mobile_app/core/theme/colors/app_colors.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/08/2026]
  * File Description: Defines the dark theme configuration for the Appoynt mobile application.
  */
 
-// Importing standard material framework widgets and configurations
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 // Importing application central color design token constants
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 
@@ -34,11 +34,23 @@ final ThemeData dark_mode_theme = ThemeData(
   // Configuring navigation app bar top headers
   appBarTheme: const AppBarTheme(
     // Setting app bar background color token mapping
-    backgroundColor: AppColors.background_dark,
+    backgroundColor: AppColors.transparent,
     // Setting elevated shadow height as zero to keep layout flat
     elevation: 0.0,
+    // Prevents Material3 scroll surface tinting
+    scrolledUnderElevation: 0.0,
+    // Ensure titles are consistently centered
+    centerTitle: true,
     // Setting foreground content color standard (text & icons)
     foregroundColor: AppColors.text_dark_primary,
+    // System overlay configuration for transparent status bar with light icons
+    systemOverlayStyle: SystemUiOverlayStyle(
+      statusBarColor: AppColors.transparent,
+      statusBarIconBrightness: Brightness.light,
+      statusBarBrightness: Brightness.dark,
+      systemNavigationBarColor: AppColors.transparent,
+      systemNavigationBarIconBrightness: Brightness.light,
+    ),
   ),
   // Configuring global bottom sheet styles
   bottomSheetTheme: const BottomSheetThemeData(

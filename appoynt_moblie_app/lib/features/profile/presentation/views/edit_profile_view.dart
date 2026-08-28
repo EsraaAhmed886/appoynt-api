@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
@@ -62,6 +63,7 @@ class _EditProfileViewState extends State<EditProfileView> {
   @override
   void initState() {
     super.initState();
+    _applySystemOverlay();
     _firstNameController = TextEditingController(text: widget.initialFirstName);
     _lastNameController = TextEditingController(text: widget.initialLastName);
     _phoneController = TextEditingController(text: widget.initialPhone);
@@ -71,6 +73,19 @@ class _EditProfileViewState extends State<EditProfileView> {
         TextEditingController(text: widget.initialNationalId ?? '');
     _birthDateController =
         TextEditingController(text: widget.initialBirthDate ?? '');
+  }
+
+  void _applySystemOverlay() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: AppColors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
+        systemNavigationBarColor: AppColors.transparent,
+        systemNavigationBarIconBrightness: Brightness.dark,
+      ),
+    );
   }
 
   @override
@@ -118,12 +133,65 @@ class _EditProfileViewState extends State<EditProfileView> {
           avatarProvider = null;
         }
 
+        final bool is_dark =
+            Theme.of(context).brightness == Brightness.dark;
+        final SystemUiOverlayStyle overlay_style = SystemUiOverlayStyle(
+          statusBarColor: AppColors.transparent,
+          statusBarIconBrightness:
+              is_dark ? Brightness.light : Brightness.dark,
+          statusBarBrightness:
+              is_dark ? Brightness.dark : Brightness.light,
+          systemNavigationBarColor:
+              is_dark ? AppColors.background_dark : AppColors.white,
+          systemNavigationBarIconBrightness:
+              is_dark ? Brightness.light : Brightness.dark,
+        );
+
         return Scaffold(
+          backgroundColor:
+              is_dark ? AppColors.background_dark : AppColors.white,
           appBar: AppBar(
-            title: Text(context.tr('updateProfilePhoto')),
+            backgroundColor:
+                is_dark ? AppColors.background_dark : AppColors.white,
+            elevation: 0.0,
+            scrolledUnderElevation: 0.0,
+            systemOverlayStyle: overlay_style,
+            leading: IconButton(
+              icon: Container(
+                padding: const EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  color: is_dark
+                      ? AppColors.surface_dark
+                      : AppColors.slate100,
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                child: Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  color: is_dark
+                      ? AppColors.text_dark_primary
+                      : AppColors.slate800,
+                  size: 18.0,
+                ),
+              ),
+              onPressed: () => Navigator.pop(context),
+            ),
+            title: Text(
+              context.tr('editProfile'),
+              style: TextStyle(
+                color: is_dark
+                    ? AppColors.text_dark_primary
+                    : AppColors.slate900,
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            centerTitle: true,
           ),
-          body: SingleChildScrollView(
-            padding: const EdgeInsets.all(20.0),
+          body: SafeArea(
+            top: false,
+            bottom: true,
+            child: SingleChildScrollView(
+                padding: const EdgeInsets.all(20.0),
             child: Form(
               key: _formKey,
               child: Column(
@@ -259,8 +327,9 @@ class _EditProfileViewState extends State<EditProfileView> {
               ),
             ),
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
+    },
+  );
+}
 }
