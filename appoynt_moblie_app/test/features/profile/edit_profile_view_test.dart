@@ -1,0 +1,135 @@
+/*
+ * File Name: edit_profile_view_test.dart
+ * Author: Kholoud Khaled
+ * Date of Creation: 28/08/2026
+ * Version Information: V1.0.0
+ * Dependencies: package:flutter/material.dart, package:flutter_test/flutter_test.dart,
+ *   package:flutter_bloc/flutter_bloc.dart,
+ *   package:appoynt_mobile_app/core/localization/app_localizations_delegate.dart,
+ *   package:appoynt_mobile_app/features/profile/presentation/bloc/edit_profile_cubit.dart,
+ *   package:appoynt_mobile_app/features/profile/presentation/views/edit_profile_view.dart,
+ *   package:appoynt_mobile_app/features/profile/domain/repositories/profile_repository.dart,
+ *   package:appoynt_mobile_app/features/profile/data/models/user_profile_model.dart,
+ *   package:appoynt_mobile_app/features/profile/data/models/update_profile_request_model.dart
+ * Contributors: [Kholoud Khaled]
+ * Last Modified Date: [Kholoud Khaled - 28/08/2026]
+ * File Description: Widget tests verifying EditProfileView rendering, photo picker triggers, and form submission.
+ */
+
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:appoynt_mobile_app/core/localization/app_localizations_delegate.dart';
+import 'package:appoynt_mobile_app/features/profile/domain/repositories/profile_repository.dart';
+import 'package:appoynt_mobile_app/features/profile/presentation/bloc/edit_profile_cubit.dart';
+import 'package:appoynt_mobile_app/features/profile/presentation/views/edit_profile_view.dart';
+import 'package:appoynt_mobile_app/features/profile/data/models/user_profile_model.dart';
+import 'package:appoynt_mobile_app/features/profile/data/models/update_profile_request_model.dart';
+
+class _FakeProfileRepository implements ProfileRepository {
+  bool updateProfileCalled = false;
+
+  @override
+  Future<UserProfileModel> updateProfile({
+    required String firstName,
+    required String lastName,
+    required String phone,
+    String? address,
+    String? nationalId,
+    String? birthDate,
+    File? imageFile,
+    bool deleteCurrentPhoto = false,
+  }) async {
+    updateProfileCalled = true;
+    return UserProfileModel(
+      id: '1',
+      first_name: firstName,
+      last_name: lastName,
+      email: 'john@example.com',
+      phone_number: phone,
+    );
+  }
+
+  @override
+  Future<void> deleteProfilePhoto() async {}
+
+  @override
+  Future<UserProfileModel?> getCachedProfile() async => null;
+
+  @override
+  Future<String?> getCachedProfilePhotoUrl() async => null;
+
+  @override
+  Future<UserProfileModel> getUserProfile() async => const UserProfileModel(
+        id: '1',
+        first_name: 'John',
+        last_name: 'Doe',
+        email: 'john@example.com',
+        phone_number: '1234567890',
+      );
+
+  @override
+  Future<void> updateUserProfile(
+      UpdateProfileRequestModel requestModel) async {}
+
+  @override
+  Future<String> uploadProfilePhoto(String file_path) async => 'url';
+}
+
+void main() {
+  Widget createTestWidget({required EditProfileCubit cubit}) {
+    return MaterialApp(
+      locale: const Locale('en'),
+      localizationsDelegates: app_localizations_delegates,
+      supportedLocales: app_supported_locales,
+      home: BlocProvider<EditProfileCubit>.value(
+        value: cubit,
+        child: const EditProfileView(
+          initialFirstName: 'Jane',
+          initialLastName: 'Smith',
+          initialPhone: '987654321',
+        ),
+      ),
+    );
+  }
+
+  group('EditProfileView Widget Tests', () {
+    late _FakeProfileRepository fakeRepo;
+    late EditProfileCubit cubit;
+
+    setUp(() {
+      fakeRepo = _FakeProfileRepository();
+      cubit = EditProfileCubit(profileRepository: fakeRepo);
+    });
+
+    tearDown(() {
+      cubit.close();
+    });
+
+    testWidgets('renders initial fields and avatar camera badge',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(createTestWidget(cubit: cubit));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(CircleAvatar), findsOneWidget);
+      expect(find.byIcon(Icons.camera_alt), findsOneWidget);
+      expect(find.text('Jane'), findsOneWidget);
+      expect(find.text('Smith'), findsOneWidget);
+      expect(find.text('Save'), findsOneWidget);
+    });
+
+    testWidgets('tapping Save button invokes saveProfile on cubit',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(createTestWidget(cubit: cubit));
+      await tester.pumpAndSettle();
+
+      final Finder saveBtn = find.text('Save');
+      await tester.ensureVisible(saveBtn);
+      await tester.tap(saveBtn);
+      await tester.pumpAndSettle();
+
+      expect(fakeRepo.updateProfileCalled, isTrue);
+    });
+  });
+}

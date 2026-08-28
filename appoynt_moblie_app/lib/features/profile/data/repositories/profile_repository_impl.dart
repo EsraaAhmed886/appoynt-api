@@ -2,16 +2,18 @@
  * File Name: profile_repository_impl.dart
  * Author: Kholoud Khaled
  * Date of Creation: 09/08/2026
- * Version Information: V2.2.0
- * Dependencies: profile_repository.dart, profile_remote_data_source.dart,
+ * Version Information: V2.3.0
+ * Dependencies: dart:io, profile_repository.dart, profile_remote_data_source.dart,
  *   profile_local_data_source.dart, user_profile_model.dart,
  *   update_profile_request_model.dart
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 28/08/2026]
  * File Description: Implements the ProfileRepository interface coordinating
- *   remote API calls with local SharedPreferences caching. V2.2.0 adds
- *   deleteProfilePhoto coordinating remote deletion with local cache clearance.
+ *   remote API calls with local SharedPreferences caching. V2.3.0 adds
+ *   updateProfile coordinating staged photo updates and profile saves.
  */
+
+import 'dart:io';
 
 // Importing domain repository contract interface definition
 import 'package:appoynt_mobile_app/features/profile/domain/repositories/profile_repository.dart';
@@ -53,8 +55,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
     // populated in local cache so the avatar renders immediately on next launch
     if (fresh_profile.has_profile_photo) {
       // Only refresh the photo URL cache when the server confirms photo exists
-      final String? existing_url =
-          await local_data_source.getProfilePhotoUrl();
+      final String? existing_url = await local_data_source.getProfilePhotoUrl();
       // Use Patient GUID (fresh_profile.id) first to target /api/patients/{patientGuid}/profile-photo
       final String patient_guid = fresh_profile.id.isNotEmpty
           ? fresh_profile.id
@@ -79,8 +80,13 @@ class ProfileRepositoryImpl implements ProfileRepository {
         await local_data_source.saveProfilePhotoUrl(photo_url);
       }
     } else {
-      // Server reports no profile photo — clear stale URL from cache
-      await local_data_source.clearProfilePhotoUrl();
+      final String? existing_url = await local_data_source.getProfilePhotoUrl();
+      if (null != existing_url && existing_url.isNotEmpty) {
+        // Retain recently cached photo URL to prevent race-condition wipe
+      } else {
+        // Server reports no profile photo and no active cache — clear cache
+        await local_data_source.clearProfilePhotoUrl();
+      }
     }
     // Return the fresh remote profile to the caller
     return fresh_profile;
@@ -107,7 +113,8 @@ class ProfileRepositoryImpl implements ProfileRepository {
       await local_data_source.saveProfileToCache(updated_profile);
     } catch (refresh_error) {
       // If remote GET fails post-update, update local cache manually with request values
-      final UserProfileModel? cached = await local_data_source.getCachedProfile();
+      final UserProfileModel? cached =
+          await local_data_source.getCachedProfile();
       if (null != cached) {
         final UserProfileModel fallback_updated = cached.copyWith(
           first_name: requestModel.first_name,
@@ -128,6 +135,51 @@ class ProfileRepositoryImpl implements ProfileRepository {
         '[ProfileRepositoryImpl] Post-update cache refresh notice: $refresh_error',
       );
     }
+  }
+
+  // Updates profile information and processes any staged photo changes on save
+  @override
+  Future<UserProfileModel> updateProfile({
+    required String firstName,
+    required String lastName,
+    required String phone,
+    String? address,
+    String? nationalId,
+    String? birthDate,
+    File? imageFile,
+    bool deleteCurrentPhoto = false,
+  }) async {
+    // 1. Update text attributes first via PUT /api/patients/profile
+    final UpdateProfileRequestModel requestModel = UpdateProfileRequestModel(
+      first_name: firstName,
+      last_name: lastName,
+      address: address,
+      national_id: nationalId,
+      date_of_birth: birthDate,
+    );
+    await updateUserProfile(requestModel);
+
+    // 2. Upload photo if a new local image is staged or delete if flagged
+    String? new_photo_url;
+    if (null != imageFile) {
+      debugPrint('[ProfileRepository] Uploading image file: ${imageFile.path}');
+      new_photo_url = await uploadProfilePhoto(imageFile.path);
+      await local_data_source.saveProfilePhotoUrl(new_photo_url);
+    } else if (deleteCurrentPhoto) {
+      debugPrint('[ProfileRepository] Deleting profile photo');
+      await deleteProfilePhoto();
+    } else {
+      // No photo change
+    }
+
+    // 3. Read fresh profile from remote and persist to local cache
+    final UserProfileModel fresh_profile = await getUserProfile();
+    if (null != new_photo_url && new_photo_url.isNotEmpty) {
+      await local_data_source.saveProfilePhotoUrl(new_photo_url);
+    } else {
+      // No explicit photo url override
+    }
+    return fresh_profile;
   }
 
   // Uploads a profile photo using POST /api/patients/profile-photo,

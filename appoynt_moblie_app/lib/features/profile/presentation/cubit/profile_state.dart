@@ -2,16 +2,17 @@
  * File Name: profile_state.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/07/2026
- * Version Information: V1.3.0
- * Dependencies: package:appoynt_mobile_app/features/profile/domain/entities/patient_profile.dart,
+ * Version Information: V1.4.0
+ * Dependencies: dart:io, package:appoynt_mobile_app/features/profile/domain/entities/patient_profile.dart,
  *   user_profile_model.dart
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 28/08/2026]
  * File Description: Defines the states and subclasses for the Patient Profile
- *   BLoC/Cubit pattern. V1.3.0 adds avatarDeleting, avatarDeleteSuccess,
- *   and avatarDeleteError to support the profile photo removal flow.
+ *   BLoC/Cubit pattern. V1.4.0 adds staged_profile_image and is_photo_deleted
+ *   fields to support local staging of image changes until explicit save.
  */
 
+import 'dart:io';
 // Importing the PatientProfile domain entity
 import 'package:appoynt_mobile_app/features/profile/domain/entities/patient_profile.dart';
 // Importing UserProfileModel representation
@@ -65,6 +66,14 @@ class ProfileState {
   final String? error_message;
   // Dirty flag status mapping unsaved edits comparison
   final bool is_dirty;
+  // Locally staged profile image file in memory before save
+  final File? staged_profile_image;
+  // Flag indicating current photo has been staged for deletion
+  final bool is_photo_deleted;
+
+  // Convenience camelCase getters
+  File? get stagedProfileImage => staged_profile_image;
+  bool get isPhotoDeleted => is_photo_deleted;
 
   // Constructor mapping the variables
   const ProfileState({
@@ -73,6 +82,8 @@ class ProfileState {
     required this.temp_profile,
     this.error_message,
     required this.is_dirty,
+    this.staged_profile_image,
+    this.is_photo_deleted = false,
   });
 
   // Factory constructor representing the default starting state layout config
@@ -89,6 +100,8 @@ class ProfileState {
       error_message: null,
       // False flag defaults
       is_dirty: false,
+      staged_profile_image: null,
+      is_photo_deleted: false,
     );
   }
 
@@ -104,7 +117,23 @@ class ProfileState {
     String? error_message,
     // Optional dirty flag update
     bool? is_dirty,
+    // Optional staged image file update
+    File? staged_profile_image,
+    File? stagedProfileImage,
+    // Optional photo deleted flag update
+    bool? is_photo_deleted,
+    bool? isPhotoDeleted,
+    // Clear staged image flag
+    bool clear_staged_image = false,
+    bool clearStagedImage = false,
   }) {
+    final bool should_clear_staged = clear_staged_image || clearStagedImage;
+    final File? resolved_staged = should_clear_staged
+        ? null
+        : (staged_profile_image ??
+            stagedProfileImage ??
+            this.staged_profile_image);
+
     // Return new copy of state representation instance
     return ProfileState(
       // Apply status override or keep current state value
@@ -117,6 +146,9 @@ class ProfileState {
       error_message: error_message ?? this.error_message,
       // Apply dirty status override or keep current flag
       is_dirty: is_dirty ?? this.is_dirty,
+      staged_profile_image: resolved_staged,
+      is_photo_deleted:
+          is_photo_deleted ?? isPhotoDeleted ?? this.is_photo_deleted,
     );
   }
 }
@@ -152,6 +184,8 @@ class ProfileUpdating extends ProfileState {
     required super.profile,
     required super.temp_profile,
     required super.is_dirty,
+    super.staged_profile_image,
+    super.is_photo_deleted,
   }) : super(status: ProfileStatus.updating);
 }
 

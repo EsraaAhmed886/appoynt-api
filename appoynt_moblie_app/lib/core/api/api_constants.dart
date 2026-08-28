@@ -22,7 +22,7 @@ class ApiConstants {
 
   /// Endpoint for user authentication (Login).
   static const String login = 'auth/login';
-  
+
   /// Endpoint for new user registration (Sign Up).
   static const String register = 'auth/register';
 
@@ -38,11 +38,19 @@ class ApiConstants {
   /// Endpoint for setting a new password.
   static const String reset_password = 'auth/reset-password';
 
+  // ── Profile Endpoints (Verified in Swagger) ───────────
+
+  /// Endpoint for patient profile details (GET & PUT /api/patients/profile).
+  static const String patient_profile = 'patients/profile';
+
+  /// Exact ASP.NET Core Swagger endpoint for patient profile photo (POST & DELETE /api/patients/profile-photo).
+  static const String patient_profile_photo = 'patients/profile-photo';
+
   // ── Headers ───────────────────────────────────────────
 
   /// Standard content type header for JSON requests.
   static const String content_type = 'application/json';
-  
+
   /// Standard accept header for JSON responses.
   static const String accept = 'application/json';
 }

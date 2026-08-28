@@ -2,15 +2,15 @@
  * File Name: profile_repository.dart
  * Author: Kholoud Khaled
  * Date of Creation: 09/08/2026
- * Version Information: V1.2.0
- * Dependencies: user_profile_model.dart, update_profile_request_model.dart
+ * Version Information: V1.3.0
+ * Dependencies: dart:io, user_profile_model.dart, update_profile_request_model.dart
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 28/08/2026]
  * File Description: Defines the repository interface for profile operations in
- *   the domain layer. V1.2.0 adds the deleteProfilePhoto contract method that
- *   removes the user avatar on the backend and clears it from local cache.
+ *   the domain layer. V1.3.0 adds updateProfile coordinating staged photo updates and profile saves.
  */
 
+import 'dart:io';
 // Importing UserProfileModel representation
 import 'package:appoynt_mobile_app/features/profile/data/models/user_profile_model.dart';
 // Importing UpdateProfileRequestModel representation
@@ -27,6 +27,18 @@ abstract class ProfileRepository {
 
   /// Updates the user's profile details with the specified parameters.
   Future<void> updateUserProfile(UpdateProfileRequestModel requestModel);
+
+  /// Updates profile information and processes any staged photo changes on save.
+  Future<UserProfileModel> updateProfile({
+    required String firstName,
+    required String lastName,
+    required String phone,
+    String? address,
+    String? nationalId,
+    String? birthDate,
+    File? imageFile,
+    bool deleteCurrentPhoto = false,
+  });
 
   /// Uploads a new profile photo from a local file path using multipart POST.
   /// Persists the returned image URL to local cache and returns it.

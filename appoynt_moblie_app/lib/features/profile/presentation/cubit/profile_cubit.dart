@@ -2,7 +2,7 @@
  * File Name: profile_cubit.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/07/2026
- * Version Information: V1.4.0
+ * Version Information: V1.5.0
  * Dependencies: package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart,
  *   package:appoynt_mobile_app/features/profile/domain/entities/patient_profile.dart,
@@ -13,9 +13,11 @@
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 28/08/2026]
  * File Description: Implements the Patient Profile Cubit orchestrating UI updates,
- *   validations, saves, avatar uploads, and avatar deletion via DeleteProfilePhotoUseCase.
+ *   validations, local photo staging, and saves/deletions on form submit.
  */
 
+import 'dart:io';
+import 'package:flutter/painting.dart';
 // Importing the BLoC library
 import 'package:flutter_bloc/flutter_bloc.dart';
 // Importing the profile state definitions
@@ -124,7 +126,9 @@ class ProfileCubit extends Cubit<ProfileState> {
         // Map email
         email: user_profile.email,
         // Convert gender integer to localized text string
-        gender: 0 == user_profile.gender ? 'Male' : (1 == user_profile.gender ? 'Female' : ''),
+        gender: 0 == user_profile.gender
+            ? 'Male'
+            : (1 == user_profile.gender ? 'Female' : ''),
         // Map address
         address: user_profile.address ?? '',
         // Map national ID from model or keep local
@@ -334,9 +338,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       // Map email from the API model
       email: model.email,
       // Map gender integer (0=Male, 1=Female) to display string
-      gender: 0 == model.gender
-          ? 'Male'
-          : (1 == model.gender ? 'Female' : ''),
+      gender: 0 == model.gender ? 'Male' : (1 == model.gender ? 'Female' : ''),
       // Map address from the API model with empty-string fallback
       address: model.address ?? '',
       // Map national ID from the API model or carry existing
@@ -372,7 +374,15 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   // Updates the user profile data via the remote API
   Future<void> updateUserProfile(UpdateProfileRequestModel requestModel) async {
-    // Emit ProfileUpdating state to trigger spinner on save button
+    // 1. Capture staged image and delete flag before any state transition
+    final File? imageToUpload = state.staged_profile_image;
+    final bool shouldDelete = state.is_photo_deleted;
+
+    debugPrint(
+      '[ProfileCubit] Attempting to save profile. Staged image path: ${imageToUpload?.path}, shouldDelete: $shouldDelete',
+    );
+
+    // Emit ProfileUpdating state preserving the staged image
     emit(ProfileUpdating(
       // Keep existing profile
       profile: state.profile,
@@ -380,12 +390,34 @@ class ProfileCubit extends Cubit<ProfileState> {
       temp_profile: state.temp_profile,
       // Keep existing dirty status
       is_dirty: state.is_dirty,
+      staged_profile_image: imageToUpload,
+      is_photo_deleted: shouldDelete,
     ));
     // Try catch block to handle network exceptions
     try {
-      // Call UpdateUserProfileUseCase to perform PUT /api/patients/profile
+      // 2. Process any staged photo deletion or upload before updating profile info
+      if (shouldDelete) {
+        debugPrint('[ProfileCubit] Deleting profile photo...');
+        await get_it<DeleteProfilePhotoUseCase>().call();
+      } else if (null != imageToUpload) {
+        debugPrint('[ProfileCubit] Uploading staged image: ${imageToUpload.path}');
+        await get_it<UploadProfilePhotoUseCase>().call(imageToUpload.path);
+      } else {
+        // No staged photo changes
+      }
+
+      // 3. Call UpdateUserProfileUseCase to perform PUT /api/patients/profile
       await get_it<UpdateUserProfileUseCase>().call(requestModel);
-      // Re-fetch fresh UserProfileModel from GET /api/patients/profile (also updates cache)
+
+      // 3. Clear Flutter imageCache to invalidate stale network image
+      try {
+        PaintingBinding.instance.imageCache.clear();
+        PaintingBinding.instance.imageCache.clearLiveImages();
+      } catch (_) {
+        // Safe fallback in headless/test environments
+      }
+
+      // 4. Re-fetch fresh UserProfileModel from GET /api/patients/profile (also updates cache)
       final UserProfileModel fresh_user =
           await get_it<GetUserProfileUseCase>().call();
       // Read updated photo URL from local cache
@@ -403,7 +435,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         temp_profile: saved_profile,
         is_dirty: false,
       ));
-      // Emit ProfileLoaded state so all listening views (ProfilePage, PersonalInformationPage) refresh UI immediately
+      // Emit ProfileLoaded state so all listening views refresh UI immediately
       emit(ProfileLoaded(
         user: fresh_user,
         profile: saved_profile,
@@ -1224,155 +1256,71 @@ class ProfileCubit extends Cubit<ProfileState> {
   }
 
   // Launches the image picker for a specific source (camera or gallery),
-  // then calls the repository upload flow. This overload is called by the
-  // avatar widget after the user selects a source from the bottom sheet.
-  Future<void> pick_and_upload_avatar_from_source(
-      ImageSource source) async {
-    // Instantiate the image picker service singleton
+  // and stages the selected image locally in state without calling the API.
+  Future<void> pick_and_stage_avatar_from_source(ImageSource source) async {
     final ImagePicker picker = ImagePicker();
-    // Emit uploading state to show spinner before picker opens
-    if (!isClosed) {
-      emit(state.copyWith(status: ProfileStatus.avatarUploading));
-    } else {
-      // Cubit closed — abort early
-      return;
-    }
-    // Attempt to pick the image from the specified source
-    XFile? picked_file;
     try {
-      // Invoke picker with caller-specified source (camera or gallery)
-      picked_file = await picker.pickImage(
-        // Use the caller-provided source selection
+      final XFile? picked_file = await picker.pickImage(
         source: source,
-        // Cap decode width to 1024px to reduce upload payload
         maxWidth: 1024.0,
-        // Cap decode height to 1024px
         maxHeight: 1024.0,
-        // 85% quality balances visual fidelity vs file size
         imageQuality: 85,
       );
+      if (null != picked_file) {
+        final File staged_file = File(picked_file.path);
+        if (!isClosed) {
+          emit(state.copyWith(
+            staged_profile_image: staged_file,
+            is_photo_deleted: false,
+            is_dirty: true,
+          ));
+        } else {
+          // Cubit closed — discard emit
+        }
+      } else {
+        // User cancelled picker
+      }
     } catch (picker_error) {
-      // Picker raised an exception (e.g. permission denied)
       debugPrint('[ProfileCubit] Picker error: $picker_error');
-      // Emit error state with descriptive message
       if (!isClosed) {
         emit(state.copyWith(
-          status: ProfileStatus.avatarUploadError,
-          error_message: 'Image selection failed.',
+          error_message: 'Image selection failed. Please try again.',
         ));
       } else {
         // Cubit closed — discard emit
       }
-      return;
-    }
-    // Guard: user cancelled picker without a selection
-    if (null == picked_file) {
-      // Revert to success status — no upload was triggered
-      if (!isClosed) {
-        emit(state.copyWith(status: ProfileStatus.success));
-      } else {
-        // Cubit closed — discard emit
-      }
-      return;
-    } else {
-      // File selected — continue to upload
-    }
-    // Extract local path from XFile wrapper
-    final String file_path = picked_file.path;
-    // Execute repository upload call with the local file path
-    try {
-      // Upload photo via use case (Clean Architecture: cubit → use case → repository)
-      final String new_photo_url =
-          await get_it<UploadProfilePhotoUseCase>().call(file_path);
-      // Clone profile entity with the new avatar URL applied
-      final PatientProfile updated_profile =
-          state.profile.copyWith(avatar_url: new_photo_url);
-      // Emit success state with updated profile
-      if (!isClosed) {
-        emit(state.copyWith(
-          status: ProfileStatus.avatarUploadSuccess,
-          profile: updated_profile,
-          temp_profile: updated_profile,
-        ));
-        debugPrint(
-          '[ProfileCubit] Avatar uploaded from source. URL: $new_photo_url',
-        );
-      } else {
-        // Cubit closed — discard result
-      }
-    } on DioException catch (dio_error) {
-      final String error_msg = ErrorHandler.handleDioError(dio_error);
-      if (!isClosed) {
-        emit(state.copyWith(
-          status: ProfileStatus.avatarUploadError,
-          error_message: error_msg,
-        ));
-      } else {
-        // Cubit closed — discard emit
-      }
-      debugPrint('[ProfileCubit] DioException during upload: $dio_error');
-    } catch (generic_error) {
-      if (!isClosed) {
-        emit(state.copyWith(
-          status: ProfileStatus.avatarUploadError,
-          error_message: 'An unexpected error occurred during upload.',
-        ));
-      } else {
-        // Cubit closed — discard emit
-      }
-      debugPrint('[ProfileCubit] Upload error: $generic_error');
     }
   }
 
-  // Deletes the current profile photo remotely and clears local state
-  Future<void> remove_profile_photo() async {
+  // Alias for pickImage
+  Future<void> pickImage(ImageSource source) =>
+      pick_and_stage_avatar_from_source(source);
+
+  // Backward compatibility alias for immediate source picker calls
+  Future<void> pick_and_upload_avatar_from_source(ImageSource source) =>
+      pick_and_stage_avatar_from_source(source);
+
+  // Stages photo deletion locally without calling the API.
+  void stage_photo_deletion() {
     if (!isClosed) {
-      emit(state.copyWith(status: ProfileStatus.avatarDeleting));
+      emit(state.copyWith(
+        clear_staged_image: true,
+        is_photo_deleted: true,
+        is_dirty: true,
+      ));
     } else {
-      return;
-    }
-    try {
-      // Execute delete photo use case
-      await get_it<DeleteProfilePhotoUseCase>().call();
-      // Clone profile with empty avatar URL
-      final PatientProfile updated_profile =
-          state.profile.copyWith(avatar_url: '');
-      if (!isClosed) {
-        emit(state.copyWith(
-          status: ProfileStatus.avatarDeleteSuccess,
-          profile: updated_profile,
-          temp_profile: updated_profile,
-        ));
-        debugPrint('[ProfileCubit] Profile photo deleted successfully.');
-      } else {
-        // Cubit closed — discard emit
-      }
-    } on DioException catch (dio_error) {
-      final String error_msg = ErrorHandler.handleDioError(dio_error);
-      if (!isClosed) {
-        emit(state.copyWith(
-          status: ProfileStatus.avatarDeleteError,
-          error_message: error_msg,
-        ));
-      } else {
-        // Cubit closed — discard emit
-      }
-      debugPrint('[ProfileCubit] DioException during photo delete: $dio_error');
-    } catch (generic_error) {
-      if (!isClosed) {
-        emit(state.copyWith(
-          status: ProfileStatus.avatarDeleteError,
-          error_message: 'Failed to delete profile photo.',
-        ));
-      } else {
-        // Cubit closed — discard emit
-      }
-      debugPrint('[ProfileCubit] Photo delete error: $generic_error');
+      // Cubit closed — discard emit
     }
   }
 
-  // Alias removeProfilePhoto matching camelCase
-  Future<void> removeProfilePhoto() => remove_profile_photo();
+  // Alias for stagePhotoDeletion
+  void stagePhotoDeletion() => stage_photo_deletion();
+
+  // Backward compatibility alias for photo deletion
+  Future<void> remove_profile_photo() async => stage_photo_deletion();
+
+  // Backward compatibility camelCase alias
+  Future<void> removeProfilePhoto() async => stage_photo_deletion();
 
   // Edit insurance card by list index
   void edit_insurance_card(int index, String card_name, String card_number,

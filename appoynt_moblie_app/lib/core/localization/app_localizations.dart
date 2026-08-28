@@ -1036,7 +1036,8 @@ abstract class AppLocalizations {
 
     // ── AuthLocalization Dictionary Direct Lookup ────────────────────────
     final String currentLangCode = s.is_arabic ? 'ar' : 'en';
-    final String? dictionaryMapped = AuthLocalization.localizedValues[currentLangCode]?[cleanMessage];
+    final String? dictionaryMapped =
+        AuthLocalization.localizedValues[currentLangCode]?[cleanMessage];
     if (null != dictionaryMapped && dictionaryMapped.isNotEmpty) {
       return dictionaryMapped;
     } else {
@@ -1096,9 +1097,11 @@ abstract class AppLocalizations {
       return s.auth_registration_email_already_registered;
     } else if ('auth.registration.phone.already_registered' == cleanMessage) {
       return s.auth_registration_phone_already_registered;
-    } else if ('auth.registration.password.invalid_characters' == cleanMessage) {
+    } else if ('auth.registration.password.invalid_characters' ==
+        cleanMessage) {
       return s.auth_registration_password_invalid_characters;
-    } else if ('auth.registration.password.contains_user_info' == cleanMessage) {
+    } else if ('auth.registration.password.contains_user_info' ==
+        cleanMessage) {
       return s.auth_registration_password_contains_user_info;
     } else if ('auth.otp.attempts_exceeded' == cleanMessage) {
       return s.auth_otp_attempts_exceeded;
@@ -1354,6 +1357,9 @@ extension AppLocalizationsX on BuildContext {
         return loc.deletePhoto;
       case 'cancel':
         return loc.cancel;
+      case 'save':
+      case 'profile_save_button':
+        return loc.profile_save_button;
       case 'profile_photo_delete_success':
         return loc.profile_photo_delete_success;
       case 'profile_photo_delete_error':

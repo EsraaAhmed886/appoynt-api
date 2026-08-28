@@ -2,7 +2,7 @@
  * File Name: profile_avatar_widget.dart
  * Author: Kholoud Khaled
  * Date of Creation: 13/08/2026
- * Version Information: V1.1.0
+ * Version Information: V1.2.0
  * Dependencies: package:flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
  *   package:image_picker/image_picker.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
@@ -13,11 +13,7 @@
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 28/08/2026]
  * File Description: Reusable stateful widget rendering the patient's circular
- *   profile avatar. Handles three visual states: network image (authenticated
- *   via Bearer token in httpHeaders), uploading/deleting spinner overlay, and initials
- *   badge fallback when no image URL is set or the network load fails.
- *   Tapping the avatar opens a vertical full-width modal options sheet for
- *   Gallery, Camera, or Delete Photo actions delegating to ProfileCubit.
+ *   profile avatar with reactive preview of locally staged images and photo deletion.
  */
 
 // Importing dart:io for File type reference
@@ -30,6 +26,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 // Importing profile cubit for upload action dispatch
 import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart';
+// Importing profile state for staging reactivity
+import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart';
 // Importing app color tokens for design consistency
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 // Importing token storage to retrieve Bearer token for authenticated image load
@@ -143,13 +141,11 @@ class _ProfileAvatarWidgetState extends State<ProfileAvatarWidget> {
   // Computes a two-character initials string from the provided name components
   String _compute_initials() {
     // Extract first character of first_name, uppercase, or empty string
-    final String first_initial = widget.first_name.isNotEmpty
-        ? widget.first_name[0].toUpperCase()
-        : '';
+    final String first_initial =
+        widget.first_name.isNotEmpty ? widget.first_name[0].toUpperCase() : '';
     // Extract first character of last_name, uppercase, or empty string
-    final String last_initial = widget.last_name.isNotEmpty
-        ? widget.last_name[0].toUpperCase()
-        : '';
+    final String last_initial =
+        widget.last_name.isNotEmpty ? widget.last_name[0].toUpperCase() : '';
     // Concatenate both initials into a two-character badge string
     final String initials = '$first_initial$last_initial';
     // Return computed initials or a generic person icon placeholder key
@@ -160,19 +156,21 @@ class _ProfileAvatarWidgetState extends State<ProfileAvatarWidget> {
   // the selected action (Gallery, Camera, or Delete Photo) to ProfileCubit.
   Future<void> _show_source_picker_sheet(BuildContext sheet_context) async {
     final ProfileCubit cubit = sheet_context.read<ProfileCubit>();
-    final bool has_photo = widget.avatar_url.isNotEmpty;
+    final ProfileState state = cubit.state;
+    final bool has_photo = !state.is_photo_deleted &&
+        (null != state.staged_profile_image || widget.avatar_url.isNotEmpty);
 
     ProfilePhotoOptionsDialog.show(
       sheet_context,
       hasExistingPhoto: has_photo,
       onGalleryTap: () {
-        cubit.pick_and_upload_avatar_from_source(ImageSource.gallery);
+        cubit.pick_and_stage_avatar_from_source(ImageSource.gallery);
       },
       onCameraTap: () {
-        cubit.pick_and_upload_avatar_from_source(ImageSource.camera);
+        cubit.pick_and_stage_avatar_from_source(ImageSource.camera);
       },
       onDeleteTap: () {
-        cubit.remove_profile_photo();
+        cubit.stage_photo_deletion();
       },
     );
   }
@@ -182,15 +180,41 @@ class _ProfileAvatarWidgetState extends State<ProfileAvatarWidget> {
   Widget build(BuildContext context) {
     // Resolve theme brightness for adaptive UI elements
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+    // Read ProfileState if available in tree for staged image reactivity
+    final ProfileState? profile_state = context.watch<ProfileCubit?>()?.state;
+    final File? staged_image = profile_state?.staged_profile_image;
+    final bool is_photo_deleted = profile_state?.is_photo_deleted ?? false;
+
     // Compute initials badge text from the current name values
     final String initials = _compute_initials();
     // Determine whether avatar_url is a valid network URL (starts with http)
-    final bool is_network_url = widget.avatar_url.isNotEmpty &&
-        widget.avatar_url.startsWith('http');
+    final bool is_network_url =
+        widget.avatar_url.isNotEmpty && widget.avatar_url.startsWith('http');
     // Determine whether avatar_url is a local file path (for preview before upload)
     final bool is_local_file = widget.avatar_url.isNotEmpty &&
         !widget.avatar_url.startsWith('http') &&
         File(widget.avatar_url).existsSync();
+
+    // Resolve which image content to display
+    final Widget avatar_content;
+    if (widget.is_uploading) {
+      avatar_content = _build_uploading_placeholder(is_dark);
+    } else if (null != staged_image && staged_image.existsSync()) {
+      avatar_content = Image.file(
+        staged_image,
+        width: _AvatarDimensions.avatar_size,
+        height: _AvatarDimensions.avatar_size,
+        fit: BoxFit.cover,
+      );
+    } else if (is_photo_deleted) {
+      avatar_content = _build_initials_badge(initials, is_dark);
+    } else if (is_network_url) {
+      avatar_content = _build_network_image();
+    } else if (is_local_file) {
+      avatar_content = _build_local_file_image();
+    } else {
+      avatar_content = _build_initials_badge(initials, is_dark);
+    }
 
     // Return a GestureDetector wrapping the avatar container for tap events
     return GestureDetector(
@@ -248,13 +272,7 @@ class _ProfileAvatarWidgetState extends State<ProfileAvatarWidget> {
                 _AvatarDimensions.avatar_radius,
               ),
               // Conditionally render network image, local file, or initials badge
-              child: widget.is_uploading
-                  ? _build_uploading_placeholder(is_dark)
-                  : (is_network_url
-                      ? _build_network_image()
-                      : (is_local_file
-                          ? _build_local_file_image()
-                          : _build_initials_badge(initials, is_dark))),
+              child: avatar_content,
             ),
           ),
           // Camera edit icon overlay — conditionally rendered based on flag
