@@ -656,7 +656,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get dummy_appointments_tab_label {
     // Return English bottom navigation appointments tab label
-    return 'Appointments';
+    return 'Appoynts';
   }
 
   // Override getter returning bottom navigation search label in English
