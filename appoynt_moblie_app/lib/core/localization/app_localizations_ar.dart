@@ -2,11 +2,11 @@
  * File Name: app_localizations_ar.dart
  * Author: Kholoud Khaled
  * Date of Creation: 20/06/2026
- * Version Information: V1.2.0
+ * Version Information: V1.3.0
  * Dependencies: package:flutter/material.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 27/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/08/2026]
  * File Description: Arabic concrete implementation of localizations
  *   containing onboarding, profile, and authentication strings.
  */
@@ -2562,4 +2562,28 @@ class AppLocalizationsAr extends AppLocalizations {
       'انتهت مهلة حجز الموعد المؤقت. قمنا بتحديث المواعيد المتاحة لك.';
   @override
   String get select_new_slot => 'اختيار موعد جديد';
+
+  // Profile Photo Options Dialog getters
+  @override
+  String get update_profile_photo => 'تحديث الصورة الشخصية';
+  @override
+  String get updateProfilePhoto => 'تحديث الصورة الشخصية';
+  @override
+  String get choose_from_gallery => 'اختيار من المعرض';
+  @override
+  String get chooseFromGallery => 'اختيار من المعرض';
+  @override
+  String get take_photo => 'التقاط صورة';
+  @override
+  String get takePhoto => 'التقاط صورة';
+  @override
+  String get delete_photo => 'حذف الصورة الحالية';
+  @override
+  String get deletePhoto => 'حذف الصورة الحالية';
+  @override
+  String get cancel => 'إلغاء';
+  @override
+  String get profile_photo_delete_success => 'تم حذف الصورة الشخصية بنجاح.';
+  @override
+  String get profile_photo_delete_error => 'فشل حذف الصورة الشخصية.';
 }

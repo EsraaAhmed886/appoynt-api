@@ -2,19 +2,15 @@
  * File Name: profile_repository_impl.dart
  * Author: Kholoud Khaled
  * Date of Creation: 09/08/2026
- * Version Information: V2.1.0
+ * Version Information: V2.2.0
  * Dependencies: profile_repository.dart, profile_remote_data_source.dart,
  *   profile_local_data_source.dart, user_profile_model.dart,
  *   update_profile_request_model.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/08/2026]
  * File Description: Implements the ProfileRepository interface coordinating
- *   remote API calls with local SharedPreferences caching. Implements the
- *   Stale-While-Revalidate strategy: cache writes occur automatically after
- *   every successful remote fetch so the cubit can read stale data instantly
- *   while a background refresh silently revalidates and updates the cache.
- *   V2.1.0 adds uploadProfilePhoto with URL cache persistence and the
- *   getCachedProfilePhotoUrl convenience reader.
+ *   remote API calls with local SharedPreferences caching. V2.2.0 adds
+ *   deleteProfilePhoto coordinating remote deletion with local cache clearance.
  */
 
 // Importing domain repository contract interface definition
@@ -149,6 +145,19 @@ class ProfileRepositoryImpl implements ProfileRepository {
     );
     // Return the resolved URL so the cubit can update state immediately
     return photo_url;
+  }
+
+  // Deletes the profile photo via remote DELETE endpoint and clears local cache
+  @override
+  Future<void> deleteProfilePhoto() async {
+    // Delegate remote photo deletion to remote data source
+    await remote_data_source.deleteProfilePhoto();
+    // Clear persisted profile photo URL from local cache
+    await local_data_source.clearProfilePhotoUrl();
+    // Log the successful photo deletion
+    debugPrint(
+      '[ProfileRepositoryImpl] Profile photo deleted remotely and cleared from local cache',
+    );
   }
 
   // Reads the cached profile photo URL from local storage without a network call

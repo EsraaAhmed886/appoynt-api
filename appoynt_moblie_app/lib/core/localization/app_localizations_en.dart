@@ -2,13 +2,12 @@
  * File Name: app_localizations_en.dart
  * Author: Kholoud Khaled
  * Date of Creation: 20/06/2026
- * Version Information: V1.2.0
+ * Version Information: V1.3.0
  * Dependencies: package:flutter/material.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 27/08/2026]
- * File Description: English concrete implementation of localizations
- *   containing onboarding, profile, and authentication strings.
+ * Last Modified Date: [Kholoud Khaled - 28/08/2026]
+ * File Description: English concrete localization dictionary mapping text getters for the entire application.
  */
 
 // Importing standard material framework libraries
@@ -2527,6 +2526,30 @@ class AppLocalizationsEn extends AppLocalizations {
       "Your temporary slot hold has expired. We've refreshed the schedule for you.";
   @override
   String get select_new_slot => 'Select New Slot';
+
+  // Profile Photo Options Dialog getters
+  @override
+  String get update_profile_photo => 'Update Profile Photo';
+  @override
+  String get updateProfilePhoto => 'Update Profile Photo';
+  @override
+  String get choose_from_gallery => 'Choose from Gallery';
+  @override
+  String get chooseFromGallery => 'Choose from Gallery';
+  @override
+  String get take_photo => 'Take a Photo';
+  @override
+  String get takePhoto => 'Take a Photo';
+  @override
+  String get delete_photo => 'Delete Photo';
+  @override
+  String get deletePhoto => 'Delete Photo';
+  @override
+  String get cancel => 'Cancel';
+  @override
+  String get profile_photo_delete_success => 'Profile photo deleted successfully.';
+  @override
+  String get profile_photo_delete_error => 'Failed to delete profile photo.';
 }
 
 

@@ -2,16 +2,14 @@
  * File Name: profile_remote_data_source.dart
  * Author: Kholoud Khaled
  * Date of Creation: 09/08/2026
- * Version Information: V1.2.0
+ * Version Information: V1.3.0
  * Dependencies: package:dio/dio.dart, change_password_request_model.dart,
  *   user_profile_model.dart, update_profile_request_model.dart,
  *   api_constants.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
- * File Description: Remote data source for profile feature operations. V1.2.0
- *   fixes getUserProfile to call the correct GET /api/patients/profile endpoint
- *   (which returns PatientProfileResponse with hasProfilePhoto), and adds the
- *   uploadProfilePhoto multipart-form-data POST method.
+ * Last Modified Date: [Kholoud Khaled - 28/08/2026]
+ * File Description: Remote data source for profile feature operations. V1.3.0
+ *   adds deleteProfilePhoto DELETE method for avatar removal.
  */
 
 // Importing Dart standard libraries for JSON decoding operations
@@ -24,18 +22,18 @@ import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 // Importing token storage dependency
 import 'package:appoynt_mobile_app/core/storage/token_storage.dart';
-// Importing ChangePassword DTO request model representation
-import 'package:appoynt_mobile_app/features/profile/data/models/change_password_request_model.dart';
-// Importing UserProfile DTO model representation
-import 'package:appoynt_mobile_app/features/profile/data/models/user_profile_model.dart';
-// Importing UpdateProfile DTO request model representation
-import 'package:appoynt_mobile_app/features/profile/data/models/update_profile_request_model.dart';
-// Importing API constants for endpoint and base URL definitions
+// Importing API constants
 import 'package:appoynt_mobile_app/core/api/api_constants.dart';
+// Importing change password request model representation
+import 'package:appoynt_mobile_app/features/profile/data/models/change_password_request_model.dart';
+// Importing user profile model representation
+import 'package:appoynt_mobile_app/features/profile/data/models/user_profile_model.dart';
+// Importing update profile request model representation
+import 'package:appoynt_mobile_app/features/profile/data/models/update_profile_request_model.dart';
 
-/// Abstract contract defining remote profile actions.
+/// Contract definition for remote profile operations.
 abstract class ProfileRemoteDataSource {
-  /// Calls the change password API.
+  /// Submits a request to change the current user's password.
   Future<void> changePassword(ChangePasswordRequestModel requestModel);
 
   /// Fetches the user profile details from the remote API
@@ -49,6 +47,10 @@ abstract class ProfileRemoteDataSource {
   /// Endpoint: POST /api/patients/profile-photo
   /// Returns the constructed network URL for the uploaded image.
   Future<String> uploadProfilePhoto(String file_path);
+
+  /// Deletes the patient profile photo on the backend.
+  /// Endpoint: DELETE /api/patients/profile-photo
+  Future<void> deleteProfilePhoto();
 
   /// Builds the network URL to fetch the patient profile photo.
   /// Endpoint: GET /api/patients/{patientId}/profile-photo
@@ -164,6 +166,13 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     } else {
       return await buildProfilePhotoUrl(patient_id_from_response);
     }
+  }
+
+  @override
+  // Deletes the patient profile photo on the backend via DELETE /api/patients/profile-photo
+  Future<void> deleteProfilePhoto() async {
+    // Perform standard DELETE network call on patients profile-photo path
+    await dio.delete('patients/profile-photo');
   }
 
   @override

@@ -2,13 +2,13 @@
  * File Name: profile_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/07/2026
- * Version Information: V1.1.0
+ * Version Information: V1.2.0
  * Dependencies: package:flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 27/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/08/2026]
  * File Description: Defines the Patient Profile View Mode screen showing summaries and medical sections.
  */
 
@@ -104,12 +104,14 @@ class _ProfilePageState extends State<ProfilePage> {
           }
         },
         child: BlocListener<ProfileCubit, ProfileState>(
-          // Listen for avatar upload result states to show feedback SnackBars
+          // Listen for avatar upload and delete result states to show feedback SnackBars
           listenWhen: (previous_state, current_state) {
-            // Only trigger listener when avatar upload status changes
+            // Only trigger listener when avatar status changes
             return previous_state.status != current_state.status &&
                 (ProfileStatus.avatarUploadError == current_state.status ||
-                    ProfileStatus.avatarUploadSuccess == current_state.status);
+                    ProfileStatus.avatarUploadSuccess == current_state.status ||
+                    ProfileStatus.avatarDeleteError == current_state.status ||
+                    ProfileStatus.avatarDeleteSuccess == current_state.status);
           },
           listener: (listener_context, upload_state) {
             // Handle avatar upload success feedback notification
@@ -125,6 +127,19 @@ class _ProfilePageState extends State<ProfilePage> {
                 listener_context,
                 upload_state.error_message ??
                     localizations.profile_photo_upload_error,
+              );
+            } else if (ProfileStatus.avatarDeleteSuccess == upload_state.status) {
+              // Show floating success SnackBar confirming photo was deleted
+              CustomSnackBar.success(
+                listener_context,
+                localizations.profile_photo_delete_success,
+              );
+            } else if (ProfileStatus.avatarDeleteError == upload_state.status) {
+              // Show floating error SnackBar with the failure message
+              CustomSnackBar.error(
+                listener_context,
+                upload_state.error_message ??
+                    localizations.profile_photo_delete_error,
               );
             } else {
               // No action needed
@@ -221,7 +236,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                 last_name: state.profile.last_name,
                                 // Derive uploading flag from active avatar status
                                 is_uploading: ProfileStatus.avatarUploading ==
-                                    state.status,
+                                        state.status ||
+                                    ProfileStatus.avatarDeleting ==
+                                        state.status,
                                 // Hide camera edit badge overlay on main profile page
                                 show_camera_badge: false,
                                 // Open full-screen zoomable preview modal on avatar tap

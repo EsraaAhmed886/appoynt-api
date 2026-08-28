@@ -2,23 +2,22 @@
  * File Name: profile_avatar_widget.dart
  * Author: Kholoud Khaled
  * Date of Creation: 13/08/2026
- * Version Information: V1.0.0
+ * Version Information: V1.1.0
  * Dependencies: package:flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
  *   package:image_picker/image_picker.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart,
- *   package:appoynt_mobile_app/core/theme/app_colors.dart,
- *   package:appoynt_mobile_app/core/theme/app_spacing.dart,
+ *   package:appoynt_mobile_app/core/theme/colors/app_colors.dart,
  *   package:appoynt_mobile_app/core/storage/token_storage.dart,
- *   package:appoynt_mobile_app/core/localization/app_localizations.dart
+ *   package:appoynt_mobile_app/features/profile/presentation/widgets/profile_photo_options_dialog.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/08/2026]
  * File Description: Reusable stateful widget rendering the patient's circular
  *   profile avatar. Handles three visual states: network image (authenticated
- *   via Bearer token in httpHeaders), uploading spinner overlay, and initials
+ *   via Bearer token in httpHeaders), uploading/deleting spinner overlay, and initials
  *   badge fallback when no image URL is set or the network load fails.
- *   Tapping the avatar opens a Camera/Gallery source selection bottom sheet
- *   which delegates to ProfileCubit.pick_and_upload_avatar_from_source.
+ *   Tapping the avatar opens a vertical full-width modal options sheet for
+ *   Gallery, Camera, or Delete Photo actions delegating to ProfileCubit.
  */
 
 // Importing dart:io for File type reference
@@ -36,8 +35,8 @@ import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 // Importing token storage to retrieve Bearer token for authenticated image load
 import 'package:appoynt_mobile_app/core/storage/token_storage.dart';
 
-// Importing PhotoSourceDialog component for pop-up dialog photo source selection
-import 'package:appoynt_mobile_app/features/profile/presentation/widgets/photo_source_dialog.dart';
+// Importing ProfilePhotoOptionsDialog component for modal bottom sheet options
+import 'package:appoynt_mobile_app/features/profile/presentation/widgets/profile_photo_options_dialog.dart';
 
 // Local dimension constants to eliminate hardcoded magic numbers in this widget
 class _AvatarDimensions {
@@ -157,21 +156,25 @@ class _ProfileAvatarWidgetState extends State<ProfileAvatarWidget> {
     return initials.isNotEmpty ? initials : '?';
   }
 
-  // Presents the centered PhotoSourceDialog pop-up modal and dispatches
-  // the selected image source (Camera vs Gallery) to the ProfileCubit upload handler.
+  // Presents the vertical ProfilePhotoOptionsDialog bottom sheet and dispatches
+  // the selected action (Gallery, Camera, or Delete Photo) to ProfileCubit.
   Future<void> _show_source_picker_sheet(BuildContext sheet_context) async {
-    // Show pop-up dialog using the PhotoSourceDialog helper
-    final ImageSource? selected_source =
-        await show_photo_source_dialog(sheet_context);
-    // Verify source selection and context mount status across async gap
-    if (null != selected_source && sheet_context.mounted) {
-      // Dispatch selected source to cubit avatar upload method
-      sheet_context
-          .read<ProfileCubit>()
-          .pick_and_upload_avatar_from_source(selected_source);
-    } else {
-      // User cancelled dialog or context was unmounted
-    }
+    final ProfileCubit cubit = sheet_context.read<ProfileCubit>();
+    final bool has_photo = widget.avatar_url.isNotEmpty;
+
+    ProfilePhotoOptionsDialog.show(
+      sheet_context,
+      hasExistingPhoto: has_photo,
+      onGalleryTap: () {
+        cubit.pick_and_upload_avatar_from_source(ImageSource.gallery);
+      },
+      onCameraTap: () {
+        cubit.pick_and_upload_avatar_from_source(ImageSource.camera);
+      },
+      onDeleteTap: () {
+        cubit.remove_profile_photo();
+      },
+    );
   }
 
   @override

@@ -2,7 +2,7 @@
  * File Name: profile_cubit.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/07/2026
- * Version Information: V1.3.0
+ * Version Information: V1.4.0
  * Dependencies: package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart,
  *   package:appoynt_mobile_app/features/profile/domain/entities/patient_profile.dart,
@@ -11,9 +11,9 @@
  *   package:image_picker/image_picker.dart,
  *   package:appoynt_mobile_app/core/error/error_handler.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 27/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/08/2026]
  * File Description: Implements the Patient Profile Cubit orchestrating UI updates,
- *   validations, saves, and error handling via ErrorHandler.
+ *   validations, saves, avatar uploads, and avatar deletion via DeleteProfilePhotoUseCase.
  */
 
 // Importing the BLoC library
@@ -41,6 +41,8 @@ import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 // Importing upload profile photo use case for Clean Architecture compliance
 import 'package:appoynt_mobile_app/features/profile/domain/usecases/upload_profile_photo_usecase.dart';
+// Importing delete profile photo use case for Clean Architecture compliance
+import 'package:appoynt_mobile_app/features/profile/domain/usecases/delete_profile_photo_usecase.dart';
 
 // Profile business logic Cubit controller class
 class ProfileCubit extends Cubit<ProfileState> {
@@ -1321,6 +1323,56 @@ class ProfileCubit extends Cubit<ProfileState> {
       debugPrint('[ProfileCubit] Upload error: $generic_error');
     }
   }
+
+  // Deletes the current profile photo remotely and clears local state
+  Future<void> remove_profile_photo() async {
+    if (!isClosed) {
+      emit(state.copyWith(status: ProfileStatus.avatarDeleting));
+    } else {
+      return;
+    }
+    try {
+      // Execute delete photo use case
+      await get_it<DeleteProfilePhotoUseCase>().call();
+      // Clone profile with empty avatar URL
+      final PatientProfile updated_profile =
+          state.profile.copyWith(avatar_url: '');
+      if (!isClosed) {
+        emit(state.copyWith(
+          status: ProfileStatus.avatarDeleteSuccess,
+          profile: updated_profile,
+          temp_profile: updated_profile,
+        ));
+        debugPrint('[ProfileCubit] Profile photo deleted successfully.');
+      } else {
+        // Cubit closed — discard emit
+      }
+    } on DioException catch (dio_error) {
+      final String error_msg = ErrorHandler.handleDioError(dio_error);
+      if (!isClosed) {
+        emit(state.copyWith(
+          status: ProfileStatus.avatarDeleteError,
+          error_message: error_msg,
+        ));
+      } else {
+        // Cubit closed — discard emit
+      }
+      debugPrint('[ProfileCubit] DioException during photo delete: $dio_error');
+    } catch (generic_error) {
+      if (!isClosed) {
+        emit(state.copyWith(
+          status: ProfileStatus.avatarDeleteError,
+          error_message: 'Failed to delete profile photo.',
+        ));
+      } else {
+        // Cubit closed — discard emit
+      }
+      debugPrint('[ProfileCubit] Photo delete error: $generic_error');
+    }
+  }
+
+  // Alias removeProfilePhoto matching camelCase
+  Future<void> removeProfilePhoto() => remove_profile_photo();
 
   // Edit insurance card by list index
   void edit_insurance_card(int index, String card_name, String card_number,

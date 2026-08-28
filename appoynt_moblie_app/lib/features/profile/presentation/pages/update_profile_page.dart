@@ -2,14 +2,14 @@
  * File Name: update_profile_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/07/2026
- * Version Information: V1.2.0
+ * Version Information: V1.3.0
  * Dependencies: package:flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart,
  *   package:appoynt_mobile_app/features/profile/data/models/update_profile_request_model.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 27/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/08/2026]
  * File Description: Defines the Update Profile layout form fields, validators, and backend save handlers.
  */
 
@@ -776,6 +776,28 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                 context,
                 state.message,
               );
+            } else if (ProfileStatus.avatarUploadSuccess == state.status) {
+              CustomSnackBar.success(
+                context,
+                localizations.profile_photo_upload_success,
+              );
+            } else if (ProfileStatus.avatarUploadError == state.status) {
+              CustomSnackBar.error(
+                context,
+                state.error_message ??
+                    localizations.profile_photo_upload_error,
+              );
+            } else if (ProfileStatus.avatarDeleteSuccess == state.status) {
+              CustomSnackBar.success(
+                context,
+                localizations.profile_photo_delete_success,
+              );
+            } else if (ProfileStatus.avatarDeleteError == state.status) {
+              CustomSnackBar.error(
+                context,
+                state.error_message ??
+                    localizations.profile_photo_delete_error,
+              );
             } else {
               // No action needed
             }
@@ -826,9 +848,11 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                   first_name: state.profile.first_name,
                                   // Pass user last name for initials fallback
                                   last_name: state.profile.last_name,
-                                  // Pass active upload status flag
+                                  // Pass active upload / delete status flag
                                   is_uploading: ProfileStatus.avatarUploading ==
-                                      state.status,
+                                          state.status ||
+                                      ProfileStatus.avatarDeleting ==
+                                          state.status,
                                   // Show camera edit badge overlay on personal information page
                                   show_camera_badge: true,
                                 ),

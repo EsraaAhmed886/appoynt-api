@@ -2,13 +2,13 @@
  * File Name: profile_repository.dart
  * Author: Kholoud Khaled
  * Date of Creation: 09/08/2026
- * Version Information: V1.1.0
+ * Version Information: V1.2.0
  * Dependencies: user_profile_model.dart, update_profile_request_model.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/08/2026]
  * File Description: Defines the repository interface for profile operations in
- *   the domain layer. V1.1.0 adds the uploadProfilePhoto contract method that
- *   initiates the multipart file upload and returns the resolved image URL.
+ *   the domain layer. V1.2.0 adds the deleteProfilePhoto contract method that
+ *   removes the user avatar on the backend and clears it from local cache.
  */
 
 // Importing UserProfileModel representation
@@ -32,6 +32,10 @@ abstract class ProfileRepository {
   /// Persists the returned image URL to local cache and returns it.
   /// Endpoint: POST /api/patients/profile-photo
   Future<String> uploadProfilePhoto(String file_path);
+
+  /// Deletes the current profile photo from the backend and clears it from local cache.
+  /// Endpoint: DELETE /api/patients/profile-photo
+  Future<void> deleteProfilePhoto();
 
   /// Reads the cached profile photo URL from local storage.
   /// Returns null when no URL has been persisted yet.

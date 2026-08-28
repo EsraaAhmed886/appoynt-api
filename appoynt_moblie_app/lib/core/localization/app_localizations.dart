@@ -2,11 +2,11 @@
  * File Name: app_localizations.dart
  * Author: Kholoud Khaled
  * Date of Creation: 20/06/2026
- * Version Information: V1.2.0
+ * Version Information: V1.3.0
  * Dependencies: package:flutter/material.dart, auth_strings.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 27/08/2026]
- * File Description: Defines the abstract contract for application-wide custom localizations.
+ * Last Modified Date: [Kholoud Khaled - 28/08/2026]
+ * File Description: Defines the abstract contract for application-wide custom localizations and context.tr extension.
  */
 
 // Importing standard material package for BuildContext and Locale
@@ -1317,7 +1317,49 @@ abstract class AppLocalizations {
   String get reservation_expired;
   String get reservation_expired_msg;
   String get select_new_slot;
+
+  // Profile Photo Options Dialog getters
+  String get update_profile_photo;
+  String get updateProfilePhoto;
+  String get choose_from_gallery;
+  String get chooseFromGallery;
+  String get take_photo;
+  String get takePhoto;
+  String get delete_photo;
+  String get deletePhoto;
+  String get cancel;
+  String get profile_photo_delete_success;
+  String get profile_photo_delete_error;
 }
 
 // Defining a short alias for clean and simple type references
 typedef AppStrings = AppLocalizations;
+
+// Extension on BuildContext to support context.tr() string lookup
+extension AppLocalizationsX on BuildContext {
+  String tr(String key) {
+    final AppLocalizations loc = AppLocalizations.of(this);
+    switch (key) {
+      case 'updateProfilePhoto':
+      case 'update_profile_photo':
+        return loc.updateProfilePhoto;
+      case 'chooseFromGallery':
+      case 'choose_from_gallery':
+        return loc.chooseFromGallery;
+      case 'takePhoto':
+      case 'take_photo':
+        return loc.takePhoto;
+      case 'deletePhoto':
+      case 'delete_photo':
+        return loc.deletePhoto;
+      case 'cancel':
+        return loc.cancel;
+      case 'profile_photo_delete_success':
+        return loc.profile_photo_delete_success;
+      case 'profile_photo_delete_error':
+        return loc.profile_photo_delete_error;
+      default:
+        return key;
+    }
+  }
+}

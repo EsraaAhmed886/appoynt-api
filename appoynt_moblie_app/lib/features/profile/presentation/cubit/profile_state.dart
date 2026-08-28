@@ -2,14 +2,14 @@
  * File Name: profile_state.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/07/2026
- * Version Information: V1.2.0
+ * Version Information: V1.3.0
  * Dependencies: package:appoynt_mobile_app/features/profile/domain/entities/patient_profile.dart,
  *   user_profile_model.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/08/2026]
  * File Description: Defines the states and subclasses for the Patient Profile
- *   BLoC/Cubit pattern. V1.2.0 adds avatarUploading, avatarUploadSuccess,
- *   and avatarUploadError enum values to support the profile image upload flow.
+ *   BLoC/Cubit pattern. V1.3.0 adds avatarDeleting, avatarDeleteSuccess,
+ *   and avatarDeleteError to support the profile photo removal flow.
  */
 
 // Importing the PatientProfile domain entity
@@ -45,6 +45,12 @@ enum ProfileStatus {
   avatarUploadSuccess,
   // Profile avatar photo upload failed with error
   avatarUploadError,
+  // Profile avatar photo deletion in progress
+  avatarDeleting,
+  // Profile avatar photo deletion completed successfully
+  avatarDeleteSuccess,
+  // Profile avatar photo deletion failed with error
+  avatarDeleteError,
 }
 
 // State class representation for Profile feature block operations
@@ -179,3 +185,16 @@ class ProfileUpdateError extends ProfileState {
           error_message: message,
         );
 }
+
+// State representing successful profile avatar removal operation
+class ProfilePhotoDeleted extends ProfileState {
+  // Constructor forwarding default parameters to base state
+  const ProfilePhotoDeleted({
+    required super.profile,
+    required super.temp_profile,
+    required super.is_dirty,
+  }) : super(status: ProfileStatus.avatarDeleteSuccess);
+}
+
+// Alias for photo removed state
+typedef EditProfilePhotoRemovedState = ProfilePhotoDeleted;

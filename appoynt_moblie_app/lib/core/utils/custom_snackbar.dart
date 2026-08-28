@@ -357,6 +357,8 @@ class _TopToastWidgetState extends State<_TopToastWidget>
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                     _buildActionButton(iconColor),
                   ],
                 ),
