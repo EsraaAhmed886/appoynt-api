@@ -37,6 +37,7 @@ export default function ClinicViewEditPage({
     is_conflict_modal_open,
     is_success_modal_open,
     doctor_occupied_days,
+    doctor_other_schedules,
     is_editing_info,
     is_editing_schedule,
     is_editing_breaks,
@@ -116,6 +117,7 @@ export default function ClinicViewEditPage({
           is_card_dirty={is_schedule_dirty}
           schedule_list={form.scheduleList}
           doctor_occupied_days={doctor_occupied_days}
+          doctor_other_schedules={doctor_other_schedules}
           on_add_schedule={actions.addSchedule}
           on_edit_schedule={actions.editSchedule}
           on_delete_schedule={actions.deleteSchedule}

@@ -10,9 +10,9 @@
  */
 
 import { clinics as initial_clinics } from "@/data/clinics";
-import { Clinic } from "@/types/clinic";
+import { Clinic, WorkingScheduleItem } from "@/types/clinic";
 
-export type { Clinic };
+export type { Clinic, WorkingScheduleItem };
 
 const storage_key = "clinics";
 
@@ -139,4 +139,32 @@ export function get_doctor_occupied_working_days(
   });
 
   return Array.from(occupied_days_set);
+}
+
+// 9. Retrieve all working schedule items across other clinics for a specific doctor (excluding current clinic being edited)
+export function get_doctor_other_clinic_schedules(
+  doctor_id: string | number,
+  exclude_clinic_id?: number | null,
+): WorkingScheduleItem[] {
+  const all_clinics = get_clinics();
+  const schedules: WorkingScheduleItem[] = [];
+
+  all_clinics.forEach((clinic) => {
+    const current_doc = clinic.doctor_id ?? "doc_1";
+    if (String(current_doc) === String(doctor_id)) {
+      if (
+        null !== exclude_clinic_id &&
+        undefined !== exclude_clinic_id &&
+        Number(clinic.id) === Number(exclude_clinic_id)
+      ) {
+        // Exclude current clinic being edited
+      } else {
+        if (Array.isArray(clinic.schedule_list) && clinic.schedule_list.length > 0) {
+          schedules.push(...clinic.schedule_list);
+        }
+      }
+    }
+  });
+
+  return schedules;
 }
