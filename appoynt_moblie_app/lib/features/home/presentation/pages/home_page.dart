@@ -26,10 +26,8 @@ import 'package:appoynt_mobile_app/features/favorites/presentation/pages/favorit
 import 'package:appoynt_mobile_app/features/notifications/presentation/pages/notifications_page.dart';
 // Importing AppointmentsPage widget screen definition
 import 'package:appoynt_mobile_app/features/appointments/presentation/pages/appointments_page.dart';
-// Importing AskAiFab widget definition
-import 'package:appoynt_mobile_app/features/appointments/presentation/widgets/ask_ai_fab.dart';
-// Importing AskAiDummyView widget screen definition
-import 'package:appoynt_mobile_app/features/ask_ai/presentation/views/ask_ai_dummy_view.dart';
+// Importing DraggableFloatingAiButton widget definition
+import 'package:appoynt_mobile_app/features/ask_ai/presentation/widgets/draggable_floating_ai_button.dart';
 
 // Defining the HomePage stateful widget representation
 class HomePage extends StatefulWidget {
@@ -113,20 +111,8 @@ class _HomePageState extends State<HomePage> {
                             // Fallback container representation
                             : const SizedBox.shrink(),
           ),
-          // Positioned floating AI assistant action button (decoupled from Scaffold FAB to avoid pushing SnackBars up)
-          PositionedDirectional(
-            bottom: AppSpacing.space_xl,
-            end: AppSpacing.space_xl,
-            child: AskAiFab(
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => const AskAiDummyView(),
-                  ),
-                );
-              },
-            ),
-          ),
+          // Floating draggable AI bot widget
+          const DraggableFloatingAiButton(),
         ],
       ),
     );

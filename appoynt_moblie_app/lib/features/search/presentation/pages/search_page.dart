@@ -38,8 +38,7 @@ import 'package:appoynt_mobile_app/features/shared/widgets/doctor_card.dart';
 import 'package:appoynt_mobile_app/features/search/presentation/widgets/search_sort_bottom_sheet.dart';
 import 'package:appoynt_mobile_app/core/routing/routes.dart';
 import 'package:appoynt_mobile_app/features/doctor_profile/presentation/pages/doctor_profile_page.dart';
-import 'package:appoynt_mobile_app/features/appointments/presentation/widgets/ask_ai_fab.dart';
-import 'package:appoynt_mobile_app/features/ask_ai/presentation/views/ask_ai_dummy_view.dart';
+import 'package:appoynt_mobile_app/features/ask_ai/presentation/widgets/draggable_floating_ai_button.dart';
 
 
 // Local layout dimensions class to strictly eliminate hardcoded numbers
@@ -563,20 +562,8 @@ class _SearchPageState extends State<SearchPage> {
                 else
                   // Empty layout satisfying compiler condition
                   const SizedBox.shrink(),
-                // Positioned floating AI assistant action button (decoupled from Scaffold FAB to avoid pushing SnackBars up)
-                PositionedDirectional(
-                  bottom: AppSpacing.space_xl,
-                  end: AppSpacing.space_xl,
-                  child: AskAiFab(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => const AskAiDummyView(),
-                        ),
-                      );
-                    },
-                  ),
-                ),
+                // Floating draggable AI bot widget
+                const DraggableFloatingAiButton(),
               ],
             ),
             // Fixed Bottom Navigation Bar component shown only when soft keyboard is closed
