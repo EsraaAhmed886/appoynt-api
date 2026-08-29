@@ -24,6 +24,7 @@ type WorkingScheduleSectionProps = {
   is_card_dirty?: boolean;
   schedule_list: WorkingScheduleItem[];
   doctor_occupied_days?: string[];
+  doctor_other_schedules?: WorkingScheduleItem[];
   on_add_schedule: (item: WorkingScheduleItem) => void;
   on_edit_schedule: (index: number, item: WorkingScheduleItem) => void;
   on_delete_schedule: (index: number) => void;
@@ -37,6 +38,7 @@ export default function WorkingScheduleSection({
   is_card_dirty = false,
   schedule_list,
   doctor_occupied_days = [],
+  doctor_other_schedules = [],
   on_add_schedule,
   on_edit_schedule,
   on_delete_schedule,
@@ -60,9 +62,7 @@ export default function WorkingScheduleSection({
   const is_editing_item = null !== editing_index;
 
   const available_day_options = WORKING_DAYS.filter((day) => {
-    if (doctor_occupied_days.includes(day)) {
-      return false;
-    } else if (is_editing_item && selected_day === day) {
+    if (is_editing_item && selected_day === day) {
       return true;
     } else {
       return !schedule_list.some((item) => item.day === day);
@@ -92,13 +92,17 @@ export default function WorkingScheduleSection({
   };
 
   const validate_input = (day: string, start: string, end: string) => {
+    const conflict_reference =
+      doctor_other_schedules.length > 0
+        ? doctor_other_schedules
+        : doctor_occupied_days;
     const errs = validate_working_schedule_item(
       day,
       start,
       end,
       schedule_list,
       editing_index,
-      doctor_occupied_days,
+      conflict_reference,
     );
     set_validation_errors(errs || {});
     return null === errs;
