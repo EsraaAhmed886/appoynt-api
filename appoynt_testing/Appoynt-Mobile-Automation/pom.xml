@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Project Information -->
+    <groupId>com.appoynt.mobileautomation</groupId>
+    <artifactId>Appoynt-Mobile-Automation</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+
+    <!-- Project Properties -->
+    <properties>
+
+        <!-- Java -->
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Test Suites -->
+        <androidSuite>test_runners/AndroidTestSuite.xml</androidSuite>
+
+        <defaultSuite>test_runners/AndroidTestSuite.xml</defaultSuite>
+
+        <!-- Versions -->
+        <maven.surefire.plugin.version>3.5.3</maven.surefire.plugin.version>
+        <aspectj.version>1.9.24</aspectj.version>
+
+    </properties>
+
+
+    <!-- Dependencies -->
+    <dependencies>
+
+        <!-- Appium -->
+        <dependency>
+            <groupId>io.appium</groupId>
+            <artifactId>java-client</artifactId>
+            <version>10.1.1</version>
+        </dependency>
+
+        <!-- TestNG -->
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>7.12.0</version>
+        </dependency>
+
+        <!-- Selenium Support -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-support</artifactId>
+            <version>4.47.0</version>
+        </dependency>
+
+        <!-- Jackson JSON -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.22.1</version>
+        </dependency>
+
+        <!-- Allure TestNG -->
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-testng</artifactId>
+            <version>2.35.4</version>
+
+        </dependency>
+
+        <!-- Log4j API -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.26.1</version>
+        </dependency>
+
+        <!-- Log4j Core -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.26.1</version>
+        </dependency>
+
+        <!-- SLF4J Integration -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j2-impl</artifactId>
+            <version>2.26.1</version>
+        </dependency>
+
+    </dependencies>
+
+
+    <!-- Maven Profiles -->
+    <profiles>
+
+        <!-- Default: Android for now -->
+        <profile>
+            <id>default</id>
+
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+
+            <properties>
+                <suiteFile>${defaultSuite}</suiteFile>
+            </properties>
+        </profile>
+
+
+        <!-- Android -->
+        <profile>
+            <id>android</id>
+
+            <properties>
+                <suiteFile>${androidSuite}</suiteFile>
+            </properties>
+        </profile>
+
+    </profiles>
+
+
+    <!-- Build Configuration -->
+    <build>
+
+        <!-- Test Output Folder -->
+        <directory>test-outputs/target</directory>
+
+        <plugins>
+
+            <!-- Maven Surefire -->
+            <plugin>
+
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven.surefire.plugin.version}</version>
+
+                <dependencies>
+
+                    <!-- AspectJ Weaver for Allure -->
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjweaver</artifactId>
+                        <version>${aspectj.version}</version>
+                    </dependency>
+
+                </dependencies>
+
+
+                <configuration>
+
+                    <!-- TestNG Suite -->
+                    <suiteXmlFiles>
+                        <suiteXmlFile>${suiteFile}</suiteXmlFile>
+                    </suiteXmlFiles>
+
+
+                    <!-- AspectJ Agent -->
+                    <argLine>
+                        -javaagent:${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar
+                    </argLine>
+
+                </configuration>
+
+            </plugin>
+
+        </plugins>
+
+    </build>
+
+</project>

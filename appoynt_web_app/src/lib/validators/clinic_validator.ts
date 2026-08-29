@@ -19,6 +19,7 @@ import {
   is_start_before_end,
   is_same_time,
   is_interval_within_bounds,
+  do_time_intervals_overlap,
 } from "@/lib/utils/time_utils";
 import {
   normalize_phone_number,
@@ -135,6 +136,7 @@ export function validate_consultation_fee(fee: string): string | null {
 
 /**
  * Real-time validation for Working Schedule item.
+ * Supports checking occupied day strings or schedule items for time overlap against other clinics.
  * Returns object mapping field to translation error key, or null if valid.
  */
 export function validate_working_schedule_item(
@@ -143,16 +145,12 @@ export function validate_working_schedule_item(
   end_time: string,
   existing_schedules: WorkingScheduleItem[],
   editing_index: number | null = null,
-  doctor_occupied_days: string[] = []
+  doctor_occupied_days_or_schedules: (string | WorkingScheduleItem)[] = []
 ): { day_error?: string; start_error?: string; end_error?: string } | null {
   const errors: { day_error?: string; start_error?: string; end_error?: string } = {};
 
   if ("" === day.trim()) {
     errors.day_error = "val_day_req";
-  } else if (doctor_occupied_days.includes(day)) {
-    errors.day_error = "val_day_occupied";
-  } else {
-    // Valid day input
   }
 
   // Duplicate check inside same clinic form
@@ -166,20 +164,14 @@ export function validate_working_schedule_item(
 
   if (duplicate_exists) {
     errors.day_error = "val_day_duplicate";
-  } else {
-    // Unique day
   }
 
   if ("" === start_time.trim()) {
     errors.start_error = "val_start_time_req";
-  } else {
-    // Start time provided
   }
 
   if ("" === end_time.trim()) {
     errors.end_error = "val_end_time_req";
-  } else {
-    // End time provided
   }
 
   if ("" !== start_time.trim() && "" !== end_time.trim()) {
@@ -189,10 +181,29 @@ export function validate_working_schedule_item(
       errors.start_error = "val_start_after_end";
       errors.end_error = "val_end_before_start";
     } else {
-      // Valid range
+      // Check for overlap or conflict with other clinics
+      for (const item of doctor_occupied_days_or_schedules) {
+        if (typeof item === "string") {
+          if (item === day) {
+            errors.day_error = "val_day_occupied";
+            break;
+          } else {
+            // No action needed
+          }
+        } else if (item && item.day === day) {
+          if (do_time_intervals_overlap(start_time, end_time, item.startTime, item.endTime)) {
+            errors.day_error = "val_schedule_conflict";
+            errors.start_error = "val_schedule_conflict";
+            errors.end_error = "val_schedule_conflict";
+            break;
+          } else {
+            // No action needed
+          }
+        } else {
+          // No action needed
+        }
+      }
     }
-  } else {
-    // Incomplete times
   }
 
   if (Object.keys(errors).length > 0) {
@@ -315,7 +326,8 @@ export function is_step_valid(
   },
   existing_clinics: Clinic[] = [],
   current_clinic_id?: number | null,
-  doctor_occupied_days: string[] = []
+  doctor_occupied_days: string[] = [],
+  doctor_other_schedules: WorkingScheduleItem[] = []
 ): boolean {
   if (1 === step) {
     const err_name = validate_clinic_name(form_state.clinic_name);
@@ -337,9 +349,21 @@ export function is_step_valid(
     if (0 === form_state.schedule_list.length) {
       return false;
     } else {
-      return form_state.schedule_list.every(
-        (s) => !doctor_occupied_days.includes(s.day)
-      );
+      if (doctor_other_schedules.length > 0) {
+        return form_state.schedule_list.every((s) => {
+          return !doctor_other_schedules.some((other) => {
+            if (other.day === s.day) {
+              return do_time_intervals_overlap(s.startTime, s.endTime, other.startTime, other.endTime);
+            } else {
+              return false;
+            }
+          });
+        });
+      } else {
+        return form_state.schedule_list.every(
+          (s) => !doctor_occupied_days.includes(s.day)
+        );
+      }
     }
   } else if (3 === step) {
     return form_state.break_list.every((b, idx) => {

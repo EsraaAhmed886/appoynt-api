@@ -50,3 +50,8 @@ obj/
 # User-specific files
 *.user
 *.suo
+
+# Mobile binaries / packages
+*.apk
+*.aab
+*.ipa

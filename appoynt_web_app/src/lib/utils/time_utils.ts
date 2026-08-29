@@ -10,23 +10,42 @@
  */
 
 /**
- * Converts a 24-hour time string "HH:MM" into total minutes from midnight.
+ * Converts a 24-hour ("HH:MM") or 12-hour ("hh:mm AM/PM") time string into total minutes from midnight.
  * Returns -1 if the time format is invalid.
  */
 export function parse_time_to_minutes(time_str: string): number {
-  if ("" === time_str.trim()) {
+  if (!time_str || "" === time_str.trim()) {
     return -1;
   } else {
-    const parts = time_str.split(":");
-    if (2 !== parts.length) {
+    const match = time_str.trim().match(/^(\d{1,2}):(\d{2})(?:\s*(AM|PM))?$/i);
+    if (!match) {
       return -1;
     } else {
-      const hours = parseInt(parts[0], 10);
-      const minutes = parseInt(parts[1], 10);
+      let hours = parseInt(match[1], 10);
+      const minutes = parseInt(match[2], 10);
+      const modifier = match[3] ? match[3].toUpperCase() : null;
 
-      if (isNaN(hours) || isNaN(minutes) || hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
+      if (isNaN(hours) || isNaN(minutes) || minutes < 0 || minutes > 59) {
         return -1;
       } else {
+        if (null !== modifier) {
+          if (hours < 1 || hours > 12) {
+            return -1;
+          } else if ("PM" === modifier && hours < 12) {
+            hours += 12;
+          } else if ("AM" === modifier && 12 === hours) {
+            hours = 0;
+          } else {
+            // No action needed
+          }
+        } else {
+          if (hours < 0 || hours > 23) {
+            return -1;
+          } else {
+            // No action needed
+          }
+        }
+
         return hours * 60 + minutes;
       }
     }
@@ -84,5 +103,27 @@ export function is_interval_within_bounds(
     return false;
   } else {
     return start_mins >= bounds_start_mins && end_mins <= bounds_end_mins;
+  }
+}
+
+/**
+ * Verifies whether two time intervals strictly overlap.
+ * Back-to-back intervals (e.g. 09:00-13:00 and 13:00-17:00) do NOT overlap and are allowed.
+ */
+export function do_time_intervals_overlap(
+  start1: string,
+  end1: string,
+  start2: string,
+  end2: string
+): boolean {
+  const s1 = parse_time_to_minutes(start1);
+  const e1 = parse_time_to_minutes(end1);
+  const s2 = parse_time_to_minutes(start2);
+  const e2 = parse_time_to_minutes(end2);
+
+  if (s1 < 0 || e1 < 0 || s2 < 0 || e2 < 0) {
+    return false;
+  } else {
+    return s1 < e2 && e1 > s2;
   }
 }

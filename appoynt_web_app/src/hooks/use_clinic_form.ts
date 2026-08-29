@@ -23,7 +23,9 @@ import {
   update_clinic,
   get_clinics,
   get_doctor_occupied_working_days,
+  get_doctor_other_clinic_schedules,
 } from "@/services/clinic.service";
+import { do_time_intervals_overlap } from "@/lib/utils/time_utils";
 import {
   validate_clinic_name,
   validate_phone,
@@ -398,13 +400,31 @@ export function use_clinic_form(clinic_id: number) {
 
   // Save Schedule Card
   const save_schedule_card = useCallback(() => {
+    const other_schedules = get_doctor_other_clinic_schedules(doctor_id, clinic_id);
+    const has_conflict = schedule_list.some((s) => {
+      return other_schedules.some((other) => {
+        if (other.day === s.day) {
+          return do_time_intervals_overlap(s.startTime, s.endTime, other.startTime, other.endTime);
+        } else {
+          return false;
+        }
+      });
+    });
+
+    if (has_conflict) {
+      return false;
+    } else {
+      // No conflict detected, proceed to save
+    }
+
     const updated_entity = build_current_clinic_entity();
     update_clinic(updated_entity);
     set_original_clinic(updated_entity);
     set_is_editing_schedule(false);
     set_is_dirty(false);
     set_is_success_modal_open(true);
-  }, [build_current_clinic_entity]);
+    return true;
+  }, [build_current_clinic_entity, doctor_id, clinic_id, schedule_list]);
 
   // Save Breaks Card
   const save_breaks_card = useCallback(() => {
@@ -488,6 +508,11 @@ export function use_clinic_form(clinic_id: number) {
     clinic_id,
   );
 
+  const doctor_other_schedules = get_doctor_other_clinic_schedules(
+    doctor_id,
+    clinic_id,
+  );
+
   // Card-specific Dirty Checks against original saved values
   const orig_info_location_parts = original_clinic?.location
     ? original_clinic.location.split(",").map((s) => s.trim())
@@ -557,6 +582,7 @@ export function use_clinic_form(clinic_id: number) {
     is_conflict_modal_open,
     is_success_modal_open,
     doctor_occupied_days,
+    doctor_other_schedules,
     // Independent Card Editing States
     is_editing_info,
     is_editing_schedule,
