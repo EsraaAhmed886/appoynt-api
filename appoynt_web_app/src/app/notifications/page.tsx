@@ -17,7 +17,7 @@
 
 "use client";
 
-import { CheckCheck, Trash2, SearchX } from "lucide-react";
+import { CheckCheck, Trash2, SearchX, BellOff } from "lucide-react";
 import { useTranslation } from "@/context/language_context";
 import EmptyState from "@/components/common/empty_state";
 import ErrorState from "@/components/common/error_state";
@@ -153,12 +153,11 @@ export default function NotificationsPage() {
                         </button>
                       </>
                     ) : (
-                      <>
-                        <EmptyState />
-                        <h3 className="text-xs md:text-sm font-bold text-app-text-primary mt-2">
-                          {t("notif_no_found")}
-                        </h3>
-                      </>
+                      <EmptyState
+                        icon={<BellOff className="w-10 h-10 text-app-primary" />}
+                        title={t("notif_no_found")}
+                        description={t("notif_empty_desc")}
+                      />
                     )}
                   </div>
                 ) : (
