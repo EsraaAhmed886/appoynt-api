@@ -2,10 +2,10 @@
  * File Name : clinic.service.ts
  * Author : shimaa salah
  * Created Date : 2026-07-20
- * Version : v1.0.0
+ * Version : v1.1.0
  * Dependencies : @/data/clinics, @/types/clinic
  * Contributors : [shimaa salah]
- * Last Modified : shimaa salah - 2026-08-25
+ * Last Modified : shimaa salah - 29/08/2026
  * Description : LocalStorage state persistence and data access service for managing clinic entities.
  */
 
@@ -135,6 +135,8 @@ export function get_doctor_occupied_working_days(
           // No action needed
         }
       }
+    } else {
+      // Different doctor
     }
   });
 
@@ -167,10 +169,16 @@ export function get_doctor_existing_schedules(
           clinic.schedule_list.forEach((item) => {
             if (item && item.day && item.startTime && item.endTime) {
               schedules.push(item);
+            } else {
+              // No action needed
             }
           });
+        } else {
+          // No action needed
         }
       }
+    } else {
+      // Different doctor
     }
   });
 

@@ -11,7 +11,7 @@
  *   - @/context/language_context
  *   - @/components/language_toggle
  * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 24/08/2026]
+ * Last Modified Date: [shimaa salah - 29/08/2026]
  * File Description: Top layout header bar containing mobile menu trigger, route title, language switcher, notifications, and profile avatar.
  */
 
@@ -55,9 +55,10 @@ export default function LayoutHeader({
         return translations.nav_clinics;
       } else if ("appointments" === main_segment) {
         if (segments.includes("medical-record")) {
-          return translations.medical_record || translations.medrec_title || "Medical Record";
+          return translations.medical_record || "Medical Record";
+        } else {
+          return translations.appointments_page_title || translations.nav_appointments || "Appointments";
         }
-        return translations.appointments_page_title || translations.nav_appointments || "Appointments";
       } else if ("notifications" === main_segment) {
         return translations.nav_notifications || "Notifications";
       } else if ("patients" === main_segment) {
@@ -67,7 +68,7 @@ export default function LayoutHeader({
       } else if ("schedule" === main_segment) {
         return translations.nav_schedule || "Schedule";
       } else if ("medical-records" === main_segment || "medical-record" === main_segment) {
-        return translations.medical_record || translations.medrec_title || translations.nav_medical_records || "Medical Record";
+        return translations.medical_record || translations.nav_medical_records || "Medical Record";
       } else if ("settings" === main_segment) {
         return translations.nav_settings || "Settings";
       } else {

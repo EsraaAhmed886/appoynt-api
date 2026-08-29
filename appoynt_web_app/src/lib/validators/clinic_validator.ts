@@ -2,13 +2,13 @@
  * File Name: clinic_validator.ts
  * Author: shimaa salah
  * Created Date: 05/07/2026
- * Version: v1.2.0
+ * Version: v1.3.0
  * Dependencies:
  *   - @/types/clinic
  *   - @/lib/utils/time_utils
  *   - @/lib/utils/phone_utils
  * Contributors: shimaa salah
- * Last Modified: shimaa salah - 13/08/2026
+ * Last Modified: shimaa salah - 29/08/2026
  * Description: Pure validation engine returning localization keys for dynamic language resolution in UI components.
  */
 
@@ -150,30 +150,30 @@ export function has_schedule_overlap(
 ): boolean {
   if (!day || !start_time || !end_time || !other_schedules || 0 === other_schedules.length) {
     return false;
-  }
+  } else {
+    const start_mins = parse_time_to_minutes(start_time);
+    const end_mins = parse_time_to_minutes(end_time);
 
-  const start_mins = parse_time_to_minutes(start_time);
-  const end_mins = parse_time_to_minutes(end_time);
-
-  if (start_mins < 0 || end_mins < 0 || start_mins >= end_mins) {
-    return false;
-  }
-
-  return other_schedules.some((other) => {
-    if (other.day !== day) {
+    if (start_mins < 0 || end_mins < 0 || start_mins >= end_mins) {
       return false;
+    } else {
+      return other_schedules.some((other) => {
+        if (other.day !== day) {
+          return false;
+        } else {
+          const other_start = parse_time_to_minutes(other.startTime);
+          const other_end = parse_time_to_minutes(other.endTime);
+
+          if (other_start < 0 || other_end < 0 || other_start >= other_end) {
+            return false;
+          } else {
+            // Overlap occurs strictly if: start_mins < other_end && end_mins > other_start
+            return start_mins < other_end && end_mins > other_start;
+          }
+        }
+      });
     }
-
-    const other_start = parse_time_to_minutes(other.startTime);
-    const other_end = parse_time_to_minutes(other.endTime);
-
-    if (other_start < 0 || other_end < 0 || other_start >= other_end) {
-      return false;
-    }
-
-    // Overlap occurs strictly if: start_mins < other_end && end_mins > other_start
-    return start_mins < other_end && end_mins > other_start;
-  });
+  }
 }
 
 /**
@@ -192,6 +192,8 @@ export function validate_working_schedule_item(
 
   if ("" === day.trim()) {
     errors.day_error = "val_day_req";
+  } else {
+    // Valid day
   }
 
   // Duplicate check inside same clinic form
@@ -205,14 +207,20 @@ export function validate_working_schedule_item(
 
   if (duplicate_exists) {
     errors.day_error = "val_day_duplicate";
+  } else {
+    // Unique day
   }
 
   if ("" === start_time.trim()) {
     errors.start_error = "val_start_time_req";
+  } else {
+    // Start time provided
   }
 
   if ("" === end_time.trim()) {
     errors.end_error = "val_end_time_req";
+  } else {
+    // End time provided
   }
 
   if ("" !== start_time.trim() && "" !== end_time.trim()) {
@@ -231,8 +239,12 @@ export function validate_working_schedule_item(
       if (has_schedule_overlap(day, start_time, end_time, schedule_items)) {
         errors.start_error = "val_conflict_detected";
         errors.end_error = "val_conflict_detected";
+      } else {
+        // No conflict detected
       }
     }
+  } else {
+    // Incomplete times
   }
 
   if (Object.keys(errors).length > 0) {
