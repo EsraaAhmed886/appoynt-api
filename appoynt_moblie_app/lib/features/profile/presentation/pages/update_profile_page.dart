@@ -2,16 +2,17 @@
  * File Name: update_profile_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/07/2026
- * Version Information: V1.5.0
+ * Version Information: V1.6.0
  * Dependencies: package:flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart,
  *   package:appoynt_mobile_app/features/profile/data/models/update_profile_request_model.dart,
- *   package:appoynt_mobile_app/core/utils/national_id_parser.dart
+ *   package:appoynt_mobile_app/core/utils/national_id_parser.dart,
+ *   package:appoynt_mobile_app/features/profile/presentation/widgets/edit_profile_body.dart
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 29/08/2026]
- * File Description: Defines the Update Profile layout form fields, validators, and backend save handlers with auto-calculated read-only gender.
+ * File Description: Defines the Update Profile layout form fields, validators, and backend save handlers with sleek dynamic National ID info badges.
  */
 
 // Importing flutter services for InputFormatters
@@ -23,9 +24,9 @@ import 'package:appoynt_mobile_app/core/routing/route_export.dart';
 // Importing Cubit controller
 import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart';
+import 'package:appoynt_mobile_app/features/profile/presentation/widgets/edit_profile_body.dart';
 // Importing reusable text field widgets
 import 'package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart';
-import 'package:appoynt_mobile_app/core/widgets/app_date_picker.dart';
 // Importing DTO request model representation
 import 'package:appoynt_mobile_app/features/profile/data/models/update_profile_request_model.dart';
 // Importing ProfileAvatarWidget reusable component
@@ -110,6 +111,10 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
   late TextEditingController _phone_controller;
   // Date of birth text controller
   late TextEditingController _dob_controller;
+  // Track extracted birth date DateTime object from National ID
+  DateTime? _extracted_birth_date;
+  // Track extracted gender string from National ID
+  String? _extracted_gender;
   // Track selected blood group string
   String _selected_blood_group = '';
 
@@ -464,8 +469,9 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
       if (null != extracted_date) {
         _dob_controller.text =
             "${extracted_date.day.toString().padLeft(2, '0')}/${extracted_date.month.toString().padLeft(2, '0')}/${extracted_date.year}";
+        _extracted_birth_date = extracted_date;
       } else {
-        // No action needed
+        _extracted_birth_date = null;
       }
 
       // 2. Auto-extract Gender (Odd -> Male, Even -> Female)
@@ -477,13 +483,21 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         cubit.update_temp_profile(
           cubit.state.temp_profile.copyWith(gender: formatted_gender),
         );
+        _extracted_gender = extracted_gender;
       } else {
-        // No action needed
+        _extracted_gender = null;
       }
       // Refresh state layout
       setState(() {});
     } else {
-      // Incomplete ID input
+      if (_extracted_birth_date != null || _extracted_gender != null) {
+        setState(() {
+          _extracted_birth_date = null;
+          _extracted_gender = null;
+        });
+      } else {
+        // No action needed
+      }
     }
   }
 
@@ -511,6 +525,12 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         TextEditingController(text: _strip_country_code(state.profile.phone));
     _dob_controller = TextEditingController(text: '05/12/1997');
     _initial_email = state.profile.email.trim().toLowerCase();
+    if (state.profile.national_id.trim().length == 14) {
+      _extracted_birth_date = NationalIdParser.extractBirthDate(state.profile.national_id);
+      _extracted_gender = NationalIdParser.extractGender(state.profile.national_id);
+    } else {
+      // No action needed
+    }
     // Add real-time listener for extracting Date of Birth
     _national_id_controller.addListener(_on_national_id_changed);
     // Trigger remote fetch API sequence in post frame callback
@@ -731,6 +751,12 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
               _address_controller.text = state.user.address ?? '';
               // Set medical history fields
               _national_id_controller.text = state.profile.national_id;
+              if (state.profile.national_id.trim().length == 14) {
+                _extracted_birth_date = NationalIdParser.extractBirthDate(state.profile.national_id);
+                _extracted_gender = NationalIdParser.extractGender(state.profile.national_id);
+              } else {
+                // No action needed
+              }
               _weight_controller.text = state.profile.weight;
               _height_controller.text = state.profile.height;
               _selected_blood_group = state.profile.blood_group;
@@ -1050,112 +1076,9 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                       ],
                                       validator: _validate_national_id,
                                     ),
-                                    const SizedBox(height: _LocalDimensions.field_spacing_large),
-                                    // Date of Birth input card (full width, tapping triggers custom calendar picker dialog)
-                                    GestureDetector(
-                                      onTap: () async {
-                                        if (_national_id_controller
-                                            .text.isNotEmpty) {
-                                          return;
-                                        } else {
-                                          final DateTime? picked_date =
-                                              await showAppDatePicker(
-                                            context: context,
-                                            initialDate: DateTime.now(),
-                                            firstDate: DateTime(1900),
-                                            lastDate: DateTime.now(),
-                                          );
-                                          if (picked_date != null) {
-                                            final String formatted =
-                                                '${picked_date.day}/${picked_date.month}/${picked_date.year}';
-                                            setState(() {
-                                              _dob_controller.text = formatted;
-                                            });
-                                          } else {
-                                            // Picker cancelled
-                                          }
-                                        }
-                                      },
-                                      child: IgnorePointer(
-                                        child: AuthTextField(
-                                          label: localizations
-                                              .profile_birthdate_label,
-                                          hint: '',
-                                          controller: _dob_controller,
-                                          enabled: false,
-                                          show_shadow: false,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(height: _LocalDimensions.field_spacing_large),
-                                    // Gender label
-                                    Text(
-                                      localizations.profile_gender_label,
-                                      style: TextStyle(
-                                        fontSize:
-                                            AppSpacing.font_size_body_medium,
-                                        fontWeight: FontWeight.w700,
-                                        color: is_dark
-                                            ? AppColors.text_dark_primary
-                                            : AppColors.primary_color,
-                                      ),
-                                    ),
-                                    const SizedBox(height: _LocalDimensions.field_spacing_tiny),
-                                    // Gender Field (Dimmed & Read-Only / Auto-Calculated from National ID)
-                                    Opacity(
-                                      opacity: 0.65, // Dimmed look
-                                      child: IgnorePointer(
-                                        ignoring: true, // Prevents user interaction
-                                        child: Container(
-                                          height: 48.0,
-                                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                          decoration: BoxDecoration(
-                                            color: is_dark
-                                                ? AppColors.darkSurfaceElevated
-                                                : AppColors.slate100, // Disabled grey background
-                                            borderRadius: BorderRadius.circular(12.0),
-                                            border: Border.all(
-                                              color: is_dark
-                                                  ? AppColors.darkBorder
-                                                  : AppColors.slate200,
-                                            ),
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              Icon(
-                                                'female' == state.temp_profile.gender.toLowerCase()
-                                                    ? Icons.female_rounded
-                                                    : Icons.male_rounded,
-                                                color: is_dark
-                                                    ? AppColors.darkTextSecondary
-                                                    : AppColors.slate600,
-                                                size: 20.0,
-                                              ),
-                                              const SizedBox(width: 10.0),
-                                              Text(
-                                                'female' == state.temp_profile.gender.toLowerCase()
-                                                    ? localizations.profile_gender_female
-                                                    : localizations.profile_gender_male,
-                                                style: TextStyle(
-                                                  fontSize: 14.0,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: is_dark
-                                                      ? AppColors.darkTextPrimary
-                                                      : AppColors.slate800,
-                                                ),
-                                              ),
-                                              const Spacer(),
-                                              Icon(
-                                                Icons.lock_outline_rounded,
-                                                color: is_dark
-                                                    ? AppColors.darkTextMuted
-                                                    : AppColors.slate400,
-                                                size: 16.0,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
+                                    NationalIdInfoBadges(
+                                      birthDate: _extracted_birth_date,
+                                      gender: _extracted_gender,
                                     ),
                                     const SizedBox(height: _LocalDimensions.field_spacing_large),
                                     // Weight and Height side-by-side Row

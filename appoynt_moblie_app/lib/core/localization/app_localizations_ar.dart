@@ -1336,6 +1336,8 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get profile_national_id_label => 'الرقم القومي';
   @override
+  String get auto_detected_from_national_id => 'تم التحديد تلقائيًا من الرقم القومي';
+  @override
   String get profile_national_id_hint => 'أدخل الرقم القومي (١٤ رقم)';
   @override
   String get profile_error_national_id_empty =>

@@ -1333,6 +1333,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get profile_national_id_label => 'National ID';
   @override
+  String get auto_detected_from_national_id => 'Auto-detected from National ID';
+  @override
   String get profile_national_id_hint => 'Enter 14-digit National ID';
   @override
   String get profile_error_national_id_empty => 'National ID cannot be empty.';

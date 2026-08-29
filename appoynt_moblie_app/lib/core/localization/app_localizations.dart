@@ -608,6 +608,7 @@ abstract class AppLocalizations {
   String get profile_phone_label;
   String get profile_birthdate_label;
   String get profile_national_id_label;
+  String get auto_detected_from_national_id;
   String get profile_national_id_hint;
   String get profile_error_national_id_empty;
   String get profile_error_national_id_invalid;
@@ -1346,6 +1347,11 @@ extension AppLocalizationsX on BuildContext {
       case 'editProfile':
       case 'edit_profile':
         return loc.edit_profile_title;
+      case 'national_id':
+      case 'profile_national_id_label':
+        return loc.profile_national_id_label;
+      case 'auto_detected_from_national_id':
+        return loc.auto_detected_from_national_id;
       case 'gender':
       case 'profile_gender_label':
         return loc.profile_gender_label;

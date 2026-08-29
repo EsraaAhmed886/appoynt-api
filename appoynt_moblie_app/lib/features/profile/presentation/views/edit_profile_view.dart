@@ -25,6 +25,7 @@ import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
 import 'package:appoynt_mobile_app/core/utils/custom_snackbar.dart';
 import 'package:appoynt_mobile_app/core/utils/national_id_parser.dart';
+import 'package:appoynt_mobile_app/features/profile/presentation/widgets/edit_profile_body.dart';
 import 'package:appoynt_mobile_app/features/profile/presentation/bloc/edit_profile_cubit.dart';
 import 'package:appoynt_mobile_app/features/profile/presentation/bloc/edit_profile_state.dart';
 import 'package:appoynt_mobile_app/features/profile/presentation/widgets/profile_photo_options_dialog.dart';
@@ -61,7 +62,8 @@ class _EditProfileViewState extends State<EditProfileView> {
   late final TextEditingController _addressController;
   late final TextEditingController _nationalIdController;
   late final TextEditingController _birthDateController;
-  String _selectedGender = 'male';
+  DateTime? _extractedBirthDate;
+  String? _extractedGender;
 
   @override
   void initState() {
@@ -78,12 +80,8 @@ class _EditProfileViewState extends State<EditProfileView> {
         TextEditingController(text: widget.initialBirthDate ?? '');
 
     if (widget.initialNationalId != null) {
-      final String? gender = NationalIdParser.extractGender(widget.initialNationalId!);
-      if (gender != null) {
-        _selectedGender = gender;
-      } else {
-        // No action needed
-      }
+      _extractedGender = NationalIdParser.extractGender(widget.initialNationalId!);
+      _extractedBirthDate = NationalIdParser.extractBirthDate(widget.initialNationalId!);
     } else {
       // No action needed
     }
@@ -105,15 +103,19 @@ class _EditProfileViewState extends State<EditProfileView> {
 
       // 2. Auto-extract Gender
       final extractedGender = NationalIdParser.extractGender(value);
-      if (extractedGender != null) {
+      setState(() {
+        _extractedBirthDate = extractedDate;
+        _extractedGender = extractedGender;
+      });
+    } else {
+      if (_extractedBirthDate != null || _extractedGender != null) {
         setState(() {
-          _selectedGender = extractedGender; // 'male' or 'female'
+          _extractedBirthDate = null;
+          _extractedGender = null;
         });
       } else {
         // No action needed
       }
-    } else {
-      // No action needed
     }
   }
 
@@ -328,75 +330,21 @@ class _EditProfileViewState extends State<EditProfileView> {
                   const SizedBox(height: 16.0),
                   TextFormField(
                     controller: _nationalIdController,
-                    decoration: const InputDecoration(labelText: 'National ID'),
+                    keyboardType: TextInputType.number,
+                    maxLength: 14,
+                    style: const TextStyle(fontWeight: FontWeight.w600, letterSpacing: 1.1),
+                    decoration: InputDecoration(
+                      counterText: '',
+                      labelText: 'National ID',
+                      prefixIcon: const Icon(Icons.badge_outlined, size: 20.0),
+                      suffixIcon: _extractedBirthDate != null
+                          ? const Icon(Icons.check_circle_rounded, color: AppColors.success, size: 20.0)
+                          : null,
+                    ),
                   ),
-                  const SizedBox(height: 16.0),
-                  TextFormField(
-                    controller: _birthDateController,
-                    decoration: const InputDecoration(labelText: 'Birth Date'),
-                  ),
-                  const SizedBox(height: 16.0),
-                  // Gender Field (Dimmed & Read-Only)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        context.tr('gender'),
-                        style: TextStyle(
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.w600,
-                          color: is_dark ? AppColors.darkTextPrimary : AppColors.slate700,
-                        ),
-                      ),
-                      const SizedBox(height: 8.0),
-                      Opacity(
-                        opacity: 0.65, // Dimmed look
-                        child: IgnorePointer(
-                          ignoring: true, // Prevents user interaction
-                          child: Container(
-                            height: 48.0,
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                            decoration: BoxDecoration(
-                              color: is_dark
-                                  ? AppColors.darkSurfaceElevated
-                                  : AppColors.slate100, // Disabled grey background
-                              borderRadius: BorderRadius.circular(12.0),
-                              border: Border.all(
-                                color: is_dark ? AppColors.darkBorder : AppColors.slate200,
-                              ),
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  _selectedGender == 'female'
-                                      ? Icons.female_rounded
-                                      : Icons.male_rounded,
-                                  color: is_dark ? AppColors.darkTextSecondary : AppColors.slate600,
-                                  size: 20.0,
-                                ),
-                                const SizedBox(width: 10.0),
-                                Text(
-                                  _selectedGender == 'female'
-                                      ? context.tr('female')
-                                      : context.tr('male'),
-                                  style: TextStyle(
-                                    fontSize: 14.0,
-                                    fontWeight: FontWeight.w500,
-                                    color: is_dark ? AppColors.darkTextPrimary : AppColors.slate800,
-                                  ),
-                                ),
-                                const Spacer(),
-                                Icon(
-                                  Icons.lock_outline_rounded,
-                                  color: is_dark ? AppColors.darkTextMuted : AppColors.slate400,
-                                  size: 16.0,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                  NationalIdInfoBadges(
+                    birthDate: _extractedBirthDate,
+                    gender: _extractedGender,
                   ),
                   const SizedBox(height: 32.0),
                   SizedBox(

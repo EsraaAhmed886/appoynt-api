@@ -131,5 +131,23 @@ void main() {
 
       expect(fakeRepo.updateProfileCalled, isTrue);
     });
+
+    testWidgets('entering 14-digit National ID auto-displays dynamic info badges',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(createTestWidget(cubit: cubit));
+      await tester.pumpAndSettle();
+
+      // Find National ID TextFormField
+      final Finder nationalIdField = find.widgetWithText(TextFormField, 'National ID');
+      expect(nationalIdField, findsOneWidget);
+
+      // Enter female 14-digit National ID (30508078800044 -> 07 Aug 2005, Female)
+      await tester.enterText(nationalIdField, '30508078800044');
+      await tester.pumpAndSettle();
+
+      expect(find.text('07 Aug 2005'), findsOneWidget);
+      expect(find.text('Female'), findsOneWidget);
+      expect(find.text('Auto-detected from National ID'), findsOneWidget);
+    });
   });
 }
