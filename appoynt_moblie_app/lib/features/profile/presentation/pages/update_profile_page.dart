@@ -2,15 +2,16 @@
  * File Name: update_profile_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/07/2026
- * Version Information: V1.4.0
+ * Version Information: V1.5.0
  * Dependencies: package:flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart,
- *   package:appoynt_mobile_app/features/profile/data/models/update_profile_request_model.dart
+ *   package:appoynt_mobile_app/features/profile/data/models/update_profile_request_model.dart,
+ *   package:appoynt_mobile_app/core/utils/national_id_parser.dart
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 29/08/2026]
- * File Description: Defines the Update Profile layout form fields, validators, and backend save handlers with standardized dark slate theme.
+ * File Description: Defines the Update Profile layout form fields, validators, and backend save handlers with auto-calculated read-only gender.
  */
 
 // Importing flutter services for InputFormatters
@@ -452,44 +453,35 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
     }
   }
 
-  // Real-time listener parsing 14-digit National ID to automatically extract Date of Birth
+  // Real-time listener parsing 14-digit National ID to automatically extract Date of Birth and Gender
   void _on_national_id_changed() {
     // Read national ID text string
     final String id = _national_id_controller.text.trim();
     // Validate that length is exactly 14 digits and contains only numbers
     if (14 == id.length && RegExp(r'^\d+$').hasMatch(id)) {
-      // Extract century indicator (2 = 1900s, 3 = 2000s)
-      final int century_code = int.parse(id.substring(0, 1));
-      // Resolve century start year
-      final int century = 2 == century_code ? 1900 : (3 == century_code ? 2000 : 0);
-      // Validate supported century prefix
-      if (century > 0) {
-        // Extract year, month, and day substrings
-        final int year_val = int.parse(id.substring(1, 3));
-        final int month_val = int.parse(id.substring(3, 5));
-        final int day_val = int.parse(id.substring(5, 7));
-        // Validate month range (1 to 12) and day range (1 to 31)
-        if (month_val >= 1 && month_val <= 12 && day_val >= 1 && day_val <= 31) {
-          // Attempt date formatting
-          try {
-            // Calculate year
-            final int year = century + year_val;
-            // Instantiating DateTime to trigger validation exceptions
-            DateTime(year, month_val, day_val);
-            // Format as DD/MM/YYYY
-            _dob_controller.text =
-                "${day_val.toString().padLeft(2, '0')}/${month_val.toString().padLeft(2, '0')}/$year";
-            // Refresh state layout
-            setState(() {});
-          } catch (_) {
-            // Invalid date components (ignored)
-          }
-        } else {
-          // Parsing failure
-        }
+      // 1. Auto-extract Birth Date
+      final DateTime? extracted_date = NationalIdParser.extractBirthDate(id);
+      if (null != extracted_date) {
+        _dob_controller.text =
+            "${extracted_date.day.toString().padLeft(2, '0')}/${extracted_date.month.toString().padLeft(2, '0')}/${extracted_date.year}";
       } else {
-        // Invalid century prefix
+        // No action needed
       }
+
+      // 2. Auto-extract Gender (Odd -> Male, Even -> Female)
+      final String? extracted_gender = NationalIdParser.extractGender(id);
+      if (null != extracted_gender) {
+        final String formatted_gender =
+            'female' == extracted_gender.toLowerCase() ? 'Female' : 'Male';
+        final cubit = context.read<ProfileCubit>();
+        cubit.update_temp_profile(
+          cubit.state.temp_profile.copyWith(gender: formatted_gender),
+        );
+      } else {
+        // No action needed
+      }
+      // Refresh state layout
+      setState(() {});
     } else {
       // Incomplete ID input
     }
@@ -660,8 +652,8 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
     // Validate form fields using validator triggers
     if (true == _form_key.currentState?.validate()) {
       // Convert gender string label into standard API integer (0 for Male, 1 for Female)
-      final String gender_str = context.read<ProfileCubit>().state.temp_profile.gender;
-      final int? gender_val = 'Male' == gender_str ? 0 : ('Female' == gender_str ? 1 : null);
+      final String gender_str = context.read<ProfileCubit>().state.temp_profile.gender.toLowerCase();
+      final int? gender_val = 'male' == gender_str ? 0 : ('female' == gender_str ? 1 : null);
       // Format birthdate from DD/MM/YYYY to YYYY-MM-DD for backend API payload compatibility
       String? dob_api;
       if (_dob_controller.text.isNotEmpty) {
@@ -1109,29 +1101,61 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                       ),
                                     ),
                                     const SizedBox(height: _LocalDimensions.field_spacing_tiny),
-                                    // Segmented chips for gender choices limited strictly to Male and Female
-                                    _build_segmented_chips<String>(
-                                      values: const ['Male', 'Female'],
-                                      labels: [
-                                        localizations.profile_gender_male,
-                                        localizations.profile_gender_female,
-                                      ],
-                                      selectedValue:
-                                          (state.temp_profile.gender ==
-                                                      'Male' ||
-                                                   state.temp_profile.gender ==
-                                                      'Female')
-                                              ? state.temp_profile.gender
-                                              : 'Male',
-                                      onChanged: (value) {
-                                        context
-                                            .read<ProfileCubit>()
-                                            .update_temp_profile(
-                                              state.temp_profile
-                                                  .copyWith(gender: value),
-                                            );
-                                      },
-                                      is_dark: is_dark,
+                                    // Gender Field (Dimmed & Read-Only / Auto-Calculated from National ID)
+                                    Opacity(
+                                      opacity: 0.65, // Dimmed look
+                                      child: IgnorePointer(
+                                        ignoring: true, // Prevents user interaction
+                                        child: Container(
+                                          height: 48.0,
+                                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                          decoration: BoxDecoration(
+                                            color: is_dark
+                                                ? AppColors.darkSurfaceElevated
+                                                : AppColors.slate100, // Disabled grey background
+                                            borderRadius: BorderRadius.circular(12.0),
+                                            border: Border.all(
+                                              color: is_dark
+                                                  ? AppColors.darkBorder
+                                                  : AppColors.slate200,
+                                            ),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                'female' == state.temp_profile.gender.toLowerCase()
+                                                    ? Icons.female_rounded
+                                                    : Icons.male_rounded,
+                                                color: is_dark
+                                                    ? AppColors.darkTextSecondary
+                                                    : AppColors.slate600,
+                                                size: 20.0,
+                                              ),
+                                              const SizedBox(width: 10.0),
+                                              Text(
+                                                'female' == state.temp_profile.gender.toLowerCase()
+                                                    ? localizations.profile_gender_female
+                                                    : localizations.profile_gender_male,
+                                                style: TextStyle(
+                                                  fontSize: 14.0,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: is_dark
+                                                      ? AppColors.darkTextPrimary
+                                                      : AppColors.slate800,
+                                                ),
+                                              ),
+                                              const Spacer(),
+                                              Icon(
+                                                Icons.lock_outline_rounded,
+                                                color: is_dark
+                                                    ? AppColors.darkTextMuted
+                                                    : AppColors.slate400,
+                                                size: 16.0,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                     const SizedBox(height: _LocalDimensions.field_spacing_large),
                                     // Weight and Height side-by-side Row

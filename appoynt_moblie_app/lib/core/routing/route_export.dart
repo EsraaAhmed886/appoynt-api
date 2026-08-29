@@ -36,6 +36,9 @@ export 'package:appoynt_mobile_app/core/theme/app_theme.dart';
 // Exporting centralized floating SnackBar notification helper utility
 export 'package:appoynt_mobile_app/core/utils/custom_snackbar.dart';
 
+// Exporting centralized Egyptian National ID parser utility
+export 'package:appoynt_mobile_app/core/utils/national_id_parser.dart';
+
 // Exporting configured light mode theme data settings
 export 'package:appoynt_mobile_app/core/theme/modes/light_mode.dart';
 

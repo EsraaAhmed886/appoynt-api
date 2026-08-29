@@ -1343,6 +1343,18 @@ extension AppLocalizationsX on BuildContext {
   String tr(String key) {
     final AppLocalizations loc = AppLocalizations.of(this);
     switch (key) {
+      case 'editProfile':
+      case 'edit_profile':
+        return loc.edit_profile_title;
+      case 'gender':
+      case 'profile_gender_label':
+        return loc.profile_gender_label;
+      case 'male':
+      case 'profile_gender_male':
+        return loc.profile_gender_male;
+      case 'female':
+      case 'profile_gender_female':
+        return loc.profile_gender_female;
       case 'updateProfilePhoto':
       case 'update_profile_photo':
         return loc.updateProfilePhoto;

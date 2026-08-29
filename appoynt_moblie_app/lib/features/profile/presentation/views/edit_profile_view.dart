@@ -2,18 +2,19 @@
  * File Name: edit_profile_view.dart
  * Author: Kholoud Khaled
  * Date of Creation: 28/08/2026
- * Version Information: V1.0.0
+ * Version Information: V1.1.0
  * Dependencies: dart:io, package:flutter/material.dart,
  *   package:flutter_bloc/flutter_bloc.dart, package:image_picker/image_picker.dart,
  *   package:appoynt_mobile_app/core/theme/colors/app_colors.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart,
+ *   package:appoynt_mobile_app/core/utils/national_id_parser.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/bloc/edit_profile_cubit.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/bloc/edit_profile_state.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/widgets/profile_photo_options_dialog.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 29/08/2026]
  * File Description: View widget for editing profile details and staging photo updates/deletions
- *   with instant local avatar preview and deferred backend submission on save.
+ *   with auto-calculated read-only gender from Egyptian National ID.
  */
 
 import 'package:flutter/material.dart';
@@ -23,6 +24,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
 import 'package:appoynt_mobile_app/core/utils/custom_snackbar.dart';
+import 'package:appoynt_mobile_app/core/utils/national_id_parser.dart';
 import 'package:appoynt_mobile_app/features/profile/presentation/bloc/edit_profile_cubit.dart';
 import 'package:appoynt_mobile_app/features/profile/presentation/bloc/edit_profile_state.dart';
 import 'package:appoynt_mobile_app/features/profile/presentation/widgets/profile_photo_options_dialog.dart';
@@ -59,6 +61,7 @@ class _EditProfileViewState extends State<EditProfileView> {
   late final TextEditingController _addressController;
   late final TextEditingController _nationalIdController;
   late final TextEditingController _birthDateController;
+  String _selectedGender = 'male';
 
   @override
   void initState() {
@@ -73,6 +76,45 @@ class _EditProfileViewState extends State<EditProfileView> {
         TextEditingController(text: widget.initialNationalId ?? '');
     _birthDateController =
         TextEditingController(text: widget.initialBirthDate ?? '');
+
+    if (widget.initialNationalId != null) {
+      final String? gender = NationalIdParser.extractGender(widget.initialNationalId!);
+      if (gender != null) {
+        _selectedGender = gender;
+      } else {
+        // No action needed
+      }
+    } else {
+      // No action needed
+    }
+
+    _nationalIdController.addListener(_onNationalIdChanged);
+  }
+
+  void _onNationalIdChanged() {
+    final String value = _nationalIdController.text.trim();
+    if (value.length == 14 && RegExp(r'^\d+$').hasMatch(value)) {
+      // 1. Auto-extract Birth Date
+      final extractedDate = NationalIdParser.extractBirthDate(value);
+      if (extractedDate != null) {
+        _birthDateController.text =
+            "${extractedDate.year}-${extractedDate.month.toString().padLeft(2, '0')}-${extractedDate.day.toString().padLeft(2, '0')}";
+      } else {
+        // No action needed
+      }
+
+      // 2. Auto-extract Gender
+      final extractedGender = NationalIdParser.extractGender(value);
+      if (extractedGender != null) {
+        setState(() {
+          _selectedGender = extractedGender; // 'male' or 'female'
+        });
+      } else {
+        // No action needed
+      }
+    } else {
+      // No action needed
+    }
   }
 
   void _applySystemOverlay() {
@@ -90,6 +132,7 @@ class _EditProfileViewState extends State<EditProfileView> {
 
   @override
   void dispose() {
+    _nationalIdController.removeListener(_onNationalIdChanged);
     _firstNameController.dispose();
     _lastNameController.dispose();
     _phoneController.dispose();
@@ -291,6 +334,69 @@ class _EditProfileViewState extends State<EditProfileView> {
                   TextFormField(
                     controller: _birthDateController,
                     decoration: const InputDecoration(labelText: 'Birth Date'),
+                  ),
+                  const SizedBox(height: 16.0),
+                  // Gender Field (Dimmed & Read-Only)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        context.tr('gender'),
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w600,
+                          color: is_dark ? AppColors.darkTextPrimary : AppColors.slate700,
+                        ),
+                      ),
+                      const SizedBox(height: 8.0),
+                      Opacity(
+                        opacity: 0.65, // Dimmed look
+                        child: IgnorePointer(
+                          ignoring: true, // Prevents user interaction
+                          child: Container(
+                            height: 48.0,
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            decoration: BoxDecoration(
+                              color: is_dark
+                                  ? AppColors.darkSurfaceElevated
+                                  : AppColors.slate100, // Disabled grey background
+                              borderRadius: BorderRadius.circular(12.0),
+                              border: Border.all(
+                                color: is_dark ? AppColors.darkBorder : AppColors.slate200,
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  _selectedGender == 'female'
+                                      ? Icons.female_rounded
+                                      : Icons.male_rounded,
+                                  color: is_dark ? AppColors.darkTextSecondary : AppColors.slate600,
+                                  size: 20.0,
+                                ),
+                                const SizedBox(width: 10.0),
+                                Text(
+                                  _selectedGender == 'female'
+                                      ? context.tr('female')
+                                      : context.tr('male'),
+                                  style: TextStyle(
+                                    fontSize: 14.0,
+                                    fontWeight: FontWeight.w500,
+                                    color: is_dark ? AppColors.darkTextPrimary : AppColors.slate800,
+                                  ),
+                                ),
+                                const Spacer(),
+                                Icon(
+                                  Icons.lock_outline_rounded,
+                                  color: is_dark ? AppColors.darkTextMuted : AppColors.slate400,
+                                  size: 16.0,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 32.0),
                   SizedBox(
