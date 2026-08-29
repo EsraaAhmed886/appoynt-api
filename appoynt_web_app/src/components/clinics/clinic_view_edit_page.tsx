@@ -75,7 +75,7 @@ export default function ClinicViewEditPage({
 
   if (!is_loaded) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-app-input_fill">
+      <div className="flex min-h-[400px] items-center justify-center">
         <div className="text-center space-y-3">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-app-primary border-t-transparent mx-auto" />
           <p className="text-sm font-medium text-app-text-secondary">Loading clinic details...</p>
@@ -89,9 +89,8 @@ export default function ClinicViewEditPage({
   const clinic_code = `CLN-${String(clinic_id).padStart(3, "0")}`;
 
   return (
-    <div className="min-h-screen bg-app-input_fill px-4 py-8 md:px-8 lg:px-12 pb-24">
-      <div className="mx-auto max-w-7xl space-y-6">
-        {/* Page Header (No Top Edit Button) */}
+    <div className="mx-auto max-w-7xl space-y-6 pb-20">
+      {/* Page Header (No Top Edit Button) */}
         <ClinicDetailsHeader
           clinic_name={form.clinicName}
           status={form.status}
@@ -189,6 +188,5 @@ export default function ClinicViewEditPage({
           on_close={actions.closeSuccessModal}
         />
       </div>
-    </div>
   );
 }
