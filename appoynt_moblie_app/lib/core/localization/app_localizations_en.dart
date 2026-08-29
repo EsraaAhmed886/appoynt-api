@@ -1335,6 +1335,18 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get auto_detected_from_national_id => 'Auto-detected from National ID';
   @override
+  String get governorate => 'Governorate';
+  @override
+  String get city => 'City';
+  @override
+  String get select_governorate => 'Select Governorate';
+  @override
+  String get select_city => 'Select City';
+  @override
+  String get select_gov_first => 'Select Governorate first';
+  @override
+  String get loading_text => 'Loading...';
+  @override
   String get profile_national_id_hint => 'Enter 14-digit National ID';
   @override
   String get profile_error_national_id_empty => 'National ID cannot be empty.';

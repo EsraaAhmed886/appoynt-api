@@ -15,6 +15,8 @@ import 'dart:io';
 import 'package:appoynt_mobile_app/features/profile/data/models/user_profile_model.dart';
 // Importing UpdateProfileRequestModel representation
 import 'package:appoynt_mobile_app/features/profile/data/models/update_profile_request_model.dart';
+// Importing GovernorateModel & CityModel representations
+import 'package:appoynt_mobile_app/features/profile/data/models/governorate_model.dart';
 
 /// Repository interface defining domain business tasks for user profile.
 abstract class ProfileRepository {
@@ -39,6 +41,12 @@ abstract class ProfileRepository {
     File? imageFile,
     bool deleteCurrentPhoto = false,
   });
+
+  /// Retrieves list of Egyptian Governorates (with associated cities).
+  Future<List<GovernorateModel>> getGovernorates();
+
+  /// Retrieves list of Cities for a specific Governorate.
+  Future<List<CityModel>> getCitiesByGovernorate(dynamic governorateId);
 
   /// Uploads a new profile photo from a local file path using multipart POST.
   /// Persists the returned image URL to local cache and returns it.

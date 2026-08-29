@@ -37,6 +37,8 @@ import 'package:appoynt_mobile_app/features/profile/domain/repositories/profile_
 import 'package:appoynt_mobile_app/features/profile/domain/usecases/get_user_profile_usecase.dart';
 import 'package:appoynt_mobile_app/features/profile/domain/usecases/update_user_profile_usecase.dart';
 import 'package:appoynt_mobile_app/features/profile/data/models/user_profile_model.dart';
+// Importing GovernorateModel & CityModel representations
+import 'package:appoynt_mobile_app/features/profile/data/models/governorate_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 // Importing image_picker for camera and gallery photo selection
@@ -48,6 +50,14 @@ import 'package:appoynt_mobile_app/features/profile/domain/usecases/delete_profi
 
 // Profile business logic Cubit controller class
 class ProfileCubit extends Cubit<ProfileState> {
+  // Cascading Governorates & Cities for Address Selection
+  List<GovernorateModel> governoratesList = [];
+  List<CityModel> citiesList = [];
+  GovernorateModel? selectedGovernorate;
+  CityModel? selectedCity;
+  bool isGovernoratesLoading = false;
+  bool isCitiesLoading = false;
+
   // Master list of available chronic conditions options (to be fetched from API/DB)
   final List<Map<String, String>> available_conditions = const [
     // Diabetes details EN/AR and icon key
@@ -100,66 +110,272 @@ class ProfileCubit extends Cubit<ProfileState> {
   // Constructor initializing with initial blank state configuration
   ProfileCubit() : super(ProfileState.initial());
 
+  // Fetches Egyptian Governorates lookup dataset
+  Future<void> fetchGovernorates({
+    dynamic initialGovId,
+    dynamic initialCityId,
+    String? initialGovName,
+    String? initialCityName,
+  }) async {
+    isGovernoratesLoading = true;
+    if (!isClosed) {
+      emit(state.copyWith(
+        profile: state.profile,
+        temp_profile: state.temp_profile,
+      ));
+    } else {
+      // Cubit closed
+    }
+
+    try {
+      final List<GovernorateModel> data =
+          await get_it<ProfileRepository>().getGovernorates();
+      governoratesList = data;
+      debugPrint(
+          '[ProfileCubit] Loaded ${governoratesList.length} governorates successfully.');
+
+      if (initialGovId != null) {
+        for (final gov in governoratesList) {
+          if (gov.id.toString() == initialGovId.toString()) {
+            selectedGovernorate = gov;
+            break;
+          } else {
+            // Check next
+          }
+        }
+      } else if (initialGovName != null && initialGovName.trim().isNotEmpty) {
+        final String search = initialGovName.trim().toLowerCase();
+        for (final gov in governoratesList) {
+          if (gov.nameEn.toLowerCase() == search ||
+              gov.nameAr.toLowerCase() == search) {
+            selectedGovernorate = gov;
+            break;
+          } else {
+            // Check next
+          }
+        }
+      } else {
+        // No initial governorate match
+      }
+
+      if (selectedGovernorate != null) {
+        if (initialCityId != null) {
+          for (final city in selectedGovernorate!.cities) {
+            if (city.id.toString() == initialCityId.toString()) {
+              selectedCity = city;
+              break;
+            } else {
+              // Check next
+            }
+          }
+        } else if (initialCityName != null &&
+            initialCityName.trim().isNotEmpty) {
+          final String searchCity = initialCityName.trim().toLowerCase();
+          for (final city in selectedGovernorate!.cities) {
+            if (city.nameEn.toLowerCase() == searchCity ||
+                city.nameAr.toLowerCase() == searchCity) {
+              selectedCity = city;
+              break;
+            } else {
+              // Check next
+            }
+          }
+        } else {
+          // No initial city match
+        }
+      } else {
+        // No governorate selected
+      }
+      isGovernoratesLoading = false;
+      if (!isClosed) {
+        emit(state.copyWith(
+          profile: state.profile,
+          temp_profile: state.temp_profile,
+        ));
+      } else {
+        // Cubit closed
+      }
+    } catch (e) {
+      governoratesList = GovernorateModel.defaultGovernorates;
+      isGovernoratesLoading = false;
+      debugPrint('[ProfileCubit] Failed to load governorates from API: $e, using default list.');
+      if (!isClosed) {
+        emit(state.copyWith(
+          profile: state.profile,
+          temp_profile: state.temp_profile,
+        ));
+      } else {
+        // Cubit closed
+      }
+    }
+  }
+
+  // Handles governorate selection and fetches dependent cities
+  Future<void> onGovernorateChanged(GovernorateModel? gov) async {
+    if (gov == null) {
+      selectedGovernorate = null;
+      selectedCity = null;
+      citiesList = [];
+      if (!isClosed) {
+        emit(state.copyWith(
+          profile: state.profile,
+          temp_profile: state.temp_profile,
+        ));
+      } else {
+        // Cubit closed
+      }
+      return;
+    } else {
+      selectedGovernorate = gov;
+      selectedCity = null; // Auto-reset city selection
+      citiesList = [];
+    }
+
+    // If cities are already embedded in the governorate object, use them directly:
+    if (gov.cities.isNotEmpty) {
+      citiesList = gov.cities;
+      if (!isClosed) {
+        emit(state.copyWith(
+          profile: state.profile,
+          temp_profile: state.temp_profile,
+        ));
+      } else {
+        // Cubit closed
+      }
+      return;
+    } else {
+      // Otherwise, fetch cities from the API dynamically:
+      isCitiesLoading = true;
+      if (!isClosed) {
+        emit(state.copyWith(
+          profile: state.profile,
+          temp_profile: state.temp_profile,
+        ));
+      } else {
+        // Cubit closed
+      }
+    }
+
+    try {
+      final fetchedCities =
+          await get_it<ProfileRepository>().getCitiesByGovernorate(gov.id);
+      citiesList = fetchedCities;
+      isCitiesLoading = false;
+      debugPrint(
+          '[ProfileCubit] Loaded ${citiesList.length} cities for ${gov.nameEn}');
+      if (!isClosed) {
+        emit(state.copyWith(
+          profile: state.profile,
+          temp_profile: state.temp_profile,
+        ));
+      } else {
+        // Cubit closed
+      }
+    } catch (e) {
+      isCitiesLoading = false;
+      debugPrint('[ProfileCubit] Failed to load cities: $e');
+      if (!isClosed) {
+        emit(state.copyWith(
+          profile: state.profile,
+          temp_profile: state.temp_profile,
+        ));
+      } else {
+        // Cubit closed
+      }
+    }
+  }
+
+  // Handles city selection
+  void onCityChanged(CityModel? city) {
+    selectedCity = city;
+    if (!isClosed) {
+      emit(state.copyWith(
+        profile: state.profile,
+        temp_profile: state.temp_profile,
+      ));
+    } else {
+      // Cubit closed
+    }
+  }
+
   // Fetches the user profile data from the remote API and updates state
   Future<void> fetchUserProfile() async {
+    // Get safe fallback profile if state.profile is null or uninitialized
+    final PatientProfile currentProfile = state.profile;
+    final PatientProfile currentTempProfile = state.temp_profile;
+
     // Emit ProfileLoading state to trigger loading UI
     emit(ProfileLoading(
       // Keep existing profile
-      profile: state.profile,
+      profile: currentProfile,
       // Keep existing temp profile
-      temp_profile: state.temp_profile,
+      temp_profile: currentTempProfile,
       // Keep existing dirty state
       is_dirty: state.is_dirty,
     ));
+
     // Try catch block to handle network exceptions
     try {
-      // Call GetUserProfileUseCase to fetch user details
+      // 1. Fetch user profile from API
       final user_profile = await get_it<GetUserProfileUseCase>().call();
-      // Map API model values to domain PatientProfile entity to populate local UI fields
+
+      // 2. Safely map API response to domain PatientProfile entity
       final loaded_profile = PatientProfile(
-        // Map first name
-        first_name: user_profile.first_name,
-        // Map last name
-        last_name: user_profile.last_name,
-        // Map phone number
-        phone: user_profile.phone_number,
-        // Map email
-        email: user_profile.email,
+        // Map first name safely
+        first_name: user_profile.first_name.isNotEmpty
+            ? user_profile.first_name
+            : currentProfile.first_name,
+        // Map last name safely
+        last_name: user_profile.last_name.isNotEmpty
+            ? user_profile.last_name
+            : currentProfile.last_name,
+        // Map phone number safely
+        phone: user_profile.phone_number.isNotEmpty
+            ? user_profile.phone_number
+            : currentProfile.phone,
+        // Map email safely
+        email: user_profile.email.isNotEmpty
+            ? user_profile.email
+            : currentProfile.email,
         // Convert gender integer to localized text string
         gender: 0 == user_profile.gender
             ? 'Male'
-            : (1 == user_profile.gender ? 'Female' : ''),
-        // Map address
-        address: user_profile.address ?? '',
+            : (1 == user_profile.gender ? 'Female' : currentProfile.gender),
+        // Map address with fallback
+        address: user_profile.address ?? currentProfile.address,
         // Map national ID from model or keep local
-        national_id: user_profile.national_id ?? state.profile.national_id,
+        national_id: (user_profile.national_id != null &&
+                user_profile.national_id!.isNotEmpty)
+            ? user_profile.national_id!
+            : currentProfile.national_id,
         // Map weight from model or keep local
-        weight: user_profile.weight ?? state.profile.weight,
+        weight: user_profile.weight ?? currentProfile.weight,
         // Map height from model or keep local
-        height: user_profile.height ?? state.profile.height,
+        height: user_profile.height ?? currentProfile.height,
         // Map blood group from model or keep local
-        blood_group: user_profile.blood_group ?? state.profile.blood_group,
+        blood_group: user_profile.blood_group ?? currentProfile.blood_group,
         // Keep existing local smoking status
-        smoking: state.profile.smoking,
+        smoking: currentProfile.smoking,
         // Keep existing local food allergies
-        food_allergies: state.profile.food_allergies,
+        food_allergies: currentProfile.food_allergies,
         // Keep existing local medication allergies
-        medication_allergies: state.profile.medication_allergies,
+        medication_allergies: currentProfile.medication_allergies,
         // Keep existing local prescriptions
-        prescriptions: state.profile.prescriptions,
+        prescriptions: currentProfile.prescriptions,
         // Keep existing local lab tests
-        lab_tests: state.profile.lab_tests,
+        lab_tests: currentProfile.lab_tests,
         // Keep existing local scans
-        scans: state.profile.scans,
+        scans: currentProfile.scans,
         // Keep existing local chronic conditions
-        chronic_conditions: state.profile.chronic_conditions,
+        chronic_conditions: currentProfile.chronic_conditions,
         // Keep existing local insurance cards
-        insurance_cards: state.profile.insurance_cards,
+        insurance_cards: currentProfile.insurance_cards,
         // Keep existing local avatar url
-        avatar_url: state.profile.avatar_url,
+        avatar_url: currentProfile.avatar_url,
         // Keep existing local payment cards
-        payment_cards: state.profile.payment_cards,
+        payment_cards: currentProfile.payment_cards,
       );
+
       // Emit ProfileLoaded state with fetched user model and mapped patient profile
       emit(ProfileLoaded(
         // Bind fetched user profile model
@@ -171,20 +387,30 @@ class ProfileCubit extends Cubit<ProfileState> {
         // Reset dirty status
         is_dirty: false,
       ));
-      // Catch all block for network and parsing exceptions
+    } on DioException catch (e) {
+      // Ignore 401 errors here since AuthInterceptor delegates to SessionManager / AuthCubit logout
+      if (401 == e.response?.statusCode) {
+        return;
+      } else {
+        final String clean_msg = ErrorHandler.handleDioError(e);
+        // Emit ProfileUpdateError state with the clean error message
+        emit(ProfileUpdateError(
+          // Set error message
+          message: clean_msg,
+          // Keep existing profile
+          profile: currentProfile,
+          // Keep existing temp profile
+          temp_profile: currentTempProfile,
+          // Keep existing dirty status
+          is_dirty: state.is_dirty,
+        ));
+      }
     } catch (e) {
-      final String clean_msg = (e is DioException)
-          ? ErrorHandler.handleDioError(e)
-          : 'Failed to load profile. Please try again.';
-      // Emit ProfileUpdateError state with the clean error message
+      // General error catch block
       emit(ProfileUpdateError(
-        // Set error message
-        message: clean_msg,
-        // Keep existing profile
-        profile: state.profile,
-        // Keep existing temp profile
-        temp_profile: state.temp_profile,
-        // Keep existing dirty status
+        message: 'Failed to load profile. Please try again.',
+        profile: currentProfile,
+        temp_profile: currentTempProfile,
         is_dirty: state.is_dirty,
       ));
     }
@@ -327,48 +553,59 @@ class ProfileCubit extends Cubit<ProfileState> {
     // Optional pre-resolved profile photo URL from cache or upload response
     String? resolved_photo_url,
   }) {
+    final PatientProfile baseProfile = state.profile;
     // Return a fully populated PatientProfile using the model field values
     return PatientProfile(
       // Map first name from the API model
-      first_name: model.first_name,
+      first_name: model.first_name.isNotEmpty
+          ? model.first_name
+          : baseProfile.first_name,
       // Map last name from the API model
-      last_name: model.last_name,
+      last_name: model.last_name.isNotEmpty
+          ? model.last_name
+          : baseProfile.last_name,
       // Map phone number from the API model
-      phone: model.phone_number,
+      phone: model.phone_number.isNotEmpty
+          ? model.phone_number
+          : baseProfile.phone,
       // Map email from the API model
-      email: model.email,
+      email: model.email.isNotEmpty ? model.email : baseProfile.email,
       // Map gender integer (0=Male, 1=Female) to display string
-      gender: 0 == model.gender ? 'Male' : (1 == model.gender ? 'Female' : ''),
-      // Map address from the API model with empty-string fallback
-      address: model.address ?? '',
+      gender: 0 == model.gender
+          ? 'Male'
+          : (1 == model.gender ? 'Female' : baseProfile.gender),
+      // Map address from the API model with fallback
+      address: model.address ?? baseProfile.address,
       // Map national ID from the API model or carry existing
-      national_id: model.national_id ?? state.profile.national_id,
+      national_id: (model.national_id != null && model.national_id!.isNotEmpty)
+          ? model.national_id!
+          : baseProfile.national_id,
       // Map weight from the API model or carry existing
-      weight: model.weight ?? state.profile.weight,
+      weight: model.weight ?? baseProfile.weight,
       // Map height from the API model or carry existing
-      height: model.height ?? state.profile.height,
+      height: model.height ?? baseProfile.height,
       // Map blood group from the API model or carry existing
-      blood_group: model.blood_group ?? state.profile.blood_group,
+      blood_group: model.blood_group ?? baseProfile.blood_group,
       // Carry existing local smoking status (not in API response)
-      smoking: state.profile.smoking,
+      smoking: baseProfile.smoking,
       // Carry existing local food allergies (not in API response)
-      food_allergies: state.profile.food_allergies,
+      food_allergies: baseProfile.food_allergies,
       // Carry existing local medication allergies (not in API response)
-      medication_allergies: state.profile.medication_allergies,
+      medication_allergies: baseProfile.medication_allergies,
       // Carry existing local prescriptions (not in API response)
-      prescriptions: state.profile.prescriptions,
+      prescriptions: baseProfile.prescriptions,
       // Carry existing local lab tests (not in API response)
-      lab_tests: state.profile.lab_tests,
+      lab_tests: baseProfile.lab_tests,
       // Carry existing local scans (not in API response)
-      scans: state.profile.scans,
+      scans: baseProfile.scans,
       // Carry existing local chronic conditions (not in API response)
-      chronic_conditions: state.profile.chronic_conditions,
+      chronic_conditions: baseProfile.chronic_conditions,
       // Carry existing local insurance cards (not in API response)
-      insurance_cards: state.profile.insurance_cards,
+      insurance_cards: baseProfile.insurance_cards,
       // Use resolved photo URL when provided, otherwise carry existing local URL
-      avatar_url: resolved_photo_url ?? state.profile.avatar_url,
+      avatar_url: resolved_photo_url ?? baseProfile.avatar_url,
       // Carry existing local payment cards (not in API response)
-      payment_cards: state.profile.payment_cards,
+      payment_cards: baseProfile.payment_cards,
     );
   }
 

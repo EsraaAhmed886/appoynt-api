@@ -33,6 +33,9 @@ import 'package:appoynt_mobile_app/features/profile/data/models/user_profile_mod
 // Importing update profile request model representation
 import 'package:appoynt_mobile_app/features/profile/data/models/update_profile_request_model.dart';
 
+// Importing governorate model representation
+import 'package:appoynt_mobile_app/features/profile/data/models/governorate_model.dart';
+
 /// Contract definition for remote profile operations.
 abstract class ProfileRemoteDataSource {
   /// Submits a request to change the current user's password.
@@ -57,6 +60,12 @@ abstract class ProfileRemoteDataSource {
     bool deleteCurrentPhoto = false,
   });
 
+  /// Retrieves list of Egyptian Governorates (with associated cities).
+  Future<List<GovernorateModel>> getGovernorates();
+
+  /// Retrieves list of Cities for a specific Governorate.
+  Future<List<CityModel>> getCitiesByGovernorate(dynamic governorateId);
+
   /// Uploads a profile photo file using multipart/form-data.
   /// Endpoint: POST /api/patients/profile-photo
   /// Returns the constructed network URL for the uploaded image.
@@ -78,6 +87,114 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
 
   // Constructor mapping required dio client
   const ProfileRemoteDataSourceImpl(this.dio);
+
+  @override
+  // Retrieves the list of Egyptian Governorates from API with local fallback
+  Future<List<GovernorateModel>> getGovernorates() async {
+    try {
+      final Response response = await dio.get('governorates');
+      debugPrint('[Governorates API] Response status: ${response.statusCode}');
+      debugPrint('[Governorates API] Response data: ${response.data}');
+
+      dynamic rawList;
+      if (response.data is List) {
+        rawList = response.data;
+      } else if (response.data is Map<String, dynamic>) {
+        final Map<String, dynamic> map = response.data as Map<String, dynamic>;
+        rawList = map['data'] ??
+            map['result'] ??
+            map['governorates'] ??
+            map['items'] ??
+            map['values'] ??
+            [];
+      } else {
+        rawList = null;
+      }
+
+      if (rawList is List && rawList.isNotEmpty) {
+        final List<GovernorateModel> results = rawList
+            .map((item) =>
+                GovernorateModel.fromJson(item as Map<String, dynamic>))
+            .toList();
+        if (results.isNotEmpty) {
+          debugPrint(
+              '[Governorates API] Successfully parsed ${results.length} governorates from API.');
+          return results;
+        } else {
+          return GovernorateModel.defaultGovernorates;
+        }
+      } else {
+        debugPrint(
+            '[Governorates API] Received empty list or non-list data, using fallback default governorates.');
+        return GovernorateModel.defaultGovernorates;
+      }
+    } catch (e, stack) {
+      debugPrint('[Governorates API] Error fetching governorates: $e');
+      debugPrint(stack.toString());
+      return GovernorateModel.defaultGovernorates;
+    }
+  }
+
+  @override
+  // Retrieves the list of Cities belonging to a specific Governorate
+  Future<List<CityModel>> getCitiesByGovernorate(dynamic governorateId) async {
+    try {
+      final Response response =
+          await dio.get('governorates/$governorateId/cities');
+      debugPrint('[Cities API] Response status: ${response.statusCode}');
+      debugPrint('[Cities API] Response data: ${response.data}');
+
+      dynamic rawList;
+      if (response.data is List) {
+        rawList = response.data;
+      } else if (response.data is Map<String, dynamic>) {
+        final Map<String, dynamic> map = response.data as Map<String, dynamic>;
+        rawList = map['data'] ??
+            map['result'] ??
+            map['cities'] ??
+            map['items'] ??
+            map['values'] ??
+            [];
+      } else {
+        rawList = null;
+      }
+
+      if (rawList is List && rawList.isNotEmpty) {
+        final List<CityModel> results = rawList
+            .map((item) =>
+                CityModel.fromJson(item as Map<String, dynamic>))
+            .toList();
+        if (results.isNotEmpty) {
+          debugPrint(
+              '[Cities API] Successfully parsed ${results.length} cities from API.');
+          return results;
+        } else {
+          return _getFallbackCities(governorateId);
+        }
+      } else {
+        return _getFallbackCities(governorateId);
+      }
+    } catch (e, stack) {
+      debugPrint('[Cities API] Error fetching cities: $e');
+      debugPrint(stack.toString());
+      return _getFallbackCities(governorateId);
+    }
+  }
+
+  List<CityModel> _getFallbackCities(dynamic governorateId) {
+    try {
+      for (final gov in GovernorateModel.defaultGovernorates) {
+        if (gov.id.toString() == governorateId.toString()) {
+          return gov.cities;
+        } else {
+          // Continue searching
+        }
+      }
+      return const [];
+    } catch (_) {
+      return const [];
+    }
+  }
 
   @override
   // Submits a password update PUT request to the server

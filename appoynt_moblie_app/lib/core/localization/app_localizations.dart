@@ -609,6 +609,12 @@ abstract class AppLocalizations {
   String get profile_birthdate_label;
   String get profile_national_id_label;
   String get auto_detected_from_national_id;
+  String get governorate;
+  String get city;
+  String get select_governorate;
+  String get select_city;
+  String get select_gov_first;
+  String get loading_text;
   String get profile_national_id_hint;
   String get profile_error_national_id_empty;
   String get profile_error_national_id_invalid;
@@ -1352,6 +1358,19 @@ extension AppLocalizationsX on BuildContext {
         return loc.profile_national_id_label;
       case 'auto_detected_from_national_id':
         return loc.auto_detected_from_national_id;
+      case 'governorate':
+        return loc.governorate;
+      case 'city':
+        return loc.city;
+      case 'select_governorate':
+        return loc.select_governorate;
+      case 'select_city':
+        return loc.select_city;
+      case 'select_gov_first':
+        return loc.select_gov_first;
+      case 'loading':
+      case 'loading_text':
+        return loc.loading_text;
       case 'gender':
       case 'profile_gender_label':
         return loc.profile_gender_label;

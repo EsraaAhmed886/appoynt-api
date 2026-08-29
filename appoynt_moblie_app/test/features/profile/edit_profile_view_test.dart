@@ -27,6 +27,9 @@ import 'package:appoynt_mobile_app/features/profile/presentation/views/edit_prof
 import 'package:appoynt_mobile_app/features/profile/data/models/user_profile_model.dart';
 import 'package:appoynt_mobile_app/features/profile/data/models/update_profile_request_model.dart';
 
+// Importing GovernorateModel representation
+import 'package:appoynt_mobile_app/features/profile/data/models/governorate_model.dart';
+
 class _FakeProfileRepository implements ProfileRepository {
   bool updateProfileCalled = false;
 
@@ -49,6 +52,16 @@ class _FakeProfileRepository implements ProfileRepository {
       email: 'john@example.com',
       phone_number: phone,
     );
+  }
+
+  @override
+  Future<List<GovernorateModel>> getGovernorates() async {
+    return GovernorateModel.defaultGovernorates;
+  }
+
+  @override
+  Future<List<CityModel>> getCitiesByGovernorate(dynamic governorateId) async {
+    return const [];
   }
 
   @override
@@ -78,9 +91,12 @@ class _FakeProfileRepository implements ProfileRepository {
 }
 
 void main() {
-  Widget createTestWidget({required EditProfileCubit cubit}) {
+  Widget createTestWidget({
+    required EditProfileCubit cubit,
+    Locale locale = const Locale('en'),
+  }) {
     return MaterialApp(
-      locale: const Locale('en'),
+      locale: locale,
       localizationsDelegates: app_localizations_delegates,
       supportedLocales: app_supported_locales,
       home: BlocProvider<EditProfileCubit>.value(
@@ -117,6 +133,8 @@ void main() {
       expect(find.text('Jane'), findsOneWidget);
       expect(find.text('Smith'), findsOneWidget);
       expect(find.text('Save'), findsOneWidget);
+      expect(find.text('Governorate'), findsOneWidget);
+      expect(find.text('City'), findsOneWidget);
     });
 
     testWidgets('tapping Save button invokes saveProfile on cubit',
@@ -132,7 +150,7 @@ void main() {
       expect(fakeRepo.updateProfileCalled, isTrue);
     });
 
-    testWidgets('entering 14-digit National ID auto-displays dynamic info badges',
+    testWidgets('entering 14-digit National ID auto-displays dynamic info badges in English',
         (WidgetTester tester) async {
       await tester.pumpWidget(createTestWidget(cubit: cubit));
       await tester.pumpAndSettle();
@@ -148,6 +166,23 @@ void main() {
       expect(find.text('07 Aug 2005'), findsOneWidget);
       expect(find.text('Female'), findsOneWidget);
       expect(find.text('Auto-detected from National ID'), findsOneWidget);
+    });
+
+    testWidgets('entering 14-digit National ID auto-displays localized info badges in Arabic',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(createTestWidget(cubit: cubit, locale: const Locale('ar')));
+      await tester.pumpAndSettle();
+
+      // Find National ID TextFormField
+      final Finder nationalIdField = find.widgetWithText(TextFormField, 'National ID');
+      expect(nationalIdField, findsOneWidget);
+
+      // Enter female 14-digit National ID (30508078800044 -> 07 أغسطس 2005, أنثى)
+      await tester.enterText(nationalIdField, '30508078800044');
+      await tester.pumpAndSettle();
+
+      expect(find.text('07 أغسطس 2005'), findsOneWidget);
+      expect(find.text('أنثى'), findsOneWidget);
     });
   });
 }

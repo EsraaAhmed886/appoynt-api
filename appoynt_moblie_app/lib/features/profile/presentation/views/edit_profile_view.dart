@@ -59,7 +59,6 @@ class _EditProfileViewState extends State<EditProfileView> {
   late final TextEditingController _firstNameController;
   late final TextEditingController _lastNameController;
   late final TextEditingController _phoneController;
-  late final TextEditingController _addressController;
   late final TextEditingController _nationalIdController;
   late final TextEditingController _birthDateController;
   DateTime? _extractedBirthDate;
@@ -72,8 +71,6 @@ class _EditProfileViewState extends State<EditProfileView> {
     _firstNameController = TextEditingController(text: widget.initialFirstName);
     _lastNameController = TextEditingController(text: widget.initialLastName);
     _phoneController = TextEditingController(text: widget.initialPhone);
-    _addressController =
-        TextEditingController(text: widget.initialAddress ?? '');
     _nationalIdController =
         TextEditingController(text: widget.initialNationalId ?? '');
     _birthDateController =
@@ -87,6 +84,13 @@ class _EditProfileViewState extends State<EditProfileView> {
     }
 
     _nationalIdController.addListener(_onNationalIdChanged);
+
+    // Fetch governorates on screen load
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<EditProfileCubit>().loadGovernorates(
+            initialGovName: widget.initialAddress,
+          );
+    });
   }
 
   void _onNationalIdChanged() {
@@ -138,7 +142,6 @@ class _EditProfileViewState extends State<EditProfileView> {
     _firstNameController.dispose();
     _lastNameController.dispose();
     _phoneController.dispose();
-    _addressController.dispose();
     _nationalIdController.dispose();
     _birthDateController.dispose();
     super.dispose();
@@ -324,11 +327,6 @@ class _EditProfileViewState extends State<EditProfileView> {
                   ),
                   const SizedBox(height: 16.0),
                   TextFormField(
-                    controller: _addressController,
-                    decoration: const InputDecoration(labelText: 'Address'),
-                  ),
-                  const SizedBox(height: 16.0),
-                  TextFormField(
                     controller: _nationalIdController,
                     keyboardType: TextInputType.number,
                     maxLength: 14,
@@ -346,6 +344,8 @@ class _EditProfileViewState extends State<EditProfileView> {
                     birthDate: _extractedBirthDate,
                     gender: _extractedGender,
                   ),
+                  const SizedBox(height: 16.0),
+                  const GovernorateCityDropdowns(),
                   const SizedBox(height: 32.0),
                   SizedBox(
                     width: double.infinity,
@@ -360,7 +360,12 @@ class _EditProfileViewState extends State<EditProfileView> {
                                           _firstNameController.text.trim(),
                                       lastName: _lastNameController.text.trim(),
                                       phone: _phoneController.text.trim(),
-                                      address: _addressController.text.trim(),
+                                      governorateId:
+                                          state.selectedGovernorate?.id,
+                                      governorateName:
+                                          state.selectedGovernorate?.nameEn,
+                                      cityId: state.selectedCity?.id,
+                                      cityName: state.selectedCity?.nameEn,
                                       nationalId:
                                           _nationalIdController.text.trim(),
                                       birthDate:

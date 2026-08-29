@@ -2,19 +2,28 @@
  * File Name: edit_profile_body.dart
  * Author: Kholoud Khaled
  * Date of Creation: 29/08/2026
- * Version Information: V1.0.0
+ * Version Information: V1.1.0
  * Dependencies: package:flutter/material.dart,
+ *   package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/core/theme/colors/app_colors.dart,
- *   package:appoynt_mobile_app/core/localization/app_localizations.dart
+ *   package:appoynt_mobile_app/core/localization/app_localizations.dart,
+ *   package:appoynt_mobile_app/features/profile/data/models/governorate_model.dart,
+ *   package:appoynt_mobile_app/features/profile/presentation/bloc/edit_profile_cubit.dart,
+ *   package:appoynt_mobile_app/features/profile/presentation/bloc/edit_profile_state.dart
  * Contributors: [Kholoud Khaled]
  * Last Modified Date: [Kholoud Khaled - 29/08/2026]
- * File Description: Widget rendering dynamic auto-detected Date of Birth and Gender Info Badges
- *   underneath Egyptian National ID input field with smooth AnimatedCrossFade transitions.
+ * File Description: Widget providing dynamic auto-detected Date of Birth and Gender Info Badges
+ *   and cascaded Egyptian Governorate & City dropdown selectors with dark/light theme support.
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
+import 'package:appoynt_mobile_app/core/widgets/smart_search_picker.dart';
+import 'package:appoynt_mobile_app/features/profile/data/models/governorate_model.dart';
+import 'package:appoynt_mobile_app/features/profile/presentation/bloc/edit_profile_cubit.dart';
+import 'package:appoynt_mobile_app/features/profile/presentation/bloc/edit_profile_state.dart';
 
 /// Compact auto-detected Date of Birth and Gender badge widget.
 class NationalIdInfoBadges extends StatelessWidget {
@@ -31,8 +40,22 @@ class NationalIdInfoBadges extends StatelessWidget {
     required this.gender,
   });
 
-  String _formatDisplayDate(DateTime date) {
-    const List<String> months = [
+  String _formatDisplayDate(DateTime date, String langCode) {
+    const List<String> arabicMonths = [
+      'يناير',
+      'فبراير',
+      'مارس',
+      'أبريل',
+      'مايو',
+      'يونيو',
+      'يوليو',
+      'أغسطس',
+      'سبتمبر',
+      'أكتوبر',
+      'نوفمبر',
+      'ديسمبر',
+    ];
+    const List<String> englishMonths = [
       'Jan',
       'Feb',
       'Mar',
@@ -47,7 +70,9 @@ class NationalIdInfoBadges extends StatelessWidget {
       'Dec',
     ];
     final String day = date.day.toString().padLeft(2, '0');
-    final String month = months[date.month - 1];
+    final String month = ('ar' == langCode)
+        ? arabicMonths[date.month - 1]
+        : englishMonths[date.month - 1];
     return '$day $month ${date.year}';
   }
 
@@ -55,6 +80,8 @@ class NationalIdInfoBadges extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final AppLocalizations loc = AppLocalizations.of(context);
+    final String currentLocale =
+        Localizations.localeOf(context).languageCode;
     final bool isVisible = birthDate != null && gender != null;
 
     return AnimatedCrossFade(
@@ -90,7 +117,7 @@ class NationalIdInfoBadges extends StatelessWidget {
                             const SizedBox(width: 6.0),
                             Flexible(
                               child: Text(
-                                _formatDisplayDate(birthDate!),
+                                _formatDisplayDate(birthDate!, currentLocale),
                                 style: TextStyle(
                                   fontSize: 13.0,
                                   fontWeight: FontWeight.w600,
@@ -172,6 +199,222 @@ class NationalIdInfoBadges extends StatelessWidget {
           ? CrossFadeState.showSecond
           : CrossFadeState.showFirst,
       duration: const Duration(milliseconds: 250),
+    );
+  }
+}
+
+/// Stacked modern Governorate and City bottom sheet selector input section widget.
+class GovernorateCityDropdowns extends StatelessWidget {
+  const GovernorateCityDropdowns({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final String langCode = Localizations.localeOf(context).languageCode;
+    final bool isAr = 'ar' == langCode;
+    final AppLocalizations loc = AppLocalizations.of(context);
+
+    return BlocBuilder<EditProfileCubit, EditProfileState>(
+      builder: (context, state) {
+        final cubit = context.read<EditProfileCubit>();
+        final bool isGovLoading = state.isGovernoratesLoading;
+        final bool isCityLoading = state.isCitiesLoading;
+        final bool hasSelectedGov = null != state.selectedGovernorate;
+        final List<CityModel> availableCities = state.cities.isNotEmpty
+            ? state.cities
+            : (state.selectedGovernorate?.cities ?? []);
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // -------------------------------------------------------------
+            // 1. Governorate Field
+            // -------------------------------------------------------------
+            Text(
+              isAr ? 'المحافظة' : 'Governorate',
+              style: TextStyle(
+                fontSize: 14.0,
+                fontWeight: FontWeight.w600,
+                color: isDark ? AppColors.darkTextPrimary : AppColors.slate700,
+              ),
+            ),
+            const SizedBox(height: 8.0),
+            _SelectionContainer(
+              icon: Icons.map_outlined,
+              hint: isGovLoading
+                  ? loc.loading_text
+                  : (isAr ? 'اختر المحافظة' : 'Select Governorate'),
+              value: state.selectedGovernorate?.getName(langCode),
+              isLoading: isGovLoading,
+              onTap: () async {
+                if (state.governorates.isNotEmpty) {
+                  final GovernorateModel? selected =
+                      await showSmartSearchPicker<GovernorateModel>(
+                    context: context,
+                    title: isAr ? 'المحافظة' : 'Governorate',
+                    searchHint: isAr
+                        ? 'ابحث عن المحافظة...'
+                        : 'Search governorate...',
+                    items: state.governorates,
+                    itemLabel: (gov) => gov.getName(langCode),
+                    selectedItem: state.selectedGovernorate,
+                  );
+                  if (selected != null) {
+                    cubit.onGovernorateChanged(selected);
+                  } else {
+                    // Dialog dismissed
+                  }
+                } else {
+                  // No governorates available
+                }
+              },
+            ),
+
+            const SizedBox(height: 16.0),
+
+            // -------------------------------------------------------------
+            // 2. City Field (Dependent on Governorate)
+            // -------------------------------------------------------------
+            Text(
+              isAr ? 'المدينة' : 'City',
+              style: TextStyle(
+                fontSize: 14.0,
+                fontWeight: FontWeight.w600,
+                color: isDark ? AppColors.darkTextPrimary : AppColors.slate700,
+              ),
+            ),
+            const SizedBox(height: 8.0),
+            Opacity(
+              opacity: hasSelectedGov ? 1.0 : 0.6,
+              child: _SelectionContainer(
+                icon: Icons.location_city_outlined,
+                hint: !hasSelectedGov
+                    ? (isAr
+                        ? 'يرجى اختيار المحافظة أولاً'
+                        : 'Select Governorate first')
+                    : (isAr ? 'اختر المدينة' : 'Select City'),
+                value: state.selectedCity?.getName(langCode),
+                isLoading: isCityLoading,
+                onTap: (!hasSelectedGov || isCityLoading)
+                    ? null
+                    : () async {
+                        if (availableCities.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                isAr
+                                    ? 'لا توجد مدن متاحة لهذه المحافظة'
+                                    : 'No cities available for this governorate',
+                              ),
+                              duration: const Duration(seconds: 2),
+                            ),
+                          );
+                          return;
+                        } else {
+                          final CityModel? selected =
+                              await showSmartSearchPicker<CityModel>(
+                            context: context,
+                            title: isAr ? 'المدينة' : 'City',
+                            searchHint: isAr
+                                ? 'ابحث عن المدينة...'
+                                : 'Search city...',
+                            items: availableCities,
+                            itemLabel: (city) => city.getName(langCode),
+                            selectedItem: state.selectedCity,
+                          );
+                          if (selected != null) {
+                            cubit.onCityChanged(selected);
+                          } else {
+                            // Dialog dismissed
+                          }
+                        }
+                      },
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Custom Selection Container (Matches Blood Group & Inputs Style)
+// -----------------------------------------------------------------------------
+class _SelectionContainer extends StatelessWidget {
+  final IconData icon;
+  final String hint;
+  final String? value;
+  final bool isLoading;
+  final VoidCallback? onTap;
+
+  const _SelectionContainer({
+    required this.icon,
+    required this.hint,
+    this.value,
+    this.isLoading = false,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final bool hasValue = null != value && value!.trim().isNotEmpty;
+    final bool isEnabled = null != onTap;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12.0),
+      child: Container(
+        height: 52.0,
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.darkSurface : AppColors.slate50,
+          borderRadius: BorderRadius.circular(12.0),
+          border: Border.all(
+            color: isDark ? AppColors.darkBorder : AppColors.slate200,
+            width: 1.0,
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              color: isEnabled ? AppColors.primary : AppColors.slate400,
+              size: 20.0,
+            ),
+            const SizedBox(width: 12.0),
+            Expanded(
+              child: Text(
+                hasValue ? value! : hint,
+                style: TextStyle(
+                  fontSize: 14.0,
+                  fontWeight: hasValue ? FontWeight.w600 : FontWeight.w400,
+                  color: hasValue
+                      ? (isDark ? AppColors.darkTextPrimary : AppColors.slate900)
+                      : (isDark ? AppColors.darkTextMuted : AppColors.slate400),
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            if (isLoading)
+              const SizedBox(
+                width: 16.0,
+                height: 16.0,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.0,
+                  color: AppColors.primary,
+                ),
+              )
+            else
+              Icon(
+                Icons.keyboard_arrow_down_rounded,
+                color: isEnabled ? AppColors.primary : AppColors.slate400,
+                size: 22.0,
+              ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -1338,6 +1338,18 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get auto_detected_from_national_id => 'تم التحديد تلقائيًا من الرقم القومي';
   @override
+  String get governorate => 'المحافظة';
+  @override
+  String get city => 'المدينة';
+  @override
+  String get select_governorate => 'اختر المحافظة';
+  @override
+  String get select_city => 'اختر المدينة';
+  @override
+  String get select_gov_first => 'اختر المحافظة أولاً';
+  @override
+  String get loading_text => 'جاري التحميل...';
+  @override
   String get profile_national_id_hint => 'أدخل الرقم القومي (١٤ رقم)';
   @override
   String get profile_error_national_id_empty =>

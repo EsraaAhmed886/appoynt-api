@@ -25,6 +25,8 @@ import 'package:appoynt_mobile_app/features/profile/data/datasources/profile_loc
 import 'package:appoynt_mobile_app/features/profile/data/models/user_profile_model.dart';
 // Importing UpdateProfileRequestModel representation for update payloads
 import 'package:appoynt_mobile_app/features/profile/data/models/update_profile_request_model.dart';
+// Importing GovernorateModel & CityModel representations
+import 'package:appoynt_mobile_app/features/profile/data/models/governorate_model.dart';
 // Importing Flutter foundation for debug logging support
 import 'package:flutter/foundation.dart';
 
@@ -217,5 +219,17 @@ class ProfileRepositoryImpl implements ProfileRepository {
   Future<String?> getCachedProfilePhotoUrl() async {
     // Delegate the photo URL cache read to the local data source implementation
     return await local_data_source.getProfilePhotoUrl();
+  }
+
+  // Retrieves the list of Egyptian Governorates
+  @override
+  Future<List<GovernorateModel>> getGovernorates() async {
+    return await remote_data_source.getGovernorates();
+  }
+
+  // Retrieves the list of Cities for a specific Governorate
+  @override
+  Future<List<CityModel>> getCitiesByGovernorate(dynamic governorateId) async {
+    return await remote_data_source.getCitiesByGovernorate(governorateId);
   }
 }
