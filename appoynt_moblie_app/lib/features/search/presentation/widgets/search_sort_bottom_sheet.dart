@@ -2,14 +2,14 @@
  * File Name: search_sort_bottom_sheet.dart
  * Author: Kholoud Khaled
  * Date of Creation: 14/08/2026
- * Version Information: V2.0.0
+ * Version Information: V2.1.0
  * Dependencies: package:flutter/material.dart, app_spacing.dart,
  *   app_colors.dart, app_localizations.dart, search_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 29/08/2026]
  * File Description: Defines the unified Search sort bottom sheet modal matching
  *   the exact visual design, radio option cards, icon badges, and apply interaction
- *   established in FavoriteSortBottomSheet.
+ *   established in FavoriteSortBottomSheet with standardized dark slate theme.
  */
 
 // Import standard Flutter material design framework

@@ -2,12 +2,12 @@
  * File Name: app_colors.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/06/2026
- * Version Information: V2.1.0
+ * Version Information: V2.2.0
  * Dependencies: package:flutter/material.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 29/08/2026]
  * File Description: Defines centralized color constants and palettes
- *   for light and dark theme modes including pastel notification banners.
+ *   for light and dark theme modes including dark slate tokens.
  */
 
 // Importing the flutter material package to utilize the Color class
@@ -18,11 +18,25 @@ class AppColors {
   // Private constructor to prevent instantiation
   AppColors._();
 
+  // --- Dark Theme Color Tokens (Extracted from Appointments) ---
+  static const Color darkBackground = Color(0xFF0F172A); // Deep Slate background
+  static const Color darkSurface = Color(0xFF1E293B);    // Card & container surface
+  static const Color darkSurfaceElevated = Color(0xFF243047); // Popups, elevated chips
+  static const Color darkBorder = Color(0xFF334155);     // Subtle card & input borders
+
+  // Text Colors (Dark Mode)
+  static const Color darkTextPrimary = Color(0xFFF8FAFC);   // Pure crisp white/slate 50
+  static const Color darkTextSecondary = Color(0xFF94A3B8); // Muted slate 400
+  static const Color darkTextMuted = Color(0xFF64748B);     // Subtext / hints slate 500
+
+  // Accents (Consistent across themes)
+  static const Color primary = Color(0xFF0284C7);           // Vibrant Appoynt Blue
+  static const Color primaryDarkSurface = Color(0xFF0C4A6E); // Primary chip/badge background in dark mode
+
   // Primary & Secondary Brand Colors
-  static const Color primary = Color(0xFF2563EB); // Blue 600
-  static const Color primary_color = Color(0xFF0F62FE); // Brand vibrant blue
-  static const Color primaryDark = Color(0xFF1D4ED8); // Blue 700
-  static const Color primary_dark = Color(0xFF1D4ED8);
+  static const Color primary_color = Color(0xFF0284C7); // Brand vibrant blue
+  static const Color primaryDark = Color(0xFF0369A1); // Blue 700
+  static const Color primary_dark = Color(0xFF0369A1);
   static const Color secondary = Color(0xFF4F46E5); // Indigo 600
 
   // Standard Material Base Colors Mapping
@@ -98,7 +112,7 @@ class AppColors {
   static const Color gray200 = Color(0xFFE4E7EC);
   static const Color gray_light_bg = Color(0xFFEDF1F7);
   static const Color gray_soft_bg = Color(0xFFF6F8FB);
-  static const Color dark_surface_2 = Color(0xFF252536);
+  static const Color dark_surface_2 = darkSurfaceElevated;
 
   // Status & Feedback Colors - Success (Emerald / Green)
   static const Color success = Color(0xFF10B981); // Emerald 500
@@ -231,44 +245,44 @@ class AppColors {
   // Soft, modern dimming barrier overlay color representation (black with 0.3 opacity)
   static const Color barrier_color = Color(0x4D000000);
 
-  // Background color constant representation for the dark theme mode (lighter dark gray)
-  static const Color background_dark = Color(0xFF121212);
+  // Background color constant representation for the dark theme mode (Deep Slate)
+  static const Color background_dark = darkBackground;
 
   // Primary text color constant representation for the light theme mode
   static const Color text_light_primary = Color(0xFF171717);
 
   // Primary text color constant representation for the dark theme mode
-  static const Color text_dark_primary = Color(0xFFEDEDED);
+  static const Color text_dark_primary = darkTextPrimary;
 
   // Secondary text color constant representation for the light theme mode
   static const Color text_light_secondary = Color(0xFF767676);
 
   // Secondary text color constant representation for the dark theme mode
-  static const Color text_dark_secondary = Color(0xFF9E9E9E);
+  static const Color text_dark_secondary = darkTextSecondary;
 
   // Surface container color constant representation for the light theme mode
   static const Color surface_light = Color(0xFFF4F4F4);
 
   // Surface container color constant representation for the dark theme mode
-  static const Color surface_dark = Color(0xFF1E1E1E);
+  static const Color surface_dark = darkSurface;
 
   // Divider and border color constant representation for the light theme mode
   static const Color border_light = Color(0xFFE0E0E0);
 
   // Divider and border color constant representation for the dark theme mode
-  static const Color border_dark = Color(0xFF2C2C2C);
+  static const Color border_dark = darkBorder;
 
   // Distinct darker slate-gray background tint for inner bounding boxes in Light Mode
   static const Color inner_container_light = Color(0xFFCBD5E1);
 
   // Background color constant representation for inner bounding boxes in Dark Mode
-  static const Color inner_container_dark = Color(0xFF262626);
+  static const Color inner_container_dark = darkSurfaceElevated;
 
   // Defined 1px border outline for inner track containers in Light Mode
   static const Color inner_container_border_light = Color(0xFF94A3B8);
 
   // Defined 1px border outline for inner track containers in Dark Mode
-  static const Color inner_container_border_dark = Color(0xFF3B4252);
+  static const Color inner_container_border_dark = darkBorder;
 
   // Background color constant for the onboarding screens layout
   static const Color onboarding_background = Color(0xFFF0F3FA);

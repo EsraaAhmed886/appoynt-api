@@ -2,13 +2,13 @@
  * File Name: favorite_sort_bottom_sheet.dart
  * Author: Kholoud Khaled
  * Date of Creation: 14/08/2026
- * Version Information: V2.0.0
+ * Version Information: V2.1.0
  * Dependencies: package:flutter/material.dart, app_spacing.dart,
  *   app_colors.dart, app_localizations.dart, favorites_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 29/08/2026]
  * File Description: Category-aware modal bottom sheet allowing users to select and apply
- *   sorting algorithms tailored specifically to Doctors, Offers, or Clinics.
+ *   sorting algorithms tailored specifically to Doctors, Offers, or Clinics with standardized dark theme.
  */
 
 // Import standard material design framework

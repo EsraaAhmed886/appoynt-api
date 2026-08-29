@@ -2,14 +2,14 @@
  * File Name: profile_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/07/2026
- * Version Information: V1.2.0
+ * Version Information: V1.3.0
  * Dependencies: package:flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/08/2026]
- * File Description: Defines the Patient Profile View Mode screen showing summaries and medical sections.
+ * Last Modified Date: [Kholoud Khaled - 29/08/2026]
+ * File Description: Defines the Patient Profile View Mode screen showing summaries and medical sections with standardized dark slate theme.
  */
 
 // Importing clipboard service for copy-to-clipboard interactions
@@ -1122,11 +1122,13 @@ class _ProfileOptionCard extends StatelessWidget {
                     // Bind subtitle
                     subtitle,
                     // Subdued typography specs
-                    style: const TextStyle(
+                    style: TextStyle(
                       // Small body size font
                       fontSize: AppSpacing.font_size_body_small,
                       // Secondary color styling
-                      color: AppColors.text_light_secondary,
+                      color: is_dark
+                          ? AppColors.darkTextSecondary
+                          : AppColors.text_light_secondary,
                     ),
                   ),
                 ],
@@ -1138,11 +1140,13 @@ class _ProfileOptionCard extends StatelessWidget {
               width: AppSpacing.space_s,
             ),
             // Interactive directional navigation chevron indicator icon
-            const Icon(
+            Icon(
               // Arrow chevron token pointing right coordinates
               Icons.chevron_right_rounded,
               // Subdued color matching summaries
-              color: AppColors.text_light_secondary,
+              color: is_dark
+                  ? AppColors.darkTextSecondary
+                  : AppColors.text_light_secondary,
               // Icon standard size
               size: AppSpacing.icon_size_m,
             ),

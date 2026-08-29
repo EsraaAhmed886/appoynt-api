@@ -2,17 +2,18 @@
  * File Name: route_export.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/06/2026
- * Version Information: V1.1.0
+ * Version Information: V1.2.0
  * Dependencies: flutter/material.dart,
  *   package:appoynt_mobile_app/constants/app_assets.dart,
  *   package:appoynt_mobile_app/constants/app_spacing.dart,
  *   package:appoynt_mobile_app/core/theme/colors/app_colors.dart,
+ *   package:appoynt_mobile_app/core/theme/app_theme.dart,
  *   package:appoynt_mobile_app/core/theme/modes/light_mode.dart,
  *   package:appoynt_mobile_app/core/theme/modes/dark_mode.dart,
  *   package:appoynt_mobile_app/core/theme/modes/theme_mode.dart,
  *   package:appoynt_mobile_app/core/utils/custom_snackbar.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 27/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 29/08/2026]
  * File Description: Acts as a central global barrel file for the
  *   application's foundational UI layer.
  */
@@ -28,6 +29,9 @@ export 'package:appoynt_mobile_app/constants/app_spacing.dart';
 
 // Exporting central application color definition tokens and palettes
 export 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
+
+// Exporting centralized application theme entry point
+export 'package:appoynt_mobile_app/core/theme/app_theme.dart';
 
 // Exporting centralized floating SnackBar notification helper utility
 export 'package:appoynt_mobile_app/core/utils/custom_snackbar.dart';

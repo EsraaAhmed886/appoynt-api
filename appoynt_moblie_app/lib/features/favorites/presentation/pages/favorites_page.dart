@@ -2,7 +2,7 @@
  * File Name: favorites_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 14/08/2026
- * Version Information: V2.1.0
+ * Version Information: V2.2.0
  * Dependencies: package:flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
  *   app_localizations.dart, app_spacing.dart, app_colors.dart,
  *   service_locator.dart, favorites_cubit.dart, favorites_state.dart,
@@ -10,10 +10,10 @@
  *   guest_favorites_widget.dart, favorite_sort_bottom_sheet.dart,
  *   custom_category_chips_bar.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 29/08/2026]
  * File Description: Main Favorites Screen featuring 3 category tabs (Doctors,
  *   Offers, Clinics), guest session guard, debounced search bar, category-aware
- *   sorting modal, and tab-specific list rendering with unified shared category chips.
+ *   sorting modal, and tab-specific list rendering with standardized dark slate theme.
  */
 
 // Import standard UI framework

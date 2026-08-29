@@ -2,13 +2,13 @@
  * File Name: doctor_sticky_booking_bar.dart
  * Author: Kholoud Khaled
  * Date of Creation: 16/08/2026
- * Version Information: V1.2.0
+ * Version Information: V1.3.0
  * Dependencies: package:flutter/material.dart, app_colors.dart, app_spacing.dart,
  *   app_localizations.dart, doctor_profile_entity.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 29/08/2026]
  * File Description: Modern full-width floating sticky bottom bar for booking,
- *   featuring full-width button layout with localized text and rounded styling.
+ *   featuring full-width button layout with localized text and standardized dark slate theme.
  */
 
 // Import Flutter material library
@@ -46,10 +46,16 @@ class DoctorStickyBookingBar extends StatelessWidget {
         MediaQuery.of(context).padding.bottom + AppSpacing.space_m,
       ),
       decoration: BoxDecoration(
-        color: is_dark ? AppColors.surface_dark : AppColors.background_light,
+        color: is_dark ? AppColors.darkSurface : AppColors.background_light,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(AppSpacing.radius_xxl),
           topRight: Radius.circular(AppSpacing.radius_xxl),
+        ),
+        border: Border(
+          top: BorderSide(
+            color: is_dark ? AppColors.darkBorder : AppColors.slate200,
+            width: 1.0,
+          ),
         ),
         boxShadow: [
           BoxShadow(

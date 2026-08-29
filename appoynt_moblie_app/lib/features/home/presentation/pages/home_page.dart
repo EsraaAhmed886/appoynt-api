@@ -2,12 +2,12 @@
  * File Name: home_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 17/07/2026
- * Version Information: V1.0.0
+ * Version Information: V1.1.0
  * Dependencies: flutter/material.dart,
  *   package:appoynt_mobile_app/core/routing/route_export.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
- * File Description: Defines the temporary dummy home screen and components.
+ * Last Modified Date: [Kholoud Khaled - 29/08/2026]
+ * File Description: Defines the temporary dummy home screen and components with standardized dark slate theme.
  */
 
 // TODO: START OF DUMMY HOME SCREEN IMPLEMENTATION - REMOVE ONCE FINAL HOME IS COMPLETED
@@ -243,11 +243,13 @@ class _HomeTab extends StatelessWidget {
                       // Greeting text string
                       localizations.dummy_good_morning,
                       // Font typography layout parameters
-                      style: const TextStyle(
+                      style: TextStyle(
                         // Typographic font size value
                         fontSize: AppSpacing.font_size_subtitle,
                         // Color styling from design token configurations
-                        color: AppColors.text_light_secondary,
+                        color: is_dark
+                            ? AppColors.darkTextSecondary
+                            : AppColors.text_light_secondary,
                       ),
                     ),
                     // Small vertical spacer box
@@ -292,7 +294,7 @@ class _HomeTab extends StatelessWidget {
                   decoration: BoxDecoration(
                     // Dynamic background color matching surface theme
                     color: is_dark
-                        ? AppColors.surface_dark
+                        ? AppColors.darkSurface
                         : AppColors.background_light,
                     // Circular rounded container shape configurations
                     borderRadius: BorderRadius.circular(
@@ -303,8 +305,8 @@ class _HomeTab extends StatelessWidget {
                     border: Border.all(
                       // Border boundary outline color mappings
                       color: is_dark
-                          ? AppColors.border_dark
-                          : AppColors.border_light,
+                          ? AppColors.darkBorder
+                          : AppColors.slate200,
                       // Explicit border width definition
                       width: AppSpacing.border_width_thin,
                     ),
@@ -421,7 +423,7 @@ class _HomeTab extends StatelessWidget {
                   decoration: BoxDecoration(
                     // Dynamic background surface color
                     color: is_dark
-                        ? AppColors.surface_dark
+                        ? AppColors.darkSurface
                         : AppColors.background_light,
                     // Rounded container corners configurations
                     borderRadius: BorderRadius.circular(
@@ -432,8 +434,8 @@ class _HomeTab extends StatelessWidget {
                     border: Border.all(
                       // Border outline colors matching dividers
                       color: is_dark
-                          ? AppColors.border_dark
-                          : AppColors.border_light,
+                          ? AppColors.darkBorder
+                          : AppColors.slate200,
                       // Explicit border width definition
                       width: AppSpacing.border_width_thin,
                     ),
@@ -448,11 +450,13 @@ class _HomeTab extends StatelessWidget {
                         width: AppSpacing.dummy_search_bar_padding_left,
                       ),
                       // Search icon graphic asset representation
-                      const Icon(
+                      Icon(
                         // Search icon graphic representation
                         Icons.search_rounded,
                         // Icon color matching subtext descriptions
-                        color: AppColors.text_light_secondary,
+                        color: is_dark
+                            ? AppColors.darkTextMuted
+                            : AppColors.text_light_secondary,
                         // Icon size constraint
                         size: AppSpacing.dummy_size_icon_notification,
                       ),
@@ -466,11 +470,13 @@ class _HomeTab extends StatelessWidget {
                         // Search label text string
                         localizations.dummy_search_hint,
                         // Typographic text parameters options
-                        style: const TextStyle(
+                        style: TextStyle(
                           // Small text body size
                           fontSize: AppSpacing.font_size_body_medium,
                           // Subdued color representing text inputs hint layout
-                          color: AppColors.text_light_secondary,
+                          color: is_dark
+                              ? AppColors.darkTextMuted
+                              : AppColors.text_light_secondary,
                         ),
                       ),
                     ],
@@ -654,8 +660,8 @@ class _HomeTab extends StatelessWidget {
                         ),
                         // Layout decorations details
                         decoration: BoxDecoration(
-                          // Solid white background fill
-                          color: AppColors.white,
+                          // Solid white/elevated background fill
+                          color: is_dark ? AppColors.darkSurfaceElevated : AppColors.white,
                           // Rounded border edges configurations
                           borderRadius: BorderRadius.circular(
                             // Circular boundary radius parameter value
@@ -667,9 +673,9 @@ class _HomeTab extends StatelessWidget {
                           // Localized action button label string
                           localizations.dummy_view_details,
                           // Label text styling parameters options
-                          style: const TextStyle(
+                          style: TextStyle(
                             // Color matching brand primary theme colors
-                            color: AppColors.primary_color,
+                            color: is_dark ? AppColors.darkTextPrimary : AppColors.primary_color,
                             // Small font size
                             fontSize: AppSpacing.font_size_label,
                             // Bold text weight representation
@@ -986,11 +992,13 @@ class _ComingSoonTab extends StatelessWidget {
             // Under construction string
             localizations.dummy_coming_soon,
             // Typography layouts style parameters options
-            style: const TextStyle(
+            style: TextStyle(
               // Small body font size
               fontSize: AppSpacing.font_size_subtitle,
-              // Subtle grey color token
-              color: AppColors.text_light_secondary,
+              // Subtle slate color token
+              color: is_dark
+                  ? AppColors.darkTextSecondary
+                  : AppColors.text_light_secondary,
             ),
           ),
         ],
@@ -1127,7 +1135,7 @@ class _SpecialtyChip extends StatelessWidget {
       decoration: BoxDecoration(
         // Dynamic background surface color
         color: is_dark
-            ? AppColors.surface_dark
+            ? AppColors.darkSurface
             : AppColors.background_light,
         // Rounded container corners configurations
         borderRadius: BorderRadius.circular(
@@ -1138,7 +1146,7 @@ class _SpecialtyChip extends StatelessWidget {
         border: Border.all(
           // Border outline colors matching dividers
           color:
-              is_dark ? AppColors.border_dark : AppColors.border_light,
+              is_dark ? AppColors.darkBorder : AppColors.slate200,
           // Explicit border width definition
           width: AppSpacing.border_width_thin,
         ),
@@ -1233,7 +1241,7 @@ class _DoctorCard extends StatelessWidget {
         decoration: BoxDecoration(
           // Dynamic background surface color
           color: is_dark
-              ? AppColors.surface_dark
+              ? AppColors.darkSurface
               : AppColors.background_light,
           // Rounded container corners configurations
           borderRadius: BorderRadius.circular(
@@ -1244,7 +1252,7 @@ class _DoctorCard extends StatelessWidget {
           border: Border.all(
           // Border outline colors matching dividers
           color:
-              is_dark ? AppColors.border_dark : AppColors.border_light,
+              is_dark ? AppColors.darkBorder : AppColors.slate200,
           // Explicit border width definition
           width: AppSpacing.border_width_thin,
         ),
@@ -1316,11 +1324,13 @@ class _DoctorCard extends StatelessWidget {
                   // Specialty title string
                   specialty,
                   // Typography layout parameter details
-                  style: const TextStyle(
+                  style: TextStyle(
                     // Small font size mapping subhead layouts
                     fontSize: AppSpacing.font_size_label,
                     // Subdued color representing text descriptions
-                    color: AppColors.text_light_secondary,
+                    color: is_dark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.text_light_secondary,
                   ),
                 ),
                 // Spacer vertical height offset box
@@ -1368,11 +1378,13 @@ class _DoctorCard extends StatelessWidget {
                       width: AppSpacing.dummy_search_bar_spacing,
                     ),
                     // Work bag experience icon representation widget
-                    const Icon(
+                    Icon(
                       // Work bag icon token
                       Icons.work_outline_rounded,
                       // Icon color matching subtext descriptions
-                      color: AppColors.text_light_secondary,
+                      color: is_dark
+                          ? AppColors.darkTextSecondary
+                          : AppColors.text_light_secondary,
                       // Icon display size constraint
                       size: AppSpacing.dummy_doctor_card_work_icon_size,
                     ),
@@ -1386,11 +1398,13 @@ class _DoctorCard extends StatelessWidget {
                       // Experience string value representation
                       experience,
                       // Typography configurations style options
-                      style: const TextStyle(
+                      style: TextStyle(
                         // Extra small font size
                         fontSize: AppSpacing.dummy_font_size_rating,
                         // Subdued color representing text descriptions
-                        color: AppColors.text_light_secondary,
+                        color: is_dark
+                            ? AppColors.darkTextSecondary
+                            : AppColors.text_light_secondary,
                       ),
                     ),
                   ],

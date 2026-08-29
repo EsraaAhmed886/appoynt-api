@@ -2,14 +2,14 @@
  * File Name: doctor_card.dart
  * Author: Kholoud Khaled
  * Date of Creation: 04/08/2026
- * Version Information: v1.6.0
+ * Version Information: v1.7.0
  * Dependencies: package:flutter/material.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart,
  *   package:appoynt_mobile_app/constants/app_spacing.dart,
  *   package:appoynt_mobile_app/core/theme/colors/app_colors.dart,
  *   package:appoynt_mobile_app/features/shared/widgets/favorite_heart_button.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 29/08/2026]
  * File Description: Defines a reusable, highly polished Doctor Card component
  *   displaying details, rating, fee, framed 110x130dp rounded-rectangle doctor portrait
  *   with subtle border and soft shadow, ecg-heart icon, and booking CTA.
@@ -91,7 +91,7 @@ class DoctorCard extends StatelessWidget {
         decoration: BoxDecoration(
           // Set background color matching active theme
           color: is_dark
-              ? AppColors.surface_dark
+              ? AppColors.darkSurface
               : AppColors.background_light,
           // Set corner rounded curves using spacing constants
           borderRadius:
@@ -99,10 +99,19 @@ class DoctorCard extends StatelessWidget {
           // Draw outline border stroke
           border: Border.all(
             // Resolve border color based on theme
-            color: is_dark ? AppColors.border_dark : AppColors.slate_200,
+            color: is_dark ? AppColors.darkBorder : AppColors.slate200,
             // Set thin border width
             width: AppSpacing.border_width_thin,
           ),
+          boxShadow: [
+            BoxShadow(
+              color: is_dark
+                  ? AppColors.black.withValues(alpha: 0.15)
+                  : AppColors.black.withValues(alpha: 0.04),
+              blurRadius: 10.0,
+              offset: const Offset(0, 3),
+            ),
+          ],
         ),
         // Arrange items inside card vertically
         child: Column(

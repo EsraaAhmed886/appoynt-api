@@ -2,15 +2,15 @@
  * File Name: update_profile_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/07/2026
- * Version Information: V1.3.0
+ * Version Information: V1.4.0
  * Dependencies: package:flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart,
  *   package:appoynt_mobile_app/features/profile/data/models/update_profile_request_model.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/08/2026]
- * File Description: Defines the Update Profile layout form fields, validators, and backend save handlers.
+ * Last Modified Date: [Kholoud Khaled - 29/08/2026]
+ * File Description: Defines the Update Profile layout form fields, validators, and backend save handlers with standardized dark slate theme.
  */
 
 // Importing flutter services for InputFormatters

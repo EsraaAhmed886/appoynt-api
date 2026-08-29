@@ -2,12 +2,12 @@
  * File Name: search_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 17/07/2026
- * Version Information: V1.1.0
+ * Version Information: V1.2.0
  * Dependencies: flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
  *   search_cubit.dart, search_state.dart, app_spacing.dart, app_colors.dart, app_network_image.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
- * File Description: Renders the dedicated Search Screen with dynamic states (A, B, C), inputs, and filters.
+ * Last Modified Date: [Kholoud Khaled - 29/08/2026]
+ * File Description: Renders the dedicated Search Screen with dynamic states (A, B, C), inputs, and filters with standardized dark theme.
  */
 
 // TODO: START OF DUMMY HOME SCREEN IMPLEMENTATION - REMOVE ONCE FINAL HOME IS COMPLETED
@@ -1574,13 +1574,13 @@ class _SearchPageState extends State<SearchPage> {
         ),
         decoration: BoxDecoration(
           color: is_selected
-              ? AppColors.primary_color
-              : (is_dark ? AppColors.surface_dark : AppColors.gray100),
+              ? AppColors.primary
+              : (is_dark ? AppColors.darkSurfaceElevated : AppColors.gray100),
           borderRadius: BorderRadius.circular(AppSpacing.radius_l),
           border: Border.all(
             color: is_selected
-                ? AppColors.primary_color
-                : (is_dark ? AppColors.border_dark : AppColors.gray200),
+                ? AppColors.primary
+                : (is_dark ? AppColors.darkBorder : AppColors.gray200),
             width: AppSpacing.border_width_thin,
           ),
         ),
@@ -1589,7 +1589,7 @@ class _SearchPageState extends State<SearchPage> {
           style: TextStyle(
             color: is_selected
                 ? AppColors.white
-                : (is_dark ? AppColors.text_dark_secondary : AppColors.search_text_slate),
+                : (is_dark ? AppColors.darkTextPrimary : AppColors.search_text_slate),
             fontWeight: is_selected ? FontWeight.bold : FontWeight.normal,
             fontSize: AppSpacing.font_size_label,
           ),
