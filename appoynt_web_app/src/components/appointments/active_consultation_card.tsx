@@ -241,7 +241,7 @@ export default function active_consultation_card({
         </div>
 
         {/* Action Buttons Row */}
-        <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-app-border/40">
+        <div className="flex flex-wrap items-start gap-3 pt-4 border-t border-app-border/40">
           <div className="flex flex-col gap-1">
             <button
               type="button"
