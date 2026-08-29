@@ -161,8 +161,12 @@ export function get_doctor_other_clinic_schedules(
       } else {
         if (Array.isArray(clinic.schedule_list) && clinic.schedule_list.length > 0) {
           schedules.push(...clinic.schedule_list);
+        } else {
+          // No action needed
         }
       }
+    } else {
+      // No action needed
     }
   });
 

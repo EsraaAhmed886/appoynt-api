@@ -16,35 +16,40 @@
 export function parse_time_to_minutes(time_str: string): number {
   if (!time_str || "" === time_str.trim()) {
     return -1;
-  }
-  const match = time_str.trim().match(/^(\d{1,2}):(\d{2})(?:\s*(AM|PM))?$/i);
-  if (!match) {
-    return -1;
-  }
-  let hours = parseInt(match[1], 10);
-  const minutes = parseInt(match[2], 10);
-  const modifier = match[3] ? match[3].toUpperCase() : null;
-
-  if (isNaN(hours) || isNaN(minutes) || minutes < 0 || minutes > 59) {
-    return -1;
-  }
-
-  if (modifier) {
-    if (hours < 1 || hours > 12) {
-      return -1;
-    }
-    if (modifier === "PM" && hours < 12) {
-      hours += 12;
-    } else if (modifier === "AM" && hours === 12) {
-      hours = 0;
-    }
   } else {
-    if (hours < 0 || hours > 23) {
+    const match = time_str.trim().match(/^(\d{1,2}):(\d{2})(?:\s*(AM|PM))?$/i);
+    if (!match) {
       return -1;
+    } else {
+      let hours = parseInt(match[1], 10);
+      const minutes = parseInt(match[2], 10);
+      const modifier = match[3] ? match[3].toUpperCase() : null;
+
+      if (isNaN(hours) || isNaN(minutes) || minutes < 0 || minutes > 59) {
+        return -1;
+      } else {
+        if (null !== modifier) {
+          if (hours < 1 || hours > 12) {
+            return -1;
+          } else if ("PM" === modifier && hours < 12) {
+            hours += 12;
+          } else if ("AM" === modifier && 12 === hours) {
+            hours = 0;
+          } else {
+            // No action needed
+          }
+        } else {
+          if (hours < 0 || hours > 23) {
+            return -1;
+          } else {
+            // No action needed
+          }
+        }
+
+        return hours * 60 + minutes;
+      }
     }
   }
-
-  return hours * 60 + minutes;
 }
 
 /**
@@ -118,6 +123,7 @@ export function do_time_intervals_overlap(
 
   if (s1 < 0 || e1 < 0 || s2 < 0 || e2 < 0) {
     return false;
+  } else {
+    return s1 < e2 && e1 > s2;
   }
-  return s1 < e2 && e1 > s2;
 }

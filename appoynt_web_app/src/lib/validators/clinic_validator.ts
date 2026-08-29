@@ -187,6 +187,8 @@ export function validate_working_schedule_item(
           if (item === day) {
             errors.day_error = "val_day_occupied";
             break;
+          } else {
+            // No action needed
           }
         } else if (item && item.day === day) {
           if (do_time_intervals_overlap(start_time, end_time, item.startTime, item.endTime)) {
@@ -194,7 +196,11 @@ export function validate_working_schedule_item(
             errors.start_error = "val_schedule_conflict";
             errors.end_error = "val_schedule_conflict";
             break;
+          } else {
+            // No action needed
           }
+        } else {
+          // No action needed
         }
       }
     }
@@ -348,8 +354,9 @@ export function is_step_valid(
           return !doctor_other_schedules.some((other) => {
             if (other.day === s.day) {
               return do_time_intervals_overlap(s.startTime, s.endTime, other.startTime, other.endTime);
+            } else {
+              return false;
             }
-            return false;
           });
         });
       } else {

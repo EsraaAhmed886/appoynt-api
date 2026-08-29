@@ -405,13 +405,16 @@ export function use_clinic_form(clinic_id: number) {
       return other_schedules.some((other) => {
         if (other.day === s.day) {
           return do_time_intervals_overlap(s.startTime, s.endTime, other.startTime, other.endTime);
+        } else {
+          return false;
         }
-        return false;
       });
     });
 
     if (has_conflict) {
       return false;
+    } else {
+      // No conflict detected, proceed to save
     }
 
     const updated_entity = build_current_clinic_entity();
