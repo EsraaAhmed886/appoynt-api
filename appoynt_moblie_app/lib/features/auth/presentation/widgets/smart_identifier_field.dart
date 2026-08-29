@@ -11,6 +11,7 @@
 
 // Importing central barrel configuration mapping design tokens
 import 'package:appoynt_mobile_app/core/routing/route_export.dart';
+import 'package:appoynt_mobile_app/core/utils/digit_converter_helper.dart';
 
 // Stateful widget rendering the dynamic identifier field with type icon detection
 class SmartIdentifierField extends StatefulWidget {
@@ -191,6 +192,10 @@ class _SmartIdentifierFieldState extends State<SmartIdentifierField> {
                     : AutovalidateMode.disabled,
                 // Bind keyboard configuration
                 keyboardType: widget.keyboard_type,
+                // Automatically convert typed Arabic digits to English digits
+                inputFormatters: [
+                  ArabicToEnglishDigitsFormatter(),
+                ],
                 // Force credential inputs to LTR direction even in Arabic
                 textDirection: TextDirection.ltr,
                 // Set dynamic text alignment

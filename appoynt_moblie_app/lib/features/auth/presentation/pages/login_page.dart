@@ -22,6 +22,8 @@ import 'package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart';
 import 'package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart';
 // Importing dependency injection service locator setup representation
 import 'package:appoynt_mobile_app/core/di/service_locator.dart';
+// Importing centralized digits converter helper
+import 'package:appoynt_mobile_app/core/utils/digit_converter_helper.dart';
 // Importing customized identifier input component field widget
 import 'package:appoynt_mobile_app/features/auth/presentation/widgets/smart_identifier_field.dart';
 // Importing password obfuscation selector input field widget
@@ -285,27 +287,8 @@ class _LoginPageState extends State<LoginPage> {
     }
     // Check phone specific structure rules if detected using Yoda style check
     else if (_InputType.phone == _detected_type) {
-      // Convert Arabic numerals to English digits if any exist
-      String clean_digits = input_value;
-      // Map of Arabic-Indic to standard English digits
-      final Map<String, String> translation_map = {
-        '٠': '0',
-        '١': '1',
-        '٢': '2',
-        '٣': '3',
-        '٤': '4',
-        '٥': '5',
-        '٦': '6',
-        '٧': '7',
-        '٨': '8',
-        '٩': '9'
-      };
-      // Translate each character in map
-      translation_map.forEach((arabic, english) {
-        clean_digits = clean_digits.replaceAll(arabic, english);
-      });
-      // Strip space dividers and standard phone formatting marks
-      clean_digits = clean_digits.replaceAll(RegExp(r'[^\d]'), '');
+      // Convert Arabic numerals to English digits and strip formatting marks
+      String clean_digits = input_value.toEnglishDigits().replaceAll(RegExp(r'[^\d]'), '');
       // Verify phone digit count length matches exactly 11 digits using Yoda style check
       if (11 != clean_digits.length) {
         // Return phone count validation warning message
@@ -355,10 +338,10 @@ class _LoginPageState extends State<LoginPage> {
       // Empty action block to satisfy compiler
     }
 
-    // Dispatch login credentials validation event to auth state manager cubit
+    // Dispatch login credentials validation event to auth state manager cubit with normalized English digits
     submission_context.read<AuthCubit>().login(
           // Pass clean text user identifier
-          _identifier_ctrl.text.trim(),
+          _identifier_ctrl.text.trim().toEnglishDigits(),
           // Pass plain user password
           _password_ctrl.text,
         );

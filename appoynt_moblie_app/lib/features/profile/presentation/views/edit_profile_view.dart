@@ -25,6 +25,7 @@ import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
 import 'package:appoynt_mobile_app/core/utils/custom_snackbar.dart';
 import 'package:appoynt_mobile_app/core/utils/national_id_parser.dart';
+import 'package:appoynt_mobile_app/core/utils/digit_converter_helper.dart';
 import 'package:appoynt_mobile_app/features/profile/presentation/widgets/edit_profile_body.dart';
 import 'package:appoynt_mobile_app/features/profile/presentation/bloc/edit_profile_cubit.dart';
 import 'package:appoynt_mobile_app/features/profile/presentation/bloc/edit_profile_state.dart';
@@ -322,6 +323,12 @@ class _EditProfileViewState extends State<EditProfileView> {
                   const SizedBox(height: 16.0),
                   TextFormField(
                     controller: _phoneController,
+                    keyboardType: TextInputType.phone,
+                    inputFormatters: [
+                      ArabicToEnglishDigitsFormatter(),
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9+]')),
+                      LengthLimitingTextInputFormatter(11),
+                    ],
                     decoration:
                         const InputDecoration(labelText: 'Phone Number'),
                   ),
@@ -330,6 +337,11 @@ class _EditProfileViewState extends State<EditProfileView> {
                     controller: _nationalIdController,
                     keyboardType: TextInputType.number,
                     maxLength: 14,
+                    inputFormatters: [
+                      ArabicToEnglishDigitsFormatter(),
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(14),
+                    ],
                     style: const TextStyle(fontWeight: FontWeight.w600, letterSpacing: 1.1),
                     decoration: InputDecoration(
                       counterText: '',
@@ -359,7 +371,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                                       firstName:
                                           _firstNameController.text.trim(),
                                       lastName: _lastNameController.text.trim(),
-                                      phone: _phoneController.text.trim(),
+                                      phone: _phoneController.text.trim().toEnglishDigits(),
                                       governorateId:
                                           state.selectedGovernorate?.id,
                                       governorateName:
@@ -367,7 +379,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                                       cityId: state.selectedCity?.id,
                                       cityName: state.selectedCity?.nameEn,
                                       nationalId:
-                                          _nationalIdController.text.trim(),
+                                          _nationalIdController.text.trim().toEnglishDigits(),
                                       birthDate:
                                           _birthDateController.text.trim(),
                                     );

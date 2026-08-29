@@ -15,6 +15,8 @@
 import 'package:appoynt_mobile_app/core/routing/route_export.dart';
 // Importing standard system services for inputs formatting
 import 'package:flutter/services.dart';
+// Importing centralized digits converter helper
+import 'package:appoynt_mobile_app/core/utils/digit_converter_helper.dart';
 
 // Standardized text input component widget for auth forms
 class AuthTextField extends StatefulWidget {
@@ -263,14 +265,18 @@ class _AuthTextFieldState extends State<AuthTextField> {
                   // Resolve keyboard return action using Yoda style check
                   textInputAction:
                       widget.text_input_action ?? TextInputAction.next,
-                  // Format digits-only or custom formatters
-                  inputFormatters: widget.input_formatters ??
-                      (true == widget.is_phone
-                          ? [
-                              // Use custom Egyptian phone input formatter
-                              PhoneInputFormatter(),
-                            ]
-                          : null),
+                  // Format digits-only or custom formatters with Arabic digit translation
+                  inputFormatters: [
+                    if (true == widget.is_phone ||
+                        true == widget.is_national_id ||
+                        TextInputType.number == widget.keyboard_type ||
+                        TextInputType.phone == widget.keyboard_type)
+                      ArabicToEnglishDigitsFormatter(),
+                    ...?widget.input_formatters,
+                    if (null == widget.input_formatters &&
+                        true == widget.is_phone)
+                      PhoneInputFormatter(),
+                  ],
                   // Force input directionality text rules
                   textDirection: true == force_ltr
                       ? TextDirection.ltr
@@ -466,26 +472,8 @@ class PhoneInputFormatter extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    // Retrieve new value string representation
-    String text = newValue.text;
-
-    // Convert Arabic numerals to English digits if any exist
-    final Map<String, String> arabic_to_english = {
-      '٠': '0',
-      '١': '1',
-      '٢': '2',
-      '٣': '3',
-      '٤': '4',
-      '٥': '5',
-      '٦': '6',
-      '٧': '7',
-      '٨': '8',
-      '٩': '9'
-    };
-    // Translate each character in map
-    arabic_to_english.forEach((arabic, english) {
-      text = text.replaceAll(arabic, english);
-    });
+    // Retrieve new value string representation and convert Arabic numerals to English digits
+    String text = newValue.text.toEnglishDigits();
 
     // Remove any characters that are not digits or the plus prefix sign
     text = text.replaceAll(RegExp(r'[^\d+]'), '');

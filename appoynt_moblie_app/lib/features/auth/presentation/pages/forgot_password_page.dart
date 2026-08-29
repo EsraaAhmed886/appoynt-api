@@ -21,6 +21,8 @@ import 'package:appoynt_mobile_app/core/routing/route_export.dart';
 import 'package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart';
 // Importing bloc consumer and provider utilities
 import 'package:flutter_bloc/flutter_bloc.dart';
+// Importing centralized digits converter helper
+import 'package:appoynt_mobile_app/core/utils/digit_converter_helper.dart';
 // Importing auth business state controller cubit definitions
 import 'package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart';
 // Importing dependency injection service locator setup representation
@@ -127,19 +129,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     } else {
       // Empty action block to satisfy compiler
     }
-    // Convert Arabic numerals to English digits if any exist
-    String clean_digits = phone_value;
-    // Map of Arabic-Indic to standard English digits
-    final Map<String, String> translation_map = {
-      '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4',
-      '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9'
-    };
-    // Translate each character in map
-    translation_map.forEach((arabic, english) {
-      clean_digits = clean_digits.replaceAll(arabic, english);
-    });
-    // Strip space dividers, symbols, and format modifiers
-    clean_digits = clean_digits.replaceAll(RegExp(r'[^\d]'), '');
+    // Convert Arabic numerals to English digits and strip non-digits
+    String clean_digits = phone_value.toEnglishDigits().replaceAll(RegExp(r'[^\d]'), '');
     // Verify phone digit count length matches exactly 11 digits using Yoda style check
     if (11 != clean_digits.length) {
       // Return phone count validation warning message
@@ -180,8 +171,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       // Proceed with submission if form is valid
     }
     
-    // Dispatch forgot password event to AuthCubit
-    submission_context.read<AuthCubit>().forgot_password(_phone_ctrl.text.trim());
+    // Dispatch forgot password event to AuthCubit with normalized English digits
+    submission_context.read<AuthCubit>().forgot_password(_phone_ctrl.text.trim().toEnglishDigits());
   }
 
   @override

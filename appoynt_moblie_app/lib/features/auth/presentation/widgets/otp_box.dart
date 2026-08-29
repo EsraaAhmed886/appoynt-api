@@ -14,6 +14,7 @@
 import 'package:appoynt_mobile_app/core/routing/route_export.dart';
 // Importing services package to access text input formatter properties
 import 'package:flutter/services.dart';
+import 'package:appoynt_mobile_app/core/utils/digit_converter_helper.dart';
 
 /// A stateless widget representing one segment of an OTP input field.
 class OtpBox extends StatelessWidget {
@@ -54,8 +55,11 @@ class OtpBox extends StatelessWidget {
         textAlign: TextAlign.center, // Centering the digit
         textDirection: TextDirection.ltr, // Enforcing LTR direction for digits
         keyboardType: TextInputType.number, // Restricting to numeric keyboard
-        /// Enforcing numeric-only input and a maximum length of 1 character.
-        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        /// Enforcing numeric-only input and a maximum length of 1 character with Arabic digit translation.
+        inputFormatters: [
+          ArabicToEnglishDigitsFormatter(),
+          FilteringTextInputFormatter.digitsOnly,
+        ],
         maxLength: 1,
         style: TextStyle(
           fontSize: 22, // Large font for readability
