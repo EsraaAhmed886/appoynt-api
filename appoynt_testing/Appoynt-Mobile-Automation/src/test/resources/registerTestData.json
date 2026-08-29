@@ -1,0 +1,44 @@
+[
+  {
+    "testCaseId": "TC-REG-001",
+    "firstName": "Appoynt",
+    "lastName": "User",
+    "email": "appoynt.user@gmail.com",
+    "phone": "01001386",
+    "password": "Pass123!@#",
+    "confirmPassword": "Pass123!@#",
+    "otpCode": "",
+    "expectedErrorMessage": "",
+    "expectedSuccessMessage": "",
+    "story": "Create Account Button Disabled for Incomplete Form",
+    "description": "Verifies that the 'Create My Account' button remains disabled when form fields are incomplete or terms not agreed."
+  },
+  {
+    "testCaseId": "TC-REG-002",
+    "firstName": "Kareem",
+    "lastName": "Mangood",
+    "email": "RANDOM",
+    "phone": "RANDOM",
+    "password": "Pass123!@#",
+    "confirmPassword": "Pass123!@#",
+    "otpCode": "",
+    "expectedErrorMessage": "",
+    "expectedSuccessMessage": "",
+    "story": "Create Account Button Enabled for Valid Form",
+    "description": "Verifies that filling valid registration data and checking Terms & Conditions enables the Create My Account button."
+  },
+  {
+    "testCaseId": "TC-REG-003",
+    "firstName": "Automation",
+    "lastName": "TestUser",
+    "email": "RANDOM",
+    "phone": "RANDOM",
+    "password": "Pass123!@#",
+    "confirmPassword": "Pass123!@#",
+    "otpCode": "123456",
+    "expectedErrorMessage": "",
+    "expectedSuccessMessage": "Account Created Successfully!",
+    "story": "Full End-to-End Registration & OTP Verification Flow",
+    "description": "Verifies complete end-to-end registration flow: Navigate to Sign Up, fill details, accept terms, tap Create Account, enter 123456 OTP, tap Verify, and verify 'Account Created Successfully!' screen."
+  }
+]

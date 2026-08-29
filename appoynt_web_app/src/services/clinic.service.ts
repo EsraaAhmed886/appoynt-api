@@ -143,8 +143,8 @@ export function get_doctor_occupied_working_days(
   return Array.from(occupied_days_set);
 }
 
-// 9. Retrieve all existing working schedule items for a specific doctor across clinics
-export function get_doctor_existing_schedules(
+// 9. Retrieve all working schedule items across other clinics for a specific doctor (excluding current clinic being edited)
+export function get_doctor_other_clinic_schedules(
   doctor_id: string | number,
   exclude_clinic_id?: number | null,
   clinics_override?: Clinic[],
@@ -161,7 +161,7 @@ export function get_doctor_existing_schedules(
       if (
         null !== exclude_clinic_id &&
         undefined !== exclude_clinic_id &&
-        clinic.id === exclude_clinic_id
+        Number(clinic.id) === Number(exclude_clinic_id)
       ) {
         // Exclude current clinic being edited
       } else {
@@ -178,9 +178,11 @@ export function get_doctor_existing_schedules(
         }
       }
     } else {
-      // Different doctor
+      // No action needed
     }
   });
 
   return schedules;
 }
+
+export const get_doctor_existing_schedules = get_doctor_other_clinic_schedules;

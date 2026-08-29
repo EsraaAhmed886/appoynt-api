@@ -19,6 +19,7 @@ import {
   is_start_before_end,
   is_same_time,
   is_interval_within_bounds,
+  do_time_intervals_overlap,
 } from "@/lib/utils/time_utils";
 import {
   normalize_phone_number,
@@ -178,6 +179,7 @@ export function has_schedule_overlap(
 
 /**
  * Real-time validation for Working Schedule item.
+ * Supports checking occupied day strings or schedule items for time overlap against other clinics.
  * Returns object mapping field to translation error key, or null if valid.
  */
 export function validate_working_schedule_item(
@@ -186,7 +188,7 @@ export function validate_working_schedule_item(
   end_time: string,
   existing_schedules: WorkingScheduleItem[],
   editing_index: number | null = null,
-  doctor_other_schedules: (WorkingScheduleItem | string)[] = []
+  doctor_occupied_days_or_schedules: (string | WorkingScheduleItem)[] = []
 ): { day_error?: string; start_error?: string; end_error?: string } | null {
   const errors: { day_error?: string; start_error?: string; end_error?: string } = {};
 
@@ -208,19 +210,19 @@ export function validate_working_schedule_item(
   if (duplicate_exists) {
     errors.day_error = "val_day_duplicate";
   } else {
-    // Unique day
+    // No action needed
   }
 
   if ("" === start_time.trim()) {
     errors.start_error = "val_start_time_req";
   } else {
-    // Start time provided
+    // No action needed
   }
 
   if ("" === end_time.trim()) {
     errors.end_error = "val_end_time_req";
   } else {
-    // End time provided
+    // No action needed
   }
 
   if ("" !== start_time.trim() && "" !== end_time.trim()) {
@@ -230,21 +232,31 @@ export function validate_working_schedule_item(
       errors.start_error = "val_start_after_end";
       errors.end_error = "val_end_before_start";
     } else {
-      // Filter WorkingScheduleItem objects from doctor_other_schedules
-      const schedule_items = doctor_other_schedules.filter(
-        (item): item is WorkingScheduleItem =>
-          "object" === typeof item && null !== item && "startTime" in item && "endTime" in item
-      );
-
-      if (has_schedule_overlap(day, start_time, end_time, schedule_items)) {
-        errors.start_error = "val_conflict_detected";
-        errors.end_error = "val_conflict_detected";
-      } else {
-        // No conflict detected
+      // Check for overlap or conflict with other clinics
+      for (const item of doctor_occupied_days_or_schedules) {
+        if (typeof item === "string") {
+          if (item === day) {
+            errors.day_error = "val_day_occupied";
+            break;
+          } else {
+            // No action needed
+          }
+        } else if (item && item.day === day) {
+          if (do_time_intervals_overlap(start_time, end_time, item.startTime, item.endTime)) {
+            errors.day_error = "val_schedule_conflict";
+            errors.start_error = "val_schedule_conflict";
+            errors.end_error = "val_schedule_conflict";
+            break;
+          } else {
+            // No action needed
+          }
+        } else {
+          // No action needed
+        }
       }
     }
   } else {
-    // Incomplete times
+    // No action needed
   }
 
   if (Object.keys(errors).length > 0) {
@@ -367,7 +379,8 @@ export function is_step_valid(
   },
   existing_clinics: Clinic[] = [],
   current_clinic_id?: number | null,
-  doctor_other_schedules: (WorkingScheduleItem | string)[] = []
+  doctor_occupied_days_or_schedules: (string | WorkingScheduleItem)[] = [],
+  doctor_other_schedules: WorkingScheduleItem[] = []
 ): boolean {
   if (1 === step) {
     const err_name = validate_clinic_name(form_state.clinic_name);
@@ -389,14 +402,25 @@ export function is_step_valid(
     if (0 === form_state.schedule_list.length) {
       return false;
     } else {
-      const schedule_items = doctor_other_schedules.filter(
-        (item): item is WorkingScheduleItem =>
-          "object" === typeof item && null !== item && "startTime" in item && "endTime" in item
-      );
-
-      return form_state.schedule_list.every(
-        (s) => !has_schedule_overlap(s.day, s.startTime, s.endTime, schedule_items)
-      );
+      const all_schedules = [
+        ...doctor_occupied_days_or_schedules,
+        ...doctor_other_schedules,
+      ];
+      if (all_schedules.length > 0) {
+        return form_state.schedule_list.every((s) => {
+          return !all_schedules.some((other) => {
+            if (typeof other === "string") {
+              return other === s.day;
+            } else if (other && other.day === s.day) {
+              return do_time_intervals_overlap(s.startTime, s.endTime, other.startTime, other.endTime);
+            } else {
+              return false;
+            }
+          });
+        });
+      } else {
+        return true;
+      }
     }
   } else if (3 === step) {
     return form_state.break_list.every((b, idx) => {

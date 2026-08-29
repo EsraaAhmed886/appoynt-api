@@ -1,0 +1,182 @@
+[
+  {
+    "testCaseId": "TC-APP-001",
+    "emailOrPhone": "",
+    "password": "",
+    "expectedErrorMessage": "",
+    "expectedValue": "",
+    "story": "Verify Login Button Dimmed/Disabled by Default",
+    "description": "Verifies that the Login button is disabled and dimmed by default without typing."
+  },
+  {
+    "testCaseId": "TC-APP-002",
+    "emailOrPhone": "01001386305",
+    "password": "Pass1!",
+    "expectedErrorMessage": "",
+    "expectedValue": "",
+    "story": "Button Dimmed When Phone Valid but Password < 8 Chars",
+    "description": "Verifies that Login button remains disabled when phone is valid 11 digits but password is less than 8 characters."
+  },
+  {
+    "testCaseId": "TC-APP-003",
+    "emailOrPhone": "010003000",
+    "password": "P@ssword123",
+    "expectedErrorMessage": "",
+    "expectedValue": "",
+    "story": "Button Dimmed When Password Valid but Phone Incomplete",
+    "description": "Verifies that Login button remains disabled when password is valid but phone number is incomplete."
+  },
+  {
+    "testCaseId": "TC-APP-004",
+    "emailOrPhone": "01022711357",
+    "password": "123asdASD!@#",
+    "expectedErrorMessage": "",
+    "expectedValue": "",
+    "story": "Button Enabled When Valid Phone & Password >= 8 Chars",
+    "description": "Verifies that Login button becomes enabled when valid 11-digit Egyptian phone and valid password >= 8 characters are entered."
+  },
+  {
+    "testCaseId": "TC-APP-005",
+    "emailOrPhone": "kholoud2@gmail.com",
+    "password": "Abc1234#",
+    "expectedErrorMessage": "",
+    "expectedValue": "",
+    "story": "Button Enabled When Valid Email & Password >= 8 Chars",
+    "description": "Verifies that Login button becomes enabled when valid email address and valid password >= 8 characters are entered."
+  },
+  {
+    "testCaseId": "TC-APP-006",
+    "emailOrPhone": "010",
+    "password": "",
+    "expectedErrorMessage": "This field is required",
+    "expectedValue": "",
+    "story": "Type and Clear Identifier Triggers 'This field is required'",
+    "description": "Verifies that typing and then completely clearing the identifier field displays 'This field is required' error."
+  },
+  {
+    "testCaseId": "TC-APP-008",
+    "emailOrPhone": "   ",
+    "password": "",
+    "expectedErrorMessage": "This field is required",
+    "expectedValue": "",
+    "story": "Whitespace-Only Identifier Triggers 'This field is required'",
+    "description": "Verifies that entering whitespace-only into the identifier field auto-sanitizes and displays 'This field is required' error."
+  },
+  {
+    "testCaseId": "TC-APP-009",
+    "emailOrPhone": "010003000",
+    "password": "",
+    "expectedErrorMessage": "Phone number must be exactly 11 digits",
+    "expectedValue": "",
+    "story": "Phone Length < 11 Digits Validation",
+    "description": "Verifies that entering a phone number with less than 11 digits displays 'Phone number must be exactly 11 digits'."
+  },
+  {
+    "testCaseId": "TC-APP-010",
+    "emailOrPhone": "01873883839",
+    "password": "",
+    "expectedErrorMessage": "Phone number must start with 010, 011, 012, or 015",
+    "expectedValue": "",
+    "story": "Phone Invalid Egyptian Prefix (e.g. 018)",
+    "description": "Verifies that entering an 11-digit phone number with an invalid prefix (018) displays 'Phone number must start with 010, 011, 012, or 015'."
+  },
+  {
+    "testCaseId": "TC-APP-011",
+    "emailOrPhone": "02334455667",
+    "password": "",
+    "expectedErrorMessage": "Phone number must start with 01",
+    "expectedValue": "",
+    "story": "Phone Landline Prefix (e.g. 02)",
+    "description": "Verifies that entering a phone number with a landline prefix (02) displays 'Phone number must start with 01'."
+  },
+  {
+    "testCaseId": "TC-APP-014",
+    "emailOrPhone": "010-0138-6305",
+    "password": "",
+    "expectedErrorMessage": "",
+    "expectedValue": "01001386305",
+    "story": "Phone Sanitization of Dashes/Spaces",
+    "description": "Verifies that formatted phone numbers with dashes or spaces are sanitized and accepted without format errors."
+  },
+  {
+    "testCaseId": "TC-APP-015",
+    "emailOrPhone": "DFFF",
+    "password": "",
+    "expectedErrorMessage": "Please enter a valid email address",
+    "expectedValue": "",
+    "story": "Malformed Email Without '@'",
+    "description": "Verifies that entering an email without '@' displays 'Please enter a valid email address'."
+  },
+  {
+    "testCaseId": "TC-APP-016",
+    "emailOrPhone": "user@domain",
+    "password": "",
+    "expectedErrorMessage": "Please enter a valid email address",
+    "expectedValue": "",
+    "story": "Malformed Email Missing Domain Extension",
+    "description": "Verifies that entering an email missing top-level domain extension displays 'Please enter a valid email address'."
+  },
+  {
+    "testCaseId": "TC-APP-017",
+    "emailOrPhone": "  USER@APPOYNT.COM  ",
+    "password": "",
+    "expectedErrorMessage": "",
+    "expectedValue": "user@appoynt.com",
+    "story": "Email Auto-Lowercase and Auto-Trim Conversion",
+    "description": "Verifies that uppercase email with leading/trailing spaces is automatically trimmed and converted to lowercase."
+  },
+  {
+    "testCaseId": "TC-APP-018",
+    "emailOrPhone": "01022711357",
+    "password": "Ab1!xyz",
+    "expectedErrorMessage": "",
+    "expectedValue": "",
+    "story": "Password Length < 8 Characters Keeps Login Button Disabled",
+    "description": "Verifies that entering a password with less than 8 characters keeps the Login button disabled without inline error."
+  },
+  {
+    "testCaseId": "TC-APP-027",
+    "emailOrPhone": "01022711357",
+    "password": "123asdASD!@#",
+    "expectedErrorMessage": "",
+    "expectedValue": "",
+    "story": "Toggle Password Visibility (Eye Icon)",
+    "description": "Verifies toggling password visibility reveals and masks the password correctly."
+  },
+  {
+    "testCaseId": "TC-APP-028",
+    "emailOrPhone": "01022711357",
+    "password": "123asdASD!@#",
+    "expectedErrorMessage": "",
+    "expectedValue": "",
+    "story": "Successful Login with Egyptian Phone",
+    "description": "Verifies that a user can successfully log into Appoynt application using valid Egyptian phone number and password."
+  },
+  {
+    "testCaseId": "TC-APP-029",
+    "emailOrPhone": "kholoud2@gmail.com",
+    "password": "Abc1234#",
+    "expectedErrorMessage": "",
+    "expectedValue": "",
+    "story": "Successful Login with Valid Email",
+    "description": "Verifies that a user can successfully log into Appoynt application using valid email address and password."
+  },
+  {
+    "testCaseId": "TC-APP-030",
+    "emailOrPhone": "01099999999",
+    "password": "123asdASD!@#",
+    "expectedErrorMessage": "Invalid phone number or password.",
+    "expectedValue": "",
+    "story": "Anti-Enumeration: Unregistered Phone Error Message",
+    "description": "Verifies that attempting to login with an unregistered phone number displays generic error message: 'Invalid phone number or password.'."
+  },
+  {
+    "testCaseId": "TC-APP-031",
+    "emailOrPhone": "01022711357",
+    "password": "WrongP@ss999!",
+    "expectedErrorMessage": "Invalid phone number or password.",
+    "expectedValue": "",
+    "story": "Anti-Enumeration: Registered Phone + Wrong Password",
+    "description": "Verifies that attempting to login with registered phone and wrong password displays identical generic error message: 'Invalid phone number or password.'."
+  }
+]

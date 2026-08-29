@@ -24,6 +24,7 @@ type WorkingScheduleSectionProps = {
   is_card_dirty?: boolean;
   schedule_list: WorkingScheduleItem[];
   doctor_occupied_days?: string[];
+  doctor_other_schedules?: WorkingScheduleItem[];
   doctor_existing_schedules?: WorkingScheduleItem[];
   on_add_schedule: (item: WorkingScheduleItem) => void;
   on_edit_schedule: (index: number, item: WorkingScheduleItem) => void;
@@ -38,6 +39,7 @@ export default function WorkingScheduleSection({
   is_card_dirty = false,
   schedule_list,
   doctor_occupied_days = [],
+  doctor_other_schedules = [],
   doctor_existing_schedules = [],
   on_add_schedule,
   on_edit_schedule,
@@ -91,19 +93,22 @@ export default function WorkingScheduleSection({
     set_validation_errors({});
   };
 
-  const other_schedules =
-    doctor_existing_schedules.length > 0
-      ? doctor_existing_schedules
-      : doctor_occupied_days;
-
   const validate_input = (day: string, start: string, end: string) => {
+    const schedules_source =
+      doctor_other_schedules.length > 0
+        ? doctor_other_schedules
+        : doctor_existing_schedules;
+    const conflict_reference =
+      schedules_source.length > 0
+        ? schedules_source
+        : doctor_occupied_days;
     const errs = validate_working_schedule_item(
       day,
       start,
       end,
       schedule_list,
       editing_index,
-      other_schedules,
+      conflict_reference,
     );
     set_validation_errors(errs || {});
     return null === errs;
