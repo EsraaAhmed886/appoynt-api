@@ -2,14 +2,14 @@
  * File Name: pagination.tsx
  * Author: shimaa salah
  * Date of Creation: 20/07/2026
- * Version Information: V1.2.0
+ * Version Information: V1.2.1
  * Dependencies:
  *   - react
  *   - lucide-react
  *   - @/hooks/use_click_outside
  *   - @/context/language_context
  * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 29/08/2026]
+ * Last Modified Date: [shimaa salah - 30/08/2026]
  * File Description: Shared accessible pagination bar providing record index summary, bidirectional page stepper controls, maximum 5 visible pages, and customizable page limit sizing (10, 25, 50) with animated dynamic dropdown.
  */
 
@@ -82,6 +82,8 @@ export default function Pagination({
 
   if (total === 0) {
     return null;
+  } else {
+    // No action needed
   }
 
   const startRecord = (page - 1) * limit + 1;
@@ -95,6 +97,8 @@ export default function Pagination({
 
     if (end - start + 1 < maxVisible) {
       start = Math.max(1, end - maxVisible + 1);
+    } else {
+      // No action needed
     }
 
     for (let i = start; i <= end; i++) {
@@ -109,12 +113,18 @@ export default function Pagination({
   const handlePageChange = (newPage: number) => {
     if (on_page_change) {
       on_page_change(newPage);
+    } else {
+      // No action needed
     }
     if (onPageChange) {
       onPageChange(newPage);
+    } else {
+      // No action needed
     }
     if (setPage) {
       setPage(newPage);
+    } else {
+      // No action needed
     }
   };
 
@@ -122,12 +132,18 @@ export default function Pagination({
     setInternalLimit(newLimit);
     if (on_limit_change) {
       on_limit_change(newLimit);
+    } else {
+      // No action needed
     }
     if (onLimitChange) {
       onLimitChange(newLimit);
+    } else {
+      // No action needed
     }
     if (setLimit) {
       setLimit(newLimit);
+    } else {
+      // No action needed
     }
   };
 
