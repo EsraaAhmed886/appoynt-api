@@ -35,6 +35,7 @@ import {
   LogOut,
   FileText,
   Bell,
+  Star,
 } from "lucide-react";
 
 type SidebarProps = {
@@ -141,7 +142,7 @@ export default function Sidebar({
       </div>
 
       {/* Navigation List */}
-      <nav className="flex-1 overflow-y-auto overflow-x-hidden space-y-2 p-4">
+      <nav className="flex-1 overflow-y-auto overflow-x-hidden no-scrollbar space-y-2 p-4">
         <SidebarItem
           icon={LayoutDashboard}
           title={translations.nav_dashboard}
@@ -195,6 +196,13 @@ export default function Sidebar({
           icon={Bell}
           title={translations.nav_notifications}
           href="/notifications"
+          isCollapsed={isCollapsed}
+        />
+
+        <SidebarItem
+          icon={Star}
+          title={translations.nav_reviews || "Reviews & Ratings"}
+          href="/reviews"
           isCollapsed={isCollapsed}
         />
 

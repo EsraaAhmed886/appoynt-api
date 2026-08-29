@@ -65,6 +65,8 @@ export default function LayoutHeader({
         return translations.nav_schedule || "Schedule";
       } else if ("medical-records" === main_segment) {
         return translations.nav_medical_records || "Medical Records";
+      } else if ("reviews" === main_segment) {
+        return translations.reviews_page_title || translations.nav_reviews || "Reviews & Ratings";
       } else if ("settings" === main_segment) {
         return translations.nav_settings || "Settings";
       } else {

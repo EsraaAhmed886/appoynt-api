@@ -110,3 +110,13 @@ html, body, input, button, textarea, select {
 .animate-shake {
   animation: shake 0.4s ease-in-out;
 }
+
+/* Utility to hide visible scrollbars across all browsers while retaining scroll function */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
