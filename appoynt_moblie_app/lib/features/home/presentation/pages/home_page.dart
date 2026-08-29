@@ -28,6 +28,8 @@ import 'package:appoynt_mobile_app/features/notifications/presentation/pages/not
 import 'package:appoynt_mobile_app/features/appointments/presentation/pages/appointments_page.dart';
 // Importing AskAiFab widget definition
 import 'package:appoynt_mobile_app/features/appointments/presentation/widgets/ask_ai_fab.dart';
+// Importing AskAiDummyView widget screen definition
+import 'package:appoynt_mobile_app/features/ask_ai/presentation/views/ask_ai_dummy_view.dart';
 
 // Defining the HomePage stateful widget representation
 class HomePage extends StatefulWidget {
@@ -173,11 +175,10 @@ class _HomePageState extends State<HomePage> {
             end: AppSpacing.space_xl,
             child: AskAiFab(
               onTap: () {
-                // Open AI Assistant Chat Screen / Modal BottomSheet
-                CustomSnackBar.info(
-                  context,
-                  'Opening AI Medical Assistant...',
-                  duration: const Duration(seconds: 1),
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const AskAiDummyView(),
+                  ),
                 );
               },
             ),

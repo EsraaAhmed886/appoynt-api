@@ -1,17 +1,21 @@
-import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 /*
  * File Name: ask_ai_fab.dart
  * Author: Kholoud Khaled
  * Date of Creation: 22/08/2026
- * Version Information: v1.0.0
- * Dependencies: flutter/material.dart, flutter_svg/flutter_svg.dart
+ * Version Information: v1.1.0
+ * Dependencies: flutter/material.dart, flutter_svg/flutter_svg.dart,
+ *   package:appoynt_mobile_app/core/theme/colors/app_colors.dart,
+ *   package:appoynt_mobile_app/features/ask_ai/presentation/views/ask_ai_dummy_view.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 26/08/2026]
- * File Description: Prominent circular floating action button with scaled-up AI Chatbot icon (42.0px) filling ~75-80% of the circle diameter with brand glow.
+ * Last Modified Date: [Kholoud Khaled - 29/08/2026]
+ * File Description: Prominent circular floating action button with scaled-up AI Chatbot icon (42.0px)
+ *   filling ~75-80% of the circle diameter with brand glow, opening AskAiDummyView.
  */
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
+import 'package:appoynt_mobile_app/features/ask_ai/presentation/views/ask_ai_dummy_view.dart';
 
 /// Large circular floating action button displaying prominent AI icon.
 class AskAiFab extends StatelessWidget {
@@ -54,7 +58,14 @@ class AskAiFab extends StatelessWidget {
       child: Material(
         color: AppColors.transparent,
         child: InkWell(
-          onTap: onTap,
+          onTap: onTap ??
+              () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const AskAiDummyView(),
+                  ),
+                );
+              },
           customBorder: const CircleBorder(),
           splashColor: AppColors.white.withValues(alpha: 0.25),
           highlightColor: AppColors.white.withValues(alpha: 0.12),

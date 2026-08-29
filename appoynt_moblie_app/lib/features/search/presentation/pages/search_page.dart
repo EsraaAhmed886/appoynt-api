@@ -22,7 +22,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:appoynt_mobile_app/constants/app_spacing.dart';
 // Import central color palette tokens
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
-import 'package:appoynt_mobile_app/core/utils/custom_snackbar.dart';
 // Import localization dictionary
 import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
 // Import search history item entity definition
@@ -40,6 +39,7 @@ import 'package:appoynt_mobile_app/features/search/presentation/widgets/search_s
 import 'package:appoynt_mobile_app/core/routing/routes.dart';
 import 'package:appoynt_mobile_app/features/doctor_profile/presentation/pages/doctor_profile_page.dart';
 import 'package:appoynt_mobile_app/features/appointments/presentation/widgets/ask_ai_fab.dart';
+import 'package:appoynt_mobile_app/features/ask_ai/presentation/views/ask_ai_dummy_view.dart';
 
 
 // Local layout dimensions class to strictly eliminate hardcoded numbers
@@ -569,11 +569,10 @@ class _SearchPageState extends State<SearchPage> {
                   end: AppSpacing.space_xl,
                   child: AskAiFab(
                     onTap: () {
-                      // Open AI Assistant Chat / BottomSheet
-                      CustomSnackBar.info(
-                        context,
-                        'Opening AI Medical Assistant...',
-                        duration: const Duration(seconds: 1),
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const AskAiDummyView(),
+                        ),
                       );
                     },
                   ),
