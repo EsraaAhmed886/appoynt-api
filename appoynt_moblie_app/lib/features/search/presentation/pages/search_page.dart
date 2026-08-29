@@ -6,7 +6,7 @@
  * Dependencies: flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
  *   search_cubit.dart, search_state.dart, app_spacing.dart, app_colors.dart, app_network_image.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 29/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
  * File Description: Renders the dedicated Search Screen with dynamic states (A, B, C), inputs, and filters with standardized dark theme.
  */
 
@@ -582,14 +582,10 @@ class _SearchPageState extends State<SearchPage> {
             // Fixed Bottom Navigation Bar component shown only when soft keyboard is closed
             bottomNavigationBar: 0 == MediaQuery.of(context).viewInsets.bottom
                 ? AppBottomNavBar(
-                    selected_index: 2,
+                    selected_index: -1,
                     on_tap: (index) {
                       if (true == context.mounted) {
-                        if (2 == index) {
-                          // Do nothing
-                        } else {
-                          Navigator.of(context).pop(index);
-                        }
+                        Navigator.of(context).pop(index);
                       }
                     },
                   )

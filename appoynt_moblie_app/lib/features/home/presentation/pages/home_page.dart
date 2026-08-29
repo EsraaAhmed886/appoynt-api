@@ -2,11 +2,11 @@
  * File Name: home_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 17/07/2026
- * Version Information: V1.1.0
+ * Version Information: V1.2.0
  * Dependencies: flutter/material.dart,
  *   package:appoynt_mobile_app/core/routing/route_export.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 29/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
  * File Description: Defines the temporary dummy home screen and components with standardized dark slate theme.
  */
 
@@ -52,9 +52,6 @@ class _HomePageState extends State<HomePage> {
   // Build the main Scaffold layout containing bottom navigation and tabs
   @override
   Widget build(BuildContext context) {
-    // Resolve localizations context configuration
-    final AppLocalizations localizations = AppLocalizations.of(context);
-
     // Return the root Scaffold page container layout settings
     return Scaffold(
       // Build the bottom navigation bar widget using the reusable AppBottomNavBar component
@@ -63,65 +60,15 @@ class _HomePageState extends State<HomePage> {
         selected_index: _selected_index,
         // On tap update local state and index tracker
         on_tap: (index) {
-          // Check if search tab is tapped using Yoda style check (index 2)
-          if (2 == index) {
-            // TODO: START OF DUMMY HOME ROUTING - REMOVE ONCE FINAL HOME IS COMPLETED
-            // Check if context remains mounted using Yoda style check
-            if (true == context.mounted) {
-              // Route to the dedicated search page using slide/fade transition
-              Navigator.of(context)
-                  .push<int>(
-                // Page route transition configs
-                PageRouteBuilder(
-                  // Target search page constructor mapping builder
-                  pageBuilder: (context, anim, secAnim) {
-                    // Return SearchPage widget instance
-                    return const SearchPage();
-                  },
-                  // Transition builder animating cross-fade layout sweep
-                  transitionsBuilder: (context, anim, secAnim, child) {
-                    // Return fade transition
-                    return FadeTransition(
-                      // Bind opacity factor to active transition
-                      opacity: anim,
-                      // Child display layout widget
-                      child: child,
-                    );
-                  },
-                  // Transition duration configs milliseconds limit
-                  transitionDuration: const Duration(
-                    // Delay milliseconds count
-                    milliseconds: AppSpacing.duration_fade_ms,
-                  ),
-                ),
-              )
-                  .then((result_index) {
-                // Check if a result index was returned and widget remains active
-                if (result_index != null && true == context.mounted) {
-                  // Rebuild screen selecting the requested tab index
-                  setState(() {
-                    // Update index selection
-                    _selected_index = result_index;
-                  });
-                } else {
-                  // Empty block
-                }
-              });
-            } else {
-              // No action needed
-            }
-            // TODO: END OF DUMMY HOME ROUTING
+          // Check if view remains mounted using Yoda style check
+          if (true == context.mounted) {
+            // Update state representation
+            setState(() {
+              // Bind index
+              _selected_index = index;
+            });
           } else {
-            // Check if view remains mounted using Yoda style check
-            if (true == context.mounted) {
-              // Update state representation
-              setState(() {
-                // Bind index
-                _selected_index = index;
-              });
-            } else {
-              // Empty block
-            }
+            // Empty block
           }
         },
       ),
@@ -149,10 +96,10 @@ class _HomePageState extends State<HomePage> {
                 : 1 == _selected_index
                     // Instantiate the Appointments tab widget
                     ? const AppointmentsPage()
-                    : 3 == _selected_index
+                    : 2 == _selected_index
                         // Instantiate the Favorites tab widget
                         ? const FavoritesPage()
-                        : 4 == _selected_index
+                        : 3 == _selected_index
                             // Instantiate the Profile tab wrapped in its Cubit state controller
                             ? BlocProvider<ProfileCubit>(
                                 // Create Cubit state controller instance
@@ -163,11 +110,8 @@ class _HomePageState extends State<HomePage> {
                                 // Renders the ProfilePage main screen widget
                                 child: const ProfilePage(),
                               )
-                            // Construction/Coming soon tab representation for other items
-                            : _ComingSoonTab(
-                                // Localized category label mapping active selection
-                                label: localizations.dummy_search_tab_label,
-                              ),
+                            // Fallback container representation
+                            : const SizedBox.shrink(),
           ),
           // Positioned floating AI assistant action button (decoupled from Scaffold FAB to avoid pushing SnackBars up)
           PositionedDirectional(
@@ -907,100 +851,6 @@ class _HomeTab extends StatelessWidget {
           const SizedBox(
             // Extra large spacing spacer
             height: AppSpacing.space_xxxl,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// Stateful/Stateless widget representation of the ComingSoonTab fallback screen
-class _ComingSoonTab extends StatelessWidget {
-  // Label text string reference
-  final String label;
-
-  // Constructor mapping the widget label parameter
-  const _ComingSoonTab({required this.label});
-
-  // Build method drawing the Coming Soon screen
-  @override
-  Widget build(BuildContext context) {
-    // Resolve localized strings dictionary reference
-    final AppLocalizations localizations = AppLocalizations.of(context);
-    // Resolve dark mode active state context
-    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
-
-    // Return centered column widget laying out contents
-    return Center(
-      // Column group mapping vertical nodes
-      child: Column(
-        // Minimize vertical space consumed by list elements
-        mainAxisSize: MainAxisSize.min,
-        // Layout list children widgets
-        children: [
-          // Circle avatar container displaying construction graphic icon
-          Container(
-            // Circle width constraint
-            width: AppSpacing.dummy_size_coming_soon_circle,
-            // Circle height constraint
-            height: AppSpacing.dummy_size_coming_soon_circle,
-            // Circle decoration configurations parameters options
-            decoration: BoxDecoration(
-              // Brand primary color with light transparency tint overlay
-              color: AppColors.primary_color
-                  .withValues(alpha: AppSpacing.dummy_opacity_active),
-              // Circular bounding shape decoration
-              shape: BoxShape.circle,
-            ),
-            // Construction icon widget representation
-            child: const Icon(
-              // Construction graphic icon token representation
-              Icons.construction_rounded,
-              // Graphic color matching brand primary accent
-              color: AppColors.primary_color,
-              // Icon display size constraint
-              size: AppSpacing.dummy_size_coming_soon_icon,
-            ),
-          ),
-          // Spacer height vertical offset
-          const SizedBox(
-            // Height spacing size value
-            height: AppSpacing.space_xl,
-          ),
-          // Text widget displaying page section label title
-          Text(
-            // Screen title name string
-            label,
-            // Typography configurations style attributes options
-            style: TextStyle(
-              // Heading size parameters
-              fontSize: AppSpacing.dummy_bottom_nav_item_radius,
-              // Bold typography weight indicator
-              fontWeight: FontWeight.w800,
-              // Dynamic text color adjusting to brightness mode
-              color: is_dark
-                  ? AppColors.text_dark_primary
-                  : AppColors.text_light_primary,
-            ),
-          ),
-          // Spacer height vertical offset
-          const SizedBox(
-            // Height spacing size value
-            height: AppSpacing.space_m,
-          ),
-          // Subhead text widget displaying Coming Soon messages
-          Text(
-            // Under construction string
-            localizations.dummy_coming_soon,
-            // Typography layouts style parameters options
-            style: TextStyle(
-              // Small body font size
-              fontSize: AppSpacing.font_size_subtitle,
-              // Subtle slate color token
-              color: is_dark
-                  ? AppColors.darkTextSecondary
-                  : AppColors.text_light_secondary,
-            ),
           ),
         ],
       ),

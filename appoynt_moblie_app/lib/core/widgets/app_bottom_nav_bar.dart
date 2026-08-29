@@ -2,11 +2,11 @@
  * File Name: app_bottom_nav_bar.dart
  * Author: Kholoud Khaled
  * Date of Creation: 17/07/2026
- * Version Information: V1.1.0
+ * Version Information: V1.2.0
  * Dependencies: package:flutter/material.dart,
  *   package:appoynt_mobile_app/core/routing/route_export.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 29/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
  * File Description: A reusable bottom navigation bar component mapping custom design tokens and localized text resources.
  */
 
@@ -76,15 +76,6 @@ class AppBottomNavBar extends StatelessWidget {
         active_icon: LucideIcons.calendarDays,
         // Localized text label string
         label: localizations.dummy_appointments_tab_label,
-      ),
-      // Search tab item declaration
-      AppNavItem(
-        // Unselected icon token representation
-        icon: LucideIcons.search,
-        // Selected icon token representation
-        active_icon: LucideIcons.search,
-        // Localized text label string
-        label: localizations.dummy_search_tab_label,
       ),
       // Favorite tab item declaration (heart icon as required in Lucide design specs)
       AppNavItem(
@@ -157,7 +148,7 @@ class AppBottomNavBar extends StatelessWidget {
             children: nav_items.asMap().entries.map((e) {
               // Resolve active selection status of target map entry
               final bool is_selected = e.key == selected_index;
-              // Return Expanded wrapper so all 5 tabs adjust their widths proportionally
+              // Return Expanded wrapper so all 4 tabs adjust their widths proportionally
               return Expanded(
                 // Return interactive detector capturing tap gesture event handlers
                 child: GestureDetector(
