@@ -290,6 +290,21 @@ class _OtpPageState extends State<OtpPage> {
     return '$m:$s';
   }
 
+  /// Returns countdown timer widgets if active and not locked.
+  List<Widget> _build_timer_widgets(BuildContext context, bool is_arabic) {
+    if (_seconds_left > 0 && !_is_locked) {
+      return [
+        const SizedBox(width: AppSpacing.space_s),
+        Text(
+          _format_time(_seconds_left),
+          style: AppTextStyles.get_otp_timer(context, is_arabic),
+        ),
+      ];
+    } else {
+      return const [];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     /// Retrieving localized strings and directionality info.
@@ -495,19 +510,7 @@ class _OtpPageState extends State<OtpPage> {
                                     ),
                                     // Conditionally show spacing and timer widget only if countdown
                                     // remains active and not locked (BUG-005)
-                                    if (_seconds_left > 0 && !_is_locked) ...[
-                                      // Horizontal spacing gap using spacing constants instead of magic numbers
-                                      const SizedBox(width: AppSpacing.space_s),
-                                      // Timer text label widget showing countdown seconds left
-                                      Text(
-                                        // Format remaining seconds as MM:SS
-                                        _format_time(_seconds_left),
-                                        // Localized timer text style passing context
-                                        style: AppTextStyles.get_otp_timer(context, is_arabic),
-                                      ),
-                                    ] else ...[
-                                      // No timer display needed when expired or locked
-                                    ],
+                                    ..._build_timer_widgets(context, is_arabic),
                                   ],
                                 ),
                               ),
