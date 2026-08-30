@@ -2,16 +2,18 @@
  * File Name: error_handler.dart
  * Author: Kholoud Khaled
  * Date of Creation: 09/08/2026
- * Version Information: V1.0.0
- * Dependencies: package:dio/dio.dart, failures.dart
+ * Version Information: V2.0.0
+ * Dependencies: dart:ui, package:dio/dio.dart, failures.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 27/08/2026]
  * File Description: Centralized error processing utility that maps every
  *   Dio/HTTP exception, SSL/handshake error, and JSON parsing failure to a
- *   strongly-typed Failure subclass. No raw exception or server message is
- *   ever exposed directly to the UI layer.
+ *   strongly-typed Failure subclass or user-friendly localized message string.
+ *   No raw technical exception dumps or untranslated keys are ever exposed directly to the UI.
  */
 
+// Importing dart:ui for platform locale resolution
+import 'dart:ui';
 // Importing Dio for DioException and response types
 import 'package:dio/dio.dart';
 // Importing the full failure hierarchy
@@ -38,13 +40,202 @@ class ApiFailure {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// ErrorHandler — static utility mapping exceptions to ApiFailure objects
+// ErrorHandler — static utility mapping exceptions to ApiFailure objects & messages
 // ─────────────────────────────────────────────────────────────────────────────
 
-// Static utility class for mapping all exception types to ApiFailure instances
+// Static utility class for mapping all exception types to user-friendly messages and ApiFailure instances
 class ErrorHandler {
   // Private constructor preventing instantiation of this utility class
   ErrorHandler._();
+
+  // Resolves the current system or application active language code ('en' or 'ar')
+  static String getCurrentLanguageCode() {
+    if (true == PlatformDispatcher.instance.locale.languageCode.startsWith('ar')) {
+      return 'ar';
+    } else {
+      return 'en';
+    }
+  }
+
+  // Maps any DioException scenario to a user-friendly, localized error message string
+  static String handleDioError(DioException error, {String? languageCode}) {
+    final String lang = languageCode ?? getCurrentLanguageCode();
+
+    switch (error.type) {
+      case DioExceptionType.connectionTimeout:
+      case DioExceptionType.sendTimeout:
+      case DioExceptionType.receiveTimeout:
+        if ('ar' == lang) {
+          return 'انتهت مهلة الاتصال بالخادم. يرجى التحقق من اتصال الإنترنت والمحاولة مجدداً.';
+        } else {
+          return 'Connection timed out. Please check your internet connection and try again.';
+        }
+
+      case DioExceptionType.connectionError:
+        if ('ar' == lang) {
+          return 'لا يوجد اتصال بالإنترنت. يرجى التحقق من الشبكة.';
+        } else {
+          return 'No internet connection. Please check your network and try again.';
+        }
+
+      case DioExceptionType.badResponse:
+        final int? statusCode = error.response?.statusCode;
+        final dynamic responseData = error.response?.data;
+        final bool isPasswordEndpoint = error.requestOptions.path.contains('password');
+
+        // Extract backend error message or error key if available in response data map
+        if (responseData is Map<String, dynamic>) {
+          final dynamic message = responseData['message'] ??
+              responseData['error'] ??
+              responseData['code'] ??
+              responseData['title'] ??
+              responseData['detail'];
+
+          if (null != message && message.toString().isNotEmpty) {
+            final String rawMsg = message.toString();
+            if (isPasswordEndpoint && (rawMsg == 'Password update failed.' || rawMsg == 'Password update failed' || rawMsg == 'password_update_failed')) {
+              return 'ar' == lang
+                  ? 'كلمة المرور الحالية غير صحيحة.'
+                  : 'Incorrect current password. Please try again.';
+            } else {
+              return mapBackendErrorKey(rawMsg, languageCode: lang);
+            }
+          } else if (responseData.containsKey('errors') && responseData['errors'] is Map) {
+            final Map errors = responseData['errors'] as Map;
+            if (errors.isNotEmpty) {
+              final dynamic firstVal = errors.values.first;
+              if (firstVal is List && firstVal.isNotEmpty) {
+                return mapBackendErrorKey(firstVal.first.toString(), languageCode: lang);
+              } else {
+                return mapBackendErrorKey(firstVal.toString(), languageCode: lang);
+              }
+            } else {
+              // No error entries in map
+            }
+          } else {
+            // No recognizable message key in response
+          }
+        } else {
+          // Response data is not a map
+        }
+
+        if (isPasswordEndpoint && (400 == statusCode || 401 == statusCode || 422 == statusCode)) {
+          if ('ar' == lang) {
+            return 'كلمة المرور الحالية غير صحيحة.';
+          } else {
+            return 'Incorrect current password. Please try again.';
+          }
+        } else if (401 == statusCode || 403 == statusCode) {
+          if ('ar' == lang) {
+            return 'انتهت جلستك. يرجى تسجيل الدخول مرة أخرى.';
+          } else {
+            return 'Your session has expired. Please log in again.';
+          }
+        } else if (404 == statusCode) {
+          if ('ar' == lang) {
+            return 'العنصر المطلوب غير موجود.';
+          } else {
+            return 'Requested resource was not found.';
+          }
+        } else if (null != statusCode && 500 <= statusCode) {
+          if ('ar' == lang) {
+            return 'حدث خطأ في الخادم. يرجى المحاولة لاحقاً.';
+          } else {
+            return 'Server error occurred. Please try again later.';
+          }
+        } else {
+          if ('ar' == lang) {
+            return 'حدث خطأ غير متوقع. يرجى المحاولة لاحقاً.';
+          } else {
+            return 'An unexpected error occurred. Please try again.';
+          }
+        }
+
+      case DioExceptionType.cancel:
+        if ('ar' == lang) {
+          return 'تم إلغاء الطلب.';
+        } else {
+          return 'Request was cancelled.';
+        }
+
+      default:
+        if ('ar' == lang) {
+          return 'حدث خطأ غير متوقع. يرجى المحاولة مجدداً.';
+        } else {
+          return 'An unexpected error occurred. Please try again.';
+        }
+    }
+  }
+
+  // Maps technical error keys or backend translation codes into clean localized strings
+  static String mapBackendErrorKey(String key, {String? languageCode}) {
+    final String lang = languageCode ?? getCurrentLanguageCode();
+    final String cleanKey = key.trim();
+
+    final Map<String, Map<String, String>> localizedKeys = {
+      'en': {
+        'error_session_expired': 'Your session has expired. Please log in again.',
+        'session_expired': 'Your session has expired. Please log in again.',
+        'unauthorized': 'You are not authorized to perform this action.',
+        'error_unauthorized': 'You are not authorized to perform this action.',
+        'error_no_internet': 'No internet connection. Please check your network and try again.',
+        'error_timeout': 'Connection timed out. Please check your internet connection and try again.',
+        'error_server': 'Server error occurred. Please try again later.',
+        'error_not_found': 'Requested resource was not found.',
+        'error_bad_request': 'Invalid request parameters. Please verify your information.',
+        'error_unknown': 'An unexpected error occurred. Please try again.',
+        'invalid_current_password': 'Incorrect current password. Please try again.',
+        'incorrect_password': 'Incorrect current password. Please try again.',
+        'incorrect_current_password': 'Incorrect current password. Please try again.',
+        'wrong_password': 'Incorrect current password. Please try again.',
+        'wrong_current_password': 'Incorrect current password. Please try again.',
+        'invalid_password': 'Incorrect current password. Please try again.',
+        'current_password_incorrect': 'Incorrect current password. Please try again.',
+        'Password update failed.': 'Incorrect current password. Please try again.',
+        'Password update failed': 'Incorrect current password. Please try again.',
+        'password_update_failed': 'Incorrect current password. Please try again.',
+      },
+      'ar': {
+        'error_session_expired': 'انتهت صلاحية الجلسة. يرجى تسجيل الدخول مجدداً.',
+        'session_expired': 'انتهت صلاحية الجلسة. يرجى تسجيل الدخول مجدداً.',
+        'unauthorized': 'غير مصرح لك بإجراء هذه العملية.',
+        'error_unauthorized': 'غير مصرح لك بإجراء هذه العملية.',
+        'error_no_internet': 'لا يوجد اتصال بالإنترنت. يرجى التحقق من الشبكة.',
+        'error_timeout': 'انتهت مهلة الاتصال بالخادم. يرجى التحقق من اتصال الإنترنت والمحاولة مجدداً.',
+        'error_server': 'حدث خطأ في الخادم. يرجى المحاولة لاحقاً.',
+        'error_not_found': 'العنصر المطلوب غير موجود.',
+        'error_bad_request': 'البيانات المدخلة غير صحيحة. يرجى التأكد من صحة البيانات.',
+        'error_unknown': 'حدث خطأ غير متوقع. يرجى المحاولة مجدداً.',
+        'invalid_current_password': 'كلمة المرور الحالية غير صحيحة.',
+        'incorrect_password': 'كلمة المرور الحالية غير صحيحة.',
+        'incorrect_current_password': 'كلمة المرور الحالية غير صحيحة.',
+        'wrong_password': 'كلمة المرور الحالية غير صحيحة.',
+        'wrong_current_password': 'كلمة المرور الحالية غير صحيحة.',
+        'invalid_password': 'كلمة المرور الحالية غير صحيحة.',
+        'current_password_incorrect': 'كلمة المرور الحالية غير صحيحة.',
+        'Password update failed.': 'كلمة المرور الحالية غير صحيحة.',
+        'Password update failed': 'كلمة المرور الحالية غير صحيحة.',
+        'password_update_failed': 'كلمة المرور الحالية غير صحيحة.',
+      },
+    };
+
+    // If key is a known dictionary identifier, return translation
+    if (localizedKeys[lang]?.containsKey(cleanKey) == true) {
+      return localizedKeys[lang]![cleanKey]!;
+    } else {
+      // If the backend returned a readable human sentence (not a snake_case key), return it directly if reasonable
+      if (cleanKey.contains(' ') && !cleanKey.startsWith('error_') && !cleanKey.contains('Exception')) {
+        return cleanKey;
+      } else {
+        // Fallback to standard generic message
+        if ('ar' == lang) {
+          return 'حدث خطأ أثناء المعالجة.';
+        } else {
+          return 'An error occurred while processing your request.';
+        }
+      }
+    }
+  }
 
   // Primary entry point: maps any thrown exception to an ApiFailure instance
   static ApiFailure handle(Object exception) {
@@ -191,16 +382,16 @@ class ErrorHandler {
     final String error_message =
         exception.error?.toString().toLowerCase() ?? '';
     // Check for SSL/TLS handshake error signature keyword
-    if (error_message.contains('handshake') ||
-        error_message.contains('certificate') ||
-        error_message.contains('ssl') ||
-        error_message.contains('tls')) {
+    if (true == error_message.contains('handshake') ||
+        true == error_message.contains('certificate') ||
+        true == error_message.contains('ssl') ||
+        true == error_message.contains('tls')) {
       // SSL certificate or TLS handshake failure detected
       return const ApiFailure(failure: SslHandshakeFailure());
-    } else if (error_message.contains('socketexception') ||
-        error_message.contains('network') ||
-        error_message.contains('unreachable') ||
-        error_message.contains('connection refused')) {
+    } else if (true == error_message.contains('socketexception') ||
+        true == error_message.contains('network') ||
+        true == error_message.contains('unreachable') ||
+        true == error_message.contains('connection refused')) {
       // Device has no active internet connection
       return const ApiFailure(failure: NoInternetFailure());
     } else {
@@ -214,7 +405,7 @@ class ErrorHandler {
     // Inspect inner error string for network connectivity keywords
     final String inner = exception.error?.toString().toLowerCase() ?? '';
     // Check for no-internet connectivity signal in the inner error message
-    if (inner.contains('socketexception') || inner.contains('network')) {
+    if (true == inner.contains('socketexception') || true == inner.contains('network')) {
       // No active internet connection detected in the inner exception message
       return const ApiFailure(failure: NoInternetFailure());
     } else {
@@ -236,8 +427,8 @@ class ErrorHandler {
     if (response.data is Map<String, dynamic>) {
       // Extract the response data map reference
       final Map<String, dynamic> data = response.data as Map<String, dynamic>;
-      // Prioritize 'message' key, then 'error', then 'detail' from the map
-      final Object? raw_message = data['message'] ?? data['error'] ?? data['detail'];
+      // Prioritize 'message' key, then 'error', then 'detail', 'title', 'code' from the map
+      final Object? raw_message = data['message'] ?? data['error'] ?? data['detail'] ?? data['title'] ?? data['code'];
       // Return string message if present, null otherwise
       if (null != raw_message && raw_message is String && raw_message.isNotEmpty) {
         // Return clean server message string
@@ -252,3 +443,4 @@ class ErrorHandler {
     }
   }
 }
+// End of error_handler.dart

@@ -2,11 +2,11 @@
  * File Name: auth_text_field.dart
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
- * Version Information: V1.0.0
+ * Version Information: V1.2.0
  * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart,
  *   package:flutter/services.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 31/08/2026]
  * File Description: Standardized, premium text input component designed for authentication forms.
  *   Provides automatic dark mode adaptation, LTR forcing for credentials, and localized fonts.
  */
@@ -15,6 +15,8 @@
 import 'package:appoynt_mobile_app/core/routing/route_export.dart';
 // Importing standard system services for inputs formatting
 import 'package:flutter/services.dart';
+// Importing centralized digits converter helper
+import 'package:appoynt_mobile_app/core/utils/digit_converter_helper.dart';
 
 // Standardized text input component widget for auth forms
 class AuthTextField extends StatefulWidget {
@@ -57,6 +59,12 @@ class AuthTextField extends StatefulWidget {
   // Flag indicating if standard shadow decorator should be displayed
   final bool show_shadow;
 
+  // Autovalidate mode for reactive form field validation
+  final AutovalidateMode? autovalidate_mode;
+
+  // Value changed callback for immediate form updates
+  final ValueChanged<String>? on_changed;
+
   // Constructor mapping standard parameters
   const AuthTextField({
     super.key,
@@ -73,6 +81,8 @@ class AuthTextField extends StatefulWidget {
     this.text_input_action,
     this.enabled = true,
     this.show_shadow = true,
+    this.autovalidate_mode,
+    this.on_changed,
   });
 
   @override
@@ -183,6 +193,27 @@ class _AuthTextFieldState extends State<AuthTextField> {
                         : TextAlign.left))
                 : (is_arabic ? TextAlign.right : TextAlign.left);
 
+            // Build list of resolved input formatters with explicit conditional branches
+            final List<TextInputFormatter> resolved_input_formatters = [];
+            if (true == widget.is_phone ||
+                true == widget.is_national_id ||
+                TextInputType.number == widget.keyboard_type ||
+                TextInputType.phone == widget.keyboard_type) {
+              resolved_input_formatters.add(ArabicToEnglishDigitsFormatter());
+            } else {
+              // No digit conversion needed
+            }
+            if (null != widget.input_formatters) {
+              resolved_input_formatters.addAll(widget.input_formatters!);
+            } else {
+              // No custom formatters provided
+            }
+            if (null == widget.input_formatters && true == widget.is_phone) {
+              resolved_input_formatters.add(PhoneInputFormatter());
+            } else {
+              // No phone formatting needed
+            }
+
             // Return Stack layering shadow background behind the TextFormField
             return Stack(
               // Allow child widgets to paint outside stack boundary lines
@@ -225,6 +256,8 @@ class _AuthTextFieldState extends State<AuthTextField> {
                       ),
                     ),
                   ),
+                ] else ...[
+                  // No shadow decorator requested
                 ],
                 // Render standard TextFormField on top of the shadow decorator
                 TextFormField(
@@ -238,10 +271,13 @@ class _AuthTextFieldState extends State<AuthTextField> {
                   obscureText: true == widget.is_password && true == _obscure,
                   // Bind validator
                   validator: widget.validator,
-                  // Enable validation modes onBlur once touched using Yoda style checks
-                  autovalidateMode: true == _touched
-                      ? AutovalidateMode.onUserInteraction
-                      : AutovalidateMode.disabled,
+                  // Enable validation modes onBlur once touched or explicit autovalidateMode
+                  autovalidateMode: widget.autovalidate_mode ??
+                      (true == _touched
+                          ? AutovalidateMode.onUserInteraction
+                          : AutovalidateMode.disabled),
+                  // Callback on value changed
+                  onChanged: widget.on_changed,
                   // Resolve virtual keyboard configuration layout
                   keyboardType: true == widget.is_phone
                       ? TextInputType.phone
@@ -252,14 +288,8 @@ class _AuthTextFieldState extends State<AuthTextField> {
                   // Resolve keyboard return action using Yoda style check
                   textInputAction:
                       widget.text_input_action ?? TextInputAction.next,
-                  // Format digits-only or custom formatters
-                  inputFormatters: widget.input_formatters ??
-                      (true == widget.is_phone
-                          ? [
-                              // Use custom Egyptian phone input formatter
-                              PhoneInputFormatter(),
-                            ]
-                          : null),
+                  // Format digits-only or custom formatters with Arabic digit translation
+                  inputFormatters: resolved_input_formatters,
                   // Force input directionality text rules
                   textDirection: true == force_ltr
                       ? TextDirection.ltr
@@ -455,26 +485,8 @@ class PhoneInputFormatter extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    // Retrieve new value string representation
-    String text = newValue.text;
-
-    // Convert Arabic numerals to English digits if any exist
-    final Map<String, String> arabic_to_english = {
-      '٠': '0',
-      '١': '1',
-      '٢': '2',
-      '٣': '3',
-      '٤': '4',
-      '٥': '5',
-      '٦': '6',
-      '٧': '7',
-      '٨': '8',
-      '٩': '9'
-    };
-    // Translate each character in map
-    arabic_to_english.forEach((arabic, english) {
-      text = text.replaceAll(arabic, english);
-    });
+    // Retrieve new value string representation and convert Arabic numerals to English digits
+    String text = newValue.text.toEnglishDigits();
 
     // Remove any characters that are not digits or the plus prefix sign
     text = text.replaceAll(RegExp(r'[^\d+]'), '');

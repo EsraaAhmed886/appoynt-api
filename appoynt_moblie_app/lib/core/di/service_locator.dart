@@ -2,12 +2,12 @@
  * File Name: service_locator.dart
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
- * Version Information: V1.0.0
+ * Version Information: V1.1.0
  * Dependencies: package:get_it/get_it.dart, package:dio/dio.dart, dio_factory.dart,
  *   auth_remote_datasource.dart, auth_repository_impl.dart, login_usecase.dart,
- *   register_usecase.dart, auth_cubit.dart
+ *   register_usecase.dart, auth_cubit.dart, profile usecases
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 17/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/08/2026]
  * File Description: Initializes and manages the singleton instances of services,
  *   repositories, use cases, and cubits using the GetIt service locator.
  */
@@ -52,6 +52,8 @@ import 'package:appoynt_mobile_app/features/profile/domain/usecases/get_user_pro
 import 'package:appoynt_mobile_app/features/profile/domain/usecases/update_user_profile_usecase.dart';
 // Profile Photo Upload Use Case
 import 'package:appoynt_mobile_app/features/profile/domain/usecases/upload_profile_photo_usecase.dart';
+// Profile Photo Delete Use Case
+import 'package:appoynt_mobile_app/features/profile/domain/usecases/delete_profile_photo_usecase.dart';
 // Favorites Remote Data Source
 import 'package:appoynt_mobile_app/features/favorites/data/datasources/favorites_remote_data_source.dart';
 // Favorites Local Data Source
@@ -147,6 +149,12 @@ Future<void> setup_service_locator() async {
   get_it.registerLazySingleton<UploadProfilePhotoUseCase>(() {
     // Inject the profile repository for multipart upload delegation
     return UploadProfilePhotoUseCase(get_it<ProfileRepository>());
+  });
+
+  /// Registering the Delete Profile Photo Use Case.
+  get_it.registerLazySingleton<DeleteProfilePhotoUseCase>(() {
+    // Inject the profile repository for photo deletion delegation
+    return DeleteProfilePhotoUseCase(get_it<ProfileRepository>());
   });
 
   // ── Authentication Feature ─────────────────────────────

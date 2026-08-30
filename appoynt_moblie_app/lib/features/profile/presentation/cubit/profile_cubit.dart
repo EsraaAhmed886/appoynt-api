@@ -2,20 +2,22 @@
  * File Name: profile_cubit.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/07/2026
- * Version Information: V1.2.0
+ * Version Information: V1.6.0
  * Dependencies: package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart,
  *   package:appoynt_mobile_app/features/profile/domain/entities/patient_profile.dart,
  *   package:appoynt_mobile_app/features/profile/domain/entities/insurance_card.dart,
  *   package:appoynt_mobile_app/features/profile/domain/entities/test_result.dart,
- *   package:image_picker/image_picker.dart
+ *   package:image_picker/image_picker.dart,
+ *   package:appoynt_mobile_app/core/error/error_handler.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 31/08/2026]
  * File Description: Implements the Patient Profile Cubit orchestrating UI updates,
- *   validations, and saves. V1.1.0 adds pick_and_upload_avatar() for camera/gallery
- *   image selection and upload via POST /api/patients/profile-photo.
+ *   validations, local photo staging, and saves/deletions on form submit.
  */
 
+import 'dart:io';
+import 'package:flutter/painting.dart';
 // Importing the BLoC library
 import 'package:flutter_bloc/flutter_bloc.dart';
 // Importing the profile state definitions
@@ -27,6 +29,7 @@ import 'package:appoynt_mobile_app/features/profile/domain/entities/insurance_ca
 // Importing the test result model definition
 import 'package:appoynt_mobile_app/features/profile/domain/entities/test_result.dart';
 import 'package:appoynt_mobile_app/core/di/service_locator.dart';
+import 'package:appoynt_mobile_app/core/error/error_handler.dart';
 import 'package:appoynt_mobile_app/features/profile/data/datasources/profile_remote_data_source.dart';
 import 'package:appoynt_mobile_app/features/profile/data/models/change_password_request_model.dart';
 import 'package:appoynt_mobile_app/features/profile/data/models/update_profile_request_model.dart';
@@ -34,15 +37,27 @@ import 'package:appoynt_mobile_app/features/profile/domain/repositories/profile_
 import 'package:appoynt_mobile_app/features/profile/domain/usecases/get_user_profile_usecase.dart';
 import 'package:appoynt_mobile_app/features/profile/domain/usecases/update_user_profile_usecase.dart';
 import 'package:appoynt_mobile_app/features/profile/data/models/user_profile_model.dart';
+// Importing GovernorateModel & CityModel representations
+import 'package:appoynt_mobile_app/features/profile/data/models/governorate_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 // Importing image_picker for camera and gallery photo selection
 import 'package:image_picker/image_picker.dart';
 // Importing upload profile photo use case for Clean Architecture compliance
 import 'package:appoynt_mobile_app/features/profile/domain/usecases/upload_profile_photo_usecase.dart';
+// Importing delete profile photo use case for Clean Architecture compliance
+import 'package:appoynt_mobile_app/features/profile/domain/usecases/delete_profile_photo_usecase.dart';
 
 // Profile business logic Cubit controller class
 class ProfileCubit extends Cubit<ProfileState> {
+  // Cascading Governorates & Cities for Address Selection
+  List<GovernorateModel> governoratesList = [];
+  List<CityModel> citiesList = [];
+  GovernorateModel? selectedGovernorate;
+  CityModel? selectedCity;
+  bool isGovernoratesLoading = false;
+  bool isCitiesLoading = false;
+
   // Master list of available chronic conditions options (to be fetched from API/DB)
   final List<Map<String, String>> available_conditions = const [
     // Diabetes details EN/AR and icon key
@@ -95,64 +110,383 @@ class ProfileCubit extends Cubit<ProfileState> {
   // Constructor initializing with initial blank state configuration
   ProfileCubit() : super(ProfileState.initial());
 
+  // Fetches Egyptian Governorates lookup dataset
+  Future<void> fetchGovernorates({
+    dynamic initialGovId,
+    dynamic initialCityId,
+    String? initialGovName,
+    String? initialCityName,
+  }) async {
+    isGovernoratesLoading = true;
+    if (!isClosed) {
+      emit(state.copyWith(
+        profile: state.profile,
+        temp_profile: state.temp_profile,
+      ));
+    } else {
+      // Cubit closed
+    }
+
+    try {
+      final List<GovernorateModel> data =
+          await get_it<ProfileRepository>().getGovernorates();
+      governoratesList = data;
+      debugPrint(
+          '[ProfileCubit] Loaded ${governoratesList.length} governorates successfully.');
+
+      if (initialGovId != null) {
+        for (final gov in governoratesList) {
+          if (gov.id.toString() == initialGovId.toString()) {
+            selectedGovernorate = gov;
+            break;
+          } else {
+            // Check next
+          }
+        }
+      } else if (initialGovName != null && initialGovName.trim().isNotEmpty) {
+        final String search = initialGovName.trim().toLowerCase();
+        for (final gov in governoratesList) {
+          if (gov.nameEn.toLowerCase() == search ||
+              gov.nameAr.toLowerCase() == search) {
+            selectedGovernorate = gov;
+            break;
+          } else {
+            // Check next
+          }
+        }
+      } else {
+        // No initial governorate match
+      }
+
+      if (selectedGovernorate != null) {
+        if (selectedGovernorate!.cities.isNotEmpty) {
+          citiesList = selectedGovernorate!.cities;
+        } else {
+          try {
+            citiesList = await get_it<ProfileRepository>()
+                .getCitiesByGovernorate(selectedGovernorate!.id);
+          } catch (_) {
+            citiesList = [];
+          }
+        }
+
+        if (initialCityId != null) {
+          for (final city in citiesList) {
+            if (city.id.toString().toLowerCase() ==
+                initialCityId.toString().toLowerCase()) {
+              selectedCity = city;
+              break;
+            } else {
+              // Check next
+            }
+          }
+        } else if (initialCityName != null &&
+            initialCityName.trim().isNotEmpty) {
+          final String searchCity = initialCityName.trim().toLowerCase();
+          for (final city in citiesList) {
+            if (city.nameEn.toLowerCase() == searchCity ||
+                city.nameAr.toLowerCase() == searchCity ||
+                (initialGovName != null &&
+                    (initialGovName.toLowerCase().contains(city.nameEn.toLowerCase()) ||
+                        initialGovName.toLowerCase().contains(city.nameAr.toLowerCase())))) {
+              selectedCity = city;
+              break;
+            } else {
+              // Check next
+            }
+          }
+        } else {
+          // No initial city match
+        }
+      } else {
+        // No governorate selected
+      }
+
+      debugPrint(
+          '✅ [Address Ready]: Gov ID = ${selectedGovernorate?.id}, City ID = ${selectedCity?.id}, Cities Count = ${citiesList.length}');
+
+      isGovernoratesLoading = false;
+      if (!isClosed) {
+        emit(state.copyWith(
+          profile: state.profile,
+          temp_profile: state.temp_profile,
+        ));
+      } else {
+        // Cubit closed
+      }
+    } catch (e) {
+      governoratesList = [];
+      isGovernoratesLoading = false;
+      debugPrint('[ProfileCubit] Failed to load governorates from API: $e.');
+      if (!isClosed) {
+        emit(state.copyWith(
+          profile: state.profile,
+          temp_profile: state.temp_profile,
+        ));
+      } else {
+        // Cubit closed
+      }
+    }
+  }
+
+  /// Matches and binds governorate and city from profile model into cubit selection state
+  Future<void> populateProfileData(UserProfileModel profile) async {
+    if (governoratesList.isEmpty) {
+      await fetchGovernorates(
+        initialGovId: profile.governorateId,
+        initialCityId: profile.cityId,
+        initialGovName: profile.governorateNameEn ?? profile.governorateName,
+        initialCityName: profile.cityNameEn ?? profile.cityName,
+      );
+      return;
+    } else {
+      // Governorates already loaded in memory
+    }
+
+    try {
+      final String? govId = profile.governorateId?.toLowerCase();
+      final String? govNameEn = profile.governorateNameEn?.toLowerCase();
+      final String? govNameAr = profile.governorateNameAr;
+
+      selectedGovernorate = governoratesList.firstWhere(
+        (gov) =>
+            (govId != null && gov.id.toString().toLowerCase() == govId) ||
+            (govNameEn != null && gov.nameEn.toLowerCase() == govNameEn) ||
+            (govNameAr != null && gov.nameAr == govNameAr),
+      );
+
+      if (selectedGovernorate != null) {
+        if (selectedGovernorate!.cities.isNotEmpty) {
+          citiesList = selectedGovernorate!.cities;
+        } else {
+          try {
+            citiesList = await get_it<ProfileRepository>()
+                .getCitiesByGovernorate(selectedGovernorate!.id);
+          } catch (_) {
+            citiesList = [];
+          }
+        }
+
+        final String? cId = profile.cityId?.toLowerCase();
+        final String? cNameEn = profile.cityNameEn?.toLowerCase();
+        final String? cNameAr = profile.cityNameAr;
+
+        try {
+          selectedCity = citiesList.firstWhere(
+            (city) =>
+                (cId != null && city.id.toString().toLowerCase() == cId) ||
+                (cNameEn != null && city.nameEn.toLowerCase() == cNameEn) ||
+                (cNameAr != null && city.nameAr == cNameAr),
+          );
+        } catch (_) {
+          selectedCity = null;
+        }
+      } else {
+        // No matching governorate found
+      }
+    } catch (_) {
+      // Fallback safely if not found
+    }
+
+    debugPrint(
+        '✅ [Address Ready]: Gov ID = ${selectedGovernorate?.id} (${selectedGovernorate?.nameEn}), City ID = ${selectedCity?.id} (${selectedCity?.nameEn}), Cities Count = ${citiesList.length}');
+  }
+
+  /// Evaluates whether required governorate and city selections are populated
+  bool get isFormValid => selectedGovernorate != null && selectedCity != null;
+
+  /// Direct method for selecting a governorate
+  void selectGovernorate(GovernorateModel governorate) {
+    onGovernorateChanged(governorate);
+  }
+
+  /// Direct method for selecting a city
+  void selectCity(CityModel city) {
+    onCityChanged(city);
+  }
+
+  // Handles governorate selection and fetches dependent cities
+  Future<void> onGovernorateChanged(GovernorateModel? gov) async {
+    if (gov == null) {
+      selectedGovernorate = null;
+      selectedCity = null;
+      citiesList = [];
+      if (!isClosed) {
+        emit(state.copyWith(
+          profile: state.profile,
+          temp_profile: state.temp_profile,
+          is_dirty: true,
+        ));
+      } else {
+        // Cubit closed
+      }
+      return;
+    } else {
+      selectedGovernorate = gov;
+      selectedCity = null; // Auto-reset city selection
+      citiesList = [];
+    }
+
+    // If cities are already embedded in the governorate object, use them directly:
+    if (gov.cities.isNotEmpty) {
+      citiesList = gov.cities;
+      if (!isClosed) {
+        emit(state.copyWith(
+          profile: state.profile,
+          temp_profile: state.temp_profile,
+          is_dirty: true,
+        ));
+      } else {
+        // Cubit closed
+      }
+      return;
+    } else {
+      // Otherwise, fetch cities from the API dynamically:
+      isCitiesLoading = true;
+      if (!isClosed) {
+        emit(state.copyWith(
+          profile: state.profile,
+          temp_profile: state.temp_profile,
+          is_dirty: true,
+        ));
+      } else {
+        // Cubit closed
+      }
+    }
+
+    try {
+      final fetchedCities =
+          await get_it<ProfileRepository>().getCitiesByGovernorate(gov.id);
+      citiesList = fetchedCities;
+      isCitiesLoading = false;
+      debugPrint(
+          '[ProfileCubit] Loaded ${citiesList.length} cities for ${gov.nameEn}');
+      if (!isClosed) {
+        emit(state.copyWith(
+          profile: state.profile,
+          temp_profile: state.temp_profile,
+          is_dirty: true,
+        ));
+      } else {
+        // Cubit closed
+      }
+    } catch (e) {
+      isCitiesLoading = false;
+      debugPrint('[ProfileCubit] Failed to load cities: $e');
+      if (!isClosed) {
+        emit(state.copyWith(
+          profile: state.profile,
+          temp_profile: state.temp_profile,
+          is_dirty: true,
+        ));
+      } else {
+        // Cubit closed
+      }
+    }
+  }
+
+  // Handles city selection
+  void onCityChanged(CityModel? city) {
+    selectedCity = city;
+    if (!isClosed) {
+      emit(state.copyWith(
+        profile: state.profile,
+        temp_profile: state.temp_profile,
+        is_dirty: true,
+      ));
+    } else {
+      // Cubit closed
+    }
+  }
+
   // Fetches the user profile data from the remote API and updates state
   Future<void> fetchUserProfile() async {
+    // Get safe fallback profile if state.profile is null or uninitialized
+    final PatientProfile currentProfile = state.profile;
+    final PatientProfile currentTempProfile = state.temp_profile;
+
     // Emit ProfileLoading state to trigger loading UI
     emit(ProfileLoading(
       // Keep existing profile
-      profile: state.profile,
+      profile: currentProfile,
       // Keep existing temp profile
-      temp_profile: state.temp_profile,
+      temp_profile: currentTempProfile,
       // Keep existing dirty state
       is_dirty: state.is_dirty,
     ));
+
     // Try catch block to handle network exceptions
     try {
-      // Call GetUserProfileUseCase to fetch user details
+      // 1. Fetch user profile from API
       final user_profile = await get_it<GetUserProfileUseCase>().call();
-      // Map API model values to domain PatientProfile entity to populate local UI fields
+      populateProfileData(user_profile);
+
+      // 2. Safely map API response to domain PatientProfile entity
       final loaded_profile = PatientProfile(
-        // Map first name
-        first_name: user_profile.first_name,
-        // Map last name
-        last_name: user_profile.last_name,
-        // Map phone number
-        phone: user_profile.phone_number,
-        // Map email
-        email: user_profile.email,
+        // Map first name safely
+        first_name: user_profile.first_name.isNotEmpty
+            ? user_profile.first_name
+            : currentProfile.first_name,
+        // Map last name safely
+        last_name: user_profile.last_name.isNotEmpty
+            ? user_profile.last_name
+            : currentProfile.last_name,
+        // Map phone number safely
+        phone: user_profile.phone_number.isNotEmpty
+            ? user_profile.phone_number
+            : currentProfile.phone,
+        // Map email safely
+        email: user_profile.email.isNotEmpty
+            ? user_profile.email
+            : currentProfile.email,
         // Convert gender integer to localized text string
-        gender: 0 == user_profile.gender ? 'Male' : (1 == user_profile.gender ? 'Female' : ''),
-        // Map address
-        address: user_profile.address ?? '',
+        gender: 0 == user_profile.gender
+            ? 'Male'
+            : (1 == user_profile.gender ? 'Female' : currentProfile.gender),
+        // Map address with fallback
+        address: user_profile.address ?? currentProfile.address,
         // Map national ID from model or keep local
-        national_id: user_profile.national_id ?? state.profile.national_id,
+        national_id: (user_profile.national_id != null &&
+                user_profile.national_id!.isNotEmpty)
+            ? user_profile.national_id!
+            : currentProfile.national_id,
         // Map weight from model or keep local
-        weight: user_profile.weight ?? state.profile.weight,
+        weight: user_profile.weight ?? currentProfile.weight,
         // Map height from model or keep local
-        height: user_profile.height ?? state.profile.height,
+        height: user_profile.height ?? currentProfile.height,
         // Map blood group from model or keep local
-        blood_group: user_profile.blood_group ?? state.profile.blood_group,
+        blood_group: user_profile.blood_group ?? currentProfile.blood_group,
         // Keep existing local smoking status
-        smoking: state.profile.smoking,
+        smoking: currentProfile.smoking,
         // Keep existing local food allergies
-        food_allergies: state.profile.food_allergies,
+        food_allergies: currentProfile.food_allergies,
         // Keep existing local medication allergies
-        medication_allergies: state.profile.medication_allergies,
+        medication_allergies: currentProfile.medication_allergies,
         // Keep existing local prescriptions
-        prescriptions: state.profile.prescriptions,
+        prescriptions: currentProfile.prescriptions,
         // Keep existing local lab tests
-        lab_tests: state.profile.lab_tests,
+        lab_tests: currentProfile.lab_tests,
         // Keep existing local scans
-        scans: state.profile.scans,
+        scans: currentProfile.scans,
         // Keep existing local chronic conditions
-        chronic_conditions: state.profile.chronic_conditions,
+        chronic_conditions: currentProfile.chronic_conditions,
         // Keep existing local insurance cards
-        insurance_cards: state.profile.insurance_cards,
+        insurance_cards: currentProfile.insurance_cards,
         // Keep existing local avatar url
-        avatar_url: state.profile.avatar_url,
+        avatar_url: currentProfile.avatar_url,
         // Keep existing local payment cards
-        payment_cards: state.profile.payment_cards,
+        payment_cards: currentProfile.payment_cards,
+        // Map governorate and city IDs and names
+        governorate_id: user_profile.governorate_id ?? currentProfile.governorate_id,
+        governorate_name_en:
+            user_profile.governorate_name_en ?? currentProfile.governorate_name_en,
+        governorate_name_ar:
+            user_profile.governorate_name_ar ?? currentProfile.governorate_name_ar,
+        city_id: user_profile.city_id ?? currentProfile.city_id,
+        city_name_en: user_profile.city_name_en ?? currentProfile.city_name_en,
+        city_name_ar: user_profile.city_name_ar ?? currentProfile.city_name_ar,
       );
+
       // Emit ProfileLoaded state with fetched user model and mapped patient profile
       emit(ProfileLoaded(
         // Bind fetched user profile model
@@ -164,17 +498,30 @@ class ProfileCubit extends Cubit<ProfileState> {
         // Reset dirty status
         is_dirty: false,
       ));
-      // Catch all block for network and parsing exceptions
+    } on DioException catch (e) {
+      // Ignore 401 errors here since AuthInterceptor delegates to SessionManager / AuthCubit logout
+      if (401 == e.response?.statusCode) {
+        return;
+      } else {
+        final String clean_msg = ErrorHandler.handleDioError(e);
+        // Emit ProfileUpdateError state with the clean error message
+        emit(ProfileUpdateError(
+          // Set error message
+          message: clean_msg,
+          // Keep existing profile
+          profile: currentProfile,
+          // Keep existing temp profile
+          temp_profile: currentTempProfile,
+          // Keep existing dirty status
+          is_dirty: state.is_dirty,
+        ));
+      }
     } catch (e) {
-      // Emit ProfileUpdateError state with the error message
+      // General error catch block
       emit(ProfileUpdateError(
-        // Set error message
-        message: e.toString(),
-        // Keep existing profile
-        profile: state.profile,
-        // Keep existing temp profile
-        temp_profile: state.temp_profile,
-        // Keep existing dirty status
+        message: 'Failed to load profile. Please try again.',
+        profile: currentProfile,
+        temp_profile: currentTempProfile,
         is_dirty: state.is_dirty,
       ));
     }
@@ -191,6 +538,7 @@ class ProfileCubit extends Cubit<ProfileState> {
 
     // PHASE 1 — Cache hit: emit immediately so the UI renders with zero delay
     if (null != cached_profile) {
+      populateProfileData(cached_profile);
       // Also read the cached photo URL for instant avatar rendering
       final String? cached_photo_url =
           await get_it<ProfileRepository>().getCachedProfilePhotoUrl();
@@ -239,6 +587,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       // Fetch fresh profile from the remote API (also writes to cache internally)
       final UserProfileModel fresh_profile =
           await get_it<GetUserProfileUseCase>().call();
+      populateProfileData(fresh_profile);
       // Read updated photo URL from local cache (refreshed inside getUserProfile)
       final String? fresh_photo_url =
           await get_it<ProfileRepository>().getCachedProfilePhotoUrl();
@@ -317,56 +666,81 @@ class ProfileCubit extends Cubit<ProfileState> {
     // Optional pre-resolved profile photo URL from cache or upload response
     String? resolved_photo_url,
   }) {
+    final PatientProfile baseProfile = state.profile;
     // Return a fully populated PatientProfile using the model field values
     return PatientProfile(
       // Map first name from the API model
-      first_name: model.first_name,
+      first_name: model.first_name.isNotEmpty
+          ? model.first_name
+          : baseProfile.first_name,
       // Map last name from the API model
-      last_name: model.last_name,
+      last_name: model.last_name.isNotEmpty
+          ? model.last_name
+          : baseProfile.last_name,
       // Map phone number from the API model
-      phone: model.phone_number,
+      phone: model.phone_number.isNotEmpty
+          ? model.phone_number
+          : baseProfile.phone,
       // Map email from the API model
-      email: model.email,
+      email: model.email.isNotEmpty ? model.email : baseProfile.email,
       // Map gender integer (0=Male, 1=Female) to display string
       gender: 0 == model.gender
           ? 'Male'
-          : (1 == model.gender ? 'Female' : ''),
-      // Map address from the API model with empty-string fallback
-      address: model.address ?? '',
+          : (1 == model.gender ? 'Female' : baseProfile.gender),
+      // Map address from the API model with fallback
+      address: model.address ?? baseProfile.address,
       // Map national ID from the API model or carry existing
-      national_id: model.national_id ?? state.profile.national_id,
+      national_id: (model.national_id != null && model.national_id!.isNotEmpty)
+          ? model.national_id!
+          : baseProfile.national_id,
       // Map weight from the API model or carry existing
-      weight: model.weight ?? state.profile.weight,
+      weight: model.weight ?? baseProfile.weight,
       // Map height from the API model or carry existing
-      height: model.height ?? state.profile.height,
+      height: model.height ?? baseProfile.height,
       // Map blood group from the API model or carry existing
-      blood_group: model.blood_group ?? state.profile.blood_group,
+      blood_group: model.blood_group ?? baseProfile.blood_group,
       // Carry existing local smoking status (not in API response)
-      smoking: state.profile.smoking,
+      smoking: baseProfile.smoking,
       // Carry existing local food allergies (not in API response)
-      food_allergies: state.profile.food_allergies,
+      food_allergies: baseProfile.food_allergies,
       // Carry existing local medication allergies (not in API response)
-      medication_allergies: state.profile.medication_allergies,
+      medication_allergies: baseProfile.medication_allergies,
       // Carry existing local prescriptions (not in API response)
-      prescriptions: state.profile.prescriptions,
+      prescriptions: baseProfile.prescriptions,
       // Carry existing local lab tests (not in API response)
-      lab_tests: state.profile.lab_tests,
+      lab_tests: baseProfile.lab_tests,
       // Carry existing local scans (not in API response)
-      scans: state.profile.scans,
+      scans: baseProfile.scans,
       // Carry existing local chronic conditions (not in API response)
-      chronic_conditions: state.profile.chronic_conditions,
+      chronic_conditions: baseProfile.chronic_conditions,
       // Carry existing local insurance cards (not in API response)
-      insurance_cards: state.profile.insurance_cards,
+      insurance_cards: baseProfile.insurance_cards,
       // Use resolved photo URL when provided, otherwise carry existing local URL
-      avatar_url: resolved_photo_url ?? state.profile.avatar_url,
+      avatar_url: resolved_photo_url ?? baseProfile.avatar_url,
       // Carry existing local payment cards (not in API response)
-      payment_cards: state.profile.payment_cards,
+      payment_cards: baseProfile.payment_cards,
+      governorate_id: model.governorate_id ?? baseProfile.governorate_id,
+      governorate_name_en:
+          model.governorate_name_en ?? baseProfile.governorate_name_en,
+      governorate_name_ar:
+          model.governorate_name_ar ?? baseProfile.governorate_name_ar,
+      city_id: model.city_id ?? baseProfile.city_id,
+      city_name_en: model.city_name_en ?? baseProfile.city_name_en,
+      city_name_ar: model.city_name_ar ?? baseProfile.city_name_ar,
     );
   }
 
   // Updates the user profile data via the remote API
   Future<void> updateUserProfile(UpdateProfileRequestModel requestModel) async {
-    // Emit ProfileUpdating state to trigger spinner on save button
+    // 1. Capture staged image and delete flag before any state transition
+    final File? imageToUpload = state.staged_profile_image;
+    final bool shouldDelete = state.is_photo_deleted;
+
+    debugPrint(
+      '[ProfileCubit] Attempting to save profile. Staged image path: ${imageToUpload?.path}, shouldDelete: $shouldDelete',
+    );
+
+    // Emit ProfileUpdating state preserving the staged image
     emit(ProfileUpdating(
       // Keep existing profile
       profile: state.profile,
@@ -374,12 +748,35 @@ class ProfileCubit extends Cubit<ProfileState> {
       temp_profile: state.temp_profile,
       // Keep existing dirty status
       is_dirty: state.is_dirty,
+      staged_profile_image: imageToUpload,
+      is_photo_deleted: shouldDelete,
     ));
     // Try catch block to handle network exceptions
     try {
-      // Call UpdateUserProfileUseCase to perform PUT /api/patients/profile
+      // 2. Process any staged photo deletion or upload before updating profile info
+      if (shouldDelete) {
+        debugPrint('[ProfileCubit] Deleting profile photo...');
+        await get_it<DeleteProfilePhotoUseCase>().call();
+      } else if (null != imageToUpload) {
+        debugPrint('[ProfileCubit] Uploading staged image: ${imageToUpload.path}');
+        await get_it<UploadProfilePhotoUseCase>().call(imageToUpload.path);
+      } else {
+        // No staged photo changes
+      }
+
+      // 3. Call UpdateUserProfileUseCase to perform PUT /api/patients/profile
+      debugPrint('🚀 [Update Profile Live Payload]: ${requestModel.toJson()}');
       await get_it<UpdateUserProfileUseCase>().call(requestModel);
-      // Re-fetch fresh UserProfileModel from GET /api/patients/profile (also updates cache)
+
+      // 3. Clear Flutter imageCache to invalidate stale network image
+      try {
+        PaintingBinding.instance.imageCache.clear();
+        PaintingBinding.instance.imageCache.clearLiveImages();
+      } catch (_) {
+        // Safe fallback in headless/test environments
+      }
+
+      // 4. Re-fetch fresh UserProfileModel from GET /api/patients/profile (also updates cache)
       final UserProfileModel fresh_user =
           await get_it<GetUserProfileUseCase>().call();
       // Read updated photo URL from local cache
@@ -397,41 +794,16 @@ class ProfileCubit extends Cubit<ProfileState> {
         temp_profile: saved_profile,
         is_dirty: false,
       ));
-      // Emit ProfileLoaded state so all listening views (ProfilePage, PersonalInformationPage) refresh UI immediately
+      // Emit ProfileLoaded state so all listening views refresh UI immediately
       emit(ProfileLoaded(
         user: fresh_user,
         profile: saved_profile,
         temp_profile: saved_profile,
         is_dirty: false,
       ));
-      // Catch DioException to extract server error message payload cleanly
+      // Catch DioException to extract clean error message via ErrorHandler
     } on DioException catch (dio_error) {
-      String clean_message = 'Failed to update profile. Please try again.';
-      if (dio_error.response?.data is Map) {
-        final Map<String, dynamic> data =
-            dio_error.response!.data as Map<String, dynamic>;
-        if (data.containsKey('title') && data['title'] != null) {
-          clean_message = data['title'].toString();
-        } else if (data.containsKey('message') && data['message'] != null) {
-          clean_message = data['message'].toString();
-        } else if (data.containsKey('errors') && data['errors'] is Map) {
-          final Map errors = data['errors'] as Map;
-          if (errors.isNotEmpty) {
-            final first_val = errors.values.first;
-            if (first_val is List && first_val.isNotEmpty) {
-              clean_message = first_val.first.toString();
-            } else {
-              clean_message = first_val.toString();
-            }
-          } else {
-            // No action needed
-          }
-        } else {
-          // No action needed
-        }
-      } else {
-        // No action needed
-      }
+      final String clean_message = ErrorHandler.handleDioError(dio_error);
       // Emit ProfileUpdateError state with extracted clean error message
       emit(ProfileUpdateError(
         message: clean_message,
@@ -442,7 +814,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     } catch (e) {
       // Emit ProfileUpdateError state with generic failure description
       emit(ProfileUpdateError(
-        message: 'An unexpected error occurred. Please try again.',
+        message: 'Failed to update profile. Please try again.',
         profile: state.profile,
         temp_profile: state.temp_profile,
         is_dirty: state.is_dirty,
@@ -630,6 +1002,16 @@ class ProfileCubit extends Cubit<ProfileState> {
     final String currentPwTrimmed = current_pw.trim();
     final String newPwTrimmed = new_pw.trim();
 
+    if (currentPwTrimmed.isEmpty) {
+      emit(state.copyWith(
+        status: ProfileStatus.passwordError,
+        error_message: 'Current password cannot be empty.',
+      ));
+      return;
+    } else {
+      // Input is non-empty
+    }
+
     try {
       final requestModel = ChangePasswordRequestModel(
         currentPassword: currentPwTrimmed,
@@ -650,9 +1032,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         ),
       );
     } on DioException catch (e) {
-      final String errorMsg = e.response?.data is Map
-          ? (e.response?.data['message'] as String? ?? 'Password update failed.')
-          : 'Password update failed.';
+      final String errorMsg = ErrorHandler.handleDioError(e);
       emit(
         state.copyWith(
           status: ProfileStatus.passwordError,
@@ -1201,12 +1581,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         // Cubit was closed before success emit — discard result safely
       }
     } on DioException catch (dio_error) {
-      // Extract DioException error message from response body when available
-      final String error_msg = dio_error.response?.data is Map
-          ? (dio_error.response?.data['title'] as String?
-                  ?? dio_error.response?.data['message'] as String?
-                  ?? 'Photo upload failed.')
-          : 'Photo upload failed.';
+      final String error_msg = ErrorHandler.handleDioError(dio_error);
       // Guard against emitting on a closed cubit
       if (!isClosed) {
         // Emit avatar upload error state with descriptive message
@@ -1240,110 +1615,71 @@ class ProfileCubit extends Cubit<ProfileState> {
   }
 
   // Launches the image picker for a specific source (camera or gallery),
-  // then calls the repository upload flow. This overload is called by the
-  // avatar widget after the user selects a source from the bottom sheet.
-  Future<void> pick_and_upload_avatar_from_source(
-      ImageSource source) async {
-    // Instantiate the image picker service singleton
+  // and stages the selected image locally in state without calling the API.
+  Future<void> pick_and_stage_avatar_from_source(ImageSource source) async {
     final ImagePicker picker = ImagePicker();
-    // Emit uploading state to show spinner before picker opens
-    if (!isClosed) {
-      emit(state.copyWith(status: ProfileStatus.avatarUploading));
-    } else {
-      // Cubit closed — abort early
-      return;
-    }
-    // Attempt to pick the image from the specified source
-    XFile? picked_file;
     try {
-      // Invoke picker with caller-specified source (camera or gallery)
-      picked_file = await picker.pickImage(
-        // Use the caller-provided source selection
+      final XFile? picked_file = await picker.pickImage(
         source: source,
-        // Cap decode width to 1024px to reduce upload payload
         maxWidth: 1024.0,
-        // Cap decode height to 1024px
         maxHeight: 1024.0,
-        // 85% quality balances visual fidelity vs file size
         imageQuality: 85,
       );
+      if (null != picked_file) {
+        final File staged_file = File(picked_file.path);
+        if (!isClosed) {
+          emit(state.copyWith(
+            staged_profile_image: staged_file,
+            is_photo_deleted: false,
+            is_dirty: true,
+          ));
+        } else {
+          // Cubit closed — discard emit
+        }
+      } else {
+        // User cancelled picker
+      }
     } catch (picker_error) {
-      // Picker raised an exception (e.g. permission denied)
       debugPrint('[ProfileCubit] Picker error: $picker_error');
-      // Emit error state with descriptive message
       if (!isClosed) {
         emit(state.copyWith(
-          status: ProfileStatus.avatarUploadError,
-          error_message: 'Image selection failed.',
+          error_message: 'Image selection failed. Please try again.',
         ));
       } else {
         // Cubit closed — discard emit
       }
-      return;
-    }
-    // Guard: user cancelled picker without a selection
-    if (null == picked_file) {
-      // Revert to success status — no upload was triggered
-      if (!isClosed) {
-        emit(state.copyWith(status: ProfileStatus.success));
-      } else {
-        // Cubit closed — discard emit
-      }
-      return;
-    } else {
-      // File selected — continue to upload
-    }
-    // Extract local path from XFile wrapper
-    final String file_path = picked_file.path;
-    // Execute repository upload call with the local file path
-    try {
-      // Upload photo via use case (Clean Architecture: cubit → use case → repository)
-      final String new_photo_url =
-          await get_it<UploadProfilePhotoUseCase>().call(file_path);
-      // Clone profile entity with the new avatar URL applied
-      final PatientProfile updated_profile =
-          state.profile.copyWith(avatar_url: new_photo_url);
-      // Emit success state with updated profile
-      if (!isClosed) {
-        emit(state.copyWith(
-          status: ProfileStatus.avatarUploadSuccess,
-          profile: updated_profile,
-          temp_profile: updated_profile,
-        ));
-        debugPrint(
-          '[ProfileCubit] Avatar uploaded from source. URL: $new_photo_url',
-        );
-      } else {
-        // Cubit closed — discard result
-      }
-    } on DioException catch (dio_error) {
-      // Extract error message from Dio response body
-      final String error_msg = dio_error.response?.data is Map
-          ? (dio_error.response?.data['title'] as String?
-                  ?? dio_error.response?.data['message'] as String?
-                  ?? 'Photo upload failed.')
-          : 'Photo upload failed.';
-      if (!isClosed) {
-        emit(state.copyWith(
-          status: ProfileStatus.avatarUploadError,
-          error_message: error_msg,
-        ));
-      } else {
-        // Cubit closed — discard emit
-      }
-      debugPrint('[ProfileCubit] DioException during upload: $dio_error');
-    } catch (generic_error) {
-      if (!isClosed) {
-        emit(state.copyWith(
-          status: ProfileStatus.avatarUploadError,
-          error_message: 'An unexpected error occurred during upload.',
-        ));
-      } else {
-        // Cubit closed — discard emit
-      }
-      debugPrint('[ProfileCubit] Upload error: $generic_error');
     }
   }
+
+  // Alias for pickImage
+  Future<void> pickImage(ImageSource source) =>
+      pick_and_stage_avatar_from_source(source);
+
+  // Backward compatibility alias for immediate source picker calls
+  Future<void> pick_and_upload_avatar_from_source(ImageSource source) =>
+      pick_and_stage_avatar_from_source(source);
+
+  // Stages photo deletion locally without calling the API.
+  void stage_photo_deletion() {
+    if (!isClosed) {
+      emit(state.copyWith(
+        clear_staged_image: true,
+        is_photo_deleted: true,
+        is_dirty: true,
+      ));
+    } else {
+      // Cubit closed — discard emit
+    }
+  }
+
+  // Alias for stagePhotoDeletion
+  void stagePhotoDeletion() => stage_photo_deletion();
+
+  // Backward compatibility alias for photo deletion
+  Future<void> remove_profile_photo() async => stage_photo_deletion();
+
+  // Backward compatibility camelCase alias
+  Future<void> removeProfilePhoto() async => stage_photo_deletion();
 
   // Edit insurance card by list index
   void edit_insurance_card(int index, String card_name, String card_number,

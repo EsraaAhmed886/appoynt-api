@@ -2,11 +2,11 @@
  * File Name: slot_card_item.dart
  * Author: Kholoud Khaled
  * Date of Creation: 17/08/2026
- * Version Information: V1.1.0
+ * Version Information: V1.2.0
  * Dependencies: package:flutter/material.dart, app_colors.dart, app_spacing.dart,
- *   doctor_slot_entity.dart
+ *   doctor_slot_entity.dart, app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 17/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
  * File Description: Card component representing a single time slot across available,
  *   holding (spinner), held/selected (primary checkmark), and booked states with FittedBox
  *   scaling protecting against vertical RenderFlex overflow.
@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 // Import design tokens, colors, and entities
 import 'package:appoynt_mobile_app/constants/app_spacing.dart';
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
+import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
 import 'package:appoynt_mobile_app/features/booking/domain/entities/doctor_slot_entity.dart';
 
 /// Individual slot card item.
@@ -43,6 +44,7 @@ class SlotCardItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     final bool is_available = slot.is_available;
+    final AppLocalizations localizations = AppLocalizations.of(context);
 
     return GestureDetector(
       onTap: is_available && !is_loading ? on_tap : null,
@@ -135,7 +137,7 @@ class SlotCardItem extends StatelessWidget {
                       if (!is_available) ...[
                         const SizedBox(height: 2.0),
                         Text(
-                          'Booked',
+                          localizations.slot_status_booked,
                           style: TextStyle(
                             fontSize: 9.5,
                             height: 1.1,

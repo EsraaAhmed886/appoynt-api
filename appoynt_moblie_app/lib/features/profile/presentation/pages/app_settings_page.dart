@@ -348,7 +348,7 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
             ? localizations.profile_theme_dark
             : localizations.profile_theme_system);
 
-    final Color dividerColor = is_dark ? AppColors.border_dark : const Color(0xFFF1F5F9);
+    final Color dividerColor = is_dark ? AppColors.border_dark : AppColors.slate100;
 
     return Scaffold(
       body: SafeArea(
@@ -374,7 +374,7 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
                   style: const TextStyle(
                     fontSize: 11.0,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF94A3B8),
+                    color: AppColors.slate400,
                     letterSpacing: 1.0,
                   ),
                 ),
@@ -427,7 +427,7 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
                   style: const TextStyle(
                     fontSize: 11.0,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF94A3B8),
+                    color: AppColors.slate400,
                     letterSpacing: 1.0,
                   ),
                 ),

@@ -2,11 +2,11 @@
  * File Name: doctor_timeline_section.dart
  * Author: Kholoud Khaled
  * Date of Creation: 16/08/2026
- * Version Information: V1.1.0
+ * Version Information: V1.3.0
  * Dependencies: package:flutter/material.dart, app_colors.dart, app_spacing.dart,
  *   app_localizations.dart, doctor_profile_entity.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/08/2026]
  * File Description: Modern medical timeline widget rendering clinical career
  *   experience and academic education history with connected nodes and localized tabs.
  */
@@ -101,94 +101,130 @@ class _DoctorTimelineSectionState extends State<DoctorTimelineSection> {
           ),
           const SizedBox(height: AppSpacing.space_l),
 
-          // Tab Switcher Pills
+          // 2. Sliding Pill Segmented Tab Switcher
           Container(
-            padding: const EdgeInsets.all(4.0),
+            height: 42.0,
             decoration: BoxDecoration(
               color: is_dark
                   ? AppColors.inner_container_dark
                   : AppColors.slate_100,
-              borderRadius: BorderRadius.circular(AppSpacing.radius_l),
+              borderRadius: BorderRadius.circular(10.0),
             ),
-            child: Row(
+            padding: const EdgeInsets.all(3.0),
+            child: Stack(
               children: [
-                Expanded(
-                  child: _build_tab_pill(
-                    title: '${localizations.experience_tab} (${widget.experience_list.length})',
-                    index: 0,
-                    is_dark: is_dark,
+                // Smoothly animated background pill indicator
+                AnimatedAlign(
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeInOutCubic,
+                  alignment: 0 == _selected_tab
+                      ? Alignment.centerLeft
+                      : Alignment.centerRight,
+                  child: FractionallySizedBox(
+                    widthFactor: 0.5,
+                    child: Container(
+                      height: double.infinity,
+                      decoration: BoxDecoration(
+                        color: is_dark
+                            ? AppColors.surface_dark
+                            : AppColors.white,
+                        borderRadius: BorderRadius.circular(8.0),
+                        border: Border.all(
+                          color: AppColors.primary_color,
+                          width: 1.2,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: is_dark
+                                ? AppColors.black.withValues(alpha: 0.3)
+                                : AppColors.black.withValues(alpha: 0.04),
+                            blurRadius: 4.0,
+                            offset: const Offset(0, 1),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-                Expanded(
-                  child: _build_tab_pill(
-                    title: '${localizations.education_tab} (${widget.education_list.length})',
-                    index: 1,
-                    is_dark: is_dark,
-                  ),
+
+                // Interactive Tab Buttons
+                Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          if (0 != _selected_tab) {
+                            setState(() {
+                              _selected_tab = 0;
+                            });
+                          } else {
+                            // Tab already active
+                          }
+                        },
+                        child: Center(
+                          child: Text(
+                            '${localizations.experience_tab} (${widget.experience_list.length})',
+                            style: TextStyle(
+                              fontSize: AppSpacing.font_size_body_small,
+                              fontWeight: 0 == _selected_tab
+                                  ? FontWeight.w700
+                                  : FontWeight.w500,
+                              color: 0 == _selected_tab
+                                  ? AppColors.primary_color
+                                  : (is_dark
+                                      ? AppColors.text_dark_secondary
+                                      : AppColors.text_light_secondary),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          if (1 != _selected_tab) {
+                            setState(() {
+                              _selected_tab = 1;
+                            });
+                          } else {
+                            // Tab already active
+                          }
+                        },
+                        child: Center(
+                          child: Text(
+                            '${localizations.education_tab} (${widget.education_list.length})',
+                            style: TextStyle(
+                              fontSize: AppSpacing.font_size_body_small,
+                              fontWeight: 1 == _selected_tab
+                                  ? FontWeight.w700
+                                  : FontWeight.w500,
+                              color: 1 == _selected_tab
+                                  ? AppColors.primary_color
+                                  : (is_dark
+                                      ? AppColors.text_dark_secondary
+                                      : AppColors.text_light_secondary),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
           const SizedBox(height: AppSpacing.space_xl),
 
-          // Timeline Content
-          _selected_tab == 0
+          // 3. Instant Snappy Content (Zero Ghosting / Zero Glitch)
+          0 == _selected_tab
               ? _build_experience_timeline(is_dark)
               : _build_education_timeline(is_dark),
         ],
       ),
     );
     }
-  }
-
-  Widget _build_tab_pill({
-    required String title,
-    required int index,
-    required bool is_dark,
-  }) {
-    final bool is_active = _selected_tab == index;
-
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _selected_tab = index;
-        });
-      },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        decoration: BoxDecoration(
-          color: is_active
-              ? (is_dark ? AppColors.surface_dark : AppColors.white)
-              : AppColors.transparent,
-          borderRadius: BorderRadius.circular(AppSpacing.radius_m),
-          boxShadow: is_active
-              ? [
-                  BoxShadow(
-                    color: is_dark
-                        ? AppColors.black.withValues(alpha: 0.3)
-                        : AppColors.slate_200.withValues(alpha: 0.6),
-                    blurRadius: 4.0,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
-              : null,
-        ),
-        child: Text(
-          title,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: AppSpacing.font_size_body_small,
-            fontWeight: is_active ? FontWeight.w700 : FontWeight.w500,
-            color: is_active
-                ? AppColors.primary_color
-                : (is_dark
-                    ? AppColors.text_dark_secondary
-                    : AppColors.text_light_secondary),
-          ),
-        ),
-      ),
-    );
   }
 
   Widget _build_experience_timeline(bool is_dark) {
@@ -211,6 +247,7 @@ class _DoctorTimelineSectionState extends State<DoctorTimelineSection> {
           final bool is_last = index == widget.experience_list.length - 1;
 
           return _build_timeline_node(
+            key: ValueKey('exp_${exp.position}_$index'),
             title: exp.position,
             subtitle: exp.hospital_or_clinic,
             badge: exp.duration,
@@ -244,6 +281,7 @@ class _DoctorTimelineSectionState extends State<DoctorTimelineSection> {
           final bool is_last = index == widget.education_list.length - 1;
 
           return _build_timeline_node(
+            key: ValueKey('edu_${edu.degree}_$index'),
             title: edu.degree,
             subtitle: edu.institution,
             badge: edu.year,
@@ -258,6 +296,7 @@ class _DoctorTimelineSectionState extends State<DoctorTimelineSection> {
   }
 
   Widget _build_timeline_node({
+    Key? key,
     required String title,
     required String subtitle,
     required String badge,
@@ -290,16 +329,17 @@ class _DoctorTimelineSectionState extends State<DoctorTimelineSection> {
                   color: badge_color,
                 ),
               ),
-              if (!is_last)
-                Expanded(
-                  child: Container(
-                    width: 2.0,
-                    margin: const EdgeInsets.symmetric(vertical: 4.0),
-                    color: is_dark
-                        ? AppColors.border_dark
-                        : AppColors.slate_200,
-                  ),
-                ),
+              false == is_last
+                  ? Expanded(
+                      child: Container(
+                        width: 2.0,
+                        margin: const EdgeInsets.symmetric(vertical: 4.0),
+                        color: is_dark
+                            ? AppColors.border_dark
+                            : AppColors.slate_200,
+                      ),
+                    )
+                  : const SizedBox.shrink(),
             ],
           ),
           const SizedBox(width: AppSpacing.space_l),
@@ -307,7 +347,9 @@ class _DoctorTimelineSectionState extends State<DoctorTimelineSection> {
           // Node Content
           Expanded(
             child: Padding(
-              padding: EdgeInsets.only(bottom: is_last ? 0 : AppSpacing.space_xl),
+              padding: EdgeInsets.only(
+                bottom: true == is_last ? 0.0 : AppSpacing.space_xl,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

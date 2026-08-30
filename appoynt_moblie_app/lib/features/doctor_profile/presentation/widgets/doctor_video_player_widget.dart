@@ -2,11 +2,11 @@
  * File Name: doctor_video_player_widget.dart
  * Author: Kholoud Khaled
  * Date of Creation: 17/08/2026
- * Version Information: V1.3.0
+ * Version Information: V1.4.0
  * Dependencies: package:flutter/material.dart, package:video_player/video_player.dart,
- *   app_colors.dart, app_spacing.dart
+ *   app_colors.dart, app_spacing.dart, app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 23/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
  * File Description: Clean standalone video player widget supporting network video
  *   streaming from official CDN sources, auto-looping, aspect ratio preservation,
  *   animated controls, progress scrubbing, and graceful error recovery.
@@ -19,6 +19,7 @@ import 'package:video_player/video_player.dart';
 // Import design tokens and colors
 import 'package:appoynt_mobile_app/constants/app_spacing.dart';
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
+import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
 
 /// Interactive custom video player component for doctor procedure and tour videos.
 class DoctorVideoPlayerWidget extends StatefulWidget {
@@ -192,6 +193,7 @@ class _DoctorVideoPlayerWidgetState extends State<DoctorVideoPlayerWidget> {
 
     // 1. Error State with Clean Retry Button
     if (_has_error || controller == null) {
+      final AppLocalizations localizations = AppLocalizations.of(context);
       return Container(
         color: AppColors.black,
         child: Center(
@@ -204,9 +206,9 @@ class _DoctorVideoPlayerWidgetState extends State<DoctorVideoPlayerWidget> {
                 size: 44.0,
               ),
               const SizedBox(height: AppSpacing.space_m),
-              const Text(
-                'Unable to load video stream',
-                style: TextStyle(
+              Text(
+                localizations.unable_to_load_video_stream,
+                style: const TextStyle(
                   color: AppColors.white,
                   fontSize: AppSpacing.font_size_body_medium,
                   fontWeight: FontWeight.w600,
@@ -223,7 +225,7 @@ class _DoctorVideoPlayerWidgetState extends State<DoctorVideoPlayerWidget> {
                   ),
                 ),
                 icon: const Icon(Icons.refresh_rounded, size: 18.0),
-                label: const Text('Retry'),
+                label: Text(localizations.retry),
               ),
             ],
           ),

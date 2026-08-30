@@ -1,3 +1,4 @@
+import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 /*
  * File Name: appointment_doctor_avatar.dart
  * Author: Kholoud Khaled
@@ -48,15 +49,15 @@ class AppointmentDoctorAvatar extends StatelessWidget {
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        color: isDark ? AppColors.slate800 : AppColors.white,
         borderRadius: BorderRadius.circular(16.0),
         border: Border.all(
-          color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+          color: isDark ? AppColors.slate700 : AppColors.slate200,
           width: 1.0,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: AppColors.black.withValues(alpha: 0.04),
             blurRadius: 8.0,
             offset: const Offset(0, 2),
           ),
@@ -85,14 +86,14 @@ class AppointmentDoctorAvatar extends StatelessWidget {
 
   Widget _buildFallback(bool isDark) {
     return Container(
-      color: const Color(0xFF0284C7).withValues(alpha: 0.1),
+      color: AppColors.sky600.withValues(alpha: 0.1),
       alignment: Alignment.center,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Icon(
             Icons.person_rounded,
-            color: Color(0xFF0284C7),
+            color: AppColors.sky600,
             size: 32.0,
           ),
           const SizedBox(height: 2.0),
@@ -101,7 +102,7 @@ class AppointmentDoctorAvatar extends StatelessWidget {
             style: const TextStyle(
               fontSize: 12.0,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF0284C7),
+              color: AppColors.sky600,
             ),
           ),
         ],

@@ -1,18 +1,16 @@
 /*
  * File Name: register_page.dart
  * Author: Kholoud Khaled
- * Date of Creation: 02/07/2026
- * Version Information: V1.1.0
+ * Date of Creation: 28/05/2026
+ * Version Information: V1.2.0
  * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart,
  *   package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart,
  *   package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart,
- *   package:appoynt_mobile_app/core/di/service_locator.dart,
- *   package:flutter/gestures.dart,
+ *   package:appoynt_mobile_app/features/auth/presentation/widgets/smart_password_field.dart,
  *   package:flutter_bloc/flutter_bloc.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
- * File Description: Renders the registration page containing the form fields, terms check box,
- *   and validations adapting fully to light/dark themes and localizations.
+ * Last Modified Date: [Kholoud Khaled - 27/08/2026]
+ * File Description: Defines the patient registration layout screen form and validation states.
  */
 
 // Importing core theme configurations and layout definitions
@@ -23,6 +21,8 @@ import 'package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart';
 import 'package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart';
 // Importing dependency injection service locator setup representation
 import 'package:appoynt_mobile_app/core/di/service_locator.dart';
+// Importing centralized digits converter helper
+import 'package:appoynt_mobile_app/core/utils/digit_converter_helper.dart';
 // Importing gesture recognizer classes for inline TextSpan links
 import 'package:flutter/gestures.dart';
 // Importing bloc consumer and provider utilities
@@ -84,6 +84,14 @@ class _RegisterPageState extends State<RegisterPage> {
   void initState() {
     // Invoke parent initialization
     super.initState();
+    // Clear any leftover auth error from previous screens
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        get_it<AuthCubit>().reset();
+      } else {
+        // No action needed
+      }
+    });
     // Instantiate input listener callback
     _input_listener = () {
       // Check active state using Yoda style check
@@ -134,6 +142,8 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   // Clean up controller logic parameters to prevent memory leaks
   void dispose() {
+    // Clear any auth error on exit
+    get_it<AuthCubit>().reset();
     // Remove listeners from all controllers
     _first_name_ctrl.removeListener(_input_listener);
     _last_name_ctrl.removeListener(_input_listener);
@@ -150,6 +160,82 @@ class _RegisterPageState extends State<RegisterPage> {
     _confirm_ctrl.dispose();
     // Invoke base layout disposal configurations
     super.dispose();
+  }
+
+  // Pure validation helper checking password security and personal info rules
+  bool _is_password_valid(
+    String password, {
+    String? firstName,
+    String? lastName,
+    String? email,
+  }) {
+    // Check minimum and maximum character length constraints using Yoda style check
+    if (8 > password.length || 30 < password.length) {
+      return false;
+    } else {
+      // Length requirements met
+    }
+
+    // Allowed characters whitelist validation: letters, digits, and standard symbols
+    if (false == RegExp(r'^[A-Za-z0-9@#$%^&*!_~+=.-]+$').hasMatch(password)) {
+      return false;
+    } else {
+      // Characters within allowed whitelist
+    }
+
+    // Complexity verification: must have uppercase, lowercase, digit, and special symbol
+    final bool has_lower = RegExp(r'[a-z]').hasMatch(password);
+    final bool has_upper = RegExp(r'[A-Z]').hasMatch(password);
+    final bool has_digit = RegExp(r'[0-9]').hasMatch(password);
+    final bool has_special = RegExp(r'[@#$%^&*!_~+=.-]').hasMatch(password);
+    if (false == has_lower ||
+        false == has_upper ||
+        false == has_digit ||
+        false == has_special) {
+      return false;
+    } else {
+      // Complexity constraints met
+    }
+
+    // Personal info defense: reject passwords containing name or email prefix
+    final String lower_pw = password.toLowerCase();
+
+    // Check first name if available and at least 2 characters long
+    if (null != firstName && firstName.trim().length >= 2) {
+      if (true == lower_pw.contains(firstName.trim().toLowerCase())) {
+        return false;
+      } else {
+        // First name not contained in password
+      }
+    } else {
+      // No first name check needed
+    }
+
+    // Check last name if available and at least 2 characters long
+    if (null != lastName && lastName.trim().length >= 2) {
+      if (true == lower_pw.contains(lastName.trim().toLowerCase())) {
+        return false;
+      } else {
+        // Last name not contained in password
+      }
+    } else {
+      // No last name check needed
+    }
+
+    // Check email prefix before '@' symbol
+    if (null != email && email.contains('@')) {
+      final String prefix = email.split('@').first.trim();
+      if (prefix.length >= 3 && true == lower_pw.contains(prefix.toLowerCase())) {
+        return false;
+      } else {
+        // Email prefix not contained in password
+      }
+    } else {
+      // No email prefix check needed
+    }
+
+    // All password safety rules passed
+    return true;
   }
 
   // Helper getter checking if all registration fields contain valid values in real-time (BUG-004)
@@ -218,17 +304,23 @@ class _RegisterPageState extends State<RegisterPage> {
       // Empty action block to satisfy compiler
     }
 
-    // Validate password length is at least 8 characters
+    // Validate password using security rules helper
     final String password = _password_ctrl.text;
-    if (8 > password.length) {
+    if (false ==
+        _is_password_valid(
+          password,
+          firstName: first_name,
+          lastName: last_name,
+          email: email,
+        )) {
       return false;
     } else {
-      // Empty action block to satisfy compiler
+      // Password is valid
     }
 
     // Validate password confirmation match
     final String confirm_password = _confirm_ctrl.text;
-    if (confirm_password != password) {
+    if (confirm_password != password || confirm_password.isEmpty) {
       return false;
     } else {
       // Empty action block to satisfy compiler
@@ -337,19 +429,8 @@ class _RegisterPageState extends State<RegisterPage> {
     } else {
       // Empty action block to satisfy compiler
     }
-    // Convert Arabic numerals to English digits if any exist
-    String clean_digits = phone_value;
-    // Map of Arabic-Indic to standard English digits
-    final Map<String, String> translation_map = {
-      '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4',
-      '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9'
-    };
-    // Translate each character in map
-    translation_map.forEach((arabic, english) {
-      clean_digits = clean_digits.replaceAll(arabic, english);
-    });
-    // Strip space dividers, symbols, and format modifiers
-    clean_digits = clean_digits.replaceAll(RegExp(r'[^\d]'), '');
+    // Convert Arabic numerals to English digits and strip non-digits
+    String clean_digits = phone_value.toEnglishDigits().replaceAll(RegExp(r'[^\d]'), '');
     // Verify phone digit count length matches exactly 11 digits using Yoda style check
     if (11 != clean_digits.length) {
       // Return phone count validation warning message
@@ -400,6 +481,47 @@ class _RegisterPageState extends State<RegisterPage> {
     } else {
       // Empty action block to satisfy compiler
     }
+    // Verify allowed characters whitelist
+    if (false == RegExp(r'^[A-Za-z0-9@#$%^&*!_~+=.-]+$').hasMatch(password_value)) {
+      return strings_catalog.auth_registration_password_invalid_characters;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+    // Check personal details (first name, last name, email prefix)
+    final String lower_pw = password_value.toLowerCase();
+    final String first_name = _first_name_ctrl.text.trim();
+    if (first_name.length >= 2 && true == lower_pw.contains(first_name.toLowerCase())) {
+      return strings_catalog.auth_registration_password_contains_user_info;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+    final String last_name = _last_name_ctrl.text.trim();
+    if (last_name.length >= 2 && true == lower_pw.contains(last_name.toLowerCase())) {
+      return strings_catalog.auth_registration_password_contains_user_info;
+    } else {
+      // Empty action block to satisfy compiler
+    }
+    final String email = _email_ctrl.text.trim();
+    if (true == email.contains('@')) {
+      final String email_prefix = email.split('@').first.trim();
+      if (email_prefix.length >= 3 && true == lower_pw.contains(email_prefix.toLowerCase())) {
+        return strings_catalog.auth_registration_password_contains_user_info;
+      } else {
+        // Empty action block to satisfy compiler
+      }
+    } else {
+      // Empty action block to satisfy compiler
+    }
+    // Verify complexity requirements
+    final bool has_lower = RegExp(r'[a-z]').hasMatch(password_value);
+    final bool has_upper = RegExp(r'[A-Z]').hasMatch(password_value);
+    final bool has_digit = RegExp(r'[0-9]').hasMatch(password_value);
+    final bool has_special = RegExp(r'[@#$%^&*!_~+=.-]').hasMatch(password_value);
+    if (!has_lower || !has_upper || !has_digit || !has_special) {
+      return strings_catalog.password_must;
+    } else {
+      // Empty action block to satisfy compiler
+    }
     // Return null representing validation success
     return null;
   }
@@ -446,8 +568,13 @@ class _RegisterPageState extends State<RegisterPage> {
             // Trigger navigation callback on success, passing the phone number
             widget.on_go_to_otp(_phone_ctrl.text);
           } else if (state is AuthError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
+            // Show floating error SnackBar anchored at bottom
+            CustomSnackBar.error(
+              context,
+              AppLocalizations.get_localized_error(
+                context,
+                state.message,
+              ),
             );
           } else {
             // Empty action block to satisfy compiler
@@ -531,34 +658,6 @@ class _RegisterPageState extends State<RegisterPage> {
                               textAlign: TextAlign.center,
                               // Pull register subtitle styling
                               style: AppTextStyles.get_register_subtitle(context, is_arabic),
-                            ),
-                            // Spacing/Container block for validation error feedback message (FR-15 / Logic Log)
-                            const SizedBox(height: AppSpacing.space_s),
-                            // Fixed-height container to prevent layout shifting
-                            SizedBox(
-                              // Fixed height derived from spacing tokens to satisfy stable UI constraint
-                              height: AppSpacing.error_container_height,
-                              // Draw error feedback text inside center coordinates
-                              child: Center(
-                                // Render error message if state is AuthError (Yoda style check)
-                                child: Text(
-                                  // Bind message or empty string based on state type
-                                  true == (state is AuthError)
-                                      ? AppLocalizations.get_localized_error(context, (state as AuthError).message)
-                                      : '',
-                                  // Center align paragraph
-                                  textAlign: TextAlign.center,
-                                  // Apply styling configurations
-                                  style: const TextStyle(
-                                    // Set brand warning color
-                                    color: AppColors.error,
-                                    // Scale size relative to labels
-                                    fontSize: AppSpacing.font_size_label,
-                                    // Emphasize text weight
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
                             ),
                           ],
                         ),

@@ -2,13 +2,13 @@
  * File Name: favorite_sort_bottom_sheet.dart
  * Author: Kholoud Khaled
  * Date of Creation: 14/08/2026
- * Version Information: V2.0.0
+ * Version Information: V2.1.0
  * Dependencies: package:flutter/material.dart, app_spacing.dart,
  *   app_colors.dart, app_localizations.dart, favorites_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 29/08/2026]
  * File Description: Category-aware modal bottom sheet allowing users to select and apply
- *   sorting algorithms tailored specifically to Doctors, Offers, or Clinics.
+ *   sorting algorithms tailored specifically to Doctors, Offers, or Clinics with standardized dark theme.
  */
 
 // Import standard material design framework
@@ -288,7 +288,7 @@ class _FavoriteSortBottomSheetState extends State<FavoriteSortBottomSheet> {
           ? (is_dark
               ? AppColors.primary_color.withValues(alpha: 0.18)
               : AppColors.primary_color.withValues(alpha: 0.08))
-          : (is_dark ? const Color(0xFF252536) : const Color(0xFFF8FAFC)),
+          : (is_dark ? AppColors.dark_surface_2 : AppColors.slate50),
       borderRadius: BorderRadius.circular(_LocalDimensions.option_radius),
       child: InkWell(
         onTap: () {
@@ -379,7 +379,7 @@ Future<void> show_favorite_sort_bottom_sheet({
   await showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
-    backgroundColor: Colors.transparent,
+    backgroundColor: AppColors.transparent,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(
         top: Radius.circular(_LocalDimensions.sheet_top_radius),

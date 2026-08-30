@@ -759,7 +759,7 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                                 ? AppColors.primary_color
                                 : (is_dark
                                     ? AppColors.border_dark
-                                    : const Color(0xFFE2E8F0)),
+                                    : AppColors.slate200),
                             width: true == _no_chronic_conditions ? 2.0 : 1.0,
                           ),
                           boxShadow: [
@@ -880,11 +880,9 @@ class _ChronicConditionsPageState extends State<ChronicConditionsPage> {
                     conditions_to_save,
                   );
 
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(snackbar_message),
-                  backgroundColor: AppColors.primary_color,
-                ),
+              CustomSnackBar.success(
+                context,
+                snackbar_message,
               );
               Navigator.of(context).pop();
             },

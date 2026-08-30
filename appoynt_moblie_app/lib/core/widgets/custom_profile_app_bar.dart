@@ -2,11 +2,11 @@
  * File Name: custom_profile_app_bar.dart
  * Author: Kholoud Khaled
  * Date of Creation: 23/07/2026
- * Version Information: V2.0.0
+ * Version Information: V2.1.0
  * Dependencies: package:flutter/material.dart,
  *   package:appoynt_mobile_app/core/routing/route_export.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 29/08/2026]
  * File Description: Centralized back navigation header with centered title and
  * automatically mirrored back arrow. Supports an optional show_back_button flag
  * to suppress the back button on root tab screens (ProfilePage, HomePage, etc.)
@@ -89,7 +89,7 @@ class CustomProfileAppBar extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 // Adaptive text color
                 color: is_dark
-                    ? AppColors.white
+                    ? AppColors.darkTextPrimary
                     : AppColors.text_light_primary,
               ),
             ),
@@ -134,15 +134,15 @@ class AppBackButton extends StatelessWidget {
         // Visual container styling decoration
         decoration: BoxDecoration(
           // Resolve background color adapting to theme mode (Yoda style check)
-          color: is_dark ? AppColors.surface_dark : AppColors.white,
+          color: is_dark ? AppColors.darkSurface : AppColors.white,
           // Rounded Rectangle Squircle corners derived from spacing tokens (12px)
           borderRadius: BorderRadius.circular(AppSpacing.radius_l),
           // Subtle border outline bounds resolving
           border: Border.all(
             // Resolve border color adapting to theme mode (Yoda style check)
             color: is_dark
-                ? AppColors.border_dark
-                : const Color(0xFFE2E8F0),
+                ? AppColors.darkBorder
+                : AppColors.slate200,
             // Thin border line width derived from spacing tokens (1px)
             width: AppSpacing.border_width_thin,
           ),
@@ -165,7 +165,7 @@ class AppBackButton extends StatelessWidget {
           // Use modern clean angular back chevron
           Icons.arrow_back_ios_new_rounded,
           // Select icon color dynamically (Yoda style check)
-          color: is_dark ? AppColors.white : AppColors.text_light_primary,
+          color: is_dark ? AppColors.darkTextPrimary : AppColors.text_light_primary,
           // Chevron display size constraint (18px)
           size: 18.0,
           // Text direction override for automatic RTL/LTR flipping

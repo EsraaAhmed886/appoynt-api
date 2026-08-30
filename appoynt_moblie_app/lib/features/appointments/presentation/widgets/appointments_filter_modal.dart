@@ -1,3 +1,4 @@
+import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 /*
  * File Name: appointments_filter_modal.dart
  * Author: Kholoud Khaled
@@ -33,7 +34,7 @@ class AppointmentsFilterModal extends StatefulWidget {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.transparent,
       builder: (_) => AppointmentsFilterModal(
         initialFilter: initialFilter,
         onApply: onApply,
@@ -144,7 +145,7 @@ class _AppointmentsFilterModalState extends State<AppointmentsFilterModal> {
         bottom: MediaQuery.of(context).viewInsets.bottom + 24.0,
       ),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF0F172A) : Colors.white,
+        color: isDark ? AppColors.slate900 : AppColors.white,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24.0)),
       ),
       child: SingleChildScrollView(
@@ -158,7 +159,7 @@ class _AppointmentsFilterModalState extends State<AppointmentsFilterModal> {
                 width: 40.0,
                 height: 4.0,
                 decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF334155) : const Color(0xFFCBD5E1),
+                  color: isDark ? AppColors.slate700 : AppColors.slate300,
                   borderRadius: BorderRadius.circular(2.0),
                 ),
               ),
@@ -174,7 +175,7 @@ class _AppointmentsFilterModalState extends State<AppointmentsFilterModal> {
                   style: TextStyle(
                     fontSize: 18.0,
                     fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : const Color(0xFF0F172A),
+                    color: isDark ? AppColors.white : AppColors.slate900,
                   ),
                 ),
                 TextButton(
@@ -182,7 +183,7 @@ class _AppointmentsFilterModalState extends State<AppointmentsFilterModal> {
                   child: Text(
                     AppointmentsStrings.of(context, 'reset'),
                     style: const TextStyle(
-                      color: Color(0xFF0284C7),
+                      color: AppColors.sky600,
                       fontWeight: FontWeight.w600,
                       fontSize: 14.0,
                     ),
@@ -198,7 +199,7 @@ class _AppointmentsFilterModalState extends State<AppointmentsFilterModal> {
               style: TextStyle(
                 fontSize: 13.0,
                 fontWeight: FontWeight.bold,
-                color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF475569),
+                color: isDark ? AppColors.slate400 : AppColors.slate600,
               ),
             ),
             const SizedBox(height: 8.0),
@@ -245,7 +246,7 @@ class _AppointmentsFilterModalState extends State<AppointmentsFilterModal> {
               style: TextStyle(
                 fontSize: 13.0,
                 fontWeight: FontWeight.bold,
-                color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF475569),
+                color: isDark ? AppColors.slate400 : AppColors.slate600,
               ),
             ),
             const SizedBox(height: 8.0),
@@ -280,7 +281,7 @@ class _AppointmentsFilterModalState extends State<AppointmentsFilterModal> {
               style: TextStyle(
                 fontSize: 13.0,
                 fontWeight: FontWeight.bold,
-                color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF475569),
+                color: isDark ? AppColors.slate400 : AppColors.slate600,
               ),
             ),
             const SizedBox(height: 8.0),
@@ -297,13 +298,13 @@ class _AppointmentsFilterModalState extends State<AppointmentsFilterModal> {
                       _selectedSpecialty = selected ? spec : null;
                     });
                   },
-                  selectedColor: const Color(0xFF0284C7).withValues(alpha: 0.2),
+                  selectedColor: AppColors.sky600.withValues(alpha: 0.2),
                   labelStyle: TextStyle(
                     fontSize: 12.0,
                     fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                     color: isSelected
-                        ? const Color(0xFF0284C7)
-                        : (isDark ? Colors.white70 : const Color(0xFF334155)),
+                        ? AppColors.sky600
+                        : (isDark ? AppColors.white70 : AppColors.slate700),
                   ),
                 );
               }).toList(),
@@ -316,7 +317,7 @@ class _AppointmentsFilterModalState extends State<AppointmentsFilterModal> {
               style: TextStyle(
                 fontSize: 13.0,
                 fontWeight: FontWeight.bold,
-                color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF475569),
+                color: isDark ? AppColors.slate400 : AppColors.slate600,
               ),
             ),
             const SizedBox(height: 8.0),
@@ -333,13 +334,13 @@ class _AppointmentsFilterModalState extends State<AppointmentsFilterModal> {
                       _selectedClinic = selected ? clinic : null;
                     });
                   },
-                  selectedColor: const Color(0xFF0284C7).withValues(alpha: 0.2),
+                  selectedColor: AppColors.sky600.withValues(alpha: 0.2),
                   labelStyle: TextStyle(
                     fontSize: 12.0,
                     fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                     color: isSelected
-                        ? const Color(0xFF0284C7)
-                        : (isDark ? Colors.white70 : const Color(0xFF334155)),
+                        ? AppColors.sky600
+                        : (isDark ? AppColors.white70 : AppColors.slate700),
                   ),
                 );
               }).toList(),
@@ -353,8 +354,8 @@ class _AppointmentsFilterModalState extends State<AppointmentsFilterModal> {
               child: ElevatedButton(
                 onPressed: _applyFilters,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF0284C7),
-                  foregroundColor: Colors.white,
+                  backgroundColor: AppColors.sky600,
+                  foregroundColor: AppColors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16.0),
                   ),
@@ -389,13 +390,13 @@ class _AppointmentsFilterModalState extends State<AppointmentsFilterModal> {
         padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 12.0),
         decoration: BoxDecoration(
           color: isSelected
-              ? const Color(0xFF0284C7).withValues(alpha: 0.12)
-              : (isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC)),
+              ? AppColors.sky600.withValues(alpha: 0.12)
+              : (isDark ? AppColors.slate800 : AppColors.slate50),
           borderRadius: BorderRadius.circular(12.0),
           border: Border.all(
             color: isSelected
-                ? const Color(0xFF0284C7)
-                : (isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
+                ? AppColors.sky600
+                : (isDark ? AppColors.slate700 : AppColors.slate200),
             width: 1.5,
           ),
         ),
@@ -406,8 +407,8 @@ class _AppointmentsFilterModalState extends State<AppointmentsFilterModal> {
               icon,
               size: 18.0,
               color: isSelected
-                  ? const Color(0xFF0284C7)
-                  : (isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B)),
+                  ? AppColors.sky600
+                  : (isDark ? AppColors.slate400 : AppColors.slate500),
             ),
             const SizedBox(width: 8.0),
             Text(
@@ -416,8 +417,8 @@ class _AppointmentsFilterModalState extends State<AppointmentsFilterModal> {
                 fontSize: 12.5,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
                 color: isSelected
-                    ? const Color(0xFF0284C7)
-                    : (isDark ? Colors.white70 : const Color(0xFF334155)),
+                    ? AppColors.sky600
+                    : (isDark ? AppColors.white70 : AppColors.slate700),
               ),
             ),
           ],
@@ -438,21 +439,21 @@ class _AppointmentsFilterModalState extends State<AppointmentsFilterModal> {
         height: 44.0,
         padding: const EdgeInsets.symmetric(horizontal: 12.0),
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
+          color: isDark ? AppColors.slate800 : AppColors.slate50,
           borderRadius: BorderRadius.circular(12.0),
           border: Border.all(
-            color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
+            color: isDark ? AppColors.slate700 : AppColors.slate200),
         ),
         child: Row(
           children: [
-            const Icon(Icons.calendar_today_outlined, size: 16.0, color: Color(0xFF0284C7)),
+            const Icon(Icons.calendar_today_outlined, size: 16.0, color: AppColors.sky600),
             const SizedBox(width: 8.0),
             Expanded(
               child: Text(
                 label,
                 style: TextStyle(
                   fontSize: 12.5,
-                  color: isDark ? Colors.white70 : const Color(0xFF334155),
+                  color: isDark ? AppColors.white70 : AppColors.slate700,
                 ),
                 overflow: TextOverflow.ellipsis,
               ),

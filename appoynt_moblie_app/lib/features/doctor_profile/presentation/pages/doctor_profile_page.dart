@@ -2,15 +2,15 @@
  * File Name: doctor_profile_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 16/08/2026
- * Version Information: V1.2.0
+ * Version Information: V1.3.0
  * Dependencies: package:flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
  *   app_colors.dart, app_spacing.dart, service_locator.dart, doctor_profile_cubit.dart,
  *   doctor_profile_state.dart, doctor_hero_header.dart, doctor_quick_stats_row.dart,
  *   doctor_about_section.dart, doctor_timeline_section.dart, doctor_procedures_section.dart,
  *   doctor_certificates_gallery.dart, doctor_media_gallery.dart,
- *   doctor_sticky_booking_bar.dart, favorite_heart_button.dart
+ *   doctor_sticky_booking_bar.dart, favorite_heart_button.dart, app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 23/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
  * File Description: Comprehensive Doctor Profile page implementing a fluid
  *   CustomScrollView with collapsible SliverAppBar, interactive medical sections,
  *   credentials galleries, and sticky confirmation bar with safe bottom padding.
@@ -24,6 +24,7 @@ import 'package:appoynt_mobile_app/constants/app_spacing.dart';
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 import 'package:appoynt_mobile_app/core/di/service_locator.dart';
 import 'package:appoynt_mobile_app/core/routing/routes.dart';
+import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
 import 'package:appoynt_mobile_app/features/booking/presentation/pages/choose_slots_page.dart';
 // Import Cubit and State
 import 'package:appoynt_mobile_app/features/doctor_profile/presentation/cubit/doctor_profile_cubit.dart';
@@ -217,7 +218,7 @@ class _DoctorProfileView extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.space_l),
             Text(
-              'Loading Doctor Profile...',
+              AppLocalizations.of(context).loading_doctor_profile,
               style: TextStyle(
                 fontSize: AppSpacing.font_size_body_medium,
                 fontWeight: FontWeight.w600,
@@ -237,6 +238,7 @@ class _DoctorProfileView extends StatelessWidget {
     String message,
     bool is_dark,
   ) {
+    final AppLocalizations localizations = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor:
           is_dark ? AppColors.background_dark : AppColors.scaffold_light,
@@ -266,7 +268,7 @@ class _DoctorProfileView extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.space_l),
               Text(
-                'Could Not Load Profile',
+                localizations.could_not_load_profile,
                 style: TextStyle(
                   fontSize: AppSpacing.font_size_title_large,
                   fontWeight: FontWeight.w700,
@@ -302,7 +304,7 @@ class _DoctorProfileView extends StatelessWidget {
                     borderRadius: BorderRadius.circular(AppSpacing.radius_l),
                   ),
                 ),
-                child: const Text('Retry'),
+                child: Text(localizations.retry),
               ),
             ],
           ),

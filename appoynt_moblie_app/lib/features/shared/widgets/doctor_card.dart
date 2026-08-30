@@ -2,14 +2,14 @@
  * File Name: doctor_card.dart
  * Author: Kholoud Khaled
  * Date of Creation: 04/08/2026
- * Version Information: v1.5.0
+ * Version Information: v1.7.0
  * Dependencies: package:flutter/material.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart,
  *   package:appoynt_mobile_app/constants/app_spacing.dart,
  *   package:appoynt_mobile_app/core/theme/colors/app_colors.dart,
  *   package:appoynt_mobile_app/features/shared/widgets/favorite_heart_button.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 23/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 29/08/2026]
  * File Description: Defines a reusable, highly polished Doctor Card component
  *   displaying details, rating, fee, framed 110x130dp rounded-rectangle doctor portrait
  *   with subtle border and soft shadow, ecg-heart icon, and booking CTA.
@@ -91,7 +91,7 @@ class DoctorCard extends StatelessWidget {
         decoration: BoxDecoration(
           // Set background color matching active theme
           color: is_dark
-              ? AppColors.surface_dark
+              ? AppColors.darkSurface
               : AppColors.background_light,
           // Set corner rounded curves using spacing constants
           borderRadius:
@@ -99,10 +99,19 @@ class DoctorCard extends StatelessWidget {
           // Draw outline border stroke
           border: Border.all(
             // Resolve border color based on theme
-            color: is_dark ? AppColors.border_dark : AppColors.slate_200,
+            color: is_dark ? AppColors.darkBorder : AppColors.slate200,
             // Set thin border width
             width: AppSpacing.border_width_thin,
           ),
+          boxShadow: [
+            BoxShadow(
+              color: is_dark
+                  ? AppColors.black.withValues(alpha: 0.15)
+                  : AppColors.black.withValues(alpha: 0.04),
+              blurRadius: 10.0,
+              offset: const Offset(0, 3),
+            ),
+          ],
         ),
         // Arrange items inside card vertically
         child: Column(
@@ -174,15 +183,21 @@ class DoctorCard extends StatelessWidget {
                     // Location details row
                     _build_detail_row(
                       // Location pin icon
-                      const Icon(
-                        Icons.location_on_outlined,
-                        size: AppSpacing.font_size_body_medium,
-                        color: AppColors.primary_color,
+                      const Padding(
+                        padding: EdgeInsets.only(top: 2.0),
+                        child: Icon(
+                          Icons.location_on_outlined,
+                          size: AppSpacing.font_size_body_medium,
+                          color: AppColors.primary_color,
+                        ),
                       ),
                       // Location string
                       location,
                       // Dark mode flag
                       is_dark,
+                      maxLines: 2,
+                      overflow: TextOverflow.visible,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                     ),
                     // Vertical space divider using spacing constants
                     const SizedBox(height: AppSpacing.space_xs),
@@ -322,10 +337,14 @@ class DoctorCard extends StatelessWidget {
   Widget _build_detail_row(
     Widget leadingWidget,
     String text,
-    bool is_dark,
-  ) {
+    bool is_dark, {
+    int maxLines = 1,
+    TextOverflow overflow = TextOverflow.ellipsis,
+    CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center,
+  }) {
     // Return Row arranging leading widget and label horizontally
     return Row(
+      crossAxisAlignment: crossAxisAlignment,
       // Children list
       children: [
         // Leading widget
@@ -338,14 +357,16 @@ class DoctorCard extends StatelessWidget {
           child: Text(
             // Parameter string
             text,
-            // Single line limit
-            maxLines: 1,
-            // Ellipsis overflow truncation behavior
-            overflow: TextOverflow.ellipsis,
+            // Multi-line limit
+            maxLines: maxLines,
+            // Ellipsis or visible overflow behavior
+            overflow: overflow,
+            softWrap: true,
             // Typography styling
             style: TextStyle(
               // Font size from spacing constants
               fontSize: AppSpacing.font_size_body_small,
+              height: 1.3,
               // Color selection based on theme
               color: is_dark
                   ? AppColors.text_dark_secondary
@@ -375,14 +396,14 @@ class DoctorCard extends StatelessWidget {
         color: is_dark ? AppColors.surface_dark : AppColors.white,
         borderRadius: BorderRadius.circular(border_radius),
         border: Border.all(
-          color: is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
+          color: is_dark ? AppColors.border_dark : AppColors.slate200,
           width: 1.0,
         ),
         boxShadow: [
           BoxShadow(
             color: is_dark
-                ? Colors.black.withValues(alpha: 0.20)
-                : Colors.black.withValues(alpha: 0.04),
+                ? AppColors.black.withValues(alpha: 0.20)
+                : AppColors.black.withValues(alpha: 0.04),
             blurRadius: 8.0,
             spreadRadius: 0,
             offset: const Offset(0, 2),
@@ -405,7 +426,7 @@ class DoctorCard extends StatelessWidget {
                     width: width,
                     height: height,
                     decoration: BoxDecoration(
-                      color: is_dark ? const Color(0xFF1E1B4B) : const Color(0xFFEFF6FF),
+                      color: is_dark ? AppColors.indigo950 : AppColors.blue50,
                     ),
                     alignment: Alignment.center,
                     child: Text(
@@ -413,7 +434,7 @@ class DoctorCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 24.0,
                         fontWeight: FontWeight.bold,
-                        color: is_dark ? const Color(0xFF93C5FD) : const Color(0xFF2563EB),
+                        color: is_dark ? AppColors.blue300 : AppColors.primary,
                       ),
                     ),
                   ),
@@ -434,7 +455,7 @@ class DoctorCard extends StatelessWidget {
                           return Container(
                             width: width,
                             height: height,
-                            color: is_dark ? AppColors.surface_dark : Colors.grey.shade100,
+                            color: is_dark ? AppColors.surface_dark : AppColors.grey100,
                           );
                         }
                       },
@@ -442,7 +463,7 @@ class DoctorCard extends StatelessWidget {
                         width: width,
                         height: height,
                         decoration: BoxDecoration(
-                          color: is_dark ? const Color(0xFF1E1B4B) : const Color(0xFFEFF6FF),
+                          color: is_dark ? AppColors.indigo950 : AppColors.blue50,
                         ),
                         alignment: Alignment.center,
                         child: Text(
@@ -450,7 +471,7 @@ class DoctorCard extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 24.0,
                             fontWeight: FontWeight.bold,
-                            color: is_dark ? const Color(0xFF93C5FD) : const Color(0xFF2563EB),
+                            color: is_dark ? AppColors.blue300 : AppColors.primary,
                           ),
                         ),
                       ),
@@ -459,7 +480,7 @@ class DoctorCard extends StatelessWidget {
                       width: width,
                       height: height,
                       decoration: BoxDecoration(
-                        color: is_dark ? const Color(0xFF1E1B4B) : const Color(0xFFEFF6FF),
+                        color: is_dark ? AppColors.indigo950 : AppColors.blue50,
                       ),
                       alignment: Alignment.center,
                       child: Text(
@@ -467,7 +488,7 @@ class DoctorCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 24.0,
                           fontWeight: FontWeight.bold,
-                          color: is_dark ? const Color(0xFF93C5FD) : const Color(0xFF2563EB),
+                          color: is_dark ? AppColors.blue300 : AppColors.primary,
                         ),
                       ),
                     )),

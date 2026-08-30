@@ -2,11 +2,11 @@
  * File Name: clinic_context_selector_card.dart
  * Author: Kholoud Khaled
  * Date of Creation: 17/08/2026
- * Version Information: V2.0.0
+ * Version Information: V2.1.0
  * Dependencies: package:flutter/material.dart, package:url_launcher/url_launcher.dart,
- *   app_colors.dart, app_spacing.dart, clinic_location_entity.dart
+ *   app_colors.dart, app_spacing.dart, clinic_location_entity.dart, app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 17/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
  * File Description: Modern medical-grade clinic context card featuring a 44x44 icon badge,
  *   direct "View on Map" external launcher, fee pill, working days, and "Change" action.
  */
@@ -17,6 +17,8 @@ import 'package:url_launcher/url_launcher.dart';
 // Import design tokens, colors, and entities
 import 'package:appoynt_mobile_app/constants/app_spacing.dart';
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
+import 'package:appoynt_mobile_app/core/utils/custom_snackbar.dart';
+import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
 import 'package:appoynt_mobile_app/features/booking/domain/entities/clinic_location_entity.dart';
 
 /// Context card displaying active clinic branch with map launch and change action.
@@ -52,11 +54,10 @@ class ClinicContextSelectorCard extends StatelessWidget {
       }
     } catch (_) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Unable to open map application.'),
-            duration: Duration(seconds: 2),
-          ),
+        CustomSnackBar.error(
+          context,
+          'Unable to open map application.',
+          duration: const Duration(seconds: 2),
         );
       } else {
         // No action needed
@@ -67,6 +68,7 @@ class ClinicContextSelectorCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+    final AppLocalizations localizations = AppLocalizations.of(context);
 
     return Container(
       padding: const EdgeInsets.all(AppSpacing.space_l + 2.0),
@@ -172,18 +174,18 @@ class ClinicContextSelectorCard extends StatelessWidget {
                       width: 1.0,
                     ),
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.swap_horiz_rounded,
                         size: 15.0,
                         color: AppColors.primary_color,
                       ),
-                      SizedBox(width: 4.0),
+                      const SizedBox(width: 4.0),
                       Text(
-                        'Change',
-                        style: TextStyle(
+                        localizations.change_label,
+                        style: const TextStyle(
                           fontSize: AppSpacing.font_size_caption,
                           fontWeight: FontWeight.w700,
                           color: AppColors.primary_color,
@@ -254,7 +256,7 @@ class ClinicContextSelectorCard extends StatelessWidget {
                           ),
                           const SizedBox(width: 3.0),
                           Text(
-                            'Map',
+                            localizations.map_label,
                             style: TextStyle(
                               fontSize: 10.5,
                               fontWeight: FontWeight.w700,

@@ -2,13 +2,12 @@
  * File Name: app_localizations_en.dart
  * Author: Kholoud Khaled
  * Date of Creation: 20/06/2026
- * Version Information: V1.0.0
+ * Version Information: V1.3.0
  * Dependencies: package:flutter/material.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
- * File Description: English concrete implementation of localizations
- *   containing onboarding and authentication strings.
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
+ * File Description: English concrete localization dictionary mapping text getters for the entire application.
  */
 
 // Importing standard material framework libraries
@@ -657,7 +656,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get dummy_appointments_tab_label {
     // Return English bottom navigation appointments tab label
-    return 'Appointments';
+    return 'Appoynts';
   }
 
   // Override getter returning bottom navigation search label in English
@@ -1272,6 +1271,24 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get profile_medical_history => 'Medical History';
   @override
+  String get profile_medical_records_subtitle =>
+      'Allergies, prescriptions, tests & plans';
+  @override
+  String get profileMedicalRecordsSubtitle =>
+      'Allergies, prescriptions, tests & plans';
+  @override
+  String get profile_payment_wallet_subtitle =>
+      'Wallet balance, saved cards & invoices';
+  @override
+  String get profilePaymentWalletSubtitle =>
+      'Wallet balance, saved cards & invoices';
+  @override
+  String get profile_security_privacy_subtitle =>
+      'Biometrics, passkey & delete account';
+  @override
+  String get profileSecurityPrivacySubtitle =>
+      'Biometrics, passkey & delete account';
+  @override
   String get profile_account_settings => 'Account Settings';
   @override
   String get profile_height => 'Height';
@@ -1315,6 +1332,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profile_birthdate_label => 'Birth Date';
   @override
   String get profile_national_id_label => 'National ID';
+  @override
+  String get auto_detected_from_national_id => 'Auto-detected from National ID';
+  @override
+  String get governorate => 'Governorate';
+  @override
+  String get city => 'City';
+  @override
+  String get select_governorate => 'Select Governorate';
+  @override
+  String get select_city => 'Select City';
+  @override
+  String get select_gov_first => 'Select Governorate first';
+  @override
+  String get loading_text => 'Loading...';
   @override
   String get profile_national_id_hint => 'Enter 14-digit National ID';
   @override
@@ -2077,6 +2108,20 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get prescriptions_update_btn => 'Update Prescription';
   @override
+  String get prescriptions_medication_details => 'Medication Details';
+  @override
+  String get prescriptions_dosage_label => 'Dosage';
+  @override
+  String get prescriptions_dosage_hint => 'e.g., 1 Tablet, 10ml';
+  @override
+  String get prescriptions_schedule_duration => 'Schedule & Duration';
+  @override
+  String get prescriptions_upload_rx_optional => 'Upload Rx Photo / Document (Optional)';
+  @override
+  String get first_name_required => 'First name is required';
+  @override
+  String get last_name_required => 'Last name is required';
+  @override
   String get login_phone_hint => '+1 234 567 8900';
   @override
   String get date_picker_cancel => 'Cancel';
@@ -2117,6 +2162,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get error_email_already_exists => 'Email is already registered.';
   @override
   String get error_auth_general => 'An error occurred during authentication, please verify your details.';
+  @override
+  String get auth_registration_email_already_registered =>
+      'This email address is already registered. Please log in or use a different email.';
+  @override
+  String get auth_registration_phone_already_registered =>
+      'This phone number is already registered. Please log in or use a different number.';
+  @override
+  String get auth_registration_password_invalid_characters =>
+      'Password contains invalid characters. Please use only letters, numbers, and standard symbols (@, #, \$, %, etc.).';
+  @override
+  String get auth_registration_password_contains_user_info =>
+      'Password must not contain your name, email, or personal details.';
+  @override
+  String get auth_otp_attempts_exceeded =>
+      'You have exceeded the maximum number of verification attempts. Please request a new code and try again.';
+  @override
+  String get auth_forgot_password_generic_success =>
+      'If this phone number is registered, a verification code has been sent.';
 
   // Network and security error EN string overrides
   @override
@@ -2491,6 +2554,217 @@ class AppLocalizationsEn extends AppLocalizations {
       "Your temporary slot hold has expired. We've refreshed the schedule for you.";
   @override
   String get select_new_slot => 'Select New Slot';
+
+  // Profile Photo Options Dialog getters
+  @override
+  String get update_profile_photo => 'Update Profile Photo';
+  @override
+  String get updateProfilePhoto => 'Update Profile Photo';
+  @override
+  String get choose_from_gallery => 'Choose from Gallery';
+  @override
+  String get chooseFromGallery => 'Choose from Gallery';
+  @override
+  String get take_photo => 'Take a Photo';
+  @override
+  String get takePhoto => 'Take a Photo';
+  @override
+  String get delete_photo => 'Delete Photo';
+  @override
+  String get deletePhoto => 'Delete Photo';
+  @override
+  String get cancel => 'Cancel';
+  @override
+  String get profile_photo_delete_success => 'Profile photo deleted successfully.';
+  @override
+  String get profile_photo_delete_error => 'Failed to delete profile photo.';
+
+  // Global Extracted UI Localization Getters (English)
+  @override
+  String get loading => 'Loading...';
+  @override
+  String get ok => 'OK';
+  @override
+  String get dial => 'Dial';
+  @override
+  String get legal_and_policies => 'LEGAL & POLICIES';
+  @override
+  String get arabic_language => 'العربية';
+  @override
+  String get english_language => 'English';
+  @override
+  String get kg_unit => 'kg';
+  @override
+  String get cm_unit => 'cm';
+  @override
+  String get no_matching_results => 'No matching results found';
+  @override
+  String get verification_error => 'Verification Error';
+  @override
+  String get verification_session_lost => 'Verification session lost. Please return to the previous screen and try again.';
+  @override
+  String get go_back => 'Go Back';
+  @override
+  String get ask_ai_title => 'Ask AI Assistant';
+  @override
+  String get ask_ai_coming_soon => '✨ Coming Soon';
+  @override
+  String get ask_ai_health_assistant => 'Appoynt AI Health Assistant';
+  @override
+  String get ask_ai_desc => 'We are currently developing the AI Assistant to assist you with medical consultations, appointment scheduling, and health tracking seamlessly.';
+  @override
+  String get ask_ai_symptom_consultation_title => 'Symptom Consultation';
+  @override
+  String get ask_ai_symptom_consultation_desc => 'Helping you understand symptoms and providing trusted initial medical guidance.';
+  @override
+  String get ask_ai_smart_booking_title => 'Smart Booking & Follow-up';
+  @override
+  String get ask_ai_smart_booking_desc => 'Suggesting top doctors and convenient time slots tailored to your schedule.';
+  @override
+  String get ask_ai_med_reminders_title => 'Medication & Health Reminders';
+  @override
+  String get ask_ai_med_reminders_desc => 'Dosage notifications and personalized lifestyle health recommendations.';
+  @override
+  String get ask_ai_back_to_home => 'Back to Home';
+  @override
+  String get reservation_expired_title => 'Reservation Expired';
+  @override
+  String get reservation_expired_description => 'Your temporary slot hold has expired. We released this slot so other patients can book.';
+  @override
+  String get select_new_slot_button => 'Select New Slot';
+  @override
+  String get failed_to_load_clinic_slots => 'Failed to load clinic slots';
+  @override
+  String get slot_reserved_successfully => 'Slot Reserved Successfully!';
+  @override
+  String get slot_reserved_for_you => 'Slot Reserved for You';
+  @override
+  String get complete_booking_in => 'Complete booking in';
+  @override
+  String get days_label => 'Days';
+  @override
+  String get change_label => 'Change';
+  @override
+  String get map_label => 'Map';
+  @override
+  String get all_slots_booked_msg => 'All time slots for this date are currently booked or unavailable.';
+  @override
+  String get slot_status_booked => 'Booked';
+  @override
+  String get loading_doctor_profile => 'Loading Doctor Profile...';
+  @override
+  String get could_not_load_profile => 'Could Not Load Profile';
+  @override
+  String get unable_to_load_video => 'Unable to load video stream';
+  @override
+  String get search_governorate_hint => 'Search governorate...';
+  @override
+  String get search_city_hint => 'Search city...';
+  @override
+  String get no_cities_available => 'No cities available for this governorate';
+  @override
+  String get select_blood_type => 'Select Blood Type';
+  @override
+  String get blood_type_label => 'Blood Type';
+  @override
+  String get photo_source_dialog_title => 'Select an option to update profile picture';
+  @override
+  String get popular_options => 'Popular Options';
+  @override
+  String get active_allergies_hint => 'Active Allergies (Tap tag to toggle severity)';
+  @override
+  String get no_known_allergies_option => 'No Known Medical Allergies';
+  @override
+  String get remove_member_title => 'Remove Member';
+  @override
+  String get remove_member_confirm => 'Are you sure you want to remove this family member?';
+  @override
+  String get family_profiles_header => 'Family Profiles';
+  @override
+  String get view_document => 'View Document';
+  @override
+  String get delete_insurance_confirm => 'Are you sure you want to delete this insurance card?';
+  @override
+  String get upload_insurance_documents => 'Upload Insurance Documents';
+  @override
+  String get cardholder_name => 'Cardholder Name';
+  @override
+  String get card_number => 'Card Number';
+  @override
+  String get expiry_date => 'Expiry Date';
+  @override
+  String get cvv => 'CVV';
+  @override
+  String get securely_save_card => 'Securely Save Card';
+  @override
+  String get policy_number_label => 'POLICY NUMBER';
+  @override
+  String get expiry_date_label => 'EXPIRY DATE';
+  @override
+  String get policy_prefix => 'Policy:';
+
+
+  @override
+  String get add_new_card_title => 'Add New Card';
+  @override
+  String get cardholder_name_label => 'Cardholder Name';
+  @override
+  String get card_number_label => 'Card Number';
+  @override
+  String get cvv_label => 'CVV';
+  @override
+  String get securely_save_card_btn => 'Securely Save Card';
+  @override
+  String get no_known_medical_allergies => 'No Known Medical Allergies';
+  @override
+  String get save_allergy_profile => 'Save Allergy Profile';
+  @override
+  String get remove_action => 'Remove';
+  @override
+  String get family_profiles_count => 'Family Profiles';
+  @override
+  String get add_family_member_btn => 'Add Family Member';
+  @override
+  String get dial_action => 'Dial';
+  @override
+  String get legal_and_policies_title => 'LEGAL & POLICIES';
+  @override
+  String get edit_insurance_title => 'Edit Insurance';
+  @override
+  String get delete_card => 'Delete Card';
+  @override
+  String get delete_insurance_title => 'Delete Insurance';
+  @override
+  String get delete_insurance_msg => 'Are you sure you want to remove this insurance card?';
+  @override
+  String get delete_action => 'Delete';
+  @override
+  String get governorate_label => 'Governorate';
+  @override
+  String get loading_governorates => 'Loading governorates...';
+  @override
+  String get select_governorate_hint => 'Select Governorate';
+  @override
+  String get city_label => 'City';
+  @override
+  String get select_gov_first_hint => 'Select Governorate first';
+  @override
+  String get select_city_hint => 'Select City';
+  @override
+  String get blood_group_label => 'Blood Group';
+  @override
+  String get select_blood_group_hint => 'Select Blood Group';
+  @override
+  String get profile_photo_sheet_subtitle => 'Select an option to change your profile picture';
+  @override
+  String get profile_photo_take_photo => 'Take a photo';
+  @override
+  String get profile_photo_choose_photo => 'Choose photo';
+
+  @override
+  String get done => 'Done';
+  @override
+  String get unable_to_load_video_stream => 'Unable to load video stream';
+  @override
+  String get select_insurance_provider_hint => 'Select Insurance Provider';
 }
-
-

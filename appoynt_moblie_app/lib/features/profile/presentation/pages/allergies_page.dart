@@ -2,14 +2,14 @@
  * File Name: allergies_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/07/2026
- * Version Information: V1.2.0
+ * Version Information: V1.3.0
  * Dependencies: package:flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart,
  *   package:appoynt_mobile_app/core/widgets/auth/auth_text_field.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
  * File Description: Redesigned Medical Allergies page with master switch, modular category cards, quick-add chips, and severity-coded tags.
  */
 
@@ -39,7 +39,6 @@ class _LocalDimensions {
   static const double spacing_medium = 10.0;
   static const double spacing_large = 12.0;
   static const double font_size_medium = 14.0;
-  static const double font_size_small = 12.0;
   static const double font_size_tiny = 11.0;
   static const double font_size_micro = 10.0;
   static const double image_size = 50.0;
@@ -170,7 +169,7 @@ class _AllergiesPageState extends State<AllergiesPage> {
           border: Border.all(
             color: is_dark
                 ? AppColors.border_dark
-                : const Color(0xFFE2E8F0),
+                : AppColors.slate200,
             width: AppSpacing.border_width_thin,
           ),
           boxShadow: [
@@ -254,7 +253,7 @@ class _AllergiesPageState extends State<AllergiesPage> {
 
             // Quick-Add Popular Options Chips Carousel
             Text(
-              'Popular Options',
+              AppLocalizations.of(context).popular_options,
               style: TextStyle(
                 fontSize: _LocalDimensions.font_size_tiny,
                 fontWeight: FontWeight.w600,
@@ -279,7 +278,7 @@ class _AllergiesPageState extends State<AllergiesPage> {
                           ? AppColors.primary_color.withValues(alpha: 0.12)
                           : (is_dark
                               ? AppColors.background_dark
-                              : const Color(0xFFF1F5F9)),
+                              : AppColors.slate100),
                       side: BorderSide(
                         color: is_added
                             ? AppColors.primary_color
@@ -321,7 +320,7 @@ class _AllergiesPageState extends State<AllergiesPage> {
             // Active Severity-Coded Allergy Chips Wrap List
             if (active_list.isNotEmpty) ...[
               Text(
-                'Active Allergies (Tap tag to toggle severity)',
+                AppLocalizations.of(context).active_allergies_hint,
                 style: TextStyle(
                   fontSize: _LocalDimensions.font_size_tiny,
                   fontWeight: FontWeight.w600,
@@ -337,14 +336,14 @@ class _AllergiesPageState extends State<AllergiesPage> {
                 children: active_list.map((item) {
                   final bool is_severe = 'Severe' == item['severity'];
                   final Color dot_color = is_severe
-                      ? const Color(0xFFEF4444)
-                      : const Color(0xFFF59E0B);
+                      ? AppColors.error
+                      : AppColors.warning;
                   final Color chip_bg = is_severe
-                      ? const Color(0xFFFEF2F2)
-                      : const Color(0xFFFFFBEB);
+                      ? AppColors.errorLight
+                      : AppColors.warningLight;
                   final Color border_color = is_severe
-                      ? const Color(0xFFFCA5A5)
-                      : const Color(0xFFFDE68A);
+                      ? AppColors.red300
+                      : AppColors.amber200;
 
                   return GestureDetector(
                     onTap: is_disabled
@@ -457,7 +456,7 @@ class _AllergiesPageState extends State<AllergiesPage> {
                           ? AppColors.primary_color
                           : (is_dark
                               ? AppColors.border_dark
-                              : const Color(0xFFE2E8F0)),
+                              : AppColors.slate200),
                       width: true == _no_known_allergies ? _LocalDimensions.border_width_thick : _LocalDimensions.border_width_thin,
                     ),
                     boxShadow: [
@@ -491,21 +490,13 @@ class _AllergiesPageState extends State<AllergiesPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'No Known Medical Allergies',
+                              localizations.no_known_medical_allergies,
                               style: TextStyle(
                                 fontSize: _LocalDimensions.font_size_medium,
                                 fontWeight: FontWeight.bold,
                                 color: is_dark
                                     ? AppColors.white
                                     : AppColors.text_light_primary,
-                              ),
-                            ),
-                            const SizedBox(height: _LocalDimensions.spacing_tiny),
-                            const Text(
-                              'لا يوجد لدي حساسية معروفة',
-                              style: TextStyle(
-                                fontSize: _LocalDimensions.font_size_small,
-                                color: AppColors.text_light_secondary,
                               ),
                             ),
                           ],
@@ -595,11 +586,9 @@ class _AllergiesPageState extends State<AllergiesPage> {
                   }
                 }
 
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Allergy Profile saved successfully.'),
-                    backgroundColor: AppColors.primary_color,
-                  ),
+                CustomSnackBar.success(
+                  context,
+                  'Allergy Profile saved successfully.',
                 );
                 Navigator.of(context).pop();
               },
@@ -610,9 +599,9 @@ class _AllergiesPageState extends State<AllergiesPage> {
                   borderRadius: BorderRadius.circular(16.0),
                 ),
               ),
-              child: const Text(
-                'Save Allergy Profile',
-                style: TextStyle(
+              child: Text(
+                localizations.save_allergy_profile,
+                style: const TextStyle(
                   color: AppColors.white,
                   fontSize: AppSpacing.font_size_action_button,
                   fontWeight: FontWeight.w700,

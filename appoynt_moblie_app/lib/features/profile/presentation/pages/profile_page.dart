@@ -2,14 +2,14 @@
  * File Name: profile_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/07/2026
- * Version Information: V1.0.0
+ * Version Information: V1.3.0
  * Dependencies: package:flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
- * File Description: Defines the Patient Profile View Mode screen showing summaries and medical sections.
+ * Last Modified Date: [Kholoud Khaled - 29/08/2026]
+ * File Description: Defines the Patient Profile View Mode screen showing summaries and medical sections with standardized dark slate theme.
  */
 
 // Importing clipboard service for copy-to-clipboard interactions
@@ -104,58 +104,45 @@ class _ProfilePageState extends State<ProfilePage> {
           }
         },
         child: BlocListener<ProfileCubit, ProfileState>(
-          // Listen for avatar upload result states to show feedback SnackBars
+          // Listen for avatar upload and delete result states to show feedback SnackBars
           listenWhen: (previous_state, current_state) {
-            // Only trigger listener when avatar upload status changes
+            // Only trigger listener when avatar status changes
             return previous_state.status != current_state.status &&
                 (ProfileStatus.avatarUploadError == current_state.status ||
-                    ProfileStatus.avatarUploadSuccess == current_state.status);
+                    ProfileStatus.avatarUploadSuccess == current_state.status ||
+                    ProfileStatus.avatarDeleteError == current_state.status ||
+                    ProfileStatus.avatarDeleteSuccess == current_state.status);
           },
           listener: (listener_context, upload_state) {
             // Handle avatar upload success feedback notification
             if (ProfileStatus.avatarUploadSuccess == upload_state.status) {
-              // Show success SnackBar confirming photo was updated
-              ScaffoldMessenger.of(listener_context).showSnackBar(
-                SnackBar(
-                  // Success message sourced from localized string dictionary
-                  content: Text(
-                    localizations.profile_photo_upload_success,
-                  ),
-                  // Green tint background for success state
-                  backgroundColor: AppColors.primary_color,
-                  // Short duration to minimize screen real estate usage
-                  duration: const Duration(seconds: 2),
-                  // Rounded pill shape for the SnackBar container
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppSpacing.space_m),
-                  ),
-                  // Float above bottom navigation bar
-                  behavior: SnackBarBehavior.floating,
-                ),
+              // Show floating success SnackBar confirming photo was updated
+              CustomSnackBar.success(
+                listener_context,
+                localizations.profile_photo_upload_success,
               );
             } else if (ProfileStatus.avatarUploadError == upload_state.status) {
-              // Show error SnackBar with the failure message from the cubit
-              ScaffoldMessenger.of(listener_context).showSnackBar(
-                SnackBar(
-                  // Display error from state or a localized generic fallback
-                  content: Text(
-                    upload_state.error_message ??
-                        localizations.profile_photo_upload_error,
-                  ),
-                  // Error red-orange tint background for failure state
-                  backgroundColor: Colors.redAccent,
-                  // Standard duration for error messages
-                  duration: const Duration(seconds: 3),
-                  // Rounded pill shape for the SnackBar container
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppSpacing.space_m),
-                  ),
-                  // Float above bottom navigation bar
-                  behavior: SnackBarBehavior.floating,
-                ),
+              // Show floating error SnackBar with the failure message from the cubit
+              CustomSnackBar.error(
+                listener_context,
+                upload_state.error_message ??
+                    localizations.profile_photo_upload_error,
+              );
+            } else if (ProfileStatus.avatarDeleteSuccess == upload_state.status) {
+              // Show floating success SnackBar confirming photo was deleted
+              CustomSnackBar.success(
+                listener_context,
+                localizations.profile_photo_delete_success,
+              );
+            } else if (ProfileStatus.avatarDeleteError == upload_state.status) {
+              // Show floating error SnackBar with the failure message
+              CustomSnackBar.error(
+                listener_context,
+                upload_state.error_message ??
+                    localizations.profile_photo_delete_error,
               );
             } else {
-              // No matching upload state — no action needed
+              // No action needed
             }
           },
           child: BlocBuilder<ProfileCubit, ProfileState>(
@@ -249,7 +236,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                 last_name: state.profile.last_name,
                                 // Derive uploading flag from active avatar status
                                 is_uploading: ProfileStatus.avatarUploading ==
-                                    state.status,
+                                        state.status ||
+                                    ProfileStatus.avatarDeleting ==
+                                        state.status,
                                 // Hide camera edit badge overlay on main profile page
                                 show_camera_badge: false,
                                 // Open full-screen zoomable preview modal on avatar tap
@@ -270,7 +259,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   width: 150,
                                   height: 20,
                                   decoration: BoxDecoration(
-                                    color: is_dark ? Colors.grey[800] : Colors.grey[300],
+                                    color: is_dark ? AppColors.grey800 : AppColors.grey300,
                                     borderRadius: BorderRadius.circular(4),
                                   ),
                                   child: const Center(
@@ -380,18 +369,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                             Clipboard.setData(
                                               ClipboardData(text: patient_id),
                                             );
-                                            // Show confirmation snackbar overlay
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              // Snackbar configuration
-                                              const SnackBar(
-                                                // Success message content
-                                                content: Text(
-                                                  'Patient ID copied to clipboard!',
-                                                ),
-                                                // Auto-dismiss duration
-                                                duration: Duration(seconds: 2),
-                                              ),
+                                            // Show floating confirmation snackbar overlay
+                                            CustomSnackBar.success(
+                                              context,
+                                              'Patient ID copied to clipboard!',
+                                              duration:
+                                                  const Duration(seconds: 2),
                                             );
                                           },
                                           // Copy icon visual indicator
@@ -599,7 +582,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             _ProfileOptionCard(
                               title: localizations.profile_medical_history,
                               subtitle:
-                                  'Allergies, prescriptions, tests & plans',
+                                  localizations.profile_medical_records_subtitle,
                               icon: Icons.medical_services_outlined,
                               on_press: () {
                                 Navigator.of(context).push(
@@ -621,7 +604,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             _ProfileOptionCard(
                               title: localizations.profile_payment_wallet,
                               subtitle:
-                                  'Wallet balance, saved cards & invoices',
+                                  localizations.profile_payment_wallet_subtitle,
                               icon: Icons.wallet_outlined,
                               on_press: () {
                                 Navigator.of(context).push(
@@ -642,7 +625,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             // Option 4: Security & Privacy
                             _ProfileOptionCard(
                               title: localizations.profile_security_privacy,
-                              subtitle: 'Biometrics, passkey & delete account',
+                              subtitle: localizations
+                                  .profile_security_privacy_subtitle,
                               icon: Icons.security_outlined,
                               on_press: () {
                                 Navigator.of(context).push(
@@ -1138,11 +1122,13 @@ class _ProfileOptionCard extends StatelessWidget {
                     // Bind subtitle
                     subtitle,
                     // Subdued typography specs
-                    style: const TextStyle(
+                    style: TextStyle(
                       // Small body size font
                       fontSize: AppSpacing.font_size_body_small,
                       // Secondary color styling
-                      color: AppColors.text_light_secondary,
+                      color: is_dark
+                          ? AppColors.darkTextSecondary
+                          : AppColors.text_light_secondary,
                     ),
                   ),
                 ],
@@ -1154,11 +1140,13 @@ class _ProfileOptionCard extends StatelessWidget {
               width: AppSpacing.space_s,
             ),
             // Interactive directional navigation chevron indicator icon
-            const Icon(
+            Icon(
               // Arrow chevron token pointing right coordinates
               Icons.chevron_right_rounded,
               // Subdued color matching summaries
-              color: AppColors.text_light_secondary,
+              color: is_dark
+                  ? AppColors.darkTextSecondary
+                  : AppColors.text_light_secondary,
               // Icon standard size
               size: AppSpacing.icon_size_m,
             ),

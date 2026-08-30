@@ -2,10 +2,11 @@
  * File Name: active_hold_countdown_banner.dart
  * Author: Kholoud Khaled
  * Date of Creation: 17/08/2026
- * Version Information: V2.0.0
- * Dependencies: package:flutter/material.dart, dart:ui, app_spacing.dart, app_colors.dart
+ * Version Information: V2.1.0
+ * Dependencies: package:flutter/material.dart, dart:ui, app_spacing.dart, app_colors.dart,
+ *   package:appoynt_mobile_app/core/localization/app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 17/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
  * File Description: Modern medical-grade hold indicator with tabular digit typography,
  *   smooth slide-up animation, pulsing stopwatch icon, and amber/red urgency states.
  */
@@ -15,6 +16,7 @@ import 'package:flutter/material.dart';
 // Import design tokens and colors
 import 'package:appoynt_mobile_app/constants/app_spacing.dart';
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
+import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
 
 /// Redesigned medical-grade active hold countdown banner.
 class ActiveHoldCountdownBanner extends StatefulWidget {
@@ -76,34 +78,35 @@ class _ActiveHoldCountdownBannerState extends State<ActiveHoldCountdownBanner>
   Widget build(BuildContext context) {
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     final bool is_urgent = widget.remaining_seconds <= 60;
+    final AppLocalizations localizations = AppLocalizations.of(context);
 
     // Amber Palette (Normal)
     final Color bg_amber =
-        is_dark ? const Color(0xFF2E2412) : const Color(0xFFFFFBEB);
+        is_dark ? AppColors.amberDarkBg : AppColors.warningLight;
     final Color border_amber =
-        is_dark ? const Color(0xFF78350F) : const Color(0xFFFDE68A);
+        is_dark ? AppColors.amber900 : AppColors.amber200;
     final Color icon_bg_amber =
-        is_dark ? const Color(0xFF451A03) : const Color(0xFFFEF3C7);
-    const Color icon_color_amber = Color(0xFFD97706);
+        is_dark ? AppColors.amber950 : AppColors.amber100;
+    const Color icon_color_amber = AppColors.amber600;
     final Color title_color_amber =
-        is_dark ? const Color(0xFFFDE68A) : const Color(0xFF92400E);
+        is_dark ? AppColors.amber200 : AppColors.amber800;
     final Color sub_color_amber =
-        is_dark ? const Color(0xFFFBBF24) : const Color(0xFFB45309);
-    const Color badge_bg_amber = Color(0xFFD97706);
+        is_dark ? AppColors.amber400 : AppColors.amber700;
+    const Color badge_bg_amber = AppColors.amber600;
 
     // Red/Rose Palette (Urgent)
     final Color bg_red =
-        is_dark ? const Color(0xFF3B1212) : const Color(0xFFFEF2F2);
+        is_dark ? AppColors.redDarkBg : AppColors.errorLight;
     final Color border_red =
-        is_dark ? const Color(0xFF991B1B) : const Color(0xFFFECACA);
+        is_dark ? AppColors.red800 : AppColors.red200;
     final Color icon_bg_red =
-        is_dark ? const Color(0xFF5F1212) : const Color(0xFFFEE2E2);
-    const Color icon_color_red = Color(0xFFDC2626);
+        is_dark ? AppColors.redDarkBorder : AppColors.red100;
+    const Color icon_color_red = AppColors.red600;
     final Color title_color_red =
-        is_dark ? const Color(0xFFFCA5A5) : const Color(0xFF991B1B);
+        is_dark ? AppColors.red300 : AppColors.red800;
     final Color sub_color_red =
-        is_dark ? const Color(0xFFF87171) : const Color(0xFFB91C1C);
-    const Color badge_bg_red = Color(0xFFDC2626);
+        is_dark ? AppColors.red400 : AppColors.red700;
+    const Color badge_bg_red = AppColors.red600;
 
     // Active colors depending on urgency
     final Color card_bg = is_urgent ? bg_red : bg_amber;
@@ -143,8 +146,8 @@ class _ActiveHoldCountdownBannerState extends State<ActiveHoldCountdownBanner>
                 color: is_dark
                     ? AppColors.black.withValues(alpha: 0.3)
                     : (is_urgent
-                        ? const Color(0xFFDC2626).withValues(alpha: 0.08)
-                        : const Color(0xFFD97706).withValues(alpha: 0.08)),
+                        ? AppColors.red600.withValues(alpha: 0.08)
+                        : AppColors.amber600.withValues(alpha: 0.08)),
                 blurRadius: 10.0,
                 offset: const Offset(0, 3),
               ),
@@ -184,7 +187,7 @@ class _ActiveHoldCountdownBannerState extends State<ActiveHoldCountdownBanner>
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'Slot Reserved for You',
+                      localizations.slot_reserved_for_you,
                       style: TextStyle(
                         fontSize: 13.0,
                         fontWeight: FontWeight.w700,
@@ -193,7 +196,7 @@ class _ActiveHoldCountdownBannerState extends State<ActiveHoldCountdownBanner>
                     ),
                     const SizedBox(height: 1.5),
                     Text(
-                      'Complete booking in',
+                      localizations.complete_booking_in,
                       style: TextStyle(
                         fontSize: 11.5,
                         fontWeight: FontWeight.w500,

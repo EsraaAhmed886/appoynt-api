@@ -2,12 +2,12 @@
  * File Name: home_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 17/07/2026
- * Version Information: V1.0.0
+ * Version Information: V1.2.0
  * Dependencies: flutter/material.dart,
  *   package:appoynt_mobile_app/core/routing/route_export.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
- * File Description: Defines the temporary dummy home screen and components.
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
+ * File Description: Defines the temporary dummy home screen and components with standardized dark slate theme.
  */
 
 // TODO: START OF DUMMY HOME SCREEN IMPLEMENTATION - REMOVE ONCE FINAL HOME IS COMPLETED
@@ -26,8 +26,8 @@ import 'package:appoynt_mobile_app/features/favorites/presentation/pages/favorit
 import 'package:appoynt_mobile_app/features/notifications/presentation/pages/notifications_page.dart';
 // Importing AppointmentsPage widget screen definition
 import 'package:appoynt_mobile_app/features/appointments/presentation/pages/appointments_page.dart';
-// Importing AskAiFab widget definition
-import 'package:appoynt_mobile_app/features/appointments/presentation/widgets/ask_ai_fab.dart';
+// Importing DraggableFloatingAiButton widget definition
+import 'package:appoynt_mobile_app/features/ask_ai/presentation/widgets/draggable_floating_ai_button.dart';
 
 // Defining the HomePage stateful widget representation
 class HomePage extends StatefulWidget {
@@ -50,9 +50,6 @@ class _HomePageState extends State<HomePage> {
   // Build the main Scaffold layout containing bottom navigation and tabs
   @override
   Widget build(BuildContext context) {
-    // Resolve localizations context configuration
-    final AppLocalizations localizations = AppLocalizations.of(context);
-
     // Return the root Scaffold page container layout settings
     return Scaffold(
       // Build the bottom navigation bar widget using the reusable AppBottomNavBar component
@@ -61,126 +58,63 @@ class _HomePageState extends State<HomePage> {
         selected_index: _selected_index,
         // On tap update local state and index tracker
         on_tap: (index) {
-          // Check if search tab is tapped using Yoda style check (index 2)
-          if (2 == index) {
-            // TODO: START OF DUMMY HOME ROUTING - REMOVE ONCE FINAL HOME IS COMPLETED
-            // Check if context remains mounted using Yoda style check
-            if (true == context.mounted) {
-              // Route to the dedicated search page using slide/fade transition
-              Navigator.of(context)
-                  .push<int>(
-                // Page route transition configs
-                PageRouteBuilder(
-                  // Target search page constructor mapping builder
-                  pageBuilder: (context, anim, secAnim) {
-                    // Return SearchPage widget instance
-                    return const SearchPage();
-                  },
-                  // Transition builder animating cross-fade layout sweep
-                  transitionsBuilder: (context, anim, secAnim, child) {
-                    // Return fade transition
-                    return FadeTransition(
-                      // Bind opacity factor to active transition
-                      opacity: anim,
-                      // Child display layout widget
-                      child: child,
-                    );
-                  },
-                  // Transition duration configs milliseconds limit
-                  transitionDuration: const Duration(
-                    // Delay milliseconds count
-                    milliseconds: AppSpacing.duration_fade_ms,
-                  ),
-                ),
-              )
-                  .then((result_index) {
-                // Check if a result index was returned and widget remains active
-                if (result_index != null && true == context.mounted) {
-                  // Rebuild screen selecting the requested tab index
-                  setState(() {
-                    // Update index selection
-                    _selected_index = result_index;
-                  });
-                } else {
-                  // Empty block
-                }
-              });
-            } else {
-              // No action needed
-            }
-            // TODO: END OF DUMMY HOME ROUTING
+          // Check if view remains mounted using Yoda style check
+          if (true == context.mounted) {
+            // Update state representation
+            setState(() {
+              // Bind index
+              _selected_index = index;
+            });
           } else {
-            // Check if view remains mounted using Yoda style check
-            if (true == context.mounted) {
-              // Update state representation
-              setState(() {
-                // Bind index
-                _selected_index = index;
-              });
-            } else {
-              // Empty block
-            }
+            // Empty block
           }
         },
       ),
-      // Wrap content area within a safe area display container
-      body: SafeArea(
-        // Render the tab content based on the selected index
-        child: 0 == _selected_index
-            // Home tab content representation
-            ? _HomeTab(
-                onSearchReturn: (index) {
-                  // Check if view remains active using Yoda style check
-                  if (true == context.mounted) {
-                    setState(() {
-                      // Update selected index
-                      _selected_index = index;
-                    });
-                  } else {
-                    // Empty block
-                  }
-                },
-              )
-            : 1 == _selected_index
-                // Instantiate the Appointments tab widget
-                ? const AppointmentsPage()
-                : 3 == _selected_index
-                    // Instantiate the Favorites tab widget
-                    ? const FavoritesPage()
-                    : 4 == _selected_index
-                        // Instantiate the Profile tab wrapped in its Cubit state controller
-                        ? BlocProvider<ProfileCubit>(
-                            // Create Cubit state controller instance
-                            create: (context) {
-                              // Return new ProfileCubit
-                              return ProfileCubit();
-                            },
-                            // Renders the ProfilePage main screen widget
-                            child: const ProfilePage(),
-                          )
-                        // Construction/Coming soon tab representation for other items
-                        : _ComingSoonTab(
-                            // Localized category label mapping active selection
-                            label: localizations.dummy_search_tab_label,
-                          ),
+      // Wrap content area within a Stack layout holding tabs and floating AI button
+      body: Stack(
+        children: [
+          // Safe area display container hosting selected tab view
+          SafeArea(
+            // Render the tab content based on the selected index
+            child: 0 == _selected_index
+                // Home tab content representation
+                ? _HomeTab(
+                    onSearchReturn: (index) {
+                      // Check if view remains active using Yoda style check
+                      if (true == context.mounted) {
+                        setState(() {
+                          // Update selected index
+                          _selected_index = index;
+                        });
+                      } else {
+                        // Empty block
+                      }
+                    },
+                  )
+                : 1 == _selected_index
+                    // Instantiate the Appointments tab widget
+                    ? const AppointmentsPage()
+                    : 2 == _selected_index
+                        // Instantiate the Favorites tab widget
+                        ? const FavoritesPage()
+                        : 3 == _selected_index
+                            // Instantiate the Profile tab wrapped in its Cubit state controller
+                            ? BlocProvider<ProfileCubit>(
+                                // Create Cubit state controller instance
+                                create: (context) {
+                                  // Return new ProfileCubit
+                                  return ProfileCubit();
+                                },
+                                // Renders the ProfilePage main screen widget
+                                child: const ProfilePage(),
+                              )
+                            // Fallback container representation
+                            : const SizedBox.shrink(),
+          ),
+          // Floating draggable AI bot widget
+          const DraggableFloatingAiButton(),
+        ],
       ),
-      // Global floating AI assistant action button
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 16.0, right: 8.0),
-        child: AskAiFab(
-          onTap: () {
-            // Open AI Assistant Chat Screen / Modal BottomSheet
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Opening AI Medical Assistant...'),
-                duration: Duration(seconds: 1),
-              ),
-            );
-          },
-        ),
-      ),
-      // Floating button location pinned to the end float
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 
@@ -240,11 +174,13 @@ class _HomeTab extends StatelessWidget {
                       // Greeting text string
                       localizations.dummy_good_morning,
                       // Font typography layout parameters
-                      style: const TextStyle(
+                      style: TextStyle(
                         // Typographic font size value
                         fontSize: AppSpacing.font_size_subtitle,
                         // Color styling from design token configurations
-                        color: AppColors.text_light_secondary,
+                        color: is_dark
+                            ? AppColors.darkTextSecondary
+                            : AppColors.text_light_secondary,
                       ),
                     ),
                     // Small vertical spacer box
@@ -289,7 +225,7 @@ class _HomeTab extends StatelessWidget {
                   decoration: BoxDecoration(
                     // Dynamic background color matching surface theme
                     color: is_dark
-                        ? AppColors.surface_dark
+                        ? AppColors.darkSurface
                         : AppColors.background_light,
                     // Circular rounded container shape configurations
                     borderRadius: BorderRadius.circular(
@@ -300,8 +236,8 @@ class _HomeTab extends StatelessWidget {
                     border: Border.all(
                       // Border boundary outline color mappings
                       color: is_dark
-                          ? AppColors.border_dark
-                          : AppColors.border_light,
+                          ? AppColors.darkBorder
+                          : AppColors.slate200,
                       // Explicit border width definition
                       width: AppSpacing.border_width_thin,
                     ),
@@ -418,7 +354,7 @@ class _HomeTab extends StatelessWidget {
                   decoration: BoxDecoration(
                     // Dynamic background surface color
                     color: is_dark
-                        ? AppColors.surface_dark
+                        ? AppColors.darkSurface
                         : AppColors.background_light,
                     // Rounded container corners configurations
                     borderRadius: BorderRadius.circular(
@@ -429,8 +365,8 @@ class _HomeTab extends StatelessWidget {
                     border: Border.all(
                       // Border outline colors matching dividers
                       color: is_dark
-                          ? AppColors.border_dark
-                          : AppColors.border_light,
+                          ? AppColors.darkBorder
+                          : AppColors.slate200,
                       // Explicit border width definition
                       width: AppSpacing.border_width_thin,
                     ),
@@ -445,11 +381,13 @@ class _HomeTab extends StatelessWidget {
                         width: AppSpacing.dummy_search_bar_padding_left,
                       ),
                       // Search icon graphic asset representation
-                      const Icon(
+                      Icon(
                         // Search icon graphic representation
                         Icons.search_rounded,
                         // Icon color matching subtext descriptions
-                        color: AppColors.text_light_secondary,
+                        color: is_dark
+                            ? AppColors.darkTextMuted
+                            : AppColors.text_light_secondary,
                         // Icon size constraint
                         size: AppSpacing.dummy_size_icon_notification,
                       ),
@@ -463,11 +401,13 @@ class _HomeTab extends StatelessWidget {
                         // Search label text string
                         localizations.dummy_search_hint,
                         // Typographic text parameters options
-                        style: const TextStyle(
+                        style: TextStyle(
                           // Small text body size
                           fontSize: AppSpacing.font_size_body_medium,
                           // Subdued color representing text inputs hint layout
-                          color: AppColors.text_light_secondary,
+                          color: is_dark
+                              ? AppColors.darkTextMuted
+                              : AppColors.text_light_secondary,
                         ),
                       ),
                     ],
@@ -651,8 +591,8 @@ class _HomeTab extends StatelessWidget {
                         ),
                         // Layout decorations details
                         decoration: BoxDecoration(
-                          // Solid white background fill
-                          color: AppColors.white,
+                          // Solid white/elevated background fill
+                          color: is_dark ? AppColors.darkSurfaceElevated : AppColors.white,
                           // Rounded border edges configurations
                           borderRadius: BorderRadius.circular(
                             // Circular boundary radius parameter value
@@ -664,9 +604,9 @@ class _HomeTab extends StatelessWidget {
                           // Localized action button label string
                           localizations.dummy_view_details,
                           // Label text styling parameters options
-                          style: const TextStyle(
+                          style: TextStyle(
                             // Color matching brand primary theme colors
-                            color: AppColors.primary_color,
+                            color: is_dark ? AppColors.darkTextPrimary : AppColors.primary_color,
                             // Small font size
                             fontSize: AppSpacing.font_size_label,
                             // Bold text weight representation
@@ -904,98 +844,6 @@ class _HomeTab extends StatelessWidget {
   }
 }
 
-// Stateful/Stateless widget representation of the ComingSoonTab fallback screen
-class _ComingSoonTab extends StatelessWidget {
-  // Label text string reference
-  final String label;
-
-  // Constructor mapping the widget label parameter
-  const _ComingSoonTab({required this.label});
-
-  // Build method drawing the Coming Soon screen
-  @override
-  Widget build(BuildContext context) {
-    // Resolve localized strings dictionary reference
-    final AppLocalizations localizations = AppLocalizations.of(context);
-    // Resolve dark mode active state context
-    final bool is_dark = Theme.of(context).brightness == Brightness.dark;
-
-    // Return centered column widget laying out contents
-    return Center(
-      // Column group mapping vertical nodes
-      child: Column(
-        // Minimize vertical space consumed by list elements
-        mainAxisSize: MainAxisSize.min,
-        // Layout list children widgets
-        children: [
-          // Circle avatar container displaying construction graphic icon
-          Container(
-            // Circle width constraint
-            width: AppSpacing.dummy_size_coming_soon_circle,
-            // Circle height constraint
-            height: AppSpacing.dummy_size_coming_soon_circle,
-            // Circle decoration configurations parameters options
-            decoration: BoxDecoration(
-              // Brand primary color with light transparency tint overlay
-              color: AppColors.primary_color
-                  .withValues(alpha: AppSpacing.dummy_opacity_active),
-              // Circular bounding shape decoration
-              shape: BoxShape.circle,
-            ),
-            // Construction icon widget representation
-            child: const Icon(
-              // Construction graphic icon token representation
-              Icons.construction_rounded,
-              // Graphic color matching brand primary accent
-              color: AppColors.primary_color,
-              // Icon display size constraint
-              size: AppSpacing.dummy_size_coming_soon_icon,
-            ),
-          ),
-          // Spacer height vertical offset
-          const SizedBox(
-            // Height spacing size value
-            height: AppSpacing.space_xl,
-          ),
-          // Text widget displaying page section label title
-          Text(
-            // Screen title name string
-            label,
-            // Typography configurations style attributes options
-            style: TextStyle(
-              // Heading size parameters
-              fontSize: AppSpacing.dummy_bottom_nav_item_radius,
-              // Bold typography weight indicator
-              fontWeight: FontWeight.w800,
-              // Dynamic text color adjusting to brightness mode
-              color: is_dark
-                  ? AppColors.text_dark_primary
-                  : AppColors.text_light_primary,
-            ),
-          ),
-          // Spacer height vertical offset
-          const SizedBox(
-            // Height spacing size value
-            height: AppSpacing.space_m,
-          ),
-          // Subhead text widget displaying Coming Soon messages
-          Text(
-            // Under construction string
-            localizations.dummy_coming_soon,
-            // Typography layouts style parameters options
-            style: const TextStyle(
-              // Small body font size
-              fontSize: AppSpacing.font_size_subtitle,
-              // Subtle grey color token
-              color: AppColors.text_light_secondary,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 // Widget representation of the quick action buttons layout
 class _QuickAction extends StatelessWidget {
   // Action button icon graphic representation
@@ -1124,7 +972,7 @@ class _SpecialtyChip extends StatelessWidget {
       decoration: BoxDecoration(
         // Dynamic background surface color
         color: is_dark
-            ? AppColors.surface_dark
+            ? AppColors.darkSurface
             : AppColors.background_light,
         // Rounded container corners configurations
         borderRadius: BorderRadius.circular(
@@ -1135,7 +983,7 @@ class _SpecialtyChip extends StatelessWidget {
         border: Border.all(
           // Border outline colors matching dividers
           color:
-              is_dark ? AppColors.border_dark : AppColors.border_light,
+              is_dark ? AppColors.darkBorder : AppColors.slate200,
           // Explicit border width definition
           width: AppSpacing.border_width_thin,
         ),
@@ -1230,7 +1078,7 @@ class _DoctorCard extends StatelessWidget {
         decoration: BoxDecoration(
           // Dynamic background surface color
           color: is_dark
-              ? AppColors.surface_dark
+              ? AppColors.darkSurface
               : AppColors.background_light,
           // Rounded container corners configurations
           borderRadius: BorderRadius.circular(
@@ -1241,7 +1089,7 @@ class _DoctorCard extends StatelessWidget {
           border: Border.all(
           // Border outline colors matching dividers
           color:
-              is_dark ? AppColors.border_dark : AppColors.border_light,
+              is_dark ? AppColors.darkBorder : AppColors.slate200,
           // Explicit border width definition
           width: AppSpacing.border_width_thin,
         ),
@@ -1313,11 +1161,13 @@ class _DoctorCard extends StatelessWidget {
                   // Specialty title string
                   specialty,
                   // Typography layout parameter details
-                  style: const TextStyle(
+                  style: TextStyle(
                     // Small font size mapping subhead layouts
                     fontSize: AppSpacing.font_size_label,
                     // Subdued color representing text descriptions
-                    color: AppColors.text_light_secondary,
+                    color: is_dark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.text_light_secondary,
                   ),
                 ),
                 // Spacer vertical height offset box
@@ -1365,11 +1215,13 @@ class _DoctorCard extends StatelessWidget {
                       width: AppSpacing.dummy_search_bar_spacing,
                     ),
                     // Work bag experience icon representation widget
-                    const Icon(
+                    Icon(
                       // Work bag icon token
                       Icons.work_outline_rounded,
                       // Icon color matching subtext descriptions
-                      color: AppColors.text_light_secondary,
+                      color: is_dark
+                          ? AppColors.darkTextSecondary
+                          : AppColors.text_light_secondary,
                       // Icon display size constraint
                       size: AppSpacing.dummy_doctor_card_work_icon_size,
                     ),
@@ -1383,11 +1235,13 @@ class _DoctorCard extends StatelessWidget {
                       // Experience string value representation
                       experience,
                       // Typography configurations style options
-                      style: const TextStyle(
+                      style: TextStyle(
                         // Extra small font size
                         fontSize: AppSpacing.dummy_font_size_rating,
                         // Subdued color representing text descriptions
-                        color: AppColors.text_light_secondary,
+                        color: is_dark
+                            ? AppColors.darkTextSecondary
+                            : AppColors.text_light_secondary,
                       ),
                     ),
                   ],

@@ -21,4 +21,5 @@ class Routes {
   static const String doctor_profile = '/doctor-profile';
   static const String choose_slots = '/choose-slots';
   static const String appointments = '/appointments';
+  static const String ask_ai = '/ask-ai';
 }

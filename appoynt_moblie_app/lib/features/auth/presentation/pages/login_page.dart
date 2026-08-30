@@ -2,7 +2,7 @@
  * File Name: login_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 28/05/2026
- * Version Information: V1.0.0
+ * Version Information: V1.1.0
  * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart,
  *   package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart,
  *   package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart,
@@ -10,7 +10,7 @@
  *   package:appoynt_mobile_app/features/auth/presentation/widgets/smart_password_field.dart,
  *   package:flutter_bloc/flutter_bloc.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: Renders the user login gateway presentation page under BLoC configurations.
  */
 
@@ -22,6 +22,8 @@ import 'package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart';
 import 'package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart';
 // Importing dependency injection service locator setup representation
 import 'package:appoynt_mobile_app/core/di/service_locator.dart';
+// Importing centralized digits converter helper
+import 'package:appoynt_mobile_app/core/utils/digit_converter_helper.dart';
 // Importing customized identifier input component field widget
 import 'package:appoynt_mobile_app/features/auth/presentation/widgets/smart_identifier_field.dart';
 // Importing password obfuscation selector input field widget
@@ -92,6 +94,14 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     // Invoke standard base class initialization configurations
     super.initState();
+    // Clear any leftover auth error from previous screens
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        get_it<AuthCubit>().reset();
+      } else {
+        // No action needed
+      }
+    });
     // Register text listener mapping input type changes dynamically
     _identifier_ctrl.addListener(_detect_input_type);
     // Register password listener to refresh submit button state in real-time
@@ -106,7 +116,8 @@ class _LoginPageState extends State<LoginPage> {
       final PackageInfo package_info = await PackageInfo.fromPlatform();
       if (mounted) {
         setState(() {
-          _version_text = 'v${package_info.version} (${package_info.buildNumber})';
+          _version_text =
+              'v${package_info.version} (${package_info.buildNumber})';
         });
       } else {
         // No action needed
@@ -276,27 +287,8 @@ class _LoginPageState extends State<LoginPage> {
     }
     // Check phone specific structure rules if detected using Yoda style check
     else if (_InputType.phone == _detected_type) {
-      // Convert Arabic numerals to English digits if any exist
-      String clean_digits = input_value;
-      // Map of Arabic-Indic to standard English digits
-      final Map<String, String> translation_map = {
-        '٠': '0',
-        '١': '1',
-        '٢': '2',
-        '٣': '3',
-        '٤': '4',
-        '٥': '5',
-        '٦': '6',
-        '٧': '7',
-        '٨': '8',
-        '٩': '9'
-      };
-      // Translate each character in map
-      translation_map.forEach((arabic, english) {
-        clean_digits = clean_digits.replaceAll(arabic, english);
-      });
-      // Strip space dividers and standard phone formatting marks
-      clean_digits = clean_digits.replaceAll(RegExp(r'[^\d]'), '');
+      // Convert Arabic numerals to English digits and strip formatting marks
+      String clean_digits = input_value.toEnglishDigits().replaceAll(RegExp(r'[^\d]'), '');
       // Verify phone digit count length matches exactly 11 digits using Yoda style check
       if (11 != clean_digits.length) {
         // Return phone count validation warning message
@@ -346,10 +338,10 @@ class _LoginPageState extends State<LoginPage> {
       // Empty action block to satisfy compiler
     }
 
-    // Dispatch login credentials validation event to auth state manager cubit
+    // Dispatch login credentials validation event to auth state manager cubit with normalized English digits
     submission_context.read<AuthCubit>().login(
           // Pass clean text user identifier
-          _identifier_ctrl.text.trim(),
+          _identifier_ctrl.text.trim().toEnglishDigits(),
           // Pass plain user password
           _password_ctrl.text,
         );
@@ -446,6 +438,8 @@ class _LoginPageState extends State<LoginPage> {
   @override
   // Clean up controller logic parameters to prevent memory leaks
   void dispose() {
+    // Reset any auth error on leave
+    get_it<AuthCubit>().reset();
     // Remove input text listener tracking type detections
     _identifier_ctrl.removeListener(_detect_input_type);
     // Remove password input listener
@@ -479,9 +473,13 @@ class _LoginPageState extends State<LoginPage> {
             // Trigger navigation callback on success
             widget.on_login_success();
           } else if (state is AuthError) {
-            // Show error SnackBar
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
+            // Show floating error SnackBar anchored at bottom
+            CustomSnackBar.error(
+              context,
+              AppLocalizations.get_localized_error(
+                context,
+                state.message,
+              ),
             );
           } else {
             // Empty action block to satisfy compiler
@@ -506,295 +504,270 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       // Place page column layout
                       child: Column(
-                  // Align column elements starting from horizontal edge
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  // Contain visual children list
-                  children: [
-                    // Section positioning language toggle dropdown
-                    Align(
-                      // Toggle layout alignments dynamically depending on language code
-                      // direction using Yoda style check
-                      alignment: is_arabic
-                          ? Alignment.centerLeft
-                          : Alignment.centerRight,
-                      // Language toggler button capsule widget
-                      child: GlobalLanguageButton(
-                        // Pass language direction flag
-                        is_arabic: is_arabic,
-                        // Pass selection toggle callback
-                        on_tap: widget.on_toggle_language,
-                        // Keep standard icon color mapping rules
-                        light: false,
-                      ),
-                    ),
-
-                    // Centered logo layout container
-                    Center(
-                      // Render brand logo design image asset
-                      child: Image.asset(
-                        // Load image path registry constant
-                        AppAssets.appoynt_without_back,
-                        // Set layout height using spacing constants
-                        height: AppSpacing.size_logo_login,
-                        // Error fallback rendering verification icon
-                        errorBuilder: (context, error, stackTrace) {
-                          // Return fallback visual icon
-                          return const Icon(
-                            // Verification check icon
-                            Icons.check_circle_rounded,
-                            // Set color to primary brand
-                            color: AppColors.primary_color,
-                            // Set layout dimensions size
-                            size: 140.0,
-                          );
-                        },
-                      ),
-                    ),
-
-                    // Space before header texts using spacing constants
-                    const SizedBox(height: AppSpacing.space_m),
-
-                    // Welcoming header title and subtitle block wrapped in Transform
-                    // to offset image transparent spacing
-                    Transform.translate(
-                      // Shift layout up by 20 pixels
-                      offset: const Offset(0.0, -20.0),
-                      // Target Center child containing titles
-                      child: Center(
-                        // Column layout structuring titles vertically
-                        child: Column(
-                          // children list
-                          children: [
-                            // Text widget displaying Welcoming title
-                            Text(
-                              // Localized greeting string
-                              s.welcome_back,
-                              // Align text center
-                              textAlign: TextAlign.center,
-                              // Pull login title styling
-                              style: AppTextStyles.get_login_title(context, is_arabic),
+                        // Align column elements starting from horizontal edge
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        // Contain visual children list
+                        children: [
+                          // Section positioning language toggle dropdown
+                          Align(
+                            // Toggle layout alignments dynamically depending on language code
+                            // direction using Yoda style check
+                            alignment: is_arabic
+                                ? Alignment.centerLeft
+                                : Alignment.centerRight,
+                            // Language toggler button capsule widget
+                            child: GlobalLanguageButton(
+                              // Pass language direction flag
+                              is_arabic: is_arabic,
+                              // Pass selection toggle callback
+                              on_tap: widget.on_toggle_language,
+                              // Keep standard icon color mapping rules
+                              light: false,
                             ),
-                            // Tight spacing divider using spacing constants
-                            const SizedBox(height: AppSpacing.space_s),
-                            // Text widget displaying welcoming description
-                            Text(
-                              // Localized help subtitle string
-                              s.login_subtitle,
-                              // Align text center
-                              textAlign: TextAlign.center,
-                              // Pull login subtitle styling
-                              style:
-                                  AppTextStyles.get_login_subtitle(context, is_arabic),
+                          ),
+
+                          // Centered logo layout container
+                          Center(
+                            // Render brand logo design image asset
+                            child: Image.asset(
+                              // Load image path registry constant
+                              AppAssets.appoynt_without_back,
+                              // Set layout height using spacing constants
+                              height: AppSpacing.size_logo_login,
+                              // Error fallback rendering verification icon
+                              errorBuilder: (context, error, stackTrace) {
+                                // Return fallback visual icon
+                                return const Icon(
+                                  // Verification check icon
+                                  Icons.check_circle_rounded,
+                                  // Set color to primary brand
+                                  color: AppColors.primary_color,
+                                  // Set layout dimensions size
+                                  size: 140.0,
+                                );
+                              },
                             ),
-                            // Spacing/Container block for validation error feedback message (FR-15 / Logic Log)
-                            const SizedBox(height: AppSpacing.space_s),
-                            // Fixed-height container to prevent layout shifting
-                            SizedBox(
-                              // Fixed height derived from spacing tokens to satisfy stable UI constraint
-                              height: AppSpacing.error_container_height,
-                              // Draw error feedback text inside center coordinates
-                              child: Center(
-                                // Render error message if state is AuthError (Yoda style check)
-                                child: Text(
-                                  // Bind message or empty string based on state type
-                                  true == (state is AuthError)
-                                      ? AppLocalizations.get_localized_error(context, (state as AuthError).message)
-                                      : '',
-                                  // Center align paragraph
-                                  textAlign: TextAlign.center,
-                                  // Apply styling configurations
-                                  style: const TextStyle(
-                                    // Set brand warning color
-                                    color: AppColors.error,
-                                    // Scale size relative to labels
-                                    fontSize: AppSpacing.font_size_label,
-                                    // Emphasize text weight
-                                    fontWeight: FontWeight.bold,
+                          ),
+
+                          // Space before header texts using spacing constants
+                          const SizedBox(height: AppSpacing.space_m),
+
+                          // Welcoming header title and subtitle block wrapped in Transform
+                          // to offset image transparent spacing
+                          Transform.translate(
+                            // Shift layout up by 20 pixels
+                            offset: const Offset(0.0, -20.0),
+                            // Target Center child containing titles
+                            child: Center(
+                              // Column layout structuring titles vertically
+                              child: Column(
+                                // children list
+                                children: [
+                                  // Text widget displaying Welcoming title
+                                  Text(
+                                    // Localized greeting string
+                                    s.welcome_back,
+                                    // Align text center
+                                    textAlign: TextAlign.center,
+                                    // Pull login title styling
+                                    style: AppTextStyles.get_login_title(
+                                        context, is_arabic),
                                   ),
-                                ),
+                                  // Tight spacing divider using spacing constants
+                                  const SizedBox(height: AppSpacing.space_s),
+                                  // Text widget displaying welcoming description
+                                  Text(
+                                    // Localized help subtitle string
+                                    s.login_subtitle,
+                                    // Align text center
+                                    textAlign: TextAlign.center,
+                                    // Pull login subtitle styling
+                                    style: AppTextStyles.get_login_subtitle(
+                                        context, is_arabic),
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
+                          ),
 
-                    // Space before input fields using spacing constants
-                    const SizedBox(height: AppSpacing.space_l),
+                          // Space before input fields using spacing constants
+                          const SizedBox(height: AppSpacing.space_l),
 
-                    // Form container wrapped in Transform to offset logo transparent spacing
-                    Transform.translate(
-                      // Shift form layout up by 20 pixels to match welcoming titles
-                      offset: const Offset(0.0, -20.0),
-                      // child Form container wrapping fields validation
-                      child: Form(
-                        // Bind global identification key
-                        key: _form_key,
-                        // Toggle validation checks triggers dynamically based on
-                        // submission attempts using Yoda style check
-                        autovalidateMode: true == _form_submitted
-                            // Trigger validation checks immediately on text changes
-                            ? AutovalidateMode.onUserInteraction
-                            // Disable checks during layout setup
-                            : AutovalidateMode.disabled,
-                        // Column layout structuring credentials fields
-                        child: Column(
-                          // Align column elements starting from horizontal edge
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          // children list
-                          children: [
-                            // Dynamic Identifier input field (Email or Phone text field)
-                            SmartIdentifierField(
-                              // Bind text controller
-                              controller: _identifier_ctrl,
-                              // Prefix icon is removed from login screen
-                              prefix_icon: null,
-                              // Resolve localized label
-                              label: _field_label(s),
-                              // Resolve localized hint
-                              hint: _field_hint(s),
-                              // Bind keyboard layout type
-                              keyboard_type: _keyboard_type,
-                              // Bind validator rule checking functions
-                              validator: (val) {
-                                // Execute validator method
-                                return _validate_identifier(val, s);
-                              },
-                            ),
-
-                            // Space divider separating inputs using spacing constants
-                            const SizedBox(height: AppSpacing.space_xl),
-
-                            // Password field widget wrapping secure entries
-                            SmartPasswordField(
-                              // Bind password controller
-                              controller: _password_ctrl,
-                              // Localized label string
-                              label: s.password,
-                              // Inline validator check
-                              validator: (val) {
-                                // Verify if password input is null or empty using Yoda style check
-                                if (null == val || val.isEmpty) {
-                                  // Return requirement warning text
-                                  return s.field_required;
-                                } else {
-                                  // Empty case matches clean validations
-                                  return null;
-                                }
-                              },
-                            ),
-
-                            // Tight vertical spacing divider using spacing constants
-                            const SizedBox(height: AppSpacing.space_m),
-
-                            // Forgot password anchor text link
-                            Align(
-                              // Align right for English and left for Arabic using Yoda style check
-                              alignment: is_arabic
-                                  ? Alignment.centerLeft
-                                  : Alignment.centerRight,
-                              // TextButton trigger
-                              child: TextButton(
-                                // Bind forgot password callback
-                                onPressed: widget.on_forgot_password,
-                                // Button style settings removing internal pad offsets
-                                style: TextButton.styleFrom(
-                                  // Reset internal margins
-                                  padding: EdgeInsets.zero,
-                                  // Reset layout limits
-                                  minimumSize: Size.zero,
-                                  // Standardize tap targets
-                                  tapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
-                                ),
-                                // Anchor text widget
-                                child: Text(
-                                  // Localized forgot password link string
-                                  s.forgot_password,
-                                  // Custom link styling
-                                  style: const TextStyle(
-                                    // Brand color mapping
-                                    color: AppColors.primary_color,
-                                    // Set font size using spacing constants
-                                    fontSize: AppSpacing.font_size_forgot_link,
-                                    // Emphasize link weight
-                                    fontWeight: FontWeight.bold,
+                          // Form container wrapped in Transform to offset logo transparent spacing
+                          Transform.translate(
+                            // Shift form layout up by 20 pixels to match welcoming titles
+                            offset: const Offset(0.0, -20.0),
+                            // child Form container wrapping fields validation
+                            child: Form(
+                              // Bind global identification key
+                              key: _form_key,
+                              // Toggle validation checks triggers dynamically based on
+                              // submission attempts using Yoda style check
+                              autovalidateMode: true == _form_submitted
+                                  // Trigger validation checks immediately on text changes
+                                  ? AutovalidateMode.onUserInteraction
+                                  // Disable checks during layout setup
+                                  : AutovalidateMode.disabled,
+                              // Column layout structuring credentials fields
+                              child: Column(
+                                // Align column elements starting from horizontal edge
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                // children list
+                                children: [
+                                  // Dynamic Identifier input field (Email or Phone text field)
+                                  SmartIdentifierField(
+                                    // Bind text controller
+                                    controller: _identifier_ctrl,
+                                    // Prefix icon is removed from login screen
+                                    prefix_icon: null,
+                                    // Resolve localized label
+                                    label: _field_label(s),
+                                    // Resolve localized hint
+                                    hint: _field_hint(s),
+                                    // Bind keyboard layout type
+                                    keyboard_type: _keyboard_type,
+                                    // Bind validator rule checking functions
+                                    validator: (val) {
+                                      // Execute validator method
+                                      return _validate_identifier(val, s);
+                                    },
                                   ),
-                                ),
-                              ),
-                            ),
 
-                            // Margin space before main action button using spacing constants
-                            const SizedBox(height: AppSpacing.space_l),
+                                  // Space divider separating inputs using spacing constants
+                                  const SizedBox(height: AppSpacing.space_xl),
 
-                            // Submit login auth action button
-                            AuthButton(
-                              // Localized action string
-                              label: s.login,
-                              // Enable only when all form validations are met (BUG-008)
-                              is_enabled: _is_form_valid,
-                              // Submission execution gesture callback
-                              on_pressed: () {
-                                // Fire submit logic
-                                _submit(context);
-                              },
-                              // Set spinner active flag during execution loading state
-                              is_loading: state is AuthLoading,
-                            ),
+                                  // Password field widget wrapping secure entries
+                                  SmartPasswordField(
+                                    // Bind password controller
+                                    controller: _password_ctrl,
+                                    // Localized label string
+                                    label: s.password,
+                                    // Inline validator check
+                                    validator: (val) {
+                                      // Verify if password input is null or empty using Yoda style check
+                                      if (null == val || val.isEmpty) {
+                                        // Return requirement warning text
+                                        return s.field_required;
+                                      } else {
+                                        // Empty case matches clean validations
+                                        return null;
+                                      }
+                                    },
+                                  ),
 
-                            // Space before guest sign up prompt using spacing constants
-                            const SizedBox(height: AppSpacing.space_l),
+                                  // Tight vertical spacing divider using spacing constants
+                                  const SizedBox(height: AppSpacing.space_m),
 
-                            // Redirect navigation link prompting new users to register
-                            Center(
-                              // RichText wrapper mixing styling properties
-                              child: RichText(
-                                // Mix children span nodes
-                                text: TextSpan(
-                                  // Localized warning text prefix
-                                  text: s.no_account,
-                                  // Pull body typography text styles
-                                  style:
-                                      AppTextStyles.get_body_medium(context, is_arabic),
-                                  // children array
-                                  children: [
-                                    // Inline TextSpan nesting sign up link with recognizer to
-                                    // prevent alignment shift
-                                    TextSpan(
-                                      // Prefix leading space and localized registration label
-                                      text: ' ${s.sign_up}',
-                                      // Bind tap event callback
-                                      recognizer: TapGestureRecognizer()
-                                        ..onTap = widget.on_go_to_register,
-                                      // Custom links typography styling
-                                      style: TextStyle(
-                                        // Apply Cairo or Inter fonts correctly
-                                        fontFamily:
-                                            AppFonts.by_locale(is_arabic),
-                                        // Set brand color
-                                        color: AppColors.primary_color,
-                                        // Set size using spacing constants
-                                        fontSize:
-                                            AppSpacing.font_size_forgot_link,
-                                        // Emphasize weight helper
-                                        fontWeight: FontWeight.bold,
+                                  // Forgot password anchor text link
+                                  Align(
+                                    // Align right for English and left for Arabic using Yoda style check
+                                    alignment: is_arabic
+                                        ? Alignment.centerLeft
+                                        : Alignment.centerRight,
+                                    // TextButton trigger
+                                    child: TextButton(
+                                      // Bind forgot password callback
+                                      onPressed: widget.on_forgot_password,
+                                      // Button style settings removing internal pad offsets
+                                      style: TextButton.styleFrom(
+                                        // Reset internal margins
+                                        padding: EdgeInsets.zero,
+                                        // Reset layout limits
+                                        minimumSize: Size.zero,
+                                        // Standardize tap targets
+                                        tapTargetSize:
+                                            MaterialTapTargetSize.shrinkWrap,
+                                      ),
+                                      // Anchor text widget
+                                      child: Text(
+                                        // Localized forgot password link string
+                                        s.forgot_password,
+                                        // Custom link styling
+                                        style: const TextStyle(
+                                          // Brand color mapping
+                                          color: AppColors.primary_color,
+                                          // Set font size using spacing constants
+                                          fontSize:
+                                              AppSpacing.font_size_forgot_link,
+                                          // Emphasize link weight
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+
+                                  // Margin space before main action button using spacing constants
+                                  const SizedBox(height: AppSpacing.space_l),
+
+                                  // Submit login auth action button
+                                  AuthButton(
+                                    // Localized action string
+                                    label: s.login,
+                                    // Enable only when all form validations are met (BUG-008)
+                                    is_enabled: _is_form_valid,
+                                    // Submission execution gesture callback
+                                    on_pressed: () {
+                                      // Fire submit logic
+                                      _submit(context);
+                                    },
+                                    // Set spinner active flag during execution loading state
+                                    is_loading: state is AuthLoading,
+                                  ),
+
+                                  // Space before guest sign up prompt using spacing constants
+                                  const SizedBox(height: AppSpacing.space_l),
+
+                                  // Redirect navigation link prompting new users to register
+                                  Center(
+                                    // RichText wrapper mixing styling properties
+                                    child: RichText(
+                                      // Mix children span nodes
+                                      text: TextSpan(
+                                        // Localized warning text prefix
+                                        text: s.no_account,
+                                        // Pull body typography text styles
+                                        style: AppTextStyles.get_body_medium(
+                                            context, is_arabic),
+                                        // children array
+                                        children: [
+                                          // Inline TextSpan nesting sign up link with recognizer to
+                                          // prevent alignment shift
+                                          TextSpan(
+                                            // Prefix leading space and localized registration label
+                                            text: ' ${s.sign_up}',
+                                            // Bind tap event callback
+                                            recognizer: TapGestureRecognizer()
+                                              ..onTap =
+                                                  widget.on_go_to_register,
+                                            // Custom links typography styling
+                                            style: TextStyle(
+                                              // Apply Cairo or Inter fonts correctly
+                                              fontFamily:
+                                                  AppFonts.by_locale(is_arabic),
+                                              // Set brand color
+                                              color: AppColors.primary_color,
+                                              // Set size using spacing constants
+                                              fontSize: AppSpacing
+                                                  .font_size_forgot_link,
+                                              // Emphasize weight helper
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+
+                                  // Final bottom layout safety margins using spacing constants
+                                  const SizedBox(height: AppSpacing.space_l),
+                                ],
                               ),
                             ),
-
-                            // Final bottom layout safety margins using spacing constants
-                            const SizedBox(height: AppSpacing.space_l),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ),
+                  ),
                   if (_version_text.isNotEmpty)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 12.0, top: 4.0),
@@ -803,7 +776,9 @@ class _LoginPageState extends State<LoginPage> {
                           'Appoynt $_version_text',
                           style: TextStyle(
                             fontSize: 12.0,
-                            color: is_dark ? AppColors.text_dark_secondary : AppColors.text_light_secondary,
+                            color: is_dark
+                                ? AppColors.text_dark_secondary
+                                : AppColors.text_light_secondary,
                             fontWeight: FontWeight.w400,
                           ),
                           textAlign: TextAlign.center,

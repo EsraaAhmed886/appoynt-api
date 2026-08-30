@@ -1,3 +1,4 @@
+import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 /*
  * File Name: appointment_status_badge.dart
  * Author: Kholoud Khaled
@@ -28,39 +29,39 @@ class AppointmentStatusBadge extends StatelessWidget {
 
     switch (status) {
       case AppointmentStatus.confirmed:
-        bg = const Color(0xFFECFDF5);
-        fg = const Color(0xFF059669);
-        border = const Color(0xFFA7F3D0);
+        bg = AppColors.successLight;
+        fg = AppColors.emerald600;
+        border = AppColors.emerald200;
         textKey = 'status_confirmed';
         break;
       case AppointmentStatus.upcoming:
-        bg = const Color(0xFFF0F9FF);
-        fg = const Color(0xFF0284C7);
-        border = const Color(0xFFBAE6FD);
+        bg = AppColors.sky50;
+        fg = AppColors.sky600;
+        border = AppColors.sky200;
         textKey = 'status_upcoming';
         break;
       case AppointmentStatus.completed:
-        bg = const Color(0xFFF1F5F9);
-        fg = const Color(0xFF475569);
-        border = const Color(0xFFCBD5E1);
+        bg = AppColors.slate100;
+        fg = AppColors.slate600;
+        border = AppColors.slate300;
         textKey = 'status_completed';
         break;
       case AppointmentStatus.cancelled:
-        bg = const Color(0xFFFEF2F2);
-        fg = const Color(0xFFDC2626);
-        border = const Color(0xFFFECACA);
+        bg = AppColors.errorLight;
+        fg = AppColors.red600;
+        border = AppColors.red200;
         textKey = 'status_cancelled';
         break;
       case AppointmentStatus.missed:
-        bg = const Color(0xFFFFFBEB);
-        fg = const Color(0xFFD97706);
-        border = const Color(0xFFFDE68A);
+        bg = AppColors.warningLight;
+        fg = AppColors.amber600;
+        border = AppColors.amber200;
         textKey = 'status_missed';
         break;
       default:
-        bg = const Color(0xFFF0F9FF);
-        fg = const Color(0xFF0284C7);
-        border = const Color(0xFFBAE6FD);
+        bg = AppColors.sky50;
+        fg = AppColors.sky600;
+        border = AppColors.sky200;
         textKey = 'status_upcoming';
         break;
     }

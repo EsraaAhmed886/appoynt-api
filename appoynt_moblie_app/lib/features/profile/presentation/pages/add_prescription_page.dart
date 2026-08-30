@@ -2,12 +2,12 @@
  * File Name: add_prescription_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 22/07/2026
- * Version Information: V2.0.0
+ * Version Information: V2.1.0
  * Dependencies: package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/core/routing/route_export.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
  * File Description: Dedicated full-screen standalone form for adding a new
  * prescription entry. Dispatches the rich map payload directly to ProfileCubit
  * on save and pops back to the Prescription List screen.
@@ -255,7 +255,7 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
                       _build_section_card(
                         is_dark: is_dark,
                         // Section heading title (serves as the sole label)
-                        title: 'Medication Details',
+                        title: localizations.prescriptions_medication_details,
                         children: [
                           // Medication name and dosage strength text field
                           AuthTextField(
@@ -271,9 +271,9 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
                           // Dosage amount text field
                           AuthTextField(
                             // Static dosage label
-                            label: 'Dosage',
+                            label: localizations.prescriptions_dosage_label,
                             // Placeholder hint for dosage amount
-                            hint: 'e.g., 1 Tablet, 10ml',
+                            hint: localizations.prescriptions_dosage_hint,
                             // Bind dosage controller
                             controller: _dosage_controller,
                           ),
@@ -285,7 +285,7 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
                       _build_section_card(
                         is_dark: is_dark,
                         // Section heading title
-                        title: 'Schedule & Duration',
+                        title: localizations.prescriptions_schedule_duration,
                         children: [
                           // Frequency chip group label
                           Text(
@@ -469,7 +469,7 @@ class _AddPrescriptionPageState extends State<AddPrescriptionPage> {
                                     child: Text(
                                       // Show filename or placeholder
                                       _attachment_name ??
-                                          'Upload Rx Photo / Document (Optional)',
+                                          localizations.prescriptions_upload_rx_optional,
                                       style: TextStyle(
                                         // Body font size
                                         fontSize: _LocalDimensions.font_size_medium,

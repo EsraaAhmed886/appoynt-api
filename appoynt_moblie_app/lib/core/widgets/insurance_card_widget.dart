@@ -53,8 +53,8 @@ class InsuranceCardWidget extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Color(0xFF0F2042), // Premium Dark Navy
-                Color(0xFF0D5E6F), // Deep Teal
+                AppColors.navy_dark, // Premium Dark Navy
+                AppColors.teal_deep, // Deep Teal
               ],
             ),
             // 16px corner radius
@@ -105,7 +105,7 @@ class InsuranceCardWidget extends StatelessWidget {
                           ),
                           child: const Icon(
                             Icons.verified_user_rounded,
-                            color: Color(0xFFFFD700),
+                            color: AppColors.gold,
                             size: 16.0,
                           ),
                         ),
@@ -133,11 +133,11 @@ class InsuranceCardWidget extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Text(
-                                'POLICY NUMBER',
+                              Text(
+                                AppLocalizations.of(context).policy_number_label,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: AppColors.white60,
                                   fontSize: 10.0,
                                   fontWeight: FontWeight.bold,
@@ -164,11 +164,11 @@ class InsuranceCardWidget extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Text(
-                                'EXPIRY DATE',
+                              Text(
+                                AppLocalizations.of(context).expiry_date_label,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: AppColors.white60,
                                   fontSize: 10.0,
                                   fontWeight: FontWeight.bold,
@@ -206,7 +206,7 @@ class InsuranceCardWidget extends StatelessWidget {
           color: is_dark ? AppColors.surface_dark : AppColors.white,
           borderRadius: BorderRadius.circular(16.0),
           border: Border.all(
-            color: is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
+            color: is_dark ? AppColors.border_dark : AppColors.slate200,
             width: AppSpacing.border_width_thin,
           ),
           boxShadow: [
@@ -277,7 +277,7 @@ class InsuranceCardWidget extends StatelessWidget {
                           mainAxisSize: MainAxisSize.max,
                           children: [
                             Text(
-                              'Policy: ',
+                              AppLocalizations.of(context).policy_prefix,
                               style: TextStyle(
                                 fontSize: AppSpacing.font_size_caption,
                                 color: is_dark
@@ -361,7 +361,7 @@ class NoInsuranceCardWidget extends StatelessWidget {
           ),
         ],
         border: Border.all(
-          color: is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
+          color: is_dark ? AppColors.border_dark : AppColors.slate200,
           width: AppSpacing.border_width_thin,
         ),
       ),

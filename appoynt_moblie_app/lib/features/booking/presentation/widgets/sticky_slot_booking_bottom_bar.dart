@@ -2,11 +2,11 @@
  * File Name: sticky_slot_booking_bottom_bar.dart
  * Author: Kholoud Khaled
  * Date of Creation: 17/08/2026
- * Version Information: V2.0.0
+ * Version Information: V2.1.0
  * Dependencies: package:flutter/material.dart, app_colors.dart, app_spacing.dart,
- *   doctor_slot_entity.dart, clinic_location_entity.dart
+ *   doctor_slot_entity.dart, clinic_location_entity.dart, app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 23/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
  * File Description: Sticky bottom confirmation bar displaying formatted date & time summary,
  *   consultation fee, and Continue button guarded by active hold validation.
  */
@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 // Import design tokens, colors, and entities
 import 'package:appoynt_mobile_app/constants/app_spacing.dart';
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
+import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
 import 'package:appoynt_mobile_app/features/booking/domain/entities/clinic_location_entity.dart';
 import 'package:appoynt_mobile_app/features/booking/domain/entities/doctor_slot_entity.dart';
 
@@ -64,6 +65,7 @@ class StickySlotBookingBottomBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+    final AppLocalizations localizations = AppLocalizations.of(context);
 
     return Container(
       padding: EdgeInsets.fromLTRB(
@@ -114,18 +116,18 @@ class StickySlotBookingBottomBar extends StatelessWidget {
                   borderRadius: BorderRadius.circular(14.0),
                 ),
               ),
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Continue to Confirmation',
-                    style: TextStyle(
+                    localizations.continue_to_confirmation,
+                    style: const TextStyle(
                       fontSize: AppSpacing.font_size_text,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  SizedBox(width: AppSpacing.space_m),
-                  Icon(Icons.arrow_forward_rounded, size: 18.0),
+                  const SizedBox(width: AppSpacing.space_m),
+                  const Icon(Icons.arrow_forward_rounded, size: 18.0),
                 ],
               ),
             ),

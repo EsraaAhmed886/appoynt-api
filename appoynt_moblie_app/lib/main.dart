@@ -9,7 +9,7 @@
  *   package:appoynt_mobile_app/core/widgets/connectivity_wrapper.dart,
  *   package:appoynt_mobile_app/core/di/service_locator.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 28/08/2026]
  * File Description: Entry point of the Appoynt mobile application,
  *   configuring themes and initial splash route.
  */
@@ -24,6 +24,8 @@ import 'package:appoynt_mobile_app/core/widgets/connectivity_wrapper.dart';
 import 'package:appoynt_mobile_app/core/di/service_locator.dart';
 // Importing session manager for global navigator key and 401 logout flow
 import 'package:appoynt_mobile_app/core/services/session_manager.dart';
+// Importing flutter services for SystemChrome UI overlay configurations
+import 'package:flutter/services.dart';
 // Importing flutter bloc package for state management provider scopes
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -34,6 +36,18 @@ final ThemeModeNotifier theme_mode_notifier = ThemeModeNotifier();
 void main() async {
   // Ensure framework services and widget bindings are fully initialized before running async tasks
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Force modern edge-to-edge rendering with transparent status and navigation bars
+  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: AppColors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+      statusBarBrightness: Brightness.light,
+      systemNavigationBarColor: AppColors.transparent,
+      systemNavigationBarIconBrightness: Brightness.dark,
+    ),
+  );
 
   // Initialize the service locator dependencies container
   await setup_service_locator();

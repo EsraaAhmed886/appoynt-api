@@ -8,7 +8,7 @@
  *   package:appoynt_mobile_app/constants/app_spacing.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
  * File Description: A custom, reusable high-fidelity calendar date picker dialog
  *   matching the design specifications.
  */
@@ -104,19 +104,8 @@ class _AppDatePickerDialogState extends State<AppDatePickerDialog> {
     final int first_day_weekday =
         DateTime(_currentMonth.year, _currentMonth.month, 1).weekday;
 
-    // Months translation maps
-    final List<String> months_en = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
-    ];
-    final List<String> months_ar = [
-      'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
-      'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
-    ];
-    // Resolve month label text (Yoda style check)
-    final String month_text = true == localizations.is_arabic
-        ? months_ar[_currentMonth.month - 1]
-        : months_en[_currentMonth.month - 1];
+    // Resolve month label text using centralized localization
+    final String month_text = localizations.month_names[_currentMonth.month - 1];
 
     // Resolve year label text
     final String year_text = '${_currentMonth.year}';

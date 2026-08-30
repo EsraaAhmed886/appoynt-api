@@ -2,11 +2,11 @@
  * File Name: session_manager.dart
  * Author: Kholoud Khaled
  * Date of Creation: 10/08/2026
- * Version Information: V1.0.0
+ * Version Information: V2.0.0
  * Dependencies: package:flutter/material.dart, package:get_it/get_it.dart,
- *   token_storage.dart, auth_cubit.dart, routes.dart
+ *   token_storage.dart, auth_cubit.dart, routes.dart, error_handler.dart, app_colors.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 27/08/2026]
  * File Description: Singleton service that owns the global NavigatorKey and
  *   orchestrates the full HTTP 401 session-expiry flow: token purge, AuthCubit
  *   state reset, navigation to LoginPage, and user-facing SnackBar feedback.
@@ -20,10 +20,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 // Importing GetIt for service-locator access to AuthCubit singleton
 import 'package:get_it/get_it.dart';
+// Importing error handler for mapping error keys to human-readable strings
+import 'package:appoynt_mobile_app/core/error/error_handler.dart';
 // Importing secure token storage layer for purging tokens on session expiry
 import 'package:appoynt_mobile_app/core/storage/token_storage.dart';
 // Importing route name constants for navigating to login screen
 import 'package:appoynt_mobile_app/core/routing/routes.dart';
+// Importing custom snackbar for floating notifications
+import 'package:appoynt_mobile_app/core/utils/custom_snackbar.dart';
 // Importing AuthCubit to emit unauthenticated state on session expiry
 import 'package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart';
 
@@ -59,6 +63,10 @@ class SessionManager {
       // Mark expiry handling as active to block concurrent calls
       _is_handling_expiry = true;
     }
+
+    // Resolve human-readable error text to prevent raw key exposure
+    final String clean_message =
+        ErrorHandler.mapBackendErrorKey(localized_message);
 
     // STEP 1: Purge all locally stored authentication tokens immediately
     await TokenStorage.clear_access_token();
@@ -102,35 +110,15 @@ class SessionManager {
     }
 
     // STEP 4: Show a localized session expiry SnackBar to inform the user
-    final BuildContext? overlay_context =
-        navigator_key.currentContext;
+    final BuildContext? overlay_context = navigator_key.currentContext;
     // Guard against showing SnackBar when context is not mounted
     if (null != overlay_context) {
       // Ensure SnackBar is displayed after the navigation transition completes
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        // Retrieve the ScaffoldMessenger from the navigator overlay context
-        ScaffoldMessenger.of(overlay_context).showSnackBar(
-          // Configure SnackBar with session expiry message and styling
-          SnackBar(
-            // Display the localized session expiry message string
-            content: Text(localized_message),
-            // Auto-dismiss after 3 seconds for non-intrusive UX
-            duration: const Duration(seconds: 3),
-            // Style with error color to signal an important state change
-            backgroundColor: Colors.red.shade700,
-            // Action allowing the user to manually dismiss the message
-            action: SnackBarAction(
-              // Dismiss action label
-              label: 'OK',
-              // White label color for contrast on the red background
-              textColor: Colors.white,
-              // Callback to dismiss the SnackBar on tap
-              onPressed: () {
-                // Hide the SnackBar when the user taps the action button
-                ScaffoldMessenger.of(overlay_context).hideCurrentSnackBar();
-              },
-            ),
-          ),
+        CustomSnackBar.error(
+          overlay_context,
+          clean_message,
+          duration: const Duration(seconds: 3),
         );
       });
     } else {

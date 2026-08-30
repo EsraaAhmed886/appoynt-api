@@ -1,3 +1,4 @@
+import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 /*
  * File Name: notification_filter_chips.dart
  * Author: Kholoud Khaled
@@ -72,7 +73,7 @@ class NotificationFilterChips extends StatelessWidget {
               duration: const Duration(milliseconds: 200),
               curve: Curves.easeInOut,
               child: Material(
-                color: Colors.transparent,
+                color: AppColors.transparent,
                 child: InkWell(
                   onTap: () => on_select_filter(filter),
                   borderRadius: BorderRadius.circular(24.0),
@@ -80,19 +81,19 @@ class NotificationFilterChips extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 9.0),
                     decoration: BoxDecoration(
                       color: isSelected
-                          ? const Color(0xFF0284C7)
-                          : (isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9)),
+                          ? AppColors.sky600
+                          : (isDark ? AppColors.slate800 : AppColors.slate100),
                       borderRadius: BorderRadius.circular(24.0),
                       border: Border.all(
                         color: isSelected
-                            ? const Color(0xFF0284C7)
-                            : (isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
+                            ? AppColors.sky600
+                            : (isDark ? AppColors.slate700 : AppColors.slate200),
                         width: 1.0,
                       ),
                       boxShadow: isSelected
                           ? [
                               BoxShadow(
-                                color: const Color(0xFF0284C7).withValues(alpha: 0.25),
+                                color: AppColors.sky600.withValues(alpha: 0.25),
                                 blurRadius: 8.0,
                                 offset: const Offset(0, 3),
                               ),
@@ -108,8 +109,8 @@ class NotificationFilterChips extends StatelessWidget {
                             fontSize: 13.0,
                             fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
                             color: isSelected
-                                ? Colors.white
-                                : (isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B)),
+                                ? AppColors.white
+                                : (isDark ? AppColors.slate400 : AppColors.slate500),
                           ),
                         ),
                         if (showBadge) ...[
@@ -117,7 +118,7 @@ class NotificationFilterChips extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 1.5),
                             decoration: BoxDecoration(
-                              color: isSelected ? Colors.white : const Color(0xFF0284C7),
+                              color: isSelected ? AppColors.white : AppColors.sky600,
                               borderRadius: BorderRadius.circular(10.0),
                             ),
                             child: Text(
@@ -125,7 +126,7 @@ class NotificationFilterChips extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 10.0,
                                 fontWeight: FontWeight.bold,
-                                color: isSelected ? const Color(0xFF0284C7) : Colors.white,
+                                color: isSelected ? AppColors.sky600 : AppColors.white,
                               ),
                             ),
                           ),

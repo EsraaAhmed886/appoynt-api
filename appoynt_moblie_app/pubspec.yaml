@@ -5,7 +5,7 @@
 #  * Version Information: V1.0.0
 #  * Dependencies: None
 #  * Contributors: [Kholoud Khaled]
-#  * Last Modified Date: [Kholoud Khaled - 20/06/2026]
+#  * Last Modified Date: [Kholoud Khaled - 30/08/2026]
 #  * File Description: Configuration and dependencies for Appoynt Mobile App.
 #  */
 
@@ -37,6 +37,7 @@ dependencies:
 
   # Networking
   dio: ^5.5.0
+  http_parser: ^4.0.2
 
   # Local Storage
   flutter_secure_storage: ^9.2.2
@@ -105,6 +106,8 @@ flutter:
     - assets/icons/
     # Add path to the local assets/svgs directory
     - assets/svgs/
+    # Add path to the local assets/translations directory
+    - assets/translations/
 
 # Configuration for generating app launcher icons
 flutter_launcher_icons:

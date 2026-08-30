@@ -2,14 +2,18 @@
  * File Name: appointment_cancellation_dialog.dart
  * Author: Kholoud Khaled
  * Date of Creation: 22/08/2026
- * Version Information: v1.0.0
- * Dependencies: flutter/material.dart, ../../../../core/localization/appointments_strings.dart, ../../data/models/appointment_model.dart
+ * Version Information: V1.1.0
+ * Dependencies: flutter/material.dart,
+ *   package:appoynt_mobile_app/core/theme/colors/app_colors.dart,
+ *   package:appoynt_mobile_app/core/localization/appointments_strings.dart,
+ *   package:appoynt_mobile_app/features/appointments/data/models/appointment_model.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 26/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 27/08/2026]
  * File Description: Cancellation confirmation dialog calculating refund tiers, displaying cutoff warnings, and capturing optional cancellation reasons.
  */
 
 import 'package:flutter/material.dart';
+import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 import '../../../../core/localization/appointments_strings.dart';
 import '../../data/models/appointment_model.dart';
 
@@ -58,7 +62,7 @@ class _AppointmentCancellationDialogState extends State<AppointmentCancellationD
     final canCancel = widget.appointment.canCancel;
 
     return Dialog(
-      backgroundColor: isDark ? const Color(0xFF0F172A) : Colors.white,
+      backgroundColor: isDark ? AppColors.slate900 : AppColors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0)),
       insetPadding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Padding(
@@ -73,12 +77,12 @@ class _AppointmentCancellationDialogState extends State<AppointmentCancellationD
                 Container(
                   padding: const EdgeInsets.all(10.0),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFEF4444).withValues(alpha: 0.12),
+                    color: AppColors.error.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(14.0),
                   ),
                   child: const Icon(
                     Icons.cancel_outlined,
-                    color: Color(0xFFEF4444),
+                    color: AppColors.error,
                     size: 24.0,
                   ),
                 ),
@@ -89,7 +93,7 @@ class _AppointmentCancellationDialogState extends State<AppointmentCancellationD
                     style: TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
-                      color: isDark ? Colors.white : const Color(0xFF0F172A),
+                      color: isDark ? AppColors.white : AppColors.slate900,
                     ),
                   ),
                 ),
@@ -104,7 +108,7 @@ class _AppointmentCancellationDialogState extends State<AppointmentCancellationD
               style: TextStyle(
                 fontSize: 13.5,
                 height: 1.4,
-                color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF475569),
+                color: isDark ? AppColors.slate400 : AppColors.slate600,
               ),
             ),
             const SizedBox(height: 14.0),
@@ -123,9 +127,9 @@ class _AppointmentCancellationDialogState extends State<AppointmentCancellationD
                   child: OutlinedButton(
                     onPressed: () => Navigator.pop(context),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: isDark ? Colors.white70 : const Color(0xFF475569),
+                      foregroundColor: isDark ? AppColors.white70 : AppColors.slate600,
                       side: BorderSide(
-                        color: isDark ? const Color(0xFF334155) : const Color(0xFFCBD5E1),
+                        color: isDark ? AppColors.slate700 : AppColors.slate300,
                       ),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.0)),
                       padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -147,9 +151,9 @@ class _AppointmentCancellationDialogState extends State<AppointmentCancellationD
                           }
                         : null,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFEF4444),
-                      foregroundColor: Colors.white,
-                      disabledBackgroundColor: const Color(0xFFEF4444).withValues(alpha: 0.3),
+                      backgroundColor: AppColors.error,
+                      foregroundColor: AppColors.white,
+                      disabledBackgroundColor: AppColors.error.withValues(alpha: 0.3),
                       elevation: 0,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.0)),
                       padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -175,13 +179,13 @@ class _AppointmentCancellationDialogState extends State<AppointmentCancellationD
         padding: const EdgeInsets.all(12.0),
         decoration: BoxDecoration(
           color: refundTier == RefundEligibility.full
-              ? const Color(0xFFECFDF5)
-              : const Color(0xFFFFFBEB),
+              ? AppColors.successLight
+              : AppColors.warningLight,
           borderRadius: BorderRadius.circular(12.0),
           border: Border.all(
             color: refundTier == RefundEligibility.full
-                ? const Color(0xFFA7F3D0)
-                : const Color(0xFFFDE68A),
+                ? AppColors.emerald200
+                : AppColors.amber200,
           ),
         ),
         child: Row(
@@ -192,8 +196,8 @@ class _AppointmentCancellationDialogState extends State<AppointmentCancellationD
                   : Icons.info_outline_rounded,
               size: 18.0,
               color: refundTier == RefundEligibility.full
-                  ? const Color(0xFF059669)
-                  : const Color(0xFFD97706),
+                  ? AppColors.emerald600
+                  : AppColors.amber600,
             ),
             const SizedBox(width: 8.0),
             Expanded(
@@ -205,8 +209,8 @@ class _AppointmentCancellationDialogState extends State<AppointmentCancellationD
                   fontSize: 12.5,
                   fontWeight: FontWeight.w600,
                   color: refundTier == RefundEligibility.full
-                      ? const Color(0xFF065F46)
-                      : const Color(0xFF92400E),
+                      ? AppColors.emerald800
+                      : AppColors.amber800,
                 ),
               ),
             ),
@@ -217,13 +221,13 @@ class _AppointmentCancellationDialogState extends State<AppointmentCancellationD
       return Container(
         padding: const EdgeInsets.all(12.0),
         decoration: BoxDecoration(
-          color: const Color(0xFFFEF2F2),
+          color: AppColors.errorLight,
           borderRadius: BorderRadius.circular(12.0),
-          border: Border.all(color: const Color(0xFFFECACA)),
+          border: Border.all(color: AppColors.red200),
         ),
         child: Row(
           children: [
-            const Icon(Icons.error_outline_rounded, size: 18.0, color: Color(0xFFDC2626)),
+            const Icon(Icons.error_outline_rounded, size: 18.0, color: AppColors.red600),
             const SizedBox(width: 8.0),
             Expanded(
               child: Text(
@@ -231,7 +235,7 @@ class _AppointmentCancellationDialogState extends State<AppointmentCancellationD
                 style: const TextStyle(
                   fontSize: 12.0,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF991B1B),
+                  color: AppColors.red800,
                 ),
               ),
             ),
@@ -249,10 +253,10 @@ class _AppointmentCancellationDialogState extends State<AppointmentCancellationD
         children: [
           Container(
             decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
+              color: isDark ? AppColors.slate800 : AppColors.slate50,
               borderRadius: BorderRadius.circular(12.0),
               border: Border.all(
-                color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                color: isDark ? AppColors.slate700 : AppColors.slate200,
               ),
             ),
             child: TextField(
@@ -260,13 +264,13 @@ class _AppointmentCancellationDialogState extends State<AppointmentCancellationD
               maxLines: 2,
               style: TextStyle(
                 fontSize: 13.0,
-                color: isDark ? Colors.white : const Color(0xFF0F172A),
+                color: isDark ? AppColors.white : AppColors.slate900,
               ),
               decoration: InputDecoration(
                 hintText: AppointmentsStrings.of(context, 'cancel_reason_hint'),
                 hintStyle: TextStyle(
                   fontSize: 12.5,
-                  color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
+                  color: isDark ? AppColors.slate500 : AppColors.slate400,
                 ),
                 contentPadding: const EdgeInsets.all(12.0),
                 border: InputBorder.none,

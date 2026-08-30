@@ -2,15 +2,17 @@
  * File Name: app_localizations.dart
  * Author: Kholoud Khaled
  * Date of Creation: 20/06/2026
- * Version Information: V1.0.0
- * Dependencies: package:flutter/material.dart
+ * Version Information: V1.3.0
+ * Dependencies: package:flutter/material.dart, auth_strings.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
- * File Description: Defines the abstract contract for application-wide custom localizations.
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
+ * File Description: Defines the abstract contract for application-wide custom localizations and context.tr extension.
  */
 
 // Importing standard material package for BuildContext and Locale
 import 'package:flutter/material.dart';
+// Importing specialized authentication localization strings
+import 'package:appoynt_mobile_app/core/localization/auth_strings.dart';
 
 // Abstract class defining localization dictionary schema for the app
 abstract class AppLocalizations {
@@ -578,6 +580,12 @@ abstract class AppLocalizations {
   String get profile_personal_information;
   String get profile_personal_information_subtitle;
   String get profile_medical_history;
+  String get profile_medical_records_subtitle;
+  String get profileMedicalRecordsSubtitle;
+  String get profile_payment_wallet_subtitle;
+  String get profilePaymentWalletSubtitle;
+  String get profile_security_privacy_subtitle;
+  String get profileSecurityPrivacySubtitle;
   String get profile_account_settings;
   String get profile_height;
   String get profile_weight;
@@ -600,6 +608,13 @@ abstract class AppLocalizations {
   String get profile_phone_label;
   String get profile_birthdate_label;
   String get profile_national_id_label;
+  String get auto_detected_from_national_id;
+  String get governorate;
+  String get city;
+  String get select_governorate;
+  String get select_city;
+  String get select_gov_first;
+  String get loading_text;
   String get profile_national_id_hint;
   String get profile_error_national_id_empty;
   String get profile_error_national_id_invalid;
@@ -963,9 +978,47 @@ abstract class AppLocalizations {
   String get profile_opening_help_center;
   String get prescriptions_edit_title;
   String get prescriptions_update_btn;
+  String get prescriptions_medication_details;
+  String get prescriptions_dosage_label;
+  String get prescriptions_dosage_hint;
+  String get prescriptions_schedule_duration;
+  String get prescriptions_upload_rx_optional;
+  String get first_name_required;
+  String get last_name_required;
   String get login_phone_hint;
   String get date_picker_cancel;
   String get date_picker_confirm;
+  String get done;
+  String get unable_to_load_video_stream;
+  String get select_insurance_provider_hint;
+  String get add_new_card_title;
+  String get cardholder_name_label;
+  String get card_number_label;
+  String get cvv_label;
+  String get securely_save_card_btn;
+  String get no_known_medical_allergies;
+  String get save_allergy_profile;
+  String get remove_action;
+  String get family_profiles_count;
+  String get add_family_member_btn;
+  String get dial_action;
+  String get legal_and_policies_title;
+  String get edit_insurance_title;
+  String get delete_card;
+  String get delete_insurance_title;
+  String get delete_insurance_msg;
+  String get delete_action;
+  String get governorate_label;
+  String get loading_governorates;
+  String get select_governorate_hint;
+  String get city_label;
+  String get select_gov_first_hint;
+  String get select_city_hint;
+  String get blood_group_label;
+  String get select_blood_group_hint;
+  String get profile_photo_sheet_subtitle;
+  String get profile_photo_take_photo;
+  String get profile_photo_choose_photo;
   List<String> get weekdays;
 
   // New settings and help about page keys
@@ -986,6 +1039,12 @@ abstract class AppLocalizations {
   String get error_user_not_found;
   String get error_email_already_exists;
   String get error_auth_general;
+  String get auth_registration_email_already_registered;
+  String get auth_registration_phone_already_registered;
+  String get auth_registration_password_invalid_characters;
+  String get auth_registration_password_contains_user_info;
+  String get auth_otp_attempts_exceeded;
+  String get auth_forgot_password_generic_success;
 
   // Network and security error localized message getters
   String get error_no_internet;
@@ -1019,6 +1078,16 @@ abstract class AppLocalizations {
     // Look up localizations dictionary from widget tree context
     final AppLocalizations s = AppLocalizations.of(context);
     final String cleanMessage = message.trim();
+
+    // ── AuthLocalization Dictionary Direct Lookup ────────────────────────
+    final String currentLangCode = s.is_arabic ? 'ar' : 'en';
+    final String? dictionaryMapped =
+        AuthLocalization.localizedValues[currentLangCode]?[cleanMessage];
+    if (null != dictionaryMapped && dictionaryMapped.isNotEmpty) {
+      return dictionaryMapped;
+    } else {
+      // Continue checking localized getters and failure keys
+    }
 
     // ── Network & Security ────────────────────────────────────────────────
     if ('error_no_internet' == cleanMessage) {
@@ -1066,6 +1135,23 @@ abstract class AppLocalizations {
       return s.error_unknown;
     } else if ('error_cache' == cleanMessage) {
       return s.error_cache;
+    }
+
+    // ── Specific Authentication Error Mappings ────────────────────────────
+    else if ('auth.registration.email.already_registered' == cleanMessage) {
+      return s.auth_registration_email_already_registered;
+    } else if ('auth.registration.phone.already_registered' == cleanMessage) {
+      return s.auth_registration_phone_already_registered;
+    } else if ('auth.registration.password.invalid_characters' ==
+        cleanMessage) {
+      return s.auth_registration_password_invalid_characters;
+    } else if ('auth.registration.password.contains_user_info' ==
+        cleanMessage) {
+      return s.auth_registration_password_contains_user_info;
+    } else if ('auth.otp.attempts_exceeded' == cleanMessage) {
+      return s.auth_otp_attempts_exceeded;
+    } else if ('auth.forgot_password.generic_success' == cleanMessage) {
+      return s.auth_forgot_password_generic_success;
     }
 
     // ── Legacy Auth String Mappings ───────────────────────────────────────
@@ -1279,7 +1365,341 @@ abstract class AppLocalizations {
   String get reservation_expired;
   String get reservation_expired_msg;
   String get select_new_slot;
+
+  // Profile Photo Options Dialog getters
+  String get update_profile_photo;
+  String get updateProfilePhoto;
+  String get choose_from_gallery;
+  String get chooseFromGallery;
+  String get take_photo;
+  String get takePhoto;
+  String get delete_photo;
+  String get deletePhoto;
+  String get cancel;
+  String get profile_photo_delete_success;
+  String get profile_photo_delete_error;
+
+  // Global Extracted UI Localization Getters
+  String get loading;
+  String get ok;
+  String get dial;
+  String get legal_and_policies;
+  String get arabic_language;
+  String get english_language;
+  String get kg_unit;
+  String get cm_unit;
+  String get no_matching_results;
+  String get verification_error;
+  String get verification_session_lost;
+  String get go_back;
+  String get ask_ai_title;
+  String get ask_ai_coming_soon;
+  String get ask_ai_health_assistant;
+  String get ask_ai_desc;
+  String get ask_ai_symptom_consultation_title;
+  String get ask_ai_symptom_consultation_desc;
+  String get ask_ai_smart_booking_title;
+  String get ask_ai_smart_booking_desc;
+  String get ask_ai_med_reminders_title;
+  String get ask_ai_med_reminders_desc;
+  String get ask_ai_back_to_home;
+  String get reservation_expired_title;
+  String get reservation_expired_description;
+  String get select_new_slot_button;
+  String get failed_to_load_clinic_slots;
+  String get slot_reserved_successfully;
+  String get slot_reserved_for_you;
+  String get complete_booking_in;
+  String get days_label;
+  String get change_label;
+  String get map_label;
+  String get all_slots_booked_msg;
+  String get slot_status_booked;
+  String get loading_doctor_profile;
+  String get could_not_load_profile;
+  String get unable_to_load_video;
+  String get search_governorate_hint;
+  String get search_city_hint;
+  String get no_cities_available;
+  String get select_blood_type;
+  String get blood_type_label;
+  String get photo_source_dialog_title;
+  String get popular_options;
+  String get active_allergies_hint;
+  String get no_known_allergies_option;
+  String get remove_member_title;
+  String get remove_member_confirm;
+  String get family_profiles_header;
+  String get view_document;
+  String get delete_insurance_confirm;
+  String get upload_insurance_documents;
+  String get cardholder_name;
+  String get card_number;
+  String get expiry_date;
+  String get cvv;
+  String get securely_save_card;
+  String get policy_number_label;
+  String get expiry_date_label;
+  String get policy_prefix;
 }
 
 // Defining a short alias for clean and simple type references
 typedef AppStrings = AppLocalizations;
+
+// Extension on BuildContext to support context.tr() string lookup
+extension AppLocalizationsX on BuildContext {
+  String tr(String key) {
+    final AppLocalizations loc = AppLocalizations.of(this);
+    switch (key) {
+      case 'editProfile':
+      case 'edit_profile':
+        return loc.edit_profile_title;
+      case 'national_id':
+      case 'profile_national_id_label':
+        return loc.profile_national_id_label;
+      case 'auto_detected_from_national_id':
+        return loc.auto_detected_from_national_id;
+      case 'governorate':
+        return loc.governorate;
+      case 'city':
+        return loc.city;
+      case 'select_governorate':
+        return loc.select_governorate;
+      case 'select_city':
+        return loc.select_city;
+      case 'select_gov_first':
+        return loc.select_gov_first;
+      case 'loading':
+      case 'loading_text':
+        return loc.loading_text;
+      case 'gender':
+      case 'profile_gender_label':
+        return loc.profile_gender_label;
+      case 'male':
+      case 'profile_gender_male':
+        return loc.profile_gender_male;
+      case 'female':
+      case 'profile_gender_female':
+        return loc.profile_gender_female;
+      case 'updateProfilePhoto':
+      case 'update_profile_photo':
+        return loc.updateProfilePhoto;
+      case 'chooseFromGallery':
+      case 'choose_from_gallery':
+        return loc.chooseFromGallery;
+      case 'takePhoto':
+      case 'take_photo':
+        return loc.takePhoto;
+      case 'deletePhoto':
+      case 'delete_photo':
+        return loc.deletePhoto;
+      case 'cancel':
+        return loc.cancel;
+      case 'save':
+      case 'profile_save_button':
+        return loc.profile_save_button;
+      case 'profile_photo_delete_success':
+        return loc.profile_photo_delete_success;
+      case 'profile_photo_delete_error':
+        return loc.profile_photo_delete_error;
+      case 'ok':
+        return loc.ok;
+      case 'dial':
+        return loc.dial;
+      case 'legal_and_policies':
+        return loc.legal_and_policies;
+      case 'arabic_language':
+        return loc.arabic_language;
+      case 'english_language':
+        return loc.english_language;
+      case 'kg_unit':
+        return loc.kg_unit;
+      case 'cm_unit':
+        return loc.cm_unit;
+      case 'no_matching_results':
+        return loc.no_matching_results;
+      case 'verification_error':
+        return loc.verification_error;
+      case 'verification_session_lost':
+        return loc.verification_session_lost;
+      case 'go_back':
+        return loc.go_back;
+      case 'ask_ai_title':
+        return loc.ask_ai_title;
+      case 'ask_ai_coming_soon':
+        return loc.ask_ai_coming_soon;
+      case 'ask_ai_health_assistant':
+        return loc.ask_ai_health_assistant;
+      case 'ask_ai_desc':
+        return loc.ask_ai_desc;
+      case 'ask_ai_symptom_consultation_title':
+        return loc.ask_ai_symptom_consultation_title;
+      case 'ask_ai_symptom_consultation_desc':
+        return loc.ask_ai_symptom_consultation_desc;
+      case 'ask_ai_smart_booking_title':
+        return loc.ask_ai_smart_booking_title;
+      case 'ask_ai_smart_booking_desc':
+        return loc.ask_ai_smart_booking_desc;
+      case 'ask_ai_med_reminders_title':
+        return loc.ask_ai_med_reminders_title;
+      case 'ask_ai_med_reminders_desc':
+        return loc.ask_ai_med_reminders_desc;
+      case 'ask_ai_back_to_home':
+        return loc.ask_ai_back_to_home;
+      case 'reservation_expired_title':
+        return loc.reservation_expired_title;
+      case 'reservation_expired_description':
+        return loc.reservation_expired_description;
+      case 'select_new_slot_button':
+        return loc.select_new_slot_button;
+      case 'failed_to_load_clinic_slots':
+        return loc.failed_to_load_clinic_slots;
+      case 'slot_reserved_successfully':
+        return loc.slot_reserved_successfully;
+      case 'slot_reserved_for_you':
+        return loc.slot_reserved_for_you;
+      case 'complete_booking_in':
+        return loc.complete_booking_in;
+      case 'days_label':
+        return loc.days_label;
+      case 'change_label':
+        return loc.change_label;
+      case 'map_label':
+        return loc.map_label;
+      case 'all_slots_booked_msg':
+        return loc.all_slots_booked_msg;
+      case 'slot_status_booked':
+        return loc.slot_status_booked;
+      case 'loading_doctor_profile':
+        return loc.loading_doctor_profile;
+      case 'could_not_load_profile':
+        return loc.could_not_load_profile;
+      case 'unable_to_load_video':
+        return loc.unable_to_load_video;
+      case 'search_governorate_hint':
+        return loc.search_governorate_hint;
+      case 'search_city_hint':
+        return loc.search_city_hint;
+      case 'no_cities_available':
+        return loc.no_cities_available;
+      case 'select_blood_type':
+        return loc.select_blood_type;
+      case 'blood_type_label':
+        return loc.blood_type_label;
+      case 'photo_source_dialog_title':
+        return loc.photo_source_dialog_title;
+      case 'popular_options':
+        return loc.popular_options;
+      case 'active_allergies_hint':
+        return loc.active_allergies_hint;
+      case 'no_known_allergies_option':
+        return loc.no_known_allergies_option;
+      case 'remove_member_title':
+        return loc.remove_member_title;
+      case 'remove_member_confirm':
+        return loc.remove_member_confirm;
+      case 'family_profiles_header':
+        return loc.family_profiles_header;
+      case 'view_document':
+        return loc.view_document;
+      case 'delete_insurance_confirm':
+        return loc.delete_insurance_confirm;
+      case 'upload_insurance_documents':
+        return loc.upload_insurance_documents;
+      case 'cardholder_name':
+        return loc.cardholder_name;
+      case 'card_number':
+        return loc.card_number;
+      case 'expiry_date':
+        return loc.expiry_date;
+      case 'cvv':
+        return loc.cvv;
+      case 'securely_save_card':
+        return loc.securely_save_card;
+      case 'policy_number_label':
+        return loc.policy_number_label;
+      case 'expiry_date_label':
+        return loc.expiry_date_label;
+      case 'policy_prefix':
+        return loc.policy_prefix;
+      case 'prescriptions_medication_details':
+        return loc.prescriptions_medication_details;
+      case 'prescriptions_dosage_label':
+        return loc.prescriptions_dosage_label;
+      case 'prescriptions_dosage_hint':
+        return loc.prescriptions_dosage_hint;
+      case 'prescriptions_schedule_duration':
+        return loc.prescriptions_schedule_duration;
+      case 'prescriptions_upload_rx_optional':
+        return loc.prescriptions_upload_rx_optional;
+      case 'first_name_required':
+        return loc.first_name_required;
+      case 'last_name_required':
+        return loc.last_name_required;
+      case 'add_new_card_title':
+        return loc.add_new_card_title;
+      case 'cardholder_name_label':
+        return loc.cardholder_name_label;
+      case 'card_number_label':
+        return loc.card_number_label;
+      case 'cvv_label':
+        return loc.cvv_label;
+      case 'securely_save_card_btn':
+        return loc.securely_save_card_btn;
+      case 'no_known_medical_allergies':
+        return loc.no_known_medical_allergies;
+      case 'save_allergy_profile':
+        return loc.save_allergy_profile;
+      case 'remove_action':
+        return loc.remove_action;
+      case 'family_profiles_count':
+        return loc.family_profiles_count;
+      case 'add_family_member_btn':
+        return loc.add_family_member_btn;
+      case 'dial_action':
+        return loc.dial_action;
+      case 'legal_and_policies_title':
+        return loc.legal_and_policies_title;
+      case 'edit_insurance_title':
+        return loc.edit_insurance_title;
+      case 'delete_card':
+        return loc.delete_card;
+      case 'delete_insurance_title':
+        return loc.delete_insurance_title;
+      case 'delete_insurance_msg':
+        return loc.delete_insurance_msg;
+      case 'delete_action':
+        return loc.delete_action;
+      case 'governorate_label':
+        return loc.governorate_label;
+      case 'loading_governorates':
+        return loc.loading_governorates;
+      case 'select_governorate_hint':
+        return loc.select_governorate_hint;
+      case 'city_label':
+        return loc.city_label;
+      case 'select_gov_first_hint':
+        return loc.select_gov_first_hint;
+      case 'select_city_hint':
+        return loc.select_city_hint;
+      case 'blood_group_label':
+        return loc.blood_group_label;
+      case 'select_blood_group_hint':
+        return loc.select_blood_group_hint;
+      case 'profile_photo_sheet_subtitle':
+        return loc.profile_photo_sheet_subtitle;
+      case 'profile_photo_take_photo':
+        return loc.profile_photo_take_photo;
+      case 'profile_photo_choose_photo':
+        return loc.profile_photo_choose_photo;
+      case 'done':
+        return loc.done;
+      case 'unable_to_load_video_stream':
+        return loc.unable_to_load_video_stream;
+      case 'select_insurance_provider_hint':
+        return loc.select_insurance_provider_hint;
+      default:
+        return key;
+    }
+  }
+}

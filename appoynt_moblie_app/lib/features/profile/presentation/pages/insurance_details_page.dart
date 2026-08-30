@@ -2,14 +2,14 @@
  * File Name: insurance_details_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/07/2026
- * Version Information: V1.0.0
+ * Version Information: V1.1.0
  * Dependencies: package:flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart,
  *   package:appoynt_mobile_app/features/profile/domain/entities/insurance_card.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
  * File Description: Defines the Insurance List screen displaying covered health policies.
  */
 
@@ -200,6 +200,7 @@ class _InsuranceDetailsPageState extends State<InsuranceDetailsPage> {
   // Helper method presenting bottom modal sheet with options when an insurance card is tapped
   void _show_card_options_sheet(BuildContext context, InsuranceCard card, int index) {
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+    final AppLocalizations localizations = AppLocalizations.of(context);
 
     showModalBottomSheet(
       context: context,
@@ -246,7 +247,7 @@ class _InsuranceDetailsPageState extends State<InsuranceDetailsPage> {
               const SizedBox(height: AppSpacing.space_l),
               ListTile(
                 leading: const Icon(Icons.file_present_rounded, color: AppColors.primary_color),
-                title: const Text('View Document'),
+                title: Text(localizations.view_document),
                 onTap: () {
                   Navigator.of(sheet_context).pop();
                   showDialog(
@@ -258,7 +259,7 @@ class _InsuranceDetailsPageState extends State<InsuranceDetailsPage> {
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.of(dialog_context).pop(),
-                            child: const Text('OK'),
+                            child: Text(localizations.ok),
                           ),
                         ],
                       );
@@ -268,7 +269,7 @@ class _InsuranceDetailsPageState extends State<InsuranceDetailsPage> {
               ),
               ListTile(
                 leading: const Icon(Icons.edit_rounded, color: AppColors.primary_color),
-                title: const Text('Edit Insurance'),
+                title: Text(localizations.edit_insurance_title),
                 onTap: () {
                   Navigator.of(sheet_context).pop();
                   Navigator.of(context).push(
@@ -286,26 +287,26 @@ class _InsuranceDetailsPageState extends State<InsuranceDetailsPage> {
               ),
               ListTile(
                 leading: const Icon(Icons.delete_outline_rounded, color: AppColors.error),
-                title: const Text('Delete Card', style: TextStyle(color: AppColors.error)),
+                title: Text(localizations.delete_card, style: const TextStyle(color: AppColors.error)),
                 onTap: () {
                   Navigator.of(sheet_context).pop();
                   showDialog(
                     context: context,
                     builder: (dialog_context) {
                       return AlertDialog(
-                        title: const Text('Delete Insurance'),
-                        content: const Text('Are you sure you want to remove this insurance card?'),
+                        title: Text(localizations.delete_insurance_title),
+                        content: Text(localizations.delete_insurance_msg),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.of(dialog_context).pop(),
-                            child: const Text('Cancel'),
+                            child: Text(localizations.cancel),
                           ),
                           TextButton(
                             onPressed: () {
                               context.read<ProfileCubit>().remove_insurance_card(index);
                               Navigator.of(dialog_context).pop();
                             },
-                            child: const Text('Delete', style: TextStyle(color: AppColors.error)),
+                            child: Text(localizations.delete_action, style: const TextStyle(color: AppColors.error)),
                           ),
                         ],
                       );

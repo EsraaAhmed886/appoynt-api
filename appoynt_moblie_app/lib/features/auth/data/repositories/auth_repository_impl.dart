@@ -2,15 +2,16 @@
  * File Name: auth_repository_impl.dart
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
- * Version Information: V1.0.0
+ * Version Information: V1.2.0
  * Dependencies: package:dartz/dartz.dart, package:dio/dio.dart, failures.dart,
- *   auth_repository.dart, user_entity.dart, auth_remote_datasource.dart
+ *   auth_repository.dart, user_entity.dart, auth_remote_datasource.dart, error_handler.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 22/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 27/08/2026]
  * File Description: Concrete implementation of the AuthRepository. It coordinates
  *   between remote data sources and maps results to domain entities or failures.
  */
 
+import 'package:appoynt_mobile_app/core/error/error_handler.dart'; // Centralized error handler
 import 'package:appoynt_mobile_app/core/error/failures.dart'; // Failure types
 import 'package:appoynt_mobile_app/features/auth/data/datasources/auth_remote_datasource.dart'; // Remote data source
 import 'package:appoynt_mobile_app/features/auth/domain/entities/user_entity.dart'; // Domain entity
@@ -32,19 +33,29 @@ class AuthRepositoryImpl implements AuthRepository {
 
   /// Utility parsing the dynamic API error payload from DioException.
   String _parse_error(DioException e) {
+    if (DioExceptionType.connectionTimeout == e.type ||
+        DioExceptionType.sendTimeout == e.type ||
+        DioExceptionType.receiveTimeout == e.type ||
+        DioExceptionType.connectionError == e.type) {
+      return ErrorHandler.handleDioError(e);
+    } else {
+      // Proceed to parse response data
+    }
     String rawError = 'An unexpected server error occurred.';
     try {
-      final data = e.response?.data;
+      final dynamic data = e.response?.data;
       if (data is List) {
-        final errors = data.map((item) {
+        final List<String> errors = data.map((item) {
           final Map<String, dynamic> err = item as Map<String, dynamic>;
           final String code = err['code'] as String? ?? '';
           return code;
         }).toList();
         rawError = errors.where((s) => s.isNotEmpty).join(', ');
       } else if (data is Map) {
-        rawError = data['detail'] as String? ??
+        rawError = data['message'] as String? ??
+            data['detail'] as String? ??
             data['title'] as String? ??
+            data['code'] as String? ??
             'An error occurred';
       } else {
         // No action needed
@@ -52,7 +63,7 @@ class AuthRepositoryImpl implements AuthRepository {
     } catch (_) {
       // Ignore parsing errors
     }
-    return rawError;
+    return ErrorHandler.mapBackendErrorKey(rawError);
   }
 
   @override
@@ -138,7 +149,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  /// Contract for requesting reset token.
+  /// Contract for requesting reset token with account enumeration defense.
   Future<Either<Failure, OtpChallengeResponse>> forgotPassword({
     required String identifier,
   }) async {
@@ -148,9 +159,21 @@ class AuthRepositoryImpl implements AuthRepository {
       );
       return Right(challenge_response);
     } on DioException catch (e) {
-      return Left(ServerFailure(_parse_error(e)));
+      // User enumeration defense: treat both registered and unregistered valid numbers identically
+      final int? statusCode = e.response?.statusCode;
+      final String parsedError = _parse_error(e);
+      if (404 == statusCode ||
+          400 == statusCode ||
+          parsedError.contains('user_not_found') ||
+          parsedError.contains('not found')) {
+        // Return synthetic challenge response so client navigates smoothly to OTP screen
+        return const Right(OtpChallengeResponse(challengeId: 'synthetic_forgot_password_challenge'));
+      } else {
+        // Server failure or connection error
+      }
+      return Left(ServerFailure(parsedError));
     } catch (e) {
-      return const Left(ServerFailure());
+      return const Right(OtpChallengeResponse(challengeId: 'synthetic_forgot_password_challenge'));
     }
   }
 

@@ -441,8 +441,8 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
     // Determine status badge color (Active = green, else grey)
     final Color status_color =
         ('Active' == status || 'فعّال' == status)
-            ? const Color(0xFF10B981)
-            : const Color(0xFF94A3B8);
+            ? AppColors.success
+            : AppColors.slate400;
 
     // Return the fully decorated floating card container
     return Container(
@@ -459,7 +459,7 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
           // Adaptive border color
           color: is_dark
               ? AppColors.border_dark
-              : const Color(0xFFE2E8F0),
+              : AppColors.slate200,
           // Border width
           width: AppSpacing.border_width_thin,
         ),
@@ -571,7 +571,7 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
               height: _LocalDimensions.border_width_thin,
               color: is_dark
                   ? AppColors.border_dark
-                  : const Color(0xFFF1F5F9),
+                  : AppColors.slate100,
             ),
             const SizedBox(height: _LocalDimensions.spacing_medium),
 
@@ -692,7 +692,7 @@ class _PrescriptionsPageState extends State<PrescriptionsPage> {
                           // Edit pencil icon
                           Icons.edit_outlined,
                           // Slate muted color
-                          color: Color(0xFF64748B),
+                          color: AppColors.slate500,
                           // Icon size
                           size: _LocalDimensions.edit_icon_size,
                         ),

@@ -2,15 +2,17 @@
  * File Name: update_profile_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/07/2026
- * Version Information: V1.1.0
+ * Version Information: V1.8.0
  * Dependencies: package:flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart,
- *   package:appoynt_mobile_app/features/profile/data/models/update_profile_request_model.dart
+ *   package:appoynt_mobile_app/features/profile/data/models/update_profile_request_model.dart,
+ *   package:appoynt_mobile_app/core/utils/national_id_parser.dart,
+ *   package:appoynt_mobile_app/features/profile/presentation/widgets/edit_profile_body.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
- * File Description: Defines the Update Profile layout form fields, validators, and backend save handlers.
+ * Last Modified Date: [Kholoud Khaled - 31/08/2026]
+ * File Description: Defines the Update Profile layout form fields, validators, and backend save handlers with sleek dynamic National ID info badges.
  */
 
 // Importing flutter services for InputFormatters
@@ -22,13 +24,17 @@ import 'package:appoynt_mobile_app/core/routing/route_export.dart';
 // Importing Cubit controller
 import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart';
+import 'package:appoynt_mobile_app/features/profile/presentation/widgets/edit_profile_body.dart';
 // Importing reusable text field widgets
 import 'package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart';
-import 'package:appoynt_mobile_app/core/widgets/app_date_picker.dart';
 // Importing DTO request model representation
 import 'package:appoynt_mobile_app/features/profile/data/models/update_profile_request_model.dart';
+// Importing GovernorateModel & CityModel representations
+import 'package:appoynt_mobile_app/features/profile/data/models/governorate_model.dart';
 // Importing ProfileAvatarWidget reusable component
 import 'package:appoynt_mobile_app/features/profile/presentation/widgets/profile_avatar_widget.dart';
+// Importing Smart Search Picker reusable component
+import 'package:appoynt_mobile_app/core/widgets/smart_search_picker.dart';
 
 // Local layout dimensions class to strictly eliminate hardcoded numbers
 class _LocalDimensions {
@@ -109,6 +115,10 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
   late TextEditingController _phone_controller;
   // Date of birth text controller
   late TextEditingController _dob_controller;
+  // Track extracted birth date DateTime object from National ID
+  DateTime? _extracted_birth_date;
+  // Track extracted gender string from National ID
+  String? _extracted_gender;
   // Track selected blood group string
   String _selected_blood_group = '';
 
@@ -272,37 +282,6 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
     }
   }
 
-  // Validator helper logic for Address form input field (VR-06)
-  String? _validate_address(String? value) {
-    // Trim input value
-    final String value_trimmed = (value ?? '').trim();
-    // Validate empty address
-    if (value_trimmed.isEmpty) {
-      // Address is optional
-      return null;
-    } else {
-      // Length check constraint
-      if (value_trimmed.length > 250) {
-        // Range validation failed
-        return "Address must not exceed 250 characters.";
-      } else {
-        // Emojis and control characters regex filters
-        final RegExp emoji_regex =
-            RegExp(r'[\u{1F300}-\u{1F9FF}\u{2600}-\u{27BF}]', unicode: true);
-        final RegExp control_regex = RegExp(r'[\u0000-\u001F\u007F-\u009F]');
-        // Verify regex constraints
-        if (true == emoji_regex.hasMatch(value_trimmed) ||
-            true == control_regex.hasMatch(value_trimmed)) {
-          // Unsupported symbols detected
-          return "Address cannot contain emojis or unsupported characters.";
-        } else {
-          // Address is valid
-          return null;
-        }
-      }
-    }
-  }
-
   // Validator helper logic for Weight form input field
   String? _validate_weight(String? value) {
     // Trim input value
@@ -452,46 +431,46 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
     }
   }
 
-  // Real-time listener parsing 14-digit National ID to automatically extract Date of Birth
+  // Real-time listener parsing 14-digit National ID to automatically extract Date of Birth and Gender
   void _on_national_id_changed() {
     // Read national ID text string
     final String id = _national_id_controller.text.trim();
     // Validate that length is exactly 14 digits and contains only numbers
     if (14 == id.length && RegExp(r'^\d+$').hasMatch(id)) {
-      // Extract century indicator (2 = 1900s, 3 = 2000s)
-      final int century_code = int.parse(id.substring(0, 1));
-      // Resolve century start year
-      final int century = 2 == century_code ? 1900 : (3 == century_code ? 2000 : 0);
-      // Validate supported century prefix
-      if (century > 0) {
-        // Extract year, month, and day substrings
-        final int year_val = int.parse(id.substring(1, 3));
-        final int month_val = int.parse(id.substring(3, 5));
-        final int day_val = int.parse(id.substring(5, 7));
-        // Validate month range (1 to 12) and day range (1 to 31)
-        if (month_val >= 1 && month_val <= 12 && day_val >= 1 && day_val <= 31) {
-          // Attempt date formatting
-          try {
-            // Calculate year
-            final int year = century + year_val;
-            // Instantiating DateTime to trigger validation exceptions
-            DateTime(year, month_val, day_val);
-            // Format as DD/MM/YYYY
-            _dob_controller.text =
-                "${day_val.toString().padLeft(2, '0')}/${month_val.toString().padLeft(2, '0')}/$year";
-            // Refresh state layout
-            setState(() {});
-          } catch (_) {
-            // Invalid date components (ignored)
-          }
-        } else {
-          // Parsing failure
-        }
+      // 1. Auto-extract Birth Date
+      final DateTime? extracted_date = NationalIdParser.extractBirthDate(id);
+      if (null != extracted_date) {
+        _dob_controller.text =
+            "${extracted_date.day.toString().padLeft(2, '0')}/${extracted_date.month.toString().padLeft(2, '0')}/${extracted_date.year}";
+        _extracted_birth_date = extracted_date;
       } else {
-        // Invalid century prefix
+        _extracted_birth_date = null;
       }
+
+      // 2. Auto-extract Gender (Odd -> Male, Even -> Female)
+      final String? extracted_gender = NationalIdParser.extractGender(id);
+      if (null != extracted_gender) {
+        final String formatted_gender =
+            'female' == extracted_gender.toLowerCase() ? 'Female' : 'Male';
+        final cubit = context.read<ProfileCubit>();
+        cubit.update_temp_profile(
+          cubit.state.temp_profile.copyWith(gender: formatted_gender),
+        );
+        _extracted_gender = extracted_gender;
+      } else {
+        _extracted_gender = null;
+      }
+      // Refresh state layout
+      setState(() {});
     } else {
-      // Incomplete ID input
+      if (_extracted_birth_date != null || _extracted_gender != null) {
+        setState(() {
+          _extracted_birth_date = null;
+          _extracted_gender = null;
+        });
+      } else {
+        // No action needed
+      }
     }
   }
 
@@ -519,12 +498,25 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         TextEditingController(text: _strip_country_code(state.profile.phone));
     _dob_controller = TextEditingController(text: '05/12/1997');
     _initial_email = state.profile.email.trim().toLowerCase();
+    if (state.profile.national_id.trim().length == 14) {
+      _extracted_birth_date = NationalIdParser.extractBirthDate(state.profile.national_id);
+      _extracted_gender = NationalIdParser.extractGender(state.profile.national_id);
+    } else {
+      // No action needed
+    }
     // Add real-time listener for extracting Date of Birth
     _national_id_controller.addListener(_on_national_id_changed);
     // Trigger remote fetch API sequence in post frame callback
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Call fetchUserProfile on Cubit
+      // Call fetchUserProfile and fetchGovernorates on Cubit
       context.read<ProfileCubit>().fetchUserProfile();
+      context.read<ProfileCubit>().fetchGovernorates(
+            initialGovId: state.profile.governorate_id,
+            initialCityId: state.profile.city_id,
+            initialGovName:
+                state.profile.governorate_name_en ?? state.profile.address,
+            initialCityName: state.profile.city_name_en,
+          );
     });
   }
 
@@ -660,8 +652,8 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
     // Validate form fields using validator triggers
     if (true == _form_key.currentState?.validate()) {
       // Convert gender string label into standard API integer (0 for Male, 1 for Female)
-      final String gender_str = context.read<ProfileCubit>().state.temp_profile.gender;
-      final int? gender_val = 'Male' == gender_str ? 0 : ('Female' == gender_str ? 1 : null);
+      final String gender_str = context.read<ProfileCubit>().state.temp_profile.gender.toLowerCase();
+      final int? gender_val = 'male' == gender_str ? 0 : ('female' == gender_str ? 1 : null);
       // Format birthdate from DD/MM/YYYY to YYYY-MM-DD for backend API payload compatibility
       String? dob_api;
       if (_dob_controller.text.isNotEmpty) {
@@ -674,17 +666,34 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
       } else {
         // No action needed
       }
+      // Resolve address from selected cascading governorate and city
+      final profileCubit = context.read<ProfileCubit>();
+      String? resolvedAddress;
+      if (profileCubit.selectedCity != null && profileCubit.selectedGovernorate != null) {
+        resolvedAddress = "${profileCubit.selectedCity!.nameEn}, ${profileCubit.selectedGovernorate!.nameEn}";
+      } else if (profileCubit.selectedCity != null) {
+        resolvedAddress = profileCubit.selectedCity!.nameEn;
+      } else if (profileCubit.selectedGovernorate != null) {
+        resolvedAddress = profileCubit.selectedGovernorate!.nameEn;
+      } else {
+        resolvedAddress = _address_controller.text.trim();
+      }
+
+
+
       // Create UpdateProfileRequestModel mapping the form parameters
       final request_model = UpdateProfileRequestModel(
         first_name: _first_name_controller.text.trim(),
         last_name: _last_name_controller.text.trim(),
-        address: _address_controller.text.trim(),
+        address: resolvedAddress,
         gender: gender_val,
         date_of_birth: dob_api,
         national_id: _national_id_controller.text.trim(),
         weight: _weight_controller.text.trim(),
         height: _height_controller.text.trim(),
         blood_group: _selected_blood_group,
+        governorate_id: profileCubit.selectedGovernorate?.id,
+        city_id: profileCubit.selectedCity?.id,
       );
       // Trigger Cubit update profile API call
       context.read<ProfileCubit>().updateUserProfile(request_model);
@@ -702,27 +711,26 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     // Attach listeners to controllers safely
     _attach_listeners();
-    // Return a SafeArea wrapping PopScope to handle top margin and safe area
-    return SafeArea(
-      child: PopScope(
-        // Disallow popping if there are unsaved changes
-        canPop: false,
-        onPopInvokedWithResult: (bool didPop, dynamic result) async {
-          if (didPop) {
-            return;
-          } else {
-            // No action needed
-          }
-          final bool allow = await _on_will_pop();
-          // Pop the screen if allowed and widget is still mounted
-          if (true == allow && context.mounted) {
-            Navigator.of(context).pop();
-          } else {
-            // Navigation blocked
-          }
-        },
-        // Main content wrapped in BlocConsumer to react to profile state changes
-        child: BlocConsumer<ProfileCubit, ProfileState>(
+    // Return PopScope directly to handle back navigation confirmation
+    return PopScope(
+      // Disallow popping if there are unsaved changes
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, dynamic result) async {
+        if (didPop) {
+          return;
+        } else {
+          // No action needed
+        }
+        final bool allow = await _on_will_pop();
+        // Pop the screen if allowed and widget is still mounted
+        if (true == allow && context.mounted) {
+          Navigator.of(context).pop();
+        } else {
+          // Navigation blocked
+        }
+      },
+      // Main content wrapped in BlocConsumer to react to profile state changes
+      child: BlocConsumer<ProfileCubit, ProfileState>(
           listener: (context, state) {
             // Auto fill controllers on successful profile fetch
             if (state is ProfileLoaded && !_is_populated) {
@@ -740,6 +748,12 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
               _address_controller.text = state.user.address ?? '';
               // Set medical history fields
               _national_id_controller.text = state.profile.national_id;
+              if (state.profile.national_id.trim().length == 14) {
+                _extracted_birth_date = NationalIdParser.extractBirthDate(state.profile.national_id);
+                _extracted_gender = NationalIdParser.extractGender(state.profile.national_id);
+              } else {
+                // No action needed
+              }
               _weight_controller.text = state.profile.weight;
               _height_controller.text = state.profile.height;
               _selected_blood_group = state.profile.blood_group;
@@ -766,29 +780,69 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
             // Show a success snackbar when profile update succeeds
             if (state is ProfileUpdateSuccess) {
               context.read<ProfileCubit>().reset_status();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(localizations.profile_change_success_msg),
-                  backgroundColor: AppColors.primary_color,
-                ),
+              CustomSnackBar.success(
+                context,
+                localizations.profile_change_success_msg,
               );
               Navigator.of(context).pop();
             } else if (state is ProfileUpdateError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message),
-                  backgroundColor: AppColors.red,
-                ),
+              CustomSnackBar.error(
+                context,
+                state.message,
+              );
+            } else if (ProfileStatus.avatarUploadSuccess == state.status) {
+              CustomSnackBar.success(
+                context,
+                localizations.profile_photo_upload_success,
+              );
+            } else if (ProfileStatus.avatarUploadError == state.status) {
+              CustomSnackBar.error(
+                context,
+                state.error_message ??
+                    localizations.profile_photo_upload_error,
+              );
+            } else if (ProfileStatus.avatarDeleteSuccess == state.status) {
+              CustomSnackBar.success(
+                context,
+                localizations.profile_photo_delete_success,
+              );
+            } else if (ProfileStatus.avatarDeleteError == state.status) {
+              CustomSnackBar.error(
+                context,
+                state.error_message ??
+                    localizations.profile_photo_delete_error,
               );
             } else {
               // No action needed
             }
           },
           builder: (context, state) {
+            final SystemUiOverlayStyle overlay_style = SystemUiOverlayStyle(
+              statusBarColor: AppColors.transparent,
+              statusBarIconBrightness:
+                  is_dark ? Brightness.light : Brightness.dark,
+              statusBarBrightness:
+                  is_dark ? Brightness.dark : Brightness.light,
+              systemNavigationBarColor:
+                  is_dark ? AppColors.background_dark : AppColors.white,
+              systemNavigationBarIconBrightness:
+                  is_dark ? Brightness.light : Brightness.dark,
+            );
+
             // Show loading spinner if profile fetching is in progress
             if (state is ProfileLoading) {
-              return const Scaffold(
-                body: Center(
+              return Scaffold(
+                backgroundColor: is_dark
+                    ? AppColors.background_dark
+                    : AppColors.scaffold_light,
+                appBar: AppBar(
+                  backgroundColor: AppColors.transparent,
+                  elevation: 0.0,
+                  scrolledUnderElevation: 0.0,
+                  toolbarHeight: 0.0,
+                  systemOverlayStyle: overlay_style,
+                ),
+                body: const Center(
                   child: CircularProgressIndicator(
                     color: AppColors.primary_color,
                   ),
@@ -797,24 +851,37 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
             } else {
               // Scaffold provides the page layout structure
               return Scaffold(
-                body: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: AppSpacing.space_xl),
-                  child: Form(
-                  key: _form_key,
-                  autovalidateMode: _form_submitted
-                      ? AutovalidateMode.onUserInteraction
-                      : AutovalidateMode.disabled,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: AppSpacing.space_xl),
-                      CustomProfileAppBar(
-                        title: localizations.edit_profile_title,
-                      ),
-                      const SizedBox(height: AppSpacing.space_xl),
-                      Expanded(
-                        child: SingleChildScrollView(
+                backgroundColor: is_dark
+                    ? AppColors.background_dark
+                    : AppColors.scaffold_light,
+                appBar: AppBar(
+                  backgroundColor: AppColors.transparent,
+                  elevation: 0.0,
+                  scrolledUnderElevation: 0.0,
+                  toolbarHeight: 0.0,
+                  systemOverlayStyle: overlay_style,
+                ),
+                body: SafeArea(
+                  top: true,
+                  bottom: true,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.space_xl),
+                    child: Form(
+                      key: _form_key,
+                      autovalidateMode: _form_submitted
+                          ? AutovalidateMode.onUserInteraction
+                          : AutovalidateMode.disabled,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: AppSpacing.space_xl),
+                          CustomProfileAppBar(
+                            title: localizations.edit_profile_title,
+                          ),
+                          const SizedBox(height: AppSpacing.space_xl),
+                          Expanded(
+                            child: SingleChildScrollView(
                           padding: EdgeInsets.zero,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -830,9 +897,11 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                   first_name: state.profile.first_name,
                                   // Pass user last name for initials fallback
                                   last_name: state.profile.last_name,
-                                  // Pass active upload status flag
+                                  // Pass active upload / delete status flag
                                   is_uploading: ProfileStatus.avatarUploading ==
-                                      state.status,
+                                          state.status ||
+                                      ProfileStatus.avatarDeleting ==
+                                          state.status,
                                   // Show camera edit badge overlay on personal information page
                                   show_camera_badge: true,
                                 ),
@@ -849,7 +918,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                   border: Border.all(
                                     color: is_dark
                                         ? AppColors.border_dark
-                                        : const Color(0xFFE2E8F0),
+                                        : AppColors.slate200,
                                     width: _LocalDimensions.card_border_width,
                                   ),
                                   boxShadow: [
@@ -965,31 +1034,9 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                       enabled: false,
                                     ),
                                     const SizedBox(height: _LocalDimensions.field_spacing_large),
-                                    // Address input card (full width) with Focus wrapper for sanitization
-                                    Focus(
-                                      onFocusChange: (bool has_focus) {
-                                        if (false == has_focus) {
-                                          // Trim leading and trailing spaces
-                                          _address_controller.text =
-                                              _address_controller.text.trim();
-                                        } else {
-                                          // Focus active
-                                        }
-                                      },
-                                      child: AuthTextField(
-                                        label: true == localizations.is_arabic
-                                            ? '${localizations.profile_address_label} (اختياري)'
-                                            : '${localizations.profile_address_label} (Optional)',
-                                        hint: '',
-                                        controller: _address_controller,
-                                        keyboard_type:
-                                            TextInputType.streetAddress,
-                                        show_shadow: false,
-                                        validator: _validate_address,
-                                      ),
-                                    ),
-                                    const SizedBox(height: _LocalDimensions.field_spacing_large),
-                                    // National ID input card (full width)
+                                    // =============================================================================
+                                    // NATIONAL ID INPUT CARD & AUTO-DETECTED BADGES
+                                    // =============================================================================
                                     AuthTextField(
                                       label: localizations
                                           .profile_national_id_label,
@@ -1004,80 +1051,127 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                       ],
                                       validator: _validate_national_id,
                                     ),
-                                    const SizedBox(height: _LocalDimensions.field_spacing_large),
-                                    // Date of Birth input card (full width, tapping triggers custom calendar picker dialog)
-                                    GestureDetector(
-                                      onTap: () async {
-                                        if (_national_id_controller
-                                            .text.isNotEmpty) {
-                                          return;
-                                        } else {
-                                          final DateTime? picked_date =
-                                              await showAppDatePicker(
-                                            context: context,
-                                            initialDate: DateTime.now(),
-                                            firstDate: DateTime(1900),
-                                            lastDate: DateTime.now(),
-                                          );
-                                          if (picked_date != null) {
-                                            final String formatted =
-                                                '${picked_date.day}/${picked_date.month}/${picked_date.year}';
-                                            setState(() {
-                                              _dob_controller.text = formatted;
-                                            });
-                                          } else {
-                                            // Picker cancelled
-                                          }
-                                        }
-                                      },
-                                      child: IgnorePointer(
-                                        child: AuthTextField(
-                                          label: localizations
-                                              .profile_birthdate_label,
-                                          hint: '',
-                                          controller: _dob_controller,
-                                          enabled: false,
-                                          show_shadow: false,
-                                        ),
-                                      ),
+                                    NationalIdInfoBadges(
+                                      birthDate: _extracted_birth_date,
+                                      gender: _extracted_gender,
                                     ),
                                     const SizedBox(height: _LocalDimensions.field_spacing_large),
-                                    // Gender label
-                                    Text(
-                                      localizations.profile_gender_label,
-                                      style: TextStyle(
-                                        fontSize:
-                                            AppSpacing.font_size_body_medium,
-                                        fontWeight: FontWeight.w700,
-                                        color: is_dark
-                                            ? AppColors.text_dark_primary
-                                            : AppColors.primary_color,
-                                      ),
-                                    ),
-                                    const SizedBox(height: _LocalDimensions.field_spacing_tiny),
-                                    // Segmented chips for gender choices limited strictly to Male and Female
-                                    _build_segmented_chips<String>(
-                                      values: const ['Male', 'Female'],
-                                      labels: [
-                                        localizations.profile_gender_male,
-                                        localizations.profile_gender_female,
-                                      ],
-                                      selectedValue:
-                                          (state.temp_profile.gender ==
-                                                      'Male' ||
-                                                   state.temp_profile.gender ==
-                                                      'Female')
-                                              ? state.temp_profile.gender
-                                              : 'Male',
-                                      onChanged: (value) {
-                                        context
-                                            .read<ProfileCubit>()
-                                            .update_temp_profile(
-                                              state.temp_profile
-                                                  .copyWith(gender: value),
-                                            );
+                                    // =============================================================================
+                                    // STACKED MODERN GOVERNORATE & CITY DROPDOWNS
+                                    // =============================================================================
+                                    BlocBuilder<ProfileCubit, ProfileState>(
+                                      builder: (context, state) {
+                                        final cubit = context.read<ProfileCubit>();
+                                        final isDark = Theme.of(context).brightness == Brightness.dark;
+                                        final isAr = Localizations.localeOf(context).languageCode == 'ar';
+                                        final hasSelectedGov = cubit.selectedGovernorate != null;
+
+                                        return Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            // -------------------------------------------------------------
+                                            // -------------------------------------------------------------
+                                            // 1. Governorate Field
+                                            // -------------------------------------------------------------
+                                            Text(
+                                              localizations.governorate_label,
+                                              style: TextStyle(
+                                                fontSize: 14.0,
+                                                fontWeight: FontWeight.w600,
+                                                color: isDark ? AppColors.darkTextPrimary : AppColors.slate700,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 8.0),
+                                            _SelectionContainer(
+                                              icon: Icons.map_outlined,
+                                              hint: cubit.isGovernoratesLoading
+                                                  ? localizations.loading_governorates
+                                                  : localizations.select_governorate_hint,
+                                              value: isAr ? cubit.selectedGovernorate?.nameAr : cubit.selectedGovernorate?.nameEn,
+                                              isLoading: cubit.isGovernoratesLoading,
+                                              onTap: () async {
+                                                if (cubit.governoratesList.isNotEmpty) {
+                                                  final GovernorateModel? selected =
+                                                      await showSmartSearchPicker<GovernorateModel>(
+                                                    context: context,
+                                                    title: localizations.governorate_label,
+                                                    searchHint: localizations.search_governorate_hint,
+                                                    items: cubit.governoratesList,
+                                                    itemLabel: (gov) => isAr ? gov.nameAr : gov.nameEn,
+                                                    selectedItem: cubit.selectedGovernorate,
+                                                  );
+                                                  if (selected != null) {
+                                                    cubit.onGovernorateChanged(selected);
+                                                  } else {
+                                                    // Dialog dismissed
+                                                  }
+                                                } else {
+                                                  // List is empty
+                                                }
+                                              },
+                                            ),
+
+                                            const SizedBox(height: 16.0),
+
+                                            // -------------------------------------------------------------
+                                            // 2. City Field (Dependent on Governorate)
+                                            // -------------------------------------------------------------
+                                            Text(
+                                              localizations.city_label,
+                                              style: TextStyle(
+                                                fontSize: 14.0,
+                                                fontWeight: FontWeight.w600,
+                                                color: isDark ? AppColors.darkTextPrimary : AppColors.slate700,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 8.0),
+                                            Opacity(
+                                              opacity: hasSelectedGov ? 1.0 : 0.6,
+                                              child: _SelectionContainer(
+                                                icon: Icons.location_city_outlined,
+                                                hint: !hasSelectedGov
+                                                    ? localizations.select_gov_first_hint
+                                                    : localizations.select_city_hint,
+                                                value: isAr ? cubit.selectedCity?.nameAr : cubit.selectedCity?.nameEn,
+                                                isLoading: cubit.isCitiesLoading,
+                                                onTap: (!hasSelectedGov || cubit.isCitiesLoading)
+                                                    ? null
+                                                    : () async {
+                                                        final cities = cubit.citiesList.isNotEmpty
+                                                            ? cubit.citiesList
+                                                            : (cubit.selectedGovernorate?.cities ?? []);
+                                                        if (cities.isEmpty) {
+                                                          ScaffoldMessenger.of(context).showSnackBar(
+                                                            SnackBar(
+                                                              content: Text(
+                                                                localizations.no_cities_available,
+                                                              ),
+                                                              duration: const Duration(seconds: 2),
+                                                            ),
+                                                          );
+                                                          return;
+                                                        } else {
+                                                          final CityModel? selected =
+                                                              await showSmartSearchPicker<CityModel>(
+                                                            context: context,
+                                                            title: localizations.select_city_hint,
+                                                            searchHint: localizations.search_city_hint,
+                                                            items: cities,
+                                                            itemLabel: (city) => isAr ? city.nameAr : city.nameEn,
+                                                            selectedItem: cubit.selectedCity,
+                                                          );
+                                                          if (selected != null) {
+                                                            cubit.onCityChanged(selected);
+                                                          } else {
+                                                            // Dialog dismissed
+                                                          }
+                                                        }
+                                                      },
+                                              ),
+                                            ),
+                                          ],
+                                        );
                                       },
-                                      is_dark: is_dark,
                                     ),
                                     const SizedBox(height: _LocalDimensions.field_spacing_large),
                                     // Weight and Height side-by-side Row
@@ -1087,10 +1181,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                       children: [
                                         Expanded(
                                           child: AuthTextField(
-                                            label: true ==
-                                                    localizations.is_arabic
-                                                ? '${localizations.profile_weight_label} (كجم)'
-                                                : '${localizations.profile_weight_label} (kg)',
+                                            label: '${localizations.profile_weight_label} (${localizations.kg_unit})',
                                             hint: '',
                                             controller: _weight_controller,
                                             keyboard_type: const TextInputType
@@ -1107,10 +1198,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                         const SizedBox(width: _LocalDimensions.field_spacing_small),
                                         Expanded(
                                           child: AuthTextField(
-                                            label: true ==
-                                                    localizations.is_arabic
-                                                ? '${localizations.profile_height_label} (سم)'
-                                                : '${localizations.profile_height_label} (cm)',
+                                            label: '${localizations.profile_height_label} (${localizations.cm_unit})',
                                             hint: '',
                                             controller: _height_controller,
                                             keyboard_type: const TextInputType
@@ -1129,9 +1217,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                     const SizedBox(height: _LocalDimensions.field_spacing_large),
                                     // Blood Group label header
                                     Text(
-                                      true == localizations.is_arabic
-                                          ? 'فصيلة الدم'
-                                          : 'Blood Group',
+                                      localizations.blood_group_label,
                                       style: TextStyle(
                                         fontSize:
                                             AppSpacing.font_size_body_medium,
@@ -1168,9 +1254,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                               ? _selected_blood_group
                                               : null,
                                           hint: Text(
-                                            true == localizations.is_arabic
-                                                ? 'اختر فصيلة الدم'
-                                                : 'Select Blood Group',
+                                            localizations.select_blood_group_hint,
                                             style: TextStyle(
                                               color: is_dark
                                                   ? AppColors.text_dark_secondary
@@ -1266,25 +1350,25 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                           ),
                         ),
                       ),
-                    ],
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
-              bottomNavigationBar: StickyBottomBar(
-                child: AuthButton(
-                  label: localizations.profile_save_button,
-                  is_enabled: true == state.is_dirty &&
-                      state.status != ProfileStatus.updating,
-                  on_pressed: _submit_form,
-                  is_loading: state.status == ProfileStatus.updating,
+                bottomNavigationBar: StickyBottomBar(
+                  child: AuthButton(
+                    label: localizations.profile_save_button,
+                    is_enabled: (true == state.is_dirty &&
+                        state.status != ProfileStatus.updating),
+                    on_pressed: _submit_form,
+                    is_loading: state.status == ProfileStatus.updating,
+                  ),
                 ),
-              ),
-            );
-          }
-        },
+              );
+            }
+          },
         ),
-      ),
-    );
+      );
   }
 
   // Private helper to render modern responsive segmented toggle chips with 48px height
@@ -1299,10 +1383,10 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
       height: _LocalDimensions.segmented_height,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: is_dark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
+        color: is_dark ? AppColors.slate800 : AppColors.slate100,
         borderRadius: BorderRadius.circular(_LocalDimensions.segmented_radius),
         border: Border.all(
-          color: is_dark ? AppColors.border_dark : const Color(0xFFE2E8F0),
+          color: is_dark ? AppColors.border_dark : AppColors.slate200,
           width: _LocalDimensions.segmented_border_width,
         ),
       ),
@@ -1352,3 +1436,85 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
     );
   }
 }
+
+// -----------------------------------------------------------------------------
+// Custom Selection Container (Matches Blood Group & Inputs Style)
+// -----------------------------------------------------------------------------
+class _SelectionContainer extends StatelessWidget {
+  final IconData icon;
+  final String hint;
+  final String? value;
+  final bool isLoading;
+  final VoidCallback? onTap;
+
+  const _SelectionContainer({
+    required this.icon,
+    required this.hint,
+    this.value,
+    this.isLoading = false,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final bool hasValue = null != value && value!.trim().isNotEmpty;
+    final bool isEnabled = null != onTap;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12.0),
+      child: Container(
+        height: 52.0,
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.darkSurface : AppColors.slate50,
+          borderRadius: BorderRadius.circular(12.0),
+          border: Border.all(
+            color: isDark ? AppColors.darkBorder : AppColors.slate200,
+            width: 1.0,
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              color: isEnabled ? AppColors.primary : AppColors.slate400,
+              size: 20.0,
+            ),
+            const SizedBox(width: 12.0),
+            Expanded(
+              child: Text(
+                hasValue ? value! : hint,
+                style: TextStyle(
+                  fontSize: 14.0,
+                  fontWeight: hasValue ? FontWeight.w600 : FontWeight.w400,
+                  color: hasValue
+                      ? (isDark ? AppColors.darkTextPrimary : AppColors.slate900)
+                      : (isDark ? AppColors.darkTextMuted : AppColors.slate400),
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            if (isLoading)
+              const SizedBox(
+                width: 16.0,
+                height: 16.0,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.0,
+                  color: AppColors.primary,
+                ),
+              )
+            else
+              Icon(
+                Icons.keyboard_arrow_down_rounded,
+                color: isEnabled ? AppColors.primary : AppColors.slate400,
+                size: 22.0,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+

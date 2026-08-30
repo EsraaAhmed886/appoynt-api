@@ -2,14 +2,14 @@
  * File Name: forgot_password_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
- * Version Information: V1.1.0
+ * Version Information: V1.2.0
  * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart,
  *   package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart,
  *   package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart,
  *   package:appoynt_mobile_app/core/di/service_locator.dart,
  *   package:flutter_bloc/flutter_bloc.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 26/08/2026]
  * File Description: The Forgot Password screen allows users to request a reset code via
  *   their phone number. It follows the centralized design system and
  *   supports full bilingual localization.
@@ -21,6 +21,8 @@ import 'package:appoynt_mobile_app/core/routing/route_export.dart';
 import 'package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart';
 // Importing bloc consumer and provider utilities
 import 'package:flutter_bloc/flutter_bloc.dart';
+// Importing centralized digits converter helper
+import 'package:appoynt_mobile_app/core/utils/digit_converter_helper.dart';
 // Importing auth business state controller cubit definitions
 import 'package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart';
 // Importing dependency injection service locator setup representation
@@ -69,6 +71,14 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   void initState() {
     // Invoke parent initialization
     super.initState();
+    // Clear any leftover auth error from previous screens
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        get_it<AuthCubit>().reset();
+      } else {
+        // No action needed
+      }
+    });
     // Register listener mapping text value changes
     _phone_ctrl.addListener(_on_phone_changed);
   }
@@ -101,6 +111,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   @override
   void dispose() {
+    // Clear any active auth error on leave
+    get_it<AuthCubit>().reset();
     // Remove listener from controller
     _phone_ctrl.removeListener(_on_phone_changed);
     /// Cleaning up the text controller to prevent memory leaks.
@@ -117,19 +129,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     } else {
       // Empty action block to satisfy compiler
     }
-    // Convert Arabic numerals to English digits if any exist
-    String clean_digits = phone_value;
-    // Map of Arabic-Indic to standard English digits
-    final Map<String, String> translation_map = {
-      '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4',
-      '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9'
-    };
-    // Translate each character in map
-    translation_map.forEach((arabic, english) {
-      clean_digits = clean_digits.replaceAll(arabic, english);
-    });
-    // Strip space dividers, symbols, and format modifiers
-    clean_digits = clean_digits.replaceAll(RegExp(r'[^\d]'), '');
+    // Convert Arabic numerals to English digits and strip non-digits
+    String clean_digits = phone_value.toEnglishDigits().replaceAll(RegExp(r'[^\d]'), '');
     // Verify phone digit count length matches exactly 11 digits using Yoda style check
     if (11 != clean_digits.length) {
       // Return phone count validation warning message
@@ -170,8 +171,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       // Proceed with submission if form is valid
     }
     
-    // Dispatch forgot password event to AuthCubit
-    submission_context.read<AuthCubit>().forgot_password(_phone_ctrl.text.trim());
+    // Dispatch forgot password event to AuthCubit with normalized English digits
+    submission_context.read<AuthCubit>().forgot_password(_phone_ctrl.text.trim().toEnglishDigits());
   }
 
   @override
@@ -189,11 +190,17 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         listener: (context, state) {
           // Check if request succeeds using Yoda style check
           if (state is ForgotPasswordSuccess) {
+            // Show uniform generic success message to prevent user enumeration
+            CustomSnackBar.success(
+              context,
+              s.auth_forgot_password_generic_success,
+            );
             // Trigger code sent navigation callback
             widget.on_code_sent(_phone_ctrl.text.trim());
           } else if (state is AuthError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
+            CustomSnackBar.error(
+              context,
+              AppLocalizations.get_localized_error(context, state.message),
             );
           } else {
             // Empty action block to satisfy compiler
@@ -279,34 +286,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                                       textAlign: TextAlign.center,
                                       // Pull forgot password subtitle styling passing context
                                       style: AppTextStyles.get_forgot_password_subtitle(context, is_arabic),
-                                    ),
-                                    // Spacing/Container block for validation error feedback message (FR-15 / Logic Log)
-                                    const SizedBox(height: AppSpacing.space_s),
-                                    // Fixed-height container to prevent layout shifting
-                                    SizedBox(
-                                      // Fixed height derived from spacing tokens to satisfy stable UI constraint
-                                      height: AppSpacing.error_container_height,
-                                      // Draw error feedback text inside center coordinates
-                                      child: Center(
-                                        // Render error message if state is AuthError (Yoda style check)
-                                        child: Text(
-                                          // Bind message or empty string based on state type
-                                          true == (state is AuthError)
-                                              ? AppLocalizations.get_localized_error(context, (state as AuthError).message)
-                                              : '',
-                                          // Center align paragraph
-                                          textAlign: TextAlign.center,
-                                          // Apply styling configurations
-                                          style: const TextStyle(
-                                            // Set brand warning color
-                                            color: AppColors.error,
-                                            // Scale size relative to labels
-                                            fontSize: AppSpacing.font_size_label,
-                                            // Emphasize text weight
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
                                     ),
                                   ],
                                 ),

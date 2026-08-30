@@ -238,7 +238,7 @@ class ClinicCard extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary_color,
                   disabledBackgroundColor:
-                      is_dark ? Colors.grey[800] : Colors.grey[300],
+                      is_dark ? AppColors.grey800 : AppColors.grey300,
                   shape: RoundedRectangleBorder(
                     borderRadius:
                         BorderRadius.circular(_LocalDimensions.btn_radius),

@@ -1,3 +1,4 @@
+import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 /*
  * File Name: appointments_empty_state.dart
  * Author: Kholoud Khaled
@@ -89,13 +90,13 @@ class AppointmentsEmptyState extends StatelessWidget {
               width: 80.0,
               height: 80.0,
               decoration: BoxDecoration(
-                color: const Color(0xFF0284C7).withValues(alpha: isDark ? 0.15 : 0.08),
+                color: AppColors.sky600.withValues(alpha: isDark ? 0.15 : 0.08),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 icon,
                 size: 38.0,
-                color: const Color(0xFF0284C7),
+                color: AppColors.sky600,
               ),
             ),
             const SizedBox(height: 18.0),
@@ -106,7 +107,7 @@ class AppointmentsEmptyState extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16.5,
                 fontWeight: FontWeight.bold,
-                color: isDark ? Colors.white : const Color(0xFF0F172A),
+                color: isDark ? AppColors.white : AppColors.slate900,
               ),
               textAlign: TextAlign.center,
             ),
@@ -118,7 +119,7 @@ class AppointmentsEmptyState extends StatelessWidget {
               style: TextStyle(
                 fontSize: 13.0,
                 height: 1.4,
-                color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                color: isDark ? AppColors.slate400 : AppColors.slate500,
               ),
               textAlign: TextAlign.center,
             ),
@@ -145,8 +146,8 @@ class AppointmentsEmptyState extends StatelessWidget {
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13.5),
             ),
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF0284C7),
-              foregroundColor: Colors.white,
+              backgroundColor: AppColors.sky600,
+              foregroundColor: AppColors.white,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.0)),
               elevation: 0,
               padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),

@@ -2,12 +2,12 @@
  * File Name: search_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 17/07/2026
- * Version Information: V1.1.0
+ * Version Information: V1.2.0
  * Dependencies: flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
  *   search_cubit.dart, search_state.dart, app_spacing.dart, app_colors.dart, app_network_image.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
- * File Description: Renders the dedicated Search Screen with dynamic states (A, B, C), inputs, and filters.
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
+ * File Description: Renders the dedicated Search Screen with dynamic states (A, B, C), inputs, and filters with standardized dark theme.
  */
 
 // TODO: START OF DUMMY HOME SCREEN IMPLEMENTATION - REMOVE ONCE FINAL HOME IS COMPLETED
@@ -38,7 +38,7 @@ import 'package:appoynt_mobile_app/features/shared/widgets/doctor_card.dart';
 import 'package:appoynt_mobile_app/features/search/presentation/widgets/search_sort_bottom_sheet.dart';
 import 'package:appoynt_mobile_app/core/routing/routes.dart';
 import 'package:appoynt_mobile_app/features/doctor_profile/presentation/pages/doctor_profile_page.dart';
-import 'package:appoynt_mobile_app/features/appointments/presentation/widgets/ask_ai_fab.dart';
+import 'package:appoynt_mobile_app/features/ask_ai/presentation/widgets/draggable_floating_ai_button.dart';
 
 
 // Local layout dimensions class to strictly eliminate hardcoded numbers
@@ -401,7 +401,7 @@ class _SearchPageState extends State<SearchPage> {
                                         // Light blue background tint matching mock-up
                                         color: is_dark
                                             ? AppColors.surface_dark
-                                            : const Color(0xFFE8F1FF),
+                                            : AppColors.blue100,
                                         // Rounded corner radius matching chips
                                         borderRadius: BorderRadius.circular(
                                           AppSpacing.search_chip_radius,
@@ -562,40 +562,21 @@ class _SearchPageState extends State<SearchPage> {
                 else
                   // Empty layout satisfying compiler condition
                   const SizedBox.shrink(),
+                // Floating draggable AI bot widget
+                const DraggableFloatingAiButton(),
               ],
             ),
             // Fixed Bottom Navigation Bar component shown only when soft keyboard is closed
             bottomNavigationBar: 0 == MediaQuery.of(context).viewInsets.bottom
                 ? AppBottomNavBar(
-                    selected_index: 2,
+                    selected_index: -1,
                     on_tap: (index) {
                       if (true == context.mounted) {
-                        if (2 == index) {
-                          // Do nothing
-                        } else {
-                          Navigator.of(context).pop(index);
-                        }
+                        Navigator.of(context).pop(index);
                       }
                     },
                   )
                 : null,
-            // Global floating AI assistant action button
-            floatingActionButton: Padding(
-              padding: const EdgeInsets.only(bottom: 16.0, right: 8.0),
-              child: AskAiFab(
-                onTap: () {
-                  // Open AI Assistant Chat / BottomSheet
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Opening AI Medical Assistant...'),
-                      duration: Duration(seconds: 1),
-                    ),
-                  );
-                },
-              ),
-            ),
-            // Floating button location pinned to the end float
-            floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
           );
         },
       ),
@@ -1575,13 +1556,13 @@ class _SearchPageState extends State<SearchPage> {
         ),
         decoration: BoxDecoration(
           color: is_selected
-              ? AppColors.primary_color
-              : (is_dark ? AppColors.surface_dark : const Color(0xFFF2F4F7)),
+              ? AppColors.primary
+              : (is_dark ? AppColors.darkSurfaceElevated : AppColors.gray100),
           borderRadius: BorderRadius.circular(AppSpacing.radius_l),
           border: Border.all(
             color: is_selected
-                ? AppColors.primary_color
-                : (is_dark ? AppColors.border_dark : const Color(0xFFE4E7EC)),
+                ? AppColors.primary
+                : (is_dark ? AppColors.darkBorder : AppColors.gray200),
             width: AppSpacing.border_width_thin,
           ),
         ),
@@ -1590,7 +1571,7 @@ class _SearchPageState extends State<SearchPage> {
           style: TextStyle(
             color: is_selected
                 ? AppColors.white
-                : (is_dark ? AppColors.text_dark_secondary : AppColors.search_text_slate),
+                : (is_dark ? AppColors.darkTextPrimary : AppColors.search_text_slate),
             fontWeight: is_selected ? FontWeight.bold : FontWeight.normal,
             fontSize: AppSpacing.font_size_label,
           ),

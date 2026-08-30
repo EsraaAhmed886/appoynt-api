@@ -273,10 +273,10 @@ class OfferCard extends StatelessWidget {
               onPressed: is_expired ? null : on_book_tap,
               style: ElevatedButton.styleFrom(
                 backgroundColor: is_expired
-                    ? (is_dark ? Colors.grey[800] : Colors.grey[300])
+                    ? (is_dark ? AppColors.grey800 : AppColors.grey300)
                     : AppColors.primary_color,
                 disabledBackgroundColor:
-                    is_dark ? Colors.grey[800] : Colors.grey[300],
+                    is_dark ? AppColors.grey800 : AppColors.grey300,
                 shape: RoundedRectangleBorder(
                   borderRadius:
                       BorderRadius.circular(_LocalDimensions.btn_radius),

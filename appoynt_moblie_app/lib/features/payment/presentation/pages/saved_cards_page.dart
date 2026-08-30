@@ -179,17 +179,17 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                                   gradient: is_default
                                       ? const LinearGradient(
                                           colors: [
-                                            Color(0xFF0F172A), // Slate Dark
-                                            Color(0xFF1E293B), // Slate Light
-                                            Color(0xFF334155), // Indigo Highlight
+                                            AppColors.slate900, // Slate Dark
+                                            AppColors.slate800, // Slate Light
+                                            AppColors.slate700, // Indigo Highlight
                                           ],
                                           begin: Alignment.topLeft,
                                           end: Alignment.bottomRight,
                                         )
                                       : const LinearGradient(
                                           colors: [
-                                            Color(0xFF1E1B4B), // Indigo Dark
-                                            Color(0xFF312E81), // Indigo Light
+                                            AppColors.indigo950, // Indigo Dark
+                                            AppColors.indigo900, // Indigo Light
                                           ],
                                           begin: Alignment.topLeft,
                                           end: Alignment.bottomRight,
@@ -237,8 +237,8 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
                                                 decoration: BoxDecoration(
                                                   gradient: const LinearGradient(
                                                     colors: [
-                                                      Color(0xFFFCD34D), // Soft Amber Gold
-                                                      Color(0xFFF59E0B), // Deep Amber Gold
+                                                      AppColors.amber300, // Soft Amber Gold
+                                                      AppColors.warning, // Deep Amber Gold
                                                     ],
                                                     begin: Alignment.topLeft,
                                                     end: Alignment.bottomRight,
@@ -647,10 +647,9 @@ class _SavedCardsPageState extends State<SavedCardsPage> {
               onPressed: () {
                 Navigator.of(dialog_context).pop();
                 context.read<ProfileCubit>().remove_payment_card(card_id);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(localizations.payment_card_removed_success),
-                  ),
+                CustomSnackBar.success(
+                  context,
+                  localizations.payment_card_removed_success,
                 );
               },
               child: Text(
@@ -672,7 +671,7 @@ class EMVChipPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     // Styling parameter configurations
     final Paint linePaint = Paint()
-      ..color = const Color(0xFFB45309).withValues(alpha: 0.3)
+      ..color = AppColors.amber700.withValues(alpha: 0.3)
       ..style = PaintingStyle.stroke
       ..strokeWidth = _LocalDimensions.line_width_thin;
 
@@ -685,7 +684,7 @@ class EMVChipPainter extends CustomPainter {
         Offset(0.0, size.height * _LocalDimensions.grid_x2), Offset(size.width, size.height * _LocalDimensions.grid_x2), linePaint);
 
     final Paint corePaint = Paint()
-      ..color = const Color(0xFFFCD34D).withValues(alpha: 0.9)
+      ..color = AppColors.amber300.withValues(alpha: 0.9)
       ..style = PaintingStyle.fill;
 
     // Draw central micro-core segment
@@ -709,7 +708,7 @@ class CardGridPainter extends CustomPainter {
   // Draw card surface details
   void paint(Canvas canvas, Size size) {
     final Paint paint = Paint()
-      ..color = const Color(0xFFB45309).withValues(alpha: _LocalDimensions.line_opacity)
+      ..color = AppColors.amber700.withValues(alpha: _LocalDimensions.line_opacity)
       ..style = PaintingStyle.stroke
       ..strokeWidth = _LocalDimensions.line_width_thin;
 

@@ -2,16 +2,15 @@
  * File Name: medical_context_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 20/07/2026
- * Version Information: V3.0.0
+ * Version Information: V3.1.0
  * Dependencies: package:flutter/material.dart,
  *   package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/core/routing/route_export.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
- *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart,
- *   package:appoynt_mobile_app/features/profile/presentation/pages/add_family_member_page.dart
+ *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
- * File Description: Dedicated screen displaying patient medical records, family dependents profile switcher, and health insurance.
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
+ * File Description: Dedicated screen displaying patient medical records, family dependents, chronic conditions, and health insurance using unified MedicalHistoryTile.
  */
 
 // Importing global route export barrel configuration
@@ -33,21 +32,6 @@ import 'package:appoynt_mobile_app/features/profile/presentation/pages/tests_res
 import 'package:appoynt_mobile_app/features/profile/presentation/pages/chronic_conditions_page.dart';
 // Importing insurance details page layout
 import 'package:appoynt_mobile_app/features/profile/presentation/pages/insurance_details_page.dart';
-// Importing full screen add family member page layout
-
-// Local layout dimensions class to strictly eliminate hardcoded numbers
-class _LocalDimensions {
-  static const double border_radius_default = 16.0;
-  static const double border_radius_badge = 12.0;
-  static const double spacing_large = 16.0;
-  static const double font_size_body = 14.0;
-  static const double font_size_tiny = 11.0;
-  static const double icon_size_medium = 20.0;
-  static const double shadow_blur = 10.0;
-  static const double shadow_opacity_dark = 0.2;
-  static const double shadow_opacity_light = 0.05;
-  static const double dash_stroke_width = 1.5;
-}
 
 // Stateful widget displaying Medical Context layout
 class MedicalContextPage extends StatefulWidget {
@@ -64,8 +48,6 @@ class MedicalContextPage extends StatefulWidget {
 
 // State class managing interactive sliders and dashboard categories
 class _MedicalContextPageState extends State<MedicalContextPage> {
-  // Selected dependent context switcher index
-
   // Helper to resolve localized count labels for general medical records/allergies/conditions
   String _get_item_count_label(int count, AppLocalizations localizations) {
     return localizations.get_items_count_text(count);
@@ -137,217 +119,127 @@ class _MedicalContextPageState extends State<MedicalContextPage> {
                     // Height gap spacer
                     const SizedBox(height: AppSpacing.space_xl),
 
-                    // SECTION 2: Separate clean navigation cards (No micro-data leaking into hub screen)
-                    
+                    // SECTION: Unified Reusable Medical History Cards
+
                     // CARD 0: Family Members Card
-                    _MedicalCategoryCard(
-                      // Title
-                      title: localizations.profile_dependents_title,
-                      // People group icon
+                    MedicalHistoryTile(
                       icon: Icons.people_outline_rounded,
-                      // Deep Orange color
                       iconColor: AppColors.deepOrange,
-                      // Background tint
                       iconBgColor: AppColors.deepOrange.withValues(alpha: 0.1),
-                      // Localized count badge
-                      badgeText: _get_members_count_label(3, localizations),
-                      // Navigate onTap
+                      title: localizations.profile_dependents_title,
+                      statusText: _get_members_count_label(3, localizations),
+                      hasItems: true,
                       onTap: () {
-                        // Push navigation route
                         Navigator.of(context).push(
-                          // Route builder
                           MaterialPageRoute(
-                            // Builder
                             builder: (route_context) => BlocProvider.value(
-                              // Propagate cubit
                               value: context.read<ProfileCubit>(),
-                              // Target sub-page
                               child: const FamilyMembersPage(),
                             ),
                           ),
                         );
                       },
                     ),
-                    // Spacing gap (strictly 16px)
-                    const SizedBox(height: _LocalDimensions.spacing_large),
 
-                    // CARD A: Allergies Card
-                    _MedicalCategoryCard(
-                      // Title
-                      title: localizations.profile_allergies,
-                      // Warning icon
+                    // CARD 1: Allergies Card
+                    MedicalHistoryTile(
                       icon: Icons.warning_amber_rounded,
-                      // Crimson red colors
                       iconColor: AppColors.error,
-                      // Background tint
                       iconBgColor: AppColors.error.withValues(alpha: 0.1),
-                      // Localized items count badge
-                      badgeText: _get_item_count_label(all_allergies.length, localizations),
-                      // Navigate onTap
+                      title: localizations.profile_allergies,
+                      statusText: _get_item_count_label(all_allergies.length, localizations),
+                      hasItems: true == all_allergies.isNotEmpty,
                       onTap: () {
-                        // Push navigation route
                         Navigator.of(context).push(
-                          // Route builder
                           MaterialPageRoute(
-                            // Builder
                             builder: (route_context) => BlocProvider.value(
-                              // Propagate cubit
                               value: context.read<ProfileCubit>(),
-                              // Target sub-page
                               child: const AllergiesPage(),
                             ),
                           ),
                         );
                       },
                     ),
-                    // Spacing gap (strictly 16px)
-                    const SizedBox(height: _LocalDimensions.spacing_large),
 
-                    // CARD B: Chronic Conditions Card
-                    _MedicalCategoryCard(
-                      // Title
-                      title: localizations.profile_chronic_conditions,
-                      // Pulse heart icon representation
+                    // CARD 2: Chronic Conditions Card
+                    MedicalHistoryTile(
                       icon: Icons.add_circle_outline_rounded,
-                      // Teal color accent
                       iconColor: AppColors.teal,
-                      // Icon background tint fill
                       iconBgColor: AppColors.teal.withValues(alpha: 0.1),
-                      // Localized conditions count badge
-                      badgeText: _get_item_count_label(state.profile.chronic_conditions.length, localizations),
-                      // Navigate onTap
+                      title: localizations.profile_chronic_conditions,
+                      statusText: _get_item_count_label(state.profile.chronic_conditions.length, localizations),
+                      hasItems: true == state.profile.chronic_conditions.isNotEmpty,
                       onTap: () {
-                        // Push navigation route
                         Navigator.of(context).push(
-                          // Route builder
                           MaterialPageRoute(
-                            // Builder
                             builder: (route_context) => BlocProvider.value(
-                              // Propagate cubit
                               value: context.read<ProfileCubit>(),
-                              // Target sub-page
                               child: const ChronicConditionsPage(),
                             ),
                           ),
                         );
                       },
                     ),
-                    // Spacing gap (strictly 16px)
-                    const SizedBox(height: _LocalDimensions.spacing_large),
 
-                    // CARD C: Medications List Card
-                    _MedicalCategoryCard(
-                      // Title
-                      title: localizations.profile_medications,
-                      // Receipt list RX icon
-                      icon: Icons.receipt_long_rounded,
-                      // Accent primary color
+                    // CARD 3: Medications List Card
+                    MedicalHistoryTile(
+                      icon: Icons.medication_outlined,
                       iconColor: AppColors.primary_color,
-                      // Background tint
                       iconBgColor: AppColors.primary_color.withValues(alpha: 0.1),
-                      // Localized active prescriptions count badge
-                      badgeText: _get_prescription_count_label(state.profile.prescriptions.length, localizations),
-                      // Navigate onTap
+                      title: localizations.profile_medications,
+                      statusText: _get_prescription_count_label(state.profile.prescriptions.length, localizations),
+                      hasItems: true == state.profile.prescriptions.isNotEmpty,
                       onTap: () {
-                        // Push navigation route
                         Navigator.of(context).push(
-                          // Route builder
                           MaterialPageRoute(
-                            // Builder
                             builder: (route_context) => BlocProvider.value(
-                              // Propagate cubit
                               value: context.read<ProfileCubit>(),
-                              // Target sub-page
                               child: const PrescriptionsPage(),
                             ),
                           ),
                         );
                       },
                     ),
-                    // Spacing gap (strictly 16px)
-                    const SizedBox(height: _LocalDimensions.spacing_large),
 
-                    // CARD D: Tests and Results Card
-                    _MedicalCategoryCard(
-                      // Title
-                      title: localizations.profile_tests_results,
-                      // Assignment folder outline icon
+                    // CARD 4: Tests and Results Card
+                    MedicalHistoryTile(
                       icon: Icons.assignment_outlined,
-                      // Purple color accent
                       iconColor: AppColors.deepPurple,
-                      // Background tint
                       iconBgColor: AppColors.deepPurple.withValues(alpha: 0.1),
-                      // Localized file count badge
-                      badgeText: _get_file_count_label(files_count, localizations),
-                      // Navigate onTap
+                      title: localizations.profile_tests_results,
+                      statusText: _get_file_count_label(files_count, localizations),
+                      hasItems: 0 < files_count,
                       onTap: () {
-                        // Push navigation route
                         Navigator.of(context).push(
-                          // Route builder
                           MaterialPageRoute(
-                            // Builder
                             builder: (route_context) => BlocProvider.value(
-                              // Propagate cubit
                               value: context.read<ProfileCubit>(),
-                              // Target sub-page
                               child: const TestsResultsPage(),
                             ),
                           ),
                         );
                       },
                     ),
-                    // Spacing gap (strictly 16px)
-                    const SizedBox(height: _LocalDimensions.spacing_large),
 
-                    // CARD E: Shared InsuranceCardWidget or NoInsuranceCardWidget depending on count
-                    true == state.profile.insurance_cards.isEmpty
-                        ? NoInsuranceCardWidget(
-                            // Title
-                            title: localizations.profile_insurance_details,
-                            // Localized count badge
-                            badgeText:
-                                _get_insurance_count_label(0, localizations),
-                            // Navigate onTap
-                            onTap: () {
-                              // Push navigate to insurance details screen layout onTap
-                              Navigator.of(context).push(
-                                // Route builder
-                                MaterialPageRoute(
-                                  // Builder constructor
-                                  builder: (route_context) =>
-                                      BlocProvider.value(
-                                    // Carry cubit block context forward
-                                    value: context.read<ProfileCubit>(),
-                                    // Insurance details page screen
-                                    child: const InsuranceDetailsPage(),
-                                  ),
-                                ),
-                              );
-                            },
-                          )
-                        : InsuranceCardWidget(
-                            // Insurance card model data
-                            card: state.profile.insurance_cards.first,
-                            // Render styled digital gradient card
-                            isGradientStyle: true,
-                            // Push navigate to insurance details screen layout onTap
-                            onTap: () {
-                              // Push navigate
-                              Navigator.of(context).push(
-                                // Route builder
-                                MaterialPageRoute(
-                                  // Builder constructor
-                                  builder: (route_context) =>
-                                      BlocProvider.value(
-                                    // Carry cubit block context forward
-                                    value: context.read<ProfileCubit>(),
-                                    // Insurance details page screen
-                                    child: const InsuranceDetailsPage(),
-                                  ),
-                                ),
-                              );
-                            },
+                    // CARD 5: Insurance Details Card (Unified MedicalHistoryTile without text truncation)
+                    MedicalHistoryTile(
+                      icon: Icons.credit_card_rounded,
+                      iconColor: AppColors.primary,
+                      iconBgColor: AppColors.primary.withValues(alpha: 0.1),
+                      title: localizations.profile_insurance_details,
+                      statusText: _get_insurance_count_label(state.profile.insurance_cards.length, localizations),
+                      hasItems: true == state.profile.insurance_cards.isNotEmpty,
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (route_context) => BlocProvider.value(
+                              value: context.read<ProfileCubit>(),
+                              child: const InsuranceDetailsPage(),
+                            ),
                           ),
+                        );
+                      },
+                    ),
                   ],
                 );
               },
@@ -359,169 +251,113 @@ class _MedicalContextPageState extends State<MedicalContextPage> {
   }
 }
 
-// Reusable separate navigation card widget mapping title and count badge
-class _MedicalCategoryCard extends StatelessWidget {
-  // Category Title text string
-  final String title;
-  // Category Icon symbol representation
+// -----------------------------------------------------------------------------
+// Unified Reusable Medical History Card Widget
+// -----------------------------------------------------------------------------
+class MedicalHistoryTile extends StatelessWidget {
   final IconData icon;
-  // Icon color configuration
   final Color iconColor;
-  // Icon circle background color tint
   final Color iconBgColor;
-  // Muted count badge label string
-  final String badgeText;
-  // Click handler tap callback
+  final String title;
+  final String statusText;
+  final bool hasItems;
   final VoidCallback onTap;
 
-  // Constructor mapping properties
-  const _MedicalCategoryCard({
-    required this.title,
+  const MedicalHistoryTile({
+    super.key,
     required this.icon,
     required this.iconColor,
     required this.iconBgColor,
-    required this.badgeText,
+    required this.title,
+    required this.statusText,
+    required this.hasItems,
     required this.onTap,
   });
 
   @override
-  // Draw card widget structure details
   Widget build(BuildContext context) {
-    // Resolve theme brightness modes status
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
 
-    // Outer container card wrapper
     return Container(
-      // Card decorations styling
+      margin: const EdgeInsets.only(bottom: 12.0),
       decoration: BoxDecoration(
-        // Background color
         color: is_dark ? AppColors.surface_dark : AppColors.white,
-        // Corners radius curvature equivalent to 16 units
-        // Corners radius curvature equivalent to 16 units
-        borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
-        // Drop shadows
-        boxShadow: [
-          // Soft card shadow
-          BoxShadow(
-            // Shadow colors adapting to dark mode
-            color: is_dark
-                ? AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_dark)
-                : AppColors.black.withValues(alpha: _LocalDimensions.shadow_opacity_light),
-            // Blur spread
-            blurRadius: _LocalDimensions.shadow_blur,
-            // Offset coordinates position
-            offset: const Offset(0, 4),
-          ),
-        ],
-        // Outline borders
+        borderRadius: BorderRadius.circular(16.0),
         border: Border.all(
-          // Border color
-          color: is_dark
-              ? AppColors.border_dark
-              : AppColors.slate_200,
-          // Boundary line thickness
+          color: is_dark ? AppColors.border_dark : AppColors.slate200,
           width: AppSpacing.border_width_thin,
         ),
+        boxShadow: is_dark
+            ? []
+            : [
+                BoxShadow(
+                  color: AppColors.black.withValues(alpha: 0.02),
+                  blurRadius: 10.0,
+                  offset: const Offset(0, 3),
+                ),
+              ],
       ),
-      // Material inkwell wrapper to support native press ripple feedback overlays
       child: Material(
-        // Transparent colors
         color: AppColors.transparent,
-        // Clickable area
         child: InkWell(
-          // Curved corners radius
-          borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
-          // Bind click handler
           onTap: onTap,
-          // Card padding offsets
+          borderRadius: BorderRadius.circular(16.0),
           child: Padding(
-            // Visual padding configurations
-            padding: const EdgeInsets.symmetric(
-              // Horizontal boundaries padding
-              horizontal: AppSpacing.space_xl,
-              // Vertical boundaries padding
-              vertical: AppSpacing.space_l,
-            ),
-            // Horizontal row placing icon, title, badge, and navigation chevron
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
             child: Row(
-              // Row elements
               children: [
-                // Medical Icon graphic represent container
+                // 1. Icon Container
                 Container(
-                  // Padding offset
-                  padding: const EdgeInsets.all(AppSpacing.space_s),
-                  // Circle shape decoration
+                  width: 40.0,
+                  height: 40.0,
                   decoration: BoxDecoration(
-                    // Background fill color tint
                     color: iconBgColor,
-                    // Circle shape
-                    shape: BoxShape.circle,
+                    borderRadius: BorderRadius.circular(12.0),
                   ),
-                  // Icon vector graphic
-                  child: Icon(
-                    // Bind icon
-                    icon,
-                    // Color
-                    color: iconColor,
-                    // Size
-                    size: _LocalDimensions.icon_size_medium,
-                  ),
+                  child: Icon(icon, color: iconColor, size: 20.0),
                 ),
-                // Divider spacing gap width
-                const SizedBox(width: AppSpacing.space_m),
-                // Title widget taking expanded horizontal space
+                const SizedBox(width: 14.0),
+
+                // 2. Title (Takes remaining available space with no premature clipping)
                 Expanded(
-                  // Title text
                   child: Text(
-                    // Bind title
                     title,
-                    // Typographic specs
                     style: TextStyle(
-                      // Size
-                      fontSize: _LocalDimensions.font_size_body,
-                      // Bold weights
-                      fontWeight: FontWeight.bold,
-                      // Color
-                      color: is_dark ? AppColors.white : AppColors.text_light_primary,
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.w700,
+                      color: is_dark ? AppColors.darkTextPrimary : AppColors.slate900,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                // Muted count items badge container
+                const SizedBox(width: 8.0),
+
+                // 3. Status Badge (Compact Chip)
                 Container(
-                  // Padding offsets
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space_s, vertical: AppSpacing.space_xs),
-                  // Card decoration
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.5),
                   decoration: BoxDecoration(
-                    // Light blue transparent background or grey background
-                    color: is_dark
-                        ? AppColors.white.withValues(alpha: _LocalDimensions.shadow_opacity_light)
-                        : AppColors.primary_color.withValues(alpha: _LocalDimensions.shadow_opacity_light),
-                    // Rounded border contours
-                    borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_badge),
+                    color: true == hasItems
+                        ? AppColors.primary_color.withValues(alpha: 0.12)
+                        : (is_dark ? AppColors.darkBackground : AppColors.primary.withValues(alpha: 0.08)),
+                    borderRadius: BorderRadius.circular(20.0),
                   ),
-                  // Badge count label
                   child: Text(
-                    // Bind label
-                    badgeText,
-                    // Style specs
+                    statusText,
                     style: TextStyle(
-                      // Tiny size
-                      fontSize: _LocalDimensions.font_size_tiny,
-                      // Semi-bold
+                      fontSize: 12.0,
                       fontWeight: FontWeight.w600,
-                      // Color blue or white adapted
-                      color: is_dark ? AppColors.white70 : AppColors.primary_color,
+                      color: true == hasItems ? AppColors.primary_color : AppColors.primary,
                     ),
                   ),
                 ),
-                // Spacing gap width
-                const SizedBox(width: AppSpacing.space_s),
-                // Right navigation chevron indicator
+                const SizedBox(width: 8.0),
+
+                // 4. Chevron Arrow
                 Icon(
-                  // Chevron right symbol
-                  Icons.chevron_right_rounded,
-                  // Muted color adaptions
-                  color: is_dark ? AppColors.white30 : AppColors.text_light_secondary,
+                  Icons.arrow_forward_ios_rounded,
+                  size: 14.0,
+                  color: is_dark ? AppColors.darkTextMuted : AppColors.slate400,
                 ),
               ],
             ),
@@ -529,56 +365,5 @@ class _MedicalCategoryCard extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-// Custom painter class to draw a dashed circle outline border
-class DashCirclePainter extends CustomPainter {
-  // Border color configuration
-  final Color color;
-
-  // Constructor mapping the properties
-  const DashCirclePainter({required this.color});
-
-  @override
-  // Draw layout logic execution
-  void paint(Canvas canvas, Size size) {
-    // Create line style Paint configurations
-    final Paint paint = Paint()
-      ..color = color
-      ..strokeWidth = _LocalDimensions.dash_stroke_width
-      ..style = PaintingStyle.stroke;
-
-    // Define dashboard dimensions parameters
-    final double radius = size.width / 2;
-    // Circle origin coordinates
-    final Offset center = Offset(size.width / 2, size.height / 2);
-    // Number of dashes to draw
-    const int dash_count = 12;
-    // Circular arc angle per dash
-    const double dash_angle = (2 * 3.1415926535) / dash_count;
-
-    // Loop drawing dashes
-    for (int i = 0; i < dash_count; i++) {
-      // Calculate start angle coordinates
-      final double start_angle = i * dash_angle;
-      // Calculate sweep angle coordinates
-      const double sweep_angle = dash_angle * 0.6;
-      // Draw dashboard arc outline segment
-      canvas.drawArc(
-        Rect.fromCircle(center: center, radius: radius),
-        start_angle,
-        sweep_angle,
-        false,
-        paint,
-      );
-    }
-  }
-
-  @override
-  // Repaint state check
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    // Always return false as layout shape is static
-    return false;
   }
 }

@@ -2,11 +2,11 @@
  * File Name: app_bottom_nav_bar.dart
  * Author: Kholoud Khaled
  * Date of Creation: 17/07/2026
- * Version Information: V1.0.0
+ * Version Information: V1.2.0
  * Dependencies: package:flutter/material.dart,
  *   package:appoynt_mobile_app/core/routing/route_export.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
  * File Description: A reusable bottom navigation bar component mapping custom design tokens and localized text resources.
  */
 
@@ -77,15 +77,6 @@ class AppBottomNavBar extends StatelessWidget {
         // Localized text label string
         label: localizations.dummy_appointments_tab_label,
       ),
-      // Search tab item declaration
-      AppNavItem(
-        // Unselected icon token representation
-        icon: LucideIcons.search,
-        // Selected icon token representation
-        active_icon: LucideIcons.search,
-        // Localized text label string
-        label: localizations.dummy_search_tab_label,
-      ),
       // Favorite tab item declaration (heart icon as required in Lucide design specs)
       AppNavItem(
         // Unselected icon token representation
@@ -111,17 +102,25 @@ class AppBottomNavBar extends StatelessWidget {
       // Apply layout styling decorations to bottom nav wrapper box
       decoration: BoxDecoration(
         // Set container background color based on active dark theme status
-        color: is_dark ? AppColors.surface_dark : AppColors.background_light,
+        color: is_dark ? AppColors.darkSurface : AppColors.background_light,
+        border: Border(
+          top: BorderSide(
+            color: is_dark ? AppColors.darkBorder : AppColors.slate200,
+            width: 1.0,
+          ),
+        ),
         // Apply shadow parameters array
-        boxShadow: const [
+        boxShadow: [
           // Shadow element representing bottom nav border elevation
           BoxShadow(
-            // Shadow color offset using dummy constant token
-            color: AppColors.dummy_shadow_color,
+            // Shadow color offset adapting to dark mode
+            color: is_dark
+                ? AppColors.black.withValues(alpha: 0.3)
+                : AppColors.dummy_shadow_color,
             // Blur radius offset using dummy constant token
             blurRadius: AppSpacing.dummy_bottom_nav_blur_radius,
             // Offset coordinates for the elevation projection
-            offset: Offset(
+            offset: const Offset(
               // Horizontal offset coordinate
               0.0,
               // Vertical offset coordinate
@@ -149,7 +148,7 @@ class AppBottomNavBar extends StatelessWidget {
             children: nav_items.asMap().entries.map((e) {
               // Resolve active selection status of target map entry
               final bool is_selected = e.key == selected_index;
-              // Return Expanded wrapper so all 5 tabs adjust their widths proportionally
+              // Return Expanded wrapper so all 4 tabs adjust their widths proportionally
               return Expanded(
                 // Return interactive detector capturing tap gesture event handlers
                 child: GestureDetector(
@@ -176,7 +175,9 @@ class AppBottomNavBar extends StatelessWidget {
                     decoration: BoxDecoration(
                       // Highlight selected item container with primary accent tint
                       color: is_selected
-                          ? AppColors.primary_color.withValues(alpha: AppSpacing.dummy_opacity_active)
+                          ? (is_dark
+                              ? AppColors.primaryDarkSurface.withValues(alpha: 0.5)
+                              : AppColors.primary_color.withValues(alpha: AppSpacing.dummy_opacity_active))
                           : AppColors.transparent,
                       // Rounded corner radius settings mapping index indicator shapes
                       borderRadius: BorderRadius.circular(
@@ -194,10 +195,10 @@ class AppBottomNavBar extends StatelessWidget {
                         Icon(
                           // Select icon mapping active status
                           is_selected ? e.value.active_icon : e.value.icon,
-                          // Highlight active icon with primary brand color, else unselected gray
+                          // Highlight active icon with primary brand color, else unselected slate
                           color: is_selected
-                              ? AppColors.primary_color
-                              : AppColors.dummy_unselected_item_color,
+                              ? AppColors.primary
+                              : (is_dark ? AppColors.darkTextSecondary : AppColors.dummy_unselected_item_color),
                           // Set icon display size
                           size: AppSpacing.dummy_size_icon_nav,
                         ),
@@ -220,10 +221,10 @@ class AppBottomNavBar extends StatelessWidget {
                           style: TextStyle(
                             // Set typographic font size matching standard labels
                             fontSize: AppSpacing.dummy_font_size_nav_label,
-                            // Highlight active label with primary brand color, else unselected gray
+                            // Highlight active label with primary brand color, else unselected slate
                             color: is_selected
-                                ? AppColors.primary_color
-                                : AppColors.dummy_unselected_item_color,
+                                ? AppColors.primary
+                                : (is_dark ? AppColors.darkTextSecondary : AppColors.dummy_unselected_item_color),
                             // Setup font weight active indicator
                             fontWeight: is_selected ? FontWeight.bold : FontWeight.w500,
                             // Setup height spacing scale

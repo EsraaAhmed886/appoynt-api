@@ -2,13 +2,13 @@
  * File Name: help_about_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 08/08/2026
- * Version Information: V1.0.0
+ * Version Information: V1.1.0
  * Dependencies: package:flutter/material.dart,
  *   package:appoynt_mobile_app/core/routing/route_export.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
  * File Description: Help & About screen containing support helpline, legal terms, open source licenses, and application version info.
  */
 
@@ -254,7 +254,7 @@ class _HelpAndAboutPageState extends State<HelpAndAboutPage> {
     final String help_center_title = localizations.profile_help_center;
     final String help_center_sub = localizations.profile_help_center_sub;
 
-    final Color dividerColor = is_dark ? AppColors.border_dark : const Color(0xFFF1F5F9);
+    final Color dividerColor = is_dark ? AppColors.border_dark : AppColors.slate100;
 
     return Scaffold(
       body: SafeArea(
@@ -349,7 +349,7 @@ class _HelpAndAboutPageState extends State<HelpAndAboutPage> {
                   style: const TextStyle(
                     fontSize: 11.0,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF94A3B8),
+                    color: AppColors.slate400,
                     letterSpacing: 1.0,
                   ),
                 ),
@@ -384,15 +384,14 @@ class _HelpAndAboutPageState extends State<HelpAndAboutPage> {
                                   child: Text(localizations.profile_cancel_button),
                                 ),
                                 TextButton(
-                                  onPressed: () {
-                                    Navigator.of(dialog_context).pop();
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text('Hotline dialer opened.'),
-                                      ),
-                                    );
-                                  },
-                                  child: const Text('Dial'),
+                                    onPressed: () {
+                                      Navigator.of(dialog_context).pop();
+                                      CustomSnackBar.info(
+                                        context,
+                                        'Hotline dialer opened.',
+                                      );
+                                    },
+                                  child: Text(localizations.dial_action),
                                 ),
                               ],
                             );
@@ -412,11 +411,9 @@ class _HelpAndAboutPageState extends State<HelpAndAboutPage> {
                         color: is_dark ? AppColors.white30 : AppColors.text_light_secondary,
                       ),
                       onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(localizations.profile_opening_help_center),
-                            backgroundColor: AppColors.primary_color,
-                          ),
+                        CustomSnackBar.info(
+                          context,
+                          localizations.profile_opening_help_center,
                         );
                       },
                     ),
@@ -425,12 +422,12 @@ class _HelpAndAboutPageState extends State<HelpAndAboutPage> {
                 const SizedBox(height: 24.0),
 
                 // SECTION 2: LEGAL & ABOUT
-                const Text(
-                  "LEGAL & POLICIES", // Localized header if needed or standard uppercase header
-                  style: TextStyle(
+                Text(
+                  localizations.legal_and_policies_title,
+                  style: const TextStyle(
                     fontSize: 11.0,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF94A3B8),
+                    color: AppColors.slate400,
                     letterSpacing: 1.0,
                   ),
                 ),
