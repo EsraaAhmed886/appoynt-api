@@ -2,16 +2,18 @@
  * File Name: user_profile_model.dart
  * Author: Kholoud Khaled
  * Date of Creation: 09/08/2026
- * Version Information: V1.2.0
- * Dependencies: None
+ * Version Information: V1.3.0
+ * Dependencies: package:appoynt_mobile_app/features/profile/data/models/governorate_model.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
- * File Description: Data Transfer Object (DTO) for the User Profile. Handles
- *   JSON serialization and mapping. V1.2.0 adds the has_profile_photo boolean
- *   field sourced from the PatientProfileResponse schema.
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
+ * File Description: Data Transfer Object (DTO) for the User/Patient Profile. Handles
+ *   resilient, defensive JSON deserialization for nested Map objects (governorate, city, bloodGroup, user)
+ *   and String ID/Name combinations from ASP.NET Core backend endpoints.
  */
 
-// Model representing user profile data with JSON serialization
+import 'package:appoynt_mobile_app/features/profile/data/models/governorate_model.dart';
+
+// Model representing user and patient profile data with defensive JSON serialization
 class UserProfileModel {
   // Unique identifier of the user
   final String id;
@@ -39,8 +41,22 @@ class UserProfileModel {
   final String? weight;
   // Patient body height in CM
   final String? height;
-  // Patient blood group category string
+  // Patient blood group category string (e.g., 'A+', 'B-')
   final String? blood_group;
+  // Foreign key identifier for selected governorate
+  final String? governorate_id;
+  // English/Arabic display name for governorate
+  final String? governorate_name;
+  // Foreign key identifier for selected city
+  final String? city_id;
+  // English/Arabic display name for city
+  final String? city_name;
+  // Parsed GovernorateModel entity object
+  final GovernorateModel? governorate;
+  // Parsed CityModel entity object
+  final CityModel? city;
+  // Profile picture URL from backend
+  final String? photo_url;
 
   // Constructor initializing all member variables
   const UserProfileModel({
@@ -53,13 +69,38 @@ class UserProfileModel {
     this.date_of_birth,
     this.address,
     this.patient_id,
-    // Default to false when the field is absent
     this.has_profile_photo = false,
     this.national_id,
     this.weight,
     this.height,
     this.blood_group,
+    this.governorate_id,
+    this.governorate_name,
+    this.city_id,
+    this.city_name,
+    this.governorate,
+    this.city,
+    this.photo_url,
   });
+
+  // Convenient camelCase property aliases
+  String get firstName => first_name;
+  String get lastName => last_name;
+  String get phoneNumber => phone_number;
+  String get phone => phone_number;
+  String? get nationalId => national_id;
+  String? get dateOfBirth => date_of_birth;
+  String? get birthDate => date_of_birth;
+  DateTime? get parsedBirthDate =>
+      date_of_birth != null ? DateTime.tryParse(date_of_birth!) : null;
+  String? get patientId => patient_id;
+  bool get hasProfilePhoto => has_profile_photo;
+  String? get bloodGroup => blood_group;
+  String? get governorateId => governorate_id;
+  String? get governorateName => governorate_name;
+  String? get cityId => city_id;
+  String? get cityName => city_name;
+  String? get photoUrl => photo_url;
 
   /// Converts a blood group string (e.g. 'A+', 'B-') or int to a standard enum int (0..7)
   static int? bloodGroupToInt(dynamic val) {
@@ -112,24 +153,43 @@ class UserProfileModel {
     }
   }
 
-  /// Converts a backend blood group representation (int 0..7 or String) into 'A+', 'B-', etc.
+  /// Converts a backend blood group representation (int 0..7 or String or Map) into 'A+', 'B-', etc.
   static String intToBloodGroup(dynamic val) {
     if (null == val) {
       return '';
     } else {
       // No action needed
     }
+    if (val is Map) {
+      final dynamic name = val['name'] ?? val['type'] ?? val['label'];
+      if (name != null) {
+        return intToBloodGroup(name);
+      } else {
+        return '';
+      }
+    } else {
+      // No action needed
+    }
     if (val is int) {
       switch (val) {
-        case 0: return 'A+';
-        case 1: return 'A-';
-        case 2: return 'B+';
-        case 3: return 'B-';
-        case 4: return 'AB+';
-        case 5: return 'AB-';
-        case 6: return 'O+';
-        case 7: return 'O-';
-        default: return '';
+        case 0:
+          return 'A+';
+        case 1:
+          return 'A-';
+        case 2:
+          return 'B+';
+        case 3:
+          return 'B-';
+        case 4:
+          return 'AB+';
+        case 5:
+          return 'AB-';
+        case 6:
+          return 'O+';
+        case 7:
+          return 'O-';
+        default:
+          return '';
       }
     } else {
       // No action needed
@@ -143,149 +203,255 @@ class UserProfileModel {
     }
   }
 
-  // Factory constructor to instantiate model from a JSON map
+  /// Internal helper to parse gender dynamically from int, string, or enum representations
+  static int? _parseGender(dynamic val) {
+    if (val == null) return null;
+    if (val is int) return val;
+    final String str = val.toString().trim().toLowerCase();
+    if (str == '0' || str == 'male' || str == 'm' || str == 'ذكر') {
+      return 0;
+    } else if (str == '1' || str == 'female' || str == 'f' || str == 'أنثى') {
+      return 1;
+    }
+    return int.tryParse(str);
+  }
+
+  // Factory constructor to instantiate model from a JSON map with defensive parsing
   factory UserProfileModel.fromJson(Map<String, dynamic> json) {
-    // Return UserProfileModel with mapped properties
+    // If backend wraps the patient payload inside a 'data', 'result', or 'patient' key
+    final Map<String, dynamic> root = json['data'] is Map<String, dynamic>
+        ? json['data'] as Map<String, dynamic>
+        : (json['patient'] is Map<String, dynamic>
+            ? json['patient'] as Map<String, dynamic>
+            : (json['result'] is Map<String, dynamic>
+                ? json['result'] as Map<String, dynamic>
+                : json));
+
+    // Nested user map fallback if identity data is in root['user']
+    final Map<String, dynamic>? userMap = root['user'] is Map<String, dynamic>
+        ? root['user'] as Map<String, dynamic>
+        : null;
+
+    // -------------------------------------------------------------------------
+    // Safe Governorate Parsing (Handles both Object Map and String ID/Name)
+    // -------------------------------------------------------------------------
+    GovernorateModel? parsedGov;
+    String? govId;
+    String? govName;
+
+    if (root['governorate'] is Map<String, dynamic>) {
+      parsedGov =
+          GovernorateModel.fromJson(root['governorate'] as Map<String, dynamic>);
+      govId = parsedGov.id?.toString();
+      govName = parsedGov.nameEn.isNotEmpty ? parsedGov.nameEn : parsedGov.nameAr;
+    } else if (root['governorate'] is String) {
+      govName = root['governorate'] as String;
+    } else if (root['governorate'] != null) {
+      govName = root['governorate'].toString();
+    }
+    govId ??= root['governorateId']?.toString() ?? root['governorate_id']?.toString();
+
+    // -------------------------------------------------------------------------
+    // Safe City Parsing (Handles both Object Map and String ID/Name)
+    // -------------------------------------------------------------------------
+    CityModel? parsedCity;
+    String? cId;
+    String? cName;
+
+    if (root['city'] is Map<String, dynamic>) {
+      parsedCity = CityModel.fromJson(root['city'] as Map<String, dynamic>);
+      cId = parsedCity.id?.toString();
+      cName = parsedCity.nameEn.isNotEmpty ? parsedCity.nameEn : parsedCity.nameAr;
+    } else if (root['city'] is String) {
+      cName = root['city'] as String;
+    } else if (root['city'] != null) {
+      cName = root['city'].toString();
+    }
+    cId ??= root['cityId']?.toString() ?? root['city_id']?.toString();
+
+    // -------------------------------------------------------------------------
+    // Safe Blood Group Parsing
+    // -------------------------------------------------------------------------
+    final String parsedBloodGroup = UserProfileModel.intToBloodGroup(
+      root['bloodGroup'] ?? root['blood_group'],
+    );
+
+    // -------------------------------------------------------------------------
+    // Safe Date of Birth Parsing
+    // -------------------------------------------------------------------------
+    String? rawDob;
+    if (root['birthDate'] != null) {
+      rawDob = root['birthDate'].toString();
+    } else if (root['dateOfBirth'] != null) {
+      rawDob = root['dateOfBirth'].toString();
+    } else if (root['dob'] != null) {
+      rawDob = root['dob'].toString();
+    }
+
+    // -------------------------------------------------------------------------
+    // Safe Address Parsing (Handles String or composed Governorate/City)
+    // -------------------------------------------------------------------------
+    String? parsedAddress;
+    if (root['address'] is String) {
+      parsedAddress = root['address'] as String;
+    } else if (root['address'] is Map) {
+      // Compose from nested map if available
+      final Map<dynamic, dynamic> addrMap = root['address'] as Map;
+      final String? street = addrMap['street']?.toString();
+      final String? c = addrMap['city']?.toString() ?? cName;
+      final String? g = addrMap['governorate']?.toString() ?? govName;
+      final parts = [street, c, g].where((p) => p != null && p.isNotEmpty).toList();
+      if (parts.isNotEmpty) {
+        parsedAddress = parts.join(', ');
+      }
+    }
+    if ((parsedAddress == null || parsedAddress.isEmpty) && govName != null) {
+      parsedAddress = cName != null ? '$cName, $govName' : govName;
+    }
+
+    // -------------------------------------------------------------------------
+    // Safe Photo URL & Has Photo Flag
+    // -------------------------------------------------------------------------
+    final String? parsedPhotoUrl = (root['profilePictureUrl'] ??
+            root['photoUrl'] ??
+            root['avatar'] ??
+            root['avatarUrl'] ??
+            root['pictureUrl'])
+        ?.toString();
+
+    final bool parsedHasPhoto = root['hasProfilePhoto'] is bool
+        ? root['hasProfilePhoto'] as bool
+        : (parsedPhotoUrl != null && parsedPhotoUrl.isNotEmpty);
+
     return UserProfileModel(
-      // Map id claim — check both 'id' (GET /patients/profile) and legacy key
-      id: json['id'] as String? ?? '',
-      // Map email claim
-      email: json['email'] as String? ?? '',
-      // Map firstName claim
-      first_name: json['firstName'] as String? ?? '',
-      // Map lastName claim
-      last_name: json['lastName'] as String? ?? '',
-      // Map phoneNumber claim
-      phone_number: json['phoneNumber'] as String? ?? '',
-      // Map gender enum value
-      gender: json['gender'] as int?,
-      // Map birthDate string (check birthDate first, then dateOfBirth)
-      date_of_birth: json['birthDate'] as String?
-          ?? json['dateOfBirth'] as String?,
-      // Map address details
-      address: json['address'] as String?,
-      // Map optional patient_id from backend API claim
-      patient_id: json['patient_id'] as String?
-          ?? json['pid'] as String?
-          ?? json['patientId'] as String?,
-      // Map hasProfilePhoto boolean flag from PatientProfileResponse schema
-      has_profile_photo: json['hasProfilePhoto'] as bool? ?? false,
-      // Map nationalId / ssn string
-      national_id: json['nationalId'] as String?
-          ?? json['ssn'] as String?
-          ?? json['national_id'] as String?,
-      // Map weight string or number (check weightKg first, then weight)
-      weight: json['weightKg']?.toString()
-          ?? json['weight']?.toString(),
-      // Map height string or number (check heightCm first, then height)
-      height: json['heightCm']?.toString()
-          ?? json['height']?.toString(),
-      // Map bloodGroup enum int (0..7) or string to UI label e.g. "B+"
-      blood_group: UserProfileModel.intToBloodGroup(
-        json['bloodGroup'] ?? json['blood_group'],
-      ),
+      id: (root['id'] ?? root['userId'] ?? root['patientId'] ?? userMap?['id'])
+              ?.toString() ??
+          '',
+      email: (root['email'] ?? userMap?['email'])?.toString() ?? '',
+      first_name: (root['firstName'] ??
+                  root['first_name'] ??
+                  userMap?['firstName'] ??
+                  userMap?['first_name'])
+              ?.toString() ??
+          '',
+      last_name: (root['lastName'] ??
+                  root['last_name'] ??
+                  userMap?['lastName'] ??
+                  userMap?['last_name'])
+              ?.toString() ??
+          '',
+      phone_number: (root['phoneNumber'] ??
+                  root['phone'] ??
+                  userMap?['phoneNumber'] ??
+                  userMap?['phone'])
+              ?.toString() ??
+          '',
+      gender: _parseGender(root['gender'] ?? userMap?['gender']),
+      date_of_birth: rawDob,
+      address: parsedAddress,
+      patient_id: (root['patient_id'] ??
+              root['pid'] ??
+              root['patientId'] ??
+              root['id'])
+          ?.toString(),
+      has_profile_photo: parsedHasPhoto,
+      national_id: (root['nationalId'] ??
+              root['ssn'] ??
+              root['national_id'] ??
+              userMap?['nationalId'])
+          ?.toString(),
+      weight: (root['weightKg'] ?? root['weight'])?.toString(),
+      height: (root['heightCm'] ?? root['height'])?.toString(),
+      blood_group: parsedBloodGroup.isNotEmpty ? parsedBloodGroup : null,
+      governorate_id: govId,
+      governorate_name: govName,
+      city_id: cId,
+      city_name: cName,
+      governorate: parsedGov,
+      city: parsedCity,
+      photo_url: parsedPhotoUrl,
     );
   }
 
   // Converts the UserProfileModel instance into a JSON map
   Map<String, dynamic> toJson() {
-    // Return JSON map representation matching ASP.NET API expected keys
     return {
-      // Map id parameter
       'id': id,
-      // Map email parameter
       'email': email,
-      // Map firstName parameter
       'firstName': first_name,
-      // Map lastName parameter
       'lastName': last_name,
-      // Map phoneNumber parameter
       'phoneNumber': phone_number,
-      // Map gender parameter
       'gender': gender,
-      // Map birthDate and dateOfBirth parameter
       'birthDate': date_of_birth,
       'dateOfBirth': date_of_birth,
-      // Map address parameter
       'address': address,
-      // Map optional patient_id parameter
       'patient_id': patient_id,
-      // Map hasProfilePhoto boolean flag for cache persistence
+      'patientId': patient_id,
       'hasProfilePhoto': has_profile_photo,
-      // Map nationalId for serialization
       'nationalId': national_id,
-      // Map weightKg and weight parameter
-      'weightKg': null != weight && weight!.isNotEmpty ? double.tryParse(weight!) ?? weight : null,
+      'weightKg': null != weight && weight!.isNotEmpty
+          ? double.tryParse(weight!) ?? weight
+          : null,
       'weight': weight,
-      // Map heightCm and height parameter
-      'heightCm': null != height && height!.isNotEmpty ? double.tryParse(height!) ?? height : null,
+      'heightCm': null != height && height!.isNotEmpty
+          ? double.tryParse(height!) ?? height
+          : null,
       'height': height,
-      // Map bloodGroup enum integer (0..7) or string
       'bloodGroup': UserProfileModel.bloodGroupToInt(blood_group),
+      'governorateId': governorate_id,
+      'governorateName': governorate_name,
+      'cityId': city_id,
+      'cityName': city_name,
+      'photoUrl': photo_url,
     };
   }
 
   // Creates a copy of the model with optional field overrides
   UserProfileModel copyWith({
-    // Optional id override
     String? id,
-    // Optional email override
     String? email,
-    // Optional first_name override
     String? first_name,
-    // Optional last_name override
     String? last_name,
-    // Optional phone_number override
     String? phone_number,
-    // Optional gender override
     int? gender,
-    // Optional date_of_birth override
     String? date_of_birth,
-    // Optional address override
     String? address,
-    // Optional patient_id override
     String? patient_id,
-    // Optional has_profile_photo override
     bool? has_profile_photo,
-    // Optional national_id override
     String? national_id,
-    // Optional weight override
     String? weight,
-    // Optional height override
     String? height,
-    // Optional blood_group override
     String? blood_group,
+    String? governorate_id,
+    String? governorate_name,
+    String? city_id,
+    String? city_name,
+    GovernorateModel? governorate,
+    CityModel? city,
+    String? photo_url,
   }) {
-    // Return new instance with applied overrides
     return UserProfileModel(
-      // Apply id override or keep current
       id: id ?? this.id,
-      // Apply email override or keep current
       email: email ?? this.email,
-      // Apply first_name override or keep current
       first_name: first_name ?? this.first_name,
-      // Apply last_name override or keep current
       last_name: last_name ?? this.last_name,
-      // Apply phone_number override or keep current
       phone_number: phone_number ?? this.phone_number,
-      // Apply gender override or keep current
       gender: gender ?? this.gender,
-      // Apply date_of_birth override or keep current
       date_of_birth: date_of_birth ?? this.date_of_birth,
-      // Apply address override or keep current
       address: address ?? this.address,
-      // Apply patient_id override or keep current
       patient_id: patient_id ?? this.patient_id,
-      // Apply has_profile_photo override or keep current
       has_profile_photo: has_profile_photo ?? this.has_profile_photo,
-      // Apply national_id override or keep current
       national_id: national_id ?? this.national_id,
-      // Apply weight override or keep current
       weight: weight ?? this.weight,
-      // Apply height override or keep current
       height: height ?? this.height,
-      // Apply blood_group override or keep current
       blood_group: blood_group ?? this.blood_group,
+      governorate_id: governorate_id ?? this.governorate_id,
+      governorate_name: governorate_name ?? this.governorate_name,
+      city_id: city_id ?? this.city_id,
+      city_name: city_name ?? this.city_name,
+      governorate: governorate ?? this.governorate,
+      city: city ?? this.city,
+      photo_url: photo_url ?? this.photo_url,
     );
   }
 }

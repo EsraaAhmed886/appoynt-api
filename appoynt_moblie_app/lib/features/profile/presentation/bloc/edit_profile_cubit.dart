@@ -21,6 +21,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:appoynt_mobile_app/features/profile/domain/repositories/profile_repository.dart';
 import 'package:appoynt_mobile_app/features/profile/data/models/governorate_model.dart';
+import 'package:appoynt_mobile_app/features/profile/data/models/user_profile_model.dart';
 import 'package:appoynt_mobile_app/features/profile/presentation/bloc/edit_profile_state.dart';
 
 class EditProfileCubit extends Cubit<EditProfileState> {
@@ -229,6 +230,43 @@ class EditProfileCubit extends Cubit<EditProfileState> {
 
   // Alias for onCityChanged
   void onCityChanged(CityModel? city) => selectCity(city);
+
+  /// Matches and binds governorate and city from profile model into cubit selection state
+  void populateProfileData(UserProfileModel profile) {
+    if (governorates.isNotEmpty) {
+      try {
+        selectedGovernorate = governorates.firstWhere(
+          (gov) =>
+              gov.id.toString() == profile.governorateId?.toString() ||
+              (profile.governorateName != null &&
+                  gov.nameEn.toLowerCase() ==
+                      profile.governorateName!.toLowerCase()) ||
+              (profile.governorateName != null &&
+                  gov.nameAr == profile.governorateName),
+        );
+        if (selectedGovernorate != null &&
+            selectedGovernorate!.cities.isNotEmpty) {
+          cities = selectedGovernorate!.cities;
+          selectedCity = cities.firstWhere(
+            (city) =>
+                city.id.toString() == profile.cityId?.toString() ||
+                (profile.cityName != null &&
+                    city.nameEn.toLowerCase() ==
+                        profile.cityName!.toLowerCase()) ||
+                (profile.cityName != null && city.nameAr == profile.cityName),
+          );
+        }
+      } catch (_) {
+        // Fallback safely if not found
+      }
+      emit(state.copyWith(
+        governorates: governorates,
+        selectedGovernorate: selectedGovernorate,
+        selectedCity: selectedCity,
+        cities: cities,
+      ));
+    }
+  }
 
   // 4. Pick Image (Gallery / Camera) - LOCAL STAGING ONLY
   Future<void> pickImage(ImageSource source) async {

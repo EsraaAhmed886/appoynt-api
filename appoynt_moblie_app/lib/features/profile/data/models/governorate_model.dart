@@ -34,22 +34,26 @@ class GovernorateModel {
 
   /// Factory deserializer from JSON map
   factory GovernorateModel.fromJson(Map<String, dynamic> json) {
-    final List<dynamic>? rawCities = json['cities'] as List<dynamic>?;
+    var rawCities = json['cities'];
+    List<CityModel> parsedCities = [];
+    if (rawCities is List) {
+      parsedCities = rawCities
+          .whereType<Map<String, dynamic>>()
+          .map((c) => CityModel.fromJson(c))
+          .toList();
+    }
+
     return GovernorateModel(
-      id: json['id'] ?? 0,
-      nameEn: json['name_en'] as String? ??
-          json['nameEn'] as String? ??
-          json['name'] as String? ??
+      id: json['id']?.toString() ?? '',
+      nameAr: json['name_ar']?.toString() ??
+          json['nameAr']?.toString() ??
+          json['name']?.toString() ??
           '',
-      nameAr: json['name_ar'] as String? ??
-          json['nameAr'] as String? ??
-          json['name'] as String? ??
+      nameEn: json['name_en']?.toString() ??
+          json['nameEn']?.toString() ??
+          json['name']?.toString() ??
           '',
-      cities: rawCities != null
-          ? rawCities
-              .map((e) => CityModel.fromJson(e as Map<String, dynamic>))
-              .toList()
-          : const [],
+      cities: parsedCities,
     );
   }
 
@@ -392,15 +396,15 @@ class CityModel {
   /// Factory deserializer from JSON map
   factory CityModel.fromJson(Map<String, dynamic> json) {
     return CityModel(
-      id: json['id'] ?? 0,
-      governorateId: json['governorate_id'] ?? json['governorateId'] ?? 0,
-      nameEn: json['name_en'] as String? ??
-          json['nameEn'] as String? ??
-          json['name'] as String? ??
+      id: json['id']?.toString() ?? '',
+      governorateId: json['governorateId']?.toString() ?? json['governorate_id']?.toString(),
+      nameEn: json['name_en']?.toString() ??
+          json['nameEn']?.toString() ??
+          json['name']?.toString() ??
           '',
-      nameAr: json['name_ar'] as String? ??
-          json['nameAr'] as String? ??
-          json['name'] as String? ??
+      nameAr: json['name_ar']?.toString() ??
+          json['nameAr']?.toString() ??
+          json['name']?.toString() ??
           '',
     );
   }

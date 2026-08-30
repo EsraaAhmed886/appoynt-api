@@ -210,6 +210,37 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
+  /// Matches and binds governorate and city from profile model into cubit selection state
+  void populateProfileData(UserProfileModel profile) {
+    if (governoratesList.isNotEmpty) {
+      try {
+        selectedGovernorate = governoratesList.firstWhere(
+          (gov) =>
+              gov.id.toString() == profile.governorateId?.toString() ||
+              (profile.governorateName != null &&
+                  gov.nameEn.toLowerCase() ==
+                      profile.governorateName!.toLowerCase()) ||
+              (profile.governorateName != null &&
+                  gov.nameAr == profile.governorateName),
+        );
+        if (selectedGovernorate != null &&
+            selectedGovernorate!.cities.isNotEmpty) {
+          citiesList = selectedGovernorate!.cities;
+          selectedCity = citiesList.firstWhere(
+            (city) =>
+                city.id.toString() == profile.cityId?.toString() ||
+                (profile.cityName != null &&
+                    city.nameEn.toLowerCase() ==
+                        profile.cityName!.toLowerCase()) ||
+                (profile.cityName != null && city.nameAr == profile.cityName),
+          );
+        }
+      } catch (_) {
+        // Fallback safely if not found
+      }
+    }
+  }
+
   // Handles governorate selection and fetches dependent cities
   Future<void> onGovernorateChanged(GovernorateModel? gov) async {
     if (gov == null) {
@@ -318,6 +349,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     try {
       // 1. Fetch user profile from API
       final user_profile = await get_it<GetUserProfileUseCase>().call();
+      populateProfileData(user_profile);
 
       // 2. Safely map API response to domain PatientProfile entity
       final loaded_profile = PatientProfile(
@@ -427,6 +459,7 @@ class ProfileCubit extends Cubit<ProfileState> {
 
     // PHASE 1 — Cache hit: emit immediately so the UI renders with zero delay
     if (null != cached_profile) {
+      populateProfileData(cached_profile);
       // Also read the cached photo URL for instant avatar rendering
       final String? cached_photo_url =
           await get_it<ProfileRepository>().getCachedProfilePhotoUrl();
@@ -475,6 +508,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       // Fetch fresh profile from the remote API (also writes to cache internally)
       final UserProfileModel fresh_profile =
           await get_it<GetUserProfileUseCase>().call();
+      populateProfileData(fresh_profile);
       // Read updated photo URL from local cache (refreshed inside getUserProfile)
       final String? fresh_photo_url =
           await get_it<ProfileRepository>().getCachedProfilePhotoUrl();
