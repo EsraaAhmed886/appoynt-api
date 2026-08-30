@@ -2,7 +2,7 @@
  * File Name: update_profile_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/07/2026
- * Version Information: V1.6.0
+ * Version Information: V1.7.0
  * Dependencies: package:flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
@@ -11,7 +11,7 @@
  *   package:appoynt_mobile_app/core/utils/national_id_parser.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/widgets/edit_profile_body.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 29/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
  * File Description: Defines the Update Profile layout form fields, validators, and backend save handlers with sleek dynamic National ID info badges.
  */
 
@@ -1066,7 +1066,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                             // 1. Governorate Field
                                             // -------------------------------------------------------------
                                             Text(
-                                              isAr ? 'المحافظة' : 'Governorate',
+                                              localizations.governorate_label,
                                               style: TextStyle(
                                                 fontSize: 14.0,
                                                 fontWeight: FontWeight.w600,
@@ -1077,8 +1077,8 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                             _SelectionContainer(
                                               icon: Icons.map_outlined,
                                               hint: cubit.isGovernoratesLoading
-                                                  ? (isAr ? 'جاري التحميل...' : 'Loading governorates...')
-                                                  : (isAr ? 'اختر المحافظة' : 'Select Governorate'),
+                                                  ? localizations.loading_governorates
+                                                  : localizations.select_governorate_hint,
                                               value: isAr ? cubit.selectedGovernorate?.nameAr : cubit.selectedGovernorate?.nameEn,
                                               isLoading: cubit.isGovernoratesLoading,
                                               onTap: () async {
@@ -1086,8 +1086,8 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                                   final GovernorateModel? selected =
                                                       await showSmartSearchPicker<GovernorateModel>(
                                                     context: context,
-                                                    title: isAr ? 'المحافظة' : 'Governorate',
-                                                    searchHint: isAr ? 'ابحث عن المحافظة...' : 'Search governorate...',
+                                                    title: localizations.governorate_label,
+                                                    searchHint: localizations.search_governorate_hint,
                                                     items: cubit.governoratesList,
                                                     itemLabel: (gov) => isAr ? gov.nameAr : gov.nameEn,
                                                     selectedItem: cubit.selectedGovernorate,
@@ -1109,7 +1109,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                             // 2. City Field (Dependent on Governorate)
                                             // -------------------------------------------------------------
                                             Text(
-                                              isAr ? 'المدينة' : 'City',
+                                              localizations.city_label,
                                               style: TextStyle(
                                                 fontSize: 14.0,
                                                 fontWeight: FontWeight.w600,
@@ -1122,8 +1122,8 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                               child: _SelectionContainer(
                                                 icon: Icons.location_city_outlined,
                                                 hint: !hasSelectedGov
-                                                    ? (isAr ? 'يرجى اختيار المحافظة أولاً' : 'Select Governorate first')
-                                                    : (isAr ? 'اختر المدينة' : 'Select City'),
+                                                    ? localizations.select_gov_first_hint
+                                                    : localizations.select_city_hint,
                                                 value: isAr ? cubit.selectedCity?.nameAr : cubit.selectedCity?.nameEn,
                                                 isLoading: cubit.isCitiesLoading,
                                                 onTap: (!hasSelectedGov || cubit.isCitiesLoading)
@@ -1136,9 +1136,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                                           ScaffoldMessenger.of(context).showSnackBar(
                                                             SnackBar(
                                                               content: Text(
-                                                                isAr
-                                                                    ? 'لا توجد مدن متاحة لهذه المحافظة'
-                                                                    : 'No cities available for this governorate',
+                                                                localizations.no_cities_available,
                                                               ),
                                                               duration: const Duration(seconds: 2),
                                                             ),
@@ -1148,8 +1146,8 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                                           final CityModel? selected =
                                                               await showSmartSearchPicker<CityModel>(
                                                             context: context,
-                                                            title: isAr ? 'اختر المدينة' : 'Select City',
-                                                            searchHint: isAr ? 'ابحث عن المدينة...' : 'Search city...',
+                                                            title: localizations.select_city_hint,
+                                                            searchHint: localizations.search_city_hint,
                                                             items: cities,
                                                             itemLabel: (city) => isAr ? city.nameAr : city.nameEn,
                                                             selectedItem: cubit.selectedCity,
@@ -1175,10 +1173,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                       children: [
                                         Expanded(
                                           child: AuthTextField(
-                                            label: true ==
-                                                    localizations.is_arabic
-                                                ? '${localizations.profile_weight_label} (كجم)'
-                                                : '${localizations.profile_weight_label} (kg)',
+                                            label: '${localizations.profile_weight_label} (${localizations.kg_unit})',
                                             hint: '',
                                             controller: _weight_controller,
                                             keyboard_type: const TextInputType
@@ -1195,10 +1190,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                         const SizedBox(width: _LocalDimensions.field_spacing_small),
                                         Expanded(
                                           child: AuthTextField(
-                                            label: true ==
-                                                    localizations.is_arabic
-                                                ? '${localizations.profile_height_label} (سم)'
-                                                : '${localizations.profile_height_label} (cm)',
+                                            label: '${localizations.profile_height_label} (${localizations.cm_unit})',
                                             hint: '',
                                             controller: _height_controller,
                                             keyboard_type: const TextInputType
@@ -1217,9 +1209,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                     const SizedBox(height: _LocalDimensions.field_spacing_large),
                                     // Blood Group label header
                                     Text(
-                                      true == localizations.is_arabic
-                                          ? 'فصيلة الدم'
-                                          : 'Blood Group',
+                                      localizations.blood_group_label,
                                       style: TextStyle(
                                         fontSize:
                                             AppSpacing.font_size_body_medium,
@@ -1256,9 +1246,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                               ? _selected_blood_group
                                               : null,
                                           hint: Text(
-                                            true == localizations.is_arabic
-                                                ? 'اختر فصيلة الدم'
-                                                : 'Select Blood Group',
+                                            localizations.select_blood_group_hint,
                                             style: TextStyle(
                                               color: is_dark
                                                   ? AppColors.text_dark_secondary

@@ -2,10 +2,11 @@
  * File Name: active_hold_countdown_banner.dart
  * Author: Kholoud Khaled
  * Date of Creation: 17/08/2026
- * Version Information: V2.0.0
- * Dependencies: package:flutter/material.dart, dart:ui, app_spacing.dart, app_colors.dart
+ * Version Information: V2.1.0
+ * Dependencies: package:flutter/material.dart, dart:ui, app_spacing.dart, app_colors.dart,
+ *   package:appoynt_mobile_app/core/localization/app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 17/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
  * File Description: Modern medical-grade hold indicator with tabular digit typography,
  *   smooth slide-up animation, pulsing stopwatch icon, and amber/red urgency states.
  */
@@ -15,6 +16,7 @@ import 'package:flutter/material.dart';
 // Import design tokens and colors
 import 'package:appoynt_mobile_app/constants/app_spacing.dart';
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
+import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
 
 /// Redesigned medical-grade active hold countdown banner.
 class ActiveHoldCountdownBanner extends StatefulWidget {
@@ -76,6 +78,7 @@ class _ActiveHoldCountdownBannerState extends State<ActiveHoldCountdownBanner>
   Widget build(BuildContext context) {
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     final bool is_urgent = widget.remaining_seconds <= 60;
+    final AppLocalizations localizations = AppLocalizations.of(context);
 
     // Amber Palette (Normal)
     final Color bg_amber =
@@ -184,7 +187,7 @@ class _ActiveHoldCountdownBannerState extends State<ActiveHoldCountdownBanner>
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'Slot Reserved for You',
+                      localizations.slot_reserved_for_you,
                       style: TextStyle(
                         fontSize: 13.0,
                         fontWeight: FontWeight.w700,
@@ -193,7 +196,7 @@ class _ActiveHoldCountdownBannerState extends State<ActiveHoldCountdownBanner>
                     ),
                     const SizedBox(height: 1.5),
                     Text(
-                      'Complete booking in',
+                      localizations.complete_booking_in,
                       style: TextStyle(
                         fontSize: 11.5,
                         fontWeight: FontWeight.w500,

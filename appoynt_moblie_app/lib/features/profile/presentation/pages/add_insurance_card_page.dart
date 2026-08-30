@@ -2,13 +2,13 @@
  * File Name: add_insurance_card_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/07/2026
- * Version Information: V1.0.0
+ * Version Information: V1.1.0
  * Dependencies: package:flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
  * File Description: Defines the upload form screen to attach new health insurance policy cards.
  */
 
@@ -319,7 +319,7 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
                 // Standardized Squircle Back Button AppBar component
                 CustomProfileAppBar(
                   title: widget.edit_index != null
-                      ? 'Edit Insurance'
+                      ? localizations.edit_insurance_title
                       : localizations.insurance_add_title,
                 ),
                 const SizedBox(height: AppSpacing.space_l),
@@ -400,7 +400,7 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
                                 children: [
                                   Text(
                                     _selected_provider.isEmpty
-                                        ? 'Select Insurance Provider'
+                                        ? localizations.select_insurance_provider_hint
                                         : _selected_provider,
                                     style: TextStyle(
                                       color: _selected_provider.isEmpty
@@ -429,7 +429,7 @@ class _AddInsuranceCardPageState extends State<AddInsuranceCardPage> {
                         const SizedBox(height: AppSpacing.space_m),
                         // Upload Insurance documents Label display
                         Text(
-                          'Upload Insurance Documents',
+                          localizations.upload_insurance_documents,
                           style: TextStyle(
                             fontSize: AppSpacing.font_size_body_medium,
                             fontWeight: FontWeight.w700,

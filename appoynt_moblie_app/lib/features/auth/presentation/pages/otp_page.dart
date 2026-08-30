@@ -10,7 +10,7 @@
  *   package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart,
  *   package:appoynt_mobile_app/core/di/service_locator.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 26/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
  * File Description: The OTP Verification screen. It handles the input of a 6-digit code,
  *   manages a resend timer, and follows the centralized design system.
  */
@@ -152,19 +152,15 @@ class _OtpPageState extends State<OtpPage> {
       builder: (dialogContext) {
         final AppLocalizations s = AppLocalizations.of(context);
         return AlertDialog(
-          title: Text(s.is_arabic ? 'خطأ في المصادقة' : 'Verification Error'),
-          content: Text(
-            s.is_arabic
-                ? 'فقدت جلسة التحقق. يرجى الرجوع إلى الصفحة السابقة وإعادة المحاولة.'
-                : 'Verification session lost. Please return to the previous page and try again.',
-          ),
+          title: Text(s.verification_error),
+          content: Text(s.verification_session_lost),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(dialogContext).pop();
                 widget.on_back();
               },
-              child: Text(s.is_arabic ? 'رجوع' : 'Go Back'),
+              child: Text(s.go_back),
             ),
           ],
         );

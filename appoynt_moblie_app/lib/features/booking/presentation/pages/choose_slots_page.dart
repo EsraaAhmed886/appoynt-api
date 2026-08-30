@@ -2,16 +2,16 @@
  * File Name: choose_slots_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 17/08/2026
- * Version Information: V2.1.0
+ * Version Information: V2.2.0
  * Dependencies: package:flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
  *   service_locator.dart, app_colors.dart, app_spacing.dart, custom_profile_app_bar.dart,
  *   slot_booking_cubit.dart, slot_booking_state.dart, clinic_context_selector_card.dart,
  *   change_clinic_bottom_sheet.dart, horizontal_calendar_date_strip.dart,
  *   time_of_day_filter_chips.dart, doctor_slot_grid.dart, active_hold_countdown_banner.dart,
  *   empty_slots_widget.dart, sticky_slot_booking_bottom_bar.dart,
- *   hold_release_confirmation_dialog.dart
+ *   hold_release_confirmation_dialog.dart, app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 26/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
  * File Description: Comprehensive Doctor Multi-Clinic & Time Slot Booking screen featuring
  *   generous 68px toolbar with AppBackButton, doctor verification badge, equal-width segmented
  *   filters, docked hold indicator, and animated hold expiration dialogs.
@@ -26,6 +26,7 @@ import 'package:appoynt_mobile_app/constants/app_spacing.dart';
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 import 'package:appoynt_mobile_app/core/utils/custom_snackbar.dart';
 import 'package:appoynt_mobile_app/core/widgets/custom_profile_app_bar.dart';
+import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
 // Import Cubit and State
 import 'package:appoynt_mobile_app/features/booking/presentation/cubit/slot_booking_cubit.dart';
 import 'package:appoynt_mobile_app/features/booking/presentation/cubit/slot_booking_state.dart';
@@ -87,6 +88,7 @@ class _ChooseSlotsView extends StatelessWidget {
 
   void _show_expired_hold_modal(BuildContext context, SlotBookingCubit cubit) {
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+    final AppLocalizations localizations = AppLocalizations.of(context);
 
     showModalBottomSheet(
       context: context,
@@ -120,7 +122,7 @@ class _ChooseSlotsView extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.space_l),
               Text(
-                'Reservation Expired',
+                localizations.reservation_expired_title,
                 style: TextStyle(
                   fontSize: AppSpacing.font_size_title_medium,
                   fontWeight: FontWeight.w800,
@@ -131,7 +133,7 @@ class _ChooseSlotsView extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.space_s),
               Text(
-                "Your temporary slot hold has expired. We've refreshed the schedule for you.",
+                localizations.reservation_expired_description,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: AppSpacing.font_size_body_small,
@@ -156,9 +158,9 @@ class _ChooseSlotsView extends StatelessWidget {
                       borderRadius: BorderRadius.circular(14.0),
                     ),
                   ),
-                  child: const Text(
-                    'Select New Slot',
-                    style: TextStyle(
+                  child: Text(
+                    localizations.select_new_slot_button,
+                    style: const TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 15.0,
                     ),
@@ -176,6 +178,7 @@ class _ChooseSlotsView extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     final SlotBookingCubit cubit = context.read<SlotBookingCubit>();
+    final AppLocalizations localizations = AppLocalizations.of(context);
 
     return BlocConsumer<SlotBookingCubit, SlotBookingState>(
       listener: (context, state) {
@@ -256,7 +259,7 @@ class _ChooseSlotsView extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Select Appointment Slot',
+                    localizations.select_appointment_slot,
                     style: TextStyle(
                       fontSize: AppSpacing.font_size_title_medium,
                       fontWeight: FontWeight.w800,
@@ -305,6 +308,7 @@ class _ChooseSlotsView extends StatelessWidget {
     SlotBookingCubit cubit,
     bool is_dark,
   ) {
+    final AppLocalizations localizations = AppLocalizations.of(context);
     if (state is SlotBookingLoading || state is SlotBookingInitial) {
       return const Center(
         child: CircularProgressIndicator(
@@ -326,7 +330,7 @@ class _ChooseSlotsView extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.space_l),
               Text(
-                'Failed to load clinic slots',
+                localizations.failed_to_load_clinic_slots,
                 style: TextStyle(
                   fontSize: AppSpacing.font_size_title_medium,
                   fontWeight: FontWeight.w700,
@@ -346,7 +350,7 @@ class _ChooseSlotsView extends StatelessWidget {
                   ),
                 ),
                 icon: const Icon(Icons.refresh_rounded, size: 18.0),
-                label: const Text('Try Again'),
+                label: Text(localizations.retry),
               ),
             ],
           ),
@@ -372,7 +376,7 @@ class _ChooseSlotsView extends StatelessWidget {
 
                   // 1. Clinic Branch Context Card
                   Padding(
-                    padding: const EdgeInsets.symmetric(
+                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.space_xl,
                     ),
                     child: ClinicContextSelectorCard(
@@ -397,7 +401,7 @@ class _ChooseSlotsView extends StatelessWidget {
                       horizontal: AppSpacing.space_xl,
                     ),
                     child: Text(
-                      'Select Date',
+                      localizations.select_date,
                       style: TextStyle(
                         fontSize: AppSpacing.font_size_body_medium + 1.0,
                         fontWeight: FontWeight.w800,
@@ -426,7 +430,7 @@ class _ChooseSlotsView extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Available Time Slots',
+                          localizations.available_time_slots,
                           style: TextStyle(
                             fontSize: AppSpacing.font_size_body_medium + 1.0,
                             fontWeight: FontWeight.w800,
@@ -490,6 +494,7 @@ class _ChooseSlotsView extends StatelessWidget {
     BuildContext context,
     SlotBookingLoaded state,
   ) {
+    final AppLocalizations localizations = AppLocalizations.of(context);
     // Show success confirmation bottom modal / navigation feedback
     showModalBottomSheet(
       context: context,
@@ -524,7 +529,7 @@ class _ChooseSlotsView extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.space_l),
               Text(
-                'Slot Reserved Successfully!',
+                localizations.slot_reserved_successfully,
                 style: TextStyle(
                   fontSize: AppSpacing.font_size_title_medium,
                   fontWeight: FontWeight.w800,
@@ -561,9 +566,9 @@ class _ChooseSlotsView extends StatelessWidget {
                       borderRadius: BorderRadius.circular(14.0),
                     ),
                   ),
-                  child: const Text(
-                    'Done',
-                    style: TextStyle(fontWeight: FontWeight.w700),
+                  child: Text(
+                    localizations.done,
+                    style: const TextStyle(fontWeight: FontWeight.w700),
                   ),
                 ),
               ),

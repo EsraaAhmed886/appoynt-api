@@ -2,11 +2,11 @@
  * File Name: add_saved_card_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 20/07/2026
- * Version Information: V1.0.0
+ * Version Information: V1.1.0
  * Dependencies: package:flutter/material.dart,
  *   package:appoynt_mobile_app/core/routing/route_export.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
  * File Description: Dedicated page to input new credit card details with strict Luhn and CVV validations.
  */
 
@@ -242,6 +242,7 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
   @override
   // Build widget layout tree
   Widget build(BuildContext context) {
+    final AppLocalizations localizations = AppLocalizations.of(context);
     // Return root Scaffold layout container
     return Scaffold(
       // Body content form layout
@@ -252,8 +253,8 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: AppSpacing.space_xl),
-              const CustomProfileAppBar(
-                title: 'Add New Card',
+              CustomProfileAppBar(
+                title: localizations.add_new_card_title,
               ),
               const SizedBox(height: AppSpacing.space_xl),
               Expanded(
@@ -278,11 +279,11 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
                       // children details
                       children: [
                         // Section Title: Holder Info
-                        const Text(
+                        Text(
                           // Label holder name
-                          'Cardholder Name',
+                          localizations.cardholder_name_label,
                           // Style specs
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: _LocalDimensions.font_size_small,
                             fontWeight: FontWeight.bold,
                           ),
@@ -314,11 +315,11 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
                         const SizedBox(height: _LocalDimensions.spacing_large),
 
                         // Section Title: Card Number
-                        const Text(
+                        Text(
                           // Label card number
-                          'Card Number',
+                          localizations.card_number_label,
                           // Style specs
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: _LocalDimensions.font_size_small,
                             fontWeight: FontWeight.bold,
                           ),
@@ -367,11 +368,11 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
                                 // children details
                                 children: [
                                   // Label Expiry text
-                                  const Text(
+                                  Text(
                                     // Label
-                                    'Expiry Date',
+                                    localizations.expiry_date_label,
                                     // Style
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: _LocalDimensions.font_size_small,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -415,11 +416,11 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
                                 // children details
                                 children: [
                                   // Label CVV text
-                                  const Text(
+                                  Text(
                                     // Label
-                                    'CVV',
+                                    localizations.cvv_label,
                                     // Style
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: _LocalDimensions.font_size_small,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -550,7 +551,7 @@ class _AddSavedCardPageState extends State<AddSavedCardPage> {
             // Centered CTA label Text
             child: Text(
               // Save Card string
-              'Securely Save Card',
+              localizations.securely_save_card_btn,
               // Typography
               style: TextStyle(
                 // Color white high contrast when enabled, subtle gray when disabled

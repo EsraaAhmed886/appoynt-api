@@ -2,7 +2,7 @@
  * File Name: edit_profile_body.dart
  * Author: Kholoud Khaled
  * Date of Creation: 29/08/2026
- * Version Information: V1.1.0
+ * Version Information: V1.2.0
  * Dependencies: package:flutter/material.dart,
  *   package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/core/theme/colors/app_colors.dart,
@@ -11,7 +11,7 @@
  *   package:appoynt_mobile_app/features/profile/presentation/bloc/edit_profile_cubit.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/bloc/edit_profile_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 29/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
  * File Description: Widget providing dynamic auto-detected Date of Birth and Gender Info Badges
  *   and cascaded Egyptian Governorate & City dropdown selectors with dark/light theme support.
  */
@@ -211,7 +211,6 @@ class GovernorateCityDropdowns extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final String langCode = Localizations.localeOf(context).languageCode;
-    final bool isAr = 'ar' == langCode;
     final AppLocalizations loc = AppLocalizations.of(context);
 
     return BlocBuilder<EditProfileCubit, EditProfileState>(
@@ -231,7 +230,7 @@ class GovernorateCityDropdowns extends StatelessWidget {
             // 1. Governorate Field
             // -------------------------------------------------------------
             Text(
-              isAr ? 'المحافظة' : 'Governorate',
+              loc.governorate_label,
               style: TextStyle(
                 fontSize: 14.0,
                 fontWeight: FontWeight.w600,
@@ -242,8 +241,8 @@ class GovernorateCityDropdowns extends StatelessWidget {
             _SelectionContainer(
               icon: Icons.map_outlined,
               hint: isGovLoading
-                  ? loc.loading_text
-                  : (isAr ? 'اختر المحافظة' : 'Select Governorate'),
+                  ? loc.loading_governorates
+                  : loc.select_governorate_hint,
               value: state.selectedGovernorate?.getName(langCode),
               isLoading: isGovLoading,
               onTap: () async {
@@ -251,10 +250,8 @@ class GovernorateCityDropdowns extends StatelessWidget {
                   final GovernorateModel? selected =
                       await showSmartSearchPicker<GovernorateModel>(
                     context: context,
-                    title: isAr ? 'المحافظة' : 'Governorate',
-                    searchHint: isAr
-                        ? 'ابحث عن المحافظة...'
-                        : 'Search governorate...',
+                    title: loc.governorate_label,
+                    searchHint: loc.search_governorate_hint,
                     items: state.governorates,
                     itemLabel: (gov) => gov.getName(langCode),
                     selectedItem: state.selectedGovernorate,
@@ -276,7 +273,7 @@ class GovernorateCityDropdowns extends StatelessWidget {
             // 2. City Field (Dependent on Governorate)
             // -------------------------------------------------------------
             Text(
-              isAr ? 'المدينة' : 'City',
+              loc.city_label,
               style: TextStyle(
                 fontSize: 14.0,
                 fontWeight: FontWeight.w600,
@@ -289,10 +286,8 @@ class GovernorateCityDropdowns extends StatelessWidget {
               child: _SelectionContainer(
                 icon: Icons.location_city_outlined,
                 hint: !hasSelectedGov
-                    ? (isAr
-                        ? 'يرجى اختيار المحافظة أولاً'
-                        : 'Select Governorate first')
-                    : (isAr ? 'اختر المدينة' : 'Select City'),
+                    ? loc.select_gov_first_hint
+                    : loc.select_city_hint,
                 value: state.selectedCity?.getName(langCode),
                 isLoading: isCityLoading,
                 onTap: (!hasSelectedGov || isCityLoading)
@@ -302,9 +297,7 @@ class GovernorateCityDropdowns extends StatelessWidget {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                isAr
-                                    ? 'لا توجد مدن متاحة لهذه المحافظة'
-                                    : 'No cities available for this governorate',
+                                loc.no_cities_available,
                               ),
                               duration: const Duration(seconds: 2),
                             ),
@@ -314,10 +307,8 @@ class GovernorateCityDropdowns extends StatelessWidget {
                           final CityModel? selected =
                               await showSmartSearchPicker<CityModel>(
                             context: context,
-                            title: isAr ? 'المدينة' : 'City',
-                            searchHint: isAr
-                                ? 'ابحث عن المدينة...'
-                                : 'Search city...',
+                            title: loc.select_city_hint,
+                            searchHint: loc.search_city_hint,
                             items: availableCities,
                             itemLabel: (city) => city.getName(langCode),
                             selectedItem: state.selectedCity,

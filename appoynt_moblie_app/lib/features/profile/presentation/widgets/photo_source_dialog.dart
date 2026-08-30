@@ -2,16 +2,15 @@
  * File Name: photo_source_dialog.dart
  * Author: Kholoud Khaled
  * Date of Creation: 13/08/2026
- * Version Information: V1.2.0
+ * Version Information: V1.3.0
  * Dependencies: package:flutter/material.dart,
  *   package:image_picker/image_picker.dart,
  *   package:appoynt_mobile_app/core/theme/colors/app_colors.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
  * File Description: Modernized centered pop-up dialog with side-by-side action cards
  *   for selecting photo source (Camera vs Gallery) matching dark theme design standards.
- *   V1.2.0 fixes card text truncation with soft wrapping and 8px horizontal padding.
  */
 
 // Importing Flutter material design widget library
@@ -76,17 +75,11 @@ class PhotoSourceDialog extends StatelessWidget {
     // Resolve dark mode status for adaptive styling
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
     // Determine subtitle based on language context
-    final String subtitle_text = localizations.is_arabic
-        ? 'اختر خياراً لتغيير صورة الملف الشخصي'
-        : 'Select an option to change your profile picture';
+    final String subtitle_text = localizations.profile_photo_sheet_subtitle;
     // Determine camera subtitle text
-    final String camera_sub = localizations.is_arabic
-        ? 'التقاط صورة'
-        : 'Take a photo';
+    final String camera_sub = localizations.profile_photo_take_photo;
     // Determine gallery subtitle text ("Choose photo")
-    final String gallery_sub = localizations.is_arabic
-        ? 'اختيار صورة'
-        : 'Choose photo';
+    final String gallery_sub = localizations.profile_photo_choose_photo;
 
     // Return centered Dialog card with dark theme surface and 24px radius
     return Dialog(

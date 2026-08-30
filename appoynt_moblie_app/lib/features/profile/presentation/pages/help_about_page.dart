@@ -2,13 +2,13 @@
  * File Name: help_about_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 08/08/2026
- * Version Information: V1.0.0
+ * Version Information: V1.1.0
  * Dependencies: package:flutter/material.dart,
  *   package:appoynt_mobile_app/core/routing/route_export.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
  * File Description: Help & About screen containing support helpline, legal terms, open source licenses, and application version info.
  */
 
@@ -391,7 +391,7 @@ class _HelpAndAboutPageState extends State<HelpAndAboutPage> {
                                         'Hotline dialer opened.',
                                       );
                                     },
-                                  child: const Text('Dial'),
+                                  child: Text(localizations.dial_action),
                                 ),
                               ],
                             );
@@ -422,9 +422,9 @@ class _HelpAndAboutPageState extends State<HelpAndAboutPage> {
                 const SizedBox(height: 24.0),
 
                 // SECTION 2: LEGAL & ABOUT
-                const Text(
-                  "LEGAL & POLICIES", // Localized header if needed or standard uppercase header
-                  style: TextStyle(
+                Text(
+                  localizations.legal_and_policies_title,
+                  style: const TextStyle(
                     fontSize: 11.0,
                     fontWeight: FontWeight.w800,
                     color: AppColors.slate400,

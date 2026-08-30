@@ -2,11 +2,11 @@
  * File Name: change_clinic_bottom_sheet.dart
  * Author: Kholoud Khaled
  * Date of Creation: 17/08/2026
- * Version Information: V1.0.0
+ * Version Information: V1.1.0
  * Dependencies: package:flutter/material.dart, app_colors.dart, app_spacing.dart,
- *   clinic_location_entity.dart
+ *   clinic_location_entity.dart, app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 17/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
  * File Description: Modal bottom sheet allowing patients to select from available
  *   clinic branches with distinct working days, fees, and location addresses.
  */
@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 // Import design tokens, colors, and entities
 import 'package:appoynt_mobile_app/constants/app_spacing.dart';
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
+import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
 import 'package:appoynt_mobile_app/features/booking/domain/entities/clinic_location_entity.dart';
 
 /// Modal bottom sheet for switching active clinic location.
@@ -59,6 +60,7 @@ class ChangeClinicBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool is_dark = Theme.of(context).brightness == Brightness.dark;
+    final AppLocalizations localizations = AppLocalizations.of(context);
 
     return Container(
       decoration: BoxDecoration(
@@ -93,7 +95,7 @@ class ChangeClinicBottomSheet extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Select Clinic Location',
+                localizations.select_clinic_location,
                 style: TextStyle(
                   fontSize: AppSpacing.font_size_title_medium,
                   fontWeight: FontWeight.w700,
@@ -192,7 +194,7 @@ class ChangeClinicBottomSheet extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Days: ${clinic.working_days.join(', ')}",
+                                "${localizations.days_label}: ${clinic.working_days.join(', ')}",
                                 style: const TextStyle(
                                   fontSize: 11.0,
                                   fontWeight: FontWeight.w600,

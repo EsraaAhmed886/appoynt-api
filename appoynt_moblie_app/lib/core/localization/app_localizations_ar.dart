@@ -6,7 +6,7 @@
  * Dependencies: package:flutter/material.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
  * File Description: Arabic concrete implementation of localizations
  *   containing onboarding, profile, and authentication strings.
  */
@@ -2149,6 +2149,20 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get prescriptions_update_btn => 'تحديث الدواء';
   @override
+  String get prescriptions_medication_details => 'تفاصيل الدواء';
+  @override
+  String get prescriptions_dosage_label => 'الجرعة';
+  @override
+  String get prescriptions_dosage_hint => 'مثال: قرص واحد، 10 مل';
+  @override
+  String get prescriptions_schedule_duration => 'الجدول والمدة';
+  @override
+  String get prescriptions_upload_rx_optional => 'رفع صورة الروشتة / المستند (اختياري)';
+  @override
+  String get first_name_required => 'الاسم الأول مطلوب';
+  @override
+  String get last_name_required => 'اسم العائلة مطلوب';
+  @override
   String get login_phone_hint => '01xxxxxxxxx';
   @override
   String get date_picker_cancel => 'إلغاء';
@@ -2600,4 +2614,193 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profile_photo_delete_success => 'تم حذف الصورة الشخصية بنجاح.';
   @override
   String get profile_photo_delete_error => 'فشل حذف الصورة الشخصية.';
+
+  // Global Extracted UI Localization Getters (Arabic)
+  @override
+  String get loading => 'جاري التحميل...';
+  @override
+  String get ok => 'موافق';
+  @override
+  String get dial => 'اتصال';
+  @override
+  String get legal_and_policies => 'الشروط والسياسات القانونية';
+  @override
+  String get arabic_language => 'العربية';
+  @override
+  String get english_language => 'English';
+  @override
+  String get kg_unit => 'كجم';
+  @override
+  String get cm_unit => 'سم';
+  @override
+  String get no_matching_results => 'لا توجد نتائج مطابقة';
+  @override
+  String get verification_error => 'خطأ في المصادقة';
+  @override
+  String get verification_session_lost => 'فقدت جلسة التحقق. يرجى الرجوع إلى الصفحة السابقة وإعادة المحاولة.';
+  @override
+  String get go_back => 'رجوع';
+  @override
+  String get ask_ai_title => 'مساعد الذكاء الاصطناعي';
+  @override
+  String get ask_ai_coming_soon => '✨ ميزة قادمة قريباً';
+  @override
+  String get ask_ai_health_assistant => 'مساعد Appoynt الذكي';
+  @override
+  String get ask_ai_desc => 'نعمل حالياً على تطوير المساعد الذكي لمساعدتك في استشاراتك الطبية، حجز المواعيد، وتتبع صحتك بسهولة.';
+  @override
+  String get ask_ai_symptom_consultation_title => 'استشارات وتحليل أعراض';
+  @override
+  String get ask_ai_symptom_consultation_desc => 'مساعدتك في فهم الأعراض وتقديم إرشادات أولية موثوقة';
+  @override
+  String get ask_ai_smart_booking_title => 'حجز ذكي ومتابعة مواعيد';
+  @override
+  String get ask_ai_smart_booking_desc => 'اقتراح أفضل الأطباء والمواعيد المناسبة لجدولك';
+  @override
+  String get ask_ai_med_reminders_title => 'تذكيرات الأدوية والصحة';
+  @override
+  String get ask_ai_med_reminders_desc => 'تنبيهات بمواعيد الجرعات ونصائح مخصصة لنمط حياتك';
+  @override
+  String get ask_ai_back_to_home => 'العودة للرئيسية';
+  @override
+  String get reservation_expired_title => 'انتهت مدة الحجز';
+  @override
+  String get reservation_expired_description => 'انتهت مدة الحجز المؤقت للموعد. تم تحرير الموعد لتمكين مرضى آخرين من الحجز.';
+  @override
+  String get select_new_slot_button => 'اختيار موعد جديد';
+  @override
+  String get failed_to_load_clinic_slots => 'فشل في تحميل مواعيد العيادة';
+  @override
+  String get slot_reserved_successfully => 'تم حجز الموعد بنجاح!';
+  @override
+  String get slot_reserved_for_you => 'تم حجز الموعد لك مؤقتاً';
+  @override
+  String get complete_booking_in => 'أكمل الحجز خلال';
+  @override
+  String get days_label => 'الأيام';
+  @override
+  String get change_label => 'تغيير';
+  @override
+  String get map_label => 'الخريطة';
+  @override
+  String get all_slots_booked_msg => 'جميع المواعيد لهذا التاريخ محجوزة حالياً أو غير متاحة.';
+  @override
+  String get slot_status_booked => 'محجوز';
+  @override
+  String get loading_doctor_profile => 'جاري تحميل ملف الطبيب...';
+  @override
+  String get could_not_load_profile => 'تعذر تحميل الملف الشخصي';
+  @override
+  String get unable_to_load_video => 'تعذر تحميل الفيديو';
+  @override
+  String get search_governorate_hint => 'ابحث عن المحافظة...';
+  @override
+  String get search_city_hint => 'ابحث عن المدينة...';
+  @override
+  String get no_cities_available => 'لا توجد مدن متاحة لهذه المحافظة';
+  @override
+  String get select_blood_type => 'اختر فصيلة الدم';
+  @override
+  String get blood_type_label => 'فصيلة الدم';
+  @override
+  String get photo_source_dialog_title => 'اختر خياراً لتغيير صورة الملف الشخصي';
+  @override
+  String get popular_options => 'الخيارات الشائعة';
+  @override
+  String get active_allergies_hint => 'الحساسيات المسجلة (اضغط لتغيير مستوى الشدة)';
+  @override
+  String get no_known_allergies_option => 'لا يوجد لدي حساسية معروفة';
+  @override
+  String get remove_member_title => 'حذف فرد من العائلة';
+  @override
+  String get remove_member_confirm => 'هل أنت متأكد من رغبتك في حذف هذا الفرد من العائلة؟';
+  @override
+  String get family_profiles_header => 'الملفات العائلية';
+  @override
+  String get view_document => 'عرض المستند';
+  @override
+  String get delete_insurance_confirm => 'هل أنت متأكد من رغبتك في حذف بطاقة التأمين هذه؟';
+  @override
+  String get upload_insurance_documents => 'رفع مستندات التأمين';
+  @override
+  String get cardholder_name => 'اسم حامل البطاقة';
+  @override
+  String get card_number => 'رقم البطاقة';
+  @override
+  String get expiry_date => 'تاريخ الانتهاء';
+  @override
+  String get cvv => 'رمز الأمان (CVV)';
+  @override
+  String get securely_save_card => 'حفظ البطاقة بأمان';
+  @override
+  String get policy_number_label => 'رقم الوثيقة';
+  @override
+  String get expiry_date_label => 'تاريخ الانتهاء';
+  @override
+  String get policy_prefix => 'الوثيقة:';
+
+
+  @override
+  String get add_new_card_title => 'إضافة بطاقة جديدة';
+  @override
+  String get cardholder_name_label => 'اسم حامل البطاقة';
+  @override
+  String get card_number_label => 'رقم البطاقة';
+  @override
+  String get cvv_label => 'رمز الأمان (CVV)';
+  @override
+  String get securely_save_card_btn => 'حفظ البطاقة بأمان';
+  @override
+  String get no_known_medical_allergies => 'لا توجد حساسية طبية معروفة';
+  @override
+  String get save_allergy_profile => 'حفظ ملف الحساسية';
+  @override
+  String get remove_action => 'إزالة';
+  @override
+  String get family_profiles_count => 'ملفات العائلة';
+  @override
+  String get add_family_member_btn => 'إضافة فرد من العائلة';
+  @override
+  String get dial_action => 'اتصال';
+  @override
+  String get legal_and_policies_title => 'الشروط والسياسات';
+  @override
+  String get edit_insurance_title => 'تعديل التأمين';
+  @override
+  String get delete_card => 'حذف البطاقة';
+  @override
+  String get delete_insurance_title => 'حذف التأمين';
+  @override
+  String get delete_insurance_msg => 'هل أنت متأكد من رغبتك في حذف بطاقة التأمين هذه؟';
+  @override
+  String get delete_action => 'حذف';
+  @override
+  String get governorate_label => 'المحافظة';
+  @override
+  String get loading_governorates => 'جاري تحميل المحافظات...';
+  @override
+  String get select_governorate_hint => 'اختر المحافظة';
+  @override
+  String get city_label => 'المدينة';
+  @override
+  String get select_gov_first_hint => 'يرجى اختيار المحافظة أولاً';
+  @override
+  String get select_city_hint => 'اختر المدينة';
+  @override
+  String get blood_group_label => 'فصيلة الدم';
+  @override
+  String get select_blood_group_hint => 'اختر فصيلة الدم';
+  @override
+  String get profile_photo_sheet_subtitle => 'اختر خياراً لتغيير صورة الملف الشخصي';
+  @override
+  String get profile_photo_take_photo => 'التقاط صورة';
+  @override
+  String get profile_photo_choose_photo => 'اختيار صورة';
+
+  @override
+  String get done => 'تم';
+  @override
+  String get unable_to_load_video_stream => 'تعذر تحميل مقطع الفيديو';
+  @override
+  String get select_insurance_provider_hint => 'اختر شركة التأمين';
 }

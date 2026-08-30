@@ -133,11 +133,11 @@ class InsuranceCardWidget extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Text(
-                                'POLICY NUMBER',
+                              Text(
+                                AppLocalizations.of(context).policy_number_label,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: AppColors.white60,
                                   fontSize: 10.0,
                                   fontWeight: FontWeight.bold,
@@ -164,11 +164,11 @@ class InsuranceCardWidget extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Text(
-                                'EXPIRY DATE',
+                              Text(
+                                AppLocalizations.of(context).expiry_date_label,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: AppColors.white60,
                                   fontSize: 10.0,
                                   fontWeight: FontWeight.bold,
@@ -277,7 +277,7 @@ class InsuranceCardWidget extends StatelessWidget {
                           mainAxisSize: MainAxisSize.max,
                           children: [
                             Text(
-                              'Policy: ',
+                              AppLocalizations.of(context).policy_prefix,
                               style: TextStyle(
                                 fontSize: AppSpacing.font_size_caption,
                                 color: is_dark

@@ -4,9 +4,10 @@
  * Date of Creation: 29/08/2026
  * Version Information: V1.0.0
  * Dependencies: dart:ui, package:flutter/material.dart,
- *   package:appoynt_mobile_app/core/theme/colors/app_colors.dart
+ *   package:appoynt_mobile_app/core/theme/colors/app_colors.dart,
+ *   package:appoynt_mobile_app/core/localization/app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 29/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
  * File Description: Sleek reusable floating search modal picker dialog with backdrop blur,
  *   instant query filtering, and animated transition for selection datasets.
  */
@@ -14,6 +15,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
+import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
 
 /// Displays a sleek, floating searchable modal picker with backdrop blur and smooth entrance.
 Future<T?> showSmartSearchPicker<T>({
@@ -257,9 +259,7 @@ class _SmartSearchDialogState<T> extends State<_SmartSearchDialog<T>> {
                   ? Padding(
                       padding: const EdgeInsets.all(32.0),
                       child: Text(
-                        widget.isAr
-                            ? 'لا توجد نتائج مطابقة'
-                            : 'No results found',
+                        AppLocalizations.of(context).no_matching_results,
                         style: TextStyle(
                           color: widget.isDark
                               ? AppColors.darkTextMuted

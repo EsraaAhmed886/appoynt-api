@@ -2,17 +2,20 @@
  * File Name: ask_ai_dummy_view.dart
  * Author: Kholoud Khaled
  * Date of Creation: 29/08/2026
- * Version Information: V1.1.0
+ * Version Information: V1.2.0
  * Dependencies: package:flutter/material.dart,
- *   package:appoynt_mobile_app/core/theme/colors/app_colors.dart
+ *   package:appoynt_mobile_app/core/theme/colors/app_colors.dart,
+ *   package:appoynt_mobile_app/core/routing/routes.dart,
+ *   package:appoynt_mobile_app/core/localization/app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 29/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
  * File Description: Modern Coming Soon placeholder view for the Ask AI medical assistant with custom rounded card back button and home redirect.
  */
 
 import 'package:flutter/material.dart';
 import 'package:appoynt_mobile_app/core/theme/colors/app_colors.dart';
 import 'package:appoynt_mobile_app/core/routing/routes.dart';
+import 'package:appoynt_mobile_app/core/localization/app_localizations.dart';
 
 /// Modern Coming Soon / Placeholder view for the Ask AI Assistant.
 class AskAiDummyView extends StatelessWidget {
@@ -22,13 +25,13 @@ class AskAiDummyView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
-    final bool isAr = Localizations.localeOf(context).languageCode == 'ar';
+    final AppLocalizations localizations = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.darkBackground : AppColors.slate50,
       appBar: AppBar(
         title: Text(
-          isAr ? 'مساعد الذكاء الاصطناعي' : 'Ask AI Assistant',
+          localizations.ask_ai_title,
           style: TextStyle(
             fontSize: 18.0,
             fontWeight: FontWeight.bold,
@@ -127,7 +130,7 @@ class AskAiDummyView extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20.0),
                   ),
                   child: Text(
-                    isAr ? '✨ ميزة قادمة قريباً' : '✨ Coming Soon',
+                    localizations.ask_ai_coming_soon,
                     style: const TextStyle(
                       color: AppColors.primary,
                       fontSize: 12.5,
@@ -137,7 +140,7 @@ class AskAiDummyView extends StatelessWidget {
                 ),
                 const SizedBox(height: 14.0),
                 Text(
-                  isAr ? 'مساعد Appoynt الذكي' : 'Appoynt AI Health Assistant',
+                  localizations.ask_ai_health_assistant,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 22.0,
@@ -147,9 +150,7 @@ class AskAiDummyView extends StatelessWidget {
                 ),
                 const SizedBox(height: 10.0),
                 Text(
-                  isAr
-                      ? 'نعمل حالياً على تطوير المساعد الذكي لمساعدتك في استشاراتك الطبية، حجز المواعيد، وتتبع صحتك بسهولة.'
-                      : 'We are working on bringing you an intelligent medical assistant to help guide your health queries and clinic recommendations.',
+                  localizations.ask_ai_desc,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 14.0,
@@ -162,15 +163,15 @@ class AskAiDummyView extends StatelessWidget {
                 // 3. Feature Highlights Preview Cards
                 _buildFeatureItem(
                   icon: Icons.chat_bubble_outline_rounded,
-                  title: isAr ? 'استشارات وتحليل أعراض' : 'Symptom Consultation',
-                  subtitle: isAr ? 'إجابات طبية أولية ذكية وموثوقة' : 'Instant smart health guidance',
+                  title: localizations.ask_ai_symptom_consultation_title,
+                  subtitle: localizations.ask_ai_symptom_consultation_desc,
                   isDark: isDark,
                 ),
                 const SizedBox(height: 12.0),
                 _buildFeatureItem(
                   icon: Icons.medical_services_outlined,
-                  title: isAr ? 'ترشيح ذكي للأطباء' : 'Smart Doctor Matching',
-                  subtitle: isAr ? 'اقتراح أفضل العيادات حسب حالتك' : 'Best specialists tailored to your needs',
+                  title: localizations.ask_ai_smart_booking_title,
+                  subtitle: localizations.ask_ai_smart_booking_desc,
                   isDark: isDark,
                 ),
                 const SizedBox(height: 36.0),
@@ -195,7 +196,7 @@ class AskAiDummyView extends StatelessWidget {
                       );
                     },
                     child: Text(
-                      isAr ? 'الرجوع للرئيسية' : 'Back to Home',
+                      localizations.ask_ai_back_to_home,
                       style: const TextStyle(
                         fontSize: 15.0,
                         fontWeight: FontWeight.bold,

@@ -38,7 +38,7 @@ void main() {
       expect(find.text('✨ Coming Soon'), findsOneWidget);
       expect(find.text('Appoynt AI Health Assistant'), findsOneWidget);
       expect(find.text('Symptom Consultation'), findsOneWidget);
-      expect(find.text('Smart Doctor Matching'), findsOneWidget);
+      expect(find.text('Smart Booking & Follow-up'), findsOneWidget);
       expect(find.text('Back to Home'), findsOneWidget);
       expect(find.byIcon(Icons.smart_toy_rounded), findsOneWidget);
       expect(find.byIcon(Icons.arrow_back_ios_new_rounded), findsOneWidget);
@@ -53,14 +53,16 @@ void main() {
       expect(find.text('✨ ميزة قادمة قريباً'), findsOneWidget);
       expect(find.text('مساعد Appoynt الذكي'), findsOneWidget);
       expect(find.text('استشارات وتحليل أعراض'), findsOneWidget);
-      expect(find.text('ترشيح ذكي للأطباء'), findsOneWidget);
-      expect(find.text('الرجوع للرئيسية'), findsOneWidget);
+      expect(find.text('حجز ذكي ومتابعة مواعيد'), findsOneWidget);
+      expect(find.text('العودة للرئيسية'), findsOneWidget);
     });
 
     testWidgets('tapping leading custom rounded card back button pops the view',
         (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
+          localizationsDelegates: app_localizations_delegates,
+          supportedLocales: app_supported_locales,
           home: Builder(
             builder: (context) => Scaffold(
               body: ElevatedButton(
@@ -75,6 +77,7 @@ void main() {
           ),
         ),
       );
+      await tester.pumpAndSettle();
 
       await tester.tap(find.text('Open AI'));
       await tester.pumpAndSettle();
@@ -91,6 +94,8 @@ void main() {
         (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
+          localizationsDelegates: app_localizations_delegates,
+          supportedLocales: app_supported_locales,
           routes: {
             Routes.home: (_) => const Scaffold(body: Text('Home Root View')),
           },
@@ -108,13 +113,18 @@ void main() {
           ),
         ),
       );
+      await tester.pumpAndSettle();
 
       await tester.tap(find.text('Open AI'));
       await tester.pumpAndSettle();
 
       expect(find.byType(AskAiDummyView), findsOneWidget);
 
-      await tester.tap(find.text('Back to Home'));
+      final Finder backToHomeFinder = find.text('Back to Home');
+      await tester.ensureVisible(backToHomeFinder);
+      await tester.pumpAndSettle();
+
+      await tester.tap(backToHomeFinder);
       await tester.pumpAndSettle();
 
       expect(find.text('Home Root View'), findsOneWidget);

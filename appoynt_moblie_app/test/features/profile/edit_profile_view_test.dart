@@ -173,8 +173,8 @@ void main() {
       await tester.pumpWidget(createTestWidget(cubit: cubit, locale: const Locale('ar')));
       await tester.pumpAndSettle();
 
-      // Find National ID TextFormField
-      final Finder nationalIdField = find.widgetWithText(TextFormField, 'National ID');
+      // Find National ID TextFormField with Arabic label
+      final Finder nationalIdField = find.widgetWithText(TextFormField, 'الرقم القومي');
       expect(nationalIdField, findsOneWidget);
 
       // Enter female 14-digit National ID (30508078800044 -> 07 أغسطس 2005, أنثى)

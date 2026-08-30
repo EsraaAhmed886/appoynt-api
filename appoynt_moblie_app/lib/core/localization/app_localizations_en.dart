@@ -6,7 +6,7 @@
  * Dependencies: package:flutter/material.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
  * File Description: English concrete localization dictionary mapping text getters for the entire application.
  */
 
@@ -2108,6 +2108,20 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get prescriptions_update_btn => 'Update Prescription';
   @override
+  String get prescriptions_medication_details => 'Medication Details';
+  @override
+  String get prescriptions_dosage_label => 'Dosage';
+  @override
+  String get prescriptions_dosage_hint => 'e.g., 1 Tablet, 10ml';
+  @override
+  String get prescriptions_schedule_duration => 'Schedule & Duration';
+  @override
+  String get prescriptions_upload_rx_optional => 'Upload Rx Photo / Document (Optional)';
+  @override
+  String get first_name_required => 'First name is required';
+  @override
+  String get last_name_required => 'Last name is required';
+  @override
   String get login_phone_hint => '+1 234 567 8900';
   @override
   String get date_picker_cancel => 'Cancel';
@@ -2564,6 +2578,193 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profile_photo_delete_success => 'Profile photo deleted successfully.';
   @override
   String get profile_photo_delete_error => 'Failed to delete profile photo.';
+
+  // Global Extracted UI Localization Getters (English)
+  @override
+  String get loading => 'Loading...';
+  @override
+  String get ok => 'OK';
+  @override
+  String get dial => 'Dial';
+  @override
+  String get legal_and_policies => 'LEGAL & POLICIES';
+  @override
+  String get arabic_language => 'العربية';
+  @override
+  String get english_language => 'English';
+  @override
+  String get kg_unit => 'kg';
+  @override
+  String get cm_unit => 'cm';
+  @override
+  String get no_matching_results => 'No matching results found';
+  @override
+  String get verification_error => 'Verification Error';
+  @override
+  String get verification_session_lost => 'Verification session lost. Please return to the previous screen and try again.';
+  @override
+  String get go_back => 'Go Back';
+  @override
+  String get ask_ai_title => 'Ask AI Assistant';
+  @override
+  String get ask_ai_coming_soon => '✨ Coming Soon';
+  @override
+  String get ask_ai_health_assistant => 'Appoynt AI Health Assistant';
+  @override
+  String get ask_ai_desc => 'We are currently developing the AI Assistant to assist you with medical consultations, appointment scheduling, and health tracking seamlessly.';
+  @override
+  String get ask_ai_symptom_consultation_title => 'Symptom Consultation';
+  @override
+  String get ask_ai_symptom_consultation_desc => 'Helping you understand symptoms and providing trusted initial medical guidance.';
+  @override
+  String get ask_ai_smart_booking_title => 'Smart Booking & Follow-up';
+  @override
+  String get ask_ai_smart_booking_desc => 'Suggesting top doctors and convenient time slots tailored to your schedule.';
+  @override
+  String get ask_ai_med_reminders_title => 'Medication & Health Reminders';
+  @override
+  String get ask_ai_med_reminders_desc => 'Dosage notifications and personalized lifestyle health recommendations.';
+  @override
+  String get ask_ai_back_to_home => 'Back to Home';
+  @override
+  String get reservation_expired_title => 'Reservation Expired';
+  @override
+  String get reservation_expired_description => 'Your temporary slot hold has expired. We released this slot so other patients can book.';
+  @override
+  String get select_new_slot_button => 'Select New Slot';
+  @override
+  String get failed_to_load_clinic_slots => 'Failed to load clinic slots';
+  @override
+  String get slot_reserved_successfully => 'Slot Reserved Successfully!';
+  @override
+  String get slot_reserved_for_you => 'Slot Reserved for You';
+  @override
+  String get complete_booking_in => 'Complete booking in';
+  @override
+  String get days_label => 'Days';
+  @override
+  String get change_label => 'Change';
+  @override
+  String get map_label => 'Map';
+  @override
+  String get all_slots_booked_msg => 'All time slots for this date are currently booked or unavailable.';
+  @override
+  String get slot_status_booked => 'Booked';
+  @override
+  String get loading_doctor_profile => 'Loading Doctor Profile...';
+  @override
+  String get could_not_load_profile => 'Could Not Load Profile';
+  @override
+  String get unable_to_load_video => 'Unable to load video stream';
+  @override
+  String get search_governorate_hint => 'Search governorate...';
+  @override
+  String get search_city_hint => 'Search city...';
+  @override
+  String get no_cities_available => 'No cities available for this governorate';
+  @override
+  String get select_blood_type => 'Select Blood Type';
+  @override
+  String get blood_type_label => 'Blood Type';
+  @override
+  String get photo_source_dialog_title => 'Select an option to update profile picture';
+  @override
+  String get popular_options => 'Popular Options';
+  @override
+  String get active_allergies_hint => 'Active Allergies (Tap tag to toggle severity)';
+  @override
+  String get no_known_allergies_option => 'No Known Medical Allergies';
+  @override
+  String get remove_member_title => 'Remove Member';
+  @override
+  String get remove_member_confirm => 'Are you sure you want to remove this family member?';
+  @override
+  String get family_profiles_header => 'Family Profiles';
+  @override
+  String get view_document => 'View Document';
+  @override
+  String get delete_insurance_confirm => 'Are you sure you want to delete this insurance card?';
+  @override
+  String get upload_insurance_documents => 'Upload Insurance Documents';
+  @override
+  String get cardholder_name => 'Cardholder Name';
+  @override
+  String get card_number => 'Card Number';
+  @override
+  String get expiry_date => 'Expiry Date';
+  @override
+  String get cvv => 'CVV';
+  @override
+  String get securely_save_card => 'Securely Save Card';
+  @override
+  String get policy_number_label => 'POLICY NUMBER';
+  @override
+  String get expiry_date_label => 'EXPIRY DATE';
+  @override
+  String get policy_prefix => 'Policy:';
+
+
+  @override
+  String get add_new_card_title => 'Add New Card';
+  @override
+  String get cardholder_name_label => 'Cardholder Name';
+  @override
+  String get card_number_label => 'Card Number';
+  @override
+  String get cvv_label => 'CVV';
+  @override
+  String get securely_save_card_btn => 'Securely Save Card';
+  @override
+  String get no_known_medical_allergies => 'No Known Medical Allergies';
+  @override
+  String get save_allergy_profile => 'Save Allergy Profile';
+  @override
+  String get remove_action => 'Remove';
+  @override
+  String get family_profiles_count => 'Family Profiles';
+  @override
+  String get add_family_member_btn => 'Add Family Member';
+  @override
+  String get dial_action => 'Dial';
+  @override
+  String get legal_and_policies_title => 'LEGAL & POLICIES';
+  @override
+  String get edit_insurance_title => 'Edit Insurance';
+  @override
+  String get delete_card => 'Delete Card';
+  @override
+  String get delete_insurance_title => 'Delete Insurance';
+  @override
+  String get delete_insurance_msg => 'Are you sure you want to remove this insurance card?';
+  @override
+  String get delete_action => 'Delete';
+  @override
+  String get governorate_label => 'Governorate';
+  @override
+  String get loading_governorates => 'Loading governorates...';
+  @override
+  String get select_governorate_hint => 'Select Governorate';
+  @override
+  String get city_label => 'City';
+  @override
+  String get select_gov_first_hint => 'Select Governorate first';
+  @override
+  String get select_city_hint => 'Select City';
+  @override
+  String get blood_group_label => 'Blood Group';
+  @override
+  String get select_blood_group_hint => 'Select Blood Group';
+  @override
+  String get profile_photo_sheet_subtitle => 'Select an option to change your profile picture';
+  @override
+  String get profile_photo_take_photo => 'Take a photo';
+  @override
+  String get profile_photo_choose_photo => 'Choose photo';
+
+  @override
+  String get done => 'Done';
+  @override
+  String get unable_to_load_video_stream => 'Unable to load video stream';
+  @override
+  String get select_insurance_provider_hint => 'Select Insurance Provider';
 }
-
-

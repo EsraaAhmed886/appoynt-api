@@ -2,12 +2,12 @@
  * File Name: family_members_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 20/07/2026
- * Version Information: V1.3.0
+ * Version Information: V1.4.0
  * Dependencies: package:flutter/material.dart,
  *   package:appoynt_mobile_app/core/routing/route_export.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/pages/add_family_member_page.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
  * File Description: Redesigned Family Members & Dependents page displaying vertical member cards with bottom primary CTA.
  */
 
@@ -106,6 +106,7 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
   // Helper method confirming dependent member deletion popup alert dialog
   void _confirm_member_deletion(
       BuildContext context, String member_name, int index) {
+    final AppLocalizations localizations = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (dialog_context) {
@@ -113,9 +114,9 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(_LocalDimensions.border_radius_default),
           ),
-          title: const Text(
-            'Remove Member',
-            style: TextStyle(
+          title: Text(
+            localizations.remove_member_title,
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: _LocalDimensions.font_size_title,
             ),
@@ -131,7 +132,7 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
               onPressed: () {
                 Navigator.of(dialog_context).pop();
               },
-              child: const Text('Cancel'),
+              child: Text(localizations.cancel),
             ),
             TextButton(
               onPressed: () {
@@ -149,9 +150,9 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
                   'Member profile removed successfully.',
                 );
               },
-              child: const Text(
-                'Remove',
-                style: TextStyle(
+              child: Text(
+                localizations.remove_action,
+                style: const TextStyle(
                   color: AppColors.error,
                   fontWeight: FontWeight.bold,
                 ),
@@ -199,7 +200,7 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Family Profiles (${_family_members.length})',
+                    '${localizations.family_profiles_count} (${_family_members.length})',
                     style: TextStyle(
                       fontSize: _LocalDimensions.font_size_body,
                       fontWeight: FontWeight.bold,
@@ -479,9 +480,9 @@ class _FamilyMembersPageState extends State<FamilyMembersPage> {
                 color: AppColors.white,
                 size: _LocalDimensions.icon_size_medium,
               ),
-              label: const Text(
-                'Add Family Member',
-                style: TextStyle(
+              label: Text(
+                localizations.add_family_member_btn,
+                style: const TextStyle(
                   fontSize: AppSpacing.font_size_action_button,
                   fontWeight: FontWeight.w700,
                   color: AppColors.white,

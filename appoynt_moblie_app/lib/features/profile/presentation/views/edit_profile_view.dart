@@ -2,7 +2,7 @@
  * File Name: edit_profile_view.dart
  * Author: Kholoud Khaled
  * Date of Creation: 28/08/2026
- * Version Information: V1.1.0
+ * Version Information: V1.2.0
  * Dependencies: dart:io, package:flutter/material.dart,
  *   package:flutter_bloc/flutter_bloc.dart, package:image_picker/image_picker.dart,
  *   package:appoynt_mobile_app/core/theme/colors/app_colors.dart,
@@ -12,7 +12,7 @@
  *   package:appoynt_mobile_app/features/profile/presentation/bloc/edit_profile_state.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/widgets/profile_photo_options_dialog.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 29/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 30/08/2026]
  * File Description: View widget for editing profile details and staging photo updates/deletions
  *   with auto-calculated read-only gender from Egyptian National ID.
  */
@@ -196,6 +196,8 @@ class _EditProfileViewState extends State<EditProfileView> {
               is_dark ? Brightness.light : Brightness.dark,
         );
 
+        final AppLocalizations localizations = AppLocalizations.of(context);
+
         return Scaffold(
           backgroundColor:
               is_dark ? AppColors.background_dark : AppColors.white,
@@ -299,10 +301,10 @@ class _EditProfileViewState extends State<EditProfileView> {
                   const SizedBox(height: 24.0),
                   TextFormField(
                     controller: _firstNameController,
-                    decoration: const InputDecoration(labelText: 'First Name'),
+                    decoration: InputDecoration(labelText: localizations.profile_first_name_label),
                     validator: (value) {
                       if (null == value || value.trim().isEmpty) {
-                        return 'First name is required';
+                        return localizations.first_name_required;
                       } else {
                         return null;
                       }
@@ -311,10 +313,10 @@ class _EditProfileViewState extends State<EditProfileView> {
                   const SizedBox(height: 16.0),
                   TextFormField(
                     controller: _lastNameController,
-                    decoration: const InputDecoration(labelText: 'Last Name'),
+                    decoration: InputDecoration(labelText: localizations.profile_last_name_label),
                     validator: (value) {
                       if (null == value || value.trim().isEmpty) {
-                        return 'Last name is required';
+                        return localizations.last_name_required;
                       } else {
                         return null;
                       }
@@ -330,7 +332,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                       LengthLimitingTextInputFormatter(11),
                     ],
                     decoration:
-                        const InputDecoration(labelText: 'Phone Number'),
+                        InputDecoration(labelText: localizations.profile_phone_label),
                   ),
                   const SizedBox(height: 16.0),
                   TextFormField(
@@ -345,7 +347,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                     style: const TextStyle(fontWeight: FontWeight.w600, letterSpacing: 1.1),
                     decoration: InputDecoration(
                       counterText: '',
-                      labelText: 'National ID',
+                      labelText: localizations.profile_national_id_label,
                       prefixIcon: const Icon(Icons.badge_outlined, size: 20.0),
                       suffixIcon: _extractedBirthDate != null
                           ? const Icon(Icons.check_circle_rounded, color: AppColors.success, size: 20.0)
