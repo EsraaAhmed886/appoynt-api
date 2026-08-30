@@ -56,7 +56,20 @@ class _FakeProfileRepository implements ProfileRepository {
 
   @override
   Future<List<GovernorateModel>> getGovernorates() async {
-    return GovernorateModel.defaultGovernorates;
+    return const [
+      GovernorateModel(
+        id: 'c96424b4-e13c-4569-b3b4-31780630ab20',
+        nameEn: 'Cairo',
+        nameAr: 'القاهرة',
+        cities: [
+          CityModel(
+            id: '7f8b9c0d-1e2f-3a4b-5c6d-7e8f9a0b1c2d',
+            nameEn: 'Nasr City',
+            nameAr: 'مدينة نصر',
+          ),
+        ],
+      ),
+    ];
   }
 
   @override

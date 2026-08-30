@@ -252,7 +252,7 @@ class UserProfileModel {
     if (root['governorate'] is Map<String, dynamic>) {
       parsedGov =
           GovernorateModel.fromJson(root['governorate'] as Map<String, dynamic>);
-      govId = parsedGov.id?.toString();
+      govId = parsedGov.id;
       govName = parsedGov.nameEn.isNotEmpty ? parsedGov.nameEn : parsedGov.nameAr;
     } else if (root['governorate'] is String) {
       govName = root['governorate'] as String;
@@ -272,7 +272,7 @@ class UserProfileModel {
 
     if (root['city'] is Map<String, dynamic>) {
       parsedCity = CityModel.fromJson(root['city'] as Map<String, dynamic>);
-      cId = parsedCity.id?.toString();
+      cId = parsedCity.id;
       cName = parsedCity.nameEn.isNotEmpty ? parsedCity.nameEn : parsedCity.nameAr;
     } else if (root['city'] is String) {
       cName = root['city'] as String;

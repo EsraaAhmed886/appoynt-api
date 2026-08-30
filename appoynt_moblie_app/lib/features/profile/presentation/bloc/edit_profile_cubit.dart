@@ -141,7 +141,7 @@ class EditProfileCubit extends Cubit<EditProfileState> {
         isGovernoratesLoading: false,
       ));
     } catch (e) {
-      governorates = GovernorateModel.defaultGovernorates;
+      governorates = [];
       emit(state.copyWith(
         governorates: governorates,
         isGovernoratesLoading: false,

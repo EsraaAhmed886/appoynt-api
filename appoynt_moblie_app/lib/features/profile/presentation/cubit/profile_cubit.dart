@@ -196,9 +196,9 @@ class ProfileCubit extends Cubit<ProfileState> {
         // Cubit closed
       }
     } catch (e) {
-      governoratesList = GovernorateModel.defaultGovernorates;
+      governoratesList = [];
       isGovernoratesLoading = false;
-      debugPrint('[ProfileCubit] Failed to load governorates from API: $e, using default list.');
+      debugPrint('[ProfileCubit] Failed to load governorates from API: $e.');
       if (!isClosed) {
         emit(state.copyWith(
           profile: state.profile,

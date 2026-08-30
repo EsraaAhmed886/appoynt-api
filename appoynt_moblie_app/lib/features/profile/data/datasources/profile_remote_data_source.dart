@@ -121,17 +121,17 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
               '[Governorates API] Successfully parsed ${results.length} governorates from API.');
           return results;
         } else {
-          return GovernorateModel.defaultGovernorates;
+          return const [];
         }
       } else {
         debugPrint(
-            '[Governorates API] Received empty list or non-list data, using fallback default governorates.');
-        return GovernorateModel.defaultGovernorates;
+            '[Governorates API] Received empty list or non-list data.');
+        return const [];
       }
     } catch (e, stack) {
       debugPrint('[Governorates API] Error fetching governorates: $e');
       debugPrint(stack.toString());
-      return GovernorateModel.defaultGovernorates;
+      return const [];
     }
   }
 
@@ -169,29 +169,14 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
               '[Cities API] Successfully parsed ${results.length} cities from API.');
           return results;
         } else {
-          return _getFallbackCities(governorateId);
+          return const [];
         }
       } else {
-        return _getFallbackCities(governorateId);
+        return const [];
       }
     } catch (e, stack) {
       debugPrint('[Cities API] Error fetching cities: $e');
       debugPrint(stack.toString());
-      return _getFallbackCities(governorateId);
-    }
-  }
-
-  List<CityModel> _getFallbackCities(dynamic governorateId) {
-    try {
-      for (final gov in GovernorateModel.defaultGovernorates) {
-        if (gov.id.toString() == governorateId.toString()) {
-          return gov.cities;
-        } else {
-          // Continue searching
-        }
-      }
-      return const [];
-    } catch (_) {
       return const [];
     }
   }

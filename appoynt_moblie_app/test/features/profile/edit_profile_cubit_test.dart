@@ -54,7 +54,34 @@ class _FakeProfileRepository implements ProfileRepository {
 
   @override
   Future<List<GovernorateModel>> getGovernorates() async {
-    return GovernorateModel.defaultGovernorates;
+    return const [
+      GovernorateModel(
+        id: 'gov-cairo-uuid',
+        nameEn: 'Cairo',
+        nameAr: 'القاهرة',
+        cities: [
+          CityModel(
+            id: 'city-nasr-uuid',
+            governorateId: 'gov-cairo-uuid',
+            nameEn: 'Nasr City',
+            nameAr: 'مدينة نصر',
+          ),
+        ],
+      ),
+      GovernorateModel(
+        id: 'gov-giza-uuid',
+        nameEn: 'Giza',
+        nameAr: 'الجيزة',
+        cities: [
+          CityModel(
+            id: 'city-october-uuid',
+            governorateId: 'gov-giza-uuid',
+            nameEn: '6th of October',
+            nameAr: 'السادس من أكتوبر',
+          ),
+        ],
+      ),
+    ];
   }
 
   @override
@@ -78,6 +105,7 @@ class _FakeProfileRepository implements ProfileRepository {
         last_name: 'Doe',
         email: 'john@example.com',
         phone_number: '1234567890',
+        has_profile_photo: true,
       );
 
   @override
@@ -89,30 +117,28 @@ class _FakeProfileRepository implements ProfileRepository {
 }
 
 void main() {
+  late _FakeProfileRepository fakeRepo;
+  late EditProfileCubit cubit;
+
+  setUp(() {
+    fakeRepo = _FakeProfileRepository();
+    cubit = EditProfileCubit(profileRepository: fakeRepo);
+  });
+
+  tearDown(() {
+    cubit.close();
+  });
+
   group('EditProfileCubit Unit Tests', () {
-    late _FakeProfileRepository fakeRepo;
-    late EditProfileCubit cubit;
-
-    setUp(() {
-      fakeRepo = _FakeProfileRepository();
-      cubit = EditProfileCubit(profileRepository: fakeRepo);
-    });
-
-    tearDown(() {
-      cubit.close();
-    });
-
-    test('initial state has no staged image, isPhotoDeleted false, not loading',
-        () {
-      expect(cubit.state.stagedProfileImage, isNull);
+    test('initial state has empty governorates and cities', () {
+      expect(cubit.state.governorates, isEmpty);
+      expect(cubit.state.cities, isEmpty);
+      expect(cubit.state.selectedGovernorate, isNull);
+      expect(cubit.state.selectedCity, isNull);
       expect(cubit.state.isPhotoDeleted, isFalse);
-      expect(cubit.state.isLoading, isFalse);
-      expect(cubit.state.isSuccess, isFalse);
     });
 
-    test(
-        'stagePhotoDeletion sets isPhotoDeleted true and clears staged image without calling repo',
-        () {
+    test('stagePhotoDeletion sets isPhotoDeleted true and clears staged image without calling repo', () {
       cubit.stagePhotoDeletion();
 
       expect(cubit.state.isPhotoDeleted, isTrue);
@@ -121,7 +147,7 @@ void main() {
     });
 
     test('loadGovernorates fetches governorates and populates state', () async {
-      await cubit.loadGovernorates(initialGovId: 1, initialCityId: 101);
+      await cubit.loadGovernorates(initialGovId: 'gov-cairo-uuid', initialCityId: 'city-nasr-uuid');
 
       expect(cubit.state.governorates.isNotEmpty, isTrue);
       expect(cubit.state.selectedGovernorate?.nameEn, 'Cairo');
@@ -129,7 +155,7 @@ void main() {
     });
 
     test('selectGovernorate resets selectedCity', () async {
-      await cubit.loadGovernorates(initialGovId: 1, initialCityId: 101);
+      await cubit.loadGovernorates(initialGovId: 'gov-cairo-uuid', initialCityId: 'city-nasr-uuid');
       expect(cubit.state.selectedCity, isNotNull);
 
       final giza = cubit.state.governorates.firstWhere((g) => g.nameEn == 'Giza');
@@ -140,7 +166,7 @@ void main() {
     });
 
     test('selectCity updates selectedCity in state', () async {
-      await cubit.loadGovernorates(initialGovId: 2);
+      await cubit.loadGovernorates(initialGovId: 'gov-giza-uuid');
       final oct = cubit.state.selectedGovernorate!.cities.firstWhere((c) => c.nameEn == '6th of October');
       cubit.selectCity(oct);
 
