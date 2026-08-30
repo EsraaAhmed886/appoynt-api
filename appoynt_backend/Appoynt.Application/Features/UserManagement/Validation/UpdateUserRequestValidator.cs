@@ -4,8 +4,7 @@
  * Created Date   : 28/07/2026
  * Version        : v1.0.0
  * Dependencies   : FluentValidation
- * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-07-31
+ * Last Modified  : Mustafa Mahmoud - 2026-08-30
  * Description    : Validates the UpdateUserRequest payload.
  */
 
@@ -34,9 +33,5 @@ public sealed class UpdateUserRequestValidator : AbstractValidator<UpdateUserReq
             .NotEmpty().WithMessage(AuthenticationErrorCodes.LastNameRequired)
             .MaximumLength(50).WithMessage(AuthenticationErrorCodes.LastNameLengthInvalid)
             .When(r => r.LastName != null);
-
-        RuleFor(request => request.Address)
-            .MaximumLength(200).WithMessage(AuthenticationErrorCodes.AddressLengthInvalid)
-            .When(r => r.Address != null);
     }
 }

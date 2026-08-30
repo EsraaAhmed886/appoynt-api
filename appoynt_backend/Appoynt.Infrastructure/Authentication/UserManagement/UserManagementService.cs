@@ -6,7 +6,7 @@
  * Dependencies   : IUserManagementService, UserManager, RoleManager,
  *                  ApplicationDbContext, ICurrentUserService
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-25
+ * Last Modified  : Mustafa Mahmoud - 2026-08-30
  * Description    : Implements staff user management.
  */
 
@@ -478,9 +478,11 @@ public sealed class UserManagementService : IUserManagementService
         UserQueryParameters queryParams,
         CancellationToken cancellationToken = default)
     {
-        // Build the base query with Receptionist navigation for authorization filtering.
+        // Build the base query with navigations for location and authorization filtering.
         var query = _dbContext.Users
             .AsNoTracking()
+            .Include(u => u.Governorate)
+            .Include(u => u.City)
             .Include(u => u.Receptionist)
             .AsQueryable();
 
@@ -582,9 +584,11 @@ public sealed class UserManagementService : IUserManagementService
     /// <inheritdoc />
     public async Task<UserResponse?> GetUserByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        // Build the base query with Receptionist navigation for authorization filtering.
+        // Build the base query with navigations for location and authorization filtering.
         var query = _dbContext.Users
             .AsNoTracking()
+            .Include(u => u.Governorate)
+            .Include(u => u.City)
             .Include(u => u.Receptionist)
             .AsQueryable();
 
@@ -719,12 +723,58 @@ public sealed class UserManagementService : IUserManagementService
         {
         }
 
-        if (request.Address != null)
+        // Validate and update Governorate if provided
+        if (request.Address?.GovernorateId.HasValue == true)
         {
-            user.Address = request.Address;
+            var governorateExists = await _dbContext.Governorates
+                .AnyAsync(g => g.Id == request.Address.GovernorateId.Value, cancellationToken);
+
+            if (!governorateExists)
+            {
+                return UserManagementResult.Failure(AuthenticationErrorCodes.GovernorateNotFound, nameof(request.Address.GovernorateId));
+            }
+            else
+            {
+                // No action needed.
+            }
+
+            user.GovernorateId = request.Address.GovernorateId.Value;
         }
         else
         {
+            // No action needed.
+        }
+
+        // Validate and update City if provided
+        if (request.Address?.CityId.HasValue == true)
+        {
+            var city = await _dbContext.Cities
+                .FirstOrDefaultAsync(c => c.Id == request.Address.CityId.Value, cancellationToken);
+
+            if (city == null)
+            {
+                return UserManagementResult.Failure(AuthenticationErrorCodes.CityNotFound, nameof(request.Address.CityId));
+            }
+            else
+            {
+                // No action needed.
+            }
+
+            Guid effectiveGovernorateId = request.Address.GovernorateId ?? user.GovernorateId ?? Guid.Empty;
+            if (effectiveGovernorateId != Guid.Empty && city.GovernorateId != effectiveGovernorateId)
+            {
+                return UserManagementResult.Failure(AuthenticationErrorCodes.CityGovernorateMismatch, nameof(request.Address.CityId));
+            }
+            else
+            {
+                // No action needed.
+            }
+
+            user.CityId = request.Address.CityId.Value;
+        }
+        else
+        {
+            // No action needed.
         }
 
         // Update audit trail fields.
@@ -827,7 +877,15 @@ public sealed class UserManagementService : IUserManagementService
             PhoneNumber = user.PhoneNumber,
             Gender = user.Gender,
             DateOfBirth = user.DateOfBirth,
-            Address = user.Address,
+            Address = new AddressDto
+            {
+                GovernorateId = user.GovernorateId,
+                GovernorateNameAr = user.Governorate?.NameAr,
+                GovernorateNameEn = user.Governorate?.NameEn,
+                CityId = user.CityId,
+                CityNameAr = user.City?.NameAr,
+                CityNameEn = user.City?.NameEn
+            },
             IsActive = user.IsActive,
             CreatedAt = user.CreatedAt,
             Roles = roles

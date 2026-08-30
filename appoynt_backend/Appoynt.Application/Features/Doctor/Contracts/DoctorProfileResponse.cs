@@ -6,12 +6,13 @@
  * Dependencies   : System
  *                  System.Collections.Generic
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-23
+ * Last Modified  : Mustafa Mahmoud - 2026-08-30
  * Description    : Response model for doctor profile data.
  */
 
 using System;
 using System.Collections.Generic;
+using Appoynt.Application.Common.Models;
 
 namespace Appoynt.Application.Features.Doctor.Contracts;
 
@@ -71,9 +72,9 @@ public class DoctorProfileResponse
     public DateOnly? DateOfBirth { get; set; }
 
     /// <summary>
-    /// Gets or sets the doctor's address.
+    /// Gets or sets the user's location address details.
     /// </summary>
-    public string? Address { get; set; }
+    public AddressDto? Address { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the doctor has a profile photo.

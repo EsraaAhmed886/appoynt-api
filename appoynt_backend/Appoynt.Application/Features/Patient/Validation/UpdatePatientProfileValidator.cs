@@ -4,8 +4,7 @@
  * Created Date   : 2026-08-10
  * Version        : v1.0.0
  * Dependencies   : FluentValidation, Appoynt.Application.Features.Patient.Contracts, Appoynt.Application.Common.Constants, Appoynt.Domain.Common.Constants
- * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-10
+ * Last Modified  : Mustafa Mahmoud - 2026-08-30
  * Description    : Validator for the update patient profile request.
  */
 
@@ -51,12 +50,6 @@ public class UpdatePatientProfileValidator : AbstractValidator<UpdatePatientProf
         RuleFor(x => x.BirthDate)
             .Must(date => date < DateOnly.FromDateTime(DateTime.UtcNow))
             .When(x => x.BirthDate.HasValue);
-
-        // Address Validation
-        RuleFor(x => x.Address)
-            .MaximumLength(250)
-            .WithMessage(AuthenticationErrorCodes.AddressLengthInvalid)
-            .When(x => x.Address != null);
 
         // National ID Validation
         RuleFor(x => x.NationalId)

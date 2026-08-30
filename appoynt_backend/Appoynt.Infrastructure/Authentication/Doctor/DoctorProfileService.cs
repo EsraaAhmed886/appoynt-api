@@ -5,7 +5,7 @@
  * Version        : v1.0.0
  * Dependencies   : ApplicationDbContext, ICurrentUserService, IDoctorProfileService
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-25
+ * Last Modified  : Mustafa Mahmoud - 2026-08-30
  * Description    : Implementation of IDoctorProfileService for Doctor profile operations.
  */
 
@@ -15,6 +15,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Appoynt.Application.Common.Constants;
 using Appoynt.Application.Common.Interfaces;
+using Appoynt.Application.Common.Models;
 using Appoynt.Application.Common.Validation;
 using Appoynt.Application.Features.Doctor;
 using Appoynt.Application.Features.Doctor.Contracts;
@@ -23,7 +24,6 @@ using Appoynt.Infrastructure.Persistence;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Appoynt.Application.Common.Models;
 
 namespace Appoynt.Infrastructure.Authentication.Doctor;
 
@@ -71,6 +71,9 @@ public class DoctorProfileService : IDoctorProfileService
         var doctor = await _dbContext.Doctors
             .AsNoTracking()
             .Include(d => d.User)
+                .ThenInclude(u => u.Governorate)
+            .Include(d => d.User)
+                .ThenInclude(u => u.City)
             .Include(d => d.DoctorSpecializations)
                 .ThenInclude(ds => ds.Specialization)
             .Include(d => d.PhoneNumbers)
@@ -97,7 +100,15 @@ public class DoctorProfileService : IDoctorProfileService
             Education = doctor.Education,
             Gender = doctor.User.Gender,
             DateOfBirth = doctor.User.DateOfBirth,
-            Address = doctor.User.Address,
+            Address = new AddressDto
+            {
+                GovernorateId = doctor.User.GovernorateId,
+                GovernorateNameAr = doctor.User.Governorate?.NameAr,
+                GovernorateNameEn = doctor.User.Governorate?.NameEn,
+                CityId = doctor.User.CityId,
+                CityNameAr = doctor.User.City?.NameAr,
+                CityNameEn = doctor.User.City?.NameEn
+            },
             HasProfilePhoto = !string.IsNullOrEmpty(doctor.User.ProfilePicturePath),
             PhoneNumbers = doctor.PhoneNumbers.Select(p => new DoctorPhoneNumberDto
             {
@@ -215,9 +226,54 @@ public class DoctorProfileService : IDoctorProfileService
                 // No action needed.
             }
 
-            if (request.Address != null)
+            // Validate and update Governorate if provided
+            if (request.Address?.GovernorateId.HasValue == true)
             {
-                doctor.User.Address = request.Address;
+                var governorateExists = await _dbContext.Governorates
+                    .AnyAsync(g => g.Id == request.Address.GovernorateId.Value, ct);
+
+                if (!governorateExists)
+                {
+                    return DoctorResult.Failure(DoctorErrorCodes.GovernorateNotFound, "Governorate not found.");
+                }
+                else
+                {
+                    // No action needed.
+                }
+
+                doctor.User.GovernorateId = request.Address.GovernorateId.Value;
+            }
+            else
+            {
+                // No action needed.
+            }
+
+            // Validate and update City if provided
+            if (request.Address?.CityId.HasValue == true)
+            {
+                var city = await _dbContext.Cities
+                    .FirstOrDefaultAsync(c => c.Id == request.Address.CityId.Value, ct);
+
+                if (city == null)
+                {
+                    return DoctorResult.Failure(DoctorErrorCodes.CityNotFound, "City not found.");
+                }
+                else
+                {
+                    // No action needed.
+                }
+
+                Guid effectiveGovernorateId = request.Address.GovernorateId ?? doctor.User.GovernorateId ?? Guid.Empty;
+                if (effectiveGovernorateId != Guid.Empty && city.GovernorateId != effectiveGovernorateId)
+                {
+                    return DoctorResult.Failure(DoctorErrorCodes.CityGovernorateMismatch, "City does not belong to the specified governorate.");
+                }
+                else
+                {
+                    // No action needed.
+                }
+
+                doctor.User.CityId = request.Address.CityId.Value;
             }
             else
             {

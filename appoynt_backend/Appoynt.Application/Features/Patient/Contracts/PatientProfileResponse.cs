@@ -4,12 +4,12 @@
  * Created Date   : 2026-08-10
  * Version        : v1.0.0
  * Dependencies   : Appoynt.Domain.Enums
- * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-10
- * Description    : Data transfer object for patient profile response.
+ * Last Modified  : Mustafa Mahmoud - 2026-08-30
+ * Description    : Data transfer object for patient profile response with location details.
  */
 
 using System;
+using Appoynt.Application.Common.Models;
 using Appoynt.Domain.Enums;
 
 namespace Appoynt.Application.Features.Patient.Contracts;
@@ -93,4 +93,9 @@ public record PatientProfileResponse
     /// Gets the gender.
     /// </summary>
     public Gender? Gender { get; init; }
+
+    /// <summary>
+    /// Gets the user's location address details.
+    /// </summary>
+    public AddressDto? Address { get; init; }
 }

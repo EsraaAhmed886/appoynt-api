@@ -6,12 +6,13 @@
  * Dependencies   : System
  *                  System.Collections.Generic
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-23
+ * Last Modified  : Mustafa Mahmoud - 2026-08-30
  * Description    : Request model for updating a doctor's profile.
  */
 
 using System;
 using System.Collections.Generic;
+using Appoynt.Application.Common.Models;
 
 namespace Appoynt.Application.Features.Doctor.Contracts;
 
@@ -61,9 +62,9 @@ public class UpdateDoctorProfileRequest
     public DateOnly? BirthDate { get; set; }
 
     /// <summary>
-    /// Gets or sets the doctor's address.
+    /// Gets or sets the user's location address details.
     /// </summary>
-    public string? Address { get; set; }
+    public UpdateAddressDto? Address { get; set; }
 
     /// <summary>
     /// Gets or sets the list of specialization identifiers.

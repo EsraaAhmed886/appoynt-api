@@ -3,12 +3,13 @@
  * Author         : Mustafa Mahmoud
  * Created Date   : 21/07/2026
  * Version        : v1.1.0
- * Dependencies   : IdentityUser<Guid>, Gender, Doctor, Patient,
+ * Dependencies   : IdentityUser<Guid>, Gender, Governorate, City, Doctor, Patient,
  *                  Admin, Receptionist, RefreshToken
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-14
+ * Last Modified  : Mustafa Mahmoud - 2026-08-30
  * Description    : Represents an application user with business information,
- *                  profile picture path, audit information, and navigation properties.
+ *                  location associations, profile picture path, audit information,
+ *                  and navigation properties.
  */
 
 using Appoynt.Domain.Enums;
@@ -35,8 +36,25 @@ public class ApplicationUser : IdentityUser<Guid>
     // User's date of birth.
     public DateOnly? DateOfBirth { get; set; }
 
-    // User's residential address.
-    public string? Address { get; set; }
+    /// <summary>
+    /// Gets or sets the foreign key referencing the associated governorate.
+    /// </summary>
+    public Guid? GovernorateId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the navigation property to the associated governorate.
+    /// </summary>
+    public Governorate? Governorate { get; set; }
+
+    /// <summary>
+    /// Gets or sets the foreign key referencing the associated city.
+    /// </summary>
+    public Guid? CityId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the navigation property to the associated city.
+    /// </summary>
+    public City? City { get; set; }
 
     // Indicates whether the user account is active.
     public bool IsActive { get; set; } = true;
