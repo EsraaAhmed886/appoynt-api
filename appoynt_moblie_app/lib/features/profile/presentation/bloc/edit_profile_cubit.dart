@@ -2,14 +2,14 @@
  * File Name: edit_profile_cubit.dart
  * Author: Kholoud Khaled
  * Date of Creation: 28/08/2026
- * Version Information: V1.2.0
+ * Version Information: V1.3.0
  * Dependencies: dart:io, package:flutter/painting.dart,
  *   package:flutter_bloc/flutter_bloc.dart, package:image_picker/image_picker.dart,
  *   package:appoynt_mobile_app/features/profile/domain/repositories/profile_repository.dart,
  *   package:appoynt_mobile_app/features/profile/data/models/governorate_model.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/bloc/edit_profile_state.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 29/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 31/08/2026]
  * File Description: Cubit managing the Edit Profile flow by staging photo picks and deletions,
  *   loading cascading Egyptian Governorates and Cities, and updating backend profile data.
  */
@@ -36,6 +36,9 @@ class EditProfileCubit extends Cubit<EditProfileState> {
 
   List<GovernorateModel> get governoratesList => governorates;
   List<CityModel> get citiesList => cities;
+
+  /// Evaluates whether required governorate and city selections are populated
+  bool get isFormValid => selectedGovernorate != null && selectedCity != null;
 
   EditProfileCubit({required this.profileRepository})
       : super(const EditProfileState());
@@ -318,6 +321,25 @@ class EditProfileCubit extends Cubit<EditProfileState> {
     String? nationalId,
     String? birthDate,
   }) async {
+    final String? resolvedGovId =
+        (governorateId ?? selectedGovernorate?.id)?.toString();
+    final String? resolvedCityId =
+        (cityId ?? selectedCity?.id)?.toString();
+
+    // Strict Guard: Do not proceed if either Governorate or City is missing
+    if (resolvedGovId == null ||
+        resolvedGovId.trim().isEmpty ||
+        resolvedCityId == null ||
+        resolvedCityId.trim().isEmpty) {
+      emit(state.copyWith(
+        isLoading: false,
+        errorMessage: 'Please select both Governorate and City',
+      ));
+      return;
+    } else {
+      // Both location IDs are populated
+    }
+
     // 1. Capture the staged image before any async state mutation
     final File? imageToUpload = state.stagedProfileImage;
     final bool shouldDelete = state.isPhotoDeleted;
@@ -356,6 +378,8 @@ class EditProfileCubit extends Cubit<EditProfileState> {
         birthDate: birthDate,
         imageFile: imageToUpload,
         deleteCurrentPhoto: shouldDelete,
+        governorateId: resolvedGovId,
+        cityId: resolvedCityId,
       );
 
       // Invalidate image cache so UI immediately displays new avatar without restart

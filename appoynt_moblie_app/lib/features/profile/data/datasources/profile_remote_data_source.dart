@@ -2,12 +2,12 @@
  * File Name: profile_remote_data_source.dart
  * Author: Kholoud Khaled
  * Date of Creation: 09/08/2026
- * Version Information: V1.4.0
+ * Version Information: V1.5.0
  * Dependencies: package:dio/dio.dart, change_password_request_model.dart,
  *   user_profile_model.dart, update_profile_request_model.dart,
  *   api_constants.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 31/08/2026]
  * File Description: Remote data source for profile feature operations. V1.4.0
  *   adds multipart FormData updateProfile and cache-busting uploadProfilePhoto.
  */
@@ -58,6 +58,12 @@ abstract class ProfileRemoteDataSource {
     String? birthDate,
     File? imageFile,
     bool deleteCurrentPhoto = false,
+    String? governorateId,
+    String? cityId,
+    int? gender,
+    String? weight,
+    String? height,
+    String? bloodGroup,
   });
 
   /// Retrieves list of Egyptian Governorates (with associated cities).
@@ -234,6 +240,12 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     String? birthDate,
     File? imageFile,
     bool deleteCurrentPhoto = false,
+    String? governorateId,
+    String? cityId,
+    int? gender,
+    String? weight,
+    String? height,
+    String? bloodGroup,
   }) async {
     // 1. Update text attributes first via patients/profile
     final UpdateProfileRequestModel requestModel = UpdateProfileRequestModel(
@@ -242,6 +254,12 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       address: address,
       national_id: nationalId,
       date_of_birth: birthDate,
+      governorate_id: governorateId,
+      city_id: cityId,
+      gender: gender,
+      weight: weight,
+      height: height,
+      blood_group: bloodGroup,
     );
     await updateUserProfile(requestModel);
 

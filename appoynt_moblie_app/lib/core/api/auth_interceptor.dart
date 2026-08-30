@@ -2,11 +2,11 @@
  * File Name: auth_interceptor.dart
  * Author: Kholoud Khaled
  * Date of Creation: 08/08/2026
- * Version Information: V3.1.0
+ * Version Information: V3.2.0
  * Dependencies: package:dio/dio.dart, token_storage.dart, error_handler.dart,
  *   failures.dart, session_manager.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 27/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 31/08/2026]
  * File Description: Network interceptor to append authorization token headers,
  *   map all HTTP/DioExceptions through ErrorHandler to typed Failure objects,
  *   and delegate session expiry handling to SessionManager on HTTP 401 or error_session_expired.
@@ -126,6 +126,19 @@ class AuthInterceptor extends Interceptor {
       return;
     } else {
       // Non-401 failure — no session state mutation or stream broadcast needed
+    }
+
+    // Log detailed backend validation error payload if status is 400 Bad Request
+    if (400 == err.response?.statusCode && err.response?.data is Map) {
+      final Map<dynamic, dynamic> rawData = err.response!.data as Map;
+      if (rawData.containsKey('errors')) {
+        debugPrint('🚨 [Backend Validation Errors]: ${rawData['errors']}');
+      } else {
+        // No action needed
+      }
+      debugPrint('🚨 [Backend 400 Response Body]: ${err.response?.data}');
+    } else {
+      // No action needed
     }
 
     // Log all non-401 failure events with their typed localization key details

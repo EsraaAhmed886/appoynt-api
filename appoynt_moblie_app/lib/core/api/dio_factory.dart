@@ -2,10 +2,10 @@
  * File Name: dio_factory.dart
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
- * Version Information: V1.1.0
+ * Version Information: V1.2.0
  * Dependencies: package:dio/dio.dart, package:flutter/foundation.dart, api_constants.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 31/08/2026]
  * File Description: A factory class that configures and provides a singleton instance of the Dio client
  *   with safe FormData handling in logging interceptors to avoid ANR freezes.
  */
@@ -42,6 +42,18 @@ class SafeLoggingInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     debugPrint('<-- [DioError] ${err.response?.statusCode} ${err.requestOptions.uri} - ${err.message}');
+    if (null != err.response?.data) {
+      debugPrint('<-- [DioError Body] ${err.response?.data}');
+      if (err.response?.data is Map &&
+          (err.response!.data as Map).containsKey('errors')) {
+        debugPrint(
+            '🚨 [Backend Validation Errors]: ${(err.response!.data as Map)['errors']}');
+      } else {
+        // No action needed
+      }
+    } else {
+      // No action needed
+    }
     handler.next(err);
   }
 }

@@ -2,10 +2,10 @@
  * File Name: user_profile_model.dart
  * Author: Kholoud Khaled
  * Date of Creation: 09/08/2026
- * Version Information: V1.3.0
+ * Version Information: V1.4.0
  * Dependencies: package:appoynt_mobile_app/features/profile/data/models/governorate_model.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 30/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 31/08/2026]
  * File Description: Data Transfer Object (DTO) for the User/Patient Profile. Handles
  *   resilient, defensive JSON deserialization for nested Map objects (governorate, city, bloodGroup, user)
  *   and String ID/Name combinations from ASP.NET Core backend endpoints.
@@ -382,8 +382,8 @@ class UserProfileModel {
               root['national_id'] ??
               userMap?['nationalId'])
           ?.toString(),
-      weight: (root['weightKg'] ?? root['weight'])?.toString(),
-      height: (root['heightCm'] ?? root['height'])?.toString(),
+      weight: (root['weight'] ?? root['weightKg'] ?? root['weight_kg'])?.toString(),
+      height: (root['height'] ?? root['heightCm'] ?? root['height_cm'])?.toString(),
       blood_group: parsedBloodGroup.isNotEmpty ? parsedBloodGroup : null,
       governorate_id: govId,
       governorate_name: govName,

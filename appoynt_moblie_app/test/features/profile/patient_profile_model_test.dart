@@ -147,5 +147,22 @@ void main() {
       expect(gov.cities[0].nameEn, 'Dokki');
       expect(gov.cities[1].nameEn, 'Mohandessin');
     });
+
+    test('correctly deserializes weight and height from alternative keys (weight_kg, height_cm)', () {
+      final Map<String, dynamic> rawJson = {
+        'id': 'patient-dual-keys',
+        'email': 'patient@example.com',
+        'firstName': 'Ali',
+        'lastName': 'Hassan',
+        'phoneNumber': '01000000000',
+        'weight_kg': 85.0,
+        'height_cm': 178.0,
+      };
+
+      final PatientProfileModel model = PatientProfileModel.fromJson(rawJson);
+
+      expect(model.weight, '85.0');
+      expect(model.height, '178.0');
+    });
   });
 }

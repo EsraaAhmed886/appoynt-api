@@ -2,12 +2,12 @@
  * File Name: profile_repository_impl.dart
  * Author: Kholoud Khaled
  * Date of Creation: 09/08/2026
- * Version Information: V2.3.0
+ * Version Information: V2.4.0
  * Dependencies: dart:io, profile_repository.dart, profile_remote_data_source.dart,
  *   profile_local_data_source.dart, user_profile_model.dart,
  *   update_profile_request_model.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 31/08/2026]
  * File Description: Implements the ProfileRepository interface coordinating
  *   remote API calls with local SharedPreferences caching. V2.3.0 adds
  *   updateProfile coordinating staged photo updates and profile saves.
@@ -150,6 +150,12 @@ class ProfileRepositoryImpl implements ProfileRepository {
     String? birthDate,
     File? imageFile,
     bool deleteCurrentPhoto = false,
+    String? governorateId,
+    String? cityId,
+    int? gender,
+    String? weight,
+    String? height,
+    String? bloodGroup,
   }) async {
     // 1. Update text attributes first via PUT /api/patients/profile
     final UpdateProfileRequestModel requestModel = UpdateProfileRequestModel(
@@ -158,6 +164,12 @@ class ProfileRepositoryImpl implements ProfileRepository {
       address: address,
       national_id: nationalId,
       date_of_birth: birthDate,
+      governorate_id: governorateId,
+      city_id: cityId,
+      gender: gender,
+      weight: weight,
+      height: height,
+      blood_group: bloodGroup,
     );
     await updateUserProfile(requestModel);
 

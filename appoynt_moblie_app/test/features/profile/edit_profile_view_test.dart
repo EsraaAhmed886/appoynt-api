@@ -2,7 +2,7 @@
  * File Name: edit_profile_view_test.dart
  * Author: Kholoud Khaled
  * Date of Creation: 28/08/2026
- * Version Information: V1.0.0
+ * Version Information: V1.1.0
  * Dependencies: package:flutter/material.dart, package:flutter_test/flutter_test.dart,
  *   package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations_delegate.dart,
@@ -12,7 +12,7 @@
  *   package:appoynt_mobile_app/features/profile/data/models/user_profile_model.dart,
  *   package:appoynt_mobile_app/features/profile/data/models/update_profile_request_model.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 31/08/2026]
  * File Description: Widget tests verifying EditProfileView rendering, photo picker triggers, and form submission.
  */
 
@@ -43,6 +43,12 @@ class _FakeProfileRepository implements ProfileRepository {
     String? birthDate,
     File? imageFile,
     bool deleteCurrentPhoto = false,
+    String? governorateId,
+    String? cityId,
+    int? gender,
+    String? weight,
+    String? height,
+    String? bloodGroup,
   }) async {
     updateProfileCalled = true;
     return UserProfileModel(
@@ -107,6 +113,7 @@ void main() {
   Widget createTestWidget({
     required EditProfileCubit cubit,
     Locale locale = const Locale('en'),
+    String? initialAddress,
   }) {
     return MaterialApp(
       locale: locale,
@@ -114,10 +121,11 @@ void main() {
       supportedLocales: app_supported_locales,
       home: BlocProvider<EditProfileCubit>.value(
         value: cubit,
-        child: const EditProfileView(
+        child: EditProfileView(
           initialFirstName: 'Jane',
           initialLastName: 'Smith',
           initialPhone: '987654321',
+          initialAddress: initialAddress,
         ),
       ),
     );
@@ -150,9 +158,28 @@ void main() {
       expect(find.text('City'), findsOneWidget);
     });
 
-    testWidgets('tapping Save button invokes saveProfile on cubit',
+    testWidgets('Save button is disabled when city is not selected',
         (WidgetTester tester) async {
       await tester.pumpWidget(createTestWidget(cubit: cubit));
+      await tester.pumpAndSettle();
+
+      final ElevatedButton saveButtonWidget = tester.widget<ElevatedButton>(
+        find.widgetWithText(ElevatedButton, 'Save'),
+      );
+      expect(saveButtonWidget.onPressed, isNull);
+    });
+
+    testWidgets('tapping Save button invokes saveProfile on cubit when governorate and city selected',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(createTestWidget(
+        cubit: cubit,
+        initialAddress: 'Cairo',
+      ));
+      await tester.pumpAndSettle();
+
+      // Select city to complete form requirements
+      final cairo = cubit.state.governorates.firstWhere((g) => g.nameEn == 'Cairo');
+      cubit.selectCity(cairo.cities.first);
       await tester.pumpAndSettle();
 
       final Finder saveBtn = find.text('Save');

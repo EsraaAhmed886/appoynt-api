@@ -2,7 +2,7 @@
  * File Name: update_profile_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/07/2026
- * Version Information: V1.7.0
+ * Version Information: V1.8.0
  * Dependencies: package:flutter/material.dart, package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/core/localization/app_localizations.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_cubit.dart,
@@ -11,7 +11,7 @@
  *   package:appoynt_mobile_app/core/utils/national_id_parser.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/widgets/edit_profile_body.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 30/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 31/08/2026]
  * File Description: Defines the Update Profile layout form fields, validators, and backend save handlers with sleek dynamic National ID info badges.
  */
 
@@ -675,6 +675,8 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         resolvedAddress = _address_controller.text.trim();
       }
 
+
+
       // Create UpdateProfileRequestModel mapping the form parameters
       final request_model = UpdateProfileRequestModel(
         first_name: _first_name_controller.text.trim(),
@@ -686,6 +688,8 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         weight: _weight_controller.text.trim(),
         height: _height_controller.text.trim(),
         blood_group: _selected_blood_group,
+        governorate_id: profileCubit.selectedGovernorate?.id,
+        city_id: profileCubit.selectedCity?.id,
       );
       // Trigger Cubit update profile API call
       context.read<ProfileCubit>().updateUserProfile(request_model);
@@ -1350,7 +1354,9 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                 bottomNavigationBar: StickyBottomBar(
                   child: AuthButton(
                     label: localizations.profile_save_button,
-                    is_enabled: true == state.is_dirty &&
+                    is_enabled: (true == state.is_dirty ||
+                            context.read<ProfileCubit>().selectedGovernorate != null ||
+                            context.read<ProfileCubit>().selectedCity != null) &&
                         state.status != ProfileStatus.updating,
                     on_pressed: _submit_form,
                     is_loading: state.status == ProfileStatus.updating,

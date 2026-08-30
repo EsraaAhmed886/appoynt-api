@@ -2,7 +2,7 @@
  * File Name: profile_cubit.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/07/2026
- * Version Information: V1.5.0
+ * Version Information: V1.6.0
  * Dependencies: package:flutter_bloc/flutter_bloc.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/cubit/profile_state.dart,
  *   package:appoynt_mobile_app/features/profile/domain/entities/patient_profile.dart,
@@ -11,7 +11,7 @@
  *   package:image_picker/image_picker.dart,
  *   package:appoynt_mobile_app/core/error/error_handler.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 31/08/2026]
  * File Description: Implements the Patient Profile Cubit orchestrating UI updates,
  *   validations, local photo staging, and saves/deletions on form submit.
  */
@@ -245,6 +245,19 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
+  /// Evaluates whether required governorate and city selections are populated
+  bool get isFormValid => selectedGovernorate != null && selectedCity != null;
+
+  /// Direct method for selecting a governorate
+  void selectGovernorate(GovernorateModel governorate) {
+    onGovernorateChanged(governorate);
+  }
+
+  /// Direct method for selecting a city
+  void selectCity(CityModel city) {
+    onCityChanged(city);
+  }
+
   // Handles governorate selection and fetches dependent cities
   Future<void> onGovernorateChanged(GovernorateModel? gov) async {
     if (gov == null) {
@@ -255,6 +268,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         emit(state.copyWith(
           profile: state.profile,
           temp_profile: state.temp_profile,
+          is_dirty: true,
         ));
       } else {
         // Cubit closed
@@ -273,6 +287,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         emit(state.copyWith(
           profile: state.profile,
           temp_profile: state.temp_profile,
+          is_dirty: true,
         ));
       } else {
         // Cubit closed
@@ -285,6 +300,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         emit(state.copyWith(
           profile: state.profile,
           temp_profile: state.temp_profile,
+          is_dirty: true,
         ));
       } else {
         // Cubit closed
@@ -302,6 +318,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         emit(state.copyWith(
           profile: state.profile,
           temp_profile: state.temp_profile,
+          is_dirty: true,
         ));
       } else {
         // Cubit closed
@@ -313,6 +330,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         emit(state.copyWith(
           profile: state.profile,
           temp_profile: state.temp_profile,
+          is_dirty: true,
         ));
       } else {
         // Cubit closed
@@ -327,6 +345,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       emit(state.copyWith(
         profile: state.profile,
         temp_profile: state.temp_profile,
+        is_dirty: true,
       ));
     } else {
       // Cubit closed
@@ -682,6 +701,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       }
 
       // 3. Call UpdateUserProfileUseCase to perform PUT /api/patients/profile
+      debugPrint('🚀 [Update Profile Live Payload]: ${requestModel.toJson()}');
       await get_it<UpdateUserProfileUseCase>().call(requestModel);
 
       // 3. Clear Flutter imageCache to invalidate stale network image

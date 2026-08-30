@@ -40,6 +40,12 @@ abstract class ProfileRepository {
     String? birthDate,
     File? imageFile,
     bool deleteCurrentPhoto = false,
+    String? governorateId,
+    String? cityId,
+    int? gender,
+    String? weight,
+    String? height,
+    String? bloodGroup,
   });
 
   /// Retrieves list of Egyptian Governorates (with associated cities).

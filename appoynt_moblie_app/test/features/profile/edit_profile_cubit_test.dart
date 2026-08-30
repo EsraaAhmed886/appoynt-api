@@ -2,7 +2,7 @@
  * File Name: edit_profile_cubit_test.dart
  * Author: Kholoud Khaled
  * Date of Creation: 28/08/2026
- * Version Information: V1.0.0
+ * Version Information: V1.1.0
  * Dependencies: dart:io, package:flutter_test/flutter_test.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/bloc/edit_profile_cubit.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/bloc/edit_profile_state.dart,
@@ -10,7 +10,7 @@
  *   package:appoynt_mobile_app/features/profile/data/models/user_profile_model.dart,
  *   package:appoynt_mobile_app/features/profile/data/models/update_profile_request_model.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 31/08/2026]
  * File Description: Unit tests verifying EditProfileCubit local staging and deferred save execution.
  */
 
@@ -39,6 +39,12 @@ class _FakeProfileRepository implements ProfileRepository {
     String? birthDate,
     File? imageFile,
     bool deleteCurrentPhoto = false,
+    String? governorateId,
+    String? cityId,
+    int? gender,
+    String? weight,
+    String? height,
+    String? bloodGroup,
   }) async {
     updateProfileCalled = true;
     receivedImageFile = imageFile;
@@ -175,12 +181,15 @@ void main() {
 
     test('saveProfile executes repo.updateProfile and emits success state',
         () async {
+      await cubit.loadGovernorates(initialGovId: 'gov-cairo-uuid', initialCityId: 'city-nasr-uuid');
       cubit.stagePhotoDeletion();
 
       await cubit.saveProfile(
         firstName: 'John',
         lastName: 'Doe',
         phone: '123456',
+        governorateId: 'gov-cairo-uuid',
+        cityId: 'city-nasr-uuid',
       );
 
       expect(fakeRepo.updateProfileCalled, isTrue);

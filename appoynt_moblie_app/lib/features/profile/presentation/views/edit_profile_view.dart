@@ -2,7 +2,7 @@
  * File Name: edit_profile_view.dart
  * Author: Kholoud Khaled
  * Date of Creation: 28/08/2026
- * Version Information: V1.2.0
+ * Version Information: V1.3.0
  * Dependencies: dart:io, package:flutter/material.dart,
  *   package:flutter_bloc/flutter_bloc.dart, package:image_picker/image_picker.dart,
  *   package:appoynt_mobile_app/core/theme/colors/app_colors.dart,
@@ -12,7 +12,7 @@
  *   package:appoynt_mobile_app/features/profile/presentation/bloc/edit_profile_state.dart,
  *   package:appoynt_mobile_app/features/profile/presentation/widgets/profile_photo_options_dialog.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 30/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 31/08/2026]
  * File Description: View widget for editing profile details and staging photo updates/deletions
  *   with auto-calculated read-only gender from Egyptian National ID.
  */
@@ -85,6 +85,8 @@ class _EditProfileViewState extends State<EditProfileView> {
     }
 
     _nationalIdController.addListener(_onNationalIdChanged);
+    _firstNameController.addListener(_onFieldChanged);
+    _lastNameController.addListener(_onFieldChanged);
 
     // Fetch governorates on screen load
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -92,6 +94,19 @@ class _EditProfileViewState extends State<EditProfileView> {
             initialGovName: widget.initialAddress,
           );
     });
+  }
+
+  void _onFieldChanged() {
+    setState(() {});
+  }
+
+  bool _isFormValid(EditProfileState state) {
+    final bool isFirstNameValid = _firstNameController.text.trim().isNotEmpty;
+    final bool isLastNameValid = _lastNameController.text.trim().isNotEmpty;
+    final bool isGovSelected = state.selectedGovernorate != null;
+    final bool isCitySelected = state.selectedCity != null;
+
+    return isFirstNameValid && isLastNameValid && isGovSelected && isCitySelected;
   }
 
   void _onNationalIdChanged() {
@@ -140,6 +155,8 @@ class _EditProfileViewState extends State<EditProfileView> {
   @override
   void dispose() {
     _nationalIdController.removeListener(_onNationalIdChanged);
+    _firstNameController.removeListener(_onFieldChanged);
+    _lastNameController.removeListener(_onFieldChanged);
     _firstNameController.dispose();
     _lastNameController.dispose();
     _phoneController.dispose();
@@ -365,7 +382,16 @@ class _EditProfileViewState extends State<EditProfileView> {
                     width: double.infinity,
                     height: 50.0,
                     child: ElevatedButton(
-                      onPressed: state.isLoading
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        disabledBackgroundColor:
+                            AppColors.primary.withValues(alpha: 0.35),
+                        foregroundColor: AppColors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14.0),
+                        ),
+                      ),
+                      onPressed: (state.isLoading || !_isFormValid(state))
                           ? null
                           : () {
                               if (_formKey.currentState!.validate()) {
@@ -373,15 +399,18 @@ class _EditProfileViewState extends State<EditProfileView> {
                                       firstName:
                                           _firstNameController.text.trim(),
                                       lastName: _lastNameController.text.trim(),
-                                      phone: _phoneController.text.trim().toEnglishDigits(),
+                                      phone: _phoneController.text
+                                          .trim()
+                                          .toEnglishDigits(),
                                       governorateId:
                                           state.selectedGovernorate?.id,
                                       governorateName:
                                           state.selectedGovernorate?.nameEn,
                                       cityId: state.selectedCity?.id,
                                       cityName: state.selectedCity?.nameEn,
-                                      nationalId:
-                                          _nationalIdController.text.trim().toEnglishDigits(),
+                                      nationalId: _nationalIdController.text
+                                          .trim()
+                                          .toEnglishDigits(),
                                       birthDate:
                                           _birthDateController.text.trim(),
                                     );
@@ -393,7 +422,13 @@ class _EditProfileViewState extends State<EditProfileView> {
                           ? const CircularProgressIndicator.adaptive(
                               backgroundColor: AppColors.white,
                             )
-                          : Text(context.tr('save')),
+                          : Text(
+                              context.tr('save'),
+                              style: const TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                     ),
                   ),
                 ],
