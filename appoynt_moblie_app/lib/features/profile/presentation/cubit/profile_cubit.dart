@@ -281,6 +281,8 @@ class ProfileCubit extends Cubit<ProfileState> {
         } catch (_) {
           selectedCity = null;
         }
+      } else {
+        // No matching governorate found
       }
     } catch (_) {
       // Fallback safely if not found

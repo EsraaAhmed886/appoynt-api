@@ -2,7 +2,7 @@
  * File Name: otp_page.dart
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
- * Version Information: V1.2.0
+ * Version Information: V1.3.0
  * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart,
  *   package:appoynt_mobile_app/features/auth/presentation/widgets/otp_box.dart,
  *   package:appoynt_mobile_app/core/widgets/auth/auth_widgets.dart,
@@ -10,7 +10,7 @@
  *   package:appoynt_mobile_app/features/auth/presentation/cubit/auth_cubit.dart,
  *   package:appoynt_mobile_app/core/di/service_locator.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 30/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 31/08/2026]
  * File Description: The OTP Verification screen. It handles the input of a 6-digit code,
  *   manages a resend timer, and follows the centralized design system.
  */
@@ -505,6 +505,8 @@ class _OtpPageState extends State<OtpPage> {
                                         // Localized timer text style passing context
                                         style: AppTextStyles.get_otp_timer(context, is_arabic),
                                       ),
+                                    ] else ...[
+                                      // No timer display needed when expired or locked
                                     ],
                                   ],
                                 ),

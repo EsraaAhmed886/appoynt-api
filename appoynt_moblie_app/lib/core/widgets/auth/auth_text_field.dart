@@ -2,11 +2,11 @@
  * File Name: auth_text_field.dart
  * Author: Kholoud Khaled
  * Date of Creation: 02/07/2026
- * Version Information: V1.1.0
+ * Version Information: V1.2.0
  * Dependencies: package:appoynt_mobile_app/core/routing/route_export.dart,
  *   package:flutter/services.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 27/08/2026]
+ * Last Modified Date: [Kholoud Khaled - 31/08/2026]
  * File Description: Standardized, premium text input component designed for authentication forms.
  *   Provides automatic dark mode adaptation, LTR forcing for credentials, and localized fonts.
  */
@@ -193,6 +193,27 @@ class _AuthTextFieldState extends State<AuthTextField> {
                         : TextAlign.left))
                 : (is_arabic ? TextAlign.right : TextAlign.left);
 
+            // Build list of resolved input formatters with explicit conditional branches
+            final List<TextInputFormatter> resolved_input_formatters = [];
+            if (true == widget.is_phone ||
+                true == widget.is_national_id ||
+                TextInputType.number == widget.keyboard_type ||
+                TextInputType.phone == widget.keyboard_type) {
+              resolved_input_formatters.add(ArabicToEnglishDigitsFormatter());
+            } else {
+              // No digit conversion needed
+            }
+            if (null != widget.input_formatters) {
+              resolved_input_formatters.addAll(widget.input_formatters!);
+            } else {
+              // No custom formatters provided
+            }
+            if (null == widget.input_formatters && true == widget.is_phone) {
+              resolved_input_formatters.add(PhoneInputFormatter());
+            } else {
+              // No phone formatting needed
+            }
+
             // Return Stack layering shadow background behind the TextFormField
             return Stack(
               // Allow child widgets to paint outside stack boundary lines
@@ -235,6 +256,8 @@ class _AuthTextFieldState extends State<AuthTextField> {
                       ),
                     ),
                   ),
+                ] else ...[
+                  // No shadow decorator requested
                 ],
                 // Render standard TextFormField on top of the shadow decorator
                 TextFormField(
@@ -266,17 +289,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
                   textInputAction:
                       widget.text_input_action ?? TextInputAction.next,
                   // Format digits-only or custom formatters with Arabic digit translation
-                  inputFormatters: [
-                    if (true == widget.is_phone ||
-                        true == widget.is_national_id ||
-                        TextInputType.number == widget.keyboard_type ||
-                        TextInputType.phone == widget.keyboard_type)
-                      ArabicToEnglishDigitsFormatter(),
-                    ...?widget.input_formatters,
-                    if (null == widget.input_formatters &&
-                        true == widget.is_phone)
-                      PhoneInputFormatter(),
-                  ],
+                  inputFormatters: resolved_input_formatters,
                   // Force input directionality text rules
                   textDirection: true == force_ltr
                       ? TextDirection.ltr
