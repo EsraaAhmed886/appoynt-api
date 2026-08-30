@@ -5,8 +5,8 @@
  * Version Information: V1.0.0
  * Dependencies: react, next/image, lucide-react,
  *   @/hooks/use_auth, @/context/language_context, @/types
- * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Contributors: [Kholoud Khaled ,shimaa salah]
+ * Last Modified Date: [shimaa salah - 30/08/2026]
  * File Description: Interactive login page using Redux-integrated use_auth
  *   hook, design tokens, and bilingual context.
  */
@@ -82,12 +82,12 @@ export default function login_page() {
     secret_password?: boolean;
   }>({});
 
-  // Memoized resolution handler determining active error warning prompt text
+    // Memoized resolution handler determining active error warning prompt text
   const active_error_message = useMemo(() => {
     // Yoda style check validating if API returns failure message parameters
     if (null !== error_message) {
-      // Returning standard invalid credentials warning message
-      return translations.err_invalid_credentials;
+      // Returning active dynamic error message from API or fallback
+      return error_message;
     } else if (
       true === validation_errors.email_address &&
       true === validation_errors.secret_password

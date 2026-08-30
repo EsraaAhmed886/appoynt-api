@@ -4,8 +4,8 @@
  * Date of Creation: 28/06/2026
  * Version Information: V1.0.0
  * Dependencies: axios
- * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Contributors: [Kholoud Khaled ,shimaa salah]
+ * Last Modified Date: [shimaa salah - 30/08/2026]
  * File Description: Customized Axios client instance with token interceptors and 401 refresh logic.
  */
 
@@ -14,7 +14,7 @@ import axios, { InternalAxiosRequestConfig } from "axios";
 
 // Declaring endpoint base url resolved from environment configuration settings
 const api_base_url =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+  process.env.NEXT_PUBLIC_API_URL || "/api"
 
 // Instantiating standard Axios instance with custom header configurations
 export const api_client = axios.create({
@@ -169,7 +169,7 @@ api_client.interceptors.response.use(
             // Wiping refresh credentials to prevent validation loops safely
             remove_safe_storage("appoynt_refresh_token");
             // Redirecting user profile back to sign in layouts page
-            window.location.href = "/login";
+            window.location.href = "/auth/login";
           }
         } else {
           // Clearing access token variables if refresh token doesn't exist safely
@@ -177,7 +177,7 @@ api_client.interceptors.response.use(
           // Yoda check verifying window global scope for redirect executions
           if ("undefined" !== typeof window) {
             // Directing guest profiles to standard login interface
-            window.location.href = "/login";
+            window.location.href = "/auth/login";
           } else {
             // Explicit empty action block for SSR environment
           }
@@ -190,7 +190,7 @@ api_client.interceptors.response.use(
         // Yoda check to see if code is running in a browser viewport
         if ("undefined" !== typeof window) {
           // Route transition back to access portal site
-          window.location.href = "/login";
+          window.location.href = "/auth/login";
         } else {
           // Explicit empty action block for SSR safety
         }
