@@ -3,12 +3,13 @@
  * Author         : Mustafa Mahmoud
  * Created Date   : 28/07/2026
  * Version        : v1.0.0
- * Dependencies   : Gender
+ * Dependencies   : System, Gender
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-07-31
+ * Last Modified  : Mustafa Mahmoud - 2026-08-30
  * Description    : Payload for updating basic user information.
  */
 
+using Appoynt.Application.Common.Models;
 using Appoynt.Domain.Enums;
 
 namespace Appoynt.Application.Features.UserManagement.Contracts;
@@ -39,7 +40,7 @@ public sealed class UpdateUserRequest
     public DateOnly? DateOfBirth { get; init; }
 
     /// <summary>
-    /// Gets the updated physical address of the user.
+    /// Gets the user's location address details.
     /// </summary>
-    public string? Address { get; init; }
+    public UpdateAddressDto? Address { get; init; }
 }

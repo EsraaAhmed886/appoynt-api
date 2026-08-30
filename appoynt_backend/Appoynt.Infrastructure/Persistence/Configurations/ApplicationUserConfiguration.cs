@@ -3,9 +3,9 @@
  * Author         : Mustafa Mahmoud
  * Created Date   : 21/07/2026
  * Version        : v1.1.0
- * Dependencies   : ApplicationUser, UserConstants, ProfilePictureConstants, Entity Framework Core
+ * Dependencies   : ApplicationUser, Governorate, City, UserConstants, ProfilePictureConstants, Entity Framework Core
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-14
+ * Last Modified  : Mustafa Mahmoud - 2026-08-30
  * Description    : Configures the Entity Framework Core mapping for the
  *                  ApplicationUser entity, including business properties,
  *                  profile picture path, identity properties, audit configuration,
@@ -60,9 +60,13 @@ public sealed class ApplicationUserConfiguration
         builder.Property(user => user.DateOfBirth)
             .HasColumnType("date");
 
-        // Configure the maximum allowed address length.
-        builder.Property(user => user.Address)
-            .HasMaxLength(UserConstants.AddressMaxLength);
+        // Configure the optional foreign key for governorate.
+        builder.Property(user => user.GovernorateId)
+            .IsRequired(false);
+
+        // Configure the optional foreign key for city.
+        builder.Property(user => user.CityId)
+            .IsRequired(false);
 
         // Set newly created users as active by default.
         builder.Property(user => user.IsActive)
@@ -169,6 +173,22 @@ public sealed class ApplicationUserConfiguration
         builder.HasOne(user => user.DeletedBy)
             .WithMany()
             .HasForeignKey(user => user.DeletedById)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        #endregion
+
+        #region Location Relationships Configuration
+
+        // Configure optional many-to-one relationship with Governorate.
+        builder.HasOne(user => user.Governorate)
+            .WithMany()
+            .HasForeignKey(user => user.GovernorateId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Configure optional many-to-one relationship with City.
+        builder.HasOne(user => user.City)
+            .WithMany()
+            .HasForeignKey(user => user.CityId)
             .OnDelete(DeleteBehavior.Restrict);
 
         #endregion

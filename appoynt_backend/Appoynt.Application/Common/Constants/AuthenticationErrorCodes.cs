@@ -5,7 +5,7 @@
  * Version        : v1.0.0
  * Dependencies   : None
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-25
+ * Last Modified  : Mustafa Mahmoud - 2026-08-30
  * Description    : Defines stable error codes for authentication features,
  *                  including registration, login, password recovery, OTP,
  *                  refresh tokens, and account verification.
@@ -155,6 +155,21 @@ public static class AuthenticationErrorCodes
     /// Indicates that the requested user was not found.
     /// </summary>
     public const string UserNotFound = "auth.user.not_found";
+
+    /// <summary>
+    /// Indicates that the specified governorate was not found.
+    /// </summary>
+    public const string GovernorateNotFound = "user.governorate.not_found";
+
+    /// <summary>
+    /// Indicates that the specified city was not found.
+    /// </summary>
+    public const string CityNotFound = "user.city.not_found";
+
+    /// <summary>
+    /// Indicates that the specified city does not belong to the governorate.
+    /// </summary>
+    public const string CityGovernorateMismatch = "user.city_governorate_mismatch";
 
     /// <summary>
     /// Indicates a generic server-side failure that is safe to expose to clients.

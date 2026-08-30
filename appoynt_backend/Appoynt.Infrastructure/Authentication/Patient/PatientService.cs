@@ -5,7 +5,7 @@
  * Version        : v1.1.0
  * Dependencies   : ApplicationDbContext, ICurrentUserService, IFileStorageService, IValidator, Appoynt.Application.Common.Models
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-25
+ * Last Modified  : Mustafa Mahmoud - 2026-08-30
  * Description    : Full implementation of IPatientService including profile, family members, and favorites management.
  */
 
@@ -106,6 +106,9 @@ public class PatientService : IPatientService
         Appoynt.Domain.Entities.Patient? patient = await _dbContext.Set<Appoynt.Domain.Entities.Patient>()
             .AsNoTracking()
             .Include(p => p.User)
+                .ThenInclude(u => u.Governorate)
+            .Include(p => p.User)
+                .ThenInclude(u => u.City)
             .FirstOrDefaultAsync(p => p.UserId == userId.Value, cancellationToken);
 
         // Check if patient exists
@@ -136,7 +139,16 @@ public class PatientService : IPatientService
             LastName = patient.User.LastName,
             Email = patient.User.Email ?? string.Empty,
             PhoneNumber = patient.User.PhoneNumber ?? string.Empty,
-            Gender = patient.User.Gender
+            Gender = patient.User.Gender,
+            Address = new AddressDto
+            {
+                GovernorateId = patient.User.GovernorateId,
+                GovernorateNameAr = patient.User.Governorate?.NameAr,
+                GovernorateNameEn = patient.User.Governorate?.NameEn,
+                CityId = patient.User.CityId,
+                CityNameAr = patient.User.City?.NameAr,
+                CityNameEn = patient.User.City?.NameEn
+            }
         };
     }
 
@@ -231,9 +243,54 @@ public class PatientService : IPatientService
                 // No action needed.
             }
 
-            if (request.Address != null)
+            // Validate and update Governorate if provided
+            if (request.Address?.GovernorateId.HasValue == true)
             {
-                patient.User.Address = request.Address;
+                var governorateExists = await _dbContext.Governorates
+                    .AnyAsync(g => g.Id == request.Address.GovernorateId.Value, cancellationToken);
+
+                if (!governorateExists)
+                {
+                    return PatientResult.Failure(PatientErrorCodes.GovernorateNotFound, "Governorate not found.");
+                }
+                else
+                {
+                    // No action needed.
+                }
+
+                patient.User.GovernorateId = request.Address.GovernorateId.Value;
+            }
+            else
+            {
+                // No action needed.
+            }
+
+            // Validate and update City if provided
+            if (request.Address?.CityId.HasValue == true)
+            {
+                var city = await _dbContext.Cities
+                    .FirstOrDefaultAsync(c => c.Id == request.Address.CityId.Value, cancellationToken);
+
+                if (city == null)
+                {
+                    return PatientResult.Failure(PatientErrorCodes.CityNotFound, "City not found.");
+                }
+                else
+                {
+                    // No action needed.
+                }
+
+                Guid effectiveGovernorateId = request.Address.GovernorateId ?? patient.User.GovernorateId ?? Guid.Empty;
+                if (effectiveGovernorateId != Guid.Empty && city.GovernorateId != effectiveGovernorateId)
+                {
+                    return PatientResult.Failure(PatientErrorCodes.CityGovernorateMismatch, "City does not belong to the specified governorate.");
+                }
+                else
+                {
+                    // No action needed.
+                }
+
+                patient.User.CityId = request.Address.CityId.Value;
             }
             else
             {

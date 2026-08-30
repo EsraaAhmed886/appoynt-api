@@ -4,9 +4,8 @@
  * Created Date   : 2026-08-14
  * Version        : v1.0.0
  * Dependencies   : None
- * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-25
- * Description    : Contains constant error codes for doctor validation and operations.
+ * Last Modified  : Mustafa Mahmoud - 2026-08-30
+ * Description    : Contains constant error codes for doctor validation, location, and operations.
  */
 
 namespace Appoynt.Application.Common.Constants;
@@ -110,6 +109,25 @@ public static class DoctorErrorCodes
     /// Indicates that the supplied birth date is not in the past.
     /// </summary>
     public const string BirthDateInvalid = "doctor.birth_date.invalid";
+
+    #endregion
+
+    #region Location Errors
+
+    /// <summary>
+    /// Indicates that the specified governorate was not found.
+    /// </summary>
+    public const string GovernorateNotFound = "doctor.governorate.not_found";
+
+    /// <summary>
+    /// Indicates that the specified city was not found.
+    /// </summary>
+    public const string CityNotFound = "doctor.city.not_found";
+
+    /// <summary>
+    /// Indicates that the specified city does not belong to the governorate.
+    /// </summary>
+    public const string CityGovernorateMismatch = "doctor.city_governorate_mismatch";
 
     #endregion
 }

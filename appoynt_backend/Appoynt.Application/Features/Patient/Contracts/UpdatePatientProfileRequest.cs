@@ -3,12 +3,13 @@
  * Author         : Mustafa Mahmoud
  * Created Date   : 2026-08-10
  * Version        : v1.0.0
- * Dependencies   : Appoynt.Domain.Enums
+ * Dependencies   : System, Appoynt.Domain.Enums
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-10
+ * Last Modified  : Mustafa Mahmoud - 2026-08-30
  * Description    : Data transfer object for updating a patient profile.
  */
 
+using Appoynt.Application.Common.Models;
 using Appoynt.Domain.Enums;
 
 namespace Appoynt.Application.Features.Patient.Contracts;
@@ -39,9 +40,9 @@ public record UpdatePatientProfileRequest
     public DateOnly? BirthDate { get; init; }
 
     /// <summary>
-    /// Gets the address.
+    /// Gets the user's location address details.
     /// </summary>
-    public string? Address { get; init; }
+    public UpdateAddressDto? Address { get; init; }
 
     /// <summary>
     /// Gets the national ID.

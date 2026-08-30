@@ -6,7 +6,7 @@
  * Dependencies   : UpdatePatientProfileValidator, UpdatePatientPhoneNumberValidator,
  *                  UpdateFamilyMemberValidator, Patient Contracts, FluentAssertions
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-24
+ * Last Modified  : Mustafa Mahmoud - 2026-08-30
  * Description    : Unit tests completing coverage of patient-facing validators:
  *                  partial profile updates with medical measurements boundary
  *                  checks, phone number update rules, and family member update rules.
@@ -14,6 +14,7 @@
 
 using System;
 using Appoynt.Application.Common.Constants;
+using Appoynt.Application.Common.Models;
 using Appoynt.Application.Features.Patient.Contracts;
 using Appoynt.Application.Features.Patient.Validation;
 using Appoynt.Domain.Enums;
@@ -125,23 +126,6 @@ public class PatientProfileValidationTests
     }
 
     /// <summary>
-    /// An address beyond two hundred fifty characters must be rejected.
-    /// </summary>
-    [Fact]
-    public void Validate_ProfileUpdateLongAddress_ShouldFail()
-    {
-        // Arrange with an address one character over the enforced limit.
-        var request = new UpdatePatientProfileRequest { Address = new string('A', 251) };
-
-        // Act
-        var result = _profileValidator.Validate(request);
-
-        // Assert.
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.ErrorMessage == AuthenticationErrorCodes.AddressLengthInvalid);
-    }
-
-    /// <summary>
     /// National IDs must be exactly fourteen digits when supplied.
     /// </summary>
     [Theory]
@@ -241,7 +225,11 @@ public class PatientProfileValidationTests
             LastName = "Tarek",
             Gender = Gender.Male,
             BirthDate = new DateOnly(1994, 2, 20),
-            Address = "7 Abbas El Akkad, Nasr City",
+            Address = new UpdateAddressDto
+            {
+                GovernorateId = Guid.NewGuid(),
+                CityId = Guid.NewGuid()
+            },
             NationalId = "29402200101234",
             WeightKg = 85.5m,
             HeightCm = 178m,

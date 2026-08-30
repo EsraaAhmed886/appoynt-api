@@ -1,3 +1,14 @@
+/**
+ * File Name      : AuditLoggingIntegrationTests.cs
+ * Author         : Mustafa Mahmoud
+ * Created Date   : 2026-08-16
+ * Version        : v1.0.0
+ * Dependencies   : WebApplicationFactory, ApplicationDbContext, FluentAssertions
+ * Contributors   : [Mustafa Mahmoud]
+ * Last Modified  : Mustafa Mahmoud - 2026-08-30
+ * Description    : Integration tests verifying the generic Audit Logging engine behavior.
+ */
+
 using System.Text.Json;
 using Appoynt.Domain.Entities;
 using Appoynt.Domain.Enums;
@@ -90,19 +101,18 @@ public sealed class AuditLoggingIntegrationTests : IClassFixture<WebApplicationF
         var user = new ApplicationUser
         {
             Id = Guid.NewGuid(),
-            FirstName = "Test",
+            FirstName = "Initial First",
             LastName = "Update",
             UserName = "testupdate",
             Email = "testupdate@example.com",
-            PhoneNumber = Guid.NewGuid().ToString(),
-            Address = "Initial Address"
+            PhoneNumber = Guid.NewGuid().ToString()
         };
 
         dbContext.Users.Add(user);
         await dbContext.SaveChangesAsync();
 
         // Act
-        user.Address = "Updated Address";
+        user.FirstName = "Updated First";
         await dbContext.SaveChangesAsync();
 
         // Assert
@@ -114,9 +124,9 @@ public sealed class AuditLoggingIntegrationTests : IClassFixture<WebApplicationF
             .FirstOrDefault();
 
         updateLog.Should().NotBeNull();
-        updateLog!.OldValues.Should().Contain("Initial Address");
-        updateLog.NewValues.Should().Contain("Updated Address");
-        updateLog.AffectedColumns.Should().Contain("Address");
+        updateLog!.OldValues.Should().Contain("Initial First");
+        updateLog.NewValues.Should().Contain("Updated First");
+        updateLog.AffectedColumns.Should().Contain("FirstName");
     }
 
     [Fact]

@@ -4,9 +4,8 @@
  * Created Date   : 2026-08-10
  * Version        : v1.1.0
  * Dependencies   : None
- * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-23
- * Description    : Contains constant error codes for patient, family member, and favorite operations.
+ * Last Modified  : Mustafa Mahmoud - 2026-08-30
+ * Description    : Contains constant error codes for patient, family member, location, and favorite operations.
  */
 
 namespace Appoynt.Application.Common.Constants;
@@ -64,4 +63,9 @@ public static class PatientErrorCodes
     public const string FavoriteClinicNotFound = "favorite.clinic_not_found";
     public const string FavoriteAlreadyAdded = "favorite.already_added";
     public const string FavoriteNotInFavorites = "favorite.not_in_favorites";
+
+    // Location Errors
+    public const string GovernorateNotFound = "patient.governorate.not_found";
+    public const string CityNotFound = "patient.city.not_found";
+    public const string CityGovernorateMismatch = "patient.city_governorate_mismatch";
 }

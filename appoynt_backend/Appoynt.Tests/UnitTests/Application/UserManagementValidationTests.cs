@@ -6,8 +6,7 @@
  * Dependencies   : CreateStaffRequestValidator, CreateDoctorRequestValidator,
  *                  UpdateUserRequestValidator, ForgotPasswordRequestValidator,
  *                  UserManagement Contracts, PasswordRecovery Contracts, FluentAssertions
- * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-24
+ * Last Modified  : Mustafa Mahmoud - 2026-08-30
  * Description    : Unit tests for user management and password recovery validation
  *                  rules, covering staff and doctor account creation constraints,
  *                  partial profile update rules, and forgot-password identifier checks.
@@ -16,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using Appoynt.Application.Common.Constants;
+using Appoynt.Application.Common.Models;
 using Appoynt.Application.Features.Authentication.PasswordRecovery.Contracts;
 using Appoynt.Application.Features.Authentication.PasswordRecovery.Validation;
 using Appoynt.Application.Features.UserManagement.Contracts;
@@ -474,23 +474,6 @@ public class UserManagementValidationTests
     }
 
     /// <summary>
-    /// An address beyond two hundred characters must be rejected per the update rule.
-    /// </summary>
-    [Fact]
-    public void Validate_UpdateUserAddressExceedsMaxLength_ShouldFail()
-    {
-        // Arrange with an address one character over the enforced limit of 200.
-        var request = new UpdateUserRequest { Address = new string('A', 201) };
-
-        // Act
-        var result = _updateUserValidator.Validate(request);
-
-        // Assert.
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.ErrorMessage == AuthenticationErrorCodes.AddressLengthInvalid);
-    }
-
-    /// <summary>
     /// Fully populated valid update payloads must pass.
     /// </summary>
     [Fact]
@@ -501,7 +484,11 @@ public class UserManagementValidationTests
         {
             FirstName = "Omar",
             LastName = "Khaled",
-            Address = "5 Nile Corniche, Maadi"
+            Address = new UpdateAddressDto
+            {
+                GovernorateId = Guid.NewGuid(),
+                CityId = Guid.NewGuid()
+            }
         };
 
         // Act

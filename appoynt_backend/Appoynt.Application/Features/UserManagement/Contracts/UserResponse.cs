@@ -3,12 +3,13 @@
  * Author         : Mustafa Mahmoud
  * Created Date   : 28/07/2026
  * Version        : v1.0.0
- * Dependencies   : Gender
+ * Dependencies   : System, Gender
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-07-31
+ * Last Modified  : Mustafa Mahmoud - 2026-08-30
  * Description    : Response DTO for user profile.
  */
 
+using Appoynt.Application.Common.Models;
 using Appoynt.Domain.Enums;
 
 namespace Appoynt.Application.Features.UserManagement.Contracts;
@@ -54,9 +55,9 @@ public sealed class UserResponse
     public DateOnly? DateOfBirth { get; init; }
 
     /// <summary>
-    /// Gets the physical address of the user.
+    /// Gets the user's location address details.
     /// </summary>
-    public string? Address { get; init; }
+    public AddressDto? Address { get; init; }
 
     /// <summary>
     /// Gets a value indicating whether the user account is active.
