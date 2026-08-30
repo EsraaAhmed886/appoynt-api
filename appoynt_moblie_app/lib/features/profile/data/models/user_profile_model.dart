@@ -12,6 +12,7 @@
  */
 
 import 'package:appoynt_mobile_app/features/profile/data/models/governorate_model.dart';
+import 'package:appoynt_mobile_app/features/profile/domain/entities/patient_profile.dart';
 
 // Model representing user and patient profile data with defensive JSON serialization
 class UserProfileModel {
@@ -47,10 +48,18 @@ class UserProfileModel {
   final String? governorate_id;
   // English/Arabic display name for governorate
   final String? governorate_name;
+  // Arabic display name for governorate from address object
+  final String? governorate_name_ar;
+  // English display name for governorate from address object
+  final String? governorate_name_en;
   // Foreign key identifier for selected city
   final String? city_id;
   // English/Arabic display name for city
   final String? city_name;
+  // Arabic display name for city from address object
+  final String? city_name_ar;
+  // English display name for city from address object
+  final String? city_name_en;
   // Parsed GovernorateModel entity object
   final GovernorateModel? governorate;
   // Parsed CityModel entity object
@@ -76,8 +85,12 @@ class UserProfileModel {
     this.blood_group,
     this.governorate_id,
     this.governorate_name,
+    this.governorate_name_ar,
+    this.governorate_name_en,
     this.city_id,
     this.city_name,
+    this.city_name_ar,
+    this.city_name_en,
     this.governorate,
     this.city,
     this.photo_url,
@@ -98,8 +111,13 @@ class UserProfileModel {
   String? get bloodGroup => blood_group;
   String? get governorateId => governorate_id;
   String? get governorateName => governorate_name;
+  String? get governorateNameAr => governorate_name_ar ?? governorate?.nameAr;
+  String? get governorateNameEn =>
+      governorate_name_en ?? governorate?.nameEn ?? governorate_name;
   String? get cityId => city_id;
   String? get cityName => city_name;
+  String? get cityNameAr => city_name_ar ?? city?.nameAr;
+  String? get cityNameEn => city_name_en ?? city?.nameEn ?? city_name;
   String? get photoUrl => photo_url;
 
   /// Converts a blood group string (e.g. 'A+', 'B-') or int to a standard enum int (0..7)
@@ -243,45 +261,75 @@ class UserProfileModel {
         : null;
 
     // -------------------------------------------------------------------------
-    // Safe Governorate Parsing (Handles both Object Map and String ID/Name)
+    // 1. Extract Address Map (if returned nested)
+    // -------------------------------------------------------------------------
+    final Map<String, dynamic>? addressMap = root['address'] is Map<String, dynamic>
+        ? root['address'] as Map<String, dynamic>
+        : (root['address'] is Map
+            ? Map<String, dynamic>.from(root['address'] as Map)
+            : null);
+
+    // -------------------------------------------------------------------------
+    // 2. Safe Governorate Parsing (Handles Object Map, nested address, and String ID/Name)
     // -------------------------------------------------------------------------
     GovernorateModel? parsedGov;
-    String? govId;
-    String? govName;
-
-    if (root['governorate'] is Map<String, dynamic>) {
-      parsedGov =
-          GovernorateModel.fromJson(root['governorate'] as Map<String, dynamic>);
-      govId = parsedGov.id;
-      govName = parsedGov.nameEn.isNotEmpty ? parsedGov.nameEn : parsedGov.nameAr;
-    } else if (root['governorate'] is String) {
-      govName = root['governorate'] as String;
-    } else if (root['governorate'] != null) {
-      govName = root['governorate'].toString();
+    final dynamic rawGov = root['governorate'] ?? addressMap?['governorate'];
+    if (rawGov is Map<String, dynamic>) {
+      parsedGov = GovernorateModel.fromJson(rawGov);
+    } else if (rawGov is Map) {
+      parsedGov = GovernorateModel.fromJson(Map<String, dynamic>.from(rawGov));
     } else {
       // No action needed
     }
-    govId ??= root['governorateId']?.toString() ?? root['governorate_id']?.toString();
+
+    final String? govId = root['governorateId']?.toString() ??
+        root['governorate_id']?.toString() ??
+        addressMap?['governorateId']?.toString() ??
+        addressMap?['governorate_id']?.toString() ??
+        addressMap?['governorate']?['id']?.toString() ??
+        parsedGov?.id;
+
+    final String? govName = addressMap?['governorateNameEn']?.toString() ??
+        addressMap?['governorateNameAr']?.toString() ??
+        addressMap?['governorateName']?.toString() ??
+        addressMap?['governorate_name']?.toString() ??
+        root['governorateNameEn']?.toString() ??
+        root['governorateNameAr']?.toString() ??
+        root['governorateName']?.toString() ??
+        root['governorate_name']?.toString() ??
+        parsedGov?.nameEn ??
+        (rawGov is String ? rawGov : null);
 
     // -------------------------------------------------------------------------
-    // Safe City Parsing (Handles both Object Map and String ID/Name)
+    // 3. Safe City Parsing (Handles Object Map, nested address, and String ID/Name)
     // -------------------------------------------------------------------------
     CityModel? parsedCity;
-    String? cId;
-    String? cName;
-
-    if (root['city'] is Map<String, dynamic>) {
-      parsedCity = CityModel.fromJson(root['city'] as Map<String, dynamic>);
-      cId = parsedCity.id;
-      cName = parsedCity.nameEn.isNotEmpty ? parsedCity.nameEn : parsedCity.nameAr;
-    } else if (root['city'] is String) {
-      cName = root['city'] as String;
-    } else if (root['city'] != null) {
-      cName = root['city'].toString();
+    final dynamic rawCity = root['city'] ?? addressMap?['city'];
+    if (rawCity is Map<String, dynamic>) {
+      parsedCity = CityModel.fromJson(rawCity);
+    } else if (rawCity is Map) {
+      parsedCity = CityModel.fromJson(Map<String, dynamic>.from(rawCity));
     } else {
       // No action needed
     }
-    cId ??= root['cityId']?.toString() ?? root['city_id']?.toString();
+
+    final String? cId = root['cityId']?.toString() ??
+        root['city_id']?.toString() ??
+        addressMap?['cityId']?.toString() ??
+        addressMap?['city_id']?.toString() ??
+        addressMap?['city']?['id']?.toString() ??
+        parsedCity?.id;
+
+    final String? cName = addressMap?['cityNameEn']?.toString() ??
+        addressMap?['cityNameAr']?.toString() ??
+        addressMap?['cityName']?.toString() ??
+        addressMap?['city_name']?.toString() ??
+        root['cityNameEn']?.toString() ??
+        root['cityNameAr']?.toString() ??
+        root['cityName']?.toString() ??
+        root['city_name']?.toString() ??
+        parsedCity?.nameEn ??
+        (rawCity is String ? rawCity : null);
 
     // -------------------------------------------------------------------------
     // Safe Blood Group Parsing
@@ -345,6 +393,19 @@ class UserProfileModel {
         ? root['hasProfilePhoto'] as bool
         : (parsedPhotoUrl != null && parsedPhotoUrl.isNotEmpty);
 
+    final String? govNameEn = addressMap?['governorateNameEn']?.toString() ??
+        root['governorateNameEn']?.toString() ??
+        parsedGov?.nameEn;
+    final String? govNameAr = addressMap?['governorateNameAr']?.toString() ??
+        root['governorateNameAr']?.toString() ??
+        parsedGov?.nameAr;
+    final String? cityNameEn = addressMap?['cityNameEn']?.toString() ??
+        root['cityNameEn']?.toString() ??
+        parsedCity?.nameEn;
+    final String? cityNameAr = addressMap?['cityNameAr']?.toString() ??
+        root['cityNameAr']?.toString() ??
+        parsedCity?.nameAr;
+
     return UserProfileModel(
       id: (root['id'] ?? root['userId'] ?? root['patientId'] ?? userMap?['id'])
               ?.toString() ??
@@ -387,8 +448,12 @@ class UserProfileModel {
       blood_group: parsedBloodGroup.isNotEmpty ? parsedBloodGroup : null,
       governorate_id: govId,
       governorate_name: govName,
+      governorate_name_ar: govNameAr,
+      governorate_name_en: govNameEn,
       city_id: cId,
       city_name: cName,
+      city_name_ar: cityNameAr,
+      city_name_en: cityNameEn,
       governorate: parsedGov,
       city: parsedCity,
       photo_url: parsedPhotoUrl,
@@ -422,8 +487,12 @@ class UserProfileModel {
       'bloodGroup': UserProfileModel.bloodGroupToInt(blood_group),
       'governorateId': governorate_id,
       'governorateName': governorate_name,
+      'governorateNameAr': governorate_name_ar,
+      'governorateNameEn': governorate_name_en,
       'cityId': city_id,
       'cityName': city_name,
+      'cityNameAr': city_name_ar,
+      'cityNameEn': city_name_en,
       'photoUrl': photo_url,
     };
   }
@@ -446,8 +515,12 @@ class UserProfileModel {
     String? blood_group,
     String? governorate_id,
     String? governorate_name,
+    String? governorate_name_ar,
+    String? governorate_name_en,
     String? city_id,
     String? city_name,
+    String? city_name_ar,
+    String? city_name_en,
     GovernorateModel? governorate,
     CityModel? city,
     String? photo_url,
@@ -469,11 +542,47 @@ class UserProfileModel {
       blood_group: blood_group ?? this.blood_group,
       governorate_id: governorate_id ?? this.governorate_id,
       governorate_name: governorate_name ?? this.governorate_name,
+      governorate_name_ar: governorate_name_ar ?? this.governorate_name_ar,
+      governorate_name_en: governorate_name_en ?? this.governorate_name_en,
       city_id: city_id ?? this.city_id,
       city_name: city_name ?? this.city_name,
+      city_name_ar: city_name_ar ?? this.city_name_ar,
+      city_name_en: city_name_en ?? this.city_name_en,
       governorate: governorate ?? this.governorate,
       city: city ?? this.city,
       photo_url: photo_url ?? this.photo_url,
+    );
+  }
+
+  // Converts UserProfileModel to the PatientProfile domain entity
+  PatientProfile toEntity() {
+    return PatientProfile(
+      first_name: first_name,
+      last_name: last_name,
+      phone: phone_number,
+      email: email,
+      gender: gender == 0 ? 'Male' : (gender == 1 ? 'Female' : ''),
+      address: address ?? '',
+      national_id: national_id ?? '',
+      weight: weight ?? '',
+      height: height ?? '',
+      blood_group: blood_group ?? '',
+      smoking: 'No',
+      food_allergies: const [],
+      medication_allergies: const [],
+      prescriptions: const [],
+      lab_tests: const [],
+      scans: const [],
+      chronic_conditions: const [],
+      insurance_cards: const [],
+      avatar_url: photo_url ?? '',
+      payment_cards: const [],
+      governorate_id: governorate_id,
+      governorate_name_en: governorate_name_en,
+      governorate_name_ar: governorate_name_ar,
+      city_id: city_id,
+      city_name_en: city_name_en,
+      city_name_ar: city_name_ar,
     );
   }
 }

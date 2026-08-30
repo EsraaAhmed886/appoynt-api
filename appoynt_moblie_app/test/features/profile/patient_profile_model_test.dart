@@ -164,5 +164,99 @@ void main() {
       expect(model.weight, '85.0');
       expect(model.height, '178.0');
     });
+
+    test('correctly extracts governorateId and cityId from nested address object', () {
+      final Map<String, dynamic> rawJson = {
+        'id': 'patient-address-object',
+        'email': 'address@example.com',
+        'firstName': 'Fatima',
+        'lastName': 'Zahra',
+        'phoneNumber': '01099887766',
+        'address': {
+          'governorateId': 'c96424b4-e13c-4569-b3b4-31780630ab20',
+          'governorateName': 'Cairo',
+          'cityId': 'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d',
+          'cityName': 'Nasr City',
+        },
+      };
+
+      final PatientProfileModel model = PatientProfileModel.fromJson(rawJson);
+
+      expect(model.governorateId, 'c96424b4-e13c-4569-b3b4-31780630ab20');
+      expect(model.governorateName, 'Cairo');
+      expect(model.cityId, 'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d');
+      expect(model.cityName, 'Nasr City');
+      expect(model.address, 'Nasr City, Cairo');
+    });
+
+    test('correctly deserializes Swagger AddressDto with governorateNameEn/Ar and cityNameEn/Ar', () {
+      final Map<String, dynamic> rawJson = {
+        'id': 'c96424b4-e13c-4569-b3b4-31780630ab20',
+        'email': 'swagger@example.com',
+        'firstName': 'Kareem',
+        'lastName': 'Tawfik',
+        'phoneNumber': '01012345678',
+        'weightKg': 75.0,
+        'heightCm': 180.0,
+        'bloodGroup': 1,
+        'address': {
+          'governorateId': 'c96424b4-e13c-4569-b3b4-31780630ab20',
+          'governorateNameAr': 'القاهرة',
+          'governorateNameEn': 'Cairo',
+          'cityId': 'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d',
+          'cityNameAr': 'مدينة نصر',
+          'cityNameEn': 'Nasr City',
+        },
+      };
+
+      final PatientProfileModel model = PatientProfileModel.fromJson(rawJson);
+
+      expect(model.governorateId, 'c96424b4-e13c-4569-b3b4-31780630ab20');
+      expect(model.governorateName, 'Cairo');
+      expect(model.cityId, 'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d');
+      expect(model.cityName, 'Nasr City');
+      expect(model.weight, '75.0');
+      expect(model.height, '180.0');
+    });
+
+    test('correctly deserializes exact live backend profile response (Red Sea / Hurghada)', () {
+      final Map<String, dynamic> rawJson = {
+        "id": "a1deaf33-f75e-4cf7-81a4-c76ece05dacb",
+        "firstName": "kareem",
+        "lastName": "mangood",
+        "phoneNumber": "01022711357",
+        "nationalId": "29706042300097",
+        "birthDate": "1997-06-04",
+        "gender": 0,
+        "weightKg": 100.0,
+        "heightCm": 180.0,
+        "bloodGroup": 6,
+        "address": {
+          "governorateId": "3ce9bda2-d9f6-4693-9039-4befee0def21",
+          "governorateNameAr": "البحر الأحمر",
+          "governorateNameEn": "Red Sea",
+          "cityId": "d93c29a2-1e8d-4d1c-88ba-b95dc0e622f5",
+          "cityNameAr": "الغردقة",
+          "cityNameEn": "Hurghada"
+        }
+      };
+
+      final PatientProfileModel model = PatientProfileModel.fromJson(rawJson);
+
+      expect(model.id, "a1deaf33-f75e-4cf7-81a4-c76ece05dacb");
+      expect(model.firstName, "kareem");
+      expect(model.lastName, "mangood");
+      expect(model.phone, "01022711357");
+      expect(model.nationalId, "29706042300097");
+      expect(model.governorateId, "3ce9bda2-d9f6-4693-9039-4befee0def21");
+      expect(model.governorateNameEn, "Red Sea");
+      expect(model.governorateNameAr, "البحر الأحمر");
+      expect(model.cityId, "d93c29a2-1e8d-4d1c-88ba-b95dc0e622f5");
+      expect(model.cityNameEn, "Hurghada");
+      expect(model.cityNameAr, "الغردقة");
+      expect(model.weight, "100.0");
+      expect(model.height, "180.0");
+      expect(model.bloodGroup, "O+");
+    });
   });
 }

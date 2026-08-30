@@ -75,20 +75,29 @@ class EditProfileCubit extends Cubit<EditProfileState> {
       governorates = data;
 
       // Resolve initial selections if provided
-      if (initialGovId != null) {
+      final String? targetGovId =
+          initialGovId != null && initialGovId.toString().trim().isNotEmpty
+              ? initialGovId.toString().trim().toLowerCase()
+              : null;
+      final String? targetGovName =
+          initialGovName != null && initialGovName.trim().isNotEmpty
+              ? initialGovName.trim().toLowerCase()
+              : null;
+
+      if (targetGovId != null || targetGovName != null) {
         for (final gov in governorates) {
-          if (gov.id.toString() == initialGovId.toString()) {
-            selectedGovernorate = gov;
-            break;
-          } else {
-            // Check next
-          }
-        }
-      } else if (initialGovName != null && initialGovName.trim().isNotEmpty) {
-        final String search = initialGovName.trim().toLowerCase();
-        for (final gov in governorates) {
-          if (gov.nameEn.toLowerCase() == search ||
-              gov.nameAr.toLowerCase() == search) {
+          final String govIdStr = gov.id.trim().toLowerCase();
+          final String govNameEn = gov.nameEn.trim().toLowerCase();
+          final String govNameAr = gov.nameAr.trim().toLowerCase();
+
+          final bool idMatch = targetGovId != null && govIdStr == targetGovId;
+          final bool nameMatch = targetGovName != null &&
+              (govNameEn == targetGovName ||
+                  govNameAr == targetGovName ||
+                  targetGovName.contains(govNameEn) ||
+                  targetGovName.contains(govNameAr));
+
+          if (idMatch || nameMatch) {
             selectedGovernorate = gov;
             break;
           } else {
@@ -96,7 +105,7 @@ class EditProfileCubit extends Cubit<EditProfileState> {
           }
         }
       } else {
-        // No initial governorate match
+        // No initial governorate parameters provided
       }
 
       // If a governorate was resolved, populate cities
@@ -108,21 +117,35 @@ class EditProfileCubit extends Cubit<EditProfileState> {
               .getCitiesByGovernorate(selectedGovernorate!.id);
         }
 
-        if (initialCityId != null) {
+        final String? targetCityId =
+            initialCityId != null && initialCityId.toString().trim().isNotEmpty
+                ? initialCityId.toString().trim().toLowerCase()
+                : null;
+        final String? targetCityName =
+            initialCityName != null && initialCityName.trim().isNotEmpty
+                ? initialCityName.trim().toLowerCase()
+                : null;
+
+        if (targetCityId != null ||
+            targetCityName != null ||
+            targetGovName != null) {
           for (final city in cities) {
-            if (city.id.toString() == initialCityId.toString()) {
-              selectedCity = city;
-              break;
-            } else {
-              // Check next
-            }
-          }
-        } else if (initialCityName != null &&
-            initialCityName.trim().isNotEmpty) {
-          final String searchCity = initialCityName.trim().toLowerCase();
-          for (final city in cities) {
-            if (city.nameEn.toLowerCase() == searchCity ||
-                city.nameAr.toLowerCase() == searchCity) {
+            final String cityIdStr = city.id.trim().toLowerCase();
+            final String cityNameEn = city.nameEn.trim().toLowerCase();
+            final String cityNameAr = city.nameAr.trim().toLowerCase();
+
+            final bool idMatch =
+                targetCityId != null && cityIdStr == targetCityId;
+            final bool nameMatch = targetCityName != null &&
+                (cityNameEn == targetCityName ||
+                    cityNameAr == targetCityName ||
+                    targetCityName.contains(cityNameEn) ||
+                    targetCityName.contains(cityNameAr));
+            final bool addressSubMatch = targetGovName != null &&
+                (targetGovName.contains(cityNameEn) ||
+                    targetGovName.contains(cityNameAr));
+
+            if (idMatch || nameMatch || addressSubMatch) {
               selectedCity = city;
               break;
             } else {
@@ -130,11 +153,14 @@ class EditProfileCubit extends Cubit<EditProfileState> {
             }
           }
         } else {
-          // No initial city match
+          // No initial city parameters provided
         }
       } else {
         // No governorate selected
       }
+
+      debugPrint(
+          '✅ [Address Ready]: Gov ID = ${selectedGovernorate?.id} (${selectedGovernorate?.nameEn}), City ID = ${selectedCity?.id} (${selectedCity?.nameEn}), Cities Count = ${cities.length}');
 
       emit(state.copyWith(
         governorates: governorates,

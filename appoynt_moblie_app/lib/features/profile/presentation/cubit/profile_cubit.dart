@@ -159,9 +159,21 @@ class ProfileCubit extends Cubit<ProfileState> {
       }
 
       if (selectedGovernorate != null) {
+        if (selectedGovernorate!.cities.isNotEmpty) {
+          citiesList = selectedGovernorate!.cities;
+        } else {
+          try {
+            citiesList = await get_it<ProfileRepository>()
+                .getCitiesByGovernorate(selectedGovernorate!.id);
+          } catch (_) {
+            citiesList = [];
+          }
+        }
+
         if (initialCityId != null) {
-          for (final city in selectedGovernorate!.cities) {
-            if (city.id.toString() == initialCityId.toString()) {
+          for (final city in citiesList) {
+            if (city.id.toString().toLowerCase() ==
+                initialCityId.toString().toLowerCase()) {
               selectedCity = city;
               break;
             } else {
@@ -171,9 +183,12 @@ class ProfileCubit extends Cubit<ProfileState> {
         } else if (initialCityName != null &&
             initialCityName.trim().isNotEmpty) {
           final String searchCity = initialCityName.trim().toLowerCase();
-          for (final city in selectedGovernorate!.cities) {
+          for (final city in citiesList) {
             if (city.nameEn.toLowerCase() == searchCity ||
-                city.nameAr.toLowerCase() == searchCity) {
+                city.nameAr.toLowerCase() == searchCity ||
+                (initialGovName != null &&
+                    (initialGovName.toLowerCase().contains(city.nameEn.toLowerCase()) ||
+                        initialGovName.toLowerCase().contains(city.nameAr.toLowerCase())))) {
               selectedCity = city;
               break;
             } else {
@@ -186,6 +201,10 @@ class ProfileCubit extends Cubit<ProfileState> {
       } else {
         // No governorate selected
       }
+
+      debugPrint(
+          '✅ [Address Ready]: Gov ID = ${selectedGovernorate?.id}, City ID = ${selectedCity?.id}, Cities Count = ${citiesList.length}');
+
       isGovernoratesLoading = false;
       if (!isClosed) {
         emit(state.copyWith(
@@ -211,38 +230,64 @@ class ProfileCubit extends Cubit<ProfileState> {
   }
 
   /// Matches and binds governorate and city from profile model into cubit selection state
-  void populateProfileData(UserProfileModel profile) {
-    if (governoratesList.isNotEmpty) {
-      try {
-        selectedGovernorate = governoratesList.firstWhere(
-          (gov) =>
-              gov.id.toString() == profile.governorateId?.toString() ||
-              (profile.governorateName != null &&
-                  gov.nameEn.toLowerCase() ==
-                      profile.governorateName!.toLowerCase()) ||
-              (profile.governorateName != null &&
-                  gov.nameAr == profile.governorateName),
-        );
-        if (selectedGovernorate != null &&
-            selectedGovernorate!.cities.isNotEmpty) {
+  Future<void> populateProfileData(UserProfileModel profile) async {
+    if (governoratesList.isEmpty) {
+      await fetchGovernorates(
+        initialGovId: profile.governorateId,
+        initialCityId: profile.cityId,
+        initialGovName: profile.governorateNameEn ?? profile.governorateName,
+        initialCityName: profile.cityNameEn ?? profile.cityName,
+      );
+      return;
+    } else {
+      // Governorates already loaded in memory
+    }
+
+    try {
+      final String? govId = profile.governorateId?.toLowerCase();
+      final String? govNameEn = profile.governorateNameEn?.toLowerCase();
+      final String? govNameAr = profile.governorateNameAr;
+
+      selectedGovernorate = governoratesList.firstWhere(
+        (gov) =>
+            (govId != null && gov.id.toString().toLowerCase() == govId) ||
+            (govNameEn != null && gov.nameEn.toLowerCase() == govNameEn) ||
+            (govNameAr != null && gov.nameAr == govNameAr),
+      );
+
+      if (selectedGovernorate != null) {
+        if (selectedGovernorate!.cities.isNotEmpty) {
           citiesList = selectedGovernorate!.cities;
+        } else {
+          try {
+            citiesList = await get_it<ProfileRepository>()
+                .getCitiesByGovernorate(selectedGovernorate!.id);
+          } catch (_) {
+            citiesList = [];
+          }
+        }
+
+        final String? cId = profile.cityId?.toLowerCase();
+        final String? cNameEn = profile.cityNameEn?.toLowerCase();
+        final String? cNameAr = profile.cityNameAr;
+
+        try {
           selectedCity = citiesList.firstWhere(
             (city) =>
-                city.id.toString() == profile.cityId?.toString() ||
-                (profile.cityName != null &&
-                    city.nameEn.toLowerCase() ==
-                        profile.cityName!.toLowerCase()) ||
-                (profile.cityName != null && city.nameAr == profile.cityName),
+                (cId != null && city.id.toString().toLowerCase() == cId) ||
+                (cNameEn != null && city.nameEn.toLowerCase() == cNameEn) ||
+                (cNameAr != null && city.nameAr == cNameAr),
           );
-        } else {
-          // No action needed
+        } catch (_) {
+          selectedCity = null;
         }
-      } catch (_) {
-        // Fallback safely if not found
       }
-    } else {
-      // No action needed
+    } catch (_) {
+      // Fallback safely if not found
     }
+
+    debugPrint(
+        '✅ [Address Ready]: Gov ID = ${selectedGovernorate?.id} (${selectedGovernorate?.nameEn}), City ID = ${selectedCity?.id} (${selectedCity?.nameEn}), Cities Count = ${citiesList.length}');
   }
 
   /// Evaluates whether required governorate and city selections are populated
@@ -429,6 +474,15 @@ class ProfileCubit extends Cubit<ProfileState> {
         avatar_url: currentProfile.avatar_url,
         // Keep existing local payment cards
         payment_cards: currentProfile.payment_cards,
+        // Map governorate and city IDs and names
+        governorate_id: user_profile.governorate_id ?? currentProfile.governorate_id,
+        governorate_name_en:
+            user_profile.governorate_name_en ?? currentProfile.governorate_name_en,
+        governorate_name_ar:
+            user_profile.governorate_name_ar ?? currentProfile.governorate_name_ar,
+        city_id: user_profile.city_id ?? currentProfile.city_id,
+        city_name_en: user_profile.city_name_en ?? currentProfile.city_name_en,
+        city_name_ar: user_profile.city_name_ar ?? currentProfile.city_name_ar,
       );
 
       // Emit ProfileLoaded state with fetched user model and mapped patient profile
@@ -663,6 +717,14 @@ class ProfileCubit extends Cubit<ProfileState> {
       avatar_url: resolved_photo_url ?? baseProfile.avatar_url,
       // Carry existing local payment cards (not in API response)
       payment_cards: baseProfile.payment_cards,
+      governorate_id: model.governorate_id ?? baseProfile.governorate_id,
+      governorate_name_en:
+          model.governorate_name_en ?? baseProfile.governorate_name_en,
+      governorate_name_ar:
+          model.governorate_name_ar ?? baseProfile.governorate_name_ar,
+      city_id: model.city_id ?? baseProfile.city_id,
+      city_name_en: model.city_name_en ?? baseProfile.city_name_en,
+      city_name_ar: model.city_name_ar ?? baseProfile.city_name_ar,
     );
   }
 

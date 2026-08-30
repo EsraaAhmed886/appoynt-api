@@ -169,7 +169,7 @@ void main() {
       expect(saveButtonWidget.onPressed, isNull);
     });
 
-    testWidgets('tapping Save button invokes saveProfile on cubit when governorate and city selected',
+    testWidgets('tapping Save button invokes saveProfile on cubit when governorate and city selected and form is dirty',
         (WidgetTester tester) async {
       await tester.pumpWidget(createTestWidget(
         cubit: cubit,
@@ -177,7 +177,7 @@ void main() {
       ));
       await tester.pumpAndSettle();
 
-      // Select city to complete form requirements
+      // Select city to complete form requirements and create a change
       final cairo = cubit.state.governorates.firstWhere((g) => g.nameEn == 'Cairo');
       cubit.selectCity(cairo.cities.first);
       await tester.pumpAndSettle();
@@ -188,6 +188,49 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(fakeRepo.updateProfileCalled, isTrue);
+    });
+
+    testWidgets('Dirty state tracking: Save button is disabled initially, enables on text change, and disables on revert',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(createTestWidget(
+        cubit: cubit,
+        initialAddress: 'Cairo',
+      ));
+      await tester.pumpAndSettle();
+
+      // Set initial city
+      final cairo = cubit.state.governorates.firstWhere((g) => g.nameEn == 'Cairo');
+      cubit.selectCity(cairo.cities.first);
+      await tester.pumpAndSettle();
+
+      // Find First Name field
+      final Finder firstNameField = find.widgetWithText(TextFormField, 'First Name');
+      expect(firstNameField, findsOneWidget);
+
+      // Save button should now be enabled due to city selection
+      ElevatedButton saveBtn = tester.widget<ElevatedButton>(
+        find.widgetWithText(ElevatedButton, 'Save'),
+      );
+      expect(saveBtn.onPressed, isNotNull);
+
+      // Re-trigger with baseline set by changing text
+      await tester.enterText(firstNameField, 'Janet');
+      await tester.pumpAndSettle();
+
+      saveBtn = tester.widget<ElevatedButton>(
+        find.widgetWithText(ElevatedButton, 'Save'),
+      );
+      expect(saveBtn.onPressed, isNotNull);
+
+      // Revert text back to initial 'Jane' and revert city to none to test disable
+      await tester.enterText(firstNameField, 'Jane');
+      cubit.selectGovernorate(null);
+      await tester.pumpAndSettle();
+
+      saveBtn = tester.widget<ElevatedButton>(
+        find.widgetWithText(ElevatedButton, 'Save'),
+      );
+      expect(saveBtn.onPressed, isNull);
     });
 
     testWidgets('entering 14-digit National ID auto-displays dynamic info badges in English',

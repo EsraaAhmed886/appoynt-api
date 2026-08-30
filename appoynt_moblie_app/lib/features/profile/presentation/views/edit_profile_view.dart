@@ -30,6 +30,7 @@ import 'package:appoynt_mobile_app/features/profile/presentation/widgets/edit_pr
 import 'package:appoynt_mobile_app/features/profile/presentation/bloc/edit_profile_cubit.dart';
 import 'package:appoynt_mobile_app/features/profile/presentation/bloc/edit_profile_state.dart';
 import 'package:appoynt_mobile_app/features/profile/presentation/widgets/profile_photo_options_dialog.dart';
+import 'package:appoynt_mobile_app/features/profile/domain/entities/patient_profile.dart';
 
 class EditProfileView extends StatefulWidget {
   final String initialFirstName;
@@ -39,6 +40,10 @@ class EditProfileView extends StatefulWidget {
   final String? initialNationalId;
   final String? initialBirthDate;
   final String initialAvatarUrl;
+  final String? initialGovId;
+  final String? initialCityId;
+  final String? initialGovName;
+  final String? initialCityName;
 
   const EditProfileView({
     super.key,
@@ -49,7 +54,28 @@ class EditProfileView extends StatefulWidget {
     this.initialNationalId,
     this.initialBirthDate,
     this.initialAvatarUrl = '',
+    this.initialGovId,
+    this.initialCityId,
+    this.initialGovName,
+    this.initialCityName,
   });
+
+  /// Factory constructor to initialize EditProfileView directly from a PatientProfile entity
+  factory EditProfileView.fromProfile(PatientProfile profile, {Key? key}) {
+    return EditProfileView(
+      key: key,
+      initialFirstName: profile.first_name,
+      initialLastName: profile.last_name,
+      initialPhone: profile.phone,
+      initialAddress: profile.address,
+      initialNationalId: profile.national_id,
+      initialAvatarUrl: profile.avatar_url,
+      initialGovId: profile.governorateId,
+      initialCityId: profile.cityId,
+      initialGovName: profile.governorateNameEn,
+      initialCityName: profile.cityNameEn,
+    );
+  }
 
   @override
   State<EditProfileView> createState() => _EditProfileViewState();
@@ -65,10 +91,24 @@ class _EditProfileViewState extends State<EditProfileView> {
   DateTime? _extractedBirthDate;
   String? _extractedGender;
 
+  // Baseline snapshot for dirty state tracking (change detection)
+  String _initialFirstName = '';
+  String _initialLastName = '';
+  String _initialPhone = '';
+  String _initialNationalId = '';
+  String? _initialGovId;
+  String? _initialCityId;
+  bool _snapshotInitialized = false;
+
   @override
   void initState() {
     super.initState();
     _applySystemOverlay();
+    _initialFirstName = widget.initialFirstName.trim();
+    _initialLastName = widget.initialLastName.trim();
+    _initialPhone = widget.initialPhone.trim();
+    _initialNationalId = (widget.initialNationalId ?? '').trim();
+
     _firstNameController = TextEditingController(text: widget.initialFirstName);
     _lastNameController = TextEditingController(text: widget.initialLastName);
     _phoneController = TextEditingController(text: widget.initialPhone);
@@ -87,17 +127,57 @@ class _EditProfileViewState extends State<EditProfileView> {
     _nationalIdController.addListener(_onNationalIdChanged);
     _firstNameController.addListener(_onFieldChanged);
     _lastNameController.addListener(_onFieldChanged);
+    _phoneController.addListener(_onFieldChanged);
 
     // Fetch governorates on screen load
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<EditProfileCubit>().loadGovernorates(
-            initialGovName: widget.initialAddress,
+            initialGovId: widget.initialGovId,
+            initialCityId: widget.initialCityId,
+            initialGovName: widget.initialGovName ?? widget.initialAddress,
+            initialCityName: widget.initialCityName,
           );
     });
   }
 
+  void _captureInitialSnapshot(EditProfileState state) {
+    _initialFirstName = _firstNameController.text.trim();
+    _initialLastName = _lastNameController.text.trim();
+    _initialPhone = _phoneController.text.trim();
+    _initialNationalId = _nationalIdController.text.trim();
+    _initialGovId = state.selectedGovernorate?.id;
+    _initialCityId = state.selectedCity?.id;
+    _snapshotInitialized = true;
+  }
+
   void _onFieldChanged() {
-    setState(() {});
+    if (mounted && _snapshotInitialized) {
+      setState(() {});
+    } else {
+      // Widget not mounted or snapshot not initialized
+    }
+  }
+
+  bool _hasChanges(EditProfileState state) {
+    if (!_snapshotInitialized) {
+      return false;
+    } else {
+      // Baseline snapshot ready
+    }
+
+    final bool textChanged = _firstNameController.text.trim() != _initialFirstName ||
+        _lastNameController.text.trim() != _initialLastName ||
+        _phoneController.text.trim() != _initialPhone ||
+        _nationalIdController.text.trim() != _initialNationalId;
+
+    final String? currentGovId = state.selectedGovernorate?.id;
+    final String? currentCityId = state.selectedCity?.id;
+
+    final bool locationChanged = currentGovId != _initialGovId || currentCityId != _initialCityId;
+
+    final bool photoChanged = state.stagedProfileImage != null || state.isPhotoDeleted;
+
+    return textChanged || locationChanged || photoChanged;
   }
 
   bool _isFormValid(EditProfileState state) {
@@ -108,6 +188,8 @@ class _EditProfileViewState extends State<EditProfileView> {
 
     return isFirstNameValid && isLastNameValid && isGovSelected && isCitySelected;
   }
+
+  bool _canSave(EditProfileState state) => _isFormValid(state) && _hasChanges(state);
 
   void _onNationalIdChanged() {
     final String value = _nationalIdController.text.trim();
@@ -157,6 +239,7 @@ class _EditProfileViewState extends State<EditProfileView> {
     _nationalIdController.removeListener(_onNationalIdChanged);
     _firstNameController.removeListener(_onFieldChanged);
     _lastNameController.removeListener(_onFieldChanged);
+    _phoneController.removeListener(_onFieldChanged);
     _firstNameController.dispose();
     _lastNameController.dispose();
     _phoneController.dispose();
@@ -172,6 +255,7 @@ class _EditProfileViewState extends State<EditProfileView> {
     return BlocConsumer<EditProfileCubit, EditProfileState>(
       listener: (context, state) {
         if (state.isSuccess) {
+          _captureInitialSnapshot(state);
           CustomSnackBar.success(
             context,
             AppLocalizations.of(context).profile_change_success_msg,
@@ -187,6 +271,14 @@ class _EditProfileViewState extends State<EditProfileView> {
         }
       },
       builder: (context, state) {
+        if (!_snapshotInitialized &&
+            !state.isGovernoratesLoading &&
+            !state.isCitiesLoading &&
+            (state.governorates.isNotEmpty || state.governoratesError != null)) {
+          _captureInitialSnapshot(state);
+        } else {
+          // Snapshot captured or loading
+        }
         ImageProvider? avatarProvider;
 
         if (state.isPhotoDeleted) {
@@ -391,7 +483,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                           borderRadius: BorderRadius.circular(14.0),
                         ),
                       ),
-                      onPressed: (state.isLoading || !_isFormValid(state))
+                      onPressed: (state.isLoading || !_canSave(state))
                           ? null
                           : () {
                               if (_formKey.currentState!.validate()) {

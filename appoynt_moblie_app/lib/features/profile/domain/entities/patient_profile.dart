@@ -2,12 +2,13 @@
  * File Name: patient_profile.dart
  * Author: Kholoud Khaled
  * Date of Creation: 19/07/2026
- * Version Information: V1.0.0
+ * Version Information: V1.1.0
  * Dependencies: package:appoynt_mobile_app/features/profile/domain/entities/insurance_card.dart,
  *   package:appoynt_mobile_app/features/profile/domain/entities/test_result.dart
  * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 16/08/2026]
- * File Description: Declares the PatientProfile domain entity representing patient record metadata.
+ * Last Modified Date: [Kholoud Khaled - 31/08/2026]
+ * File Description: Declares the PatientProfile domain entity representing patient record metadata,
+ *   including governorate and city address properties.
  */
 
 // Importing the InsuranceCard entity declaration
@@ -58,6 +59,18 @@ class PatientProfile {
   final String avatar_url;
   // Saved payment cards list (rich map schema: id, brand, number, expiry, holder, is_default)
   final List<Map<String, dynamic>> payment_cards;
+  // Foreign key identifier for selected governorate
+  final String? governorate_id;
+  // English display name for governorate
+  final String? governorate_name_en;
+  // Arabic display name for governorate
+  final String? governorate_name_ar;
+  // Foreign key identifier for selected city
+  final String? city_id;
+  // English display name for city
+  final String? city_name_en;
+  // Arabic display name for city
+  final String? city_name_ar;
 
   // Constructor initializing all profile property mappings
   const PatientProfile({
@@ -101,7 +114,26 @@ class PatientProfile {
     required this.avatar_url,
     // Require payment cards list
     required this.payment_cards,
+    this.governorate_id,
+    this.governorate_name_en,
+    this.governorate_name_ar,
+    this.city_id,
+    this.city_name_en,
+    this.city_name_ar,
   });
+
+  // Convenient property getters
+  String? get governorateId => governorate_id;
+  String? get governorateNameEn => governorate_name_en;
+  String? get governorateNameAr => governorate_name_ar;
+  String? get cityId => city_id;
+  String? get cityNameEn => city_name_en;
+  String? get cityNameAr => city_name_ar;
+  String? get nationalId => national_id;
+  String? get bloodGroup => blood_group;
+  String? get firstName => first_name;
+  String? get lastName => last_name;
+  String? get photoUrl => avatar_url;
 
   // Helper factory method creating an initial empty/dummy profile instance
   factory PatientProfile.empty() {
@@ -164,6 +196,12 @@ class PatientProfile {
           'is_default': 'false',
         },
       ],
+      governorate_id: null,
+      governorate_name_en: null,
+      governorate_name_ar: null,
+      city_id: null,
+      city_name_en: null,
+      city_name_ar: null,
     );
   }
 
@@ -209,6 +247,12 @@ class PatientProfile {
     String? avatar_url,
     // Optional payment cards list update
     List<Map<String, dynamic>>? payment_cards,
+    String? governorate_id,
+    String? governorate_name_en,
+    String? governorate_name_ar,
+    String? city_id,
+    String? city_name_en,
+    String? city_name_ar,
   }) {
     // Return new modified PatientProfile instance mapping properties
     return PatientProfile(
@@ -252,6 +296,12 @@ class PatientProfile {
       avatar_url: avatar_url ?? this.avatar_url,
       // Apply payment cards override or keep current list
       payment_cards: payment_cards ?? this.payment_cards,
+      governorate_id: governorate_id ?? this.governorate_id,
+      governorate_name_en: governorate_name_en ?? this.governorate_name_en,
+      governorate_name_ar: governorate_name_ar ?? this.governorate_name_ar,
+      city_id: city_id ?? this.city_id,
+      city_name_en: city_name_en ?? this.city_name_en,
+      city_name_ar: city_name_ar ?? this.city_name_ar,
     );
   }
 }

@@ -511,7 +511,11 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
       // Call fetchUserProfile and fetchGovernorates on Cubit
       context.read<ProfileCubit>().fetchUserProfile();
       context.read<ProfileCubit>().fetchGovernorates(
-            initialGovName: state.profile.address,
+            initialGovId: state.profile.governorate_id,
+            initialCityId: state.profile.city_id,
+            initialGovName:
+                state.profile.governorate_name_en ?? state.profile.address,
+            initialCityName: state.profile.city_name_en,
           );
     });
   }
@@ -1354,10 +1358,8 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                 bottomNavigationBar: StickyBottomBar(
                   child: AuthButton(
                     label: localizations.profile_save_button,
-                    is_enabled: (true == state.is_dirty ||
-                            context.read<ProfileCubit>().selectedGovernorate != null ||
-                            context.read<ProfileCubit>().selectedCity != null) &&
-                        state.status != ProfileStatus.updating,
+                    is_enabled: (true == state.is_dirty &&
+                        state.status != ProfileStatus.updating),
                     on_pressed: _submit_form,
                     is_loading: state.status == ProfileStatus.updating,
                   ),

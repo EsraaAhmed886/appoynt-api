@@ -208,6 +208,11 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       // Correct endpoint for patient profile per Swagger documentation
       'patients/profile',
     );
+    try {
+      debugPrint('🔍 [Raw Profile API Response]: ${jsonEncode(response.data)}');
+    } catch (_) {
+      debugPrint('🔍 [Raw Profile API Response]: ${response.data}');
+    }
     // Parse received map into UserProfileModel from PatientProfileResponse layout
     return UserProfileModel.fromJson(
         response.data as Map<String, dynamic>);
