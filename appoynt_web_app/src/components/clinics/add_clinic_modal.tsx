@@ -29,7 +29,10 @@ import BreakTimesStep from "./steps/break_times_step";
 import ReceptionistsStep from "./steps/receptionists_step";
 import BookingSettingsStep from "./steps/booking_settings_step";
 
-import { get_doctor_occupied_working_days } from "@/services/clinic.service";
+import {
+  get_doctor_occupied_working_days,
+  get_doctor_existing_schedules,
+} from "@/services/clinic.service";
 import { CITIES_BY_GOVERNORATE, PHONE_REGEX } from "./clinic_form_constants";
 import {
   validate_clinic_name,
@@ -95,6 +98,12 @@ export default function AddClinicModal({
   const doctor_occupied_days = get_doctor_occupied_working_days(
     form_state.doctor_id || doctor_id,
     editing_clinic_id,
+  );
+
+  const doctor_existing_schedules = get_doctor_existing_schedules(
+    form_state.doctor_id || doctor_id,
+    editing_clinic_id,
+    existing_clinics,
   );
 
   const steps_labels = [
@@ -245,7 +254,7 @@ export default function AddClinicModal({
         form_state,
         existing_clinics,
         editing_clinic_id,
-        doctor_occupied_days,
+        doctor_existing_schedules,
       );
 
       if (!is_step3_ok) {
@@ -276,11 +285,7 @@ export default function AddClinicModal({
         };
 
         on_add_clinic(new_clinic);
-        set_form_state((prev) => ({
-          ...prev,
-          is_dirty: false,
-          is_success_open: true,
-        }));
+        update_field("is_success_open", true);
       }
     }
   };
@@ -306,24 +311,57 @@ export default function AddClinicModal({
     workingDaysError: form_state.working_days_error,
     status: form_state.status,
     availableCities: available_cities,
+    scheduleList: form_state.schedule_list,
+    breakList: form_state.break_list,
+    assignedReceptionists: form_state.assigned_receptionists,
+    appointmentDuration: form_state.appointment_duration,
+    maxAdvanceBooking: form_state.max_advance_booking,
   };
 
   const clinic_actions_props = {
-    setClinicName: (val: string) => update_field("clinic_name", val),
+    setClinicName: (val: string) => {
+      update_field("clinic_name", val);
+      update_field("clinic_name_error", "");
+      mark_as_dirty();
+    },
     setClinicNameError: (val: string) => update_field("clinic_name_error", val),
-    setPhone: (val: string) => update_field("phone", val),
+    setPhone: (val: string) => {
+      update_field("phone", val);
+      update_field("phone_error", "");
+      mark_as_dirty();
+    },
     setPhoneError: (val: string) => update_field("phone_error", val),
-    setGovernorate: (val: string) => update_field("governorate", val),
+    setGovernorate: (val: string) => {
+      update_field("governorate", val);
+      update_field("governorate_error", "");
+      update_field("city", "");
+      mark_as_dirty();
+    },
     setGovernorateError: (val: string) =>
       update_field("governorate_error", val),
-    setCity: (val: string) => update_field("city", val),
+    setCity: (val: string) => {
+      update_field("city", val);
+      update_field("city_error", "");
+      mark_as_dirty();
+    },
     setCityError: (val: string) => update_field("city_error", val),
-    setAddress: (val: string) => update_field("address", val),
+    setAddress: (val: string) => {
+      update_field("address", val);
+      update_field("address_error", "");
+      mark_as_dirty();
+    },
     setAddressError: (val: string) => update_field("address_error", val),
-    setConsultationFee: (val: string) => update_field("consultation_fee", val),
+    setConsultationFee: (val: string) => {
+      update_field("consultation_fee", val);
+      update_field("consultation_fee_error", "");
+      mark_as_dirty();
+    },
     setConsultationFeeError: (val: string) =>
       update_field("consultation_fee_error", val),
-    setStatus: (val: string) => update_field("status", val),
+    setStatus: (val: string) => {
+      update_field("status", val);
+      mark_as_dirty();
+    },
     markAsDirty: mark_as_dirty,
     getInputBorderClass: (has_error: boolean) =>
       has_error
@@ -331,12 +369,18 @@ export default function AddClinicModal({
         : "border-app-border focus:border-app-primary focus:ring-2 focus:ring-app-primary/20",
   };
 
+  const input_border_class = (has_error: boolean) => {
+    return has_error
+      ? "border-red-500 ring-2 ring-red-200"
+      : "border-app-border focus:border-app-primary focus:ring-2 focus:ring-app-primary/20";
+  };
+
   const current_step_is_valid = is_step_valid(
     form_state.current_step,
     form_state,
     existing_clinics,
     editing_clinic_id,
-    doctor_occupied_days,
+    doctor_existing_schedules,
   );
 
   if (false === is_open) {
@@ -450,6 +494,7 @@ export default function AddClinicModal({
                 <WorkingScheduleStep
                   scheduleList={form_state.schedule_list}
                   doctorOccupiedDays={doctor_occupied_days}
+                  doctorExistingSchedules={doctor_existing_schedules}
                   onAddSchedule={(item) => {
                     update_field("schedule_list", [
                       ...form_state.schedule_list,
@@ -468,14 +513,20 @@ export default function AddClinicModal({
                   onDeleteSchedule={(index) => {
                     const target_item = form_state.schedule_list[index];
                     const deleted_day = target_item ? target_item.day : "";
-                    const next_schedules = form_state.schedule_list.filter(
+                    const next_list = form_state.schedule_list.filter(
                       (_, i) => i !== index,
                     );
-                    const next_breaks = form_state.break_list.filter(
-                      (b) => b.day !== deleted_day,
-                    );
-                    update_field("schedule_list", next_schedules);
-                    update_field("break_list", next_breaks);
+                    update_field("schedule_list", next_list);
+                    if (deleted_day) {
+                      update_field(
+                        "break_list",
+                        form_state.break_list.filter(
+                          (b) => b.day !== deleted_day,
+                        ),
+                      );
+                    } else {
+                      // No action needed
+                    }
                     mark_as_dirty();
                   }}
                 />

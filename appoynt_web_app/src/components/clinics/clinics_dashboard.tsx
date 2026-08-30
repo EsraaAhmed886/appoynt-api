@@ -157,7 +157,9 @@ export default function ClinicsDashboard() {
             on_delete_clinic={handle_open_delete_modal}
           />
         ) : (
-          <ErrorState />
+          <div className="mt-6 flex flex-col items-center justify-center p-12 bg-app-surface rounded-2xl border border-app-border text-center shadow-xs">
+            <ErrorState />
+          </div>
         )}
 
         {total_pages > 1 ? (

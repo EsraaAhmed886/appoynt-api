@@ -37,6 +37,7 @@ export type { WorkingScheduleItem };
 type WorkingScheduleStepProps = {
   scheduleList: WorkingScheduleItem[];
   doctorOccupiedDays?: string[];
+  doctorExistingSchedules?: WorkingScheduleItem[];
   onAddSchedule: (item: WorkingScheduleItem) => void;
   onEditSchedule: (index: number, item: WorkingScheduleItem) => void;
   onDeleteSchedule: (index: number) => void;
@@ -45,6 +46,7 @@ type WorkingScheduleStepProps = {
 export default function WorkingScheduleStep({
   scheduleList,
   doctorOccupiedDays = [],
+  doctorExistingSchedules = [],
   onAddSchedule,
   onEditSchedule,
   onDeleteSchedule,
@@ -66,9 +68,7 @@ export default function WorkingScheduleStep({
   const is_editing = null !== editing_index;
 
   const available_day_options = WORKING_DAYS.filter((day) => {
-    if (doctorOccupiedDays.includes(day)) {
-      return false;
-    } else if (is_editing && selected_day === day) {
+    if (is_editing && selected_day === day) {
       return true;
     } else {
       return !scheduleList.some((item) => item.day === day);
@@ -97,6 +97,11 @@ export default function WorkingScheduleStep({
     set_validation_errors({});
   };
 
+  const other_schedules =
+    doctorExistingSchedules.length > 0
+      ? doctorExistingSchedules
+      : doctorOccupiedDays;
+
   const validate_current_input = (day: string, start: string, end: string) => {
     const errs = validate_working_schedule_item(
       day,
@@ -104,7 +109,7 @@ export default function WorkingScheduleStep({
       end,
       scheduleList,
       editing_index,
-      doctorOccupiedDays,
+      other_schedules,
     );
     set_validation_errors(errs || {});
     return null === errs;
