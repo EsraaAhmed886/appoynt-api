@@ -205,13 +205,23 @@ class UserProfileModel {
 
   /// Internal helper to parse gender dynamically from int, string, or enum representations
   static int? _parseGender(dynamic val) {
-    if (val == null) return null;
-    if (val is int) return val;
+    if (val == null) {
+      return null;
+    } else {
+      // No action needed
+    }
+    if (val is int) {
+      return val;
+    } else {
+      // No action needed
+    }
     final String str = val.toString().trim().toLowerCase();
     if (str == '0' || str == 'male' || str == 'm' || str == 'ذكر') {
       return 0;
     } else if (str == '1' || str == 'female' || str == 'f' || str == 'أنثى') {
       return 1;
+    } else {
+      // Fallback parse
     }
     return int.tryParse(str);
   }
@@ -248,6 +258,8 @@ class UserProfileModel {
       govName = root['governorate'] as String;
     } else if (root['governorate'] != null) {
       govName = root['governorate'].toString();
+    } else {
+      // No action needed
     }
     govId ??= root['governorateId']?.toString() ?? root['governorate_id']?.toString();
 
@@ -266,6 +278,8 @@ class UserProfileModel {
       cName = root['city'] as String;
     } else if (root['city'] != null) {
       cName = root['city'].toString();
+    } else {
+      // No action needed
     }
     cId ??= root['cityId']?.toString() ?? root['city_id']?.toString();
 
@@ -286,6 +300,8 @@ class UserProfileModel {
       rawDob = root['dateOfBirth'].toString();
     } else if (root['dob'] != null) {
       rawDob = root['dob'].toString();
+    } else {
+      // No action needed
     }
 
     // -------------------------------------------------------------------------
@@ -303,10 +319,16 @@ class UserProfileModel {
       final parts = [street, c, g].where((p) => p != null && p.isNotEmpty).toList();
       if (parts.isNotEmpty) {
         parsedAddress = parts.join(', ');
+      } else {
+        // No action needed
       }
+    } else {
+      // No action needed
     }
     if ((parsedAddress == null || parsedAddress.isEmpty) && govName != null) {
       parsedAddress = cName != null ? '$cName, $govName' : govName;
+    } else {
+      // No action needed
     }
 
     // -------------------------------------------------------------------------

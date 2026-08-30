@@ -41,6 +41,8 @@ class GovernorateModel {
           .whereType<Map<String, dynamic>>()
           .map((c) => CityModel.fromJson(c))
           .toList();
+    } else {
+      // No action needed
     }
 
     return GovernorateModel(

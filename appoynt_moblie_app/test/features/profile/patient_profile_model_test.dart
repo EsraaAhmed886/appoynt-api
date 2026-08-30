@@ -15,7 +15,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:appoynt_mobile_app/features/profile/data/models/governorate_model.dart';
 import 'package:appoynt_mobile_app/features/profile/data/models/patient_profile_model.dart';
-import 'package:appoynt_mobile_app/features/profile/data/models/user_profile_model.dart';
 
 void main() {
   group('PatientProfileModel / UserProfileModel Deserialization Tests', () {

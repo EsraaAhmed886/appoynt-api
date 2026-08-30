@@ -234,10 +234,14 @@ class ProfileCubit extends Cubit<ProfileState> {
                         profile.cityName!.toLowerCase()) ||
                 (profile.cityName != null && city.nameAr == profile.cityName),
           );
+        } else {
+          // No action needed
         }
       } catch (_) {
         // Fallback safely if not found
       }
+    } else {
+      // No action needed
     }
   }
 

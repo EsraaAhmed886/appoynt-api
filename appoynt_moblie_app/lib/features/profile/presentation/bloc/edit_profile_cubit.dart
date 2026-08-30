@@ -255,6 +255,8 @@ class EditProfileCubit extends Cubit<EditProfileState> {
                         profile.cityName!.toLowerCase()) ||
                 (profile.cityName != null && city.nameAr == profile.cityName),
           );
+        } else {
+          // No action needed
         }
       } catch (_) {
         // Fallback safely if not found
@@ -265,6 +267,8 @@ class EditProfileCubit extends Cubit<EditProfileState> {
         selectedCity: selectedCity,
         cities: cities,
       ));
+    } else {
+      // No action needed
     }
   }
 
