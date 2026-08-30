@@ -4,8 +4,8 @@
  * Date of Creation: 28/06/2026
  * Version Information: V1.0.0
  * Dependencies: @reduxjs/toolkit, axios, @/lib/api, @/lib/api/auth.api, @/types
- * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Contributors: [Kholoud Khaled, shimaa salah]
+ * Last Modified Date: [shimaa salah - 30/08/2026]
  * File Description: Defines Redux Toolkit auth slice for managing user login session states.
  */
 
@@ -19,7 +19,6 @@ import { set_safe_storage, remove_safe_storage, get_safe_storage } from "@/lib/a
 import { auth_api } from "@/lib/api/auth.api";
 // Importing login credentials interface type schema
 import type { login_credentials } from "@/types";
-
 // Asynchronous thunk action handler to perform login API verification requests
 export const login_thunk = createAsyncThunk(
   // The unique string identifier representation of action thunk trigger
@@ -30,23 +29,62 @@ export const login_thunk = createAsyncThunk(
     try {
       // Calling authentication api endpoint passing parameters
       const response = await auth_api.login_call(credentials);
-      // Extracting data payload wrapper containing authentication details
-      const response_data = response.data;
-      // Destructuring token variables and profiles details from container
-      const { access_token, refresh_token, user_email, user_role } = response_data.data;
 
-      // Saving the JWT access token in browser local storage safely
-      set_safe_storage("appoynt_token", access_token);
-      // Saving the JWT refresh token in browser local storage safely
-      set_safe_storage("appoynt_refresh_token", refresh_token);
+      // Extracting JWT access token string from response payload
+      const access_token: string =
+        response.data?.accessToken || response.data?.access_token || "";
+
+      // Initializing default user credentials fallback values
+      let user_role: string = "Doctor";
+      let user_email: string = credentials.email_address;
+
+      // Yoda style comparison checking if access token string exists
+      if ("" !== access_token) {
+        // Opening try-catch block for safe token decoding
+        try {
+          // Splitting JWT token string to extract base64 payload segment
+          const payload_base64 = access_token.split(".")[1];
+          // Parsing base64 decoded string into JSON object
+          const decoded_payload = JSON.parse(atob(payload_base64));
+
+          // Resolving user role claim from decoded claims
+          user_role =
+            decoded_payload.role ||
+            decoded_payload[
+            "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+            ] ||
+            "Doctor";
+
+          // Resolving user email identification from decoded claims
+          user_email =
+            decoded_payload.email ||
+            decoded_payload.sub ||
+            credentials.email_address;
+        } catch (decode_error) {
+          // Fallback to default credentials when JWT parsing encounters errors
+        }
+
+        // Saving the JWT access token in browser local storage safely
+        set_safe_storage("appoynt_token", access_token);
+      } else {
+        // Explicit empty action block when access token is empty
+      }
 
       // Returning successfully authenticated payload parameters to reducer
       return { access_token, user_email, user_role };
     } catch (network_error) {
       // Casting general error response to AxiosError type configuration
-      const error_obj = network_error as AxiosError<{ message: string }>;
+      const error_obj = network_error as AxiosError<{
+        message?: string;
+        title?: string;
+      }>;
+
       // Extracting descriptive validation message from server response object
-      const message_str = error_obj.response?.data?.message ?? "Login failed";
+      const message_str: string =
+        error_obj.response?.data?.message ||
+        error_obj.response?.data?.title ||
+        "Invalid email or password";
+
       // Propagating rejected warning message down the thunk payload line
       return rejectWithValue(message_str);
     }

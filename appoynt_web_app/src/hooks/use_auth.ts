@@ -5,8 +5,8 @@
  * Version Information: V1.0.0
  * Dependencies: react, next/navigation, react-redux,
  *   @/store/auth_slice, @/store/index, @/types
- * Contributors: [Kholoud Khaled]
- * Last Modified Date: [Kholoud Khaled - 28/05/2026]
+ * Contributors: [Kholoud Khaled, shimaa salah]
+ * Last Modified Date: [shimaa salah - 30/08/2026]
  * File Description: A custom authentication hook interfacing components with Redux auth state.
  */
 
@@ -52,7 +52,7 @@ export function use_auth() {
       // Case mapping to medical practitioner dashboard layouts
       case "Doctor": {
         // Returning doctor landing page directory url
-        return "/doctor";
+        return "/dashboard";
       }
       // Case mapping to clinic staff dashboard layouts
       case "Receptionist": {
@@ -62,7 +62,7 @@ export function use_auth() {
       // Fallback default landing route path
       default: {
         // Returning standard root portal layout
-        return "/";
+        return "/dashboard";
       }
     }
   }, []);
