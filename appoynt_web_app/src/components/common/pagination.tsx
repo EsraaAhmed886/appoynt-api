@@ -83,7 +83,7 @@ export default function Pagination({
   if (total === 0) {
     return null;
   } else {
-    // No action needed
+    // Total is positive
   }
 
   const startRecord = (page - 1) * limit + 1;
@@ -93,12 +93,12 @@ export default function Pagination({
     const pages: number[] = [];
     const maxVisible = 5;
     let start = Math.max(1, page - 2);
-    let end = Math.min(totalPages, start + maxVisible - 1);
+    const end = Math.min(totalPages, start + maxVisible - 1);
 
     if (end - start + 1 < maxVisible) {
       start = Math.max(1, end - maxVisible + 1);
     } else {
-      // No action needed
+      // Range matches or exceeds maxVisible
     }
 
     for (let i = start; i <= end; i++) {
@@ -116,11 +116,13 @@ export default function Pagination({
     } else {
       // No action needed
     }
+
     if (onPageChange) {
       onPageChange(newPage);
     } else {
       // No action needed
     }
+
     if (setPage) {
       setPage(newPage);
     } else {
@@ -135,11 +137,13 @@ export default function Pagination({
     } else {
       // No action needed
     }
+
     if (onLimitChange) {
       onLimitChange(newLimit);
     } else {
       // No action needed
     }
+
     if (setLimit) {
       setLimit(newLimit);
     } else {

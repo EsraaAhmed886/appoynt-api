@@ -24,6 +24,7 @@ import {
   get_clinics,
   get_doctor_occupied_working_days,
   get_doctor_other_clinic_schedules,
+  get_doctor_existing_schedules,
 } from "@/services/clinic.service";
 import { do_time_intervals_overlap } from "@/lib/utils/time_utils";
 import {
@@ -583,6 +584,7 @@ export function use_clinic_form(clinic_id: number) {
     is_success_modal_open,
     doctor_occupied_days,
     doctor_other_schedules,
+    doctor_existing_schedules: doctor_other_schedules,
     // Independent Card Editing States
     is_editing_info,
     is_editing_schedule,
