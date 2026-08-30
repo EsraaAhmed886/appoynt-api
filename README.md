@@ -383,12 +383,11 @@ Follow these instructions to set up your local development environment.
 | --- | ------------------- | ---------------------- | --------------------------------- |
 | 1   | **Kareem Mangood**  | Team Lead              | Project Management & Architecture |
 | 2   | **Mostafa Mahmoud** | Backend Developer      | API & Database                    |
-| 3   | **Hosam Hany**      | Mobile Developer       | Flutter & Dart Development        |
-| 4   | **Shimaa Salah**    | Frontend Web Developer | React / Next.js Development       |
-| 5   | **Menna Ahmed**     | UI/UX Designer         | Design System & Prototyping       |
-| 6   | **Habiba Ezzat**    | AI/ML Engineer         | AI & Machine Learning             |
-| 7   | **Sohila Mohamed**  | AI/ML Engineer         | AI & Machine Learning             |
-| 8   | **Kholoud Khaled**  | Test Engineer          | Mobile/Web Testing                |
+| 3   | **Shimaa Salah**    | Frontend Web Developer | React / Next.js Development       |
+| 4   | **Menna Ahmed**     | UI/UX Designer         | Design System & Prototyping       |
+| 5   | **Kholoud Khaled**  | Test Engineer          | Mobile/Web Testing                |
+| 6   | **Mohamed Qotb**    | Data Engineer          | Data Analysis                     |
+| 7   | **Esraa Ahmed**     | AI/ML Engineer         | AI & Machine Learning             |
 
 ## 🗓 Project Timeline
 
