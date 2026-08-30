@@ -2,14 +2,14 @@
  * File Name: pagination.tsx
  * Author: shimaa salah
  * Date of Creation: 20/07/2026
- * Version Information: V1.2.0
+ * Version Information: V1.2.1
  * Dependencies:
  *   - react
  *   - lucide-react
  *   - @/hooks/use_click_outside
  *   - @/context/language_context
  * Contributors: shimaa salah
- * Last Modified Date: [shimaa salah - 29/08/2026]
+ * Last Modified Date: [shimaa salah - 30/08/2026]
  * File Description: Shared accessible pagination bar providing record index summary, bidirectional page stepper controls, maximum 5 visible pages, and customizable page limit sizing (10, 25, 50) with animated dynamic dropdown.
  */
 
@@ -80,7 +80,7 @@ export default function Pagination({
   const total =
     totalProp ?? total_records ?? totalRecords ?? totalPages * limit;
 
-  if (0 === total) {
+  if (total === 0) {
     return null;
   } else {
     // Total is positive
