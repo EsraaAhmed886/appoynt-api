@@ -5,7 +5,7 @@
  * Version        : v1.0.0
  * Dependencies   : ApplicationDbContext, IDatabaseSeeder, SeedOptions
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 24/07/2026
+ * Last Modified  : Mustafa Mahmoud - 2026-08-31
  * Description    : Provides startup helpers for applying database migrations
  *                  and running seed operations.
  */
@@ -96,6 +96,10 @@ public static class DatabaseInitializationExtensions
             logger.LogInformation("Ensuring medical specializations exist in database.");
             ISpecializationSeeder specializationSeeder = services.GetRequiredService<ISpecializationSeeder>();
             await specializationSeeder.SeedAsync(cancellationToken).ConfigureAwait(false);
+
+            logger.LogInformation("Ensuring clinical reference catalogs (ICD-10, Medications, Diagnostic Tests) exist in database.");
+            IMedicalCatalogSeeder medicalCatalogSeeder = services.GetRequiredService<IMedicalCatalogSeeder>();
+            await medicalCatalogSeeder.SeedAsync(cancellationToken).ConfigureAwait(false);
 
             if (!seedOptions.Enabled)
             {

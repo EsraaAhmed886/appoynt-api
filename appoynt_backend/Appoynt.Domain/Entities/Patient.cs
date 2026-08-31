@@ -6,7 +6,7 @@
  * Dependencies   : BaseEntity, ApplicationUser, FamilyMember,
  *                  BloodGroup, SmokingStatus, PatientFavoriteDoctor, PatientFavoriteClinic
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-23
+ * Last Modified  : Mustafa Mahmoud - 2026-08-31
  * Description    : Represents a patient within the application, including
  *                  the Patient Identifier (PID), family association,
  *                  medical information, National ID, and favorites navigation.
@@ -70,6 +70,12 @@ public class Patient : BaseEntity
     /// </summary>
     public SmokingStatus? SmokingStatus { get; set; }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether full medical history sharing across different doctors is enabled.
+    /// Defaults to true. When disabled, other doctors cannot view finalized medical records created by other physicians.
+    /// </summary>
+    public bool IsMedicalHistorySharingEnabled { get; set; } = true;
+
     #endregion
 
     #region Relationship Properties
@@ -98,6 +104,11 @@ public class Patient : BaseEntity
     /// Gets or sets the collection of favorite clinics linked to this patient.
     /// </summary>
     public ICollection<PatientFavoriteClinic> FavoriteClinics { get; set; } = [];
+
+    /// <summary>
+    /// Gets or sets the collection of allergies recorded for this patient.
+    /// </summary>
+    public ICollection<PatientAllergy> Allergies { get; set; } = [];
 
     #endregion
 }
