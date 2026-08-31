@@ -184,6 +184,61 @@ public class ApplicationDbContext
     /// </summary>
     public DbSet<PatientFavoriteClinic> PatientFavoriteClinics => Set<PatientFavoriteClinic>();
 
+    /// <summary>
+    /// Gets the global standard ICD-10 diagnoses catalog.
+    /// </summary>
+    public DbSet<Diagnosis> Diagnoses => Set<Diagnosis>();
+
+    /// <summary>
+    /// Gets the global standardized medications catalog.
+    /// </summary>
+    public DbSet<Medication> Medications => Set<Medication>();
+
+    /// <summary>
+    /// Gets the global diagnostic and laboratory test catalog.
+    /// </summary>
+    public DbSet<TestCatalog> TestCatalogs => Set<TestCatalog>();
+
+    /// <summary>
+    /// Gets the doctor-submitted custom medication requests.
+    /// </summary>
+    public DbSet<CustomMedicationRequest> CustomMedicationRequests => Set<CustomMedicationRequest>();
+
+    /// <summary>
+    /// Gets the electronic medical records created for consultations.
+    /// </summary>
+    public DbSet<MedicalRecord> MedicalRecords => Set<MedicalRecord>();
+
+    /// <summary>
+    /// Gets the diagnoses recorded on medical records.
+    /// </summary>
+    public DbSet<MedicalRecordDiagnosis> MedicalRecordDiagnoses => Set<MedicalRecordDiagnosis>();
+
+    /// <summary>
+    /// Gets the medications prescribed on medical records.
+    /// </summary>
+    public DbSet<MedicalRecordMedication> MedicalRecordMedications => Set<MedicalRecordMedication>();
+
+    /// <summary>
+    /// Gets the diagnostic and laboratory tests requested on medical records.
+    /// </summary>
+    public DbSet<MedicalRecordTestRequest> MedicalRecordTestRequests => Set<MedicalRecordTestRequest>();
+
+    /// <summary>
+    /// Gets the file attachments and documents linked to medical records.
+    /// </summary>
+    public DbSet<MedicalRecordAttachment> MedicalRecordAttachments => Set<MedicalRecordAttachment>();
+
+    /// <summary>
+    /// Gets the audit change log history of post-finalization edits.
+    /// </summary>
+    public DbSet<MedicalRecordChangeLog> MedicalRecordChangeLogs => Set<MedicalRecordChangeLog>();
+
+    /// <summary>
+    /// Gets the allergy alerts recorded for patients.
+    /// </summary>
+    public DbSet<PatientAllergy> PatientAllergies => Set<PatientAllergy>();
+
     #endregion
 
     #region Model Configuration

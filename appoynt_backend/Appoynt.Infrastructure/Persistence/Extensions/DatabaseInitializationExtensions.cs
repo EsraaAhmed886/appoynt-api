@@ -97,6 +97,10 @@ public static class DatabaseInitializationExtensions
             ISpecializationSeeder specializationSeeder = services.GetRequiredService<ISpecializationSeeder>();
             await specializationSeeder.SeedAsync(cancellationToken).ConfigureAwait(false);
 
+            logger.LogInformation("Ensuring clinical reference catalogs (ICD-10, Medications, Diagnostic Tests) exist in database.");
+            IMedicalCatalogSeeder medicalCatalogSeeder = services.GetRequiredService<IMedicalCatalogSeeder>();
+            await medicalCatalogSeeder.SeedAsync(cancellationToken).ConfigureAwait(false);
+
             if (!seedOptions.Enabled)
             {
                 logger.LogInformation("Optional demo data seeding is disabled via configuration.");

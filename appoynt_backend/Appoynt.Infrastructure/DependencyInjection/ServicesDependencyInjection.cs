@@ -64,6 +64,11 @@ internal static class ServicesDependencyInjection
         services.AddScoped<Appoynt.Application.Common.Interfaces.Seeding.IGovernorateSeeder, Appoynt.Infrastructure.Persistence.Seed.GovernorateSeeder>();
         services.AddHostedService<Appoynt.Infrastructure.BackgroundServices.SlotMaintenanceService>();
 
+        // Register Medical Record services
+        services.AddScoped<Appoynt.Application.Features.MedicalRecords.IMedicalRecordService, Appoynt.Infrastructure.Services.MedicalRecordService>();
+        services.AddScoped<Appoynt.Application.Features.MedicalRecords.ICustomMedicationService, Appoynt.Infrastructure.Services.CustomMedicationService>();
+        services.AddScoped<Appoynt.Application.Features.MedicalRecords.IReferenceDataService, Appoynt.Infrastructure.Services.ReferenceDataService>();
+
         // Register clinic validators
         services.AddScoped<FluentValidation.IValidator<Appoynt.Application.Features.Clinics.Contracts.CreateClinicRequest>, Appoynt.Application.Features.Clinics.Validation.CreateClinicRequestValidator>();
         services.AddScoped<FluentValidation.IValidator<Appoynt.Application.Features.Clinics.Contracts.UpdateClinicRequest>, Appoynt.Application.Features.Clinics.Validation.UpdateClinicRequestValidator>();

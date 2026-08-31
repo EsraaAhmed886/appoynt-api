@@ -40,6 +40,8 @@ internal static class SeedingDependencyInjection
 
         services.AddScoped<IDoctorSeeder, DoctorSeeder>();
 
+        services.AddScoped<IMedicalCatalogSeeder, MedicalCatalogSeeder>();
+
         services.AddScoped<IDatabaseSeeder, DatabaseSeeder>();
 
         return services;
