@@ -2,11 +2,11 @@
  * File Name: appointment_queue_list.tsx
  * Author: shimaa salah
  * Created Date: 18/08/2026
- * Version: v1.3.0
+ * Version: v1.5.0
  * Dependencies: react, lucide-react, @/types/appointment, @/context/language_context
  * Contributors: [shimaa salah]
- * Last Modified: [shimaa salah - 19/08/2026]
- * Description: Client component rendering queued patients table, localized waiting status badges, estimated wait times, and exact empty queue state.
+ * Last Modified: [shimaa salah - 31/08/2026]
+ * Description: Client component rendering queued patients table, localized waiting status badges, estimated wait times, and exact empty queue state with no Actions column.
  */
 
 "use client";
@@ -162,15 +162,17 @@ export default function appointment_queue_list({
             </table>
           </div>
 
-          {/* View All Queue Button */}
-          <div className="pt-2 text-center border-t border-app-border/30">
-            <button
-              type="button"
-              className="text-xs font-semibold text-app-primary hover:underline"
-            >
-              {translations.btn_view_all_queue} &darr;
-            </button>
-          </div>
+          {/* View All Queue Button (Visible strictly when queue contains 6 or more patients) */}
+          {queue.length >= 6 ? (
+            <div className="pt-2 text-center border-t border-app-border/30">
+              <button
+                type="button"
+                className="text-xs font-semibold text-app-primary hover:underline cursor-pointer"
+              >
+                {translations.btn_view_all_queue} &darr;
+              </button>
+            </div>
+          ) : null}
         </>
       )}
     </div>

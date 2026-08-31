@@ -136,6 +136,22 @@ export default function AppointmentsDashboard() {
     }
   };
 
+  // Explicitly start consultation for a selected patient from queue
+  const handle_start_consultation = async (queue_id: string) => {
+    try {
+      const result = await appointment_service.start_consultation(queue_id);
+      if (true === result.success) {
+        set_appointments_data(result.data);
+        set_toast_message(translations.toast_consultation_started);
+      } else {
+        set_toast_message(translations.toast_consultation_start_failed);
+      }
+    } catch (start_err) {
+      console.error("Error starting consultation:", start_err);
+      set_toast_message(translations.toast_consultation_start_failed);
+    }
+  };
+
   // Handle Loading UI State using existing LoadingState component
   if (true === is_loading) {
     return (
@@ -187,10 +203,14 @@ export default function AppointmentsDashboard() {
         <div className="lg:col-span-8 space-y-6">
           <ActiveConsultationCard
             consultation={appointments_data.active_consultation}
+            next_patient={appointments_data.queue.find((item) => "in_consultation" !== item.status) ?? null}
             on_end_click={() => set_is_end_modal_open(true)}
+            on_start_click={handle_start_consultation}
           />
 
-          <AppointmentQueueList queue={appointments_data.queue} />
+          <AppointmentQueueList
+            queue={appointments_data.queue}
+          />
         </div>
 
         {/* Right Column (4 cols on desktop): Rigid Sticky Time Slots Panel */}

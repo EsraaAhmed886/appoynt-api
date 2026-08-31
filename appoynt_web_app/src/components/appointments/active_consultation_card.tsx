@@ -20,24 +20,31 @@ import {
   Pill,
   UserX,
   ExternalLink,
+  Play,
 } from "lucide-react";
-import { active_consultation } from "@/types/appointment";
+import { active_consultation, queue_item } from "@/types/appointment";
 import { use_consultation_timer } from "@/hooks/use_consultation_timer";
+import { use_current_time } from "@/hooks/use_current_time";
 import { useTranslation } from "@/context/language_context";
 
 type active_consultation_card_props = {
   consultation: active_consultation | null;
+  next_patient?: queue_item | null;
   on_end_click: () => void;
+  on_start_click?: (queue_id: string) => void;
 };
 
 export default function active_consultation_card({
   consultation,
+  next_patient,
   on_end_click,
+  on_start_click,
 }: active_consultation_card_props) {
   const { translations } = useTranslation();
   const [image_error, set_image_error] = useState<boolean>(false);
 
   const timer_data = use_consultation_timer(consultation?.started_at);
+  const live_actual_time = use_current_time();
 
   // Render Empty State when no active consultation exists
   if (null === consultation) {
@@ -52,6 +59,18 @@ export default function active_consultation_card({
         <p className="mt-2 text-sm text-app-text-secondary max-w-sm">
           {translations.no_active_consultation_desc}
         </p>
+        {next_patient && on_start_click ? (
+          <button
+            type="button"
+            onClick={() => on_start_click(next_patient.id)}
+            className="mt-5 inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-app-primary text-white text-sm font-semibold hover:opacity-90 active:scale-98 transition shadow-xs cursor-pointer"
+          >
+            <Play className="h-4 w-4 fill-current" />
+            <span>
+              {translations.start_consultation || "Start Consultation"}: {next_patient.patient.full_name}
+            </span>
+          </button>
+        ) : null}
       </div>
     );
   } else {
@@ -152,7 +171,7 @@ export default function active_consultation_card({
                     {translations.actual_time_label}
                   </span>
                   <span className="font-semibold text-emerald-600 dark:text-emerald-400" dir="ltr">
-                    {consultation.actual_time}
+                    {live_actual_time}
                   </span>
                 </div>
 
