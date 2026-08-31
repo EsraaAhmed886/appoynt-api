@@ -5,7 +5,7 @@
  * Version        : v1.1.0
  * Dependencies   : CurrentUserService, DateTimeProvider, LocalFileStorageService, ImageProcessingService, ProfileImageService
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-26
+ * Last Modified  : Mustafa Mahmoud - 2026-08-31
  * Description    : Registers infrastructure services used throughout the application.
  */
 

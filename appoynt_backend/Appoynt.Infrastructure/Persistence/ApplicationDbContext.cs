@@ -7,7 +7,7 @@
  *                  ICurrentUserService, IDateTimeProvider,
  *                  ApplicationUser, BaseEntity, OtpChallenge
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-26
+ * Last Modified  : Mustafa Mahmoud - 2026-08-31
  * Description    : Represents the application's primary database context.
  *                  Responsible for entity mapping, persistence operations,
  *                  auditing, and soft-delete behavior.

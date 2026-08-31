@@ -5,7 +5,7 @@
  * Version        : v1.0.0
  * Dependencies   : ApplicationDbContext, IDatabaseSeeder, SeedOptions
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 24/07/2026
+ * Last Modified  : Mustafa Mahmoud - 2026-08-31
  * Description    : Provides startup helpers for applying database migrations
  *                  and running seed operations.
  */

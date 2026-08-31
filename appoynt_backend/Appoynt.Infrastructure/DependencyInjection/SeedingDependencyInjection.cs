@@ -5,7 +5,7 @@
  * Version        : v1.0.0
  * Dependencies   : RoleSeeder, AdminSeeder, DatabaseSeeder
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 22/07/2026
+ * Last Modified  : Mustafa Mahmoud - 2026-08-31
  * Description    : Registers all database seeders used by the application.
  */
 

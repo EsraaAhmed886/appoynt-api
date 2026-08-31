@@ -6,7 +6,7 @@
  * Dependencies   : BaseEntity, ApplicationUser, FamilyMember,
  *                  BloodGroup, SmokingStatus, PatientFavoriteDoctor, PatientFavoriteClinic
  * Contributors   : [Mustafa Mahmoud]
- * Last Modified  : Mustafa Mahmoud - 2026-08-23
+ * Last Modified  : Mustafa Mahmoud - 2026-08-31
  * Description    : Represents a patient within the application, including
  *                  the Patient Identifier (PID), family association,
  *                  medical information, National ID, and favorites navigation.
