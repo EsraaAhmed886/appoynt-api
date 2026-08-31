@@ -26,6 +26,7 @@ import { active_consultation, queue_item } from "@/types/appointment";
 import { use_consultation_timer } from "@/hooks/use_consultation_timer";
 import { use_current_time } from "@/hooks/use_current_time";
 import { useTranslation } from "@/context/language_context";
+import { formatLocalizedDate } from "@/lib/utils/date_utils";
 
 type active_consultation_card_props = {
   consultation: active_consultation | null;
@@ -40,7 +41,7 @@ export default function active_consultation_card({
   on_end_click,
   on_start_click,
 }: active_consultation_card_props) {
-  const { translations } = useTranslation();
+  const { translations, current_locale } = useTranslation();
   const [image_error, set_image_error] = useState<boolean>(false);
 
   const timer_data = use_consultation_timer(consultation?.started_at);
@@ -79,7 +80,9 @@ export default function active_consultation_card({
 
     const chronic_diseases = summary?.chronic_diseases ?? [];
     const allergies = summary?.allergies ?? [];
-    const last_visit = summary?.last_visit_date ?? translations.label_not_available;
+    const last_visit = summary?.last_visit_date
+      ? formatLocalizedDate(summary.last_visit_date, current_locale)
+      : translations.label_not_available;
 
     const visit_type_label =
       "follow_up" === patient.visit_type
