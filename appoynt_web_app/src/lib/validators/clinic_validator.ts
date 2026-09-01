@@ -443,6 +443,9 @@ export function is_step_valid(
     consultation_fee: string;
     schedule_list: WorkingScheduleItem[];
     break_list: BreakTimeItem[];
+    assigned_receptionists?: ReceptionistItem[];
+    appointment_duration?: string;
+    max_advance_booking?: string;
   },
   existing_clinics: Clinic[] = [],
   current_clinic_id?: number | null,
@@ -490,6 +493,11 @@ export function is_step_valid(
       }
     }
   } else if (3 === step) {
+    // Step 3 (Break Times) is OPTIONAL: an empty break_list is valid.
+    // If breaks exist, all entries must be valid.
+    if (!form_state.break_list || 0 === form_state.break_list.length) {
+      return true;
+    }
     return form_state.break_list.every((b, idx) => {
       const err = validate_break_time_item(
         b.day,
@@ -501,6 +509,15 @@ export function is_step_valid(
       );
       return null === err;
     });
+  } else if (4 === step) {
+    // Step 4 (Receptionists) is REQUIRED: at least one receptionist must be assigned.
+    return (form_state.assigned_receptionists?.length || 0) > 0;
+  } else if (5 === step) {
+    // Step 5 (Booking Settings) is REQUIRED: duration and advance booking must be selected.
+    return (
+      Boolean(form_state.appointment_duration?.trim()) &&
+      Boolean(form_state.max_advance_booking?.trim())
+    );
   } else {
     return true;
   }
