@@ -28,6 +28,7 @@ type ReceptionistsSectionProps = {
   is_edit_mode: boolean;
   is_card_dirty?: boolean;
   assigned_receptionists: ReceptionistItem[];
+  receptionists_error?: string;
   on_update_assigned: (list: ReceptionistItem[]) => void;
   on_toggle_edit: () => void;
   on_cancel?: () => void;
@@ -38,6 +39,7 @@ export default function ReceptionistsSection({
   is_edit_mode,
   is_card_dirty = false,
   assigned_receptionists,
+  receptionists_error = "",
   on_update_assigned,
   on_toggle_edit,
   on_cancel,
@@ -141,7 +143,11 @@ export default function ReceptionistsSection({
       </div>
 
       {/* Table Container */}
-      <div className="overflow-hidden rounded-xl border border-app-border bg-app-surface">
+      <div
+        className={`overflow-hidden rounded-xl border bg-app-surface transition-colors ${
+          receptionists_error ? "border-red-500" : "border-app-border"
+        }`}
+      >
         <table className="w-full text-start text-sm">
           <thead className="border-b border-app-border bg-app-input_fill text-app-text-secondary">
             <tr>
@@ -166,9 +172,13 @@ export default function ReceptionistsSection({
               <tr>
                 <td
                   colSpan={is_edit_mode ? 4 : 3}
-                  className="px-5 py-6 text-center text-app-text-secondary"
+                  className={`px-5 py-6 text-center font-medium ${
+                    receptionists_error ? "text-red-500" : "text-app-text-secondary"
+                  }`}
                 >
-                  {translations.msg_no_receptionists_assigned}
+                  {receptionists_error
+                    ? translations[receptionists_error as keyof typeof translations] || receptionists_error
+                    : translations.msg_no_receptionists_assigned}
                 </td>
               </tr>
             ) : (
@@ -210,6 +220,12 @@ export default function ReceptionistsSection({
           </tbody>
         </table>
       </div>
+
+      {receptionists_error ? (
+        <p className="text-xs font-medium text-red-500">
+          {translations[receptionists_error as keyof typeof translations] || receptionists_error}
+        </p>
+      ) : null}
 
       {/* Modal: Assign Receptionists */}
       {is_modal_open ? (

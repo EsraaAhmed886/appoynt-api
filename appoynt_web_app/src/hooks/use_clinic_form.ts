@@ -35,6 +35,7 @@ import {
   validate_address,
   validate_consultation_fee,
   validate_working_schedule,
+  validate_assigned_receptionists,
 } from "@/lib/validators/clinic_validator";
 
 export function use_clinic_form(clinic_id: number) {
@@ -69,6 +70,7 @@ export function use_clinic_form(clinic_id: number) {
   const [schedule_error, set_schedule_error] = useState("");
   const [break_list, set_break_list] = useState<BreakTimeItem[]>([]);
   const [assigned_receptionists, set_assigned_receptionists] = useState<ReceptionistItem[]>([]);
+  const [receptionists_error, set_receptionists_error] = useState("");
   const [appointment_duration, set_appointment_duration] = useState("");
   const [max_advance_booking, set_max_advance_booking] = useState("");
 
@@ -284,6 +286,7 @@ export function use_clinic_form(clinic_id: number) {
     } else {
       // No action needed
     }
+    set_receptionists_error("");
     set_is_editing_receptionists(false);
   }, [original_clinic]);
 
@@ -451,13 +454,22 @@ export function use_clinic_form(clinic_id: number) {
 
   // Save Receptionists Card
   const save_receptionists_card = useCallback(() => {
+    const err_receptionists = validate_assigned_receptionists(assigned_receptionists);
+    if (err_receptionists) {
+      set_receptionists_error(err_receptionists);
+      return false;
+    } else {
+      set_receptionists_error("");
+    }
+
     const updated_entity = build_current_clinic_entity();
     update_clinic(updated_entity);
     set_original_clinic(updated_entity);
     set_is_editing_receptionists(false);
     set_is_dirty(false);
     set_is_success_modal_open(true);
-  }, [build_current_clinic_entity]);
+    return true;
+  }, [build_current_clinic_entity, assigned_receptionists]);
 
   // Save Booking Card
   const save_booking_card = useCallback(() => {
@@ -510,6 +522,14 @@ export function use_clinic_form(clinic_id: number) {
       return;
     } else {
       set_schedule_error("");
+    }
+
+    const err_receptionists = validate_assigned_receptionists(assigned_receptionists);
+    if (err_receptionists) {
+      set_receptionists_error(err_receptionists);
+      return;
+    } else {
+      set_receptionists_error("");
     }
 
     // Check if schedule changes impact existing appointments (trigger conflict dialog)
@@ -636,6 +656,7 @@ export function use_clinic_form(clinic_id: number) {
       scheduleError: schedule_error,
       breakList: break_list,
       assignedReceptionists: assigned_receptionists,
+      receptionistsError: receptionists_error,
       appointmentDuration: appointment_duration,
       maxAdvanceBooking: max_advance_booking,
     },
@@ -681,6 +702,9 @@ export function use_clinic_form(clinic_id: number) {
       },
       setAssignedReceptionists: (list: ReceptionistItem[]) => {
         set_assigned_receptionists(list);
+        if (list.length > 0) {
+          set_receptionists_error("");
+        }
         mark_as_dirty();
       },
       setAppointmentDuration: (val: string) => {

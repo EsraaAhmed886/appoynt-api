@@ -12,7 +12,7 @@
  * Description: Pure validation engine returning localization keys for dynamic language resolution in UI components.
  */
 
-import { Clinic, WorkingScheduleItem, BreakTimeItem } from "@/types/clinic";
+import { Clinic, WorkingScheduleItem, BreakTimeItem, ReceptionistItem } from "@/types/clinic";
 import { get_clinics } from "@/services/clinic.service";
 import {
   parse_time_to_minutes,
@@ -315,6 +315,20 @@ export function validate_working_schedule(
 ): string | null {
   if (!schedule_list || schedule_list.length === 0) {
     return "msg_no_working_days";
+  }
+  return null;
+}
+
+/**
+ * Validates assigned receptionists list for a clinic.
+ * Requires at least one assigned receptionist.
+ * Returns translation key "val_receptionist_req" if empty, or null if valid.
+ */
+export function validate_assigned_receptionists(
+  receptionists: ReceptionistItem[] = []
+): string | null {
+  if (!receptionists || receptionists.length === 0) {
+    return "val_receptionist_req";
   }
   return null;
 }
