@@ -22,7 +22,6 @@ import {
   do_time_intervals_overlap,
 } from "@/lib/utils/time_utils";
 import {
-  normalize_phone_number,
   is_phone_number_duplicate,
 } from "@/lib/utils/phone_utils";
 
@@ -53,28 +52,68 @@ export function validate_clinic_name(name: string): string | null {
 export function validate_phone(
   phone: string,
   existing_clinics: Clinic[] = [],
-  current_clinic_id?: number | null
+  current_clinic_id?: number | null,
+  is_typing: boolean = false
 ): string | null {
+  // Empty check
+  if ("" === phone || "" === phone.trim()) {
+    return is_typing ? null : "val_phone_req";
+  }
+
+  // 1. Explicit invalid character checks (immediately flag spaces, letters, special characters/dashes)
+  if (/\s/.test(phone)) {
+    return "val_phone_spaces";
+  }
+  if (/[a-zA-Z]/.test(phone)) {
+    return "val_phone_letters";
+  }
+  if (/[-–—]/.test(phone) || /[^\d]/.test(phone)) {
+    return "val_phone_special_chars";
+  }
+
   const trimmed = phone.trim();
 
-  if ("" === trimmed) {
-    return "val_phone_req";
-  } else {
-    const normalized = normalize_phone_number(trimmed);
-    const egyptian_mobile_regex = /^01[0125][0-9]{8}$/;
+  // 2. Length limit check (> 11 digits)
+  if (trimmed.length > 11) {
+    return "val_phone_too_long";
+  }
 
-    if (!egyptian_mobile_regex.test(normalized)) {
-      return "val_phone_invalid";
+  // 3. Prefix validation for Egyptian mobile numbers
+  if (trimmed.length >= 1 && !trimmed.startsWith("0")) {
+    return "val_phone_invalid_prefix";
+  }
+  if (trimmed.length >= 2 && !trimmed.startsWith("01")) {
+    return "val_phone_invalid_prefix";
+  }
+  if (trimmed.length >= 3 && !/01[0125]/.test(trimmed.slice(0, 3))) {
+    return "val_phone_invalid_prefix";
+  }
+
+  // 4. Incomplete number check (< 11 digits)
+  if (trimmed.length < 11) {
+    // While typing, let user continue typing without premature error
+    if (is_typing) {
+      return null;
     } else {
-      const target_clinics =
-        existing_clinics.length > 0 ? existing_clinics : get_clinics();
-      if (is_phone_number_duplicate(trimmed, target_clinics, current_clinic_id)) {
-        return "val_phone_duplicate";
-      } else {
-        return null;
-      }
+      // On blur or submit, incomplete number is invalid
+      return "val_phone_invalid";
     }
   }
+
+  // 5. Complete 11 digits regex check
+  const egyptian_mobile_regex = /^01[0125][0-9]{8}$/;
+  if (!egyptian_mobile_regex.test(trimmed)) {
+    return "val_phone_invalid";
+  }
+
+  // 6. Duplicate check across clinics
+  const target_clinics =
+    existing_clinics.length > 0 ? existing_clinics : get_clinics();
+  if (is_phone_number_duplicate(trimmed, target_clinics, current_clinic_id)) {
+    return "val_phone_duplicate";
+  }
+
+  return null;
 }
 
 /**
