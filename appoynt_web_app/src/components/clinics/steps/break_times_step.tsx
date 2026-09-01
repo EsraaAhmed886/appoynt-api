@@ -156,10 +156,10 @@ export default function BreakTimesStep({
         <button
           type="button"
           onClick={() => handle_open_modal()}
-          className="flex items-center justify-center gap-2 rounded-xl bg-app-primary px-4 py-2.5 text-sm font-medium text-white hover:opacity-90 transition-all shadow-sm"
+          className="flex items-center justify-center gap-2 rounded-xl bg-app-primary px-4 py-2.5 text-sm font-medium text-white hover:opacity-90 transition-all shadow-sm whitespace-nowrap shrink-0"
         >
-          <Plus size={16} />
-          {translations.btn_add_break}
+          <Plus size={16} className="shrink-0" />
+          <span>{translations.btn_add_break}</span>
         </button>
       </div>
 

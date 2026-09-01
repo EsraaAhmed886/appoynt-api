@@ -115,6 +115,7 @@ export default function ClinicViewEditPage({
           is_edit_mode={is_editing_schedule}
           is_card_dirty={is_schedule_dirty}
           schedule_list={form.scheduleList}
+          schedule_error={form.scheduleError}
           doctor_occupied_days={doctor_occupied_days}
           doctor_other_schedules={doctor_other_schedules}
           on_add_schedule={actions.addSchedule}
@@ -145,6 +146,7 @@ export default function ClinicViewEditPage({
           is_edit_mode={is_editing_receptionists}
           is_card_dirty={is_receptionists_dirty}
           assigned_receptionists={form.assignedReceptionists}
+          receptionists_error={form.receptionistsError}
           on_update_assigned={actions.setAssignedReceptionists}
           on_toggle_edit={actions.toggleEditReceptionists}
           on_cancel={actions.cancelReceptionists}

@@ -54,3 +54,43 @@ export function formatReviewDate(
     }
   }
 }
+
+/**
+ * Formats a date string (ISO, RFC, or human readable e.g. "May 21, 2024") into a localized date string.
+ * Example output (en): "May 21, 2024"
+ * Example output (ar): "21 مايو 2024"
+ */
+export function formatLocalizedDate(
+  dateInput?: string | Date | null,
+  locale: "en" | "ar" = "en"
+): string {
+  if (!dateInput) {
+    return "";
+  } else {
+    try {
+      const date = typeof dateInput === "string" ? new Date(dateInput) : dateInput;
+
+      if (isNaN(date.getTime())) {
+        return typeof dateInput === "string" ? dateInput : "";
+      } else {
+        if ("ar" === locale) {
+          return date.toLocaleDateString("ar-EG", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+            numberingSystem: "latn",
+          });
+        } else {
+          return date.toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          });
+        }
+      }
+    } catch {
+      return typeof dateInput === "string" ? dateInput : "";
+    }
+  }
+}
+

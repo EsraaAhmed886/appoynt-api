@@ -14,6 +14,7 @@
 import { ChevronLeft, ChevronRight, Calendar } from "lucide-react";
 import { time_slot } from "@/types/appointment";
 import { useTranslation } from "@/context/language_context";
+import { formatLocalizedDate } from "@/lib/utils/date_utils";
 
 type time_slots_panel_props = {
   selected_date: string;
@@ -24,7 +25,7 @@ export default function time_slots_panel({
   selected_date,
   time_slots,
 }: time_slots_panel_props) {
-  const { translations } = useTranslation();
+  const { translations, current_locale } = useTranslation();
 
   // Helper function to render slot card style based on status with soft Dark Mode support
   const get_slot_style = (status: time_slot["status"]) => {
@@ -71,7 +72,7 @@ export default function time_slots_panel({
 
         <div className="flex items-center gap-2 font-semibold text-app-text-primary">
           <Calendar className="h-3.5 w-3.5 text-app-primary" />
-          <span>{selected_date}</span>
+          <span>{formatLocalizedDate(selected_date, current_locale)}</span>
         </div>
 
         <button

@@ -176,12 +176,12 @@ export default function ClinicInformationStep({
           onChange={(e) => {
             const val = e.target.value;
             setPhone(val);
-            const err = validate_phone(val, existingClinics, editingClinicId);
+            const err = validate_phone(val, existingClinics, editingClinicId, true);
             setPhoneError(err || "");
             markAsDirty();
           }}
           onBlur={() => {
-            const err = validate_phone(phone, existingClinics, editingClinicId);
+            const err = validate_phone(phone, existingClinics, editingClinicId, false);
             setPhoneError(err || "");
           }}
           placeholder={translations.ph_phone}

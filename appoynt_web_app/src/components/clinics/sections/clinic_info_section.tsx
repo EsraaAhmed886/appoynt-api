@@ -281,8 +281,11 @@ export default function ClinicInfoSection({
                 onChange={(e) => {
                   const val = e.target.value;
                   setPhone(val);
-                  setPhoneError(validate_phone(val, existing_clinics, editing_clinic_id) || "");
+                  setPhoneError(validate_phone(val, existing_clinics, editing_clinic_id, true) || "");
                   markAsDirty();
+                }}
+                onBlur={() => {
+                  setPhoneError(validate_phone(phone, existing_clinics, editing_clinic_id, false) || "");
                 }}
                 className={`w-full rounded-xl border bg-app-input_fill px-4 py-2.5 text-sm text-app-text-primary outline-none transition-all ${
                   phoneError ? "border-red-500" : "border-app-border focus:border-app-primary"

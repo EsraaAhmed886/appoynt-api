@@ -14,6 +14,7 @@ export type Clinic = {
   doctor_id?: string | number;
   name: string;
   location: string;
+  address?: string;
   phone: string;
   consultation_fee?: string;
   consultationFee?: string;

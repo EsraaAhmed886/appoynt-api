@@ -14,31 +14,8 @@ import { appointments_data_response } from "@/types/appointment";
 export const initial_appointments_data: appointments_data_response = {
   selected_date: "May 21, 2024",
 
-  // Active consultation details matching the top patient card in wireframe
-  active_consultation: {
-    consultation_id: "cons_101",
-    appointment_id: "app_101",
-    patient: {
-      id: "PAT-9823",
-      full_name: "Mohamed Ali",
-      age: 26,
-      gender: "male",
-      phone_number: "0102 345 6789",
-      profile_image_url: "", // Empty string triggers default avatar fallback
-      visit_type: "follow_up",
-      visit_duration_mins: 15,
-      summary: {
-        chronic_diseases: ["Hypertension"],
-        allergies: ["Penicillin"],
-        last_visit_date: "Apr 10, 2024",
-      },
-    },
-    // Set started_at to current timestamp so fresh consultation starts from 00:00:00
-    started_at: new Date().toISOString(),
-    expected_time: "10:15 AM",
-    actual_time: "10:20 AM",
-    status: "in_consultation",
-  },
+  // No active consultation initially on load/initialization
+  active_consultation: null,
 
   // Waiting queue list with complete patient profiles
   queue: [
@@ -61,7 +38,8 @@ export const initial_appointments_data: appointments_data_response = {
       },
       scheduled_time: "10:15 AM",
       visit_type: "follow_up",
-      status: "in_consultation",
+      status: "checked_in",
+      estimated_wait_mins: 0,
     },
     {
       id: "q_2",
@@ -133,7 +111,7 @@ export const initial_appointments_data: appointments_data_response = {
 
   // Time slots grid matching the right panel in wireframe
   time_slots: [
-    { id: "ts_1", time: "09:00 AM", status: "in_consultation", patient_name: "Mohamed Ali" },
+    { id: "ts_1", time: "09:00 AM", status: "booked", patient_name: "Mohamed Ali" },
     { id: "ts_2", time: "09:30 AM", status: "booked", patient_name: "Tarek Ahmed" },
     { id: "ts_3", time: "10:00 AM", status: "booked", patient_name: "Mona Hassan" },
     { id: "ts_4", time: "10:30 AM", status: "available" },

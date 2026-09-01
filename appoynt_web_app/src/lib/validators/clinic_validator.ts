@@ -8,11 +8,11 @@
  *   - @/lib/utils/time_utils
  *   - @/lib/utils/phone_utils
  * Contributors: shimaa salah
- * Last Modified: shimaa salah - 29/08/2026
+ * Last Modified: shimaa salah - 01/09/2026
  * Description: Pure validation engine returning localization keys for dynamic language resolution in UI components.
  */
 
-import { Clinic, WorkingScheduleItem, BreakTimeItem } from "@/types/clinic";
+import { Clinic, WorkingScheduleItem, BreakTimeItem, ReceptionistItem } from "@/types/clinic";
 import { get_clinics } from "@/services/clinic.service";
 import {
   parse_time_to_minutes,
@@ -22,7 +22,6 @@ import {
   do_time_intervals_overlap,
 } from "@/lib/utils/time_utils";
 import {
-  normalize_phone_number,
   is_phone_number_duplicate,
 } from "@/lib/utils/phone_utils";
 
@@ -53,28 +52,90 @@ export function validate_clinic_name(name: string): string | null {
 export function validate_phone(
   phone: string,
   existing_clinics: Clinic[] = [],
-  current_clinic_id?: number | null
+  current_clinic_id?: number | null,
+  is_typing: boolean = false
 ): string | null {
+  // Empty check
+  if ("" === phone || "" === phone.trim()) {
+    return is_typing ? null : "val_phone_req";
+  } else {
+    // No action needed
+  }
+
+  // 1. Explicit invalid character checks (immediately flag spaces, letters, special characters/dashes)
+  if (/\s/.test(phone)) {
+    return "val_phone_spaces";
+  } else {
+    // No action needed
+  }
+  if (/[a-zA-Z]/.test(phone)) {
+    return "val_phone_letters";
+  } else {
+    // No action needed
+  }
+  if (/[-–—]/.test(phone) || /[^\d]/.test(phone)) {
+    return "val_phone_special_chars";
+  } else {
+    // No action needed
+  }
+
   const trimmed = phone.trim();
 
-  if ("" === trimmed) {
-    return "val_phone_req";
+  // 2. Length limit check (> 11 digits)
+  if (trimmed.length > 11) {
+    return "val_phone_too_long";
   } else {
-    const normalized = normalize_phone_number(trimmed);
-    const egyptian_mobile_regex = /^01[0125][0-9]{8}$/;
-
-    if (!egyptian_mobile_regex.test(normalized)) {
-      return "val_phone_invalid";
-    } else {
-      const target_clinics =
-        existing_clinics.length > 0 ? existing_clinics : get_clinics();
-      if (is_phone_number_duplicate(trimmed, target_clinics, current_clinic_id)) {
-        return "val_phone_duplicate";
-      } else {
-        return null;
-      }
-    }
+    // No action needed
   }
+
+  // 3. Prefix validation for Egyptian mobile numbers
+  if (trimmed.length >= 1 && !trimmed.startsWith("0")) {
+    return "val_phone_invalid_prefix";
+  } else {
+    // No action needed
+  }
+  if (trimmed.length >= 2 && !trimmed.startsWith("01")) {
+    return "val_phone_invalid_prefix";
+  } else {
+    // No action needed
+  }
+  if (trimmed.length >= 3 && !/01[0125]/.test(trimmed.slice(0, 3))) {
+    return "val_phone_invalid_prefix";
+  } else {
+    // No action needed
+  }
+
+  // 4. Incomplete number check (< 11 digits)
+  if (trimmed.length < 11) {
+    // While typing, let user continue typing without premature error
+    if (is_typing) {
+      return null;
+    } else {
+      // On blur or submit, incomplete number is invalid
+      return "val_phone_invalid";
+    }
+  } else {
+    // No action needed
+  }
+
+  // 5. Complete 11 digits regex check
+  const egyptian_mobile_regex = /^01[0125][0-9]{8}$/;
+  if (!egyptian_mobile_regex.test(trimmed)) {
+    return "val_phone_invalid";
+  } else {
+    // No action needed
+  }
+
+  // 6. Duplicate check across clinics
+  const target_clinics =
+    existing_clinics.length > 0 ? existing_clinics : get_clinics();
+  if (is_phone_number_duplicate(trimmed, target_clinics, current_clinic_id)) {
+    return "val_phone_duplicate";
+  } else {
+    // No action needed
+  }
+
+  return null;
 }
 
 /**
@@ -267,6 +328,38 @@ export function validate_working_schedule_item(
 }
 
 /**
+ * Validates full working schedule array for a clinic.
+ * Requires at least one working schedule entry.
+ * Returns translation key "msg_no_working_days" if empty, or null if valid.
+ */
+export function validate_working_schedule(
+  schedule_list: WorkingScheduleItem[] = []
+): string | null {
+  if (!schedule_list || schedule_list.length === 0) {
+    return "msg_no_working_days";
+  } else {
+    // No action needed
+  }
+  return null;
+}
+
+/**
+ * Validates assigned receptionists list for a clinic.
+ * Requires at least one assigned receptionist.
+ * Returns translation key "val_receptionist_req" if empty, or null if valid.
+ */
+export function validate_assigned_receptionists(
+  receptionists: ReceptionistItem[] = []
+): string | null {
+  if (!receptionists || receptionists.length === 0) {
+    return "val_receptionist_req";
+  } else {
+    // No action needed
+  }
+  return null;
+}
+
+/**
  * Real-time validation for Break Time item including break-vs-break overlap checks.
  * Returns object mapping field to translation error key, or null if valid.
  */
@@ -376,6 +469,9 @@ export function is_step_valid(
     consultation_fee: string;
     schedule_list: WorkingScheduleItem[];
     break_list: BreakTimeItem[];
+    assigned_receptionists?: ReceptionistItem[];
+    appointment_duration?: string;
+    max_advance_booking?: string;
   },
   existing_clinics: Clinic[] = [],
   current_clinic_id?: number | null,
@@ -423,17 +519,32 @@ export function is_step_valid(
       }
     }
   } else if (3 === step) {
-    return form_state.break_list.every((b, idx) => {
-      const err = validate_break_time_item(
-        b.day,
-        b.breakStart,
-        b.breakEnd,
-        form_state.schedule_list,
-        form_state.break_list,
-        idx
-      );
-      return null === err;
-    });
+    // Step 3 (Break Times) is OPTIONAL: an empty break_list is valid.
+    // If breaks exist, all entries must be valid.
+    if (!form_state.break_list || 0 === form_state.break_list.length) {
+      return true;
+    } else {
+      return form_state.break_list.every((b, idx) => {
+        const err = validate_break_time_item(
+          b.day,
+          b.breakStart,
+          b.breakEnd,
+          form_state.schedule_list,
+          form_state.break_list,
+          idx
+        );
+        return null === err;
+      });
+    }
+  } else if (4 === step) {
+    // Step 4 (Receptionists) is REQUIRED: at least one receptionist must be assigned.
+    return (form_state.assigned_receptionists?.length || 0) > 0;
+  } else if (5 === step) {
+    // Step 5 (Booking Settings) is REQUIRED: duration and advance booking must be selected.
+    return (
+      Boolean(form_state.appointment_duration?.trim()) &&
+      Boolean(form_state.max_advance_booking?.trim())
+    );
   } else {
     return true;
   }

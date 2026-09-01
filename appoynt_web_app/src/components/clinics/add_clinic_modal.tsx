@@ -5,7 +5,7 @@
  * Version : v1.1.0
  * Dependencies : react, lucide-react, @/context/language_context, @/types/clinic, @/services/clinic.service, @/lib/validators/clinic_validator
  * Contributors : [shimaa salah]
- * Last Modified : shimaa salah - 2026-08-25
+ * Last Modified : shimaa salah - 2026-09-01
  * Description : Multi-step modal component for adding a new clinic record with step navigation locks and centralized validation.
  */
 
@@ -202,8 +202,32 @@ export default function AddClinicModal({
         return false;
       } else {
         update_field("working_days_error", "");
-        return true;
+        return is_step_valid(
+          2,
+          form_state,
+          existing_clinics,
+          editing_clinic_id,
+          doctor_existing_schedules,
+        );
       }
+    } else if (3 === step) {
+      // Step 3 (Break Times) is OPTIONAL: an empty break_list is valid.
+      return is_step_valid(
+        3,
+        form_state,
+        existing_clinics,
+        editing_clinic_id,
+        doctor_existing_schedules,
+      );
+    } else if (4 === step) {
+      // Step 4 (Receptionists) is REQUIRED: at least 1 receptionist must be assigned.
+      return (form_state.assigned_receptionists?.length || 0) > 0;
+    } else if (5 === step) {
+      // Step 5 (Booking Settings) is REQUIRED: both values must be selected.
+      return (
+        Boolean(form_state.appointment_duration?.trim()) &&
+        Boolean(form_state.max_advance_booking?.trim())
+      );
     } else {
       return true;
     }
@@ -241,53 +265,133 @@ export default function AddClinicModal({
   };
 
   const handle_save = () => {
-    const is_step1_ok = validate_current_step_fields();
+    // Step 1: Clinic Information
+    const is_step1_ok = is_step_valid(
+      1,
+      form_state,
+      existing_clinics,
+      editing_clinic_id,
+    );
     if (!is_step1_ok) {
+      const name_err = validate_clinic_name(form_state.clinic_name);
+      const phone_err = validate_phone(
+        form_state.phone,
+        existing_clinics,
+        editing_clinic_id,
+      );
+      const gov_err = validate_governorate(form_state.governorate);
+      const city_err = validate_city(form_state.city);
+      const address_err = validate_address(form_state.address);
+      const fee_err = validate_consultation_fee(form_state.consultation_fee);
+
+      update_field("clinic_name_error", name_err || "");
+      update_field("phone_error", phone_err || "");
+      update_field("governorate_error", gov_err || "");
+      update_field("city_error", city_err || "");
+      update_field("address_error", address_err || "");
+      update_field("consultation_fee_error", fee_err || "");
       update_field("current_step", 1);
       return;
-    } else if (0 === form_state.schedule_list.length) {
+    } else {
+      // No action needed
+    }
+
+    // Step 2: Working Schedule (REQUIRED: at least 1 day and no conflicts)
+    const is_step2_ok = is_step_valid(
+      2,
+      form_state,
+      existing_clinics,
+      editing_clinic_id,
+      doctor_existing_schedules,
+    );
+    if (!is_step2_ok || 0 === form_state.schedule_list.length) {
+      update_field("working_days_error", "msg_no_working_days");
       update_field("current_step", 2);
       return;
     } else {
-      const is_step3_ok = is_step_valid(
-        3,
-        form_state,
-        existing_clinics,
-        editing_clinic_id,
-        doctor_existing_schedules,
-      );
-
-      if (!is_step3_ok) {
-        update_field("current_step", 3);
-        return;
-      } else {
-        const fee_text = `${form_state.consultation_fee} EGP`;
-        const schedule_text = form_state.schedule_list
-          .map((s) => s.day)
-          .join(", ");
-
-        const new_clinic: Clinic = {
-          id: Date.now(),
-          doctor_id: form_state.doctor_id || doctor_id,
-          name: form_state.clinic_name,
-          location: `${form_state.city}, ${form_state.governorate}`,
-          phone: form_state.phone,
-          consultation_fee: fee_text,
-          consultationFee: fee_text,
-          working_days: schedule_text || "Sat - Wed",
-          workingDays: schedule_text || "Sat - Wed",
-          status: form_state.status,
-          schedule_list: form_state.schedule_list,
-          break_list: form_state.break_list,
-          assigned_receptionists: form_state.assigned_receptionists,
-          appointment_duration: form_state.appointment_duration,
-          max_advance_booking: form_state.max_advance_booking,
-        };
-
-        on_add_clinic(new_clinic);
-        update_field("is_success_open", true);
-      }
+      // No action needed
     }
+
+    // Step 3: Break Times (OPTIONAL: if any exist, must be valid)
+    const is_step3_ok = is_step_valid(
+      3,
+      form_state,
+      existing_clinics,
+      editing_clinic_id,
+      doctor_existing_schedules,
+    );
+    if (!is_step3_ok) {
+      update_field("current_step", 3);
+      return;
+    } else {
+      // No action needed
+    }
+
+    // Step 4: Receptionists (REQUIRED: at least 1 receptionist)
+    const is_step4_ok = is_step_valid(
+      4,
+      form_state,
+      existing_clinics,
+      editing_clinic_id,
+    );
+    if (!is_step4_ok || (form_state.assigned_receptionists?.length || 0) === 0) {
+      update_field("current_step", 4);
+      return;
+    } else {
+      // No action needed
+    }
+
+    // Step 5: Booking Settings (REQUIRED: both duration and advance booking)
+    const is_step5_ok = is_step_valid(
+      5,
+      form_state,
+      existing_clinics,
+      editing_clinic_id,
+    );
+    if (
+      !is_step5_ok ||
+      !form_state.appointment_duration?.trim() ||
+      !form_state.max_advance_booking?.trim()
+    ) {
+      update_field("current_step", 5);
+      return;
+    } else {
+      // No action needed
+    }
+    const fee_text = `${form_state.consultation_fee} EGP`;
+    const schedule_text = form_state.schedule_list
+      .map((s) => s.day)
+      .join(", ");
+
+    const loc_text = [
+      form_state.governorate,
+      form_state.city,
+      form_state.address,
+    ]
+      .filter(Boolean)
+      .join(", ");
+
+    const new_clinic: Clinic = {
+      id: Date.now(),
+      doctor_id: form_state.doctor_id || doctor_id,
+      name: form_state.clinic_name,
+      location: loc_text,
+      address: form_state.address,
+      phone: form_state.phone,
+      consultation_fee: fee_text,
+      consultationFee: fee_text,
+      working_days: schedule_text || "Sat - Wed",
+      workingDays: schedule_text || "Sat - Wed",
+      status: form_state.status,
+      schedule_list: form_state.schedule_list,
+      break_list: form_state.break_list,
+      assigned_receptionists: form_state.assigned_receptionists,
+      appointment_duration: form_state.appointment_duration,
+      max_advance_booking: form_state.max_advance_booking,
+    };
+
+    on_add_clinic(new_clinic);
+    update_field("is_success_open", true);
   };
 
   const available_cities = form_state.governorate
