@@ -5,7 +5,7 @@
  * Version: v1.1.0
  * Dependencies: @/types/appointment, @/data/mock_appointments_data
  * Contributors: [shimaa salah]
- * Last Modified: [shimaa salah - 19/08/2026]
+ * Last Modified: [shimaa salah - 01/09/2026]
  * Description: Service layer abstracting appointment data fetching and automated consultation queue transition.
  */
 
@@ -116,6 +116,8 @@ export const appointment_service = {
     // Guard: Cannot start a new consultation if one is already active
     if (null !== current_data.active_consultation) {
       return { success: false, data: current_data };
+    } else {
+      // No action needed
     }
 
     // Find the next eligible patient in queue
@@ -125,6 +127,8 @@ export const appointment_service = {
 
     if (undefined === next_eligible_item) {
       return { success: false, data: current_data };
+    } else {
+      // No action needed
     }
 
     // Guard: Cannot start consultation for a patient who is not currently next in queue
@@ -133,6 +137,8 @@ export const appointment_service = {
       next_eligible_item.appointment_id !== patient_queue_id
     ) {
       return { success: false, data: current_data };
+    } else {
+      // No action needed
     }
 
     const target_item = next_eligible_item;

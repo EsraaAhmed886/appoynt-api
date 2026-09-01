@@ -5,7 +5,7 @@
  * Version : v1.0.0
  * Dependencies : react, @/types/clinic, @/services/clinic.service, @/lib/validators/clinic_validator
  * Contributors : [shimaa salah]
- * Last Modified : shimaa salah - 2026-08-25
+ * Last Modified : shimaa salah - 2026-09-01
  * Description : Custom hook encapsulating clinic form state, read-only/edit mode, dirty tracking, validation, optimistic locking, and save/cancel actions.
  */
 
@@ -704,6 +704,8 @@ export function use_clinic_form(clinic_id: number) {
         set_assigned_receptionists(list);
         if (list.length > 0) {
           set_receptionists_error("");
+        } else {
+          // No action needed
         }
         mark_as_dirty();
       },

@@ -5,7 +5,7 @@
  * Version : v1.1.0
  * Dependencies : react, lucide-react, @/context/language_context, @/types/clinic, @/services/clinic.service, @/lib/validators/clinic_validator
  * Contributors : [shimaa salah]
- * Last Modified : shimaa salah - 2026-08-25
+ * Last Modified : shimaa salah - 2026-09-01
  * Description : Multi-step modal component for adding a new clinic record with step navigation locks and centralized validation.
  */
 
@@ -292,6 +292,8 @@ export default function AddClinicModal({
       update_field("consultation_fee_error", fee_err || "");
       update_field("current_step", 1);
       return;
+    } else {
+      // No action needed
     }
 
     // Step 2: Working Schedule (REQUIRED: at least 1 day and no conflicts)
@@ -306,6 +308,8 @@ export default function AddClinicModal({
       update_field("working_days_error", "msg_no_working_days");
       update_field("current_step", 2);
       return;
+    } else {
+      // No action needed
     }
 
     // Step 3: Break Times (OPTIONAL: if any exist, must be valid)
@@ -319,6 +323,8 @@ export default function AddClinicModal({
     if (!is_step3_ok) {
       update_field("current_step", 3);
       return;
+    } else {
+      // No action needed
     }
 
     // Step 4: Receptionists (REQUIRED: at least 1 receptionist)
@@ -331,6 +337,8 @@ export default function AddClinicModal({
     if (!is_step4_ok || (form_state.assigned_receptionists?.length || 0) === 0) {
       update_field("current_step", 4);
       return;
+    } else {
+      // No action needed
     }
 
     // Step 5: Booking Settings (REQUIRED: both duration and advance booking)
@@ -347,6 +355,8 @@ export default function AddClinicModal({
     ) {
       update_field("current_step", 5);
       return;
+    } else {
+      // No action needed
     }
     const fee_text = `${form_state.consultation_fee} EGP`;
     const schedule_text = form_state.schedule_list
