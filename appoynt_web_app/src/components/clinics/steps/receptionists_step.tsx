@@ -14,6 +14,7 @@
  * File Description: Step 1 form view for entering and validating receptionist information, including personal details, contact information, clinic assignment, and account credentials.
  */
 import { useState } from "react";
+import { useTranslation } from "@/context/language_context";
 import {
   UserPlus,
   Trash2,
@@ -95,6 +96,7 @@ export default function ReceptionistsStep({
   assignedReceptionists,
   onUpdateAssigned,
 }: ReceptionistsStepProps) {
+  const { translations } = useTranslation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [tempSelected, setTempSelected] = useState<ReceptionistItem[]>([]);
@@ -111,7 +113,7 @@ export default function ReceptionistsStep({
     onUpdateAssigned(assignedReceptionists.filter((r) => r.id !== id));
   };
 
-  // ???????? ??? ???????? ???
+  // Receptionists available to assign
   const availableList = MOCK_ALL_RECEPTIONISTS.filter(
     (r) => !tempSelected.some((selected) => selected.id === r.id),
   ).filter(
@@ -145,23 +147,23 @@ export default function ReceptionistsStep({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-4">
         <div>
           <h3 className="text-lg font-semibold text-app-text-primary">
-            Assigned Receptionists
+            {translations.modal_step_4 || "Assigned Receptionists"}
           </h3>
           <p className="text-sm text-app-text-secondary">
-            Assign receptionists who can manage appointments for this clinic.
+            {translations.lbl_receptionists_desc || "Assign receptionists who can manage appointments for this clinic."}
           </p>
         </div>
 
         <button
           type="button"
           onClick={handleOpenModal}
-          className="flex items-center gap-2 rounded-lg bg-app-primary px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-all"
+          className="flex items-center justify-center gap-2 rounded-lg bg-app-primary px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-all whitespace-nowrap shrink-0"
         >
-          <UserPlus size={16} />
-          Assign Receptionist
+          <UserPlus size={16} className="shrink-0" />
+          <span>{translations.btn_assign_receptionist || "Assign Receptionist"}</span>
         </button>
       </div>
 
@@ -227,7 +229,7 @@ export default function ReceptionistsStep({
           <div className="w-full max-w-2xl rounded-xl bg-app-surface p-6 shadow-xl space-y-4">
             <div className="flex items-center justify-between border-b border-app-border pb-3">
               <h3 className="text-lg font-semibold text-app-text-primary">
-                Assign Receptionist
+                {translations.btn_assign_receptionist || "Assign Receptionist"}
               </h3>
               <button
                 type="button"
