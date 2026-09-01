@@ -306,6 +306,20 @@ export function validate_working_schedule_item(
 }
 
 /**
+ * Validates full working schedule array for a clinic.
+ * Requires at least one working schedule entry.
+ * Returns translation key "msg_no_working_days" if empty, or null if valid.
+ */
+export function validate_working_schedule(
+  schedule_list: WorkingScheduleItem[] = []
+): string | null {
+  if (!schedule_list || schedule_list.length === 0) {
+    return "msg_no_working_days";
+  }
+  return null;
+}
+
+/**
  * Real-time validation for Break Time item including break-vs-break overlap checks.
  * Returns object mapping field to translation error key, or null if valid.
  */

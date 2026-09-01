@@ -23,6 +23,7 @@ type WorkingScheduleSectionProps = {
   is_edit_mode: boolean;
   is_card_dirty?: boolean;
   schedule_list: WorkingScheduleItem[];
+  schedule_error?: string;
   doctor_occupied_days?: string[];
   doctor_other_schedules?: WorkingScheduleItem[];
   doctor_existing_schedules?: WorkingScheduleItem[];
@@ -38,6 +39,7 @@ export default function WorkingScheduleSection({
   is_edit_mode,
   is_card_dirty = false,
   schedule_list,
+  schedule_error = "",
   doctor_occupied_days = [],
   doctor_other_schedules = [],
   doctor_existing_schedules = [],
@@ -186,7 +188,11 @@ export default function WorkingScheduleSection({
       </div>
 
       {/* Table Container */}
-      <div className="overflow-hidden rounded-xl border border-app-border bg-app-surface">
+      <div
+        className={`overflow-hidden rounded-xl border bg-app-surface transition-colors ${
+          schedule_error ? "border-red-500" : "border-app-border"
+        }`}
+      >
         <table className="w-full text-start text-sm">
           <thead className="border-b border-app-border bg-app-input_fill text-app-text-secondary">
             <tr>
@@ -211,9 +217,13 @@ export default function WorkingScheduleSection({
               <tr>
                 <td
                   colSpan={is_edit_mode ? 4 : 3}
-                  className="px-5 py-6 text-center text-app-text-secondary font-medium"
+                  className={`px-5 py-6 text-center font-medium ${
+                    schedule_error ? "text-red-500" : "text-app-text-secondary"
+                  }`}
                 >
-                  {translations.lbl_no_working_schedule}
+                  {schedule_error
+                    ? translations[schedule_error as keyof typeof translations] || schedule_error
+                    : translations.lbl_no_working_schedule}
                 </td>
               </tr>
             ) : (
@@ -257,6 +267,12 @@ export default function WorkingScheduleSection({
           </tbody>
         </table>
       </div>
+
+      {schedule_error ? (
+        <p className="text-xs font-medium text-red-500">
+          {translations[schedule_error as keyof typeof translations] || schedule_error}
+        </p>
+      ) : null}
 
       {/* Summary Pill Badge matching reference image */}
       <div className="pt-1">

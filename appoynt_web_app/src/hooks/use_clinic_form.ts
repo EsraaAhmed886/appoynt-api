@@ -34,6 +34,7 @@ import {
   validate_city,
   validate_address,
   validate_consultation_fee,
+  validate_working_schedule,
 } from "@/lib/validators/clinic_validator";
 
 export function use_clinic_form(clinic_id: number) {
@@ -65,6 +66,7 @@ export function use_clinic_form(clinic_id: number) {
   const [status, set_status] = useState("Active");
 
   const [schedule_list, set_schedule_list] = useState<WorkingScheduleItem[]>([]);
+  const [schedule_error, set_schedule_error] = useState("");
   const [break_list, set_break_list] = useState<BreakTimeItem[]>([]);
   const [assigned_receptionists, set_assigned_receptionists] = useState<ReceptionistItem[]>([]);
   const [appointment_duration, set_appointment_duration] = useState("");
@@ -263,6 +265,7 @@ export function use_clinic_form(clinic_id: number) {
     } else {
       // No action needed
     }
+    set_schedule_error("");
     set_is_editing_schedule(false);
   }, [original_clinic]);
 
@@ -402,6 +405,14 @@ export function use_clinic_form(clinic_id: number) {
 
   // Save Schedule Card
   const save_schedule_card = useCallback(() => {
+    const err_schedule = validate_working_schedule(schedule_list);
+    if (err_schedule) {
+      set_schedule_error(err_schedule);
+      return false;
+    } else {
+      set_schedule_error("");
+    }
+
     const other_schedules = get_doctor_other_clinic_schedules(doctor_id, clinic_id);
     const has_conflict = schedule_list.some((s) => {
       return other_schedules.some((other) => {
@@ -491,6 +502,14 @@ export function use_clinic_form(clinic_id: number) {
       return;
     } else {
       // No action needed
+    }
+
+    const err_schedule = validate_working_schedule(schedule_list);
+    if (err_schedule) {
+      set_schedule_error(err_schedule);
+      return;
+    } else {
+      set_schedule_error("");
     }
 
     // Check if schedule changes impact existing appointments (trigger conflict dialog)
@@ -614,6 +633,7 @@ export function use_clinic_form(clinic_id: number) {
       consultationFeeError: consultation_fee_error,
       status: status,
       scheduleList: schedule_list,
+      scheduleError: schedule_error,
       breakList: break_list,
       assignedReceptionists: assigned_receptionists,
       appointmentDuration: appointment_duration,
@@ -673,6 +693,7 @@ export function use_clinic_form(clinic_id: number) {
       },
       addSchedule: (item: WorkingScheduleItem) => {
         set_schedule_list((prev) => [...prev, item]);
+        set_schedule_error("");
         mark_as_dirty();
       },
       editSchedule: (index: number, item: WorkingScheduleItem) => {

@@ -115,6 +115,7 @@ export default function ClinicViewEditPage({
           is_edit_mode={is_editing_schedule}
           is_card_dirty={is_schedule_dirty}
           schedule_list={form.scheduleList}
+          schedule_error={form.scheduleError}
           doctor_occupied_days={doctor_occupied_days}
           doctor_other_schedules={doctor_other_schedules}
           on_add_schedule={actions.addSchedule}
