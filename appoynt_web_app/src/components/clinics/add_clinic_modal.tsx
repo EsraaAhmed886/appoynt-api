@@ -266,11 +266,20 @@ export default function AddClinicModal({
           .map((s) => s.day)
           .join(", ");
 
+        const loc_text = [
+          form_state.governorate,
+          form_state.city,
+          form_state.address,
+        ]
+          .filter(Boolean)
+          .join(", ");
+
         const new_clinic: Clinic = {
           id: Date.now(),
           doctor_id: form_state.doctor_id || doctor_id,
           name: form_state.clinic_name,
-          location: `${form_state.city}, ${form_state.governorate}`,
+          location: loc_text,
+          address: form_state.address,
           phone: form_state.phone,
           consultation_fee: fee_text,
           consultationFee: fee_text,

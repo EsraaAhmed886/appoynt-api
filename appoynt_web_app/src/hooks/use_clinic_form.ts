@@ -122,20 +122,20 @@ export function use_clinic_form(clinic_id: number) {
       if (parts.length >= 3) {
         set_governorate(parts[0]);
         set_city(parts[1]);
-        set_address(parts.slice(2).join(", "));
+        set_address(entity.address || parts.slice(2).join(", "));
       } else if (parts.length === 2) {
         set_governorate(parts[0]);
         set_city(parts[1]);
-        set_address("");
+        set_address(entity.address || "");
       } else {
         set_governorate("");
         set_city("");
-        set_address(entity.location);
+        set_address(entity.address || entity.location);
       }
     } else {
       set_governorate("");
       set_city("");
-      set_address("");
+      set_address(entity.address || "");
     }
 
     const fee_val = (entity.consultation_fee || entity.consultationFee || "").replace(
@@ -353,6 +353,7 @@ export function use_clinic_form(clinic_id: number) {
       doctor_id: doctor_id,
       name: clinic_name,
       location: loc_text,
+      address: address,
       phone: phone,
       consultation_fee: fee_text,
       consultationFee: fee_text,
