@@ -1,0 +1,22 @@
+# ==========================================================
+# Medical Safety System & Clinical RAG Chatbot - Backend Requirements
+# ==========================================================
+# PURGED: streamlit (GUI layer removed for pure backend API operation)
+
+# Web API Framework
+fastapi>=0.100.0
+uvicorn[standard]>=0.22.0
+pydantic>=2.0.0
+
+# Vector RAG & NLP Engine
+langchain>=0.1.0
+langchain-community>=0.0.10
+langchain-huggingface>=0.0.1
+langchain-text-splitters>=0.0.1
+faiss-cpu>=1.7.4
+sentence-transformers>=2.2.2
+pypdf>=3.0.0
+
+# Dynamic Translation & AI Services
+deep-translator>=1.11.4
+google-genai>=0.1.0

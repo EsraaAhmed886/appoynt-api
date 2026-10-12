@@ -1,0 +1,40 @@
+﻿# ==============================================================================
+# Healthcare AI API — Consolidated Requirements
+# Root-level requirements.txt for unified production Docker deployment on Render.
+# Merges dependencies from: Warning (Task1), rag_module (Task2), smart_referral_care (Task3)
+# ==============================================================================
+
+# ── Web Framework ──────────────────────────────────────────────────────────────
+fastapi>=0.110.0
+uvicorn[standard]>=0.29.0
+pydantic>=2.6.0
+python-multipart>=0.0.9
+
+# ── HTTP Client ────────────────────────────────────────────────────────────────
+requests>=2.31.0
+httpx>=0.27.0
+
+# ── RAG / Vector Store (Task 2) ────────────────────────────────────────────────
+langchain>=0.1.16
+langchain-community>=0.0.32
+langchain-huggingface>=0.0.3
+langchain-text-splitters>=0.0.1
+faiss-cpu>=1.7.4
+sentence-transformers>=2.7.0
+pypdf>=4.0.0
+
+# ── LLM / Generative AI ────────────────────────────────────────────────────────
+google-genai>=0.7.0
+
+# ── Translation (RAG fallback) ─────────────────────────────────────────────────
+deep-translator>=1.11.4
+
+# ── NLP (Task 1) ──────────────────────────────────────────────────────────────
+spacy>=3.7.0
+
+# ── ML Models (Task 1 — safety engine) ────────────────────────────────────────
+lightgbm>=4.3.0
+scikit-learn>=1.4.0
+numpy>=1.26.0
+pandas>=2.2.0
+joblib>=1.3.0

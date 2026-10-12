@@ -1,0 +1,56 @@
+﻿# ==============================================================================
+# .gitignore — Healthcare AI API
+# ==============================================================================
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*.class
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Environment files — NEVER commit secrets
+.env
+.env.*
+!.env.example
+
+# Local development binaries / tools
+ngrok.exe
+ngrok
+*.exe
+
+# IDE / editor metadata
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Test / coverage artefacts
+htmlcov/
+.coverage
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# Logs
+*.log
+
+# ---------------------------------------------------------------------------
+# NOTE: FAISS index files and model weights (*.pkl, *.faiss) are intentionally
+# NOT excluded — they are required for production inference and must be tracked.
+# If they become too large for Git, migrate to Git LFS or a cloud bucket.
+# ---------------------------------------------------------------------------
