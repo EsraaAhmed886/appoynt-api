@@ -1,22 +1,28 @@
 # ==========================================================
 # Medical Safety System & Clinical RAG Chatbot - Backend Requirements
 # ==========================================================
-# PURGED: streamlit (GUI layer removed for pure backend API operation)
+# CPU-only PyTorch index: prevents sentence-transformers from pulling
+# a 2.5 GB CUDA torch build on Render's free tier (512 MB RAM limit).
+--extra-index-url https://download.pytorch.org/whl/cpu
 
-# Web API Framework
-fastapi>=0.100.0
-uvicorn[standard]>=0.22.0
-pydantic>=2.0.0
+# ── PyTorch (CPU-only, no CUDA / nvidia-* packages) ───────────────────────────
+torch>=2.2.0,<2.5.0
 
-# Vector RAG & NLP Engine
-langchain>=0.1.0
-langchain-community>=0.0.10
-langchain-huggingface>=0.0.1
+# ── Web API Framework ──────────────────────────────────────────────────────────
+fastapi>=0.110.0
+uvicorn[standard]>=0.29.0
+pydantic>=2.6.0
+
+# ── Vector RAG & NLP Engine ────────────────────────────────────────────────────
+langchain>=0.1.16
+langchain-community>=0.0.32
+langchain-huggingface>=0.0.3
 langchain-text-splitters>=0.0.1
 faiss-cpu>=1.7.4
-sentence-transformers>=2.2.2
-pypdf>=3.0.0
+# Cap sentence-transformers to avoid pulling heavier optional cuda extras
+sentence-transformers>=2.7.0,<3.0.0
+pypdf>=4.0.0
 
-# Dynamic Translation & AI Services
+# ── Dynamic Translation & AI Services ─────────────────────────────────────────
 deep-translator>=1.11.4
-google-genai>=0.1.0
+google-genai>=0.7.0
